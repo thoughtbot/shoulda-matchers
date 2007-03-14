@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
-class ContextTest < Test::Unit::TestCase
+class ContextTest < Test::Unit::TestCase # :nodoc:
 
   context "context with setup block" do
     setup do

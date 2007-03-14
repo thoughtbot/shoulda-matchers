@@ -1,11 +1,12 @@
-module TBTestHelpers
+module TBTestHelpers # :nodoc:
   module Should
-    def Should.included(other)
+    def Should.included(other) # :nodoc:
       @@_context_names = []
       @@_setup_blocks = []
       @@_teardown_blocks = []
     end
     
+    # Creates a context block with the given name.  The context block can contain setup, should, should_eventually, and teardown blocks.
     def context(name, &context_block)
       @@_context_names << name
       context_block.bind(self).call
@@ -14,17 +15,17 @@ module TBTestHelpers
       @@_teardown_blocks.pop
     end
 
+    # Run before every should block in the current context
     def setup(&setup_block)
       @@_setup_blocks << setup_block
     end
 
+    # Run after every should block in the current context
     def teardown(&teardown_block)
       @@_teardown_blocks << teardown_block
     end
 
     # Defines a specification.  Can be called either inside our outside of a context.
-    #
-    # 
     def should(name, opts = {}, &should_block)
       unless @@_context_names.empty?
         test_name = "test #{@@_context_names.join(" ")} should #{name}"
@@ -48,11 +49,13 @@ module TBTestHelpers
         define_method test_name_sym do |*args|
           setup_block.bind(self).call if setup_block
           should_block.bind(self).call(*args)
+        ensure
           teardown_block.bind(self).call if teardown_block
         end
       end
     end
-    
+
+    # Defines a specification that is not yet implemented.  Will be displayed as an 'X' when running tests, and failures will not be shown.
     def should_eventually(name, &block)
       should("eventually #{name}", {:unimplemented => true}, &block)
     end
