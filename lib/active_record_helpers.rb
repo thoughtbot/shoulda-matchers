@@ -1,5 +1,5 @@
-class Test # :nodoc:
-  class Unit # :nodoc:
+module Test # :nodoc:
+  module Unit # :nodoc:
     class TestCase
       class << self
         # Ensures that the model cannot be saved if one of the attributes listed is not present.

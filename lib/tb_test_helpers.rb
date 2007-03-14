@@ -1,8 +1,8 @@
 require 'active_record_helpers'
 require 'should'
 
-class Test # :nodoc:
-  class Unit # :nodoc:
+module Test # :nodoc:
+  module Unit # :nodoc:
     class TestCase
       class << self
         include TBTestHelpers::Should
