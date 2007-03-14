@@ -14,6 +14,20 @@ class ContextTest < Test::Unit::TestCase # :nodoc:
     should "have name set right" do
       assert_match(/^test context with setup block/, self.to_s)
     end
+
+    context "and with a subcontext" do
+      setup do
+        @blah = "#{@blah} twice"
+      end
+      
+      should "be named correctly" do
+        assert_match(/^test context with subcontext should be named correctly/, self.to_s)
+      end
+      
+      should "run the setup methods in order" do
+        assert_equal @blah, "blah twice"
+      end
+    end
   end
 
   context "another context with setup block" do
@@ -44,15 +58,9 @@ class ContextTest < Test::Unit::TestCase # :nodoc:
     end
   end
   
-  context "final context" do
+  context "another context" do
     should "not define @blah" do
       assert_nil @blah
-    end
-    
-    context "with subcontext" do
-      should "be named correctly" do
-        assert_match(/^test final context with subcontext should be named correctly/, self.to_s)
-      end
     end
   end
   
