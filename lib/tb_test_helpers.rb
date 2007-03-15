@@ -44,7 +44,7 @@ module Test # :nodoc:
         assert a1h = a1.inject({}){|h,e| h[e] = a1.select{|i| i == e}.size; h}
         assert a2h = a2.inject({}){|h,e| h[e] = a2.select{|i| i == e}.size; h}
     
-        assert_equal(a1, a2, msg)
+        assert_equal(a1h, a2h, msg)
       end
     end
   end
