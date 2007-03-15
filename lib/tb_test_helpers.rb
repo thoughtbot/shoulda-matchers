@@ -18,16 +18,16 @@ module Test # :nodoc:
       end
 
       # Ensures that the number of items in the collection changes
-      def assert_difference(object, method, difference, reload = false)
+      def assert_difference(object, method, difference, reload = false, msg = nil)
         initial_value = object.send(method)
         yield
-        reload and object.send(:reload)
-        assert_equal initial_value + difference, object.send(method), "#{object}##{method} after block"
+        object.send(:reload) if reload
+        assert_equal initial_value + difference, object.send(method), (msg || "#{object}##{method} after block")
       end
 
       # Ensures that object.method does not change
-      def assert_no_difference(object, method, reload = false, &block)
-        assert_difference(object, method, 0, reload, &block)
+      def assert_no_difference(object, method, reload = false, msg = nil, &block)
+        assert_difference(object, method, 0, reload, msg, &block)
       end
 
       # Logs a message, tagged with TESTING: and the name of the calling method.
@@ -36,7 +36,7 @@ module Test # :nodoc:
       end
 
       # asserts that two arrays contain the same elements, the same number of times.  Essentially ==, but unordered.
-      def assert_same_elements(a1, a2)
+      def assert_same_elements(a1, a2, msg = nil)
         [:select, :inject, :size].each do |m|
           [a1, a2].each {|a| assert_respond_to(a, m, "Are you sure that #{a} is an array?") }
         end
@@ -44,7 +44,7 @@ module Test # :nodoc:
         assert a1h = a1.inject({}){|h,e| h[e] = a1.select{|i| i == e}.size; h}
         assert a2h = a2.inject({}){|h,e| h[e] = a2.select{|i| i == e}.size; h}
     
-        assert_equal(a1, a2)
+        assert_equal(a1, a2, msg)
       end
     end
   end
