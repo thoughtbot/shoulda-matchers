@@ -5,6 +5,7 @@ module Test # :nodoc:
         # Ensures that the model cannot be saved if one of the attributes listed is not present.
         # Requires an existing record
         def should_require_attributes(*attributes)
+          opts = attributes.last.is_a?(Hash) ? attributes.pop : {}
           opts[:message] ||= /blank/
           klass = self.name.gsub(/Test$/, '').constantize
           attributes.each do |attribute|
@@ -13,7 +14,7 @@ module Test # :nodoc:
               assert !object.valid?, "Instance is still valid"
               assert object.errors.on(attribute), "No errors found"
               case opts[:message]
-              when Regex:
+              when Regexp:
                 assert(object.errors.on(attribute).to_a.detect {|e| e =~ opts[:message]}, 
                        "#{opts[:message]} not found in #{object.errors.on(attribute).to_a.inspect}")
               when String:
@@ -48,7 +49,7 @@ module Test # :nodoc:
               assert object.errors.on(attribute), "No errors found"
               
               case opts[:message]
-              when Regex:
+              when Regexp:
                 assert(object.errors.on(attribute).to_a.detect {|e| e =~ opts[:message]}, 
                        "#{opts[:message]} not found in #{object.errors.on(attribute).to_a.inspect}")
               when String:
@@ -58,17 +59,17 @@ module Test # :nodoc:
               
               if scope
                 # Now test that the object is valid when changing the scoped attribute
-                object.send(:"#{scoped}=", existing.send(scope).nil? ? 1 : existing.send(scoped_attr).next)
+                object.send(:"#{scope}=", existing.send(scope).nil? ? 1 : existing.send(scope).next)
                 object.errors.clear
                 object.valid?
 
                 case opts[:message]
-                when Regex:
-                  assert(! object.errors.on(attribute).to_a.detect {|e| e =~ opts[:message]}, 
-                         "#{opts[:message]} not found in #{object.errors.on(attribute).to_a.inspect}")
+                when Regexp:
+                  assert(!object.errors.on(attribute).to_a.detect {|e| e =~ opts[:message]}, 
+                         "#{opts[:message].inspect} found in #{object.errors.on(attribute).to_a.inspect} after :#{scope} set to #{object.send(scope.to_sym)}")
                 when String:
-                  assert(! object.errors.on(attribute).to_a.include?(opts[:message]), 
-                         "#{opts[:message]} not found in #{object.errors.on(attribute).to_a.inspect}")                
+                  assert(!object.errors.on(attribute).to_a.include?(opts[:message]), 
+                         "#{opts[:message].inspect} found in #{object.errors.on(attribute).to_a.inspect} after :#{scope} set to #{object.send(scope.to_sym)}")
                 end
                 
               end
