@@ -5,13 +5,21 @@ module Test # :nodoc:
         # Ensures that the model cannot be saved if one of the attributes listed is not present.
         # Requires an existing record
         def should_require_attributes(*attributes)
+          opts[:message] ||= /blank/
           klass = self.name.gsub(/Test$/, '').constantize
           attributes.each do |attribute|
             should "require #{attribute} to be set" do
               object = klass.new
               assert !object.valid?, "Instance is still valid"
               assert object.errors.on(attribute), "No errors found"
-              assert object.errors.on(attribute).to_a.include?("can't be blank"), "Error message doesn't match"
+              case opts[:message]
+              when Regex:
+                assert(object.errors.on(attribute).to_a.detect {|e| e =~ opts[:message]}, 
+                       "#{opts[:message]} not found in #{object.errors.on(attribute).to_a.inspect}")
+              when String:
+                assert(object.errors.on(attribute).to_a.include?(opts[:message]), 
+                       "#{opts[:message]} not found in #{object.errors.on(attribute).to_a.inspect}")                
+              end
             end
           end
         end
@@ -19,16 +27,51 @@ module Test # :nodoc:
         # Ensures that the model cannot be saved if one of the attributes listed is not unique.
         # Requires an existing record
         def should_require_unique_attributes(*attributes)
+          opts = attributes.last.is_a?(Hash) ? attributes.pop : {}
+          opts[:message] ||= /taken/
+          scope = opts[:scoped_to]
+          
           klass = self.name.gsub(/Test$/, '').constantize
           attributes.each do |attribute|
             attribute = attribute.to_sym
-            should "require unique value for #{attribute}" do
+            should "require unique value for #{attribute}#{" scoped to #{scope}" if scope}" do
               assert existing = klass.find(:first), "Can't find first #{klass}"
               object = klass.new
+              
               object.send(:"#{attribute}=", existing.send(attribute))
+              if scope
+                assert_respond_to object, :"#{scope}="
+                object.send(:"#{scope}=", existing.send(scope))
+              end
+              
               assert !object.valid?, "Instance is still valid"
               assert object.errors.on(attribute), "No errors found"
-              assert object.errors.on(attribute).to_a.include?('has already been taken'), "Error message doesn't match"
+              
+              case opts[:message]
+              when Regex:
+                assert(object.errors.on(attribute).to_a.detect {|e| e =~ opts[:message]}, 
+                       "#{opts[:message]} not found in #{object.errors.on(attribute).to_a.inspect}")
+              when String:
+                assert(object.errors.on(attribute).to_a.include?(opts[:message]), 
+                       "#{opts[:message]} not found in #{object.errors.on(attribute).to_a.inspect}")                
+              end
+              
+              if scope
+                # Now test that the object is valid when changing the scoped attribute
+                object.send(:"#{scoped}=", existing.send(scope).nil? ? 1 : existing.send(scoped_attr).next)
+                object.errors.clear
+                object.valid?
+
+                case opts[:message]
+                when Regex:
+                  assert(! object.errors.on(attribute).to_a.detect {|e| e =~ opts[:message]}, 
+                         "#{opts[:message]} not found in #{object.errors.on(attribute).to_a.inspect}")
+                when String:
+                  assert(! object.errors.on(attribute).to_a.include?(opts[:message]), 
+                         "#{opts[:message]} not found in #{object.errors.on(attribute).to_a.inspect}")                
+                end
+                
+              end
             end
           end
         end

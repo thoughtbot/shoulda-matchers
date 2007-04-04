@@ -33,8 +33,9 @@ module TBTestHelpers # :nodoc:
     # Defines a specification.  Can be called either inside our outside of a context.
     def should(name, opts = {}, &should_block)
       test_name = ["test", @@context_names, "should", "#{name}"].flatten.join(' ').to_sym
-  
-      raise ArgumentError, "'#{test_name}' is already defined" and return if self.instance_methods.include? test_name
+
+      name_defined = eval("self.instance_methods.include?('#{test_name.to_s.gsub(/['"]/, '\$1')}')", should_block.binding)
+      raise ArgumentError, "'#{test_name}' is already defined" and return if name_defined
       
       setup_blocks    = @@setup_blocks.dup
       teardown_blocks = @@teardown_blocks.dup

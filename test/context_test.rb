@@ -12,7 +12,6 @@ class ContextTest < Test::Unit::TestCase # :nodoc:
     end
     
     should "have name set right" do
-      raise RuntimeError, "Whops!"
       assert_match(/^test context with setup block/, self.to_s)
     end
 
