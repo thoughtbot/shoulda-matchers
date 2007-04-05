@@ -12,7 +12,7 @@ module Test # :nodoc:
   module Unit # :nodoc:
     class TestCase
       class << self
-        include TBTestHelpers::Should
+        include TBTestHelpers::Context
     
         # Loads all fixture files (<tt>test/fixtures/*.yml</tt>)
         def load_all_fixtures
