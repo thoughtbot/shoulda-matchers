@@ -1,19 +1,27 @@
 require 'test/unit/ui/console/testrunner'
 
 # Completely stolen from redgreen gem
-module Color
-  COLORS = { :clear => 0, :red => 31, :green => 32, :yellow => 33 }
-  def self.method_missing(color_name, *args)
+#
+# Adds colored output to your tests.  Specify <tt>color: true</tt> in 
+# your <tt>test/tb_test_helpers.conf</tt> file to enable.
+#
+# *Bug*: for some reason, this adds another line of output to the end of 
+# every rake task, as though there was another (empty) set of tests.  
+# A fix would be most welcome.
+#
+module Color 
+  COLORS = { :clear => 0, :red => 31, :green => 32, :yellow => 33 } # :nodoc:
+  def self.method_missing(color_name, *args)  # :nodoc:
     color(color_name) + args.first + color(:clear) 
   end
-  def self.color(color)
+  def self.color(color) # :nodoc:
     "\e[#{COLORS[color.to_sym]}m"
   end
 end
 
-module Test
-  module Unit
-    class TestResult
+module Test # :nodoc:
+  module Unit # :nodoc:
+    class TestResult # :nodoc:
       alias :old_to_s :to_s
       def to_s
         if old_to_s =~ /\d+ tests, \d+ assertions, (\d+) failures, (\d+) errors/
@@ -22,7 +30,7 @@ module Test
       end
     end
 
-    class AutoRunner
+    class AutoRunner # :nodoc:
       alias :old_initialize :initialize
       def initialize(standalone)
         old_initialize(standalone)
@@ -32,7 +40,7 @@ module Test
       end
     end
 
-    class Failure
+    class Failure # :nodoc:
       alias :old_long_display :long_display
       def long_display
         # old_long_display.sub('Failure', Color.red('Failure'))
@@ -40,7 +48,7 @@ module Test
       end
     end
 
-    class Error
+    class Error # :nodoc:
       alias :old_long_display :long_display
       def long_display
         # old_long_display.sub('Error', Color.yellow('Error'))
@@ -48,9 +56,9 @@ module Test
       end
     end
 
-    module UI
-      module Console
-        class RedGreenTestRunner < Test::Unit::UI::Console::TestRunner
+    module UI # :nodoc:
+      module Console # :nodoc:
+        class RedGreenTestRunner < Test::Unit::UI::Console::TestRunner  # :nodoc:
           def output_single(something, level=NORMAL)
             return unless (output?(level))
             something = case something

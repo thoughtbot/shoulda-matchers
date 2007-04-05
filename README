@@ -4,12 +4,13 @@ A collection of Test::Unit helper methods.
 
 Adds helpers for 
 
-#. Contexts and should statements
-#. Common ActiveRecord model tests
-#. A few general purpose assertions
-
+1. context and should statements
+1. Common ActiveRecord model tests
+1. A few general purpose assertions
+  
 == Todo
 
-#. Controller test helpers
-#. General code cleanups
-#. More options for AR helpers
+1. Controller test helpers
+1. General code cleanups
+1. More options for AR helpers
+  
