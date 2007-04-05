@@ -1,1 +1,15 @@
-== Example
+= ThoughtBot Test Helpers
+
+A collection of Test::Unit helper methods.
+
+Adds helpers for 
+
+#. Contexts and should statements
+#. Common ActiveRecord model tests
+#. A few general purpose assertions
+
+== Todo
+
+#. Controller test helpers
+#. General code cleanups
+#. More options for AR helpers
