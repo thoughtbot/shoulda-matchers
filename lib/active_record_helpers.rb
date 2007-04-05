@@ -5,22 +5,16 @@ module Test # :nodoc:
         # Ensures that the model cannot be saved if one of the attributes listed is not present.
         # Requires an existing record
         def should_require_attributes(*attributes)
-          opts = attributes.last.is_a?(Hash) ? attributes.pop : {}
+          opts = opts_from(attributes)
           opts[:message] ||= /blank/
-          klass = self.name.gsub(/Test$/, '').constantize
+          klass = model_class
+          
           attributes.each do |attribute|
             should "require #{attribute} to be set" do
               object = klass.new
               assert !object.valid?, "Instance is still valid"
               assert object.errors.on(attribute), "No errors found"
-              case opts[:message]
-              when Regexp:
-                assert(object.errors.on(attribute).to_a.detect {|e| e =~ opts[:message]}, 
-                       "#{opts[:message]} not found in #{object.errors.on(attribute).to_a.inspect}")
-              when String:
-                assert(object.errors.on(attribute).to_a.include?(opts[:message]), 
-                       "#{opts[:message]} not found in #{object.errors.on(attribute).to_a.inspect}")                
-              end
+              assert_contains(object.errors.on(attribute), opts[:message])
             end
           end
         end
@@ -28,11 +22,11 @@ module Test # :nodoc:
         # Ensures that the model cannot be saved if one of the attributes listed is not unique.
         # Requires an existing record
         def should_require_unique_attributes(*attributes)
-          opts = attributes.last.is_a?(Hash) ? attributes.pop : {}
+          opts = opts_from(attributes)
           opts[:message] ||= /taken/
           scope = opts[:scoped_to]
           
-          klass = self.name.gsub(/Test$/, '').constantize
+          klass = model_class
           attributes.each do |attribute|
             attribute = attribute.to_sym
             should "require unique value for #{attribute}#{" scoped to #{scope}" if scope}" do
@@ -48,30 +42,15 @@ module Test # :nodoc:
               assert !object.valid?, "Instance is still valid"
               assert object.errors.on(attribute), "No errors found"
               
-              case opts[:message]
-              when Regexp:
-                assert(object.errors.on(attribute).to_a.detect {|e| e =~ opts[:message]}, 
-                       "#{opts[:message]} not found in #{object.errors.on(attribute).to_a.inspect}")
-              when String:
-                assert(object.errors.on(attribute).to_a.include?(opts[:message]), 
-                       "#{opts[:message]} not found in #{object.errors.on(attribute).to_a.inspect}")                
-              end
+              assert_contains(object.errors.on(attribute), opts[:message])
               
               if scope
                 # Now test that the object is valid when changing the scoped attribute
                 object.send(:"#{scope}=", existing.send(scope).nil? ? 1 : existing.send(scope).next)
                 object.errors.clear
                 object.valid?
-
-                case opts[:message]
-                when Regexp:
-                  assert(!object.errors.on(attribute).to_a.detect {|e| e =~ opts[:message]}, 
-                         "#{opts[:message].inspect} found in #{object.errors.on(attribute).to_a.inspect} after :#{scope} set to #{object.send(scope.to_sym)}")
-                when String:
-                  assert(!object.errors.on(attribute).to_a.include?(opts[:message]), 
-                         "#{opts[:message].inspect} found in #{object.errors.on(attribute).to_a.inspect} after :#{scope} set to #{object.send(scope.to_sym)}")
-                end
-                
+                assert_does_not_contain(object.errors.on(attribute), opts[:message], 
+                                        "after :#{scope} set to #{object.send(scope.to_sym)}")
               end
             end
           end
@@ -80,7 +59,8 @@ module Test # :nodoc:
         # Ensures that the attribute cannot be set on update
         # Requires an existing record
         def should_protect_attributes(*attributes)
-          klass = self.name.gsub(/Test$/, '').constantize
+          opts = opts_from(attributes)
+          klass = model_class
           attributes.each do |attribute|
             attribute = attribute.to_sym
             should "not allow #{attribute} to be changed by update" do
@@ -97,14 +77,16 @@ module Test # :nodoc:
         # Ensures that the attribute cannot be set to the given values
         # Requires an existing record
         def should_not_allow_values_for(attribute, *bad_values)
-          klass = self.name.gsub(/Test$/, '').constantize
+          opts = opts_from(bad_values)
+          opts[:message] ||= /invalid/
+          klass = model_class
           bad_values.each do |v|
             should "not allow #{attribute} to be set to \"#{v}\"" do
               assert object = klass.find(:first), "Can't find first #{klass}"
               object.send("#{attribute}=", v)
               assert !object.save, "Saved #{klass} with #{attribute} set to \"#{v}\""
               assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{v}\""
-              assert_match(/invalid/, object.errors.on(attribute), "Error set on #{attribute} doesn't include \"invalid\" when set to \"#{v}\"")
+              assert_contains(object.errors.on(attribute), opts[:message], "when set to \"#{v}\"")
             end
           end
         end
@@ -112,22 +94,26 @@ module Test # :nodoc:
         # Ensures that the attribute can be set to the given values.
         # Requires an existing record
         def should_allow_values_for(attribute, *good_values)
-          klass = self.name.gsub(/Test$/, '').constantize
+          opts = opts_from(good_values)
+          opts[:message] ||= /invalid/
+          klass = model_class
           good_values.each do |v|
             should "allow #{attribute} to be set to \"#{v}\"" do
               assert object = klass.find(:first), "Can't find first #{klass}"
               object.send("#{attribute}=", v)
               object.save
               # assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{v}\""
-              assert_no_match(/invalid/, object.errors.on(attribute), "Error set on #{attribute} includes \"invalid\" when set to \"#{v}\"")
+              assert_contains(object.errors.on(attribute), opts[:messgae], "when set to \"#{v}\"")
             end
           end
         end
 
         # Ensures that the length of the attribute is in the given range
         # Requires an existing record
-        def should_ensure_length_in_range(attribute, range)
-          klass = self.name.gsub(/Test$/, '').constantize
+        def should_ensure_length_in_range(attribute, range, opts = {})
+          opts[:short_message] ||= /short/
+          opts[:long_message]  ||= /long/
+          klass = model_class
           min_length = range.first
           max_length = range.last
 
@@ -139,7 +125,7 @@ module Test # :nodoc:
             object.send("#{attribute}=", min_value)
             assert !object.save, "Saved #{klass} with #{attribute} set to \"#{min_value}\""
             assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{min_value}\""
-            assert_match(/short/, object.errors.on(attribute), "Error set on #{attribute} doesn't include \"short\" when set to \"#{min_value}\"")
+            assert_contains(object.errors.on(attribute), opts[:short_message], "when set to \"#{min_value}\"")
           end
       
           should "not allow #{attribute} to be more than #{max_length} chars long" do
@@ -147,14 +133,16 @@ module Test # :nodoc:
             object.send("#{attribute}=", max_value)
             assert !object.save, "Saved #{klass} with #{attribute} set to \"#{max_value}\""
             assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{max_value}\""
-            assert_match(/long/, object.errors.on(attribute), "Error set on #{attribute} doesn't include \"long\" when set to \"#{max_value}\"")
+            assert_contains(object.errors.on(attribute), opts[:long_message], "when set to \"#{max_value}\"")
           end
         end    
 
         # Ensure that the attribute is in the range specified
         # Requires an existing record
-        def should_ensure_value_in_range(attribute, range)
-          klass = self.name.gsub(/Test$/, '').constantize
+        def should_ensure_value_in_range(attribute, range, opts = {})
+          opts[:low_message]  ||= /included/
+          opts[:high_message] ||= /included/
+          klass = model_class
           min = range.first
           max = range.last
 
@@ -164,6 +152,7 @@ module Test # :nodoc:
             object.send("#{attribute}=", v)
             assert !object.save, "Saved #{klass} with #{attribute} set to \"#{v}\""
             assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{v}\""
+            assert_contains(object.errors.on(attribute), opts[:low_message], "when set to \"#{v}\"")
           end
       
           should "not allow #{attribute} to be more than #{max}" do
@@ -172,21 +161,23 @@ module Test # :nodoc:
             object.send("#{attribute}=", v)
             assert !object.save, "Saved #{klass} with #{attribute} set to \"#{v}\""
             assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{v}\""
+            assert_contains(object.errors.on(attribute), opts[:high_message], "when set to \"#{v}\"")
           end
         end    
         
         # Ensure that the attribute is numeric
         # Requires an existing record
         def should_only_allow_numeric_values_for(*attributes)
-          klass = self.name.gsub(/Test$/, '').constantize
+          opts = opts_from(attributes)
+          opts[:message]  ||= /number/
+          klass = model_class
           attributes.each do |attribute|
             attribute = attribute.to_sym
             should "only allow numeric values for #{attribute}" do
               assert object = klass.find(:first), "Can't find first #{klass}"
               object.send(:"#{attribute}=", "abcd")
               assert !object.valid?, "Instance is still valid"
-              assert object.errors.on(attribute), "No errors found"
-              assert object.errors.on(attribute).to_a.include?('is not a number'), "Error message doesn't match"
+              assert_contains(object.errors.on(attribute), opts[:message])
             end
           end
         end
@@ -195,8 +186,8 @@ module Test # :nodoc:
         # The last parameter may be a hash of options.  Currently, the only supported option
         # is :through
         def should_have_many(*associations)
-          opts = associations.last.is_a?(Hash) ? associations.pop : {}
-          klass = self.name.gsub(/Test$/, '').constantize
+          opts = opts_from(associations)
+          klass = model_class
           associations.each do |association|
             should "have many #{association}#{" through #{opts[:through]}" if opts[:through]}" do
               reflection = klass.reflect_on_association(association)
@@ -209,7 +200,8 @@ module Test # :nodoc:
 
         # Ensures that the has_and_belongs_to_many relationship exists.  
         def should_have_and_belong_to_many(*associations)
-          klass = self.name.gsub(/Test$/, '').constantize
+          opts = opts_from(associations)
+          klass = model_class
           associations.each do |association|
             should "should have and belong to many #{association}" do
               assert klass.reflect_on_association(association)
@@ -220,7 +212,8 @@ module Test # :nodoc:
     
         # Ensure that the has_one relationship exists.
         def should_have_one(*associations)
-          klass = self.name.gsub(/Test$/, '').constantize
+          opts = opts_from(associations)
+          klass = model_class
           associations.each do |association|
             should "have one #{association}" do
               assert klass.reflect_on_association(association)
@@ -231,7 +224,8 @@ module Test # :nodoc:
     
         # Ensure that the belongs_to relationship exists.
         def should_belong_to(*associations)
-          klass = self.name.gsub(/Test$/, '').constantize
+          opts = opts_from(associations)
+          klass = model_class
           associations.each do |association|
             should "belong_to #{association}" do
               assert klass.reflect_on_association(association)
@@ -239,6 +233,17 @@ module Test # :nodoc:
             end
           end
         end
+        
+        private
+        
+        def opts_from(collection)
+          collection.last.is_a?(Hash) ? collection.pop : {}
+        end
+
+        def model_class
+          self.name.gsub(/Test$/, '').constantize
+        end
+                
       end
     end
   end

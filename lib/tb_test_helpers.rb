@@ -24,6 +24,11 @@ module Test # :nodoc:
     
       end
 
+      # Logs a message, tagged with TESTING: and the name of the calling method.
+      def report!(msg = "")
+        puts("#{caller.first}: #{msg}")
+      end
+
       # Ensures that the number of items in the collection changes
       def assert_difference(object, method, difference, reload = false, msg = nil)
         initial_value = object.send(method)
@@ -37,11 +42,6 @@ module Test # :nodoc:
         assert_difference(object, method, 0, reload, msg, &block)
       end
 
-      # Logs a message, tagged with TESTING: and the name of the calling method.
-      def report!(msg = "")
-        @controller.logger.info("TESTING: #{caller.first}: #{msg}")
-      end
-
       # asserts that two arrays contain the same elements, the same number of times.  Essentially ==, but unordered.
       def assert_same_elements(a1, a2, msg = nil)
         [:select, :inject, :size].each do |m|
@@ -53,6 +53,31 @@ module Test # :nodoc:
     
         assert_equal(a1h, a2h, msg)
       end
+      
+      def assert_contains(collection, x, extra_msg = "")
+        collection = [collection] unless collection.is_a?(Array)
+        msg = "#{x} not found in #{collection.to_a.inspect} " + extra_msg
+        case x
+        when Regexp: assert(collection.detect { |e| e =~ x }, msg)
+        when String: assert(collection.include?(x), msg)
+        when Fixnum: assert(collection.include?(x), msg)
+        else
+          raise ArgumentError, "Don't know what to do with #{x}"
+        end        
+      end
+
+      def assert_does_not_contain(collection, x, extra_msg = "")
+        collection = [collection] unless collection.is_a?(Array)
+        msg = "#{x} found in #{collection.to_a.inspect} " + extra_msg
+        case x
+        when Regexp: assert(!collection.detect { |e| e =~ x }, msg)
+        when String: assert(!collection.include?(x), msg)
+        when Fixnum: assert(!collection.include?(x), msg)
+        else
+          raise ArgumentError, "Don't know what to do with #{x}"
+        end        
+      end
+
     end
   end
 end
