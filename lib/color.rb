@@ -3,7 +3,7 @@ require 'test/unit/ui/console/testrunner'
 # Completely stolen from redgreen gem
 #
 # Adds colored output to your tests.  Specify <tt>color: true</tt> in 
-# your <tt>test/tb_test_helpers.conf</tt> file to enable.
+# your <tt>test/shoulda.conf</tt> file to enable.
 #
 # *Bug*: for some reason, this adds another line of output to the end of 
 # every rake task, as though there was another (empty) set of tests.  
