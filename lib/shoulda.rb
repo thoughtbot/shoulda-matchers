@@ -11,7 +11,7 @@ require 'color' if tb_test_options[:color]
 
 module Test # :nodoc:
   module Unit # :nodoc:
-    class TestCase
+    class TestCase # :nodoc:
 
       include ThoughtBot::Shoulda::General::InstanceMethods
 

@@ -12,7 +12,7 @@ end
 
 Rake::RDocTask.new { |rdoc|
   rdoc.rdoc_dir = 'doc'
-  rdoc.title    = "ThoughtBot Test Helpers -- Making your tests easy on the fingers and eyes"
+  rdoc.title    = "Shoulda -- Making your tests easy on the fingers and eyes"
   rdoc.options << '--line-numbers' << '--inline-source'
   rdoc.template = "#{ENV['template']}.rb" if ENV['template']
   rdoc.rdoc_files.include('README', 'lib/**/*.rb')

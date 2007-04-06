@@ -9,7 +9,7 @@ require 'test/unit/ui/console/testrunner'
 # every rake task, as though there was another (empty) set of tests.  
 # A fix would be most welcome.
 #
-module Color 
+module ThoughtBot::Shoulda::Color 
   COLORS = { :clear => 0, :red => 31, :green => 32, :yellow => 33 } # :nodoc:
   def self.method_missing(color_name, *args)  # :nodoc:
     color(color_name) + args.first + color(:clear) 
@@ -25,7 +25,7 @@ module Test # :nodoc:
       alias :old_to_s :to_s
       def to_s
         if old_to_s =~ /\d+ tests, \d+ assertions, (\d+) failures, (\d+) errors/
-          Color.send($1.to_i != 0 || $2.to_i != 0 ? :red : :green, $&)
+          ThoughtBot::Shoulda::Color.send($1.to_i != 0 || $2.to_i != 0 ? :red : :green, $&)
         end
       end
     end
@@ -43,16 +43,16 @@ module Test # :nodoc:
     class Failure # :nodoc:
       alias :old_long_display :long_display
       def long_display
-        # old_long_display.sub('Failure', Color.red('Failure'))
-        Color.red(old_long_display)
+        # old_long_display.sub('Failure', ThoughtBot::Shoulda::Color.red('Failure'))
+        ThoughtBot::Shoulda::Color.red(old_long_display)
       end
     end
 
     class Error # :nodoc:
       alias :old_long_display :long_display
       def long_display
-        # old_long_display.sub('Error', Color.yellow('Error'))
-        Color.yellow(old_long_display)
+        # old_long_display.sub('Error', ThoughtBot::Shoulda::Color.yellow('Error'))
+        ThoughtBot::Shoulda::Color.yellow(old_long_display)
       end
     end
 
@@ -62,9 +62,9 @@ module Test # :nodoc:
           def output_single(something, level=NORMAL)
             return unless (output?(level))
             something = case something
-            when '.' then Color.green('.')
-            when 'F' then Color.red("F")
-            when 'E' then Color.yellow("E")
+            when '.' then ThoughtBot::Shoulda::Color.green('.')
+            when 'F' then ThoughtBot::Shoulda::Color.red("F")
+            when 'E' then ThoughtBot::Shoulda::Color.yellow("E")
             else something
             end
             @io.write(something) 
