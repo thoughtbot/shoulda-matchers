@@ -151,7 +151,7 @@ module ThoughtBot # :nodoc:
             object.send("#{attribute}=", v)
             object.save
             # assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{v}\""
-            assert_contains(object.errors.on(attribute), opts[:messgae], "when set to \"#{v}\"")
+            assert_contains(object.errors.on(attribute), opts[:message], "when set to \"#{v}\"")
           end
         end
       end
