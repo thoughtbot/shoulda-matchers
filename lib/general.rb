@@ -1,5 +1,5 @@
 module ThoughtBot # :nodoc:
-  module TestHelpers # :nodoc:
+  module Shoulda # :nodoc:
     module General # :nodoc:
       
       module ClassMethods

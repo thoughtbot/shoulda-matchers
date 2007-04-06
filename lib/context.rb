@@ -1,5 +1,5 @@
 module ThoughtBot # :nodoc:
-  module TestHelpers # :nodoc:
+  module Shoulda # :nodoc:
     # = context and should blocks
     # 
     # A context block can exist next to normal <tt>def test_blah</tt> statements, 

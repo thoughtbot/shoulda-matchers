@@ -13,12 +13,12 @@ module Test # :nodoc:
   module Unit # :nodoc:
     class TestCase
 
-      include ThoughtBot::TestHelpers::General::InstanceMethods
+      include ThoughtBot::Shoulda::General::InstanceMethods
 
       class << self
-        include ThoughtBot::TestHelpers::Context
-        include ThoughtBot::TestHelpers::ActiveRecord
-        include ThoughtBot::TestHelpers::General::ClassMethods    
+        include ThoughtBot::Shoulda::Context
+        include ThoughtBot::Shoulda::ActiveRecord
+        include ThoughtBot::Shoulda::General::ClassMethods    
       end
     end
   end

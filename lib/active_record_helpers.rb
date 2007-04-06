@@ -1,5 +1,5 @@
 module ThoughtBot # :nodoc:
-  module TestHelpers # :nodoc:
+  module Shoulda # :nodoc:
     # = Macro test helpers for your active record models
     #
     # These helpers will test most of the validations and associations for your ActiveRecord models.
