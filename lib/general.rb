@@ -56,7 +56,7 @@ module ThoughtBot # :nodoc:
         #   assert_contains(['a', '1'], /\d/) => passes
         def assert_contains(collection, x, extra_msg = "")
           collection = [collection] unless collection.is_a?(Array)
-          msg = "#{x} not found in #{collection.to_a.inspect} " + extra_msg
+          msg = "#{x.inspect} not found in #{collection.to_a.inspect} " + extra_msg
           case x
           when Regexp: assert(collection.detect { |e| e =~ x }, msg)
           else         assert(collection.include?(x), msg)
@@ -67,7 +67,7 @@ module ThoughtBot # :nodoc:
         # none of the elements from the collection match x.
         def assert_does_not_contain(collection, x, extra_msg = "")
           collection = [collection] unless collection.is_a?(Array)
-          msg = "#{x} found in #{collection.to_a.inspect} " + extra_msg
+          msg = "#{x.inspect} found in #{collection.to_a.inspect} " + extra_msg
           case x
           when Regexp: assert(!collection.detect { |e| e =~ x }, msg)
           else         assert(!collection.include?(x), msg)
