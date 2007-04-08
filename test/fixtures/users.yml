@@ -1,0 +1,6 @@
+first:
+  id: 1
+  name: Some dude
+  company_id: 1
+  age: 2
+  email: none@none.com
