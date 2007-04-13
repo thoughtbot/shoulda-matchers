@@ -24,3 +24,10 @@ module Test # :nodoc:
   end
 end
 
+module ActionController #:nodoc:
+  module Integration #:nodoc:
+    class Session #:nodoc:
+      include ThoughtBot::Shoulda::General::InstanceMethods
+    end
+  end
+end
