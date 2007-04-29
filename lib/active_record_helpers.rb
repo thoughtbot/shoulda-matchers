@@ -30,8 +30,8 @@ module ThoughtBot # :nodoc:
       # Example:
       #   should_require_attributes :name, :phone_number
       def should_require_attributes(*attributes)
-        opts = opts_from(attributes)
-        opts[:message] ||= /blank/
+        message = get_options!(attributes, :message)
+        message ||= /blank/
         klass = model_class
         
         attributes.each do |attribute|
@@ -39,7 +39,7 @@ module ThoughtBot # :nodoc:
             object = klass.new
             assert !object.valid?, "Instance is still valid"
             assert object.errors.on(attribute), "No errors found"
-            assert_contains(object.errors.on(attribute), opts[:message])
+            assert_contains(object.errors.on(attribute), message)
           end
         end
       end
@@ -54,9 +54,8 @@ module ThoughtBot # :nodoc:
       # Example:
       #   should_require_unique_attributes :keyword, :username
       def should_require_unique_attributes(*attributes)
-        opts = opts_from(attributes)
-        opts[:message] ||= /taken/
-        scope = opts[:scoped_to]
+        message, scope = get_options!(attributes, :message, :scoped_to)
+        message ||= /taken/
         
         klass = model_class
         attributes.each do |attribute|
@@ -74,14 +73,14 @@ module ThoughtBot # :nodoc:
             assert !object.valid?, "Instance is still valid"
             assert object.errors.on(attribute), "No errors found"
             
-            assert_contains(object.errors.on(attribute), opts[:message])
+            assert_contains(object.errors.on(attribute), message)
             
             if scope
               # Now test that the object is valid when changing the scoped attribute
               object.send(:"#{scope}=", existing.send(scope).nil? ? 1 : existing.send(scope).next)
               object.errors.clear
               object.valid?
-              assert_does_not_contain(object.errors.on(attribute), opts[:message], 
+              assert_does_not_contain(object.errors.on(attribute), message, 
                                       "after :#{scope} set to #{object.send(scope.to_sym)}")
             end
           end
@@ -93,7 +92,7 @@ module ThoughtBot # :nodoc:
       #
       #   should_protect_attributes :password, :admin_flag
       def should_protect_attributes(*attributes)
-        opts = opts_from(attributes)
+        get_options!(attributes)
         klass = model_class
         attributes.each do |attribute|
           attribute = attribute.to_sym
@@ -118,8 +117,8 @@ module ThoughtBot # :nodoc:
       # Example:
       #   should_not_allow_values_for :isbn, "bad 1", "bad 2"
       def should_not_allow_values_for(attribute, *bad_values)
-        opts = opts_from(bad_values)
-        opts[:message] ||= /invalid/
+        message = get_options!(bad_values, :message)
+        message ||= /invalid/
         klass = model_class
         bad_values.each do |v|
           should "not allow #{attribute} to be set to \"#{v}\"" do
@@ -127,7 +126,7 @@ module ThoughtBot # :nodoc:
             object.send("#{attribute}=", v)
             assert !object.save, "Saved #{klass} with #{attribute} set to \"#{v}\""
             assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{v}\""
-            assert_contains(object.errors.on(attribute), opts[:message], "when set to \"#{v}\"")
+            assert_contains(object.errors.on(attribute), message, "when set to \"#{v}\"")
           end
         end
       end
@@ -142,15 +141,15 @@ module ThoughtBot # :nodoc:
       # Example:
       #   should_allow_values_for :isbn, "isbn 1 2345 6789 0", "ISBN 1-2345-6789-0"
       def should_allow_values_for(attribute, *good_values)
-        opts = opts_from(good_values)
-        opts[:message] ||= /invalid/
+        message = get_options!(good_values, :message)
+        message ||= /invalid/
         klass = model_class
         good_values.each do |v|
           should "allow #{attribute} to be set to \"#{v}\"" do
             assert object = klass.find(:first), "Can't find first #{klass}"
             object.send("#{attribute}=", v)
             object.save
-            assert_does_not_contain(object.errors.on(attribute), opts[:message], "when set to \"#{v}\"")
+            assert_does_not_contain(object.errors.on(attribute), message, "when set to \"#{v}\"")
           end
         end
       end
@@ -167,8 +166,10 @@ module ThoughtBot # :nodoc:
       # Example:
       #   should_ensure_length_in_range :password, (6..20)
       def should_ensure_length_in_range(attribute, range, opts = {})
-        opts[:short_message] ||= /short/
-        opts[:long_message]  ||= /long/
+        short_message, long_message = get_options!([opts], :short_message, :long_message)
+        short_message ||= /short/
+        long_message  ||= /long/
+        
         klass = model_class
         min_length = range.first
         max_length = range.last
@@ -181,7 +182,7 @@ module ThoughtBot # :nodoc:
           object.send("#{attribute}=", min_value)
           assert !object.save, "Saved #{klass} with #{attribute} set to \"#{min_value}\""
           assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{min_value}\""
-          assert_contains(object.errors.on(attribute), opts[:short_message], "when set to \"#{min_value}\"")
+          assert_contains(object.errors.on(attribute), short_message, "when set to \"#{min_value}\"")
         end
     
         should "not allow #{attribute} to be more than #{max_length} chars long" do
@@ -189,7 +190,7 @@ module ThoughtBot # :nodoc:
           object.send("#{attribute}=", max_value)
           assert !object.save, "Saved #{klass} with #{attribute} set to \"#{max_value}\""
           assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{max_value}\""
-          assert_contains(object.errors.on(attribute), opts[:long_message], "when set to \"#{max_value}\"")
+          assert_contains(object.errors.on(attribute), long_message, "when set to \"#{max_value}\"")
         end
       end    
 
@@ -205,11 +206,13 @@ module ThoughtBot # :nodoc:
       # Example:
       #   should_ensure_value_in_range :age, (0..100)
       def should_ensure_value_in_range(attribute, range, opts = {})
-        opts[:low_message]  ||= /included/
-        opts[:high_message] ||= /included/
+        low_message, high_message = get_options!([opts], :low_message, :high_message)
+        low_message  ||= /included/
+        high_message ||= /included/
+        
         klass = model_class
-        min = range.first
-        max = range.last
+        min   = range.first
+        max   = range.last
 
         should "not allow #{attribute} to be less than #{min}" do
           v = min - 1
@@ -217,7 +220,7 @@ module ThoughtBot # :nodoc:
           object.send("#{attribute}=", v)
           assert !object.save, "Saved #{klass} with #{attribute} set to \"#{v}\""
           assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{v}\""
-          assert_contains(object.errors.on(attribute), opts[:low_message], "when set to \"#{v}\"")
+          assert_contains(object.errors.on(attribute), low_message, "when set to \"#{v}\"")
         end
     
         should "not allow #{attribute} to be more than #{max}" do
@@ -226,7 +229,7 @@ module ThoughtBot # :nodoc:
           object.send("#{attribute}=", v)
           assert !object.save, "Saved #{klass} with #{attribute} set to \"#{v}\""
           assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{v}\""
-          assert_contains(object.errors.on(attribute), opts[:high_message], "when set to \"#{v}\"")
+          assert_contains(object.errors.on(attribute), high_message, "when set to \"#{v}\"")
         end
       end    
       
@@ -240,8 +243,8 @@ module ThoughtBot # :nodoc:
       # Example:
       #   should_only_allow_numeric_values_for :age
       def should_only_allow_numeric_values_for(*attributes)
-        opts = opts_from(attributes)
-        opts[:message]  ||= /number/
+        message = get_options!(attributes, :message)
+        message ||= /number/
         klass = model_class
         attributes.each do |attribute|
           attribute = attribute.to_sym
@@ -249,7 +252,7 @@ module ThoughtBot # :nodoc:
             assert object = klass.find(:first), "Can't find first #{klass}"
             object.send(:"#{attribute}=", "abcd")
             assert !object.valid?, "Instance is still valid"
-            assert_contains(object.errors.on(attribute), opts[:message])
+            assert_contains(object.errors.on(attribute), message)
           end
         end
       end
@@ -263,14 +266,14 @@ module ThoughtBot # :nodoc:
       #   should_have_many :friends
       #   should_have_many :enemies, :through => :friends
       def should_have_many(*associations)
-        opts = opts_from(associations)
+        through = get_options!(associations, :through)
         klass = model_class
         associations.each do |association|
-          should "have many #{association}#{" through #{opts[:through]}" if opts[:through]}" do
+          should "have many #{association}#{" through #{through}" if through}" do
             reflection = klass.reflect_on_association(association)
             assert reflection
             assert_equal :has_many, reflection.macro
-            assert_equal(opts[:through], reflection.options[:through]) if opts[:through]
+            assert_equal(through, reflection.options[:through]) if through
           end
         end
       end
@@ -279,7 +282,7 @@ module ThoughtBot # :nodoc:
       #
       #   should_have_and_belong_to_many :posts, :cars
       def should_have_and_belong_to_many(*associations)
-        opts = opts_from(associations)
+        get_options!(associations)
         klass = model_class
         associations.each do |association|
           should "should have and belong to many #{association}" do
@@ -293,7 +296,7 @@ module ThoughtBot # :nodoc:
       #
       #   should_have_one :god # unless hindu
       def should_have_one(*associations)
-        opts = opts_from(associations)
+        get_options!(associations)
         klass = model_class
         associations.each do |association|
           should "have one #{association}" do
@@ -307,7 +310,7 @@ module ThoughtBot # :nodoc:
       #
       #   should_belong_to :parent
       def should_belong_to(*associations)
-        opts = opts_from(associations)
+        get_options!(associations)
         klass = model_class
         associations.each do |association|
           should "belong_to #{association}" do
@@ -319,14 +322,7 @@ module ThoughtBot # :nodoc:
       
       private
       
-      def opts_from(collection)
-        collection.last.is_a?(Hash) ? collection.pop : {}
-      end
-
-      def model_class
-        self.name.gsub(/Test$/, '').constantize
-      end
-              
+      include ThoughtBot::Shoulda::Private
     end
   end
 end

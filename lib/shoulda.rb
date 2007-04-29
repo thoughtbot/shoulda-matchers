@@ -1,3 +1,4 @@
+require 'private_helpers'
 require 'active_record_helpers'
 require 'context'
 require 'general'
