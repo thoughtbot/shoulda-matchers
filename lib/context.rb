@@ -86,7 +86,7 @@ module ThoughtBot # :nodoc:
       # Defines a test.  Can be called either inside our outside of a context.
       # Optionally specify <tt>:unimplimented => true</tt> (see should_eventually)
       def should(name, opts = {}, &should_block)
-        test_name = ["test", @@context_names, "should", "#{name}"].flatten.join(' ').to_sym
+        test_name = ["test", @@context_names, "should", "#{name}. "].flatten.join(' ').to_sym
 
         name_defined = eval("self.instance_methods.include?('#{test_name.to_s.gsub(/['"]/, '\$1')}')", should_block.binding)
         raise ArgumentError, "'#{test_name}' is already defined" and return if name_defined
