@@ -1,5 +1,6 @@
 require 'private_helpers'
 require 'active_record_helpers'
+require 'controller_helpers'
 require 'context'
 require 'general'
 require 'yaml'
