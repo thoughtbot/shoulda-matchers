@@ -174,17 +174,18 @@ module ThoughtBot # :nodoc:
         min_length = range.first
         max_length = range.last
 
-        min_value = "x" * (min_length - 1)
-        max_value = "x" * (max_length + 1)
-
-        should "not allow #{attribute} to be less than #{min_length} chars long" do
-          assert object = klass.find(:first), "Can't find first #{klass}"
-          object.send("#{attribute}=", min_value)
-          assert !object.save, "Saved #{klass} with #{attribute} set to \"#{min_value}\""
-          assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{min_value}\""
-          assert_contains(object.errors.on(attribute), short_message, "when set to \"#{min_value}\"")
+        if min_length > 0
+          min_value = "x" * (min_length - 1)
+          should "not allow #{attribute} to be less than #{min_length} chars long" do
+            assert object = klass.find(:first), "Can't find first #{klass}"
+            object.send("#{attribute}=", min_value)
+            assert !object.save, "Saved #{klass} with #{attribute} set to \"#{min_value}\""
+            assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{min_value}\""
+            assert_contains(object.errors.on(attribute), short_message, "when set to \"#{min_value}\"")
+          end
         end
     
+        max_value = "x" * (max_length + 1)
         should "not allow #{attribute} to be more than #{max_length} chars long" do
           assert object = klass.find(:first), "Can't find first #{klass}"
           object.send("#{attribute}=", max_value)
