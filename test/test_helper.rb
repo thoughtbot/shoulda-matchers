@@ -8,14 +8,14 @@ require 'active_record'
 require 'active_record/fixtures'
 require 'shoulda'
 
-config = YAML::load(IO.read(File.join(BASE, 'database.yml')))
-ActiveRecord::Base.logger = Logger.new(File.join(BASE, "debug.log"))
+config = YAML::load(IO.read(File.join(BASE, "support", 'database.yml')))
+ActiveRecord::Base.logger = Logger.new(File.join(BASE, "support", "debug.log"))
 ActiveRecord::Base.establish_connection(config['sqlite3'])
 ActiveRecord::Migration.verbose = false
 
-load(File.join(BASE, "schema.rb"))
+load(File.join(BASE, "support", "schema.rb"))
 
-Test::Unit::TestCase.fixture_path = File.join(BASE, "fixtures")
+Test::Unit::TestCase.fixture_path = File.join(BASE, "support", "fixtures")
 
 class Test::Unit::TestCase #:nodoc:
 	def self.fixtures(*args)
