@@ -30,6 +30,10 @@ end
 
 class PostTest < Test::Unit::TestCase # :nodoc:
   fixtures :posts
+
+  def test_failure
+    flunk
+  end
   
   should_belong_to :user
   should_require_unique_attributes :title
