@@ -3,12 +3,10 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 
 Rake::TestTask.new do |t|
-  t.libs << 'test'
-  t.pattern = 'test/*_test.rb'
+  t.libs << 'lib'
+  t.pattern = 'test/{unit,functional}/**/*_test.rb' # Update this line
   t.verbose = true
 end
-
-# Generate the RDoc documentation
 
 Rake::RDocTask.new { |rdoc|
   rdoc.rdoc_dir = 'doc'
@@ -20,4 +18,3 @@ Rake::RDocTask.new { |rdoc|
 
 desc 'Default: run tests.'
 task :default => ['test']
-

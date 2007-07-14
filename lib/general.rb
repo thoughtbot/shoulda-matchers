@@ -5,7 +5,7 @@ module ThoughtBot # :nodoc:
       module ClassMethods
         # Loads all fixture files (<tt>test/fixtures/*.yml</tt>)
         def load_all_fixtures
-          all_fixtures = Dir.glob(File.join(RAILS_ROOT, "test", "fixtures", "*.yml")).collect do |f| 
+          all_fixtures = Dir.glob(File.join(Test::Unit::TestCase.fixture_path, "*.yml")).collect do |f| 
             File.basename(f, '.yml').to_sym
           end
           fixtures *all_fixtures

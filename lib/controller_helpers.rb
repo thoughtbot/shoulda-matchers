@@ -6,26 +6,37 @@ class Test::Unit::TestCase
       attr_accessor :redirect, :flash, :params, :render
     end
 
-    attr_accessor :identifier, :klass, :object, :parent_params, :test_actions, 
+    attr_accessor :identifier, :klass, :object, :parent, 
+                  :test_html_actions, :test_xml_actions, 
                   :create, :update, :destroy
+
+    alias parents parent
     
     def initialize
       @create  = ActionOptions.new
       @update  = ActionOptions.new
       @destroy = ActionOptions.new
-      @test_actions = [:index, :show, :new, :edit, :create, :update, :destroy]
-    end
+
+      @test_html_actions = [:index, :show, :new, :edit, :create, :update, :destroy]
+      @test_xml_actions  = [:index, :show, :create, :update, :destroy]
+    end  
     
     def normalize!(target)
-      @test_actions = @test_actions.map(&:to_sym)
+      @test_html_actions = @test_html_actions.map(&:to_sym)
+      @test_xml_actions  = @test_xml_actions.map(&:to_sym)
+      
       @identifier    ||= :id
       @klass         ||= target.name.gsub(/ControllerTest$/, '').singularize.constantize
       @object        ||= @klass.name.tableize.singularize
-      @parent_params ||= {}
+      @parent        ||= []
+      @parent          = [@parent] unless @parent.is_a? Array
       
-      @create.redirect  ||= "#{@object}_url(record)"
-      @update.redirect  ||= "#{@object}_url(record)"
-      @destroy.redirect ||= "#{@object.pluralize}_url"
+      singular_args = @parent.map {|n| "record.#{n}"}
+      @destroy.redirect ||= "#{@object.pluralize}_url(#{singular_args.join(', ')})" 
+
+      singular_args << 'record'
+      @create.redirect  ||= "#{@object}_url(#{singular_args.join(', ')})"
+      @update.redirect  ||= "#{@object}_url(#{singular_args.join(', ')})"
       
       @create.flash  ||= /created/i
       @update.flash  ||= /updated/i
@@ -36,24 +47,32 @@ class Test::Unit::TestCase
     end
   end
 
-  def self.should_be_a_resource(&blk)
+  def self.should_be_restful(&blk)
     resource = ResourceOptions.new
     blk.call(resource)
     resource.normalize!(self)
     
-    make_show_test(resource)    if resource.test_actions.include?(:show)
-    make_edit_test(resource)    if resource.test_actions.include?(:edit)
-    make_index_test(resource)   if resource.test_actions.include?(:index)
-    make_new_test(resource)     if resource.test_actions.include?(:new)
-    make_destroy_test(resource) if resource.test_actions.include?(:destroy)
-    make_create_test(resource)  if resource.test_actions.include?(:create)
-    make_update_test(resource)  if resource.test_actions.include?(:update)
+    resource.test_html_actions.each do |action|
+      self.send(:"make_#{action}_html_test", resource) if self.respond_to? :"make_#{action}_html_test"
+    end
+
+    context "XML: " do
+      setup do
+        @request.accept = "application/xml"
+      end
+
+      resource.test_xml_actions.each do |action|
+        self.send(:"make_#{action}_xml_test", resource) if self.respond_to? :"make_#{action}_xml_test"
+      end
+    end
   end
 
-  def self.make_show_test(res)
-    should "get show for @#{res.object} via params: #{pretty_param_string(res)}" do
-      assert(record = instance_variable_get("@#{res.object}"), "This test requires you to set @#{res.object} in your setup block")
-      get :show, res.parent_params.merge({ res.identifier => record.to_param })
+  def self.make_show_html_test(res)
+    # should "get show for @#{res.object} via params: #{pretty_param_string(res)}" do
+    should "get show for @#{res.object}" do
+      record = get_existing_record(res)
+      parent_params = make_parent_params(res, record)
+      get :show, parent_params.merge({ res.identifier => record.to_param })
       assert assigns(res.klass.name.underscore.to_sym), "The show action isn't assigning to @#{res.klass.name.underscore}"
       assert_response :success
       assert_template 'show'
@@ -61,10 +80,12 @@ class Test::Unit::TestCase
     end
   end
 
-  def self.make_edit_test(res)
-    should "get edit for @#{res.object} via params: #{pretty_param_string(res)}" do
-      assert(record = instance_variable_get("@#{res.object}"), "This test requires you to set @#{res.object} in your setup block")
-      get :edit, res.parent_params.merge({ res.identifier => record.to_param })
+  def self.make_edit_html_test(res)
+    # should "get edit for @#{res.object} via params: #{pretty_param_string(res)}" do
+    should "get edit for @#{res.object}" do
+      record = get_existing_record(res)
+      parent_params = make_parent_params(res, record)
+      get :edit, parent_params.merge({ res.identifier => record.to_param })
       assert assigns(res.klass.name.underscore.to_sym), "The edit action isn't assigning to @#{res.klass.name.underscore}"
       assert_response :success
       assert_select "form", true, "The edit template doesn't contain a <form> element"
@@ -73,9 +94,10 @@ class Test::Unit::TestCase
     end
   end
 
-  def self.make_index_test(res)
+  def self.make_index_html_test(res)
     should "get index" do
-      get(:index, res.parent_params)
+      parent_params = make_parent_params(res)
+      get(:index, parent_params)
       assert_response :success
       assert assigns(res.klass.name.underscore.pluralize.to_sym), 
              "The index action isn't assigning to @#{res.klass.name.underscore.pluralize}"
@@ -84,9 +106,10 @@ class Test::Unit::TestCase
     end
   end
 
-  def self.make_new_test(res)
+  def self.make_new_html_test(res)
     should "show form on get to new" do
-      get(:new, res.parent_params)
+      parent_params = make_parent_params(res)
+      get(:new, parent_params)
       assert_response :success
       assert assigns(res.klass.name.underscore.to_sym), 
              "The new action isn't assigning to @#{res.klass.name.underscore}"
@@ -95,12 +118,12 @@ class Test::Unit::TestCase
     end
   end
 
-  def self.make_destroy_test(res)
+  def self.make_destroy_html_test(res)
     should "destroy @#{res.object} on 'delete' to destroy action" do
-      assert(record = instance_variable_get("@#{res.object}"), 
-             "This test requires you to set @#{res.object} in your setup block")
+      record = get_existing_record(res)
+      parent_params = make_parent_params(res, record)
       assert_difference(res.klass, :count, -1) do
-        delete :destroy, res.parent_params.merge({ res.identifier => record.to_param })
+        delete :destroy, parent_params.merge({ res.identifier => record.to_param })
         assert_redirected_to eval(res.destroy.redirect, self.send(:binding), __FILE__, __LINE__), 
                              "Flash: #{flash.inspect}"
         assert_contains flash.values, res.destroy.flash, ", Flash: #{flash.inspect}"
@@ -108,10 +131,12 @@ class Test::Unit::TestCase
     end
   end
   
-  def self.make_create_test(res)
+  def self.make_create_html_test(res)
     should "create #{res.klass} record on post to 'create'" do
       assert_difference(res.klass, :count, 1) do
-        post :create, res.parent_params.merge(res.object => res.create.params)
+        # params = res.parent_params.merge(res.object => res.create.params)
+        parent_params = make_parent_params(res)
+        post :create, parent_params.merge(res.object => res.create.params)
         assert record = assigns(res.object), "@#{res.object} not set after create"
         assert_equal [], record.errors.full_messages, "@#{res.object} has errors:"
         assert_redirected_to eval(res.create.redirect, self.send(:binding), __FILE__, __LINE__)
@@ -120,50 +145,141 @@ class Test::Unit::TestCase
     end
   end
 
-  def self.make_update_test(res)
+  def self.make_update_html_test(res)
     should "update #{res.klass} record on put to :update" do
-      assert(record = instance_variable_get("@#{res.object}"), 
-             "This test requires you to set @#{res.object} in your setup block")
-      put :update, res.parent_params.merge(res.identifier => record.to_param, res.object => res.create.params)
+      record = get_existing_record(res)
+      parent_params = make_parent_params(res, record)
+      put :update, parent_params.merge(res.identifier => record.to_param, res.object => res.update.params)
       assert record = assigns(res.object), "@#{res.object} not set after create"
       assert_equal [], record.errors.full_messages, "@#{res.object} has errors:"
       assert_redirected_to eval(res.update.redirect, self.send(:binding), __FILE__, __LINE__)
       assert_contains flash.values, res.update.flash, ", Flash: #{flash.inspect}"
-      res.create.params.each do |key, value|
+      res.update.params.each do |key, value|
         assert_equal value.to_s, record.send(key.to_sym).to_s, 
                      "#{res.object}.#{key} not set to #{value} after update"
       end
     end
   end
   
-  def self.should_be_denied_on(method, action, opts ={})
-    redirect_proc  = opts[:redirect]
-    klass          = opts[:klass]        || self.name.gsub(/ControllerTest/, '').singularize.constantize
-    params         = opts[:params]       || {}
-    expected_flash = opts[:flash]        || /\w+/
-    
-    should "no be able to #{method.to_s.upcase} #{action}" do
-      assert_no_difference(klass, :count) do
-        self.send(method, action, params)
-        assert_contains flash.values, expected_flash
-        
-        assert_response :redirect
-        if redirect_proc
-          assert_redirected_to(@controller.instance_eval(&redirect_proc))
-        end
+  def self.make_show_xml_test(res)
+    should "get show for @#{res.object} as xml" do
+      record        = get_existing_record(res)
+      parent_params = make_parent_params(res, record)
+
+      get :show, parent_params.merge({ res.identifier => record.to_param }), :format => :xml      
+
+      assert_equal "application/xml; charset=utf-8", @response.headers['Content-Type']
+      assert_response :success
+      assert_select "#{res.klass.name.underscore.dasherize}", 1, 
+                    "Can't find <#{res.klass.name.underscore.dasherize.pluralize}> in \n#{@response.body}"
+    end
+  end
+
+  def self.make_index_xml_test(res)
+    should "get index as xml" do
+      parent_params = make_parent_params(res)
+      
+      get(:index, parent_params)
+      
+      assert_equal "application/xml; charset=utf-8", @response.headers['Content-Type']
+      assert_response :success
+      assert_select "#{res.klass.name.underscore.dasherize.pluralize}", 1, 
+                    "Can't find <#{res.klass.name.underscore.dasherize.pluralize}> in \n#{@response.body}"
+    end
+  end
+
+  def self.make_destroy_xml_test(res)
+    should "destroy @#{res.object} on 'delete' to destroy action as xml" do
+      record = get_existing_record(res)
+      parent_params = make_parent_params(res, record)
+
+      assert_difference(res.klass, :count, -1) do
+        delete :destroy, parent_params.merge({ res.identifier => record.to_param })
+        assert_equal "application/xml; charset=utf-8", @response.headers['Content-Type']
+        assert_response :success
+        assert_match(/^\s*$/, @response.body, "The response body was not empty:")
+      end
+    end
+  end  
+
+  def self.make_create_xml_test(res)
+    should "create #{res.klass} record on post to 'create' as xml" do
+      assert_difference(res.klass, :count, 1) do
+        # params = res.parent_params.merge(res.object => res.create.params)
+        parent_params = make_parent_params(res)
+
+        post :create, parent_params.merge(res.object => res.create.params)
+
+        assert_equal "application/xml; charset=utf-8", @response.headers['Content-Type']
+        assert_response :created
+        assert record = assigns(res.object), "@#{res.object} not set after create"
+        assert_equal [], record.errors.full_messages, "@#{res.object} has errors:"
+        assert_equal eval(res.create.redirect, self.send(:binding), __FILE__, __LINE__),
+                     @response.headers["Location"]
+      end      
+    end
+  end
+
+  def self.make_update_xml_test(res)
+    should "update #{res.klass} record on put to :update as xml" do
+      record = get_existing_record(res)
+      parent_params = make_parent_params(res, record)
+
+      put :update, parent_params.merge(res.identifier => record.to_param, res.object => res.update.params)
+
+      assert_equal "application/xml; charset=utf-8", @response.headers['Content-Type']
+      assert record = assigns(res.object), "@#{res.object} not set after create"
+      assert_equal [], record.errors.full_messages, "@#{res.object} has errors:"
+      assert_response :success
+      assert_match(/^\s*$/, @response.body, "The response body was not empty:")
+      res.update.params.each do |key, value|
+        assert_equal value.to_s, record.send(key.to_sym).to_s,
+                     "#{res.object}.#{key} not set to #{value} after update"
       end
     end
   end
+
+  # def self.should_be_denied_on(method, action, opts ={})
+  #   redirect_proc  = opts[:redirect]
+  #   klass          = opts[:klass]        || self.name.gsub(/ControllerTest/, '').singularize.constantize
+  #   params         = opts[:params]       || {}
+  #   expected_flash = opts[:flash]        || /\w+/
+  #   
+  #   should "no be able to #{method.to_s.upcase} #{action}" do
+  #     assert_no_difference(klass, :count) do
+  #       self.send(method, action, params)
+  #       assert_contains flash.values, expected_flash
+  #       
+  #       assert_response :redirect
+  #       if redirect_proc
+  #         assert_redirected_to(@controller.instance_eval(&redirect_proc))
+  #       end
+  #     end
+  #   end
+  # end
     
   class << self
-    private  
+    private
     include ThoughtBot::Shoulda::Private
   end
   
   private
 
-  def self.pretty_param_string(res)
-    res.parent_params.merge({ res.identifier => :X }).inspect.gsub(':X', '@object.to_param').gsub('=>', ' => ')
+  def get_existing_record(res)
+    returning(instance_variable_get "@#{res.object}") do |record|
+      assert(record, "This test requires you to set @#{res.object} in your setup block")    
+    end
   end
-  
+
+  def make_parent_params(resource, record = nil, parent_names = nil)
+    parent_names ||= resource.parents.reverse
+    
+    return {} if parent_names == [] # Base case
+    
+    parent_name = parent_names.shift
+
+    parent = record ? record.send(parent_name) : parent_name.to_s.classify.constantize.find(:first)
+    
+    { :"#{parent_name}_id" => parent.id }.merge(make_parent_params(resource, parent, parent_names))
+  end
 end
