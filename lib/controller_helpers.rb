@@ -11,6 +11,7 @@ class Test::Unit::TestCase
                   :create, :update, :destroy, :denied
 
     alias parents parent
+    alias parents= parent=
     
     def initialize
       @create  = ActionOptions.new
