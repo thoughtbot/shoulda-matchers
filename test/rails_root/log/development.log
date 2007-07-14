@@ -1,4 +1,0 @@
-  [4;36;1mSQL (0.000000)[0m   [0;1mSQLite3::SQLException: no such table: schema_info: SELECT * FROM schema_info[0m
-  [4;35;1mSQL (0.000207)[0m   [0mSELECT name FROM sqlite_master WHERE type = 'table'[0m
-  [4;36;1mSQL (0.000000)[0m   [0;1mSQLite3::SQLException: no such table: schema_info: SELECT * FROM schema_info[0m
-  [4;35;1mSQL (0.000208)[0m   [0mSELECT name FROM sqlite_master WHERE type = 'table'[0m

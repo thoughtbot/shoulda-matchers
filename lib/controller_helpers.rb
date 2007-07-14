@@ -3,12 +3,12 @@ class Test::Unit::TestCase
   
   class ResourceOptions
     class ActionOptions
-      attr_accessor :redirect, :flash, :params, :render
+      attr_accessor :redirect, :flash, :params, :render, :actions
     end
 
     attr_accessor :identifier, :klass, :object, :parent, 
                   :test_html_actions, :test_xml_actions, 
-                  :create, :update, :destroy
+                  :create, :update, :destroy, :denied
 
     alias parents parent
     
@@ -16,15 +16,16 @@ class Test::Unit::TestCase
       @create  = ActionOptions.new
       @update  = ActionOptions.new
       @destroy = ActionOptions.new
-
+      @denied  = ActionOptions.new
       @test_html_actions = [:index, :show, :new, :edit, :create, :update, :destroy]
       @test_xml_actions  = [:index, :show, :create, :update, :destroy]
-    end  
+      @denied.actions    = []
+    end
     
     def normalize!(target)
       @test_html_actions = @test_html_actions.map(&:to_sym)
       @test_xml_actions  = @test_xml_actions.map(&:to_sym)
-      
+      @denied.actions    = @denied.actions.map(&:to_sym)
       @identifier    ||= :id
       @klass         ||= target.name.gsub(/ControllerTest$/, '').singularize.constantize
       @object        ||= @klass.name.tableize.singularize
@@ -37,10 +38,12 @@ class Test::Unit::TestCase
       singular_args << 'record'
       @create.redirect  ||= "#{@object}_url(#{singular_args.join(', ')})"
       @update.redirect  ||= "#{@object}_url(#{singular_args.join(', ')})"
+      @denied.redirect  ||= "new_session_url"
       
       @create.flash  ||= /created/i
       @update.flash  ||= /updated/i
       @destroy.flash ||= /removed/i
+      @denied.flash  ||= /denied/i
 
       @create.params  ||= {}
       @update.params  ||= {}
@@ -69,7 +72,7 @@ class Test::Unit::TestCase
 
   def self.make_show_html_test(res)
     # should "get show for @#{res.object} via params: #{pretty_param_string(res)}" do
-    should "get show for @#{res.object}" do
+    should "GET :show for @#{res.object}" do
       record = get_existing_record(res)
       parent_params = make_parent_params(res, record)
       get :show, parent_params.merge({ res.identifier => record.to_param })
@@ -82,7 +85,7 @@ class Test::Unit::TestCase
 
   def self.make_edit_html_test(res)
     # should "get edit for @#{res.object} via params: #{pretty_param_string(res)}" do
-    should "get edit for @#{res.object}" do
+    should "GET :edit for @#{res.object}" do
       record = get_existing_record(res)
       parent_params = make_parent_params(res, record)
       get :edit, parent_params.merge({ res.identifier => record.to_param })
@@ -95,7 +98,7 @@ class Test::Unit::TestCase
   end
 
   def self.make_index_html_test(res)
-    should "get index" do
+    should "GET :index" do
       parent_params = make_parent_params(res)
       get(:index, parent_params)
       assert_response :success
@@ -107,7 +110,7 @@ class Test::Unit::TestCase
   end
 
   def self.make_new_html_test(res)
-    should "show form on get to new" do
+    should "show form on GET to :new" do
       parent_params = make_parent_params(res)
       get(:new, parent_params)
       assert_response :success
@@ -119,7 +122,7 @@ class Test::Unit::TestCase
   end
 
   def self.make_destroy_html_test(res)
-    should "destroy @#{res.object} on 'delete' to destroy action" do
+    should "destroy @#{res.object} on DELETE to :destroy" do
       record = get_existing_record(res)
       parent_params = make_parent_params(res, record)
       assert_difference(res.klass, :count, -1) do
@@ -132,7 +135,7 @@ class Test::Unit::TestCase
   end
   
   def self.make_create_html_test(res)
-    should "create #{res.klass} record on post to 'create'" do
+    should "create #{res.klass} record on POST to :create" do
       assert_difference(res.klass, :count, 1) do
         # params = res.parent_params.merge(res.object => res.create.params)
         parent_params = make_parent_params(res)
@@ -146,7 +149,7 @@ class Test::Unit::TestCase
   end
 
   def self.make_update_html_test(res)
-    should "update #{res.klass} record on put to :update" do
+    should "update #{res.klass} record on PUT to :update" do
       record = get_existing_record(res)
       parent_params = make_parent_params(res, record)
       put :update, parent_params.merge(res.identifier => record.to_param, res.object => res.update.params)
@@ -161,6 +164,9 @@ class Test::Unit::TestCase
     end
   end
   
+  def self.make_denied_update_test(res)
+  end
+
   def self.make_show_xml_test(res)
     should "get show for @#{res.object} as xml" do
       record        = get_existing_record(res)
@@ -239,25 +245,6 @@ class Test::Unit::TestCase
     end
   end
 
-  # def self.should_be_denied_on(method, action, opts ={})
-  #   redirect_proc  = opts[:redirect]
-  #   klass          = opts[:klass]        || self.name.gsub(/ControllerTest/, '').singularize.constantize
-  #   params         = opts[:params]       || {}
-  #   expected_flash = opts[:flash]        || /\w+/
-  #   
-  #   should "no be able to #{method.to_s.upcase} #{action}" do
-  #     assert_no_difference(klass, :count) do
-  #       self.send(method, action, params)
-  #       assert_contains flash.values, expected_flash
-  #       
-  #       assert_response :redirect
-  #       if redirect_proc
-  #         assert_redirected_to(@controller.instance_eval(&redirect_proc))
-  #       end
-  #     end
-  #   end
-  # end
-    
   class << self
     private
     include ThoughtBot::Shoulda::Private
