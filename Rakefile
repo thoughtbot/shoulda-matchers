@@ -4,7 +4,7 @@ require 'rake/rdoctask'
 
 Rake::TestTask.new do |t|
   t.libs << 'lib'
-  t.pattern = 'test/{unit,functional}/**/*_test.rb' # Update this line
+  t.pattern = 'test/{unit,functional,other}/**/*_test.rb'
   t.verbose = true
 end
 
