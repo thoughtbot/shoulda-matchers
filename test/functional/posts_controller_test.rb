@@ -14,14 +14,32 @@ class PostsControllerTest < Test::Unit::TestCase
     @post       = Post.find(:first)
   end
 
-  should_be_restful do |resource|
-    resource.parent = :user
+  context "The public" do
+    setup do
+      @request.session[:logged_in] = false
+    end
+
+    should_be_restful do |resource|
+      resource.parent = :user
+      resource.formats = [:html]
+
+      resource.denied.actions = [:index, :show, :edit, :new, :create, :update, :destroy]
+      resource.denied.flash = /what/i
+      resource.denied.redirect = '"/"'
+    end    
+  end
+
+  context "Logged in" do
+    setup do
+      @request.session[:logged_in] = true
+    end
     
-    resource.create.params = { :title => "first post", :body => 'blah blah blah'}
-    resource.update.params = { :title => "changed" }
-    
-    # resource.create.redirect  = "post_url( record.user, record)"
-    # resource.update.redirect  = "post_url( record.user, record)"
-    # resource.destroy.redirect = "posts_url(record.user)"
+    should_be_restful do |resource|
+      resource.parent = :user
+      resource.formats = [:html]
+
+      resource.create.params = { :title => "first post", :body => 'blah blah blah'}
+      resource.update.params = { :title => "changed" }
+    end
   end
 end

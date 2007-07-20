@@ -54,6 +54,8 @@ module ThoughtBot # :nodoc:
         # at least one element from the collection matches x.  +extra_msg+ is appended to the error message if the assertion fails.
         #
         #   assert_contains(['a', '1'], /\d/) => passes
+        #   assert_contains(['a', '1'], 'a') => passes
+        #   assert_contains(['a', '1'], /not there/) => fails
         def assert_contains(collection, x, extra_msg = "")
           collection = [collection] unless collection.is_a?(Array)
           msg = "#{x.inspect} not found in #{collection.to_a.inspect} " + extra_msg

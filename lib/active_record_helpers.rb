@@ -37,8 +37,8 @@ module ThoughtBot # :nodoc:
         attributes.each do |attribute|
           should "require #{attribute} to be set" do
             object = klass.new
-            assert !object.valid?, "Instance is still valid"
-            assert object.errors.on(attribute), "No errors found"
+            assert !object.valid?, "#{klass.name} does not require #{attribute}."
+            assert object.errors.on(attribute), "#{klass.name} does not require #{attribute}."
             assert_contains(object.errors.on(attribute), message)
           end
         end
@@ -66,17 +66,18 @@ module ThoughtBot # :nodoc:
             
             object.send(:"#{attribute}=", existing.send(attribute))
             if scope
-              assert_respond_to object, :"#{scope}="
+              assert_respond_to object, :"#{scope}=", "#{klass.name} doesn't seem to have a #{scope} attribute."
               object.send(:"#{scope}=", existing.send(scope))
             end
             
-            assert !object.valid?, "Instance is still valid"
-            assert object.errors.on(attribute), "No errors found"
+            assert !object.valid?, "#{klass.name} does not require a unique value for #{attribute}."
+            assert object.errors.on(attribute), "#{klass.name} does not require a unique value for #{attribute}."
             
             assert_contains(object.errors.on(attribute), message)
             
             if scope
               # Now test that the object is valid when changing the scoped attribute
+              # TODO:  actually find all values for scope and create a unique one.
               object.send(:"#{scope}=", existing.send(scope).nil? ? 1 : existing.send(scope).next)
               object.errors.clear
               object.valid?
@@ -99,7 +100,8 @@ module ThoughtBot # :nodoc:
           should "not allow #{attribute} to be changed by update" do
             assert object = klass.find(:first), "Can't find first #{klass}"
             value = object[attribute]
-            assert object.update_attributes({ attribute => 1 }), 
+            # TODO:  1 may not be a valid value for the attribute (due to validations)
+            assert object.update_attributes({ attribute => 1 }),
                    "Cannot update #{klass} with { :#{attribute} => 1 }, #{object.errors.full_messages.to_sentence}"
             assert object.valid?, "#{klass} isn't valid after changing #{attribute}"
             assert_equal value, object[attribute], "Was able to change #{klass}##{attribute}"
