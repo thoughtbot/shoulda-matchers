@@ -1,6 +1,12 @@
 module ThoughtBot # :nodoc:
   module Shoulda # :nodoc:
     module General # :nodoc:
+      def self.included(other)
+        other.class_eval do
+          extend ThoughtBot::Shoulda::General::ClassMethods
+          include ThoughtBot::Shoulda::General::InstanceMethods
+        end
+      end
       
       module ClassMethods
         # Loads all fixture files (<tt>test/fixtures/*.yml</tt>)

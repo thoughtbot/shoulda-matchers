@@ -1,6 +1,7 @@
+$LOAD_PATH << File.join(File.dirname(__FILE__), 'controller_tests')
 require 'private_helpers'
 require 'active_record_helpers'
-require 'controller_helpers'
+require 'controller_tests'
 require 'context'
 require 'general'
 require 'yaml'
@@ -15,12 +16,13 @@ module Test # :nodoc:
   module Unit # :nodoc:
     class TestCase # :nodoc:
 
-      include ThoughtBot::Shoulda::General::InstanceMethods
+      include ThoughtBot::Shoulda::ControllerTests
+      include ThoughtBot::Shoulda::General
 
       class << self
         include ThoughtBot::Shoulda::Context
         include ThoughtBot::Shoulda::ActiveRecord
-        include ThoughtBot::Shoulda::General::ClassMethods    
+        # include ThoughtBot::Shoulda::General::ClassMethods    
       end
     end
   end
