@@ -20,7 +20,7 @@ class UsersControllerTest < Test::Unit::TestCase
     resource.object     = :user
     resource.parent     = []
     resource.actions    = [:index, :show, :new, :edit, :update, :create, :destroy]
-    resource.formats    = [:html]
+    resource.formats    = [:html, :xml]
     
     # resource.denied.actions = [:show]
     # resource.denied.redirect = 'users_url'
@@ -28,8 +28,8 @@ class UsersControllerTest < Test::Unit::TestCase
     resource.create.params = { :name => "bob", :email => 'bob@bob.com', :age => 13}
     resource.update.params = { :name => "sue" }
     
-    resource.create.redirect  = "user_url(record)"
-    resource.update.redirect  = "user_url(record)"
+    resource.create.redirect  = "user_url(@user)"
+    resource.update.redirect  = "user_url(@user)"
     resource.destroy.redirect = "users_url"
     
     resource.create.flash  = /created/i

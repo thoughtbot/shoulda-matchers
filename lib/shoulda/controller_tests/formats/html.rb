@@ -1,10 +1,10 @@
 module ThoughtBot # :nodoc: 
   module Shoulda # :nodoc: 
-    module ControllerTests # :nodoc:
+    module Controller # :nodoc:
       module HTML # :nodoc: all
         def self.included(other)
           other.class_eval do
-            extend ThoughtBot::Shoulda::ControllerTests::HTML::ClassMethods
+            extend ThoughtBot::Shoulda::Controller::HTML::ClassMethods
           end
         end
   
@@ -115,13 +115,8 @@ module ThoughtBot # :nodoc:
                 end
               else
                 should_set_the_flash_to res.destroy.flash
+                should_redirect_to res.destroy.redirect
 
-                should "redirect to #{res.destroy.redirect}" do
-                  record = @record
-                  assert_redirected_to eval(res.destroy.redirect, self.send(:binding), __FILE__, __LINE__), 
-                                       "Flash: #{flash.inspect}"
-                end
-          
                 should "destroy record" do
                   assert_raises(::ActiveRecord::RecordNotFound) { @record.reload }
                 end
@@ -147,15 +142,11 @@ module ThoughtBot # :nodoc:
               else
                 should_assign_to res.object
                 should_set_the_flash_to res.create.flash
+                should_redirect_to res.create.redirect
 
                 should "not have errors on @#{res.object}" do
                   assert_equal [], assigns(res.object).errors.full_messages, "@#{res.object} has errors:"            
                 end
-          
-                should "redirect to #{res.create.redirect}" do
-                  record = assigns(res.object)
-                  assert_redirected_to eval(res.create.redirect, self.send(:binding), __FILE__, __LINE__)
-                end          
               end      
             end
           end
@@ -178,15 +169,13 @@ module ThoughtBot # :nodoc:
                   assert_equal [], assigns(res.object).errors.full_messages, "@#{res.object} has errors:"
                 end
           
-                should "redirect to #{res.update.redirect}" do
-                  record = assigns(res.object)
-                  assert_redirected_to eval(res.update.redirect, self.send(:binding), __FILE__, __LINE__)            
-                end
-
+                should_redirect_to res.update.redirect
                 should_set_the_flash_to(res.update.flash)
               end
             end
           end
+
+          private
 
           def should_deny_html_request(res)
             should "be denied" do

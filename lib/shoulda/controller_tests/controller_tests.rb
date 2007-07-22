@@ -2,13 +2,13 @@ module ThoughtBot # :nodoc:
   module Shoulda # :nodoc:
     # = Macro test helpers for your controllers
     #
-    module ControllerTests
+    module Controller
       def self.included(other) # :nodoc:
         other.class_eval do
-          extend  ThoughtBot::Shoulda::ControllerTests::ClassMethods
-          include ThoughtBot::Shoulda::ControllerTests::InstanceMethods
-          ThoughtBot::Shoulda::ControllerTests::ClassMethods::VALID_FORMATS.each do |format|
-            include "ThoughtBot::Shoulda::ControllerTests::#{format.to_s.upcase}".constantize
+          extend  ThoughtBot::Shoulda::Controller::ClassMethods
+          include ThoughtBot::Shoulda::Controller::InstanceMethods
+          ThoughtBot::Shoulda::Controller::ClassMethods::VALID_FORMATS.each do |format|
+            include "ThoughtBot::Shoulda::Controller::#{format.to_s.upcase}".constantize
           end
         end
       end
@@ -16,7 +16,7 @@ module ThoughtBot # :nodoc:
       module ClassMethods
         # Formats tested by #should_be_restful.  Defaults to [:html, :xml]
         VALID_FORMATS = Dir.glob(File.join(File.dirname(__FILE__), 'formats', '*')).map { |f| File.basename(f, '.rb') }.map(&:to_sym) # :doc:
-        VALID_FORMATS.each {|f| require "formats/#{f}.rb"}
+        VALID_FORMATS.each {|f| require "shoulda/controller_tests/formats/#{f}.rb"}
 
         # Actions tested by #should_be_restful
         VALID_ACTIONS = [:index, :show, :new, :edit, :create, :update, :destroy] # :doc:
@@ -95,10 +95,10 @@ module ThoughtBot # :nodoc:
             @parent        ||= []
             @parent          = [@parent] unless @parent.is_a? Array
 
-            singular_args = @parent.map {|n| "record.#{n}"}
+            singular_args = @parent.map {|n| "@#{object}.#{n}"}
             @destroy.redirect ||= "#{@object.pluralize}_url(#{singular_args.join(', ')})" 
 
-            singular_args << 'record'
+            singular_args << "@#{object}"
             @create.redirect  ||= "#{@object}_url(#{singular_args.join(', ')})"
             @update.redirect  ||= "#{@object}_url(#{singular_args.join(', ')})"
             @denied.redirect  ||= "new_session_url"
@@ -187,18 +187,35 @@ module ThoughtBot # :nodoc:
             assert_template template.to_s
           end
         end
+
+        def should_redirect_to(url)
+          should "redirect to #{url}" do
+            instantiate_variables_from_assigns do
+              assert_redirected_to eval(url, self.send(:binding), __FILE__, __LINE__)
+            end
+          end
+        end
       end
 
       module InstanceMethods
-        # Asserts that the controller's response was 'application/xml'
-        def assert_xml_response
-          assert_equal "application/xml; charset=utf-8", @response.headers['Content-Type'], "Body: #{@response.body.first(100)} ..."
-        end
 
         private
+        
+        def instantiate_variables_from_assigns(*names, &blk)
+          old = {}
+          names = assigns.keys if names.empty?
+          names.each do |name|
+            old[name] = instance_variable_get("@#{name}")
+            instance_variable_set("@#{name}", assigns(name.to_sym))
+          end
+          blk.call
+          names.each do |name|
+            instance_variable_set("@#{name}", old[name])
+          end
+        end
 
         def get_existing_record(res) # :nodoc:
-          returning(instance_variable_get "@#{res.object}") do |record|
+          returning(instance_variable_get("@#{res.object}")) do |record|
             assert(record, "This test requires you to set @#{res.object} in your setup block")    
           end
         end

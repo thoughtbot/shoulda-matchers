@@ -2,10 +2,14 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
+require 'lib/tasks/list_tests.rb'
+
+# Test::Unit::UI::VERBOSE
+
 Rake::TestTask.new do |t|
   t.libs << 'lib'
   t.pattern = 'test/{unit,functional,other}/**/*_test.rb'
-  t.verbose = true
+  t.verbose = false
 end
 
 Rake::RDocTask.new { |rdoc|

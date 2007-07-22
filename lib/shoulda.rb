@@ -1,9 +1,9 @@
-$LOAD_PATH << File.join(File.dirname(__FILE__), 'controller_tests')
-require 'private_helpers'
-require 'active_record_helpers'
-require 'controller_tests'
-require 'context'
-require 'general'
+# $LOAD_PATH << File.join(File.dirname(__FILE__), 'controller_tests')
+require 'shoulda/private_helpers'
+require 'shoulda/active_record_helpers'
+require 'shoulda/controller_tests/controller_tests.rb'
+require 'shoulda/context'
+require 'shoulda/general'
 require 'yaml'
 
 config_file = "shoulda.conf"
@@ -16,7 +16,7 @@ module Test # :nodoc:
   module Unit # :nodoc:
     class TestCase # :nodoc:
 
-      include ThoughtBot::Shoulda::ControllerTests
+      include ThoughtBot::Shoulda::Controller
       include ThoughtBot::Shoulda::General
 
       class << self
