@@ -22,9 +22,6 @@ class UsersControllerTest < Test::Unit::TestCase
     resource.actions    = [:index, :show, :new, :edit, :update, :create, :destroy]
     resource.formats    = [:html, :xml]
     
-    # resource.denied.actions = [:show]
-    # resource.denied.redirect = 'users_url'
-    
     resource.create.params = { :name => "bob", :email => 'bob@bob.com', :age => 13}
     resource.update.params = { :name => "sue" }
     
