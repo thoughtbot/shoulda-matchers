@@ -6,11 +6,23 @@ require 'shoulda/context'
 require 'shoulda/general'
 require 'yaml'
 
-config_file = "shoulda.conf"
-config_file = defined?(RAILS_ROOT) ? File.join(RAILS_ROOT, "test", "shoulda.conf") : File.join("test", "shoulda.conf")
+shoulda_options = {}
 
-tb_test_options = (YAML.load_file(config_file) rescue {}).symbolize_keys
-require 'color' if tb_test_options[:color]
+possible_config_paths = []
+possible_config_paths << File.join(ENV["HOME"], ".shoulda.conf")       if ENV["HOME"]
+possible_config_paths << "shoulda.conf"
+possible_config_paths << File.join("test", "shoulda.conf")
+possible_config_paths << File.join(RAILS_ROOT, "test", "shoulda.conf") if defined?(RAILS_ROOT) 
+
+possible_config_paths.each do |config_file|
+  if File.exists? config_file
+    puts "Loading #{config_file}"
+    shoulda_options = YAML.load_file(config_file).symbolize_keys
+    break
+  end
+end
+
+require 'shoulda/color' if shoulda_options[:color]
 
 module Test # :nodoc:
   module Unit # :nodoc:
