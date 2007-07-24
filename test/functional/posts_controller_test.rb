@@ -21,7 +21,6 @@ class PostsControllerTest < Test::Unit::TestCase
 
     should_be_restful do |resource|
       resource.parent = :user
-      resource.formats = [:html]
 
       resource.denied.actions = [:index, :show, :edit, :new, :create, :update, :destroy]
       resource.denied.flash = /what/i
@@ -36,7 +35,6 @@ class PostsControllerTest < Test::Unit::TestCase
     
     should_be_restful do |resource|
       resource.parent = :user
-      resource.formats = [:html]
 
       resource.create.params = { :title => "first post", :body => 'blah blah blah'}
       resource.update.params = { :title => "changed" }

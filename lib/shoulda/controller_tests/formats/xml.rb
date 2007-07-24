@@ -10,11 +10,20 @@ module ThoughtBot # :nodoc:
   
         module ClassMethods
           # Macro that creates a test asserting that the controller responded with an XML content-type
-          def should_respond_with_xml
+          # and that the XML contains +<name/>+ as the root element.
+          def should_respond_with_xml_for(name = nil)
             should "have ContentType set to 'application/xml'" do
-              assert_xml_response              
+              assert_xml_response
+            end
+            
+            if name
+              should "return <#{name}/> as the root element" do
+                body = @response.body.first(100).map {|l| "  #{l}"}
+                assert_select name.to_s.dasherize, 1, "Body:\n#{body}...\nDoes not have <#{name}/> as the root element."
+              end
             end
           end
+          alias should_respond_with_xml should_respond_with_xml_for
           
           protected
                     
@@ -33,7 +42,7 @@ module ThoughtBot # :nodoc:
               else
                 should_assign_to res.object          
                 should_respond_with :success
-                should_respond_with_xml
+                should_respond_with_xml_for res.object
               end
             end
           end
@@ -59,7 +68,7 @@ module ThoughtBot # :nodoc:
                 should_deny_xml_request(res)          
               else
                 should_respond_with :success
-                should_respond_with_xml
+                should_respond_with_xml_for res.object.to_s.pluralize
                 should_assign_to res.object.to_s.pluralize
               end
             end
@@ -137,17 +146,8 @@ module ThoughtBot # :nodoc:
           end
 
           def should_deny_xml_request(res)
-            should "be denied" do
-              assert_xml_denied(res)
-            end
+            should_respond_with 401
           end
-        end
-
-        def assert_xml_denied(res)
-          flunk "what happens on a permission denied via xml?"
-          # assert_redirected_to eval(res.denied.redirect, self.send(:binding), __FILE__, __LINE__), 
-          #                      "Flash: #{flash.inspect}"
-          # assert_contains(flash.values, res.denied.flash)
         end
 
         # Sets the next request's format to 'application/xml'

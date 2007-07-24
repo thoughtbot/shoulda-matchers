@@ -7,8 +7,19 @@ class ApplicationController < ActionController::Base
   
   def ensure_logged_in
     unless session[:logged_in]
-      flash[:warning] = "What are you doing?"
-      redirect_to '/' and return false
+      respond_to do |accepts|
+        accepts.html do
+          flash[:error] = 'What do you think you\'re doing?'
+          redirect_to '/'
+        end
+        accepts.xml do
+          headers["Status"]           = "Unauthorized"
+          headers["WWW-Authenticate"] = %(Basic realm="Web Password")
+          render :text => "Couldn't authenticate you", :status => '401 Unauthorized'
+        end
+      end
+      return false
     end
+    return true
   end
 end
