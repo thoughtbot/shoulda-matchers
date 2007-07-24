@@ -203,7 +203,7 @@ module ThoughtBot # :nodoc:
         
         def instantiate_variables_from_assigns(*names, &blk)
           old = {}
-          names = assigns.keys if names.empty?
+          names = @response.template.assigns.keys if names.empty?
           names.each do |name|
             old[name] = instance_variable_get("@#{name}")
             instance_variable_set("@#{name}", assigns(name.to_sym))
@@ -234,105 +234,6 @@ module ThoughtBot # :nodoc:
 
       end
     end  
-  end
-end
-
-
-module ThoughtBot::Shoulda::XmlTests
-  def self.included(other)
-    other.class_eval do
-      extend ThoughtBot::Shoulda::XmlTests::ClassMethods
-    end
-  end
-  
-  module ClassMethods
-    def make_show_xml_test(res)
-      should "get show for @#{res.object} as xml" do
-        @request.accept = "application/xml"
-
-        record        = get_existing_record(res)
-        parent_params = make_parent_params(res, record)
-
-        get :show, parent_params.merge({ res.identifier => record.to_param })
-
-        assert_xml_response
-        assert_response :success
-        assert_select "#{res.object.to_s.dasherize}", 1, 
-                      "Can't find <#{res.object.to_s.dasherize.pluralize}/> in \n#{@response.body}"
-      end
-    end
-
-    def make_index_xml_test(res)
-      should "get index as xml" do
-        @request.accept = "application/xml"
-
-        parent_params = make_parent_params(res)
-
-        get(:index, parent_params)
-
-        assert_xml_response
-        assert_response :success
-        assert_select "#{res.object.to_s.dasherize.pluralize}", 1, 
-                      "Can't find <#{res.object.to_s.dasherize.pluralize}/> in \n#{@response.body}"
-      end
-    end
-
-    def make_destroy_xml_test(res)
-      should "destroy @#{res.object} on 'delete' to destroy action as xml" do
-        @request.accept = "application/xml"
-
-        record = get_existing_record(res)
-        parent_params = make_parent_params(res, record)
-
-        assert_difference(res.klass, :count, -1) do
-          delete :destroy, parent_params.merge({ res.identifier => record.to_param })
-          assert_xml_response
-          assert_response :success
-          assert_match(/^\s*$/, @response.body, "The response body was not empty:")
-        end
-      end
-    end  
-
-    def make_create_xml_test(res)
-      should "create #{res.klass} record on post to 'create' as xml" do
-        @request.accept = "application/xml"
-
-        assert_difference(res.klass, :count, 1) do
-          # params = res.parent_params.merge(res.object => res.create.params)
-          parent_params = make_parent_params(res)
-
-          post :create, parent_params.merge(res.object => res.create.params)
-
-          assert_xml_response
-          assert_response :created
-          assert record = assigns(res.object), "@#{res.object} not set after create"
-          assert_equal [], record.errors.full_messages, "@#{res.object} has errors:"
-          assert_equal eval(res.create.redirect, self.send(:binding), __FILE__, __LINE__),
-                       @response.headers["Location"]
-        end      
-      end
-    end
-
-    def make_update_xml_test(res)
-      should "update #{res.klass} record on put to :update as xml" do
-        @request.accept = "application/xml"
-
-        record = get_existing_record(res)
-        parent_params = make_parent_params(res, record)
-
-        put :update, parent_params.merge(res.identifier => record.to_param, res.object => res.update.params)
-
-        assert_xml_response
-        assert record = assigns(res.object), "@#{res.object} not set after create"
-        assert_equal [], record.errors.full_messages, "@#{res.object} has errors:"
-        assert_response :success
-        assert_match(/^\s*$/, @response.body, "The response body was not empty:")
-        res.update.params.each do |key, value|
-          assert_equal value.to_s, record.send(key.to_sym).to_s,
-                       "#{res.object}.#{key} not set to #{value} after update"
-        end
-      end
-    end
   end
 end
 

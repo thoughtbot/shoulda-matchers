@@ -16,7 +16,6 @@ possible_config_paths << File.join(RAILS_ROOT, "test", "shoulda.conf") if define
 
 possible_config_paths.each do |config_file|
   if File.exists? config_file
-    puts "Loading #{config_file}"
     shoulda_options = YAML.load_file(config_file).symbolize_keys
     break
   end
