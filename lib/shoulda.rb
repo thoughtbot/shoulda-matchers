@@ -22,9 +22,9 @@ end
 
 require 'shoulda/color' if shoulda_options[:color]
 
-module Test # :nodoc:
-  module Unit # :nodoc:
-    class TestCase # :nodoc:
+module Test # :nodoc: all
+  module Unit 
+    class TestCase
 
       include ThoughtBot::Shoulda::Controller
       include ThoughtBot::Shoulda::General
@@ -38,10 +38,10 @@ module Test # :nodoc:
   end
 end
 
-module ActionController #:nodoc:
-  module Integration #:nodoc:
-    class Session #:nodoc:
-      include ThoughtBot::Shoulda::General::InstanceMethods
+module ActionController #:nodoc: all
+  module Integration
+    class Session 
+      include ThoughtBot::Shoulda::General
     end
   end
 end

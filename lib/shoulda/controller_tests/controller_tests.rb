@@ -1,6 +1,5 @@
 module ThoughtBot # :nodoc:
   module Shoulda # :nodoc:
-    # = Macro test helpers for your controllers
     module Controller
       def self.included(other) # :nodoc:
         other.class_eval do
@@ -12,6 +11,30 @@ module ThoughtBot # :nodoc:
         end
       end
       
+      # = Macro test helpers for your controllers
+      #
+      # By using the macro helpers you can quickly and easily create concise and easy to read test suites.
+      # 
+      # This code segment:
+      #   context "on GET to :show for first record" do
+      #     setup do
+      #       get :show, :id => 1
+      #     end
+      #   
+      #     should_assign_to :user
+      #     should_respond_with :success
+      #     should_render_template :show
+      #     should_not_set_the_flash
+      #
+      #     should "do something else really cool" do
+      #       assert_equal 1, assigns(:user).id
+      #     end
+      #   end
+      #
+      # Would produce 5 tests for the +show+ action
+      #
+      # Furthermore, the should_be_restful helper will create an entire set of tests which will verify that your
+      # controller responds restfully to a variety of requested formats.
       module ClassMethods
         # Formats tested by #should_be_restful.  Defaults to [:html, :xml]
         VALID_FORMATS = Dir.glob(File.join(File.dirname(__FILE__), 'formats', '*')).map { |f| File.basename(f, '.rb') }.map(&:to_sym) # :doc:
@@ -20,26 +43,108 @@ module ThoughtBot # :nodoc:
         # Actions tested by #should_be_restful
         VALID_ACTIONS = [:index, :show, :new, :edit, :create, :update, :destroy] # :doc:
 
+        # A ResourceOptions object is passed into should_be_restful in order to configure the tests for your controller.
+        # 
+        # Example:
+        #   class UsersControllerTest < Test::Unit::TestCase
+        #     load_all_fixtures
+        #   
+        #     def setup
+        #       ...normal setup code...
+        #       @user = User.find(:first)
+        #     end
+        #   
+        #     should_be_restful do |resource|
+        #       resource.identifier = :id
+        #       resource.klass      = User
+        #       resource.object     = :user
+        #       resource.parent     = []
+        #       resource.actions    = [:index, :show, :new, :edit, :update, :create, :destroy]
+        #       resource.formats    = [:html, :xml]
+        #   
+        #       resource.create.params = { :name => "bob", :email => 'bob@bob.com', :age => 13}
+        #       resource.update.params = { :name => "sue" }
+        #   
+        #       resource.create.redirect  = "user_url(@user)"
+        #       resource.update.redirect  = "user_url(@user)"
+        #       resource.destroy.redirect = "users_url"
+        #   
+        #       resource.create.flash  = /created/i
+        #       resource.update.flash  = /updated/i
+        #       resource.destroy.flash = /removed/i    
+        #     end
+        #   end
+        #
+        # Whenever possible, the resource attributes will be set to sensible defaults.
+        #
         class ResourceOptions
+          # Configuration options for the create, update, destroy actions under should_be_restful
           class ActionOptions
-            # String eval'd to get the target of the redirection
+            # String evaled to get the target of the redirection.
+            # All of the instance variables set by the controller will be available to the 
+            # evaled code.
+            #
+            # Example:
+            #   resource.create.redirect  = "user_url(@user.company, @user)"
+            #
+            # Defaults to a generated url based on the name of the controller, the action, and the resource.parents list.
             attr_accessor :redirect
 
-            # String or Regexp describing a value expected in the flash
+            # String or Regexp describing a value expected in the flash.  Will match against any flash key.
+            #
+            # Defaults:
+            # destroy:: /removed/
+            # create::  /created/
+            # update::  /updated/
             attr_accessor :flash
             
-            # Hash describing the params that should be sent in with this action
+            # Hash describing the params that should be sent in with this action.
             attr_accessor :params
-            
-            # Actions that should be denied (only used by resource.denied)
+          end
+
+          # Configuration options for the denied actions under should_be_restful
+          #
+          # Example:
+          #   context "The public" do
+          #     setup do
+          #       @request.session[:logged_in] = false
+          #     end
+          #   
+          #     should_be_restful do |resource|
+          #       resource.parent = :user
+          #   
+          #       resource.denied.actions = [:index, :show, :edit, :new, :create, :update, :destroy]
+          #       resource.denied.flash = /get outta here/i
+          #       resource.denied.redirect = 'new_session_url'
+          #     end    
+          #   end
+          #
+          class DeniedOptions
+            # String evaled to get the target of the redirection.
+            # All of the instance variables set by the controller will be available to the 
+            # evaled code.
+            #
+            # Example:
+            #   resource.create.redirect  = "user_url(@user.company, @user)"
+            attr_accessor :redirect
+
+            # String or Regexp describing a value expected in the flash.  Will match against any flash key.
+            #
+            # Example:
+            #   resource.create.flash = /created/
+            attr_accessor :flash
+
+            # Actions that should be denied (only used by resource.denied).  <i>Note that these actions will
+            # only be tested if they are also listed in +resource.actions+</i>
             attr_accessor :actions
           end
 
-          # Name of key in params that references the primary key.  Will almost always be :id (default)
+          # Name of key in params that references the primary key.  
+          # Will almost always be :id (default), unless you are using a plugin or have patched rails.
           attr_accessor :identifier
           
           # Name of the ActiveRecord class this resource is responsible for.  Automatically determined from
-          # test class if not explicitly set.
+          # test class if not explicitly set.  UserTest => :user
           attr_accessor :klass
 
           # Name of the instantiated ActiveRecord object that should be used by some of the tests.  
@@ -47,33 +152,62 @@ module ThoughtBot # :nodoc:
           attr_accessor :object
 
           # Name of the parent AR objects.
+          #
+          # Example:
+          #   # in the routes...
+          #   map.resources :companies do
+          #     map.resources :people do
+          #       map.resources :limbs
+          #     end
+          #   end
+          #
+          #   # in the tests...
+          #   class PeopleControllerTest < Test::Unit::TestCase
+          #     should_be_restful do |resource|
+          #       resource.parent = :companies
+          #     end
+          #   end
+          #
+          #   class LimbsControllerTest < Test::Unit::TestCase
+          #     should_be_restful do |resource|
+          #       resource.parents = [:companies, :people]
+          #     end
+          #   end
           attr_accessor :parent
           alias parents parent
           alias parents= parent=
           
-          # Actions that should be tested.  Must be a subset of #VALID_ACTIONS
+          # Actions that should be tested.  Must be a subset of VALID_ACTIONS (default).
+          # Tests for each actionw will only be generated if the action is listed here.
+          #
+          # Example (for a read-only controller):
+          #   resource.actions = [:show, :index]
           attr_accessor :actions
 
-          # Formats that should be tested.  Must be a subset of #VALID_FORMATS
+          # Formats that should be tested.  Must be a subset of VALID_FORMATS (default).
+          # Each action will be tested against the formats listed here.
+          #
+          # Example:
+          #   resource.actions = [:html, :xml]
           attr_accessor :formats
           
-          # ActionOptions object
+          # ActionOptions object specifying options for the create action.
           attr_accessor :create
 
-          # ActionOptions object
+          # ActionOptions object specifying options for the update action.
           attr_accessor :update
 
-          # ActionOptions object
+          # ActionOptions object specifying options for the desrtoy action.
           attr_accessor :destroy
 
-          # ActionOptions object
+          # DeniedOptions object specifying which actions should return deny a request, and what should happen in that case.
           attr_accessor :denied
 
           def initialize # :nodoc:
             @create  = ActionOptions.new
             @update  = ActionOptions.new
             @destroy = ActionOptions.new
-            @denied  = ActionOptions.new
+            @denied  = DeniedOptions.new
             @actions = VALID_ACTIONS
             @formats = VALID_FORMATS
             @denied.actions = []
@@ -119,7 +253,31 @@ module ThoughtBot # :nodoc:
           end
         end
 
-        # Bunch of documentation and examples for this one.
+        # :section: should_be_restful
+        # Generates a full suite of tests for a restful controller.
+        #
+        # The following definition will generate tests for the +index+, +show+, +new+, 
+        # +edit+, +create+, +update+ and +destroy+ actions, in both +html+ and +xml+ formats:
+        #
+        #   should_be_restful do |resource|
+        #     resource.parent = :user
+        #   
+        #     resource.create.params = { :title => "first post", :body => 'blah blah blah'}
+        #     resource.update.params = { :title => "changed" }
+        #   end
+        #
+        # This generates about 40 tests, all of the format:
+        #   "on GET to :show should assign @user."
+        #   "on GET to :show should not set the flash."
+        #   "on GET to :show should render 'show' template."
+        #   "on GET to :show should respond with success."
+        #   "on GET to :show as xml should assign @user."
+        #   "on GET to :show as xml should have ContentType set to 'application/xml'."
+        #   "on GET to :show as xml should respond with success."
+        #   "on GET to :show as xml should return <user/> as the root element."
+        # The +resource+ parameter passed into the block is a ResourceOptions object, and 
+        # is used to configure the tests for the details of your resources.
+        #
         def should_be_restful(&blk) # :yields: resource
           resource = ResourceOptions.new
           blk.call(resource)
@@ -138,8 +296,14 @@ module ThoughtBot # :nodoc:
           end
         end
 
+        # :section: Test macros
+        
         # Macro that creates a test asserting that the flash contains the given value.
         # val can be a String or a Regex
+        #
+        # Example:
+        #
+        #   should_set_the_flash_to /created/i
         def should_set_the_flash_to(val)
           should "have #{val.inspect} in the flash" do
             assert_contains flash.values, val, ", Flash: #{flash.inspect}"            
@@ -154,6 +318,10 @@ module ThoughtBot # :nodoc:
         end
         
         # Macro that creates a test asserting that the controller assigned to @name
+        #
+        # Example:
+        #
+        #   should_assign_to :user
         def should_assign_to(name)
           should "assign @#{name}" do
             assert assigns(name.to_sym), "The show action isn't assigning to @#{name}"
@@ -161,6 +329,10 @@ module ThoughtBot # :nodoc:
         end
 
         # Macro that creates a test asserting that the controller did not assign to @name
+        #
+        # Example:
+        #
+        #   should_not_assign_to :user
         def should_not_assign_to(name)
           should "not assign to @#{name}" do
             assert !assigns(name.to_sym), "@#{name} was visible"
@@ -187,8 +359,12 @@ module ThoughtBot # :nodoc:
           end
         end
 
+        # Macro that creates a test asserting that the controller returned a redirect to the given path.
+        # Example:
+        #
+        #   should_redirect_to "/"
         def should_redirect_to(url)
-          should "redirect to #{url}" do
+          should "redirect to \"#{url}\"" do
             instantiate_variables_from_assigns do
               assert_redirected_to eval(url, self.send(:binding), __FILE__, __LINE__)
             end
@@ -196,9 +372,9 @@ module ThoughtBot # :nodoc:
         end
       end
 
-      module InstanceMethods
-
-        private
+      module InstanceMethods # :nodoc:
+        
+        private # :enddoc:
         
         SPECIAL_INSTANCE_VARIABLES = %w{
           _cookies
@@ -248,11 +424,8 @@ module ThoughtBot # :nodoc:
 
         def make_parent_params(resource, record = nil, parent_names = nil) # :nodoc:
           parent_names ||= resource.parents.reverse
-
           return {} if parent_names == [] # Base case
-
           parent_name = parent_names.shift
-
           parent = record ? record.send(parent_name) : parent_name.to_s.classify.constantize.find(:first)
 
           { :"#{parent_name}_id" => parent.id }.merge(make_parent_params(resource, parent, parent_names))

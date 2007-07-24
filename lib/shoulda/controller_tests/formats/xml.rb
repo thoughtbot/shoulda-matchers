@@ -1,8 +1,8 @@
 module ThoughtBot # :nodoc: 
   module Shoulda # :nodoc: 
     module Controller # :nodoc:
-      module XML # :nodoc:
-        def self.included(other)
+      module XML 
+        def self.included(other) #:nodoc:
           other.class_eval do
             extend ThoughtBot::Shoulda::Controller::XML::ClassMethods
           end
@@ -27,7 +27,7 @@ module ThoughtBot # :nodoc:
           
           protected
                     
-          def make_show_xml_tests(res)
+          def make_show_xml_tests(res) # :nodoc:
             context "on GET to :show as xml" do
               setup do
                 request_xml
@@ -47,15 +47,15 @@ module ThoughtBot # :nodoc:
             end
           end
 
-          def make_edit_xml_tests(res)
+          def make_edit_xml_tests(res) # :nodoc:
             # XML doesn't need an :edit action
           end
 
-          def make_new_xml_tests(res)
+          def make_new_xml_tests(res) # :nodoc:
             # XML doesn't need a :new action
           end
 
-          def make_index_xml_tests(res)
+          def make_index_xml_tests(res) # :nodoc:
             context "on GET to :index as xml" do
               setup do
                 request_xml
@@ -74,7 +74,7 @@ module ThoughtBot # :nodoc:
             end
           end
 
-          def make_destroy_xml_tests(res)
+          def make_destroy_xml_tests(res) # :nodoc:
             context "on DELETE to :destroy as xml" do
               setup do
                 request_xml
@@ -97,7 +97,7 @@ module ThoughtBot # :nodoc:
             end
           end
 
-          def make_create_xml_tests(res)
+          def make_create_xml_tests(res) # :nodoc:
             context "on POST to :create as xml" do
               setup do
                 request_xml
@@ -123,7 +123,7 @@ module ThoughtBot # :nodoc:
             end
           end
 
-          def make_update_xml_tests(res)
+          def make_update_xml_tests(res) # :nodoc:
             context "on PUT to :update as xml" do
               setup do
                 request_xml
