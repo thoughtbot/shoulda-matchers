@@ -64,7 +64,7 @@ class ContextTest < Test::Unit::TestCase # :nodoc:
     end
   end
   
-  should_eventually "pass anyway, since it's unimplemented" do
+  should_eventually "should pass, since it's unimplemented" do
     flunk "what?"
   end
 

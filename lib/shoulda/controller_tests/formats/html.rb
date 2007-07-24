@@ -19,7 +19,8 @@ module ThoughtBot # :nodoc:
 
               if res.denied.actions.include?(:show)
                 should_not_assign_to res.object
-                should_deny_html_request(res)
+                should_redirect_to res.denied.redirect
+                should_set_the_flash_to res.denied.flash
               else
                 should_assign_to res.object          
                 should_respond_with :success
@@ -39,7 +40,8 @@ module ThoughtBot # :nodoc:
         
               if res.denied.actions.include?(:edit)
                 should_not_assign_to res.object
-                should_deny_html_request(res)
+                should_redirect_to res.denied.redirect
+                should_set_the_flash_to res.denied.flash
               else
                 should_assign_to res.object                    
                 should_respond_with :success
@@ -66,7 +68,8 @@ module ThoughtBot # :nodoc:
 
               if res.denied.actions.include?(:index)
                 should_not_assign_to res.object.to_s.pluralize
-                should_deny_html_request(res)          
+                should_redirect_to res.denied.redirect
+                should_set_the_flash_to res.denied.flash          
               else
                 should_respond_with :success
                 should_assign_to res.object.to_s.pluralize
@@ -85,7 +88,8 @@ module ThoughtBot # :nodoc:
 
               if res.denied.actions.include?(:new)
                 should_not_assign_to res.object
-                should_deny_html_request(res)
+                should_redirect_to res.denied.redirect
+                should_set_the_flash_to res.denied.flash
               else
                 should_respond_with :success
                 should_assign_to res.object
@@ -108,7 +112,8 @@ module ThoughtBot # :nodoc:
               end
         
               if res.denied.actions.include?(:destroy)
-                should_deny_html_request(res)
+                should_redirect_to res.denied.redirect
+                should_set_the_flash_to res.denied.flash
           
                 should "not destroy record" do
                   assert @record.reload
@@ -133,7 +138,8 @@ module ThoughtBot # :nodoc:
               end
         
               if res.denied.actions.include?(:create)
-                should_deny_html_request(res)
+                should_redirect_to res.denied.redirect
+                should_set_the_flash_to res.denied.flash
                 should_not_assign_to res.object
           
                 should "not create new record" do
@@ -161,7 +167,8 @@ module ThoughtBot # :nodoc:
 
               if res.denied.actions.include?(:update)
                 should_not_assign_to res.object
-                should_deny_html_request(res)
+                should_redirect_to res.denied.redirect
+                should_set_the_flash_to res.denied.flash
               else
                 should_assign_to res.object
 
@@ -174,20 +181,6 @@ module ThoughtBot # :nodoc:
               end
             end
           end
-
-          private
-
-          def should_deny_html_request(res)
-            should "be denied" do
-              assert_html_denied(res)
-            end
-          end
-        end
-
-        def assert_html_denied(res)
-          assert_redirected_to eval(res.denied.redirect, self.send(:binding), __FILE__, __LINE__), 
-                               "Flash: #{flash.inspect}"
-          assert_contains(flash.values, res.denied.flash)
         end
       end
     end

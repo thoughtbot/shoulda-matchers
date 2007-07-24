@@ -38,7 +38,7 @@ module ThoughtBot # :nodoc:
 
               if res.denied.actions.include?(:show)
                 should_not_assign_to res.object
-                should_deny_xml_request(res)
+                should_respond_with 401
               else
                 should_assign_to res.object          
                 should_respond_with :success
@@ -65,7 +65,7 @@ module ThoughtBot # :nodoc:
 
               if res.denied.actions.include?(:index)
                 should_not_assign_to res.object.to_s.pluralize
-                should_deny_xml_request(res)          
+                should_respond_with 401          
               else
                 should_respond_with :success
                 should_respond_with_xml_for res.object.to_s.pluralize
@@ -84,7 +84,7 @@ module ThoughtBot # :nodoc:
               end
         
               if res.denied.actions.include?(:destroy)
-                should_deny_xml_request(res)
+                should_respond_with 401
           
                 should "not destroy record" do
                   assert @record.reload
@@ -107,7 +107,7 @@ module ThoughtBot # :nodoc:
               end
         
               if res.denied.actions.include?(:create)
-                should_deny_xml_request(res)
+                should_respond_with 401
                 should_not_assign_to res.object
           
                 should "not create new record" do
@@ -134,7 +134,7 @@ module ThoughtBot # :nodoc:
 
               if res.denied.actions.include?(:update)
                 should_not_assign_to res.object
-                should_deny_xml_request(res)
+                should_respond_with 401
               else
                 should_assign_to res.object
 
@@ -143,10 +143,6 @@ module ThoughtBot # :nodoc:
                 end
               end
             end
-          end
-
-          def should_deny_xml_request(res)
-            should_respond_with 401
           end
         end
 
