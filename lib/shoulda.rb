@@ -1,10 +1,9 @@
-# $LOAD_PATH << File.join(File.dirname(__FILE__), 'controller_tests')
+require 'yaml'
 require 'shoulda/private_helpers'
+require 'shoulda/general'
+require 'shoulda/context'
 require 'shoulda/active_record_helpers'
 require 'shoulda/controller_tests/controller_tests.rb'
-require 'shoulda/context'
-require 'shoulda/general'
-require 'yaml'
 
 shoulda_options = {}
 
