@@ -274,11 +274,11 @@ module ThoughtBot # :nodoc:
         associations.each do |association|
           should "have many #{association}#{" through #{through}" if through}" do
             reflection = klass.reflect_on_association(association)
-            assert reflection
+            assert reflection, "#{klass.name} does not have any relationship to #{association}"
             assert_equal :has_many, reflection.macro
             if through
               through_reflection = klass.reflect_on_association(through)
-              assert through_reflection
+              assert through_reflection, "#{klass.name} does not have any relationship to #{through}"
               assert_equal(through, reflection.options[:through])
             end
           end
@@ -293,7 +293,7 @@ module ThoughtBot # :nodoc:
         klass = model_class
         associations.each do |association|
           should "should have and belong to many #{association}" do
-            assert klass.reflect_on_association(association)
+            assert klass.reflect_on_association(association), "#{klass.name} does not have any relationship to #{association}"
             assert_equal :has_and_belongs_to_many, klass.reflect_on_association(association).macro
           end
         end
@@ -307,7 +307,7 @@ module ThoughtBot # :nodoc:
         klass = model_class
         associations.each do |association|
           should "have one #{association}" do
-            assert klass.reflect_on_association(association)
+            assert klass.reflect_on_association(association), "#{klass.name} does not have any relationship to #{association}"
             assert_equal :has_one, klass.reflect_on_association(association).macro
           end
         end
@@ -321,8 +321,9 @@ module ThoughtBot # :nodoc:
         klass = model_class
         associations.each do |association|
           should "belong_to #{association}" do
-            assert klass.reflect_on_association(association)
+            assert klass.reflect_on_association(association), "#{klass.name} does not have any relationship to #{association}"
             assert_equal :belongs_to, klass.reflect_on_association(association).macro
+            assert klass.column_names.include?("#{association}_id"), "#{klass.name} does not have a #{association}_id foreign key."
           end
         end
       end
