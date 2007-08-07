@@ -276,7 +276,11 @@ module ThoughtBot # :nodoc:
             reflection = klass.reflect_on_association(association)
             assert reflection
             assert_equal :has_many, reflection.macro
-            assert_equal(through, reflection.options[:through]) if through
+            if through
+              through_reflection = klass.reflect_on_association(through)
+              assert through_reflection
+              assert_equal(through, reflection.options[:through])
+            end
           end
         end
       end
