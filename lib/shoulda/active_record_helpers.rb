@@ -321,9 +321,11 @@ module ThoughtBot # :nodoc:
         klass = model_class
         associations.each do |association|
           should "belong_to #{association}" do
-            assert klass.reflect_on_association(association), "#{klass.name} does not have any relationship to #{association}"
-            assert_equal :belongs_to, klass.reflect_on_association(association).macro
-            assert klass.column_names.include?("#{association}_id"), "#{klass.name} does not have a #{association}_id foreign key."
+            reflection = klass.reflect_on_association(association)
+            assert reflection, "#{klass.name} does not have any relationship to #{association}"
+            assert_equal :belongs_to, reflection.macro
+            fk = reflection.options[:foreign_key] || "#{association}_id"
+            assert klass.column_names.include?(fk), "#{klass.name} does not have a #{fk} foreign key."
           end
         end
       end

@@ -116,7 +116,7 @@ module ThoughtBot # :nodoc:
                 should_set_the_flash_to res.denied.flash
           
                 should "not destroy record" do
-                  assert @record.reload
+                  assert_nothing_raised { assert @record.reload }
                 end
               else
                 should_set_the_flash_to res.destroy.flash
