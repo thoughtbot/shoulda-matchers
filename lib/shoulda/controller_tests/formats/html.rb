@@ -130,7 +130,7 @@ module ThoughtBot # :nodoc:
           end
 
           def make_create_html_tests(res)
-            context "on POST to :create" do
+            context "on POST to :create with #{res.create.params.inspect}" do
               setup do
                 parent_params = make_parent_params(res)
                 @count = res.klass.count
@@ -158,7 +158,7 @@ module ThoughtBot # :nodoc:
           end
 
           def make_update_html_tests(res)
-            context "on PUT to :update" do
+            context "on PUT to :update with #{res.create.params.inspect}" do
               setup do
                 @record = get_existing_record(res)
                 parent_params = make_parent_params(res, @record)
