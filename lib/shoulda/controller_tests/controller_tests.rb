@@ -136,6 +136,7 @@ module ThoughtBot # :nodoc:
 
             # Actions that should be denied (only used by resource.denied).  <i>Note that these actions will
             # only be tested if they are also listed in +resource.actions+</i>
+            # The special value of :all will deny all of the REST actions.
             attr_accessor :actions
           end
 
@@ -179,13 +180,15 @@ module ThoughtBot # :nodoc:
           
           # Actions that should be tested.  Must be a subset of VALID_ACTIONS (default).
           # Tests for each actionw will only be generated if the action is listed here.
+          # The special value of :all will test all of the REST actions.
           #
           # Example (for a read-only controller):
           #   resource.actions = [:show, :index]
           attr_accessor :actions
 
           # Formats that should be tested.  Must be a subset of VALID_FORMATS (default).
-          # Each action will be tested against the formats listed here.
+          # Each action will be tested against the formats listed here.  The special value
+          # of :all will test all of the supported formats.
           #
           # Example:
           #   resource.actions = [:html, :xml]
@@ -214,6 +217,10 @@ module ThoughtBot # :nodoc:
           end
 
           def normalize!(target) # :nodoc:
+            @denied.actions  = VALID_ACTIONS if @denied.actions == :all
+            @actions         = VALID_ACTIONS if @actions        == :all
+            @formats         = VALID_FORMATS if @formats        == :all
+            
             @denied.actions  = @denied.actions.map(&:to_sym)
             @actions         = @actions.map(&:to_sym)
             @formats         = @formats.map(&:to_sym)
