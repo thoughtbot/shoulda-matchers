@@ -331,7 +331,7 @@ module ThoughtBot # :nodoc:
         #   should_assign_to :user
         def should_assign_to(name)
           should "assign @#{name}" do
-            assert assigns(name.to_sym), "The show action isn't assigning to @#{name}"
+            assert assigns(name.to_sym), "The action isn't assigning to @#{name}"
           end
         end
 
