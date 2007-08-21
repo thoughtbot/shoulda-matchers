@@ -80,6 +80,21 @@ module ThoughtBot # :nodoc:
         else         assert(!collection.include?(x), msg)
         end        
       end
+      
+      # Asserts that the given object can be saved
+      #
+      #  assert_save User.new(params)
+      def assert_save(obj)
+        assert obj.save, "Errors: #{obj.errors.full_messages.join('; ')}"
+        obj.reload
+      end
+
+      # Asserts that the given object is valid
+      #
+      #  assert_save User.new(params)
+      def assert_valid(obj)
+        assert obj.valid?, "Errors: #{obj.errors.full_messages.join('; ')}"
+      end
     end
   end
 end
