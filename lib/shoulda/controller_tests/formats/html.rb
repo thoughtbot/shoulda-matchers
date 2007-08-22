@@ -47,13 +47,9 @@ module ThoughtBot # :nodoc:
                 should_respond_with :success
                 should_render_template :edit
                 should_not_set_the_flash
-
+                should_render_a_form
                 should "set @#{res.object} to requested instance" do
                   assert_equal @record, assigns(res.object)
-                end
-          
-                should "display a form" do
-                  assert_select "form", true, "The template doesn't contain a <form> element"            
                 end
               end
             end
@@ -95,10 +91,7 @@ module ThoughtBot # :nodoc:
                 should_assign_to res.object
                 should_not_set_the_flash
                 should_render_template :new
-          
-                should "display a form" do
-                  assert_select "form", true, "The template doesn't contain a <form> element"            
-                end
+                should_render_a_form
               end
             end
           end

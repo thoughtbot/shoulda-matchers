@@ -95,6 +95,25 @@ module ThoughtBot # :nodoc:
       def assert_valid(obj)
         assert obj.valid?, "Errors: #{obj.errors.full_messages.join('; ')}"
       end
+      
+      # Asserts that the block uses ActionMailer to send emails
+      #
+      #  assert_sends_email(2) { Mailer.deliver_messages }
+      def assert_sends_email(num = 1, &blk)
+        ActionMailer::Base.deliveries.clear
+        blk.call
+        msg = "Sent #{ActionMailer::Base.deliveries.size} emails, when #{num} expected:\n"
+        ActionMailer::Base.deliveries.each { |m| msg << "  '#{m.subject}' sent to #{m.to.to_sentence}\n" }
+        assert(num == ActionMailer::Base.deliveries.size, msg)
+      end
+
+      # Asserts that the block does not send emails thorough ActionMailer
+      #
+      #  assert_does_not_send_email { # do nothing }
+      def assert_does_not_send_email(&blk)
+        assert_sends_email 0, &blk
+      end
+      
     end
   end
 end

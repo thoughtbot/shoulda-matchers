@@ -377,6 +377,13 @@ module ThoughtBot # :nodoc:
             end
           end
         end
+        
+        # Macro that creates a test asserting that the rendered view contains a <form> element.
+        def should_render_a_form
+          should "display a form" do
+            assert_select "form", true, "The template doesn't contain a <form> element"            
+          end
+        end
       end
 
       module InstanceMethods # :nodoc:
