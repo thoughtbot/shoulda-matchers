@@ -2,7 +2,7 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
-require 'lib/tasks/list_tests.rb'
+#require 'tasks/list_tests.rake'
 
 # Test::Unit::UI::VERBOSE
 
