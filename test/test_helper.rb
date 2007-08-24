@@ -1,6 +1,13 @@
+require 'fileutils'
 # Load the environment
 ENV['RAILS_ENV'] = 'sqlite3'
-require File.dirname(__FILE__) + '/rails_root/config/environment.rb'
+
+# ln rails_root/vendor/plugins/shoulda => ../../../../
+rails_root = File.dirname(__FILE__) + '/rails_root'
+
+FileUtils.ln_s('../../../../', "#{rails_root}/vendor/plugins/shoulda") unless File.exists?("#{rails_root}/vendor/plugins/shoulda")
+
+require "#{rails_root}/config/environment.rb"
  
 # Load the testing framework
 require 'test_help'
@@ -13,7 +20,7 @@ ActiveRecord::Migrator.migrate("#{RAILS_ROOT}/db/migrate")
 # Setup the fixtures path
 Test::Unit::TestCase.fixture_path = File.join(File.dirname(__FILE__), "fixtures")
 # $LOAD_PATH.unshift(Test::Unit::TestCase.fixture_path)
- 
+
 class Test::Unit::TestCase #:nodoc:
   def create_fixtures(*table_names)
     if block_given?
