@@ -4,7 +4,7 @@ module ThoughtBot # :nodoc:
     #
     # These helpers will test most of the validations and associations for your ActiveRecord models.
     #
-    #   class UserTest < Test::Unit
+    #   class UserTest < Test::Unit::TestCase
     #     should_require_attributes :name, :phone_number
     #     should_not_allow_values_for :phone_number, "abcd", "1234"
     #     should_allow_values_for :phone_number, "(123) 456-7890"

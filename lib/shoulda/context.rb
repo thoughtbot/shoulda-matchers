@@ -8,7 +8,7 @@ module ThoughtBot # :nodoc:
     #
     # A context block can contain setup, should, should_eventually, and teardown blocks.
     #
-    #  class UserTest << Test::Unit 
+    #  class UserTest << Test::Unit::TestCase
     #    context "a User instance" do
     #      setup do
     #        @user = User.find(:first)
@@ -25,7 +25,7 @@ module ThoughtBot # :nodoc:
     # Contexts may be nested.  Nested contexts run their setup blocks from out to in before each test.  
     # They then run their teardown blocks from in to out after each test.
     #
-    #  class UserTest << Test::Unit 
+    #  class UserTest << Test::Unit::TestCase
     #    context "a User instance" do
     #      setup do
     #        @user = User.find(:first)
@@ -67,7 +67,7 @@ module ThoughtBot # :nodoc:
       #
       # Example:
       #
-      #   class UserTest << Test::Unit 
+      #   class UserTest << Test::Unit::TestCase 
       #     should "return first user on find(:first)"
       #       assert_equal users(:first), User.find(:first)
       #     end
