@@ -211,6 +211,15 @@ module ThoughtBot # :nodoc:
             @update  = ActionOptions.new
             @destroy = ActionOptions.new
             @denied  = DeniedOptions.new
+
+            @create.flash  ||= /created/i
+            @update.flash  ||= /updated/i
+            @destroy.flash ||= /removed/i
+            @denied.flash  ||= /denied/i
+
+            @create.params  ||= {}
+            @update.params  ||= {}
+
             @actions = VALID_ACTIONS
             @formats = VALID_FORMATS
             @denied.actions = []
@@ -242,14 +251,6 @@ module ThoughtBot # :nodoc:
             @create.redirect  ||= "#{@object}_url(#{singular_args.join(', ')})"
             @update.redirect  ||= "#{@object}_url(#{singular_args.join(', ')})"
             @denied.redirect  ||= "new_session_url"
-
-            @create.flash  ||= /created/i
-            @update.flash  ||= /updated/i
-            @destroy.flash ||= /removed/i
-            @denied.flash  ||= /denied/i
-
-            @create.params  ||= {}
-            @update.params  ||= {}
           end
           
           private
@@ -306,22 +307,29 @@ module ThoughtBot # :nodoc:
         # :section: Test macros
         
         # Macro that creates a test asserting that the flash contains the given value.
-        # val can be a String or a Regex
+        # val can be a String, a Regex, or nil (indicating that the flash should not be set)
         #
         # Example:
         #
+        #   should_set_the_flash_to "Thank you for placing this order."
         #   should_set_the_flash_to /created/i
+        #   should_set_the_flash_to nil
         def should_set_the_flash_to(val)
-          should "have #{val.inspect} in the flash" do
-            assert_contains flash.values, val, ", Flash: #{flash.inspect}"            
+          if val
+            should "have #{val.inspect} in the flash" do
+              assert_contains flash.values, val, ", Flash: #{flash.inspect}"            
+            end
+          else
+            should "not set the flash" do
+              assert_equal({}, flash, "Flash was set to:\n#{flash.inspect}")
+            end
           end
         end
     
-        # Macro that creates a test asserting that the flash is empty
+        # Macro that creates a test asserting that the flash is empty.  Same as
+        # @should_set_the_flash_to nil@
         def should_not_set_the_flash
-          should "not set the flash" do
-            assert_equal({}, flash, "Flash was set to:\n#{flash.inspect}")
-          end
+          should_set_the_flash_to nil
         end
         
         # Macro that creates a test asserting that the controller assigned to @name
@@ -367,9 +375,12 @@ module ThoughtBot # :nodoc:
         end
 
         # Macro that creates a test asserting that the controller returned a redirect to the given path.
+        # The given string is evaled to produce the resulting redirect path.  All of the instance variables
+        # set by the controller are available to the evaled string.
         # Example:
         #
-        #   should_redirect_to "/"
+        #   should_redirect_to '"/"'
+        #   should_redirect_to "users_url(@user)"
         def should_redirect_to(url)
           should "redirect to \"#{url}\"" do
             instantiate_variables_from_assigns do
