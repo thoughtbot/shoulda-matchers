@@ -113,7 +113,11 @@ module ThoughtBot # :nodoc:
                 end
               else
                 should_set_the_flash_to res.destroy.flash
-                should_redirect_to res.destroy.redirect
+                if res.destroy.redirect.is_a? Symbol
+                  should_respond_with res.destroy.redirect
+                else
+                  should_redirect_to res.destroy.redirect
+                end
 
                 should "destroy record" do
                   assert_raises(::ActiveRecord::RecordNotFound) { @record.reload }
@@ -141,7 +145,11 @@ module ThoughtBot # :nodoc:
               else
                 should_assign_to res.object
                 should_set_the_flash_to res.create.flash
-                should_redirect_to res.create.redirect
+                if res.create.redirect.is_a? Symbol
+                  should_respond_with res.create.redirect
+                else
+                  should_redirect_to res.create.redirect
+                end
 
                 should "not have errors on @#{res.object}" do
                   assert_equal [], assigns(res.object).errors.full_messages, "@#{res.object} has errors:"            
@@ -164,13 +172,16 @@ module ThoughtBot # :nodoc:
                 should_set_the_flash_to res.denied.flash
               else
                 should_assign_to res.object
-
+                should_set_the_flash_to(res.update.flash)
+                if res.update.redirect.is_a? Symbol
+                  should_respond_with res.update.redirect
+                else
+                  should_redirect_to res.update.redirect
+                end
+                
                 should "not have errors on @#{res.object}" do
                   assert_equal [], assigns(res.object).errors.full_messages, "@#{res.object} has errors:"
                 end
-          
-                should_redirect_to res.update.redirect
-                should_set_the_flash_to(res.update.flash)
               end
             end
           end

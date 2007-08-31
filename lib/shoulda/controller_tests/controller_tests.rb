@@ -371,11 +371,9 @@ module ThoughtBot # :nodoc:
         #
         #   should_redirect_to "/"
         def should_redirect_to(url)
-          if url
-            should "redirect to \"#{url}\"" do
-              instantiate_variables_from_assigns do
-                assert_redirected_to eval(url, self.send(:binding), __FILE__, __LINE__)
-              end
+          should "redirect to \"#{url}\"" do
+            instantiate_variables_from_assigns do
+              assert_redirected_to eval(url, self.send(:binding), __FILE__, __LINE__)
             end
           end
         end
