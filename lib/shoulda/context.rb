@@ -109,6 +109,8 @@ module ThoughtBot # :nodoc:
         saved_teardowns = @@teardown_blocks.dup      
         saved_contexts  = @@context_names.dup
 
+        @@setup_defined = false
+        
         @@context_names << name
         context_block.bind(self).call
 
@@ -121,6 +123,12 @@ module ThoughtBot # :nodoc:
       # If a setup block appears in a nested context, it will be run after the setup blocks
       # in the parent contexts.
       def setup(&setup_block)
+        if @@setup_defined
+          raise RuntimeError, "Either you have two setup blocks in one context, " + 
+                              "or a setup block outside of a context.  Both are equally bad."
+        end
+        @@setup_defined = true
+        
         @@setup_blocks << setup_block
       end
 

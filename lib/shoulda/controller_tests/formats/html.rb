@@ -58,7 +58,8 @@ module ThoughtBot # :nodoc:
           def make_index_html_tests(res)
             context "on GET to :index" do
               setup do
-                parent_params = make_parent_params(res)
+                record = get_existing_record(res) rescue nil
+                parent_params = make_parent_params(res, record)
                 get(:index, parent_params)          
               end
 
@@ -78,7 +79,8 @@ module ThoughtBot # :nodoc:
           def make_new_html_tests(res)
             context "on GET to :new" do
               setup do
-                parent_params = make_parent_params(res)
+                record = get_existing_record(res) rescue nil
+                parent_params = make_parent_params(res, record)
                 get(:new, parent_params)          
               end
 
@@ -129,7 +131,8 @@ module ThoughtBot # :nodoc:
           def make_create_html_tests(res)
             context "on POST to :create with #{res.create.params.inspect}" do
               setup do
-                parent_params = make_parent_params(res)
+                record = get_existing_record(res) rescue nil
+                parent_params = make_parent_params(res, record)
                 @count = res.klass.count
                 post :create, parent_params.merge(res.object => res.create.params)
               end
