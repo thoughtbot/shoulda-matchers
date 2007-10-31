@@ -325,7 +325,33 @@ module ThoughtBot # :nodoc:
             assert reflection, "#{klass.name} does not have any relationship to #{association}"
             assert_equal :belongs_to, reflection.macro
             fk = reflection.options[:foreign_key] || "#{association}_id"
-            assert klass.column_names.include?(fk), "#{klass.name} does not have a #{fk} foreign key."
+            assert klass.column_names.include?(fk.to_s), "#{klass.name} does not have a #{fk} foreign key."
+          end
+        end
+      end
+      
+      # Ensure that the given class methods are defined on the model.
+      #
+      #   should_have_class_methods :find, :destroy
+      def should_have_class_methods(*methods)
+        get_options!(methods)
+        klass = model_class
+        methods.each do |method|
+          should "respond to class method #{method}" do
+            assert_respond_to klass, method, "#{klass.name} does not have class method #{method}"
+          end
+        end
+      end
+
+      # Ensure that instance methods exist.
+      #
+      #   should_have_instance_methods :instance_method
+      def should_have_instance_methods(*methods)
+        get_options!(methods)
+        klass = model_class
+        methods.each do |method|
+          should "respond to instance method #{method}" do
+            assert_respond_to klass.new, method, "#{klass.name} does not have instance method #{method}"
           end
         end
       end

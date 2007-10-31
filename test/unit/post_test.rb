@@ -4,6 +4,7 @@ class PostTest < Test::Unit::TestCase
   load_all_fixtures
 
   should_belong_to :user
+  should_belong_to :owner
   should_have_many :tags, :through => :taggings
   
   should_require_unique_attributes :title
