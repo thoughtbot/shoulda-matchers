@@ -11,5 +11,5 @@ class UserTest < Test::Unit::TestCase
   should_ensure_value_in_range :age, 1..100
   should_protect_attributes :password
   should_have_class_methods :find, :destroy
-  should_have_instance_methods :email, :age
+  should_have_instance_methods :email, :age, :email=, :valid?
 end

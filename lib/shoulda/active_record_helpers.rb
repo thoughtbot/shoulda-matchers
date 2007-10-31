@@ -343,9 +343,9 @@ module ThoughtBot # :nodoc:
         end
       end
 
-      # Ensure that instance methods exist.
+      # Ensure that the given instance methods are defined on the model.
       #
-      #   should_have_instance_methods :instance_method
+      #   should_have_instance_methods :email, :name, :name=
       def should_have_instance_methods(*methods)
         get_options!(methods)
         klass = model_class
