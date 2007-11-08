@@ -2,8 +2,6 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
-#require 'tasks/list_tests.rake'
-
 # Test::Unit::UI::VERBOSE
 
 Rake::TestTask.new do |t|
@@ -27,3 +25,8 @@ end
 
 desc 'Default: run tests.'
 task :default => ['test']
+
+Dir['tasks/*.rake'].each do |f|
+  load f
+end
+

@@ -1,4 +1,4 @@
-namespace :test do
+namespace :shoulda do
   desc "List the names of the test methods in a specification like format"
   task :list do
 
