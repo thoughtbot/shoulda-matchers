@@ -37,7 +37,7 @@ module ThoughtBot # :nodoc:
       # controller responds restfully to a variety of requested formats.
       module ClassMethods
         # Formats tested by #should_be_restful.  Defaults to [:html, :xml]
-        VALID_FORMATS = Dir.glob(File.join(File.dirname(__FILE__), 'formats', '*')).map { |f| File.basename(f, '.rb') }.map(&:to_sym) # :doc:
+        VALID_FORMATS = Dir.glob(File.join(File.dirname(__FILE__), 'formats', '*.rb')).map { |f| File.basename(f, '.rb') }.map(&:to_sym) # :doc:
         VALID_FORMATS.each {|f| require "shoulda/controller_tests/formats/#{f}.rb"}
 
         # Actions tested by #should_be_restful
