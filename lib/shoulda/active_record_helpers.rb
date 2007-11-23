@@ -29,6 +29,7 @@ module ThoughtBot # :nodoc:
       #
       # Example:
       #   should_require_attributes :name, :phone_number
+      #
       def should_require_attributes(*attributes)
         message = get_options!(attributes, :message)
         message ||= /blank/
@@ -53,6 +54,7 @@ module ThoughtBot # :nodoc:
       #
       # Example:
       #   should_require_unique_attributes :keyword, :username
+      #
       def should_require_unique_attributes(*attributes)
         message, scope = get_options!(attributes, :message, :scoped_to)
         message ||= /taken/
@@ -92,6 +94,7 @@ module ThoughtBot # :nodoc:
       # Requires an existing record
       #
       #   should_protect_attributes :password, :admin_flag
+      #
       def should_protect_attributes(*attributes)
         get_options!(attributes)
         klass = model_class
@@ -118,6 +121,7 @@ module ThoughtBot # :nodoc:
       #
       # Example:
       #   should_not_allow_values_for :isbn, "bad 1", "bad 2"
+      #
       def should_not_allow_values_for(attribute, *bad_values)
         message = get_options!(bad_values, :message)
         message ||= /invalid/
@@ -142,6 +146,7 @@ module ThoughtBot # :nodoc:
       #
       # Example:
       #   should_allow_values_for :isbn, "isbn 1 2345 6789 0", "ISBN 1-2345-6789-0"
+      #
       def should_allow_values_for(attribute, *good_values)
         message = get_options!(good_values, :message)
         message ||= /invalid/
@@ -167,6 +172,7 @@ module ThoughtBot # :nodoc:
       #
       # Example:
       #   should_ensure_length_in_range :password, (6..20)
+      #
       def should_ensure_length_in_range(attribute, range, opts = {})
         short_message, long_message = get_options!([opts], :short_message, :long_message)
         short_message ||= /short/
@@ -208,6 +214,7 @@ module ThoughtBot # :nodoc:
       #
       # Example:
       #   should_ensure_value_in_range :age, (0..100)
+      #
       def should_ensure_value_in_range(attribute, range, opts = {})
         low_message, high_message = get_options!([opts], :low_message, :high_message)
         low_message  ||= /included/
@@ -245,6 +252,7 @@ module ThoughtBot # :nodoc:
       #
       # Example:
       #   should_only_allow_numeric_values_for :age
+      #
       def should_only_allow_numeric_values_for(*attributes)
         message = get_options!(attributes, :message)
         message ||= /number/
@@ -268,6 +276,7 @@ module ThoughtBot # :nodoc:
       # Example:
       #   should_have_many :friends
       #   should_have_many :enemies, :through => :friends
+      #
       def should_have_many(*associations)
         through = get_options!(associations, :through)
         klass = model_class
@@ -288,6 +297,7 @@ module ThoughtBot # :nodoc:
       # Ensures that the has_and_belongs_to_many relationship exists.  
       #
       #   should_have_and_belong_to_many :posts, :cars
+      #
       def should_have_and_belong_to_many(*associations)
         get_options!(associations)
         klass = model_class
@@ -302,6 +312,7 @@ module ThoughtBot # :nodoc:
       # Ensure that the has_one relationship exists.
       #
       #   should_have_one :god # unless hindu
+      #
       def should_have_one(*associations)
         get_options!(associations)
         klass = model_class
@@ -316,6 +327,7 @@ module ThoughtBot # :nodoc:
       # Ensure that the belongs_to relationship exists.
       #
       #   should_belong_to :parent
+      #
       def should_belong_to(*associations)
         get_options!(associations)
         klass = model_class
@@ -333,6 +345,7 @@ module ThoughtBot # :nodoc:
       # Ensure that the given class methods are defined on the model.
       #
       #   should_have_class_methods :find, :destroy
+      #
       def should_have_class_methods(*methods)
         get_options!(methods)
         klass = model_class
@@ -346,12 +359,50 @@ module ThoughtBot # :nodoc:
       # Ensure that the given instance methods are defined on the model.
       #
       #   should_have_instance_methods :email, :name, :name=
+      #
       def should_have_instance_methods(*methods)
         get_options!(methods)
         klass = model_class
         methods.each do |method|
           should "respond to instance method #{method}" do
             assert_respond_to klass.new, method, "#{klass.name} does not have instance method #{method}"
+          end
+        end
+      end
+
+      # Ensure that the given columns are defined on the models backing SQL table.
+      #
+      #   should_have_db_columns :id, :email, :name, :created_at
+      #
+      def should_have_db_columns(*columns)
+        column_type = get_options!(columns, :exclusive, :type)
+        klass = model_class
+        columns.each do |name|
+          test_name = "have column #{name}"
+          test_name += " of type #{column_type}" if column_type
+          should test_name do
+            column = klass.columns.detect {|c| c.name == name.to_s }
+            assert column, "#{klass.name} does not have column #{name}"
+          end
+        end
+      end
+
+      # Ensure that the given column is defined on the models backing SQL table.  The options are the same as
+      # the instance variables defined on the column definition:  :precision, :limit, :default, :null, 
+      # :primary, :type, :scale, and :sql_type.
+      #
+      #   should_have_db_column :email, :type => "string", :default => nil,   :precision => nil, :limit    => 255, 
+      #                                 :null => true,     :primary => false, :scale     => nil, :sql_type => 'varchar(255)'
+      #
+      def should_have_db_column(name, opts = {})
+        klass = model_class
+        test_name = "have column named :#{name}"
+        test_name += " with options " + opts.inspect unless opts.empty?
+        should test_name do
+          column = klass.columns.detect {|c| c.name == name.to_s }
+          assert column, "#{klass.name} does not have column #{name}"
+          opts.each do |k, v|
+            assert_equal column.instance_variable_get("@#{k}").to_s, v.to_s, ":#{name} column on table for #{klass} does not match option :#{k}"
           end
         end
       end
