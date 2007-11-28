@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   has_many :posts
+  has_many :dogs, :foreign_key => :owner_id
   
   attr_protected :password
   validates_format_of :email, :with => /\w*@\w*.com/

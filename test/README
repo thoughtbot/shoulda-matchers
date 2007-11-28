@@ -1,0 +1,8 @@
+The tests for should have two dependencies that I know of:
+
+* Rails version 1.2.3
+* A working sqlite3 installation.
+
+If you have problems running these tests, please notify the shoulda mailing list:  shoulda@googlegroups.com
+
+- Tammer Saleh

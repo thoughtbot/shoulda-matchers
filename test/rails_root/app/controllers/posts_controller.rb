@@ -49,7 +49,7 @@ class PostsController < ApplicationController
     respond_to do |format|
       if @post.update_attributes(params[:post])
         flash[:notice] = 'Post was successfully updated.'
-        format.html { redirect_to post_url(@post) }
+        format.html { redirect_to post_url(@post.user, @post) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -65,7 +65,7 @@ class PostsController < ApplicationController
     flash[:notice] = "Post was removed"
     
     respond_to do |format|
-      format.html { redirect_to posts_url }
+      format.html { redirect_to posts_url(@post.user) }
       format.xml  { head :ok }
     end
   end

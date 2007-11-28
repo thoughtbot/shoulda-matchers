@@ -281,14 +281,25 @@ module ThoughtBot # :nodoc:
         through = get_options!(associations, :through)
         klass = model_class
         associations.each do |association|
-          should "have many #{association}#{" through #{through}" if through}" do
+          name = "have many #{association}"
+          name += " through #{through}" if through
+          should name do
             reflection = klass.reflect_on_association(association)
             assert reflection, "#{klass.name} does not have any relationship to #{association}"
             assert_equal :has_many, reflection.macro
+
             if through
               through_reflection = klass.reflect_on_association(through)
               assert through_reflection, "#{klass.name} does not have any relationship to #{through}"
               assert_equal(through, reflection.options[:through])
+            end
+            
+            unless reflection.options[:through]
+              # This is not a through association, so check for the existence of the foreign key on the other table
+              fk = reflection.options[:foreign_key] || "#{klass.name.downcase}_id"
+              associated_klass = reflection.options[:class_name] || association.to_s.classify
+              associated_klass = associated_klass.constantize
+              assert associated_klass.column_names.include?(fk.to_s), "#{associated_klass.name} does not have a #{fk} foreign key."
             end
           end
         end

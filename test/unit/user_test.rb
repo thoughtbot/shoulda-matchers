@@ -4,6 +4,7 @@ class UserTest < Test::Unit::TestCase
   load_all_fixtures
 
   should_have_many :posts
+  should_have_many :dogs
   
   should_not_allow_values_for :email, "blah", "b lah"
   should_allow_values_for :email, "a@b.com", "asdf@asdf.com"
