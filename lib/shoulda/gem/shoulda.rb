@@ -1,5 +1,9 @@
-module ThoughtBot # :nodoc:
-  module Shoulda # :nodoc:
+require File.join(File.dirname(__FILE__), 'proc_extensions')
+
+module Thoughtbot
+  class Shoulda
+    VERSION = '1.0.0'
+  
     # = context and should blocks
     # 
     # A context block groups should statements under a common setup/teardown method.  
@@ -54,14 +58,14 @@ module ThoughtBot # :nodoc:
     # <b>A context block can exist next to normal <tt>def test_the_old_way; end</tt> tests</b>, 
     # meaning you do not have to fully commit to the context/should syntax in a test file.
     #
-  
-    module Context
-      def Context.included(other) # :nodoc:
+
+    module ClassMethods
+      def self.included(other) # :nodoc:
         @@context_names   = []
         @@setup_blocks    = []
         @@teardown_blocks = []
       end
-    
+  
       # Defines a test method.  Can be called either inside our outside of a context.
       # Optionally specify <tt>:unimplimented => true</tt> (see should_eventually).
       #
@@ -81,10 +85,10 @@ module ThoughtBot # :nodoc:
 
         name_defined = eval("self.instance_methods.include?('#{test_name.to_s.gsub(/['"]/, '\$1')}')", should_block.binding)
         raise ArgumentError, "'#{test_name}' is already defined" and return if name_defined
-      
+    
         setup_blocks    = @@setup_blocks.dup
         teardown_blocks = @@teardown_blocks.dup
-      
+    
         if opts[:unimplemented]
           define_method test_name do |*args|
             # XXX find a better way of doing this.
@@ -110,7 +114,7 @@ module ThoughtBot # :nodoc:
         saved_contexts  = @@context_names.dup
 
         @@setup_defined = false
-        
+      
         @@context_names << name
         context_block.bind(self).call
 
@@ -128,7 +132,7 @@ module ThoughtBot # :nodoc:
                               "or a setup block outside of a context.  Both are equally bad."
         end
         @@setup_defined = true
-        
+      
         @@setup_blocks << setup_block
       end
 
@@ -145,6 +149,16 @@ module ThoughtBot # :nodoc:
       #   should(name, {:unimplemented => true}, &block)
       def should_eventually(name, &block)
         should("eventually #{name}", {:unimplemented => true}, &block)
+      end
+    end
+  end
+end
+
+module Test # :nodoc: all
+  module Unit 
+    class TestCase
+      class << self
+        include Thoughtbot::Shoulda::ClassMethods
       end
     end
   end

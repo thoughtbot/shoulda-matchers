@@ -1,7 +1,7 @@
 require 'yaml'
 require 'shoulda/private_helpers'
 require 'shoulda/general'
-require 'shoulda/context'
+require 'shoulda/gem/shoulda'
 require 'shoulda/active_record_helpers'
 require 'shoulda/controller_tests/controller_tests.rb'
 
@@ -30,9 +30,7 @@ module Test # :nodoc: all
       include ThoughtBot::Shoulda::General
 
       class << self
-        include ThoughtBot::Shoulda::Context
         include ThoughtBot::Shoulda::ActiveRecord
-        # include ThoughtBot::Shoulda::General::ClassMethods    
       end
     end
   end
