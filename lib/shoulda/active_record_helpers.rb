@@ -296,9 +296,14 @@ module ThoughtBot # :nodoc:
             
             unless reflection.options[:through]
               # This is not a through association, so check for the existence of the foreign key on the other table
-              fk = reflection.options[:foreign_key] || "#{klass.name.downcase}_id"
-              associated_klass = reflection.options[:class_name] || association.to_s.classify
-              associated_klass = associated_klass.constantize
+              if reflection.options[:foreign_key]
+                fk = reflection.options[:foreign_key]
+              elsif reflection.options[:as]
+                fk = reflection.options[:as].to_s.foreign_key
+              else
+                fk = klass.name.foreign_key
+              end
+              associated_klass = (reflection.options[:class_name] || association.to_s.classify).constantize
               assert associated_klass.column_names.include?(fk.to_s), "#{associated_klass.name} does not have a #{fk} foreign key."
             end
           end
@@ -329,8 +334,19 @@ module ThoughtBot # :nodoc:
         klass = model_class
         associations.each do |association|
           should "have one #{association}" do
-            assert klass.reflect_on_association(association), "#{klass.name} does not have any relationship to #{association}"
-            assert_equal :has_one, klass.reflect_on_association(association).macro
+            reflection = klass.reflect_on_association(association)
+            assert reflection, "#{klass.name} does not have any relationship to #{association}"
+            assert_equal :has_one, reflection.macro
+            
+            if reflection.options[:foreign_key]
+              fk = reflection.options[:foreign_key]
+            elsif reflection.options[:as]
+              fk = reflection.options[:as].to_s.foreign_key
+            else
+              fk = klass.name.foreign_key
+            end
+            associated_klass = (reflection.options[:class_name] || association.to_s.classify).constantize
+            assert associated_klass.column_names.include?(fk.to_s), "#{associated_klass.name} does not have a #{fk} foreign key."            
           end
         end
       end
@@ -347,8 +363,12 @@ module ThoughtBot # :nodoc:
             reflection = klass.reflect_on_association(association)
             assert reflection, "#{klass.name} does not have any relationship to #{association}"
             assert_equal :belongs_to, reflection.macro
-            fk = reflection.options[:foreign_key] || "#{association}_id"
-            assert klass.column_names.include?(fk.to_s), "#{klass.name} does not have a #{fk} foreign key."
+
+            unless reflection.options[:polymorphic]
+              associated_klass = (reflection.options[:class_name] || association.to_s.classify).constantize
+              fk = reflection.options[:foreign_key] || associated_klass.name.foreign_key
+              assert klass.column_names.include?(fk.to_s), "#{klass.name} does not have a #{fk} foreign key."
+            end
           end
         end
       end
