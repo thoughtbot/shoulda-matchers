@@ -406,7 +406,7 @@ module ThoughtBot # :nodoc:
       #   should_have_db_columns :id, :email, :name, :created_at
       #
       def should_have_db_columns(*columns)
-        column_type = get_options!(columns, :exclusive, :type)
+        column_type = get_options!(columns, :type)
         klass = model_class
         columns.each do |name|
           test_name = "have column #{name}"
