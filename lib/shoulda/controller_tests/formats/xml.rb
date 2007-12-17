@@ -153,7 +153,7 @@ module ThoughtBot # :nodoc:
         
         # Asserts that the controller's response was 'application/xml'
         def assert_xml_response
-          assert_equal "application/xml; charset=utf-8", @response.headers['Content-Type'], "Body: #{@response.body.first(100)} ..."
+          assert_equal "application/xml", @response.content_type, "Body: #{@response.body.first(100).chomp}..."
         end
         
       end
