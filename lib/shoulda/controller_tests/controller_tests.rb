@@ -244,12 +244,14 @@ module ThoughtBot # :nodoc:
             @parent        ||= []
             @parent          = [@parent] unless @parent.is_a? Array
 
-            singular_args = @parent.map {|n| "@#{object}.#{n}"}
-            @destroy.redirect ||= "#{@object.pluralize}_url(#{singular_args.join(', ')})" 
+            collection_helper = [@parent, @object.pluralize, 'url'].flatten.join('_')
+            collection_args   = @parent.map {|n| "@#{object}.#{n}"}.join(', ')
+            @destroy.redirect ||= "#{collection_helper}(#{collection_args})"
 
-            singular_args << "@#{object}"
-            @create.redirect  ||= "#{@object}_url(#{singular_args.join(', ')})"
-            @update.redirect  ||= "#{@object}_url(#{singular_args.join(', ')})"
+            member_helper = [@parent, @object, 'url'].flatten.join('_')
+            member_args   = [@parent.map {|n| "@#{object}.#{n}"}, "@#{object}"].flatten.join(', ')
+            @create.redirect  ||= "#{member_helper}(#{member_args})"
+            @update.redirect  ||= "#{member_helper}(#{member_args})"
             @denied.redirect  ||= "new_session_url"
           end
           
