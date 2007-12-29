@@ -8,30 +8,6 @@ end
 
 class HelpersTest < Test::Unit::TestCase # :nodoc:
 
-  context "assert_difference" do
-    should "pass when incrementing by one" do
-      assert_difference(Val, :val, 1) do
-        Val.inc
-      end
-      assert_raises(Test::Unit::AssertionFailedError) do 
-        assert_difference(Val, :val, 2) do
-          Val.inc
-        end
-      end
-    end
-
-    should "pass when incrementing by two" do
-      assert_difference(Val, :val, 2) do
-        Val.inc(2)
-      end
-      assert_raises(Test::Unit::AssertionFailedError) do 
-        assert_difference(Val, :val, 1) do
-          Val.inc(2)
-        end
-      end
-    end
-  end
-
   context "an array of values" do
     setup do
       @a = ['abc', 'def', 3]

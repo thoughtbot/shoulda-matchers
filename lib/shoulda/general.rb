@@ -23,24 +23,6 @@ module ThoughtBot # :nodoc:
         puts("#{caller.first}: #{msg}")
       end
 
-      # Ensures that the number of items in the collection changes
-      #
-      #   assert_difference(User, :count, 1) { User.create }
-      #   assert_difference(User.packages, :size, 3, true) { User.add_three_packages }
-      #
-      # Setting reload to true will call <tt>object.reload</tt> after the block (for ActiveRecord associations)
-      def assert_difference(object, method, difference, reload = false, msg = nil)
-        initial_value = object.send(method)
-        yield
-        object.send(:reload) if reload
-        assert_equal initial_value + difference, object.send(method), (msg || "#{object}##{method} after block")
-      end
-
-      # Ensures that object.method does not change.  See assert_difference for usage.
-      def assert_no_difference(object, method, reload = false, msg = nil, &block)
-        assert_difference(object, method, 0, reload, msg, &block)
-      end
-
       # Asserts that two arrays contain the same elements, the same number of times.  Essentially ==, but unordered.
       #
       #   assert_same_elements([:a, :b, :c], [:c, :a, :b]) => passes
