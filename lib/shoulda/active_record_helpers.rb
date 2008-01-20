@@ -38,6 +38,7 @@ module ThoughtBot # :nodoc:
         attributes.each do |attribute|
           should "require #{attribute} to be set" do
             object = klass.new
+            object.send("#{attribute}=", nil)
             assert !object.valid?, "#{klass.name} does not require #{attribute}."
             assert object.errors.on(attribute), "#{klass.name} does not require #{attribute}."
             assert_contains(object.errors.on(attribute), message)

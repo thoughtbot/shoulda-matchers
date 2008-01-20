@@ -122,7 +122,9 @@ module ThoughtBot # :nodoc:
                 end
 
                 should "destroy record" do
-                  assert_raises(::ActiveRecord::RecordNotFound) { @record.reload }
+                  assert_raises(::ActiveRecord::RecordNotFound, "@#{res.object} was not destroyed.") do
+                    @record.reload
+                  end
                 end
               end
             end
@@ -155,7 +157,7 @@ module ThoughtBot # :nodoc:
                 end
 
                 should "not have errors on @#{res.object}" do
-                  assert_equal [], assigns(res.object).errors.full_messages, "@#{res.object} has errors:"            
+                  assert_equal [], pretty_error_messages(assigns(res.object)), "@#{res.object} has errors:"            
                 end
               end      
             end
@@ -183,7 +185,7 @@ module ThoughtBot # :nodoc:
                 end
                 
                 should "not have errors on @#{res.object}" do
-                  assert_equal [], assigns(res.object).errors.full_messages, "@#{res.object} has errors:"
+                  assert_equal [], pretty_error_messages(assigns(res.object)), "@#{res.object} has errors:"
                 end
               end
             end

@@ -67,15 +67,15 @@ module ThoughtBot # :nodoc:
       #
       #  assert_save User.new(params)
       def assert_save(obj)
-        assert obj.save, "Errors: #{obj.errors.full_messages.join('; ')}"
+        assert obj.save, "Errors: #{pretty_error_messages obj}"
         obj.reload
       end
 
       # Asserts that the given object is valid
       #
-      #  assert_save User.new(params)
+      #  assert_valid User.new(params)
       def assert_valid(obj)
-        assert obj.valid?, "Errors: #{obj.errors.full_messages.join('; ')}"
+        assert obj.valid?, "Errors: #{pretty_error_messages obj}"
       end
       
       # Asserts that the block uses ActionMailer to send emails
@@ -94,6 +94,10 @@ module ThoughtBot # :nodoc:
       #  assert_does_not_send_email { # do nothing }
       def assert_does_not_send_email(&blk)
         assert_sends_email 0, &blk
+      end
+
+      def pretty_error_messages(obj)
+        obj.errors.map { |a, m| "#{m} (#{obj.send(a).inspect})" }
       end
       
     end
