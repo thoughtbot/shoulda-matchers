@@ -302,7 +302,7 @@ module ThoughtBot # :nodoc:
               elsif reflection.options[:as]
                 fk = reflection.options[:as].to_s.foreign_key
               else
-                fk = klass.name.foreign_key
+                fk = reflection.primary_key_name
               end
               associated_klass = (reflection.options[:class_name] || association.to_s.classify).constantize
               assert associated_klass.column_names.include?(fk.to_s), "#{associated_klass.name} does not have a #{fk} foreign key."
@@ -367,7 +367,7 @@ module ThoughtBot # :nodoc:
 
             unless reflection.options[:polymorphic]
               associated_klass = (reflection.options[:class_name] || association.to_s.classify).constantize
-              fk = reflection.options[:foreign_key] || associated_klass.name.foreign_key
+              fk = reflection.options[:foreign_key] || reflection.primary_key_name
               assert klass.column_names.include?(fk.to_s), "#{klass.name} does not have a #{fk} foreign key."
             end
           end
