@@ -233,7 +233,15 @@ module ThoughtBot # :nodoc:
           assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{v}\""
           assert_contains(object.errors.on(attribute), low_message, "when set to \"#{v}\"")
         end
-    
+
+        should "allow #{attribute} to be #{min}" do
+          v = min
+          assert object = klass.find(:first), "Can't find first #{klass}"
+          object.send("#{attribute}=", v)
+          object.save
+          assert_does_not_contain(object.errors.on(attribute), low_message, "when set to \"#{v}\"")
+        end
+
         should "not allow #{attribute} to be more than #{max}" do
           v = max + 1
           assert object = klass.find(:first), "Can't find first #{klass}"
@@ -241,6 +249,14 @@ module ThoughtBot # :nodoc:
           assert !object.save, "Saved #{klass} with #{attribute} set to \"#{v}\""
           assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{v}\""
           assert_contains(object.errors.on(attribute), high_message, "when set to \"#{v}\"")
+        end
+
+        should "allow #{attribute} to be #{max}" do
+          v = max
+          assert object = klass.find(:first), "Can't find first #{klass}"
+          object.send("#{attribute}=", v)
+          object.save
+          assert_does_not_contain(object.errors.on(attribute), high_message, "when set to \"#{v}\"")
         end
       end    
       
