@@ -12,13 +12,14 @@
     <td><%=h post.user_id %></td>
     <td><%=h post.title %></td>
     <td><%=h post.body %></td>
-    <td><%= link_to 'Show', post_path(post.user, post) %></td>
-    <td><%= link_to 'Edit', edit_post_path(post.user, post) %></td>
-    <td><%= link_to 'Destroy', post_path(post.user, post), :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to 'Show', user_post_path(post.user, post) %></td>
+    <td><%= link_to 'Edit', edit_user_post_path(post.user, post) %></td>
+    <td><%= link_to 'Destroy', user_post_path(post.user, post), :confirm => 'Are you sure?', 
+                    :method => :delete %></td>
   </tr>
 <% end %>
 </table>
 
 <br />
 
-<%= link_to 'New post', new_post_path(post.user) %>
+<%= link_to 'New post', new_user_post_path(post.user) %>

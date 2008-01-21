@@ -244,7 +244,7 @@ module ThoughtBot # :nodoc:
             @parent        ||= []
             @parent          = [@parent] unless @parent.is_a? Array
 
-            collection_helper = [@parent, @object.pluralize, 'url'].flatten.join('_')
+            collection_helper = [@parent, @object.to_s.pluralize, 'url'].flatten.join('_')
             collection_args   = @parent.map {|n| "@#{object}.#{n}"}.join(', ')
             @destroy.redirect ||= "#{collection_helper}(#{collection_args})"
 

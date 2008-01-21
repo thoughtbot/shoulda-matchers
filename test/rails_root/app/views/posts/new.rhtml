@@ -2,7 +2,7 @@
 
 <%= error_messages_for :post %>
 
-<% form_for(:post, :url => posts_path(@user)) do |f| %>
+<% form_for(:post, :url => user_posts_path(@user)) do |f| %>
   <p>
     <b>User</b><br />
     <%= f.text_field :user_id %>
@@ -23,4 +23,4 @@
   </p>
 <% end %>
 
-<%= link_to 'Back', posts_path(@user) %>
+<%= link_to 'Back', user_posts_path(@user) %>
