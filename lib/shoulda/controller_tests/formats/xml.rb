@@ -155,7 +155,15 @@ module ThoughtBot # :nodoc:
         
         # Asserts that the controller's response was 'application/xml'
         def assert_xml_response
-          assert_equal "application/xml", @response.content_type, "Body: #{@response.body.first(100).chomp}..."
+          content_type = (@response.headers["Content-Type"] || @response.headers["type"]).to_s
+          regex = %r{\bapplication/xml\b}
+
+          msg = "Content Type '#{content_type.inspect}' doesn't match '#{regex.inspect}'\n"
+          msg += "Body: #{@response.body.first(100).chomp} ..." 
+
+          assert_match regex, content_type, msg
+          
+          # assert_equal "application/xml", @response.content_type, "Body: #{@response.body.first(100).chomp}..."
         end
         
       end
