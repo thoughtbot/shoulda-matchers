@@ -455,6 +455,32 @@ module ThoughtBot # :nodoc:
         end
       end
       
+      # Ensures that the model cannot be saved if one of the attributes listed is not accepted.
+      #
+      # Options:
+      # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.  
+      #   Regexp or string.  Default = <tt>/must be accepted/</tt>
+      #
+      # Example:
+      #   should_require_acceptance_of :eula
+      #
+      def should_require_acceptance_of(*attributes)
+        message = get_options!(attributes, :message)
+        message ||= /must be accepted/
+        klass = model_class
+    
+        attributes.each do |attribute|
+          should "require #{attribute} to be accepted" do
+            object = klass.new
+            object.send("#{attribute}=", false)
+
+            assert !object.valid?, "#{klass.name} does not require acceptance of #{attribute}."
+            assert object.errors.on(attribute), "#{klass.name} does not require acceptance of #{attribute}."
+            assert_contains(object.errors.on(attribute), message)
+          end
+        end
+      end
+      
       private
       
       include ThoughtBot::Shoulda::Private

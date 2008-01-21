@@ -162,8 +162,6 @@ module ThoughtBot # :nodoc:
           msg += "Body: #{@response.body.first(100).chomp} ..." 
 
           assert_match regex, content_type, msg
-          
-          # assert_equal "application/xml", @response.content_type, "Body: #{@response.body.first(100).chomp}..."
         end
         
       end

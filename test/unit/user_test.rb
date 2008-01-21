@@ -5,7 +5,7 @@ class UserTest < Test::Unit::TestCase
 
   should_have_many :posts
   should_have_many :dogs
-  
+
   should_not_allow_values_for :email, "blah", "b lah"
   should_allow_values_for :email, "a@b.com", "asdf@asdf.com"
   should_ensure_length_in_range :email, 1..100
@@ -17,4 +17,5 @@ class UserTest < Test::Unit::TestCase
   should_have_db_column :id, :type => "integer", :primary => true
   should_have_db_column :email, :type => "string", :default => nil,   :precision => nil, :limit    => 255, 
                                 :null => true,     :primary => false, :scale     => nil, :sql_type => 'varchar(255)'
+  should_require_acceptance_of :eula
 end
