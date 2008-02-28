@@ -177,25 +177,48 @@ module ThoughtBot # :nodoc:
         klass = model_class
         min_length = range.first
         max_length = range.last
+        same_length = (min_length == max_length)
 
         if min_length > 0
-          min_value = "x" * (min_length - 1)
           should "not allow #{attribute} to be less than #{min_length} chars long" do
+            min_value = "x" * (min_length - 1)
             assert object = klass.find(:first), "Can't find first #{klass}"
             object.send("#{attribute}=", min_value)
             assert !object.save, "Saved #{klass} with #{attribute} set to \"#{min_value}\""
-            assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{min_value}\""
+            assert object.errors.on(attribute), 
+                   "There are no errors set on #{attribute} after being set to \"#{min_value}\""
             assert_contains(object.errors.on(attribute), short_message, "when set to \"#{min_value}\"")
           end
         end
+
+        if min_length > 0
+          should "allow #{attribute} to be exactly #{min_length} chars long" do
+            min_value = "x" * min_length
+            assert object = klass.find(:first), "Can't find first #{klass}"
+            object.send("#{attribute}=", min_value)
+            object.save
+            assert_does_not_contain(object.errors.on(attribute), short_message, "when set to \"#{min_value}\"")
+          end
+        end
     
-        max_value = "x" * (max_length + 1)
         should "not allow #{attribute} to be more than #{max_length} chars long" do
+          max_value = "x" * (max_length + 1)
           assert object = klass.find(:first), "Can't find first #{klass}"
           object.send("#{attribute}=", max_value)
           assert !object.save, "Saved #{klass} with #{attribute} set to \"#{max_value}\""
-          assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{max_value}\""
+          assert object.errors.on(attribute), 
+                 "There are no errors set on #{attribute} after being set to \"#{max_value}\""
           assert_contains(object.errors.on(attribute), long_message, "when set to \"#{max_value}\"")
+        end
+
+        unless same_length
+          should "allow #{attribute} to be exactly #{max_length} chars long" do
+            max_value = "x" * max_length
+            assert object = klass.find(:first), "Can't find first #{klass}"
+            object.send("#{attribute}=", max_value)
+            object.save
+            assert_does_not_contain(object.errors.on(attribute), long_message, "when set to \"#{max_value}\"")
+          end
         end
       end    
 
