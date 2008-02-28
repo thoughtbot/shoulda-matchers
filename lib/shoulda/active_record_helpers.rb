@@ -21,7 +21,6 @@ module ThoughtBot # :nodoc:
     #
     module ActiveRecord
       # Ensures that the model cannot be saved if one of the attributes listed is not present.
-      # Requires an existing record.
       #
       # Options:
       # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.  
