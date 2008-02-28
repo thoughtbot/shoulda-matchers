@@ -101,14 +101,10 @@ module ThoughtBot # :nodoc:
         klass = model_class
         attributes.each do |attribute|
           attribute = attribute.to_sym
-          should "not allow #{attribute} to be changed by update" do
-            assert object = klass.find(:first), "Can't find first #{klass}"
-            value = object[attribute]
-            # TODO:  1 may not be a valid value for the attribute (due to validations)
-            assert object.update_attributes({ attribute => 1 }),
-                   "Cannot update #{klass} with { :#{attribute} => 1 }, #{object.errors.full_messages.to_sentence}"
-            assert object.valid?, "#{klass} isn't valid after changing #{attribute}"
-            assert_equal value, object[attribute], "Was able to change #{klass}##{attribute}"
+          should "protect #{attribute} from mass updates" do
+            protected = klass.protected_attributes
+            assert protected.include?(attribute.to_s), 
+                   "#{klass} is protecting #{protected.to_a.to_sentence}, but not #{attribute}."
           end
         end
       end
@@ -285,7 +281,9 @@ module ThoughtBot # :nodoc:
         end
       end
 
-      # Ensures that the has_many relationship exists.
+      # Ensures that the has_many relationship exists.  Will also test that the
+      # associated table has the required columns.  Works with polymorphic
+      # associations.
       # 
       # Options:
       # * <tt>:through</tt> - association name for <tt>has_many :through</tt>
@@ -327,23 +325,11 @@ module ThoughtBot # :nodoc:
         end
       end
 
-      # Ensures that the has_and_belongs_to_many relationship exists.  
+      # Ensure that the has_one relationship exists.  Will also test that the
+      # associated table has the required columns.  Works with polymorphic
+      # associations.
       #
-      #   should_have_and_belong_to_many :posts, :cars
-      #
-      def should_have_and_belong_to_many(*associations)
-        get_options!(associations)
-        klass = model_class
-        associations.each do |association|
-          should "should have and belong to many #{association}" do
-            assert klass.reflect_on_association(association), "#{klass.name} does not have any relationship to #{association}"
-            assert_equal :has_and_belongs_to_many, klass.reflect_on_association(association).macro
-          end
-        end
-      end
-  
-      # Ensure that the has_one relationship exists.
-      #
+      # Example:
       #   should_have_one :god # unless hindu
       #
       def should_have_one(*associations)
@@ -369,6 +355,21 @@ module ThoughtBot # :nodoc:
             end
             assert associated_klass.column_names.include?(fk.to_s), 
                    "#{associated_klass.name} does not have a #{fk} foreign key."            
+          end
+        end
+      end
+  
+      # Ensures that the has_and_belongs_to_many relationship exists.  
+      #
+      #   should_have_and_belong_to_many :posts, :cars
+      #
+      def should_have_and_belong_to_many(*associations)
+        get_options!(associations)
+        klass = model_class
+        associations.each do |association|
+          should "should have and belong to many #{association}" do
+            assert klass.reflect_on_association(association), "#{klass.name} does not have any relationship to #{association}"
+            assert_equal :has_and_belongs_to_many, klass.reflect_on_association(association).macro
           end
         end
       end
