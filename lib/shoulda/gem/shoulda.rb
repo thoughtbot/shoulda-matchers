@@ -6,7 +6,7 @@ module Thoughtbot
       attr_accessor :current_context
     end
 
-    VERSION = '1.1.0'
+    VERSION = '1.1.1'
 
     # = Should statements
     #
@@ -179,8 +179,7 @@ module Thoughtbot
         test_name = ["test:", full_name, "should", "#{should[:name]}. "].flatten.join(' ').to_sym
 
         if test_unit_class.instance_methods.include?(test_name.to_s)
-          puts "'#{test_name}' is already defined" 
-          #raise ArgumentError, "'#{test_name}' is already defined" 
+          warn "  * WARNING: '#{test_name}' is already defined" 
         end
         
         context = self
