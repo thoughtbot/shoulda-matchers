@@ -355,15 +355,20 @@ module ThoughtBot # :nodoc:
             assert reflection, "#{klass.name} does not have any relationship to #{association}"
             assert_equal :has_one, reflection.macro
             
+            associated_klass = (reflection.options[:class_name] || association.to_s.camelize).constantize
+
             if reflection.options[:foreign_key]
               fk = reflection.options[:foreign_key]
             elsif reflection.options[:as]
               fk = reflection.options[:as].to_s.foreign_key
+              fk_type = fk.gsub(/_id$/, '_type')
+              assert associated_klass.column_names.include?(fk_type), 
+                     "#{associated_klass.name} does not have a #{fk_type} column."            
             else
               fk = klass.name.foreign_key
             end
-            associated_klass = (reflection.options[:class_name] || association.to_s.classify).constantize
-            assert associated_klass.column_names.include?(fk.to_s), "#{associated_klass.name} does not have a #{fk} foreign key."            
+            assert associated_klass.column_names.include?(fk.to_s), 
+                   "#{associated_klass.name} does not have a #{fk} foreign key."            
           end
         end
       end

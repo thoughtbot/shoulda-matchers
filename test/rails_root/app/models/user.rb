@@ -1,6 +1,8 @@
 class User < ActiveRecord::Base
   has_many :posts
   has_many :dogs, :foreign_key => :owner_id
+
+  has_one :address, :as => :addressable
   
   attr_protected :password
 
