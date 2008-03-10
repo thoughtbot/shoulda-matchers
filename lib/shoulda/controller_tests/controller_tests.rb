@@ -145,7 +145,7 @@ module ThoughtBot # :nodoc:
           attr_accessor :identifier
           
           # Name of the ActiveRecord class this resource is responsible for.  Automatically determined from
-          # test class if not explicitly set.  UserTest => :user
+          # test class if not explicitly set.  UserTest => "User"
           attr_accessor :klass
 
           # Name of the instantiated ActiveRecord object that should be used by some of the tests.  
@@ -455,7 +455,7 @@ module ThoughtBot # :nodoc:
           parent_name = parent_names.shift
           parent = record ? record.send(parent_name) : parent_name.to_s.classify.constantize.find(:first)
 
-          { :"#{parent_name}_id" => parent.id }.merge(make_parent_params(resource, parent, parent_names))
+          { :"#{parent_name}_id" => parent.to_param }.merge(make_parent_params(resource, parent, parent_names))
         end
 
       end
