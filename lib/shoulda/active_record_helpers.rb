@@ -136,23 +136,18 @@ module ThoughtBot # :nodoc:
       # Ensures that the attribute can be set to the given values.
       # Requires an existing record
       #
-      # Options:
-      # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.  
-      #   Regexp or string.  Default = <tt>/invalid/</tt>
-      #
       # Example:
       #   should_allow_values_for :isbn, "isbn 1 2345 6789 0", "ISBN 1-2345-6789-0"
       #
       def should_allow_values_for(attribute, *good_values)
-        message = get_options!(good_values, :message)
-        message ||= /invalid/
+        get_options!(good_values)
         klass = model_class
         good_values.each do |v|
           should "allow #{attribute} to be set to \"#{v}\"" do
             assert object = klass.find(:first), "Can't find first #{klass}"
             object.send("#{attribute}=", v)
             object.save
-            assert_does_not_contain(object.errors.on(attribute), message, "when set to \"#{v}\"")
+            assert_nil object.errors.on(attribute)
           end
         end
       end
