@@ -4,7 +4,6 @@ module ThoughtBot # :nodoc:
       def self.included(other) # :nodoc:
         other.class_eval do
           extend ThoughtBot::Shoulda::General::ClassMethods
-          # include ThoughtBot::Shoulda::General::InstanceMethods
         end
       end
       
