@@ -14,9 +14,10 @@ namespace :shoulda do
       load file
       klass = File.basename(file, '.rb').classify.constantize
       
-      puts
+      puts klass.name.gsub('Test', '')
+
       test_methods = klass.instance_methods.grep(/^test/).map {|s| s.gsub(/^test: /, '')}.sort
-      test_methods.each {|m| puts m }
+      test_methods.each {|m| puts "  " + m }
     end
   end
 end

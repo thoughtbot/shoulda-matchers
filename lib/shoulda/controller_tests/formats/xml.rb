@@ -28,7 +28,7 @@ module ThoughtBot # :nodoc:
           protected
                     
           def make_show_xml_tests(res) # :nodoc:
-            context "on GET to :show as xml" do
+            context "on GET to #{controller_name_from_class}#show as xml" do
               setup do
                 request_xml
                 record = get_existing_record(res)
@@ -56,7 +56,7 @@ module ThoughtBot # :nodoc:
           end
 
           def make_index_xml_tests(res) # :nodoc:
-            context "on GET to :index as xml" do
+            context "on GET to #{controller_name_from_class}#index as xml" do
               setup do
                 request_xml
                 parent_params = make_parent_params(res)
@@ -75,7 +75,7 @@ module ThoughtBot # :nodoc:
           end
 
           def make_destroy_xml_tests(res) # :nodoc:
-            context "on DELETE to :destroy as xml" do
+            context "on DELETE to #{controller_name_from_class}#destroy as xml" do
               setup do
                 request_xml
                 @record = get_existing_record(res)
@@ -100,7 +100,7 @@ module ThoughtBot # :nodoc:
           end
 
           def make_create_xml_tests(res) # :nodoc:
-            context "on POST to :create as xml" do
+            context "on POST to #{controller_name_from_class}#create as xml" do
               setup do
                 request_xml
                 parent_params = make_parent_params(res)
@@ -126,7 +126,7 @@ module ThoughtBot # :nodoc:
           end
 
           def make_update_xml_tests(res) # :nodoc:
-            context "on PUT to :update as xml" do
+            context "on PUT to #{controller_name_from_class}#update as xml" do
               setup do
                 request_xml
                 @record = get_existing_record(res)

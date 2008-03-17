@@ -9,8 +9,12 @@ module ThoughtBot # :nodoc:
         end
   
         module ClassMethods 
+          def controller_name_from_class
+            self.name.gsub(/Test/, '')
+          end
+
           def make_show_html_tests(res)
-            context "on GET to :show" do
+            context "on GET to #{controller_name_from_class}#show" do
               setup do
                 record = get_existing_record(res)
                 parent_params = make_parent_params(res, record)
@@ -31,7 +35,7 @@ module ThoughtBot # :nodoc:
           end
 
           def make_edit_html_tests(res)
-            context "on GET to :edit" do
+            context "on GET to #{controller_name_from_class}#edit" do
               setup do
                 @record = get_existing_record(res)
                 parent_params = make_parent_params(res, @record)
@@ -56,7 +60,7 @@ module ThoughtBot # :nodoc:
           end
 
           def make_index_html_tests(res)
-            context "on GET to :index" do
+            context "on GET to #{controller_name_from_class}#index" do
               setup do
                 record = get_existing_record(res) rescue nil
                 parent_params = make_parent_params(res, record)
@@ -77,7 +81,7 @@ module ThoughtBot # :nodoc:
           end
 
           def make_new_html_tests(res)
-            context "on GET to :new" do
+            context "on GET to #{controller_name_from_class}#new" do
               setup do
                 record = get_existing_record(res) rescue nil
                 parent_params = make_parent_params(res, record)
@@ -99,7 +103,7 @@ module ThoughtBot # :nodoc:
           end
 
           def make_destroy_html_tests(res)
-            context "on DELETE to :destroy" do
+            context "on DELETE to #{controller_name_from_class}#destroy" do
               setup do
                 @record = get_existing_record(res)
                 parent_params = make_parent_params(res, @record)
@@ -131,7 +135,7 @@ module ThoughtBot # :nodoc:
           end
 
           def make_create_html_tests(res)
-            context "on POST to :create with #{res.create.params.inspect}" do
+            context "on POST to #{controller_name_from_class}#create with #{res.create.params.inspect}" do
               setup do
                 record = get_existing_record(res) rescue nil
                 parent_params = make_parent_params(res, record)
@@ -164,7 +168,7 @@ module ThoughtBot # :nodoc:
           end
 
           def make_update_html_tests(res)
-            context "on PUT to :update with #{res.create.params.inspect}" do
+            context "on PUT to #{controller_name_from_class}#update with #{res.create.params.inspect}" do
               setup do
                 @record = get_existing_record(res)
                 parent_params = make_parent_params(res, @record)
