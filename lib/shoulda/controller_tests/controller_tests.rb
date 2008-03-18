@@ -152,7 +152,9 @@ module ThoughtBot # :nodoc:
           # Defaults to the underscored name of the AR class.  CompanyManager => :company_manager
           attr_accessor :object
 
-          # Name of the parent AR objects.
+          # Name of the parent AR objects.  Can be set as parent= or parents=, and can take either
+          # the name of the parent resource (if there's only one), or an array of names (if there's
+          # more than one).
           #
           # Example:
           #   # in the routes...
