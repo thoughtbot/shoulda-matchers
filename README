@@ -20,7 +20,7 @@ Stop killing your fingers with all of those underscores...  Name your tests with
         @user = User.find(:first)
       end
     
-      should "return its full name"
+      should "return its full name" do
         assert_equal 'John Doe', @user.full_name
       end
     
@@ -29,7 +29,7 @@ Stop killing your fingers with all of those underscores...  Name your tests with
           @user.profile = Profile.find(:first)
         end
       
-        should "return true when sent #has_profile?"
+        should "return true when sent #has_profile?" do
           assert @user.has_profile?
         end
       end
