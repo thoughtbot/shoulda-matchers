@@ -98,6 +98,7 @@ module ThoughtBot # :nodoc:
       def should_protect_attributes(*attributes)
         get_options!(attributes)
         klass = model_class
+
         attributes.each do |attribute|
           attribute = attribute.to_sym
           should "protect #{attribute} from mass updates" do
@@ -382,7 +383,9 @@ module ThoughtBot # :nodoc:
       #
       def should_have_and_belong_to_many(*associations)
         get_options!(associations)
+
         klass = model_class
+
         associations.each do |association|
           should "should have and belong to many #{association}" do
             assert klass.reflect_on_association(association), "#{klass.name} does not have any relationship to #{association}"

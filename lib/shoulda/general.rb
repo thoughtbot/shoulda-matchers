@@ -44,7 +44,7 @@ module ThoughtBot # :nodoc:
       #   assert_contains(['a', '1'], /not there/) => fails
       def assert_contains(collection, x, extra_msg = "")
         collection = [collection] unless collection.is_a?(Array)
-        msg = "#{x.inspect} not found in #{collection.to_a.inspect} " + extra_msg
+        msg = "#{x.inspect} not found in #{collection.to_a.inspect} #{extra_msg}"
         case x
         when Regexp: assert(collection.detect { |e| e =~ x }, msg)
         else         assert(collection.include?(x), msg)
