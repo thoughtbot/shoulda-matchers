@@ -77,9 +77,13 @@ module ThoughtBot # :nodoc:
             
             assert_contains(object.errors.on(attribute), message)
             
+            # Now test that the object is valid when changing the scoped attribute
+            # TODO:  There is a chance that we could change the scoped field
+            # to a value that's already taken.  An alternative implementation
+            # could actually find all values for scope and create a unique
+            # one.  
             if scope
-              # Now test that the object is valid when changing the scoped attribute
-              # TODO:  actually find all values for scope and create a unique one.
+              # Assume the scope is a foreign key if the field is nil
               object.send(:"#{scope}=", existing.send(scope).nil? ? 1 : existing.send(scope).next)
               object.errors.clear
               object.valid?
@@ -90,8 +94,8 @@ module ThoughtBot # :nodoc:
         end
       end
 
-      # Ensures that the attribute cannot be set on update
-      # Requires an existing record
+      # Ensures that the attribute cannot be set on mass update.
+      # Requires an existing record.
       #
       #   should_protect_attributes :password, :admin_flag
       #
@@ -102,9 +106,9 @@ module ThoughtBot # :nodoc:
         attributes.each do |attribute|
           attribute = attribute.to_sym
           should "protect #{attribute} from mass updates" do
-            protected = klass.protected_attributes
-            assert protected.include?(attribute.to_s), 
-                   "#{klass} is protecting #{protected.to_a.to_sentence}, but not #{attribute}."
+            protected_attributes = klass.protected_attributes
+            assert protected_attributes.include?(attribute.to_s), 
+                   "#{klass} is protecting #{protected_attributes.to_a.to_sentence}, but not #{attribute}."
           end
         end
       end
@@ -381,15 +385,19 @@ module ThoughtBot # :nodoc:
       #
       #   should_have_and_belong_to_many :posts, :cars
       #
+      # NOTE:  One thing this macro should test, but doesn't is that the join
+      # table exists in the DB.  Please contact the author if you know of a DB
+      # agnostic way of introspecting on the current schema.
       def should_have_and_belong_to_many(*associations)
         get_options!(associations)
-
         klass = model_class
 
         associations.each do |association|
           should "should have and belong to many #{association}" do
-            assert klass.reflect_on_association(association), "#{klass.name} does not have any relationship to #{association}"
-            assert_equal :has_and_belongs_to_many, klass.reflect_on_association(association).macro
+            assert klass.reflect_on_association(association), 
+                   "#{klass.name} does not have any relationship to #{association}"
+            assert_equal :has_and_belongs_to_many, 
+                         klass.reflect_on_association(association).macro
           end
         end
       end
