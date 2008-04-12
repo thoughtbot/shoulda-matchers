@@ -220,7 +220,41 @@ module ThoughtBot # :nodoc:
             assert_does_not_contain(object.errors.on(attribute), long_message, "when set to \"#{max_value}\"")
           end
         end
-      end    
+      end  
+      
+     # Ensures that the length of the attribute is at least a certain length
+     # Requires an existing record
+     #
+     # Options:
+     # * <tt>:short_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.  
+     #   Regexp or string.  Default = <tt>/short/</tt>
+     #
+     # Example:
+     #   should_ensure_length_at_least :name, 3
+     #
+     def should_ensure_length_at_least(attribute, min_length, opts = {})
+        short_message = get_options!([opts], :short_message)
+        short_message ||= /short/
+     
+        klass = model_class
+     
+        if min_length > 0
+          min_value = "x" * (min_length - 1)
+          should "not allow #{attribute} to be less than #{min_length} chars long" do
+            assert object = klass.find(:first), "Can't find first #{klass}"
+            object.send("#{attribute}=", min_value)
+            assert !object.save, "Saved #{klass} with #{attribute} set to \"#{min_value}\""
+            assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{min_value}\""
+            assert_contains(object.errors.on(attribute), short_message, "when set to \"#{min_value}\"")
+          end
+        end
+        should "allow #{attribute} to be at least #{min_length} chars long" do
+          valid_value = "x" * (min_length)
+          assert object = klass.find(:first), "Can't find first #{klass}"
+          object.send("#{attribute}=", valid_value)
+          assert object.save, "Could not save #{klass} with #{attribute} set to \"#{valid_value}\""
+        end
+      end
 
       # Ensure that the attribute is in the range specified
       # Requires an existing record

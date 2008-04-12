@@ -5,4 +5,6 @@ class TagTest < Test::Unit::TestCase
 
   should_have_many :taggings
   should_have_many :posts
+  
+  should_ensure_length_at_least :name, 2
 end
