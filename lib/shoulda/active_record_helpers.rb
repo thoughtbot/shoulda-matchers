@@ -106,7 +106,7 @@ module ThoughtBot # :nodoc:
         attributes.each do |attribute|
           attribute = attribute.to_sym
           should "protect #{attribute} from mass updates" do
-            protected_attributes = klass.protected_attributes
+            protected_attributes = klass.protected_attributes || []
             assert protected_attributes.include?(attribute.to_s), 
                    "#{klass} is protecting #{protected_attributes.to_a.to_sentence}, but not #{attribute}."
           end
