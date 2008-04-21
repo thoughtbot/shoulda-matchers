@@ -96,7 +96,7 @@ module ThoughtBot # :nodoc:
       end
 
       def pretty_error_messages(obj)
-        obj.errors.map { |a, m| "#{m} (#{obj.send(a).inspect})" }
+        obj.errors.map { |a, m| "#{a} #{m} (#{obj.send(a).inspect})" }
       end
       
     end
