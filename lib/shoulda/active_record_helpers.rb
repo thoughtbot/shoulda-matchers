@@ -128,7 +128,7 @@ module ThoughtBot # :nodoc:
         message ||= /invalid/
         klass = model_class
         bad_values.each do |v|
-          should "not allow #{attribute} to be set to \"#{v}\"" do
+          should "not allow #{attribute} to be set to #{v.inspect}" do
             assert object = klass.find(:first), "Can't find first #{klass}"
             object.send("#{attribute}=", v)
             assert !object.save, "Saved #{klass} with #{attribute} set to \"#{v}\""
@@ -148,7 +148,7 @@ module ThoughtBot # :nodoc:
         get_options!(good_values)
         klass = model_class
         good_values.each do |v|
-          should "allow #{attribute} to be set to \"#{v}\"" do
+          should "allow #{attribute} to be set to #{v.inspect}" do
             assert object = klass.find(:first), "Can't find first #{klass}"
             object.send("#{attribute}=", v)
             object.save
