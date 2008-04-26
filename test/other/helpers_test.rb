@@ -1,12 +1,52 @@
 require File.join(File.dirname(__FILE__), '..', 'test_helper')
-
-class Val
-  @@val = 0
-  def self.val; @@val; end
-  def self.inc(i=1); @@val += i; end
-end
+require 'action_mailer'
+require 'mocha'
 
 class HelpersTest < Test::Unit::TestCase # :nodoc:
+
+  context "given delivered emails" do
+    setup do
+      email1 = stub(:subject => "one", :to => ["none1@email.com"])
+      email2 = stub(:subject => "two", :to => ["none2@email.com"])
+      ActionMailer::Base.stubs(:deliveries).returns([email1, email2])
+    end
+
+    should "have sent an email" do
+      assert_sent_email
+
+      assert_raises(Test::Unit::AssertionFailedError) do 
+        assert_did_not_send_email
+      end
+    end
+
+    should "find email one" do
+      assert_sent_email do |e|
+        e.subject =~ /one/
+      end
+    end
+
+    should "not find an email that doesn't exist" do
+      assert_raises(Test::Unit::AssertionFailedError) do 
+        assert_sent_email do |e|
+          e.subject =~ /whatever/
+        end
+      end
+    end
+  end
+
+  context "when there are no emails" do
+    setup do
+      ActionMailer::Base.stubs(:deliveries).returns([])
+    end
+
+    should "not have sent an email" do
+      assert_did_not_send_email
+
+      assert_raises(Test::Unit::AssertionFailedError) do 
+        assert_sent_email
+      end
+    end
+  end
 
   context "an array of values" do
     setup do
