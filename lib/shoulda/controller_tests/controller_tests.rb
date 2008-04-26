@@ -373,7 +373,7 @@ module ThoughtBot # :nodoc:
         #
         #   should_render_template :new
         def should_render_template(template)
-          should "render '#{template}' template" do            
+          should "render template #{template.inspect}" do            
             assert_template template.to_s
           end
         end
@@ -386,7 +386,7 @@ module ThoughtBot # :nodoc:
         #   should_redirect_to '"/"'
         #   should_redirect_to "users_url(@user)"
         def should_redirect_to(url)
-          should "redirect to \"#{url}\"" do
+          should "redirect to #{url.inspect}" do
             instantiate_variables_from_assigns do
               assert_redirected_to eval(url, self.send(:binding), __FILE__, __LINE__)
             end
