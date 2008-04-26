@@ -8,6 +8,9 @@ class UserTest < Test::Unit::TestCase
 
   should_have_one :address
 
+  should_have_indices :email, :name, [:email, :name]
+  should_have_index :age
+
   should_not_allow_values_for :email, "blah", "b lah"
   should_allow_values_for :email, "a@b.com", "asdf@asdf.com"
   should_ensure_length_in_range :email, 1..100
