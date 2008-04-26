@@ -415,23 +415,22 @@ module ThoughtBot # :nodoc:
         end
       end
   
-      # Ensures that the has_and_belongs_to_many relationship exists.  
+      # Ensures that the has_and_belongs_to_many relationship exists, and that the join
+      # table is in place.
       #
       #   should_have_and_belong_to_many :posts, :cars
       #
-      # NOTE:  One thing this macro should test, but doesn't is that the join
-      # table exists in the DB.  Please contact the author if you know of a DB
-      # agnostic way of introspecting on the current schema.
       def should_have_and_belong_to_many(*associations)
         get_options!(associations)
         klass = model_class
 
         associations.each do |association|
           should "should have and belong to many #{association}" do
-            assert klass.reflect_on_association(association), 
-                   "#{klass.name} does not have any relationship to #{association}"
-            assert_equal :has_and_belongs_to_many, 
-                         klass.reflect_on_association(association).macro
+            reflection = klass.reflect_on_association(association)
+            assert reflection, "#{klass.name} does not have any relationship to #{association}"
+            assert_equal :has_and_belongs_to_many, reflection.macro
+            table = reflection.options[:join_table]
+            assert ::ActiveRecord::Base.connection.tables.include?(table), "table #{table} doesn't exist"
           end
         end
       end
