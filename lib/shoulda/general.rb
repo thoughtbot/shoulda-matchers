@@ -77,19 +77,19 @@ module ThoughtBot # :nodoc:
         assert obj.valid?, "Errors: #{pretty_error_messages obj}"
       end
       
-      # Asserts that an email was delivered.  Can take a blog that can further
+      # Asserts that an email was delivered.  Can take a block that can further
       # narrow down the types of emails you're expecting. 
       #
       #  assert_sent_email 
       #
-      # passes if ActionMailer::Base.deliveries has an email
+      # Passes if ActionMailer::Base.deliveries has an email
       #  
       #  assert_sent_email do |email|
-      #    email.subject =~ /hi there/ && email.to == 'none@none.com'
+      #    email.subject =~ /hi there/ && email.to.include?('none@none.com')
       #  end
       #  
-      # passes if there is an email with subject containing 'hi there' and
-      # recipient equal to 'none@none.com'
+      # Passes if there is an email with subject containing 'hi there' and
+      # 'none@none.com' as one of the recipients.
       #    
       def assert_sent_email
         emails = ActionMailer::Base.deliveries
