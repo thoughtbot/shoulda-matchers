@@ -77,17 +77,6 @@ module ThoughtBot # :nodoc:
         assert obj.valid?, "Errors: #{pretty_error_messages obj}"
       end
       
-      # Asserts that the block uses ActionMailer to send emails
-      #
-      #  assert_sends_email(2) { Mailer.deliver_messages }
-      def assert_sends_email(num = 1, &blk)
-        ActionMailer::Base.deliveries.clear
-        blk.call
-        msg = "Sent #{ActionMailer::Base.deliveries.size} emails, when #{num} expected:\n"
-        ActionMailer::Base.deliveries.each { |m| msg << "  '#{m.subject}' sent to #{m.to.to_sentence}\n" }
-        assert(num == ActionMailer::Base.deliveries.size, msg)
-      end
-
       # Asserts that an email was delivered.  Can take a blog that can further
       # narrow down the types of emails you're expecting. 
       #
