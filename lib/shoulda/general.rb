@@ -88,11 +88,36 @@ module ThoughtBot # :nodoc:
         assert(num == ActionMailer::Base.deliveries.size, msg)
       end
 
-      # Asserts that the block does not send emails thorough ActionMailer
+      # Asserts that an email was delivered.  Can take a blog that can further
+      # narrow down the types of emails you're expecting. 
       #
-      #  assert_does_not_send_email { # do nothing }
-      def assert_does_not_send_email(&blk)
-        assert_sends_email 0, &blk
+      #  assert_sent_email 
+      #
+      # passes if ActionMailer::Base.deliveries has an email
+      #  
+      #  assert_sent_email do |email|
+      #    email.subject =~ /hi there/ && email.to == 'none@none.com'
+      #  end
+      #  
+      # passes if there is an email with subject containing 'hi there' and
+      # recipient equal to 'none@none.com'
+      #    
+      def assert_sent_email
+        emails = ActionMailer::Base.deliveries
+        assert !emails.empty?, "No emails were sent"
+        if block_given?
+          matching_emails = emails.select {|e| yield e }
+          assert !matching_emails.empty?, "None of the emails matched."
+        end
+      end
+
+      # Asserts that no ActionMailer mails were delivered
+      #
+      #  assert_did_not_send_email
+      def assert_did_not_send_email
+        msg = "Sent #{ActionMailer::Base.deliveries.size} emails.\n"
+        ActionMailer::Base.deliveries.each { |m| msg << "  '#{m.subject}' sent to #{m.to.to_sentence}\n" }
+        assert ActionMailer::Base.deliveries.empty?, msg
       end
 
       def pretty_error_messages(obj)
