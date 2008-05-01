@@ -106,7 +106,7 @@ module ThoughtBot # :nodoc:
         emails = ActionMailer::Base.deliveries
         assert !emails.empty?, "No emails were sent"
         if block_given?
-          matching_emails = emails.select {|e| yield e }
+          matching_emails = emails.select {|email| yield email }
           assert !matching_emails.empty?, "None of the emails matched."
         end
       end
