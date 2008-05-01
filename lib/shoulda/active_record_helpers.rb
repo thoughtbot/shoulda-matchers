@@ -466,7 +466,7 @@ module ThoughtBot # :nodoc:
         get_options!(methods)
         klass = model_class
         methods.each do |method|
-          should "respond to class method #{method}" do
+          should "respond to class method ##{method}" do
             assert_respond_to klass, method, "#{klass.name} does not have class method #{method}"
           end
         end
@@ -480,7 +480,7 @@ module ThoughtBot # :nodoc:
         get_options!(methods)
         klass = model_class
         methods.each do |method|
-          should "respond to instance method #{method}" do
+          should "respond to instance method ##{method}" do
             assert_respond_to klass.new, method, "#{klass.name} does not have instance method #{method}"
           end
         end
