@@ -522,6 +522,26 @@ module ThoughtBot # :nodoc:
           end
         end
       end
+
+      # Ensures that there are DB indices on the given columns or tuples of columns.
+      # Also aliased to should_have_index for readability
+      #   
+      #   should_have_indices :email, :name, [:commentable_type, :commentable_id]
+      #   should_have_index :age
+      #
+      def should_have_indices(*columns)
+        table = model_class.name.tableize
+        indices = ::ActiveRecord::Base.connection.indexes(table).map(&:columns)
+
+        columns.each do |column|
+          should "have index on #{table} for #{column.inspect}" do
+            columns = [column].flatten.map(&:to_s)
+            assert_contains(indices, columns)
+          end
+        end
+      end
+
+      alias_method :should_have_index, :should_have_indices
       
       # Ensures that the model cannot be saved if one of the attributes listed is not accepted.
       #

@@ -5,6 +5,10 @@ class CreateUsers < ActiveRecord::Migration
       t.column :email, :string
       t.column :age, :integer
     end
+    add_index :users, :email
+    add_index :users, :name
+    add_index :users, :age
+    add_index :users, [:email, :name]
   end
 
   def self.down
