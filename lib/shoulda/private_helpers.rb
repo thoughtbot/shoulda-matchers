@@ -7,7 +7,7 @@ module ThoughtBot # :nodoc:
         ret  = []
         opts = (args.last.is_a?(Hash) ? args.pop : {})
         wanted.each {|w| ret << opts.delete(w)}
-        raise ArgumentError, "Unsuported options given: #{opts.keys.join(', ')}" unless opts.keys.empty?
+        raise ArgumentError, "Unsupported options given: #{opts.keys.join(', ')}" unless opts.keys.empty?
         return *ret
       end
 
