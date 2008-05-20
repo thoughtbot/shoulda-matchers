@@ -106,9 +106,13 @@ module ThoughtBot # :nodoc:
         attributes.each do |attribute|
           attribute = attribute.to_sym
           should "protect #{attribute} from mass updates" do
-            protected_attributes = klass.protected_attributes || []
-            assert protected_attributes.include?(attribute.to_s), 
-                   "#{klass} is protecting #{protected_attributes.to_a.to_sentence}, but not #{attribute}."
+            protected = klass.protected_attributes || []
+            accessible = klass.accessible_attributes || []
+
+            assert protected.include?(attribute.to_s) || !accessible.include?(attribute.to_s),
+                   (accessible.empty? ?
+                     "#{klass} is protecting #{protected.to_a.to_sentence}, but not #{attribute}." :
+                     "#{klass} has made #{attribute} accessible")
           end
         end
       end
