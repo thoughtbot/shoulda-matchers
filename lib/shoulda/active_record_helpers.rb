@@ -51,25 +51,32 @@ module ThoughtBot # :nodoc:
       # Options:
       # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.  
       #   Regexp or string.  Default = <tt>/taken/</tt>
+      # * <tt>:scoped_to</tt> - field(s) to scope the uniqueness to.
       #
-      # Example:
+      # Examples:
       #   should_require_unique_attributes :keyword, :username
+      #   should_require_unique_attributes :name, :message => "O NOES! SOMEONE STOELED YER NAME!"
+      #   should_require_unique_attributes :email, :scoped_to => :name
+      #   should_require_unique_attributes :address, :scoped_to => [:first_name, :last_name]
       #
       def should_require_unique_attributes(*attributes)
         message, scope = get_options!(attributes, :message, :scoped_to)
+        scope = [*scope].compact
         message ||= /taken/
         
         klass = model_class
         attributes.each do |attribute|
           attribute = attribute.to_sym
-          should "require unique value for #{attribute}#{" scoped to #{scope}" if scope}" do
+          should "require unique value for #{attribute}#{" scoped to #{scope.join(', ')}" if scope}" do
             assert existing = klass.find(:first), "Can't find first #{klass}"
             object = klass.new
             
             object.send(:"#{attribute}=", existing.send(attribute))
-            if scope
-              assert_respond_to object, :"#{scope}=", "#{klass.name} doesn't seem to have a #{scope} attribute."
-              object.send(:"#{scope}=", existing.send(scope))
+            if !scope.blank?
+              scope.each do |s|
+                assert_respond_to object, :"#{s}=", "#{klass.name} doesn't seem to have a #{s} attribute."
+                object.send(:"#{s}=", existing.send(s))
+              end
             end
             
             assert !object.valid?, "#{klass.name} does not require a unique value for #{attribute}."
@@ -82,13 +89,18 @@ module ThoughtBot # :nodoc:
             # to a value that's already taken.  An alternative implementation
             # could actually find all values for scope and create a unique
             # one.  
-            if scope
+            if !scope.blank?
+              scope.each do |s|
               # Assume the scope is a foreign key if the field is nil
-              object.send(:"#{scope}=", existing.send(scope).nil? ? 1 : existing.send(scope).next)
+                object.send(:"#{s}=", existing.send(s).nil? ? 1 : existing.send(s).next)
+              end
+
               object.errors.clear
               object.valid?
-              assert_does_not_contain(object.errors.on(attribute), message, 
-                                      "after :#{scope} set to #{object.send(scope.to_sym)}")
+              scope.each do |s|
+                assert_does_not_contain(object.errors.on(attribute), message, 
+                                        "after :#{s} set to #{object.send(s.to_sym)}")
+              end
             end
           end
         end
