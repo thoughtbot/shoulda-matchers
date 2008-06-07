@@ -347,30 +347,41 @@ module ThoughtBot # :nodoc:
       # 
       # Options:
       # * <tt>:through</tt> - association name for <tt>has_many :through</tt>
+      # * <tt>:dependent</tt> - tests that the association makes use of the dependent option.      
       #
       # Example:
       #   should_have_many :friends
       #   should_have_many :enemies, :through => :friends
+      #   should_have_many :enemies, :dependent => :destroy
       #
       def should_have_many(*associations)
-        through = get_options!(associations, :through)
+        through, dependent = get_options!(associations, :through, :dependent)
         klass = model_class
         associations.each do |association|
           name = "have many #{association}"
           name += " through #{through}" if through
+          name += " dependent => #{dependent}" if dependent
           should name do
             reflection = klass.reflect_on_association(association)
             assert reflection, "#{klass.name} does not have any relationship to #{association}"
             assert_equal :has_many, reflection.macro
+
+            associated_klass = (reflection.options[:class_name] || association.to_s.classify).constantize
 
             if through
               through_reflection = klass.reflect_on_association(through)
               assert through_reflection, "#{klass.name} does not have any relationship to #{through}"
               assert_equal(through, reflection.options[:through])
             end
+
+            if dependent
+              assert_equal dependent.to_s, 
+                           reflection.options[:dependent].to_s, 
+                           "#{associated_klass.name} should have #{dependent} dependency"
+            end
             
+            # Check for the existence of the foreign key on the other table
             unless reflection.options[:through]
-              # This is not a through association, so check for the existence of the foreign key on the other table
               if reflection.options[:foreign_key]
                 fk = reflection.options[:foreign_key]
               elsif reflection.options[:as]
@@ -378,8 +389,9 @@ module ThoughtBot # :nodoc:
               else
                 fk = reflection.primary_key_name
               end
-              associated_klass = (reflection.options[:class_name] || association.to_s.classify).constantize
-              assert associated_klass.column_names.include?(fk.to_s), "#{associated_klass.name} does not have a #{fk} foreign key."
+              
+              assert associated_klass.column_names.include?(fk.to_s),
+                     "#{associated_klass.name} does not have a #{fk} foreign key."
             end
           end
         end
