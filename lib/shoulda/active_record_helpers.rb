@@ -67,7 +67,7 @@ module ThoughtBot # :nodoc:
         klass = model_class
         attributes.each do |attribute|
           attribute = attribute.to_sym
-          should "require unique value for #{attribute}#{" scoped to #{scope.join(', ')}" if scope}" do
+          should "require unique value for #{attribute}#{" scoped to #{scope.join(', ')}" unless scope.blank?}" do
             assert existing = klass.find(:first), "Can't find first #{klass}"
             object = klass.new
             
