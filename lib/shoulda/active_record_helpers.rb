@@ -91,7 +91,7 @@ module ThoughtBot # :nodoc:
             # one.  
             if !scope.blank?
               scope.each do |s|
-              # Assume the scope is a foreign key if the field is nil
+                # Assume the scope is a foreign key if the field is nil
                 object.send(:"#{s}=", existing.send(s).nil? ? 1 : existing.send(s).next)
               end
 
