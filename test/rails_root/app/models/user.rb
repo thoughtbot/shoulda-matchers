@@ -10,4 +10,5 @@ class User < ActiveRecord::Base
   validates_length_of :email, :in => 1..100
   validates_inclusion_of :age, :in => 1..100
   validates_acceptance_of :eula
+  validates_uniqueness_of :email, :scope => :name
 end
