@@ -67,5 +67,7 @@ class ContextTest < Test::Unit::TestCase # :nodoc:
   should_eventually "should pass, since it's unimplemented" do
     flunk "what?"
   end
-
+  
+  should_eventually "should not require a block when using should_eventually"
+  should "should pass without a block, as that causes it to piggyback to should_eventually"
 end
