@@ -34,14 +34,12 @@ module Thoughtbot
     # Note: The part before <tt>should</tt> in the test name is gleamed from the name of the Test::Unit class.
 
     def should(name, &blk)
-      should_eventually(name) && return unless block_given?
-      
       if Shoulda.current_context
-        Shoulda.current_context.should(name, &blk)
+        block_given? ? Shoulda.current_context.should(name, &blk) : Should.current_context.should_eventually(name)
       else
         context_name = self.name.gsub(/Test/, "")
         context = Thoughtbot::Shoulda::Context.new(context_name, self) do
-          should(name, &blk)
+          block_given? ? should(name, &blk) : should_eventually(name)
         end
         context.build
       end
@@ -157,7 +155,11 @@ module Thoughtbot
       end
 
       def should(name, &blk)
-        self.shoulds << { :name => name, :block => blk }
+        if block_given?
+          self.shoulds << { :name => name, :block => blk }
+        else
+         self.should_eventuallys << { :name => name }
+       end
       end
 
       def should_eventually(name, &blk)

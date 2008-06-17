@@ -96,10 +96,15 @@ class ContextTest < Test::Unit::TestCase # :nodoc:
     
   end
   
-  should_eventually "should pass, since it's unimplemented" do
+  should_eventually "pass, since it's unimplemented" do
     flunk "what?"
   end
+
+  should_eventually "not require a block when using should_eventually"
+  should "pass without a block, as that causes it to piggyback to should_eventually"
   
-  should_eventually "should not require a block when using should_eventually"
-  should "should pass without a block, as that causes it to piggyback to should_eventually"
+  context "context for testing should piggybacking" do
+    # I do not think this works inside a context
+    should "call should_eventually as we are not passing a block"
+  end
 end
