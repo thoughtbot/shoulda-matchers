@@ -22,7 +22,7 @@ class UsersControllerTest < Test::Unit::TestCase
     resource.actions    = [:index, :show, :new, :edit, :update, :create, :destroy]
     resource.formats    = [:html, :xml]
     
-    resource.create.params = { :name => "bob", :email => 'bob@bob.com', :age => 13}
+    resource.create.params = { :name => "bob", :email => 'bob@bob.com', :age => 13, :ssn => "123456789"}
     resource.update.params = { :name => "sue" }
     
     resource.create.redirect  = "user_url(@user)"

@@ -11,4 +11,6 @@ class User < ActiveRecord::Base
   validates_inclusion_of :age, :in => 1..100
   validates_acceptance_of :eula
   validates_uniqueness_of :email, :scope => :name
+  validates_length_of :ssn, :is => 9, :message => "Social Security Number is not the right length"
+  validates_numericality_of :ssn
 end
