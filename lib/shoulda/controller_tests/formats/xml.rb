@@ -1,4 +1,4 @@
-module Shoulda # :nodoc: 
+module Shoulda
   module Controller # :nodoc:
     module XML 
       def self.included(other) #:nodoc:

@@ -1,4 +1,4 @@
-module Shoulda # :nodoc:
+module Shoulda 
   module General
     def self.included(other) # :nodoc:
       other.class_eval do

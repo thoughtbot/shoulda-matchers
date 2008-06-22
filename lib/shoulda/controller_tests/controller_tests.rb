@@ -1,4 +1,4 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Controller
     def self.included(other) # :nodoc:
       other.class_eval do

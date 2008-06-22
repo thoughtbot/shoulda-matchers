@@ -27,10 +27,6 @@ module Shoulda
     attr_accessor :current_context
   end
 
-  VERSION = '1.1.1'
-
-  # = Should statements
-  #
   # Should statements are just syntactic sugar over normal Test::Unit test methods.  A should block 
   # contains all the normal code and assertions you're used to seeing, with the added benefit that 
   # they can be wrapped inside context blocks (see below).
@@ -68,7 +64,7 @@ module Shoulda
     end
   end
 
-  # Just like should, but never runs, and instead prints an 'X' in the Test::Unit output.
+  # Just like should, but never runs, and instead prints a differed message in the Test::Unit output.
   def should_eventually(name, &blk)
     context_name = self.name.gsub(/Test/, "")
     context = Shoulda::Context.new(context_name, self) do
@@ -77,8 +73,6 @@ module Shoulda
     context.build
   end
 
-  # = Contexts
-  # 
   # A context block groups should statements under a common set of setup/teardown methods.  
   # Context blocks can be arbitrarily nested, and can do wonders for improving the maintainability
   # and readability of your test code.
@@ -144,11 +138,9 @@ end
 module Test # :nodoc: all
   module Unit 
     class TestCase
-
       include Shoulda::General
       include Shoulda::Controller
-
-      extend Shoulda::ActiveRecord
+      extend  Shoulda::ActiveRecord
     end
   end
 end

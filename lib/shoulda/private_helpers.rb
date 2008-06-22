@@ -1,4 +1,4 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Private # :nodoc:
     # Returns the values for the entries in the args hash who's keys are listed in the wanted array.
     # Will raise if there are keys in the args hash that aren't listed.

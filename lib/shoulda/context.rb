@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), 'extensions', 'proc')
 
-module Shoulda # :nodoc:
+module Shoulda 
   class Context 
     attr_accessor :name               # my name
     attr_accessor :parent             # may be another context, or the original test::unit class.
@@ -24,40 +24,53 @@ module Shoulda # :nodoc:
       Shoulda.current_context = nil
     end
 
+    # Creates a context.  See Shoulda#context.
     def context(name, &blk)
       subcontexts << Context.new(name, self, &blk)
       Shoulda.current_context = self
     end
 
-    def setup(&blk)
-      self.setup_block = blk
-    end
-
-    def teardown(&blk)
-      self.teardown_block = blk
-    end
-
+    # Creates a should statement.  See Shoulda#should.
     def should(name, &blk)
       self.shoulds << { :name => name, :block => blk }
     end
 
+    # Creates a should_eventually statement.  See Shoulda#should_eventually.
     def should_eventually(name, &blk)
       self.should_eventuallys << { :name => name, :block => blk }
     end
 
+    # Any code in a setup block will be run before the should statements in a
+    # context.  Nested contexts will have their setup blocks run in order.
+    def setup(&blk)
+      self.setup_block = blk
+    end
+
+    # Any code in a teardown block will be run after the should statements in a
+    # context.  Nested contexts will have their teardown blocks run in reverse
+    # order.
+    def teardown(&blk)
+      self.teardown_block = blk
+    end
+
+    # The full name of this context, including parents.
     def full_name
-      parent_name = parent.full_name if am_subcontext?
+      parent_name = parent.full_name if subcontext?
       return [parent_name, name].join(" ").strip
     end
 
-    def am_subcontext?
+    # Returns true if this context is nested
+    def subcontext?
       parent.is_a?(self.class) # my parent is the same class as myself.
     end
 
+    # Returns the root class that decends from Test::Unit.
     def test_unit_class
-      am_subcontext? ? parent.test_unit_class : parent
+      subcontext? ? parent.test_unit_class : parent
     end
 
+
+    # Creates a single test from a should hash
     def create_test_from_should_hash(should)
       test_name = ["test:", full_name, "should", "#{should[:name]}. "].flatten.join(' ').to_sym
 
@@ -76,16 +89,19 @@ module Shoulda # :nodoc:
       end
     end
 
+    # Runs all the setup blocks in order
     def run_all_setup_blocks(binding)
-      self.parent.run_all_setup_blocks(binding) if am_subcontext?
+      self.parent.run_all_setup_blocks(binding) if subcontext?
       setup_block.bind(binding).call if setup_block
     end
 
+    # Runs all the teardown blocks in reverse order
     def run_all_teardown_blocks(binding)
       teardown_block.bind(binding).call if teardown_block
-      self.parent.run_all_teardown_blocks(binding) if am_subcontext?
+      self.parent.run_all_teardown_blocks(binding) if subcontext?
     end
 
+    # Prints the should_eventually names to stdout
     def print_should_eventuallys
       should_eventuallys.each do |should|
         test_name = [full_name, "should", "#{should[:name]}. "].flatten.join(' ')
@@ -94,6 +110,7 @@ module Shoulda # :nodoc:
       subcontexts.each { |context| context.print_should_eventuallys }
     end
 
+    # Triggers the test method creation process, and prints the unimplemented tests.
     def build
       shoulds.each do |should|
         create_test_from_should_hash(should)
@@ -104,10 +121,12 @@ module Shoulda # :nodoc:
       print_should_eventuallys
     end
 
+    # This delegates all method calls inside a context to the surrounding
+    # Test::Unit class.  This allows us to call Test::Unit macros inside a
+    # context.
     def method_missing(method, *args, &blk)
       test_unit_class.send(method, *args, &blk)
     end
-
   end
 end
 
