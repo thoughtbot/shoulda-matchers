@@ -1,23 +1,20 @@
 require 'shoulda/context'
 require 'shoulda/private_helpers'
 require 'shoulda/general'
-require 'shoulda/active_record_helpers'
-require 'shoulda/controller_tests/controller_tests.rb'
 require 'yaml'
 
+require 'shoulda/active_record_helpers'                if defined?(ActiveRecord)
+require 'shoulda/controller_tests/controller_tests.rb' if defined?(ActionController)
+
+config_files = []
+config_files << "shoulda.conf"
+config_files << File.join("test", "shoulda.conf")
+config_files << File.join(RAILS_ROOT, "test", "shoulda.conf") if defined?(RAILS_ROOT) 
+config_files << File.join(ENV["HOME"], ".shoulda.conf")       if ENV["HOME"]
+
 shoulda_options = {}
-
-possible_config_paths = []
-possible_config_paths << File.join(ENV["HOME"], ".shoulda.conf")       if ENV["HOME"]
-possible_config_paths << "shoulda.conf"
-possible_config_paths << File.join("test", "shoulda.conf")
-possible_config_paths << File.join(RAILS_ROOT, "test", "shoulda.conf") if defined?(RAILS_ROOT) 
-
-possible_config_paths.each do |config_file|
-  if File.exists? config_file
-    shoulda_options = YAML.load_file(config_file).symbolize_keys
-    break
-  end
+config_files.each do |file|
+  shoulda_options.merge!(YAML.load_file(file).symbolize_keys) if File.exists? file
 end
 
 require 'shoulda/color' if shoulda_options[:color]
@@ -145,10 +142,3 @@ module Test # :nodoc: all
   end
 end
 
-module ActionController #:nodoc: all
-  module Integration
-    class Session 
-      include Shoulda::General
-    end
-  end
-end

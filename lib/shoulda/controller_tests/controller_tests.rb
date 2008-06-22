@@ -462,3 +462,11 @@ module Shoulda
     end
   end  
 end
+
+module ActionController #:nodoc: all
+  module Integration
+    class Session 
+      include Shoulda::General
+    end
+  end
+end
