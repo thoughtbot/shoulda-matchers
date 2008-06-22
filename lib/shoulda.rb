@@ -26,10 +26,10 @@ module Test # :nodoc: all
   module Unit 
     class TestCase
 
-      include ThoughtBot::Shoulda::General
-      include ThoughtBot::Shoulda::Controller
+      include Shoulda::General
+      include Shoulda::Controller
 
-      extend ThoughtBot::Shoulda::ActiveRecord
+      extend Shoulda::ActiveRecord
     end
   end
 end
@@ -37,7 +37,7 @@ end
 module ActionController #:nodoc: all
   module Integration
     class Session 
-      include ThoughtBot::Shoulda::General
+      include Shoulda::General
     end
   end
 end

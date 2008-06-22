@@ -10,7 +10,7 @@ Assertions:: Many common rails testing idioms have been distilled into a set of 
 
 = Usage
 
-=== Context Helpers (ThoughtBot::Shoulda::Context)
+=== Context Helpers (Shoulda::Context)
 
 Stop killing your fingers with all of those underscores...  Name your tests with plain sentences!
 
@@ -43,7 +43,7 @@ Produces the following test methods:
 
 So readable!
 
-=== ActiveRecord Tests (ThoughtBot::Shoulda::ActiveRecord)
+=== ActiveRecord Tests (Shoulda::ActiveRecord)
 
 Quick macro tests for your ActiveRecord associations and validations:
 
@@ -73,7 +73,7 @@ Quick macro tests for your ActiveRecord associations and validations:
 
 Makes TDD so much easier.
 
-=== Controller Tests (ThoughtBot::Shoulda::Controller::ClassMethods)
+=== Controller Tests (Shoulda::Controller::ClassMethods)
 
 Macros to test the most common controller patterns...
 
@@ -105,7 +105,7 @@ Test entire controllers in a few lines...
 
 should_be_restful generates 40 tests on the fly, for both html and xml requests.
 
-=== Helpful Assertions (ThoughtBot::Shoulda::General)
+=== Helpful Assertions (Shoulda::General)
 
 More to come here, but have fun with what's there.
 
