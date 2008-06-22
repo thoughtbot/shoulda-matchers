@@ -1,6 +1,8 @@
 require 'test/unit/ui/console/testrunner'
 
-# Completely stolen from redgreen gem
+# Completely stolen from redgreen gem (thanks Pat Eyler and Chris Wanstrath).
+#
+# NOTE:  Is this now in autotest?  Can I remove this, then?
 #
 # Adds colored output to your tests.  Specify <tt>color: true</tt> in 
 # your <tt>~/.shoulda.conf</tt> file to enable.
