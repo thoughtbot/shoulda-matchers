@@ -24,4 +24,5 @@ class UserTest < Test::Unit::TestCase
                                 :null => true,     :primary => false, :scale     => nil, :sql_type => 'varchar(255)'
   should_require_acceptance_of :eula
   should_require_unique_attributes :email, :scoped_to => :name
+  should_have_readonly_attributes :name
 end
