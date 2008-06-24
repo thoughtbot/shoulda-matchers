@@ -15,7 +15,7 @@ Rake::RDocTask.new { |rdoc|
   rdoc.title    = "Shoulda -- Making tests easy on the fingers and eyes"
   rdoc.options << '--line-numbers' << '--inline-source'
   rdoc.template = "#{ENV['template']}.rb" if ENV['template']
-  rdoc.rdoc_files.include('README', 'lib/**/*.rb')
+  rdoc.rdoc_files.include('README.rdoc', 'CONTRIBUTION_GUIDELINES.rdoc', 'lib/**/*.rb')
 }
 
 desc 'Update documentation on website'

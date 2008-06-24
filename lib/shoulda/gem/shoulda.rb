@@ -34,6 +34,8 @@ module Thoughtbot
     # Note: The part before <tt>should</tt> in the test name is gleamed from the name of the Test::Unit class.
 
     def should(name, &blk)
+      should_eventually(name) && return unless block_given?
+      
       if Shoulda.current_context
         Shoulda.current_context.should(name, &blk)
       else
