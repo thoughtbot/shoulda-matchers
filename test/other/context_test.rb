@@ -63,6 +63,38 @@ class ContextTest < Test::Unit::TestCase # :nodoc:
       assert_nil @blah
     end
   end
+    
+  context "context with multiple setups and/or teardowns" do
+    
+    cleanup_count = 0
+        
+    2.times do |i|
+      setup { cleanup_count += 1 }
+      teardown { cleanup_count -= 1 }
+    end
+    
+    2.times do |i|
+      should "call all setups and all teardowns (check ##{i + 1})" do
+        assert_equal 2, cleanup_count
+      end
+    end
+    
+    context "subcontexts" do
+      
+      2.times do |i|
+        setup { cleanup_count += 1 }
+        teardown { cleanup_count -= 1 }
+      end
+                  
+      2.times do |i|
+        should "also call all setups and all teardowns in parent and subcontext (check ##{i + 1})" do
+          assert_equal 4, cleanup_count
+        end
+      end
+      
+    end
+    
+  end
   
   should_eventually "should pass, since it's unimplemented" do
     flunk "what?"

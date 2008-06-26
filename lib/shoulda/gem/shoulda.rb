@@ -124,8 +124,8 @@ module Thoughtbot
       attr_accessor :name               # my name
       attr_accessor :parent             # may be another context, or the original test::unit class.
       attr_accessor :subcontexts        # array of contexts nested under myself
-      attr_accessor :setup_block        # block given via a setup method
-      attr_accessor :teardown_block     # block given via a teardown method
+      attr_accessor :setup_blocks       # block given via a setup method
+      attr_accessor :teardown_blocks    # block given via a teardown method
       attr_accessor :shoulds            # array of hashes representing the should statements
       attr_accessor :should_eventuallys # array of hashes representing the should eventually statements
 
@@ -133,8 +133,8 @@ module Thoughtbot
         Shoulda.current_context = self
         self.name               = name
         self.parent             = parent
-        self.setup_block        = nil
-        self.teardown_block     = nil
+        self.setup_blocks       = []
+        self.teardown_blocks    = []
         self.shoulds            = []
         self.should_eventuallys = []
         self.subcontexts        = []
@@ -149,11 +149,11 @@ module Thoughtbot
       end
 
       def setup(&blk)
-        self.setup_block = blk
+        self.setup_blocks << blk
       end
 
       def teardown(&blk)
-        self.teardown_block = blk
+        self.teardown_blocks << blk
       end
 
       def should(name, &blk)
@@ -197,11 +197,15 @@ module Thoughtbot
 
       def run_all_setup_blocks(binding)
         self.parent.run_all_setup_blocks(binding) if am_subcontext?
-        setup_block.bind(binding).call if setup_block
+        setup_blocks.each do |setup_block|
+          setup_block.bind(binding).call
+        end
       end
 
       def run_all_teardown_blocks(binding)
-        teardown_block.bind(binding).call if teardown_block
+        teardown_blocks.each do |teardown_block|
+          teardown_block.bind(binding).call
+        end
         self.parent.run_all_teardown_blocks(binding) if am_subcontext?
       end
 
