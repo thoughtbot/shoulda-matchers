@@ -185,7 +185,7 @@ module Thoughtbot
         end
         
         context = self
-        test_unit_class.send(:define_method, test_name) do |*args|
+        test_unit_class.send(:define_method, test_name) do
           begin
             context.run_all_setup_blocks(self)
             should[:block].bind(self).call
