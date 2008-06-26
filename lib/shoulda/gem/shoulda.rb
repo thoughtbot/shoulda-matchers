@@ -203,7 +203,7 @@ module Thoughtbot
       end
 
       def run_all_teardown_blocks(binding)
-        teardown_blocks.each do |teardown_block|
+        teardown_blocks.reverse.each do |teardown_block|
           teardown_block.bind(binding).call
         end
         self.parent.run_all_teardown_blocks(binding) if am_subcontext?
