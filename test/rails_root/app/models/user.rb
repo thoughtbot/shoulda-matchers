@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
   has_one :address, :as => :addressable
   
   attr_protected :password
+  attr_readonly :name
 
   validates_format_of :email, :with => /\w*@\w*.com/
   validates_length_of :email, :in => 1..100

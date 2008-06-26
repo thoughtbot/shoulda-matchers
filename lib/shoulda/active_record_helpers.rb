@@ -129,6 +129,28 @@ module ThoughtBot # :nodoc:
         end
       end
   
+      # Ensures that the attribute cannot be changed once the record has been created.
+      # Requires an existing record.
+      #
+      #   should_have_readonly_attributes :password, :admin_flag
+      #
+      def should_have_readonly_attributes(*attributes)
+        get_options!(attributes)
+        klass = model_class
+
+        attributes.each do |attribute|
+          attribute = attribute.to_sym
+          should "make #{attribute} read-only" do
+            readonly = klass.readonly_attributes || []
+
+            assert readonly.include?(attribute.to_s),
+                   (readonly.empty? ?
+                     "#{klass} attribute #{attribute} is not read-only" :
+                     "#{klass} is making #{readonly.to_a.to_sentence} read-only, but not #{attribute}.")
+          end
+        end
+      end
+
       # Ensures that the attribute cannot be set to the given values
       # Requires an existing record
       #

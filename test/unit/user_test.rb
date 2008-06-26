@@ -27,4 +27,6 @@ class UserTest < Test::Unit::TestCase
   
   should_ensure_length_is :ssn, 9, :message => "Social Security Number is not the right length"
   should_only_allow_numeric_values_for :ssn
+
+  should_have_readonly_attributes :name
 end
