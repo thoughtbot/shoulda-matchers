@@ -104,7 +104,6 @@ class ContextTest < Test::Unit::TestCase # :nodoc:
   should "pass without a block, as that causes it to piggyback to should_eventually"
   
   context "context for testing should piggybacking" do
-    # I do not think this works inside a context
     should "call should_eventually as we are not passing a block"
   end
 end
