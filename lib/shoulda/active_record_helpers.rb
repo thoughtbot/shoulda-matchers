@@ -271,6 +271,50 @@ module ThoughtBot # :nodoc:
           assert object.save, "Could not save #{klass} with #{attribute} set to \"#{valid_value}\""
         end
       end
+      
+      # Ensures that the length of the attribute is exactly a certain length
+      # Requires an existing record
+      #
+      # Options:
+      # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.  
+      #   Regexp or string.  Default = <tt>/short/</tt>
+      #
+      # Example:
+      #   should_ensure_length_is :ssn, 9
+      #
+      def should_ensure_length_is(attribute, length, opts = {})
+         message = get_options!([opts], :message)
+         message ||= /wrong length/
+
+         klass = model_class
+
+         should "not allow #{attribute} to be less than #{length} chars long" do
+           min_value = "x" * (length - 1)
+           assert object = klass.find(:first), "Can't find first #{klass}"
+           object.send("#{attribute}=", min_value)
+           assert !object.save, "Saved #{klass} with #{attribute} set to \"#{min_value}\""
+           assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{min_value}\""
+           assert_contains(object.errors.on(attribute), message, "when set to \"#{min_value}\"")
+         end
+         
+         should "not allow #{attribute} to be greater than #{length} chars long" do
+           max_value = "x" * (length + 1)
+           assert object = klass.find(:first), "Can't find first #{klass}"
+           object.send("#{attribute}=", max_value)
+           assert !object.save, "Saved #{klass} with #{attribute} set to \"#{max_value}\""
+           assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{max_value}\""
+           assert_contains(object.errors.on(attribute), message, "when set to \"#{max_value}\"")
+         end
+         
+          should "allow #{attribute} to be #{length} chars long" do
+             valid_value = "x" * (length)
+             assert object = klass.find(:first), "Can't find first #{klass}"
+             object.send("#{attribute}=", valid_value)
+             object.save
+             assert_does_not_contain(object.errors.on(attribute), message, "when set to \"#{valid_value}\"")
+           end
+         
+       end
 
       # Ensure that the attribute is in the range specified
       # Requires an existing record
