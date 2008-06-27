@@ -106,4 +106,10 @@ class ContextTest < Test::Unit::TestCase # :nodoc:
   context "context for testing should piggybacking" do
     should "call should_eventually as we are not passing a block"
   end
+
+  context "context" do
+    context "with nested subcontexts" do
+      should_eventually "only print this statement once for a should_eventually"
+    end
+  end
 end

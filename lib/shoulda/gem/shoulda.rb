@@ -216,7 +216,6 @@ module Thoughtbot
           test_name = [full_name, "should", "#{should[:name]}. "].flatten.join(' ')
           puts "  * DEFERRED: " + test_name
         end
-        subcontexts.each { |context| context.print_should_eventuallys }
       end
 
       def build
