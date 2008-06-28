@@ -71,11 +71,11 @@ module ThoughtBot # :nodoc:
             assert existing = klass.find(:first), "Can't find first #{klass}"
             object = klass.new
             
-            object.send(:"#{attribute}=", existing.send(attribute))
+            object.send("#{attribute}=", existing.send(attribute))
             if !scope.blank?
               scope.each do |s|
                 assert_respond_to object, :"#{s}=", "#{klass.name} doesn't seem to have a #{s} attribute."
-                object.send(:"#{s}=", existing.send(s))
+                object.send("#{s}=", existing.send(s))
               end
             end
             
@@ -92,7 +92,7 @@ module ThoughtBot # :nodoc:
             if !scope.blank?
               scope.each do |s|
                 # Assume the scope is a foreign key if the field is nil
-                object.send(:"#{s}=", existing.send(s).nil? ? 1 : existing.send(s).next)
+                object.send("#{s}=", existing.send(s).nil? ? 1 : existing.send(s).next)
               end
 
               object.errors.clear
@@ -167,9 +167,9 @@ module ThoughtBot # :nodoc:
         klass = model_class
         bad_values.each do |v|
           should "not allow #{attribute} to be set to #{v.inspect}" do
-            assert object = klass.find(:first), "Can't find first #{klass}"
+            object = klass.new
             object.send("#{attribute}=", v)
-            assert !object.save, "Saved #{klass} with #{attribute} set to \"#{v}\""
+            assert !object.valid?, "#{klass.name} allowed \"#{v}\" as a value for #{attribute}"
             assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{v}\""
             assert_contains(object.errors.on(attribute), message, "when set to \"#{v}\"")
           end
@@ -187,9 +187,9 @@ module ThoughtBot # :nodoc:
         klass = model_class
         good_values.each do |v|
           should "allow #{attribute} to be set to #{v.inspect}" do
-            assert object = klass.find(:first), "Can't find first #{klass}"
+            object = klass.new
             object.send("#{attribute}=", v)
-            object.save
+            object.valid?
             assert_nil object.errors.on(attribute)
           end
         end
@@ -220,9 +220,9 @@ module ThoughtBot # :nodoc:
         if min_length > 0
           should "not allow #{attribute} to be less than #{min_length} chars long" do
             min_value = "x" * (min_length - 1)
-            assert object = klass.find(:first), "Can't find first #{klass}"
+            object = klass.new
             object.send("#{attribute}=", min_value)
-            assert !object.save, "Saved #{klass} with #{attribute} set to \"#{min_value}\""
+            assert !object.valid?, "#{klass.name} allowed \"#{min_value}\" as a value for #{attribute}"
             assert object.errors.on(attribute), 
                    "There are no errors set on #{attribute} after being set to \"#{min_value}\""
             assert_contains(object.errors.on(attribute), short_message, "when set to \"#{min_value}\"")
@@ -232,18 +232,18 @@ module ThoughtBot # :nodoc:
         if min_length > 0
           should "allow #{attribute} to be exactly #{min_length} chars long" do
             min_value = "x" * min_length
-            assert object = klass.find(:first), "Can't find first #{klass}"
+            object = klass.new
             object.send("#{attribute}=", min_value)
-            object.save
+            object.valid?
             assert_does_not_contain(object.errors.on(attribute), short_message, "when set to \"#{min_value}\"")
           end
         end
     
         should "not allow #{attribute} to be more than #{max_length} chars long" do
           max_value = "x" * (max_length + 1)
-          assert object = klass.find(:first), "Can't find first #{klass}"
+          object = klass.new
           object.send("#{attribute}=", max_value)
-          assert !object.save, "Saved #{klass} with #{attribute} set to \"#{max_value}\""
+          assert !object.valid?, "#{klass.name} allowed \"#{max_value}\" as a value for #{attribute}"
           assert object.errors.on(attribute), 
                  "There are no errors set on #{attribute} after being set to \"#{max_value}\""
           assert_contains(object.errors.on(attribute), long_message, "when set to \"#{max_value}\"")
@@ -252,45 +252,46 @@ module ThoughtBot # :nodoc:
         unless same_length
           should "allow #{attribute} to be exactly #{max_length} chars long" do
             max_value = "x" * max_length
-            assert object = klass.find(:first), "Can't find first #{klass}"
+            object = klass.new
             object.send("#{attribute}=", max_value)
-            object.save
+            object.valid?
             assert_does_not_contain(object.errors.on(attribute), long_message, "when set to \"#{max_value}\"")
           end
         end
       end  
       
-     # Ensures that the length of the attribute is at least a certain length
-     # Requires an existing record
-     #
-     # Options:
-     # * <tt>:short_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.  
-     #   Regexp or string.  Default = <tt>/short/</tt>
-     #
-     # Example:
-     #   should_ensure_length_at_least :name, 3
-     #
-     def should_ensure_length_at_least(attribute, min_length, opts = {})
+      # Ensures that the length of the attribute is at least a certain length
+      # Requires an existing record
+      #
+      # Options:
+      # * <tt>:short_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.  
+      #   Regexp or string.  Default = <tt>/short/</tt>
+      #
+      # Example:
+      #   should_ensure_length_at_least :name, 3
+      #
+      def should_ensure_length_at_least(attribute, min_length, opts = {})
         short_message = get_options!([opts], :short_message)
         short_message ||= /short/
-     
+        
         klass = model_class
-     
+        
         if min_length > 0
           min_value = "x" * (min_length - 1)
           should "not allow #{attribute} to be less than #{min_length} chars long" do
-            assert object = klass.find(:first), "Can't find first #{klass}"
+            object = klass.new
             object.send("#{attribute}=", min_value)
-            assert !object.save, "Saved #{klass} with #{attribute} set to \"#{min_value}\""
+            assert !object.valid?, "#{klass} allowed \"#{min_value}\" as a value for #{attribute}"
             assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{min_value}\""
             assert_contains(object.errors.on(attribute), short_message, "when set to \"#{min_value}\"")
           end
         end
         should "allow #{attribute} to be at least #{min_length} chars long" do
           valid_value = "x" * (min_length)
-          assert object = klass.find(:first), "Can't find first #{klass}"
+          object = klass.new
           object.send("#{attribute}=", valid_value)
-          assert object.save, "Could not save #{klass} with #{attribute} set to \"#{valid_value}\""
+          object.valid?
+          assert_does_not_contain(object.errors.on(attribute), short_message, "when set to \"#{valid_value}\"")
         end
       end
       
@@ -305,38 +306,37 @@ module ThoughtBot # :nodoc:
       #   should_ensure_length_is :ssn, 9
       #
       def should_ensure_length_is(attribute, length, opts = {})
-         message = get_options!([opts], :message)
-         message ||= /wrong length/
+        message = get_options!([opts], :message)
+        message ||= /wrong length/
 
-         klass = model_class
+        klass = model_class
 
-         should "not allow #{attribute} to be less than #{length} chars long" do
-           min_value = "x" * (length - 1)
-           assert object = klass.find(:first), "Can't find first #{klass}"
-           object.send("#{attribute}=", min_value)
-           assert !object.save, "Saved #{klass} with #{attribute} set to \"#{min_value}\""
-           assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{min_value}\""
-           assert_contains(object.errors.on(attribute), message, "when set to \"#{min_value}\"")
-         end
-         
-         should "not allow #{attribute} to be greater than #{length} chars long" do
-           max_value = "x" * (length + 1)
-           assert object = klass.find(:first), "Can't find first #{klass}"
-           object.send("#{attribute}=", max_value)
-           assert !object.save, "Saved #{klass} with #{attribute} set to \"#{max_value}\""
-           assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{max_value}\""
-           assert_contains(object.errors.on(attribute), message, "when set to \"#{max_value}\"")
-         end
-         
-          should "allow #{attribute} to be #{length} chars long" do
-             valid_value = "x" * (length)
-             assert object = klass.find(:first), "Can't find first #{klass}"
-             object.send("#{attribute}=", valid_value)
-             object.save
-             assert_does_not_contain(object.errors.on(attribute), message, "when set to \"#{valid_value}\"")
-           end
-         
-       end
+        should "not allow #{attribute} to be less than #{length} chars long" do
+          min_value = "x" * (length - 1)
+          object = klass.new
+          object.send("#{attribute}=", min_value)
+          assert !object.valid?, "#{klass} allowed \"#{min_value}\" as a value for #{attribute}"
+          assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{min_value}\""
+          assert_contains(object.errors.on(attribute), message, "when set to \"#{min_value}\"")
+        end
+        
+        should "not allow #{attribute} to be greater than #{length} chars long" do
+          max_value = "x" * (length + 1)
+          object = klass.new
+          object.send("#{attribute}=", max_value)
+          assert !object.valid?, "#{klass} allowed \"#{max_value}\" as a value for #{attribute}"
+          assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{max_value}\""
+          assert_contains(object.errors.on(attribute), message, "when set to \"#{max_value}\"")
+        end
+        
+        should "allow #{attribute} to be #{length} chars long" do
+          valid_value = "x" * (length)
+          object = klass.new
+          object.send("#{attribute}=", valid_value)
+          object.valid?
+          assert_does_not_contain(object.errors.on(attribute), message, "when set to \"#{valid_value}\"")
+        end
+      end
 
       # Ensure that the attribute is in the range specified
       # Requires an existing record
@@ -361,35 +361,35 @@ module ThoughtBot # :nodoc:
 
         should "not allow #{attribute} to be less than #{min}" do
           v = min - 1
-          assert object = klass.find(:first), "Can't find first #{klass}"
+          object = klass.new
           object.send("#{attribute}=", v)
-          assert !object.save, "Saved #{klass} with #{attribute} set to \"#{v}\""
+          assert !object.valid?, "#{klass} allowed \"#{v}\" as a value for #{attribute}"
           assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{v}\""
           assert_contains(object.errors.on(attribute), low_message, "when set to \"#{v}\"")
         end
 
         should "allow #{attribute} to be #{min}" do
           v = min
-          assert object = klass.find(:first), "Can't find first #{klass}"
+          object = klass.new
           object.send("#{attribute}=", v)
-          object.save
+          object.valid?
           assert_does_not_contain(object.errors.on(attribute), low_message, "when set to \"#{v}\"")
         end
 
         should "not allow #{attribute} to be more than #{max}" do
           v = max + 1
-          assert object = klass.find(:first), "Can't find first #{klass}"
+          object = klass.new
           object.send("#{attribute}=", v)
-          assert !object.save, "Saved #{klass} with #{attribute} set to \"#{v}\""
+          assert !object.valid?, "#{klass} allowed \"#{v}\" as a value for #{attribute}"
           assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{v}\""
           assert_contains(object.errors.on(attribute), high_message, "when set to \"#{v}\"")
         end
 
         should "allow #{attribute} to be #{max}" do
           v = max
-          assert object = klass.find(:first), "Can't find first #{klass}"
+          object = klass.new
           object.send("#{attribute}=", v)
-          object.save
+          object.valid?
           assert_does_not_contain(object.errors.on(attribute), high_message, "when set to \"#{v}\"")
         end
       end    
@@ -411,9 +411,9 @@ module ThoughtBot # :nodoc:
         attributes.each do |attribute|
           attribute = attribute.to_sym
           should "only allow numeric values for #{attribute}" do
-            assert object = klass.find(:first), "Can't find first #{klass}"
-            object.send(:"#{attribute}=", "abcd")
-            assert !object.valid?, "Instance is still valid"
+            object = klass.new
+            object.send("#{attribute}=", "abcd")
+            assert !object.valid?, "#{klass} allowed \"abcd\" as a value for #{attribute}"
             assert_contains(object.errors.on(attribute), message)
           end
         end
