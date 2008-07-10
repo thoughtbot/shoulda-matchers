@@ -56,9 +56,9 @@ module ThoughtBot # :nodoc:
           should stmt, :before => before do
             old_value = @_before_should_change
             new_value = expression_eval.bind(self).call
-            assert_equal from, old_value, "#{expression.inspect} was not originally #{from.inspect}" if from
+            assert_operator from, :===, old_value, "#{expression.inspect} did not originally match #{from.inspect}" if from
             assert_not_equal old_value, new_value, "#{expression.inspect} did not change" unless by == 0
-            assert_equal to, new_value, "#{expression.inspect} was not changed to #{to.inspect}" if to
+            assert_operator to, :===, new_value, "#{expression.inspect} was not changed to match #{to.inspect}" if to
             assert_equal old_value + by, new_value if by
           end
         end

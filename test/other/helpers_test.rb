@@ -78,9 +78,9 @@ class HelpersTest < Test::Unit::TestCase # :nodoc:
     end
   end
   
-  context "an array of numbers" do
+  context "an array of values" do
     setup do
-      @a = [1, 2, 3]
+      @a = [1, 2, "(3)"]
     end
 
     context "after adding another value" do
@@ -104,8 +104,8 @@ class HelpersTest < Test::Unit::TestCase # :nodoc:
       should_change "@a.length", :from => 3, :to => 6, :by => 3
       should_change "@a[0]"
       should_change "@a[1]", :from => 2, :to => "b"
-      should_change "@a[2]", :from => 3
-      should_change "@a[3]", :to => "d"
+      should_change "@a[2]", :from => /\d/, :to => /\w/
+      should_change "@a[3]", :to => String
     end
   end
 end
