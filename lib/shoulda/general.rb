@@ -46,21 +46,19 @@ module ThoughtBot # :nodoc:
         #   should_change "@post.title" :to   => "new" # => assert the value changed from anything other than "new"
         def should_change(expression, options = {}) 
           by, from, to = get_options!([options], :by, :from, :to)
-          stmt = "change '#{expression}'"
-          stmt << " from '#{from}'" if from
-          stmt << " to '#{to}'" if to
-          stmt << " by #{by}" if by
+          stmt = "change #{expression.inspect}"
+          stmt << " from #{from.inspect}" if from
+          stmt << " to #{to.inspect}" if to
+          stmt << " by #{by.inspect}" if by
 
           expression_eval = lambda { eval(expression) }
-          before = lambda do
-            @_before_should_change = expression_eval.bind(self).call
-            assert_equal from, @_before_should_change, "'#{expression}' was not originally '#{from}'" if from
-          end
+          before = lambda { @_before_should_change = expression_eval.bind(self).call }
           should stmt, :before => before do
             old_value = @_before_should_change
             new_value = expression_eval.bind(self).call
-            assert_not_equal old_value, new_value, "'#{expression}' did not change" unless by == 0
-            assert_equal to, new_value, "'#{expression}' was not changed to '#{to}'" if to
+            assert_equal from, old_value, "#{expression.inspect} was not originally #{from.inspect}" if from
+            assert_not_equal old_value, new_value, "#{expression.inspect} did not change" unless by == 0
+            assert_equal to, new_value, "#{expression.inspect} was not changed to #{to.inspect}" if to
             assert_equal old_value + by, new_value if by
           end
         end
@@ -81,9 +79,9 @@ module ThoughtBot # :nodoc:
         def should_not_change(expression)
           expression_eval = lambda { eval(expression) }
           before = lambda { @_before_should_not_change = expression_eval.bind(self).call }
-          should "not change '#{expression}'", :before => before do
+          should "not change #{expression.inspect}", :before => before do
             new_value = expression_eval.bind(self).call
-            assert_equal @_before_should_not_change, new_value, "'#{expression}' changed"
+            assert_equal @_before_should_not_change, new_value, "#{expression.inspect} changed"
           end
         end
       end
