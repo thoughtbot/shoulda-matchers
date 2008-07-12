@@ -516,7 +516,7 @@ module ThoughtBot # :nodoc:
               assert reflection, "#{klass.name} does not have any relationship to #{association}"
               assert_equal :has_and_belongs_to_many, reflection.macro
               table = reflection.options[:join_table]
-              assert ::ActiveRecord::Base.connection.tables.include?(table), "table #{table} doesn't exist"
+              assert ::ActiveRecord::Base.connection.tables.include?(table.to_s), "table #{table} doesn't exist"
             end
           end
         end
