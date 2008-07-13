@@ -4,6 +4,7 @@ class CreateAddresses < ActiveRecord::Migration
       t.column :title, :string
       t.column :addressable_id, :integer
       t.column :addressable_type, :string
+      t.column :zip, :string
     end
   end
 

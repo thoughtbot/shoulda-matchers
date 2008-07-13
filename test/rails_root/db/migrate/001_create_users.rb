@@ -4,6 +4,7 @@ class CreateUsers < ActiveRecord::Migration
       t.column :name, :string
       t.column :email, :string
       t.column :age, :integer
+      t.column :ssn, :string
     end
     add_index :users, :email
     add_index :users, :name
