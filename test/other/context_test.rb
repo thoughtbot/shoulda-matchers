@@ -2,12 +2,27 @@ require File.join(File.dirname(__FILE__), '..', 'test_helper')
 
 class ContextTest < Test::Unit::TestCase # :nodoc:
   
+  def self.context_macro(&blk)
+    context "with a subcontext made by a macro" do
+      setup { @context_macro = :foo }
+
+      merge_block &blk 
+    end
+  end
+
+  # def self.context_macro(&blk)
+  #   context "with a subcontext made by a macro" do
+  #     setup { @context_macro = :foo }
+  #     yield # <- this doesn't work.
+  #   end
+  # end
+
   context "context with setup block" do
     setup do
       @blah = "blah"
     end
     
-    should "have @blah == 'blah'" do
+    should "run the setup block" do
       assert_equal "blah", @blah
     end
     
@@ -24,10 +39,25 @@ class ContextTest < Test::Unit::TestCase # :nodoc:
         assert_match(/^test: context with setup block and a subcontext should be named correctly/, self.to_s)
       end
       
-      should "run the setup methods in order" do
+      should "run the setup blocks in order" do
         assert_equal @blah, "blah twice"
       end
     end
+
+    context_macro do
+      should "have name set right" do
+        assert_match(/^test: context with setup block with a subcontext made by a macro should have name set right/, self.to_s)
+      end
+
+      should "run the setup block of that context macro" do
+        assert_equal :foo, @context_macro
+      end
+
+      should "run the setup block of the main context" do
+        assert_equal "blah", @blah
+      end
+    end
+
   end
 
   context "another context with setup block" do

@@ -2,11 +2,26 @@ require File.join(File.dirname(__FILE__), 'proc_extensions')
 
 module Thoughtbot
   module Shoulda
-    class << self
-      attr_accessor :current_context
-    end
-
     VERSION = '1.1.1'
+
+    class << self
+      attr_accessor :contexts
+      def contexts
+        @contexts ||= []
+      end
+
+      def current_context
+        self.contexts.last
+      end
+
+      def add_context(context)
+        self.contexts.push(context)
+      end
+
+      def remove_context
+        self.contexts.pop
+      end
+    end
 
     # == Should statements
     #
@@ -57,7 +72,6 @@ module Thoughtbot
         context.build
       end
     end
-
 
     # Just like should, but never runs, and instead prints an 'X' in the Test::Unit output.
     def should_eventually(name, options = {}, &blk)
@@ -136,13 +150,13 @@ module Thoughtbot
       attr_accessor :name               # my name
       attr_accessor :parent             # may be another context, or the original test::unit class.
       attr_accessor :subcontexts        # array of contexts nested under myself
-      attr_accessor :setup_blocks       # block given via a setup method
-      attr_accessor :teardown_blocks    # block given via a teardown method
+      attr_accessor :setup_blocks       # blocks given via setup methods
+      attr_accessor :teardown_blocks    # blocks given via teardown methods
       attr_accessor :shoulds            # array of hashes representing the should statements
       attr_accessor :should_eventuallys # array of hashes representing the should eventually statements
 
       def initialize(name, parent, &blk)
-        Shoulda.current_context = self
+        Shoulda.add_context(self)
         self.name               = name
         self.parent             = parent
         self.setup_blocks       = []
@@ -151,13 +165,16 @@ module Thoughtbot
         self.should_eventuallys = []
         self.subcontexts        = []
 
+        merge_block(&blk)
+        Shoulda.remove_context
+      end
+
+      def merge_block(&blk)
         blk.bind(self).call
-        Shoulda.current_context = nil
       end
 
       def context(name, &blk)
-        subcontexts << Context.new(name, self, &blk)
-        Shoulda.current_context = self
+        self.subcontexts << Context.new(name, self, &blk)
       end
 
       def setup(&blk)
