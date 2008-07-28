@@ -9,7 +9,7 @@ class PrivateHelpersTest < Test::Unit::TestCase # :nodoc:
       assert_equal [:a, :b], args
     end
 
-    should "return wanted opts in order" do      
+    should "return wanted opts in order" do
       args = [{:one => 1, :two => 2}]
       one, two = get_options!(args, :one, :two)
       assert_equal 1, one
@@ -21,6 +21,14 @@ class PrivateHelpersTest < Test::Unit::TestCase # :nodoc:
       assert_raises ArgumentError do
         get_options!(args, :one)
       end
+    end
+  end
+
+  class ::SomeModel; end
+  context "model_class" do
+    should "sniff the class constant from the test class" do
+      self.expects(:name).returns("SomeModelTest")
+      assert_equal SomeModel, model_class
     end
   end
 end
