@@ -8,9 +8,9 @@ module ThoughtBot # :nodoc:
     #     should_require_attributes :name, :phone_number
     #     should_not_allow_values_for :phone_number, "abcd", "1234"
     #     should_allow_values_for :phone_number, "(123) 456-7890"
-    #     
+    #
     #     should_protect_attributes :password
-    #     
+    #
     #     should_have_one :profile
     #     should_have_many :dogs
     #     should_have_many :messes, :through => :dogs
@@ -23,7 +23,7 @@ module ThoughtBot # :nodoc:
       # Ensures that the model cannot be saved if one of the attributes listed is not present.
       #
       # Options:
-      # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.  
+      # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
       #   Regexp or string.  Default = <tt>/blank/</tt>
       #
       # Example:
@@ -33,14 +33,11 @@ module ThoughtBot # :nodoc:
         message = get_options!(attributes, :message)
         message ||= /blank/
         klass = model_class
-        
+
         attributes.each do |attribute|
           should "require #{attribute} to be set" do
             object = klass.new
-            object.send("#{attribute}=", nil)
-            assert !object.valid?, "#{klass.name} does not require #{attribute}."
-            assert object.errors.on(attribute), "#{klass.name} does not require #{attribute}."
-            assert_contains(object.errors.on(attribute), message)
+            assert_bad_value(object, attribute, nil, message)
           end
         end
       end
@@ -49,7 +46,7 @@ module ThoughtBot # :nodoc:
       # Requires an existing record
       #
       # Options:
-      # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.  
+      # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
       #   Regexp or string.  Default = <tt>/taken/</tt>
       # * <tt>:scoped_to</tt> - field(s) to scope the uniqueness to.
       #
@@ -63,43 +60,33 @@ module ThoughtBot # :nodoc:
         message, scope = get_options!(attributes, :message, :scoped_to)
         scope = [*scope].compact
         message ||= /taken/
-        
+
         klass = model_class
         attributes.each do |attribute|
           attribute = attribute.to_sym
           should "require unique value for #{attribute}#{" scoped to #{scope.join(', ')}" unless scope.blank?}" do
             assert existing = klass.find(:first), "Can't find first #{klass}"
             object = klass.new
-            
-            object.send("#{attribute}=", existing.send(attribute))
+            existing_value = existing.send(attribute)
+
             if !scope.blank?
               scope.each do |s|
                 assert_respond_to object, :"#{s}=", "#{klass.name} doesn't seem to have a #{s} attribute."
                 object.send("#{s}=", existing.send(s))
               end
             end
-            
-            assert !object.valid?, "#{klass.name} does not require a unique value for #{attribute}."
-            assert object.errors.on(attribute), "#{klass.name} does not require a unique value for #{attribute}."
-            
-            assert_contains(object.errors.on(attribute), message)
-            
+            assert_bad_value(object, attribute, existing_value, message)
+
             # Now test that the object is valid when changing the scoped attribute
             # TODO:  There is a chance that we could change the scoped field
             # to a value that's already taken.  An alternative implementation
             # could actually find all values for scope and create a unique
-            # one.  
+            # one.
             if !scope.blank?
               scope.each do |s|
                 # Assume the scope is a foreign key if the field is nil
                 object.send("#{s}=", existing.send(s).nil? ? 1 : existing.send(s).next)
-              end
-
-              object.errors.clear
-              object.valid?
-              scope.each do |s|
-                assert_does_not_contain(object.errors.on(attribute), message, 
-                                        "after :#{s} set to #{object.send(s.to_sym)}")
+                assert_good_value(object, attribute, existing_value, message)
               end
             end
           end
@@ -128,7 +115,7 @@ module ThoughtBot # :nodoc:
           end
         end
       end
-  
+
       # Ensures that the attribute cannot be changed once the record has been created.
       # Requires an existing record.
       #
@@ -155,7 +142,7 @@ module ThoughtBot # :nodoc:
       # Requires an existing record
       #
       # Options:
-      # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.  
+      # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
       #   Regexp or string.  Default = <tt>/invalid/</tt>
       #
       # Example:
@@ -168,14 +155,11 @@ module ThoughtBot # :nodoc:
         bad_values.each do |v|
           should "not allow #{attribute} to be set to #{v.inspect}" do
             object = klass.new
-            object.send("#{attribute}=", v)
-            assert !object.valid?, "#{klass.name} allowed \"#{v}\" as a value for #{attribute}"
-            assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{v}\""
-            assert_contains(object.errors.on(attribute), message, "when set to \"#{v}\"")
+            assert_bad_value(object, attribute, v, message)
           end
         end
       end
-  
+
       # Ensures that the attribute can be set to the given values.
       # Requires an existing record
       #
@@ -188,9 +172,7 @@ module ThoughtBot # :nodoc:
         good_values.each do |v|
           should "allow #{attribute} to be set to #{v.inspect}" do
             object = klass.new
-            object.send("#{attribute}=", v)
-            object.valid?
-            assert_nil object.errors.on(attribute)
+            assert_good_value(object, attribute, v)
           end
         end
       end
@@ -199,9 +181,9 @@ module ThoughtBot # :nodoc:
       # Requires an existing record
       #
       # Options:
-      # * <tt>:short_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.  
+      # * <tt>:short_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
       #   Regexp or string.  Default = <tt>/short/</tt>
-      # * <tt>:long_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.  
+      # * <tt>:long_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
       #   Regexp or string.  Default = <tt>/long/</tt>
       #
       # Example:
@@ -211,7 +193,7 @@ module ThoughtBot # :nodoc:
         short_message, long_message = get_options!([opts], :short_message, :long_message)
         short_message ||= /short/
         long_message  ||= /long/
-        
+
         klass = model_class
         min_length = range.first
         max_length = range.last
@@ -221,11 +203,7 @@ module ThoughtBot # :nodoc:
           should "not allow #{attribute} to be less than #{min_length} chars long" do
             min_value = "x" * (min_length - 1)
             object = klass.new
-            object.send("#{attribute}=", min_value)
-            assert !object.valid?, "#{klass.name} allowed \"#{min_value}\" as a value for #{attribute}"
-            assert object.errors.on(attribute), 
-                   "There are no errors set on #{attribute} after being set to \"#{min_value}\""
-            assert_contains(object.errors.on(attribute), short_message, "when set to \"#{min_value}\"")
+            assert_bad_value(object, attribute, min_value, short_message)
           end
         end
 
@@ -233,38 +211,30 @@ module ThoughtBot # :nodoc:
           should "allow #{attribute} to be exactly #{min_length} chars long" do
             min_value = "x" * min_length
             object = klass.new
-            object.send("#{attribute}=", min_value)
-            object.valid?
-            assert_does_not_contain(object.errors.on(attribute), short_message, "when set to \"#{min_value}\"")
+            assert_good_value(object, attribute, min_value, short_message)
           end
         end
-    
+
         should "not allow #{attribute} to be more than #{max_length} chars long" do
           max_value = "x" * (max_length + 1)
           object = klass.new
-          object.send("#{attribute}=", max_value)
-          assert !object.valid?, "#{klass.name} allowed \"#{max_value}\" as a value for #{attribute}"
-          assert object.errors.on(attribute), 
-                 "There are no errors set on #{attribute} after being set to \"#{max_value}\""
-          assert_contains(object.errors.on(attribute), long_message, "when set to \"#{max_value}\"")
+          assert_bad_value(object, attribute, max_value, long_message)
         end
 
         unless same_length
           should "allow #{attribute} to be exactly #{max_length} chars long" do
             max_value = "x" * max_length
             object = klass.new
-            object.send("#{attribute}=", max_value)
-            object.valid?
-            assert_does_not_contain(object.errors.on(attribute), long_message, "when set to \"#{max_value}\"")
+            assert_good_value(object, attribute, max_value, long_message)
           end
         end
-      end  
-      
+      end
+
       # Ensures that the length of the attribute is at least a certain length
       # Requires an existing record
       #
       # Options:
-      # * <tt>:short_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.  
+      # * <tt>:short_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
       #   Regexp or string.  Default = <tt>/short/</tt>
       #
       # Example:
@@ -273,33 +243,28 @@ module ThoughtBot # :nodoc:
       def should_ensure_length_at_least(attribute, min_length, opts = {})
         short_message = get_options!([opts], :short_message)
         short_message ||= /short/
-        
+
         klass = model_class
-        
+
         if min_length > 0
           min_value = "x" * (min_length - 1)
           should "not allow #{attribute} to be less than #{min_length} chars long" do
             object = klass.new
-            object.send("#{attribute}=", min_value)
-            assert !object.valid?, "#{klass} allowed \"#{min_value}\" as a value for #{attribute}"
-            assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{min_value}\""
-            assert_contains(object.errors.on(attribute), short_message, "when set to \"#{min_value}\"")
+            assert_bad_value(object, attribute, min_value, short_message)
           end
         end
         should "allow #{attribute} to be at least #{min_length} chars long" do
           valid_value = "x" * (min_length)
           object = klass.new
-          object.send("#{attribute}=", valid_value)
-          object.valid?
-          assert_does_not_contain(object.errors.on(attribute), short_message, "when set to \"#{valid_value}\"")
+          assert_good_value(object, attribute, valid_value, short_message)
         end
       end
-      
+
       # Ensures that the length of the attribute is exactly a certain length
       # Requires an existing record
       #
       # Options:
-      # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.  
+      # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
       #   Regexp or string.  Default = <tt>/short/</tt>
       #
       # Example:
@@ -314,27 +279,19 @@ module ThoughtBot # :nodoc:
         should "not allow #{attribute} to be less than #{length} chars long" do
           min_value = "x" * (length - 1)
           object = klass.new
-          object.send("#{attribute}=", min_value)
-          assert !object.valid?, "#{klass} allowed \"#{min_value}\" as a value for #{attribute}"
-          assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{min_value}\""
-          assert_contains(object.errors.on(attribute), message, "when set to \"#{min_value}\"")
+          assert_bad_value(object, attribute, min_value, message)
         end
-        
+
         should "not allow #{attribute} to be greater than #{length} chars long" do
           max_value = "x" * (length + 1)
           object = klass.new
-          object.send("#{attribute}=", max_value)
-          assert !object.valid?, "#{klass} allowed \"#{max_value}\" as a value for #{attribute}"
-          assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{max_value}\""
-          assert_contains(object.errors.on(attribute), message, "when set to \"#{max_value}\"")
+          assert_bad_value(object, attribute, max_value, message)
         end
-        
+
         should "allow #{attribute} to be #{length} chars long" do
           valid_value = "x" * (length)
           object = klass.new
-          object.send("#{attribute}=", valid_value)
-          object.valid?
-          assert_does_not_contain(object.errors.on(attribute), message, "when set to \"#{valid_value}\"")
+          assert_good_value(object, attribute, valid_value, message)
         end
       end
 
@@ -342,9 +299,9 @@ module ThoughtBot # :nodoc:
       # Requires an existing record
       #
       # Options:
-      # * <tt>:low_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.  
+      # * <tt>:low_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
       #   Regexp or string.  Default = <tt>/included/</tt>
-      # * <tt>:high_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.  
+      # * <tt>:high_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
       #   Regexp or string.  Default = <tt>/included/</tt>
       #
       # Example:
@@ -354,7 +311,7 @@ module ThoughtBot # :nodoc:
         low_message, high_message = get_options!([opts], :low_message, :high_message)
         low_message  ||= /included/
         high_message ||= /included/
-        
+
         klass = model_class
         min   = range.first
         max   = range.last
@@ -362,43 +319,33 @@ module ThoughtBot # :nodoc:
         should "not allow #{attribute} to be less than #{min}" do
           v = min - 1
           object = klass.new
-          object.send("#{attribute}=", v)
-          assert !object.valid?, "#{klass} allowed \"#{v}\" as a value for #{attribute}"
-          assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{v}\""
-          assert_contains(object.errors.on(attribute), low_message, "when set to \"#{v}\"")
+          assert_bad_value(object, attribute, v, low_message)
         end
 
         should "allow #{attribute} to be #{min}" do
           v = min
           object = klass.new
-          object.send("#{attribute}=", v)
-          object.valid?
-          assert_does_not_contain(object.errors.on(attribute), low_message, "when set to \"#{v}\"")
+          assert_good_value(object, attribute, v, low_message)
         end
 
         should "not allow #{attribute} to be more than #{max}" do
           v = max + 1
           object = klass.new
-          object.send("#{attribute}=", v)
-          assert !object.valid?, "#{klass} allowed \"#{v}\" as a value for #{attribute}"
-          assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{v}\""
-          assert_contains(object.errors.on(attribute), high_message, "when set to \"#{v}\"")
+          assert_bad_value(object, attribute, v, high_message)
         end
 
         should "allow #{attribute} to be #{max}" do
           v = max
           object = klass.new
-          object.send("#{attribute}=", v)
-          object.valid?
-          assert_does_not_contain(object.errors.on(attribute), high_message, "when set to \"#{v}\"")
+          assert_good_value(object, attribute, v, high_message)
         end
-      end    
-      
+      end
+
       # Ensure that the attribute is numeric
       # Requires an existing record
       #
       # Options:
-      # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.  
+      # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
       #   Regexp or string.  Default = <tt>/number/</tt>
       #
       # Example:
@@ -412,9 +359,7 @@ module ThoughtBot # :nodoc:
           attribute = attribute.to_sym
           should "only allow numeric values for #{attribute}" do
             object = klass.new
-            object.send("#{attribute}=", "abcd")
-            assert !object.valid?, "#{klass} allowed \"abcd\" as a value for #{attribute}"
-            assert_contains(object.errors.on(attribute), message)
+            assert_bad_value(object, attribute, "abcd", message)
           end
         end
       end
@@ -422,10 +367,10 @@ module ThoughtBot # :nodoc:
       # Ensures that the has_many relationship exists.  Will also test that the
       # associated table has the required columns.  Works with polymorphic
       # associations.
-      # 
+      #
       # Options:
       # * <tt>:through</tt> - association name for <tt>has_many :through</tt>
-      # * <tt>:dependent</tt> - tests that the association makes use of the dependent option.      
+      # * <tt>:dependent</tt> - tests that the association makes use of the dependent option.
       #
       # Example:
       #   should_have_many :friends
@@ -453,11 +398,11 @@ module ThoughtBot # :nodoc:
             end
 
             if dependent
-              assert_equal dependent.to_s, 
-                           reflection.options[:dependent].to_s, 
+              assert_equal dependent.to_s,
+                           reflection.options[:dependent].to_s,
                            "#{associated_klass.name} should have #{dependent} dependency"
             end
-            
+
             # Check for the existence of the foreign key on the other table
             unless reflection.options[:through]
               if reflection.options[:foreign_key]
@@ -467,7 +412,7 @@ module ThoughtBot # :nodoc:
               else
                 fk = reflection.primary_key_name
               end
-              
+
               assert associated_klass.column_names.include?(fk.to_s),
                      "#{associated_klass.name} does not have a #{fk} foreign key."
             end
@@ -490,7 +435,7 @@ module ThoughtBot # :nodoc:
             reflection = klass.reflect_on_association(association)
             assert reflection, "#{klass.name} does not have any relationship to #{association}"
             assert_equal :has_one, reflection.macro
-            
+
             associated_klass = (reflection.options[:class_name] || association.to_s.camelize).constantize
 
             if reflection.options[:foreign_key]
@@ -498,17 +443,17 @@ module ThoughtBot # :nodoc:
             elsif reflection.options[:as]
               fk = reflection.options[:as].to_s.foreign_key
               fk_type = fk.gsub(/_id$/, '_type')
-              assert associated_klass.column_names.include?(fk_type), 
-                     "#{associated_klass.name} does not have a #{fk_type} column."            
+              assert associated_klass.column_names.include?(fk_type),
+                     "#{associated_klass.name} does not have a #{fk_type} column."
             else
               fk = klass.name.foreign_key
             end
-            assert associated_klass.column_names.include?(fk.to_s), 
-                   "#{associated_klass.name} does not have a #{fk} foreign key."            
+            assert associated_klass.column_names.include?(fk.to_s),
+                   "#{associated_klass.name} does not have a #{fk} foreign key."
           end
         end
       end
-  
+
       # Ensures that the has_and_belongs_to_many relationship exists, and that the join
       # table is in place.
       #
@@ -528,7 +473,7 @@ module ThoughtBot # :nodoc:
           end
         end
       end
-  
+
       # Ensure that the belongs_to relationship exists.
       #
       #   should_belong_to :parent
@@ -550,7 +495,7 @@ module ThoughtBot # :nodoc:
           end
         end
       end
-      
+
       # Ensure that the given class methods are defined on the model.
       #
       #   should_have_class_methods :find, :destroy
@@ -597,10 +542,10 @@ module ThoughtBot # :nodoc:
       end
 
       # Ensure that the given column is defined on the models backing SQL table.  The options are the same as
-      # the instance variables defined on the column definition:  :precision, :limit, :default, :null, 
+      # the instance variables defined on the column definition:  :precision, :limit, :default, :null,
       # :primary, :type, :scale, and :sql_type.
       #
-      #   should_have_db_column :email, :type => "string", :default => nil,   :precision => nil, :limit    => 255, 
+      #   should_have_db_column :email, :type => "string", :default => nil,   :precision => nil, :limit    => 255,
       #                                 :null => true,     :primary => false, :scale     => nil, :sql_type => 'varchar(255)'
       #
       def should_have_db_column(name, opts = {})
@@ -618,7 +563,7 @@ module ThoughtBot # :nodoc:
 
       # Ensures that there are DB indices on the given columns or tuples of columns.
       # Also aliased to should_have_index for readability
-      #   
+      #
       #   should_have_indices :email, :name, [:commentable_type, :commentable_id]
       #   should_have_index :age
       #
@@ -635,11 +580,11 @@ module ThoughtBot # :nodoc:
       end
 
       alias_method :should_have_index, :should_have_indices
-      
+
       # Ensures that the model cannot be saved if one of the attributes listed is not accepted.
       #
       # Options:
-      # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.  
+      # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
       #   Regexp or string.  Default = <tt>/must be accepted/</tt>
       #
       # Example:
@@ -649,21 +594,17 @@ module ThoughtBot # :nodoc:
         message = get_options!(attributes, :message)
         message ||= /must be accepted/
         klass = model_class
-    
+
         attributes.each do |attribute|
           should "require #{attribute} to be accepted" do
             object = klass.new
-            object.send("#{attribute}=", false)
-
-            assert !object.valid?, "#{klass.name} does not require acceptance of #{attribute}."
-            assert object.errors.on(attribute), "#{klass.name} does not require acceptance of #{attribute}."
-            assert_contains(object.errors.on(attribute), message)
+            assert_bad_value(object, attribute, false, message)
           end
         end
       end
-      
+
       private
-      
+
       include ThoughtBot::Shoulda::Private
     end
   end

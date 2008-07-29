@@ -179,28 +179,28 @@ module ThoughtBot # :nodoc:
       end
 
       # Asserts that an Active Record model validates with the passed
-      # <tt>value</tt> by making sure the <tt>message_to_avoid</tt> is not
+      # <tt>value</tt> by making sure the <tt>error_message_to_avoid</tt> is not
       # contained within the list of errors for that attribute.
       #
       #   assert_good_value(User.new, :email, "user@example.com") #=> passes
       #   assert_good_value(User.new, :ssn, "123456789", /length/) #=> passes
-      def assert_good_value(object, attribute, value, message_to_avoid = //)
+      def assert_good_value(object, attribute, value, error_message_to_avoid = //)
         object.send("#{attribute}=", value)
         object.valid?
-        assert_does_not_contain(object.errors.on(attribute), message_to_avoid, "when set to \"#{value}\"")
+        assert_does_not_contain(object.errors.on(attribute), error_message_to_avoid, "when set to #{value.inspect}")
       end
 
       # Asserts that an Active Record model invalidates the passed
-      # <tt>value</tt> by making sure the <tt>message_to_expect</tt> is
+      # <tt>value</tt> by making sure the <tt>error_message_to_expect</tt> is
       # contained within the list of errors for that attribute.
       #
       #   assert_bad_value(User.new, :email, "invalid") #=> passes
       #   assert_bad_value(User.new, :ssn, "123", /length/) #=> passes
-      def assert_bad_value(object, attribute, value, message_to_expect = /invalid/)
+      def assert_bad_value(object, attribute, value, error_message_to_expect = /invalid/)
         object.send("#{attribute}=", value)
-        assert !object.valid?, "#{object.class} allowed \"#{value}\" as a value for #{attribute}"
-        assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{value}\""
-        assert_contains(object.errors.on(attribute), message_to_expect, "when set to \"#{value}\"")
+        assert !object.valid?, "#{object.class} allowed #{value.inspect} as a value for #{attribute}"
+        assert object.errors.on(attribute), "There are no errors on #{attribute} after being set to #{value.inspect}"
+        assert_contains(object.errors.on(attribute), error_message_to_expect, "when set to #{value.inspect}")
       end
 
       def pretty_error_messages(obj)
