@@ -6,16 +6,16 @@ module ThoughtBot # :nodoc:
           extend ThoughtBot::Shoulda::General::ClassMethods
         end
       end
-      
+
       module ClassMethods
         # Loads all fixture files (<tt>test/fixtures/*.yml</tt>)
         def load_all_fixtures
-          all_fixtures = Dir.glob(File.join(Test::Unit::TestCase.fixture_path, "*.yml")).collect do |f| 
+          all_fixtures = Dir.glob(File.join(Test::Unit::TestCase.fixture_path, "*.yml")).collect do |f|
             File.basename(f, '.yml').to_sym
           end
           fixtures *all_fixtures
         end
-        
+
         # Macro that creates a test asserting a change between the return value
         # of an expression that is run before and after the current setup block
         # is run. This is similar to Active Support's <tt>assert_difference</tt>
@@ -44,7 +44,7 @@ module ThoughtBot # :nodoc:
         #   should_change "@post.title"                # => assert the value changed in some way
         #   should_change "@post.title" :from => "old" # => assert the value changed to anything other than "old"
         #   should_change "@post.title" :to   => "new" # => assert the value changed from anything other than "new"
-        def should_change(expression, options = {}) 
+        def should_change(expression, options = {})
           by, from, to = get_options!([options], :by, :from, :to)
           stmt = "change #{expression.inspect}"
           stmt << " from #{from.inspect}" if from
@@ -62,7 +62,7 @@ module ThoughtBot # :nodoc:
             assert_equal old_value + by, new_value if by
           end
         end
-        
+
         # Macro that creates a test asserting no change between the return value
         # of an expression that is run before and after the current setup block
         # is run. This is the logical opposite of should_change.
@@ -85,7 +85,7 @@ module ThoughtBot # :nodoc:
           end
         end
       end
-      
+
       # Prints a message to stdout, tagged with the name of the calling method.
       def report!(msg = "")
         puts("#{caller.first}: #{msg}")
@@ -117,7 +117,7 @@ module ThoughtBot # :nodoc:
         case x
         when Regexp: assert(collection.detect { |e| e =~ x }, msg)
         else         assert(collection.include?(x), msg)
-        end        
+        end
       end
 
       # Asserts that the given collection does not contain item x.  If x is a regular expression, ensure that
@@ -128,9 +128,9 @@ module ThoughtBot # :nodoc:
         case x
         when Regexp: assert(!collection.detect { |e| e =~ x }, msg)
         else         assert(!collection.include?(x), msg)
-        end        
+        end
       end
-      
+
       # Asserts that the given object can be saved
       #
       #  assert_save User.new(params)
@@ -145,21 +145,21 @@ module ThoughtBot # :nodoc:
       def assert_valid(obj)
         assert obj.valid?, "Errors: #{pretty_error_messages obj}"
       end
-      
+
       # Asserts that an email was delivered.  Can take a block that can further
-      # narrow down the types of emails you're expecting. 
+      # narrow down the types of emails you're expecting.
       #
-      #  assert_sent_email 
+      #  assert_sent_email
       #
       # Passes if ActionMailer::Base.deliveries has an email
-      #  
+      #
       #  assert_sent_email do |email|
       #    email.subject =~ /hi there/ && email.to.include?('none@none.com')
       #  end
-      #  
+      #
       # Passes if there is an email with subject containing 'hi there' and
       # 'none@none.com' as one of the recipients.
-      #    
+      #
       def assert_sent_email
         emails = ActionMailer::Base.deliveries
         assert !emails.empty?, "No emails were sent"
@@ -178,10 +178,34 @@ module ThoughtBot # :nodoc:
         assert ActionMailer::Base.deliveries.empty?, msg
       end
 
+      # Asserts that an Active Record model validates with the passed
+      # <tt>value</tt> by making sure the <tt>message_to_avoid</tt> is not
+      # contained within the list of errors for that attribute.
+      #
+      #   assert_good_value(User.new, :email, "user@example.com") #=> passes
+      #   assert_good_value(User.new, :ssn, "123456789", /length/) #=> passes
+      def assert_good_value(object, attribute, value, message_to_avoid = //)
+        object.send("#{attribute}=", value)
+        object.valid?
+        assert_does_not_contain(object.errors.on(attribute), message_to_avoid, "when set to \"#{value}\"")
+      end
+
+      # Asserts that an Active Record model invalidates the passed
+      # <tt>value</tt> by making sure the <tt>message_to_expect</tt> is
+      # contained within the list of errors for that attribute.
+      #
+      #   assert_bad_value(User.new, :email, "invalid") #=> passes
+      #   assert_bad_value(User.new, :ssn, "123", /length/) #=> passes
+      def assert_bad_value(object, attribute, value, message_to_expect = /invalid/)
+        object.send("#{attribute}=", value)
+        assert !object.valid?, "#{object.class} allowed \"#{value}\" as a value for #{attribute}"
+        assert object.errors.on(attribute), "There are no errors set on #{attribute} after being set to \"#{value}\""
+        assert_contains(object.errors.on(attribute), message_to_expect, "when set to \"#{value}\"")
+      end
+
       def pretty_error_messages(obj)
         obj.errors.map { |a, m| "#{a} #{m} (#{obj.send(a).inspect})" }
       end
-      
     end
   end
 end

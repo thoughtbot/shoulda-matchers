@@ -14,7 +14,7 @@ class HelpersTest < Test::Unit::TestCase # :nodoc:
     should "have sent an email" do
       assert_sent_email
 
-      assert_raises(Test::Unit::AssertionFailedError) do 
+      assert_raises(Test::Unit::AssertionFailedError) do
         assert_did_not_send_email
       end
     end
@@ -26,7 +26,7 @@ class HelpersTest < Test::Unit::TestCase # :nodoc:
     end
 
     should "not find an email that doesn't exist" do
-      assert_raises(Test::Unit::AssertionFailedError) do 
+      assert_raises(Test::Unit::AssertionFailedError) do
         assert_sent_email do |e|
           e.subject =~ /whatever/
         end
@@ -42,7 +42,7 @@ class HelpersTest < Test::Unit::TestCase # :nodoc:
     should "not have sent an email" do
       assert_did_not_send_email
 
-      assert_raises(Test::Unit::AssertionFailedError) do 
+      assert_raises(Test::Unit::AssertionFailedError) do
         assert_sent_email
       end
     end
@@ -52,21 +52,21 @@ class HelpersTest < Test::Unit::TestCase # :nodoc:
     setup do
       @a = ['abc', 'def', 3]
     end
-    
+
     [/b/, 'abc', 3].each do |x|
       should "contain #{x.inspect}" do
-        assert_raises(Test::Unit::AssertionFailedError) do 
+        assert_raises(Test::Unit::AssertionFailedError) do
           assert_does_not_contain @a, x
         end
         assert_contains @a, x
       end
     end
-    
+
     should "not contain 'wtf'" do
       assert_raises(Test::Unit::AssertionFailedError) {assert_contains @a, 'wtf'}
       assert_does_not_contain @a, 'wtf'
     end
-    
+
     should "be the same as another array, ordered differently" do
       assert_same_elements(@a, [3, "def", "abc"])
       assert_raises(Test::Unit::AssertionFailedError) do
@@ -77,7 +77,7 @@ class HelpersTest < Test::Unit::TestCase # :nodoc:
       end
     end
   end
-  
+
   context "an array of values" do
     setup do
       @a = [1, 2, "(3)"]
@@ -106,6 +106,50 @@ class HelpersTest < Test::Unit::TestCase # :nodoc:
       should_change "@a[1]", :from => 2, :to => "b"
       should_change "@a[2]", :from => /\d/, :to => /\w/
       should_change "@a[3]", :to => String
+    end
+  end
+
+  context "assert_good_value" do
+    should "validate a good email address" do
+      assert_good_value User.new, :email, "good@example.com"
+    end
+
+    should "validate a good SSN with a custom message" do
+      assert_good_value User.new, :ssn, "xxxxxxxxx", /length/
+    end
+
+    should "fail to validate a bad email address" do
+      assert_raises Test::Unit::AssertionFailedError do
+        assert_good_value User.new, :email, "bad"
+      end
+    end
+
+    should "fail to validate a bad SSN that is too short" do
+      assert_raises Test::Unit::AssertionFailedError do
+        assert_good_value User.new, :ssn, "x", /length/
+      end
+    end
+  end
+
+  context "assert_bad_value" do
+    should "invalidate a bad email address" do
+      assert_bad_value User.new, :email, "bad"
+    end
+
+    should "invalidate a bad SSN with a custom message" do
+      assert_bad_value User.new, :ssn, "x", /length/
+    end
+
+    should "fail to invalidate a good email address" do
+      assert_raises Test::Unit::AssertionFailedError do
+        assert_bad_value User.new, :email, "good@example.com"
+      end
+    end
+
+    should "fail to invalidate a good SSN" do
+      assert_raises Test::Unit::AssertionFailedError do
+        assert_bad_value User.new, :ssn, "xxxxxxxxx", /length/
+      end
     end
   end
 end
