@@ -603,9 +603,10 @@ module ThoughtBot # :nodoc:
         end
       end
 
-      # Ensures that the model has a named scope named scope_name that matches the definition given.
-      # You can optionally specify the arguments that will be passed into the named_scope after the
-      # scope name.
+      # Ensures that the model has a method named scope_name that returns a NamedScope object with the
+      # proxy options set to the options you supply.  scope_name can be either a symbol, or a method
+      # call which will be evaled against the model.  The eval'd method call has access to all the same
+      # instance variables that a should statement would.
       #
       # Options: Any of the options that the named scope would pass on to find.
       #
@@ -625,8 +626,8 @@ module ThoughtBot # :nodoc:
       #
       # You can test lambdas or methods that return ActiveRecord#scoped calls:
       #
-      #   should_have_named_scope :recent, 5, :limit => 5
-      #   should_have_named_scope :recent, 1, :limit => 1
+      #   should_have_named_scope 'recent(5)', :limit => 5
+      #   should_have_named_scope 'recent(1)', :limit => 1
       #
       # Passes for 
       #   named_scope :recent, lambda {|c| {:limit => c}}
@@ -637,18 +638,14 @@ module ThoughtBot # :nodoc:
       #     scoped(:limit => c)
       #   end
       #
-      def should_have_named_scope(scope_name, *args)
+      def should_have_named_scope(scope_call, *args)
         klass = model_class
         scope_opts = args.extract_options!
-        scope_args = args
+        scope_call = scope_call.to_s
 
-        context_name = "#{model_class}.#{scope_name}"
-        context_name << "(#{scope_args.map(&:inspect).join(', ')})" unless scope_args.empty?
-
-        context context_name do
+        context scope_call do
           setup do
-            assert_respond_to klass, scope_name
-            @scope = klass.send(scope_name, *scope_args)
+            @scope = eval("#{klass}.#{scope_call}")
           end
 
           should "return a scope object" do

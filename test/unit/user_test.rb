@@ -13,9 +13,15 @@ class UserTest < Test::Unit::TestCase
 
   should_have_named_scope :old,       :conditions => "age > 50"
   should_have_named_scope :eighteen,  :conditions => { :age => 18 }
-  should_have_named_scope :recent, 5, :limit => 5
-  should_have_named_scope :recent, 1, :limit => 1
-  should_have_named_scope :recent_via_method, 7, :limit => 7
+  
+  should_have_named_scope 'recent(5)',            :limit => 5
+  should_have_named_scope 'recent(1)',            :limit => 1
+  should_have_named_scope 'recent_via_method(7)', :limit => 7
+
+  context "when given an instance variable" do
+    setup { @count = 2 }
+    should_have_named_scope 'recent(@count)', :limit => 2
+  end
 
   should_not_allow_values_for :email, "blah", "b lah"
   should_allow_values_for :email, "a@b.com", "asdf@asdf.com"
