@@ -603,6 +603,66 @@ module ThoughtBot # :nodoc:
         end
       end
 
+      # Ensures that the model has a named scope named scope_name that matches the definition given.
+      # You can optionally specify the arguments that will be passed into the named_scope after the
+      # scope name.
+      #
+      # Options: Any of the options that the named scope would pass on to find.
+      #
+      # Example:
+      #
+      #   should_have_named_scope :visible, :conditions => {:visible => true}
+      #
+      # Passes for 
+      #
+      #   named_scope :visible, :conditions => {:visible => true}
+      #
+      # Or for
+      #
+      #   def self.visible
+      #     scoped(:conditions => {:visible => true})
+      #   end
+      #
+      # You can test lambdas or methods that return ActiveRecord#scoped calls:
+      #
+      #   should_have_named_scope :recent, 5, :limit => 5
+      #   should_have_named_scope :recent, 1, :limit => 1
+      #
+      # Passes for 
+      #   named_scope :recent, lambda {|c| {:limit => c}}
+      #
+      # Or for
+      #
+      #   def self.recent(c)
+      #     scoped(:limit => c)
+      #   end
+      #
+      def should_have_named_scope(scope_name, *args)
+        klass = model_class
+        scope_opts = args.extract_options!
+        scope_args = args
+
+        context_name = "#{model_class}.#{scope_name}"
+        context_name << "(#{scope_args.map(&:inspect).join(', ')})" unless scope_args.empty?
+
+        context context_name do
+          setup do
+            assert_respond_to klass, scope_name
+            @scope = klass.send(scope_name, *scope_args)
+          end
+
+          should "return a scope object" do
+            assert_equal ::ActiveRecord::NamedScope::Scope, @scope.class
+          end
+
+          unless scope_opts.empty?
+            should "scope itself to #{scope_opts.inspect}" do
+              assert_equal scope_opts, @scope.proxy_options
+            end
+          end
+        end
+      end
+
       private
 
       include ThoughtBot::Shoulda::Private

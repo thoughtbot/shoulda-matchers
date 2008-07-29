@@ -11,6 +11,12 @@ class UserTest < Test::Unit::TestCase
   should_have_indices :email, :name, [:email, :name]
   should_have_index :age
 
+  should_have_named_scope :old,       :conditions => "age > 50"
+  should_have_named_scope :eighteen,  :conditions => { :age => 18 }
+  should_have_named_scope :recent, 5, :limit => 5
+  should_have_named_scope :recent, 1, :limit => 1
+  should_have_named_scope :recent_via_method, 7, :limit => 7
+
   should_not_allow_values_for :email, "blah", "b lah"
   should_allow_values_for :email, "a@b.com", "asdf@asdf.com"
   should_ensure_length_in_range :email, 1..100
