@@ -129,6 +129,20 @@ class HelpersTest < Test::Unit::TestCase # :nodoc:
         assert_good_value User.new, :ssn, "x", /length/
       end
     end
+
+    should "accept a class as the first argument" do
+      assert_good_value User, :email, "good@example.com"
+    end
+
+    context "with an instance variable" do
+      setup do
+        @product = Product.new(:tangible => true)
+      end
+
+      should "use that instance variable" do
+        assert_good_value Product, :price, "9999", /included/
+      end
+    end
   end
 
   context "assert_bad_value" do
@@ -149,6 +163,20 @@ class HelpersTest < Test::Unit::TestCase # :nodoc:
     should "fail to invalidate a good SSN" do
       assert_raises Test::Unit::AssertionFailedError do
         assert_bad_value User.new, :ssn, "xxxxxxxxx", /length/
+      end
+    end
+
+    should "accept a class as the first argument" do
+      assert_bad_value User, :email, "bad"
+    end
+
+    context "with an instance variable" do
+      setup do
+        @product = Product.new(:tangible => true)
+      end
+
+      should "use that instance variable" do
+        assert_bad_value Product, :price, "0", /included/
       end
     end
   end
