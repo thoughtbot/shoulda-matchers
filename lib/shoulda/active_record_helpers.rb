@@ -36,8 +36,7 @@ module ThoughtBot # :nodoc:
 
         attributes.each do |attribute|
           should "require #{attribute} to be set" do
-            object = klass.new
-            assert_bad_value(object, attribute, nil, message)
+            assert_bad_value(klass, attribute, nil, message)
           end
         end
       end
@@ -154,8 +153,7 @@ module ThoughtBot # :nodoc:
         klass = model_class
         bad_values.each do |v|
           should "not allow #{attribute} to be set to #{v.inspect}" do
-            object = klass.new
-            assert_bad_value(object, attribute, v, message)
+            assert_bad_value(klass, attribute, v, message)
           end
         end
       end
@@ -171,8 +169,7 @@ module ThoughtBot # :nodoc:
         klass = model_class
         good_values.each do |v|
           should "allow #{attribute} to be set to #{v.inspect}" do
-            object = klass.new
-            assert_good_value(object, attribute, v)
+            assert_good_value(klass, attribute, v)
           end
         end
       end
@@ -202,30 +199,26 @@ module ThoughtBot # :nodoc:
         if min_length > 0
           should "not allow #{attribute} to be less than #{min_length} chars long" do
             min_value = "x" * (min_length - 1)
-            object = klass.new
-            assert_bad_value(object, attribute, min_value, short_message)
+            assert_bad_value(klass, attribute, min_value, short_message)
           end
         end
 
         if min_length > 0
           should "allow #{attribute} to be exactly #{min_length} chars long" do
             min_value = "x" * min_length
-            object = klass.new
-            assert_good_value(object, attribute, min_value, short_message)
+            assert_good_value(klass, attribute, min_value, short_message)
           end
         end
 
         should "not allow #{attribute} to be more than #{max_length} chars long" do
           max_value = "x" * (max_length + 1)
-          object = klass.new
-          assert_bad_value(object, attribute, max_value, long_message)
+          assert_bad_value(klass, attribute, max_value, long_message)
         end
 
         unless same_length
           should "allow #{attribute} to be exactly #{max_length} chars long" do
             max_value = "x" * max_length
-            object = klass.new
-            assert_good_value(object, attribute, max_value, long_message)
+            assert_good_value(klass, attribute, max_value, long_message)
           end
         end
       end
@@ -249,14 +242,12 @@ module ThoughtBot # :nodoc:
         if min_length > 0
           min_value = "x" * (min_length - 1)
           should "not allow #{attribute} to be less than #{min_length} chars long" do
-            object = klass.new
-            assert_bad_value(object, attribute, min_value, short_message)
+            assert_bad_value(klass, attribute, min_value, short_message)
           end
         end
         should "allow #{attribute} to be at least #{min_length} chars long" do
           valid_value = "x" * (min_length)
-          object = klass.new
-          assert_good_value(object, attribute, valid_value, short_message)
+          assert_good_value(klass, attribute, valid_value, short_message)
         end
       end
 
@@ -278,20 +269,17 @@ module ThoughtBot # :nodoc:
 
         should "not allow #{attribute} to be less than #{length} chars long" do
           min_value = "x" * (length - 1)
-          object = klass.new
-          assert_bad_value(object, attribute, min_value, message)
+          assert_bad_value(klass, attribute, min_value, message)
         end
 
         should "not allow #{attribute} to be greater than #{length} chars long" do
           max_value = "x" * (length + 1)
-          object = klass.new
-          assert_bad_value(object, attribute, max_value, message)
+          assert_bad_value(klass, attribute, max_value, message)
         end
 
         should "allow #{attribute} to be #{length} chars long" do
           valid_value = "x" * (length)
-          object = klass.new
-          assert_good_value(object, attribute, valid_value, message)
+          assert_good_value(klass, attribute, valid_value, message)
         end
       end
 
@@ -318,26 +306,22 @@ module ThoughtBot # :nodoc:
 
         should "not allow #{attribute} to be less than #{min}" do
           v = min - 1
-          object = klass.new
-          assert_bad_value(object, attribute, v, low_message)
+          assert_bad_value(klass, attribute, v, low_message)
         end
 
         should "allow #{attribute} to be #{min}" do
           v = min
-          object = klass.new
-          assert_good_value(object, attribute, v, low_message)
+          assert_good_value(klass, attribute, v, low_message)
         end
 
         should "not allow #{attribute} to be more than #{max}" do
           v = max + 1
-          object = klass.new
-          assert_bad_value(object, attribute, v, high_message)
+          assert_bad_value(klass, attribute, v, high_message)
         end
 
         should "allow #{attribute} to be #{max}" do
           v = max
-          object = klass.new
-          assert_good_value(object, attribute, v, high_message)
+          assert_good_value(klass, attribute, v, high_message)
         end
       end
 
@@ -358,8 +342,7 @@ module ThoughtBot # :nodoc:
         attributes.each do |attribute|
           attribute = attribute.to_sym
           should "only allow numeric values for #{attribute}" do
-            object = klass.new
-            assert_bad_value(object, attribute, "abcd", message)
+            assert_bad_value(klass, attribute, "abcd", message)
           end
         end
       end
@@ -597,8 +580,7 @@ module ThoughtBot # :nodoc:
 
         attributes.each do |attribute|
           should "require #{attribute} to be accepted" do
-            object = klass.new
-            assert_bad_value(object, attribute, false, message)
+            assert_bad_value(klass, attribute, false, message)
           end
         end
       end
@@ -614,7 +596,7 @@ module ThoughtBot # :nodoc:
       #
       #   should_have_named_scope :visible, :conditions => {:visible => true}
       #
-      # Passes for 
+      # Passes for
       #
       #   named_scope :visible, :conditions => {:visible => true}
       #
@@ -629,7 +611,7 @@ module ThoughtBot # :nodoc:
       #   should_have_named_scope 'recent(5)', :limit => 5
       #   should_have_named_scope 'recent(1)', :limit => 1
       #
-      # Passes for 
+      # Passes for
       #   named_scope :recent, lambda {|c| {:limit => c}}
       #
       # Or for
