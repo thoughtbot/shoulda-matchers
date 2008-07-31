@@ -39,5 +39,15 @@ class PostsControllerTest < Test::Unit::TestCase
       resource.create.params = { :title => "first post", :body => 'blah blah blah'}
       resource.update.params = { :title => "changed" }
     end
+
+    context "viewing posts for a user" do
+      setup do
+        get :index, :user_id => users(:first)
+      end
+      should_respond_with :success
+      should_assign_to :user, :posts
+      should_not_assign_to :foo, :bar
+    end
   end
+
 end

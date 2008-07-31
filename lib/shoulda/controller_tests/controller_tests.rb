@@ -336,25 +336,31 @@ module ThoughtBot # :nodoc:
           should_set_the_flash_to nil
         end
         
-        # Macro that creates a test asserting that the controller assigned to @name
+        # Macro that creates a test asserting that the controller assigned to
+        # each of the named instance variable(s).
         #
         # Example:
         #
-        #   should_assign_to :user
-        def should_assign_to(name)
-          should "assign @#{name}" do
-            assert assigns(name.to_sym), "The action isn't assigning to @#{name}"
+        #   should_assign_to :user, :posts
+        def should_assign_to(*names)
+          names.each do |name|
+            should "assign @#{name}" do
+              assert assigns(name.to_sym), "The action isn't assigning to @#{name}"
+            end
           end
         end
 
-        # Macro that creates a test asserting that the controller did not assign to @name
+        # Macro that creates a test asserting that the controller did not assign to
+        # any of the named instance variable(s).
         #
         # Example:
         #
-        #   should_not_assign_to :user
-        def should_not_assign_to(name)
-          should "not assign to @#{name}" do
-            assert !assigns(name.to_sym), "@#{name} was visible"
+        #   should_not_assign_to :user, :posts
+        def should_not_assign_to(*names)
+          names.each do |name|
+            should "not assign to @#{name}" do
+              assert !assigns(name.to_sym), "@#{name} was visible"
+            end
           end
         end
 
