@@ -17,10 +17,6 @@ class ProductTest < ActiveSupport::TestCase
       @product = Product.new(:tangible => true)
     end
 
-    should "be tangible" do
-      assert @product.tangible?
-    end
-
     should_require_attributes :price
     should_ensure_value_in_range :price, 1..9999
     should_ensure_value_in_range :weight, 1..100
