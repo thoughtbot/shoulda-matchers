@@ -372,7 +372,10 @@ module ThoughtBot # :nodoc:
             assert reflection, "#{klass.name} does not have any relationship to #{association}"
             assert_equal :has_many, reflection.macro
 
-            associated_klass = (reflection.options[:class_name] || association.to_s.classify).constantize
+            associated_klass_name = reflection.options[:class_name]
+            associated_klass_name = reflection.options[:source].to_s.classify if associated_klass_name.blank?
+            associated_klass_name = association.to_s.classify                 if associated_klass_name.blank?
+            associated_klass = associated_klass_name.constantize
 
             if through
               through_reflection = klass.reflect_on_association(through)
