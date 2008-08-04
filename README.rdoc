@@ -114,10 +114,22 @@ More to come here, but have fun with what's there.
   assert_contains(['a', '1'], /\d/)
   assert_contains(['a', '1'], 'a')
 
+=== 3rd Party and Application Specific Macros
+
+Any *.rb file under RAILS_ROOT/test/shoulda_macros/ or vendor/(plugins|gems)/gem_name/shoulda_macros/ will be automatically required when you run your tests.  This allows you to distribute macros with your plugins, or to organize the macros inside your application.  Remember to add your macro to Test::Unit::TestCase in the macro file:
+
+  # test/shoulda_macros/security.rb
+  class Test::Unit::TestCase
+    def self.should_be_denied(opts = {})
+      should_set_the_flash_to(opts[:flash] || /Please log in/i)
+      should_redirect_to(opts[:redirect]   || 'login_url')
+    end
+  end
+
 = Credits
 
 Shoulda is maintained by {Tammer Saleh}[mailto:tsaleh@thoughtbot.com], and is funded by Thoughtbot[http://www.thoughtbot.com], inc. 
 
 = License
 
-Shoulda is Copyright © 2006-2007 Tammer Saleh, Thoughtbot. It is free software, and may be redistributed under the terms specified in the MIT-LICENSE file.
+Shoulda is Copyright © 2006-2008 Tammer Saleh, Thoughtbot. It is free software, and may be redistributed under the terms specified in the MIT-LICENSE file.
