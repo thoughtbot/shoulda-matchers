@@ -474,7 +474,7 @@ module ThoughtBot # :nodoc:
             assert_equal :belongs_to, reflection.macro
 
             unless reflection.options[:polymorphic]
-              associated_klass = (reflection.options[:class_name] || association.to_s.classify).constantize
+              associated_klass = (reflection.options[:class_name] || association.to_s.camelize).constantize
               fk = reflection.options[:foreign_key] || reflection.primary_key_name
               assert klass.column_names.include?(fk.to_s), "#{klass.name} does not have a #{fk} foreign key."
             end
