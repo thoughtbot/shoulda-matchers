@@ -1,6 +1,7 @@
 namespace :shoulda do
   desc "List the names of the test methods in a specification like format"
   task :list do
+    $LOAD_PATH.unshift("test")
 
     require 'test/unit'
     require 'rubygems'
@@ -13,7 +14,7 @@ namespace :shoulda do
     test_files.each do |file|
       load file
       klass = File.basename(file, '.rb').classify.constantize
-      
+
       puts klass.name.gsub('Test', '')
 
       test_methods = klass.instance_methods.grep(/^test/).map {|s| s.gsub(/^test: /, '')}.sort
