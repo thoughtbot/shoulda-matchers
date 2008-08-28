@@ -20,7 +20,11 @@ module ThoughtBot # :nodoc:
     # For all of these helpers, the last parameter may be a hash of options.
     #
     module ActiveRecord
-      # Ensures that the model cannot be saved if one of the attributes listed is not present.
+      # Ensures that the model cannot be saved if one of the attributes listed is not present.  
+      #
+      # If an instance variable has been created in the setup named after the
+      # model being tested, then this method will use that.  Otherwise, it will
+      # create a new instance to test against.
       #
       # Options:
       # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
@@ -93,7 +97,6 @@ module ThoughtBot # :nodoc:
       end
 
       # Ensures that the attribute cannot be set on mass update.
-      # Requires an existing record.
       #
       #   should_protect_attributes :password, :admin_flag
       #
@@ -116,7 +119,6 @@ module ThoughtBot # :nodoc:
       end
 
       # Ensures that the attribute cannot be changed once the record has been created.
-      # Requires an existing record.
       #
       #   should_have_readonly_attributes :password, :admin_flag
       #
@@ -138,7 +140,10 @@ module ThoughtBot # :nodoc:
       end
 
       # Ensures that the attribute cannot be set to the given values
-      # Requires an existing record
+      #
+      # If an instance variable has been created in the setup named after the
+      # model being tested, then this method will use that.  Otherwise, it will
+      # create a new instance to test against.
       #
       # Options:
       # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
@@ -159,7 +164,10 @@ module ThoughtBot # :nodoc:
       end
 
       # Ensures that the attribute can be set to the given values.
-      # Requires an existing record
+      #
+      # If an instance variable has been created in the setup named after the
+      # model being tested, then this method will use that.  Otherwise, it will
+      # create a new instance to test against.
       #
       # Example:
       #   should_allow_values_for :isbn, "isbn 1 2345 6789 0", "ISBN 1-2345-6789-0"
@@ -175,7 +183,10 @@ module ThoughtBot # :nodoc:
       end
 
       # Ensures that the length of the attribute is in the given range
-      # Requires an existing record
+      #
+      # If an instance variable has been created in the setup named after the
+      # model being tested, then this method will use that.  Otherwise, it will
+      # create a new instance to test against.
       #
       # Options:
       # * <tt>:short_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
@@ -224,7 +235,10 @@ module ThoughtBot # :nodoc:
       end
 
       # Ensures that the length of the attribute is at least a certain length
-      # Requires an existing record
+      #
+      # If an instance variable has been created in the setup named after the
+      # model being tested, then this method will use that.  Otherwise, it will
+      # create a new instance to test against.
       #
       # Options:
       # * <tt>:short_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
@@ -252,7 +266,10 @@ module ThoughtBot # :nodoc:
       end
 
       # Ensures that the length of the attribute is exactly a certain length
-      # Requires an existing record
+      #
+      # If an instance variable has been created in the setup named after the
+      # model being tested, then this method will use that.  Otherwise, it will
+      # create a new instance to test against.
       #
       # Options:
       # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
@@ -284,7 +301,10 @@ module ThoughtBot # :nodoc:
       end
 
       # Ensure that the attribute is in the range specified
-      # Requires an existing record
+      #
+      # If an instance variable has been created in the setup named after the
+      # model being tested, then this method will use that.  Otherwise, it will
+      # create a new instance to test against.
       #
       # Options:
       # * <tt>:low_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
@@ -326,7 +346,10 @@ module ThoughtBot # :nodoc:
       end
 
       # Ensure that the attribute is numeric
-      # Requires an existing record
+      #
+      # If an instance variable has been created in the setup named after the
+      # model being tested, then this method will use that.  Otherwise, it will
+      # create a new instance to test against.
       #
       # Options:
       # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
@@ -568,6 +591,10 @@ module ThoughtBot # :nodoc:
       alias_method :should_have_index, :should_have_indices
 
       # Ensures that the model cannot be saved if one of the attributes listed is not accepted.
+      #
+      # If an instance variable has been created in the setup named after the
+      # model being tested, then this method will use that.  Otherwise, it will
+      # create a new instance to test against.
       #
       # Options:
       # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
