@@ -20,7 +20,7 @@ module ThoughtBot # :nodoc:
     # For all of these helpers, the last parameter may be a hash of options.
     #
     module ActiveRecord
-      # Ensures that the model cannot be saved if one of the attributes listed is not present.  
+      # Ensures that the model cannot be saved if one of the attributes listed is not present.
       #
       # If an instance variable has been created in the setup named after the
       # model being tested, then this method will use that.  Otherwise, it will
@@ -395,11 +395,6 @@ module ThoughtBot # :nodoc:
             assert reflection, "#{klass.name} does not have any relationship to #{association}"
             assert_equal :has_many, reflection.macro
 
-            associated_klass_name = reflection.options[:class_name]
-            associated_klass_name = reflection.options[:source].to_s.classify if associated_klass_name.blank?
-            associated_klass_name = association.to_s.classify                 if associated_klass_name.blank?
-            associated_klass = associated_klass_name.constantize
-
             if through
               through_reflection = klass.reflect_on_association(through)
               assert through_reflection, "#{klass.name} does not have any relationship to #{through}"
@@ -409,7 +404,7 @@ module ThoughtBot # :nodoc:
             if dependent
               assert_equal dependent.to_s,
                            reflection.options[:dependent].to_s,
-                           "#{associated_klass.name} should have #{dependent} dependency"
+                           "#{association} should have #{dependent} dependency"
             end
 
             # Check for the existence of the foreign key on the other table
@@ -421,6 +416,9 @@ module ThoughtBot # :nodoc:
               else
                 fk = reflection.primary_key_name
               end
+
+              associated_klass_name = (reflection.options[:class_name] || association.to_s.classify)
+              associated_klass = associated_klass_name.constantize
 
               assert associated_klass.column_names.include?(fk.to_s),
                      "#{associated_klass.name} does not have a #{fk} foreign key."
