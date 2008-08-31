@@ -6,14 +6,14 @@ module Test # :nodoc: all
   module Unit
     class TestCase
       extend Thoughtbot::Shoulda
-      include Thoughtbot::Shoulda::Assertions
+      include ThoughtBot::Shoulda::Assertions
     end
   end
 end
 
 require 'shoulda/private_helpers'
 require 'shoulda/general'
-require 'shoulda/active_record_helpers'
+require 'shoulda/active_record'
 require 'shoulda/controller_tests/controller_tests.rb'
 require 'yaml'
 
@@ -37,11 +37,8 @@ require 'shoulda/color' if shoulda_options[:color]
 module Test # :nodoc: all
   module Unit
     class TestCase
-
       include ThoughtBot::Shoulda::General
       include ThoughtBot::Shoulda::Controller
-
-      extend ThoughtBot::Shoulda::ActiveRecord
     end
   end
 end

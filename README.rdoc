@@ -43,7 +43,7 @@ Produces the following test methods:
 
 So readable!
 
-=== ActiveRecord Tests (ThoughtBot::Shoulda::ActiveRecord)
+=== ActiveRecord Tests (ThoughtBot::Shoulda::ActiveRecord::Macros)
 
 Quick macro tests for your ActiveRecord associations and validations:
 

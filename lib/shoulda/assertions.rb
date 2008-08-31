@@ -1,4 +1,4 @@
-module Thoughtbot # :nodoc:
+module ThoughtBot # :nodoc:
   module Shoulda # :nodoc:
     module Assertions
       # Asserts that two arrays contain the same elements, the same number of times.  Essentially ==, but unordered.

@@ -1,7 +1,7 @@
 require File.join(File.dirname(__FILE__), '..', 'test_helper')
 
 class PrivateHelpersTest < Test::Unit::TestCase # :nodoc:
-  include ThoughtBot::Shoulda::ActiveRecord
+  include ThoughtBot::Shoulda::Private
   context "get_options!" do
     should "remove opts from args" do
       args = [:a, :b, {}]
