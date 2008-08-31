@@ -1,12 +1,14 @@
 require 'shoulda/context'
 require 'shoulda/proc_extensions'
 require 'shoulda/assertions'
+require 'shoulda/macros'
 
 module Test # :nodoc: all
   module Unit
     class TestCase
       extend Thoughtbot::Shoulda
       include ThoughtBot::Shoulda::Assertions
+      extend ThoughtBot::Shoulda::Macros
     end
   end
 end
