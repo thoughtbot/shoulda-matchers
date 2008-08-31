@@ -2,11 +2,11 @@
 
 Shoulda makes it easy to write elegant, understandable, and maintainable tests.  Shoulda consists of test macros, assertions, and helpers added on to the Test::Unit framework.  It's fully compatible with your existing tests, and requires no retooling to use.
 
-Helpers:: #context and #should give you rSpec like test blocks.  
+Helpers:: #context and #should give you rSpec like test blocks.
           In addition, you get nested contexts and a much more readable syntax.
-Macros:: Generate hundreds of lines of Controller and ActiveRecord tests with these powerful macros.  
+Macros:: Generate hundreds of lines of Controller and ActiveRecord tests with these powerful macros.
          They get you started quickly, and can help you ensure that your application is conforming to best practices.
-Assertions:: Many common rails testing idioms have been distilled into a set of useful assertions. 
+Assertions:: Many common rails testing idioms have been distilled into a set of useful assertions.
 
 = Usage
 
@@ -14,21 +14,21 @@ Assertions:: Many common rails testing idioms have been distilled into a set of 
 
 Stop killing your fingers with all of those underscores...  Name your tests with plain sentences!
 
-  class UserTest << Test::Unit::TestCase 
+  class UserTest << Test::Unit::TestCase
     context "A User instance" do
       setup do
         @user = User.find(:first)
       end
-    
+
       should "return its full name" do
         assert_equal 'John Doe', @user.full_name
       end
-    
+
       context "with a profile" do
         setup do
           @user.profile = Profile.find(:first)
         end
-      
+
         should "return true when sent #has_profile?" do
           assert @user.has_profile?
         end
@@ -81,7 +81,7 @@ Macros to test the most common controller patterns...
     setup do
       get :show, :id => 1
     end
-  
+
     should_assign_to :user
     should_respond_with :success
     should_render_template :show
@@ -105,7 +105,7 @@ Test entire controllers in a few lines...
 
 should_be_restful generates 40 tests on the fly, for both html and xml requests.
 
-=== Helpful Assertions (ThoughtBot::Shoulda::General)
+=== Helpful Assertions (ThoughtBot::Shoulda::Assertions)
 
 More to come here, but have fun with what's there.
 
@@ -128,7 +128,7 @@ Any *.rb file under RAILS_ROOT/test/shoulda_macros/ or vendor/(plugins|gems)/gem
 
 = Credits
 
-Shoulda is maintained by {Tammer Saleh}[mailto:tsaleh@thoughtbot.com], and is funded by Thoughtbot[http://www.thoughtbot.com], inc. 
+Shoulda is maintained by {Tammer Saleh}[mailto:tsaleh@thoughtbot.com], and is funded by Thoughtbot[http://www.thoughtbot.com], inc.
 
 = License
 

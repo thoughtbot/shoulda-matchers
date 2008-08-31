@@ -1,5 +1,16 @@
 require 'shoulda/context'
 require 'shoulda/proc_extensions'
+require 'shoulda/assertions'
+
+module Test # :nodoc: all
+  module Unit
+    class TestCase
+      extend Thoughtbot::Shoulda
+      include Thoughtbot::Shoulda::Assertions
+    end
+  end
+end
+
 require 'shoulda/private_helpers'
 require 'shoulda/general'
 require 'shoulda/active_record_helpers'
@@ -22,14 +33,6 @@ possible_config_paths.each do |config_file|
 end
 
 require 'shoulda/color' if shoulda_options[:color]
-
-module Test # :nodoc: all
-  module Unit
-    class TestCase
-      extend Thoughtbot::Shoulda
-    end
-  end
-end
 
 module Test # :nodoc: all
   module Unit
