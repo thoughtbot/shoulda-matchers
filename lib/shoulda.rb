@@ -1,4 +1,5 @@
-require 'shoulda/gem/shoulda'
+require 'shoulda/context'
+require 'shoulda/proc_extensions'
 require 'shoulda/private_helpers'
 require 'shoulda/general'
 require 'shoulda/active_record_helpers'
@@ -11,7 +12,7 @@ possible_config_paths = []
 possible_config_paths << File.join(ENV["HOME"], ".shoulda.conf")       if ENV["HOME"]
 possible_config_paths << "shoulda.conf"
 possible_config_paths << File.join("test", "shoulda.conf")
-possible_config_paths << File.join(RAILS_ROOT, "test", "shoulda.conf") if defined?(RAILS_ROOT) 
+possible_config_paths << File.join(RAILS_ROOT, "test", "shoulda.conf") if defined?(RAILS_ROOT)
 
 possible_config_paths.each do |config_file|
   if File.exists? config_file
@@ -23,7 +24,15 @@ end
 require 'shoulda/color' if shoulda_options[:color]
 
 module Test # :nodoc: all
-  module Unit 
+  module Unit
+    class TestCase
+      extend Thoughtbot::Shoulda
+    end
+  end
+end
+
+module Test # :nodoc: all
+  module Unit
     class TestCase
 
       include ThoughtBot::Shoulda::General
@@ -36,7 +45,7 @@ end
 
 module ActionController #:nodoc: all
   module Integration
-    class Session 
+    class Session
       include ThoughtBot::Shoulda::General
     end
   end
