@@ -4,7 +4,7 @@ require 'shoulda'
 
 if defined?(RAILS_ROOT)
   # load in the 3rd party macros from vendorized plugins and gems
-  Dir[File.join(RAILS_ROOT, "vendor", "{plugin,gem}", "*", "shoulda_macros", "*.rb")].each do |macro_file_path|
+  Dir[File.join(RAILS_ROOT, "vendor", "{plugins,gems}", "*", "shoulda_macros", "*.rb")].each do |macro_file_path|
     require macro_file_path
   end
 
