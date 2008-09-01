@@ -679,9 +679,6 @@ module ThoughtBot # :nodoc:
           end
         end
 
-        private
-
-        include ThoughtBot::Shoulda::Private
       end
     end
   end

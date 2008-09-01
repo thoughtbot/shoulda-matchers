@@ -1,3 +1,5 @@
+require 'shoulda/private_helpers'
+
 module ThoughtBot # :nodoc:
   module Shoulda # :nodoc:
     module Macros
@@ -69,6 +71,10 @@ module ThoughtBot # :nodoc:
           assert_equal @_before_should_not_change, new_value, "#{expression.inspect} changed"
         end
       end
+
+      private
+
+      include ThoughtBot::Shoulda::Private
     end
   end
 end

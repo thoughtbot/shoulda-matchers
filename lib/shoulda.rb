@@ -13,7 +13,6 @@ module Test # :nodoc: all
   end
 end
 
-require 'shoulda/private_helpers'
 require 'shoulda/general'
 require 'shoulda/active_record'
 require 'shoulda/controller'
