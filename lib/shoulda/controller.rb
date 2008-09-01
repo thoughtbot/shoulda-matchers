@@ -1,3 +1,4 @@
+require 'shoulda'
 require 'shoulda/controller/helpers'
 require 'shoulda/controller/resource_options'
 require 'shoulda/controller/macros'

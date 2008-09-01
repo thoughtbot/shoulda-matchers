@@ -1,3 +1,4 @@
+require 'shoulda'
 require 'shoulda/active_record/assertions'
 require 'shoulda/active_record/macros'
 

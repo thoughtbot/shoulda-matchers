@@ -15,4 +15,4 @@ module Test # :nodoc: all
   end
 end
 
-require 'shoulda/config.rb'
+require 'shoulda/config'

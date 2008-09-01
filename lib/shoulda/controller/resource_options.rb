@@ -3,7 +3,7 @@ module ThoughtBot # :nodoc:
     module Controller
       # Formats tested by #should_be_restful.  Defaults to [:html, :xml]
       VALID_FORMATS = Dir.glob(File.join(File.dirname(__FILE__), 'formats', '*.rb')).map { |f| File.basename(f, '.rb') }.map(&:to_sym) # :doc:
-      VALID_FORMATS.each {|f| require "shoulda/controller/formats/#{f}.rb"}
+      VALID_FORMATS.each {|f| require "shoulda/controller/formats/#{f}"}
 
       # Actions tested by #should_be_restful
       VALID_ACTIONS = [:index, :show, :new, :edit, :create, :update, :destroy] # :doc:

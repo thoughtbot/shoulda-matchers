@@ -1,3 +1,4 @@
+require 'shoulda'
 require 'shoulda/action_mailer/assertions'
 
 module Test # :nodoc: all
