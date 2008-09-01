@@ -16,7 +16,7 @@ end
 require 'shoulda/private_helpers'
 require 'shoulda/general'
 require 'shoulda/active_record'
-require 'shoulda/controller_tests/controller_tests.rb'
+require 'shoulda/controller'
 require 'yaml'
 
 shoulda_options = {}
@@ -40,7 +40,6 @@ module Test # :nodoc: all
   module Unit
     class TestCase
       include ThoughtBot::Shoulda::General
-      include ThoughtBot::Shoulda::Controller
     end
   end
 end
