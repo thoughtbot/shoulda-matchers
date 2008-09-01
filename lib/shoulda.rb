@@ -15,9 +15,6 @@ module Test # :nodoc: all
   end
 end
 
-require 'shoulda/active_record'
-require 'shoulda/controller'
-require 'shoulda/action_mailer'
 require 'yaml'
 
 shoulda_options = {}
