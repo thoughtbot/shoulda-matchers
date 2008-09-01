@@ -17,6 +17,7 @@ require 'shoulda/private_helpers'
 require 'shoulda/general'
 require 'shoulda/active_record'
 require 'shoulda/controller'
+require 'shoulda/action_mailer'
 require 'yaml'
 
 shoulda_options = {}
