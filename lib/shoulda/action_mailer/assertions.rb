@@ -1,6 +1,6 @@
-module ThoughtBot
-  module Shoulda
-    module ActionMailer
+module ThoughtBot # :nodoc:
+  module Shoulda # :nodoc:
+    module ActionMailer # :nodoc:
       module Assertions
         # Asserts that an email was delivered.  Can take a block that can further
         # narrow down the types of emails you're expecting.

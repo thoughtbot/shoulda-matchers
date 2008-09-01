@@ -1,22 +1,22 @@
-module Thoughtbot
+module Thoughtbot # :nodoc:
   module Shoulda
     VERSION = '1.1.1'
 
     class << self
       attr_accessor :contexts
-      def contexts
+      def contexts # :nodoc:
         @contexts ||= []
       end
 
-      def current_context
+      def current_context # :nodoc:
         self.contexts.last
       end
 
-      def add_context(context)
+      def add_context(context) # :nodoc:
         self.contexts.push(context)
       end
 
-      def remove_context
+      def remove_context # :nodoc:
         self.contexts.pop
       end
     end

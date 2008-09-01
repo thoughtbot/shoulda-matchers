@@ -73,7 +73,7 @@ Quick macro tests for your ActiveRecord associations and validations:
 
 Makes TDD so much easier.
 
-=== Controller Tests (ThoughtBot::Shoulda::Controller::ClassMethods)
+=== Controller Tests (ThoughtBot::Shoulda::Controller::Macros)
 
 Macros to test the most common controller patterns...
 
@@ -109,7 +109,6 @@ should_be_restful generates 40 tests on the fly, for both html and xml requests.
 
 More to come here, but have fun with what's there.
 
-  load_all_fixtures
   assert_same_elements([:a, :b, :c], [:c, :a, :b])
   assert_contains(['a', '1'], /\d/)
   assert_contains(['a', '1'], 'a')
