@@ -13,3 +13,17 @@ module Test # :nodoc: all
     end
   end
 end
+
+require 'shoulda/active_record/assertions'
+require 'shoulda/action_mailer/assertions'
+
+module ActionController #:nodoc: all
+  module Integration
+    class Session
+      include ThoughtBot::Shoulda::Assertions
+      include ThoughtBot::Shoulda::Helpers
+      include ThoughtBot::Shoulda::ActiveRecord::Assertions
+      include ThoughtBot::Shoulda::ActionMailer::Assertions
+    end
+  end
+end
