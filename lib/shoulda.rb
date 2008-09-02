@@ -14,5 +14,3 @@ module Test # :nodoc: all
     end
   end
 end
-
-require 'shoulda/config'
