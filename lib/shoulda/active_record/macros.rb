@@ -22,11 +22,10 @@ module ThoughtBot # :nodoc:
       #
       module Macros
         # Loads all fixture files (<tt>test/fixtures/*.yml</tt>)
+        # Deprecated: Use <tt>fixtures :all</tt> instead
         def load_all_fixtures
-          all_fixtures = Dir.glob(File.join(Test::Unit::TestCase.fixture_path, "*.yml")).collect do |f|
-            File.basename(f, '.yml').to_sym
-          end
-          fixtures *all_fixtures
+          warn "[DEPRECATION] load_all_fixtures is deprecated.  Use `fixtures :all` instead."
+          fixtures :all
         end
 
         # Ensures that the model cannot be saved if one of the attributes listed is not present.

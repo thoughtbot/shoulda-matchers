@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class UserTest < Test::Unit::TestCase
-  load_all_fixtures
+  fixtures :all
 
   should_have_many :posts
   should_have_many :dogs

@@ -12,7 +12,7 @@ module ThoughtBot # :nodoc:
       #
       # Example:
       #   class UsersControllerTest < Test::Unit::TestCase
-      #     load_all_fixtures
+      #     fixtures :all
       #
       #     def setup
       #       ...normal setup code...

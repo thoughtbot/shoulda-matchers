@@ -5,7 +5,7 @@ require 'users_controller'
 class UsersController; def rescue_action(e) raise e end; end
 
 class UsersControllerTest < Test::Unit::TestCase
-  load_all_fixtures
+  fixtures :all
 
   def setup
     @controller = UsersController.new
@@ -21,16 +21,16 @@ class UsersControllerTest < Test::Unit::TestCase
     resource.parent     = []
     resource.actions    = [:index, :show, :new, :edit, :update, :create, :destroy]
     resource.formats    = [:html, :xml]
-    
+
     resource.create.params = { :name => "bob", :email => 'bob@bob.com', :age => 13, :ssn => "123456789"}
     resource.update.params = { :name => "sue" }
-    
+
     resource.create.redirect  = "user_url(@user)"
     resource.update.redirect  = "user_url(@user)"
     resource.destroy.redirect = "users_url"
-    
+
     resource.create.flash  = /created/i
     resource.update.flash  = /updated/i
-    resource.destroy.flash = /removed/i    
+    resource.destroy.flash = /removed/i
   end
 end

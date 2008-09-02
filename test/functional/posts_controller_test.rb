@@ -5,7 +5,7 @@ require 'posts_controller'
 class PostsController; def rescue_action(e) raise e end; end
 
 class PostsControllerTest < Test::Unit::TestCase
-  load_all_fixtures
+  fixtures :all
 
   def setup
     @controller = PostsController.new
@@ -25,14 +25,14 @@ class PostsControllerTest < Test::Unit::TestCase
       resource.denied.actions = [:index, :show, :edit, :new, :create, :update, :destroy]
       resource.denied.flash = /what/i
       resource.denied.redirect = '"/"'
-    end    
+    end
   end
 
   context "Logged in" do
     setup do
       @request.session[:logged_in] = true
     end
-    
+
     should_be_restful do |resource|
       resource.parent = :user
 

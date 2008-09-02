@@ -48,7 +48,7 @@ So readable!
 Quick macro tests for your ActiveRecord associations and validations:
 
   class PostTest < Test::Unit::TestCase
-    load_all_fixtures
+    fixtures :all
 
     should_belong_to :user
     should_have_many :tags, :through => :taggings
@@ -60,8 +60,6 @@ Quick macro tests for your ActiveRecord associations and validations:
   end
 
   class UserTest < Test::Unit::TestCase
-    load_all_fixtures
-
     should_have_many :posts
 
     should_not_allow_values_for :email, "blah", "b lah"
