@@ -118,7 +118,8 @@ module ThoughtBot # :nodoc:
               protected = klass.protected_attributes || []
               accessible = klass.accessible_attributes || []
 
-              assert protected.include?(attribute.to_s) || !accessible.include?(attribute.to_s),
+              assert protected.include?(attribute.to_s) ||
+                (!accessible.empty? && !accessible.include?(attribute.to_s)),
                      (accessible.empty? ?
                        "#{klass} is protecting #{protected.to_a.to_sentence}, but not #{attribute}." :
                        "#{klass} has made #{attribute} accessible")
