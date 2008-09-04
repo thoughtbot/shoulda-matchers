@@ -227,7 +227,7 @@ class ShouldTest < Test::Unit::TestCase # :nodoc:
 
   context "A :before proc" do
     setup do
-      assert "before", @value
+      assert_equal "before", @value
       @value = "setup"
     end
 
