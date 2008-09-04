@@ -236,6 +236,17 @@ class ShouldTest < Test::Unit::TestCase # :nodoc:
     end
   end
 
+  context "a before statement" do
+    setup do
+      assert_equal "before", @value
+      @value = "setup"
+    end
+
+    before_should "run before the current setup" do
+      @value = "before"
+    end
+  end
+
   context "A context" do
     setup do
       @value = "outer"

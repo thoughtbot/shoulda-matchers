@@ -71,6 +71,39 @@ module Thoughtbot # :nodoc:
       end
     end
 
+    # == Before statements
+    #
+    # Before statements are simply should statements that run after the current
+    # context's setup. These are especially useful when setting expectations.
+    #
+    # === Example:
+    #
+    #  class UserControllerTest << Test::Unit::TestCase
+    #    context "the index action" do
+    #      setup do
+    #        @users = [Factory(:user)]
+    #        User.stubs(:find).returns(@users)
+    #      end
+    #
+    #      context "on GET" do
+    #        setup do
+    #          get :index
+    #        end
+    #
+    #        # normal should statement
+    #        should_respond_with :success
+    #
+    #        # runs before get :index
+    #        before_should "find all users" do
+    #          User.expects(:find).with(:all).returns(@users)
+    #        end
+    #      end
+    #    end
+    #  end
+    def before_should(name, &blk)
+      should(name, :before => blk) { assert true }
+    end
+
     # Just like should, but never runs, and instead prints an 'X' in the Test::Unit output.
     def should_eventually(name, options = {}, &blk)
       context_name = self.name.gsub(/Test/, "")
