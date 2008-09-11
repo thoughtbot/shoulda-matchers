@@ -36,14 +36,14 @@ module ThoughtBot # :nodoc:
         #
         # Options:
         # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>/blank/</tt>
+        #   Regexp or string.  Default = <tt>ActiveRecord::Errors.default_error_messages[:blank]</tt>
         #
         # Example:
         #   should_require_attributes :name, :phone_number
         #
         def should_require_attributes(*attributes)
           message = get_options!(attributes, :message)
-          message ||= /blank/
+          message ||= ::ActiveRecord::Errors.default_error_messages[:blank]
           klass = model_class
 
           attributes.each do |attribute|
@@ -58,7 +58,7 @@ module ThoughtBot # :nodoc:
         #
         # Options:
         # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>/taken/</tt>
+        #   Regexp or string.  Default = <tt>ActiveRecord::Errors.default_error_messages[:taken]</tt>
         # * <tt>:scoped_to</tt> - field(s) to scope the uniqueness to.
         #
         # Examples:
@@ -70,7 +70,7 @@ module ThoughtBot # :nodoc:
         def should_require_unique_attributes(*attributes)
           message, scope = get_options!(attributes, :message, :scoped_to)
           scope = [*scope].compact
-          message ||= /taken/
+          message ||= ::ActiveRecord::Errors.default_error_messages[:taken]
 
           klass = model_class
           attributes.each do |attribute|
@@ -156,14 +156,14 @@ module ThoughtBot # :nodoc:
         #
         # Options:
         # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>/invalid/</tt>
+        #   Regexp or string.  Default = <tt>ActiveRecord::Errors.default_error_messages[:invalid]</tt>
         #
         # Example:
         #   should_not_allow_values_for :isbn, "bad 1", "bad 2"
         #
         def should_not_allow_values_for(attribute, *bad_values)
           message = get_options!(bad_values, :message)
-          message ||= /invalid/
+          message ||= ::ActiveRecord::Errors.default_error_messages[:invalid]
           klass = model_class
           bad_values.each do |v|
             should "not allow #{attribute} to be set to #{v.inspect}" do
@@ -199,17 +199,17 @@ module ThoughtBot # :nodoc:
         #
         # Options:
         # * <tt>:short_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>/short/</tt>
+        #   Regexp or string.  Default = <tt>ActiveRecord::Errors.default_error_messages[:too_short] % range.first</tt>
         # * <tt>:long_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>/long/</tt>
+        #   Regexp or string.  Default = <tt>ActiveRecord::Errors.default_error_messages[:too_long] % range.last</tt>
         #
         # Example:
         #   should_ensure_length_in_range :password, (6..20)
         #
         def should_ensure_length_in_range(attribute, range, opts = {})
           short_message, long_message = get_options!([opts], :short_message, :long_message)
-          short_message ||= /short/
-          long_message  ||= /long/
+          short_message ||= ::ActiveRecord::Errors.default_error_messages[:too_short] % range.first
+          long_message  ||= ::ActiveRecord::Errors.default_error_messages[:too_long] % range.last
 
           klass = model_class
           min_length = range.first
@@ -251,14 +251,14 @@ module ThoughtBot # :nodoc:
         #
         # Options:
         # * <tt>:short_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>/short/</tt>
+        #   Regexp or string.  Default = <tt>ActiveRecord::Errors.default_error_messages[:too_short] % min_length</tt>
         #
         # Example:
         #   should_ensure_length_at_least :name, 3
         #
         def should_ensure_length_at_least(attribute, min_length, opts = {})
           short_message = get_options!([opts], :short_message)
-          short_message ||= /short/
+          short_message ||= ::ActiveRecord::Errors.default_error_messages[:too_short] % min_length
 
           klass = model_class
 
@@ -282,14 +282,14 @@ module ThoughtBot # :nodoc:
         #
         # Options:
         # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>/short/</tt>
+        #   Regexp or string.  Default = <tt>ActiveRecord::Errors.default_error_messages[:wrong_length] % length</tt>
         #
         # Example:
         #   should_ensure_length_is :ssn, 9
         #
         def should_ensure_length_is(attribute, length, opts = {})
           message = get_options!([opts], :message)
-          message ||= /wrong length/
+          message ||= ::ActiveRecord::Errors.default_error_messages[:wrong_length] % length
 
           klass = model_class
 
@@ -317,17 +317,17 @@ module ThoughtBot # :nodoc:
         #
         # Options:
         # * <tt>:low_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>/included/</tt>
+        #   Regexp or string.  Default = <tt>ActiveRecord::Errors.default_error_messages[:inclusion]</tt>
         # * <tt>:high_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>/included/</tt>
+        #   Regexp or string.  Default = <tt>ActiveRecord::Errors.default_error_messages[:inclusion]</tt>
         #
         # Example:
         #   should_ensure_value_in_range :age, (0..100)
         #
         def should_ensure_value_in_range(attribute, range, opts = {})
           low_message, high_message = get_options!([opts], :low_message, :high_message)
-          low_message  ||= /included/
-          high_message ||= /included/
+          low_message  ||= ::ActiveRecord::Errors.default_error_messages[:inclusion]
+          high_message ||= ::ActiveRecord::Errors.default_error_messages[:inclusion]
 
           klass = model_class
           min   = range.first
@@ -362,14 +362,14 @@ module ThoughtBot # :nodoc:
         #
         # Options:
         # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>/number/</tt>
+        #   Regexp or string.  Default = <tt>ActiveRecord::Errors.default_error_messages[:not_a_number]</tt>
         #
         # Example:
         #   should_only_allow_numeric_values_for :age
         #
         def should_only_allow_numeric_values_for(*attributes)
           message = get_options!(attributes, :message)
-          message ||= /number/
+          message ||= ::ActiveRecord::Errors.default_error_messages[:not_a_number]
           klass = model_class
           attributes.each do |attribute|
             attribute = attribute.to_sym
@@ -605,14 +605,14 @@ module ThoughtBot # :nodoc:
         #
         # Options:
         # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>/must be accepted/</tt>
+        #   Regexp or string.  Default = <tt>ActiveRecord::Errors.default_error_messages[:accepted]</tt>
         #
         # Example:
         #   should_require_acceptance_of :eula
         #
         def should_require_acceptance_of(*attributes)
           message = get_options!(attributes, :message)
-          message ||= /must be accepted/
+          message ||= ::ActiveRecord::Errors.default_error_messages[:accepted]
           klass = model_class
 
           attributes.each do |attribute|
