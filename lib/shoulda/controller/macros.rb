@@ -144,6 +144,17 @@ module ThoughtBot # :nodoc:
           end
         end
 
+        # Macro that creates a test asserting that the value returned from the session when accessed
+        # with the argument 'key' is equal to the value sent as the argument 'expected'
+        #
+        #   should_return_from_session :user_id, @user.id
+        #   should_return_from_session :user_id, nil
+        def should_return_from_session(key, expected)
+          should "return the correct value from the session for key #{key}" do
+            assert_equal expected, session[key], "Expected #{expected.inspect} but was #{session[key]}"
+          end
+        end
+
         # Macro that creates a test asserting that the controller rendered the given template.
         # Example:
         #

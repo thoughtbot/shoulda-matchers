@@ -10,6 +10,7 @@ class PostsController < ApplicationController
       format.xml  { render :xml => @posts.to_xml }
       format.rss do
         headers['Content-Type'] = 'application/rss+xml'
+        session[:special] = '$2 off your next purchase'
         head :ok
       end
     end
