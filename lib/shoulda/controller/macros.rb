@@ -140,10 +140,10 @@ module ThoughtBot # :nodoc:
         #   should_respond_with_content_type 'application/rss+xml'
         def should_respond_with_content_type(content_type)
           should "respond with content type of #{content_type}" do
-            assert_match content_type, response_content_type, "Expected #{content_type} but was actually #{response_content_type}"
+            assert_match content_type, @response.headers['type'], "Expected #{content_type} but was actually #{@response.headers['type']}"
           end
         end
-
+        
         # Macro that creates a test asserting that a value returned from the session is correct.
         # The given string is evaled to produce the resulting redirect path.  All of the instance variables
         # set by the controller are available to the evaled string.

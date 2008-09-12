@@ -31,10 +31,6 @@ module ThoughtBot # :nodoc:
           variables_added
         }.map(&:to_s)
 
-        def response_content_type
-          @response.headers['Content-Type'] || @response.headers['type']
-        end
-
         def instantiate_variables_from_assigns(*names, &blk)
           old = {}
           names = (@response.template.assigns.keys - SPECIAL_INSTANCE_VARIABLES) if names.empty?
