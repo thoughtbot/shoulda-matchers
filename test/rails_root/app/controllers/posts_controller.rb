@@ -11,6 +11,7 @@ class PostsController < ApplicationController
       format.rss do
         headers['Content-Type'] = 'application/rss+xml'
         session[:special] = '$2 off your next purchase'
+        session[:special_user_id] = @user.id
         head :ok
       end
     end

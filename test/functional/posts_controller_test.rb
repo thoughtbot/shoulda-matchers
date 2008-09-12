@@ -52,10 +52,12 @@ class PostsControllerTest < Test::Unit::TestCase
     context "viewing posts for a user with rss format" do
       setup do
         get :index, :user_id => users(:first), :format => 'rss'
+        @user = users(:first)
       end
       should_respond_with :success
       should_respond_with_content_type 'application/rss+xml'
-      should_return_from_session :special, '$2 off your next purchase'
+      should_return_from_session :special, "'$2 off your next purchase'"
+      should_return_from_session :special_user_id, '@user.id'
       should_assign_to :user, :posts
       should_not_assign_to :foo, :bar
     end

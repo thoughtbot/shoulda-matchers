@@ -144,14 +144,19 @@ module ThoughtBot # :nodoc:
           end
         end
 
-        # Macro that creates a test asserting that the value returned from the session when accessed
-        # with the argument 'key' is equal to the value sent as the argument 'expected'
+        # Macro that creates a test asserting that a value returned from the session is correct.
+        # The given string is evaled to produce the resulting redirect path.  All of the instance variables
+        # set by the controller are available to the evaled string.
+        # Example:
         #
-        #   should_return_from_session :user_id, @user.id
-        #   should_return_from_session :user_id, nil
+        #   should_return_from_session :user_id, '@user.id'
+        #   should_return_from_session :message, '"Free stuff"'
         def should_return_from_session(key, expected)
           should "return the correct value from the session for key #{key}" do
-            assert_equal expected, session[key], "Expected #{expected.inspect} but was #{session[key]}"
+            instantiate_variables_from_assigns do
+              expected_value = eval(expected, self.send(:binding), __FILE__, __LINE__)
+              assert_equal expected_value, session[key], "Expected #{expected_value.inspect} but was #{session[key]}"
+            end
           end
         end
 
