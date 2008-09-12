@@ -134,6 +134,16 @@ module ThoughtBot # :nodoc:
           end
         end
 
+        # Macro that creates a test asserting that the response content type was 'content_type'.
+        # Example:
+        #
+        #   should_respond_with_content_type 'application/rss+xml'
+        def should_respond_with_content_type(content_type)
+          should "respond with content type of #{content_type}" do
+            assert_match content_type, response_content_type, "Expected #{content_type} but was actually #{response_content_type}"
+          end
+        end
+
         # Macro that creates a test asserting that the controller rendered the given template.
         # Example:
         #

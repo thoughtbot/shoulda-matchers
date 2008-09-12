@@ -48,6 +48,16 @@ class PostsControllerTest < Test::Unit::TestCase
       should_assign_to :user, :posts
       should_not_assign_to :foo, :bar
     end
+
+    context "viewing posts for a user with rss format" do
+      setup do
+        get :index, :user_id => users(:first), :format => 'rss'
+      end
+      should_respond_with :success
+      should_respond_with_content_type 'application/rss+xml'
+      should_assign_to :user, :posts
+      should_not_assign_to :foo, :bar
+    end
   end
 
 end

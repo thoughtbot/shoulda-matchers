@@ -8,6 +8,10 @@ class PostsController < ApplicationController
     respond_to do |format|
       format.html # index.rhtml
       format.xml  { render :xml => @posts.to_xml }
+      format.rss do
+        headers['Content-Type'] = 'application/rss+xml'
+        head :ok
+      end
     end
   end
 
