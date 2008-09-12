@@ -33,7 +33,5 @@ end
 desc 'Default: run tests.'
 task :default => ['test']
 
-Dir['tasks/*.rake'].each do |f|
-  load f
-end
+require 'lib/shoulda/tasks'
 
