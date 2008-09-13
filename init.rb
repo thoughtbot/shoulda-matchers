@@ -3,6 +3,7 @@ require 'active_support'
 require 'shoulda'
 require 'shoulda/active_record'
 require 'shoulda/controller'
+require 'shoulda/controller/routing'
 require 'shoulda/action_mailer'
 
 if defined?(RAILS_ROOT)

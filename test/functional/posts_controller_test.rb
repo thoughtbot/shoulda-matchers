@@ -13,6 +13,18 @@ class PostsControllerTest < Test::Unit::TestCase
     @response   = ActionController::TestResponse.new
     @post       = Post.find(:first)
   end
+  
+  # autodetects the :controller
+  should_route :get, '/posts', :action => :index
+  # explicitly specify :controller
+  should_route :post, '/posts', :controller => :posts, :action => :create
+  # non-string parameter
+  should_route :get, '/posts/1', :action => :show, :id => 1
+  # string-parameter
+  should_route :put, '/posts/1', :action => :update, :id => "1"
+  should_route :delete, '/posts/1', :action => :destroy, :id => 1
+  should_route :get, '/posts/new', :action => :new
+
 
   context "The public" do
     setup do
