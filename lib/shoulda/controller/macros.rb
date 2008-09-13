@@ -143,7 +143,7 @@ module ThoughtBot # :nodoc:
             if content_type.is_a? Symbol
               content_type = Mime::EXTENSION_LOOKUP[content_type.to_s].to_s
             end
-            assert_match content_type, @response.headers['type'], "Expected #{content_type} but was actually #{@response.headers['type']}"
+            assert_equal content_type, @response.content_type, "Expected #{content_type} but was actually #{@response.content_type}"
           end
         end
         
