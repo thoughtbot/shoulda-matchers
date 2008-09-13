@@ -15,16 +15,23 @@ class PostsControllerTest < Test::Unit::TestCase
   end
   
   # autodetects the :controller
-  should_route :get, '/posts', :action => :index
+  should_route :get,    '/posts',     :action => :index
   # explicitly specify :controller
-  should_route :post, '/posts', :controller => :posts, :action => :create
+  should_route :post,   '/posts',     :controller => :posts, :action => :create
   # non-string parameter
-  should_route :get, '/posts/1', :action => :show, :id => 1
+  should_route :get,    '/posts/1',   :action => :show, :id => 1
   # string-parameter
-  should_route :put, '/posts/1', :action => :update, :id => "1"
-  should_route :delete, '/posts/1', :action => :destroy, :id => 1
-  should_route :get, '/posts/new', :action => :new
-
+  should_route :put,    '/posts/1',   :action => :update, :id => "1"
+  should_route :delete, '/posts/1',   :action => :destroy, :id => 1
+  should_route :get,    '/posts/new', :action => :new
+  
+  # Test the nested routes
+  should_route :get,    '/users/5/posts',     :action => :index, :user_id => 5
+  should_route :post,   '/users/5/posts',     :action => :create, :user_id => 5
+  should_route :get,    '/users/5/posts/1',   :action => :show, :id => 1, :user_id => 5
+  should_route :delete, '/users/5/posts/1',   :action => :destroy, :id => 1, :user_id => 5
+  should_route :get,    '/users/5/posts/new', :action => :new, :user_id => 5
+  should_route :put,    '/users/5/posts/1',   :action => :update, :id => 1, :user_id => 5
 
   context "The public" do
     setup do

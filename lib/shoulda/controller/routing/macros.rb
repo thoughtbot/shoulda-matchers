@@ -3,6 +3,24 @@ module ThoughtBot
     module Controller
       module Routing
         module Macros
+          # Macro that creates a routing test. It tries to use the given HTTP
+          # +method+ on the given +path+, and asserts that it routes to the
+          # given +options+.
+          #
+          # If you don't specify a :controller, it will try to guess the controller
+          # based on the current test.
+          #
+          # +to_param+ is called on the +options+ given.
+          #
+          # Examples:
+          #
+          #   should_route :get, '/posts', :action => :index
+          #   should_route :post, '/posts', :controller => :posts, :action => :create
+          #   should_route :get, '/posts/1', :action => :show, :id => 1
+          #   should_route :put, '/posts/1', :action => :update, :id => "1"
+          #   should_route :delete, '/posts/1', :action => :destroy, :id => 1
+          #   should_route :get, '/posts/new', :action => :new
+          # 
           def should_route(method, path, options)
             unless options[:controller]
               options[:controller] = self.name.gsub(/ControllerTest$/, '').tableize
