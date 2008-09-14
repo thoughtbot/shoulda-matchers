@@ -57,6 +57,7 @@ class PostsControllerTest < Test::Unit::TestCase
       should_respond_with :success
       should_respond_with_content_type 'application/rss+xml'
       should_respond_with_content_type :rss
+      should_respond_with_content_type /rss/
       should_return_from_session :special, "'$2 off your next purchase'"
       should_return_from_session :special_user_id, '@user.id'
       should_assign_to :user, :posts

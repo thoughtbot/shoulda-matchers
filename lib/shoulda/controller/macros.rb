@@ -140,10 +140,12 @@ module ThoughtBot # :nodoc:
         #   should_respond_with_content_type 'application/rss+xml'
         def should_respond_with_content_type(content_type)
           should "respond with content type of #{content_type}" do
-            if content_type.is_a? Symbol
-              content_type = Mime::EXTENSION_LOOKUP[content_type.to_s].to_s
+            content_type = Mime::EXTENSION_LOOKUP[content_type.to_s].to_s if content_type.is_a? Symbol
+            if content_type.is_a? Regexp
+              assert_match content_type, @response.content_type, "Expected to match #{content_type} but was actually #{@response.content_type}"
+            else
+              assert_equal content_type, @response.content_type, "Expected #{content_type} but was actually #{@response.content_type}"
             end
-            assert_equal content_type, @response.content_type, "Expected #{content_type} but was actually #{@response.content_type}"
           end
         end
         
