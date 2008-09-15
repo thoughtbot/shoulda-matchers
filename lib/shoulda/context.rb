@@ -1,6 +1,6 @@
 module Thoughtbot # :nodoc:
   module Shoulda
-    VERSION = '1.1.1'
+    VERSION = '2.0.0'
 
     class << self
       attr_accessor :contexts
