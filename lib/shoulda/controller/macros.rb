@@ -180,10 +180,18 @@ module ThoughtBot # :nodoc:
         #
         #   should_render_with_layout 'special'
         def should_render_with_layout(expected_layout = 'application')
-          expected_layout ||= false
-          should "render with #{expected_layout} layout" do
-            response_layout = @response.layout.blank? ? false : @response.layout.split('/').last
-            assert_equal expected_layout, response_layout, "Expected #{expected_layout} but was #{response_layout}"
+          if expected_layout
+            should "render with #{expected_layout} layout" do
+              response_layout = @response.layout.blank? ? "" : @response.layout.split('/').last
+              assert_equal expected_layout, 
+                           response_layout, 
+                           "Expected to render with layout #{expected_layout} but was rendered with #{response_layout}"
+            end
+          else
+            should "render without layout" do
+              assert_nil @response.layout, 
+                         "Expected no layout, but was rendered using #{@response.layout}"
+            end
           end
         end
 
