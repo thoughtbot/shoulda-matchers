@@ -3,7 +3,7 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/gempackagetask'
 require 'lib/shoulda/context'
-require 'lib/shoulda/tasks'
+load 'tasks/shoulda.rake'
 
 # Test::Unit::UI::VERBOSE
 test_files_pattern = 'test/{unit,functional,other}/**/*_test.rb'
