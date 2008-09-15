@@ -21,13 +21,14 @@ class PostsController < ApplicationController
     @post = @user.posts.find(params[:id])
 
     respond_to do |format|
-      format.html # show.rhtml
+      format.html { render :layout => 'wide' }
       format.xml  { render :xml => @post.to_xml }
     end
   end
 
   def new
     @post = @user.posts.build
+    render :layout => false
   end
 
   def edit

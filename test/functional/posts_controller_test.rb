@@ -82,6 +82,16 @@ class PostsControllerTest < Test::Unit::TestCase
       should_assign_to :user, :posts
       should_not_assign_to :foo, :bar
     end
+
+    context "viewing a post on GET to #show" do
+      setup { get :show, :user_id => users(:first), :id => posts(:first) }
+      should_render_with_layout 'wide'
+    end
+
+    context "on GET to #new" do
+      setup { get :new, :user_id => users(:first) }
+      should_render_without_layout
+    end
   end
 
 end

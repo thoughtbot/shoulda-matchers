@@ -148,7 +148,7 @@ module ThoughtBot # :nodoc:
             end
           end
         end
-        
+
         # Macro that creates a test asserting that a value returned from the session is correct.
         # The given string is evaled to produce the resulting redirect path.  All of the instance variables
         # set by the controller are available to the evaled string.
@@ -173,6 +173,24 @@ module ThoughtBot # :nodoc:
           should "render template #{template.inspect}" do
             assert_template template.to_s
           end
+        end
+
+        # Macro that creates a test asserting that the controller rendered with the given layout.
+        # Example:
+        #
+        #   should_render_with_layout 'special'
+        def should_render_with_layout(expected_layout = 'application')
+          expected_layout ||= false
+          should "render with #{expected_layout} layout" do
+            response_layout = @response.layout.blank? ? false : @response.layout.split('/').last
+            assert_equal expected_layout, response_layout, "Expected #{expected_layout} but was #{response_layout}"
+          end
+        end
+
+        # Macro that creates a test asserting that the controller rendered without a layout.
+        # Same as @should_render_with_layout false@
+        def should_render_without_layout
+          should_render_with_layout nil
         end
 
         # Macro that creates a test asserting that the controller returned a redirect to the given path.
