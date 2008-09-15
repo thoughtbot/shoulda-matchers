@@ -2,7 +2,6 @@ require 'shoulda'
 require 'shoulda/controller/helpers'
 require 'shoulda/controller/resource_options'
 require 'shoulda/controller/macros'
-require 'shoulda/controller/routing'
 
 module Test # :nodoc: all
   module Unit
