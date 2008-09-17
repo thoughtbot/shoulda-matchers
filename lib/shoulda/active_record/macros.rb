@@ -457,7 +457,9 @@ module ThoughtBot # :nodoc:
           dependent = get_options!(associations, :dependent)
           klass = model_class
           associations.each do |association|
-            should "have one #{association}" do
+            name = "have one #{association}"
+            name += " dependent => #{dependent}" if dependent
+            should name do
               reflection = klass.reflect_on_association(association)
               assert reflection, "#{klass.name} does not have any relationship to #{association}"
               assert_equal :has_one, reflection.macro
@@ -476,7 +478,7 @@ module ThoughtBot # :nodoc:
               end
               assert associated_klass.column_names.include?(fk.to_s),
                      "#{associated_klass.name} does not have a #{fk} foreign key."
-                     
+
               if dependent
                 assert_equal dependent.to_s,
                              reflection.options[:dependent].to_s,
