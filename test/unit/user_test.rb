@@ -9,7 +9,7 @@ class UserTest < Test::Unit::TestCase
   should_have_many :friendships
   should_have_many :friends
 
-  should_have_one :address
+  should_have_one :address, :dependent => :destroy
 
   should_have_indices :email, :name, [:email, :name]
   should_have_index :age

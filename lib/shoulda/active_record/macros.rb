@@ -447,11 +447,14 @@ module ThoughtBot # :nodoc:
         # associated table has the required columns.  Works with polymorphic
         # associations.
         #
+        # Options:
+        # * <tt>:dependent</tt> - tests that the association makes use of the dependent option.
+        #
         # Example:
         #   should_have_one :god # unless hindu
         #
         def should_have_one(*associations)
-          get_options!(associations)
+          dependent = get_options!(associations, :dependent)
           klass = model_class
           associations.each do |association|
             should "have one #{association}" do
@@ -473,6 +476,12 @@ module ThoughtBot # :nodoc:
               end
               assert associated_klass.column_names.include?(fk.to_s),
                      "#{associated_klass.name} does not have a #{fk} foreign key."
+                     
+              if dependent
+                assert_equal dependent.to_s,
+                             reflection.options[:dependent].to_s,
+                             "#{association} should have #{dependent} dependency"
+              end
             end
           end
         end
