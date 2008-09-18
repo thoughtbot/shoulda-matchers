@@ -3,7 +3,7 @@ module ThoughtBot # :nodoc:
     module ActiveRecord # :nodoc:
       DEFAULT_ERROR_MESSAGES =
         if Object.const_defined?(:I18n)
-          I18n.translate('active_record.error_messages')
+          I18n.translate('activerecord.errors.messages')
         else
           ::ActiveRecord::Errors.default_error_messages
         end
@@ -43,7 +43,7 @@ module ThoughtBot # :nodoc:
         #
         # Options:
         # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>I18n.translate('active_record.error_messages')[:blank]</tt>
+        #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages')[:blank]</tt>
         #
         # Example:
         #   should_require_attributes :name, :phone_number
@@ -65,7 +65,7 @@ module ThoughtBot # :nodoc:
         #
         # Options:
         # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>I18n.translate('active_record.error_messages')[:taken]</tt>
+        #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages')[:taken]</tt>
         # * <tt>:scoped_to</tt> - field(s) to scope the uniqueness to.
         #
         # Examples:
@@ -163,7 +163,7 @@ module ThoughtBot # :nodoc:
         #
         # Options:
         # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>I18n.translate('active_record.error_messages')[:invalid]</tt>
+        #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages')[:invalid]</tt>
         #
         # Example:
         #   should_not_allow_values_for :isbn, "bad 1", "bad 2"
@@ -206,9 +206,9 @@ module ThoughtBot # :nodoc:
         #
         # Options:
         # * <tt>:short_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>I18n.translate('active_record.error_messages')[:too_short] % range.first</tt>
+        #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages')[:too_short] % range.first</tt>
         # * <tt>:long_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>I18n.translate('active_record.error_messages')[:too_long] % range.last</tt>
+        #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages')[:too_long] % range.last</tt>
         #
         # Example:
         #   should_ensure_length_in_range :password, (6..20)
@@ -258,7 +258,7 @@ module ThoughtBot # :nodoc:
         #
         # Options:
         # * <tt>:short_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>I18n.translate('active_record.error_messages')[:too_short] % min_length</tt>
+        #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages')[:too_short] % min_length</tt>
         #
         # Example:
         #   should_ensure_length_at_least :name, 3
@@ -289,7 +289,7 @@ module ThoughtBot # :nodoc:
         #
         # Options:
         # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>I18n.translate('active_record.error_messages')[:wrong_length] % length</tt>
+        #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages')[:wrong_length] % length</tt>
         #
         # Example:
         #   should_ensure_length_is :ssn, 9
@@ -324,9 +324,9 @@ module ThoughtBot # :nodoc:
         #
         # Options:
         # * <tt>:low_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>I18n.translate('active_record.error_messages')[:inclusion]</tt>
+        #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages')[:inclusion]</tt>
         # * <tt>:high_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>I18n.translate('active_record.error_messages')[:inclusion]</tt>
+        #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages')[:inclusion]</tt>
         #
         # Example:
         #   should_ensure_value_in_range :age, (0..100)
@@ -369,7 +369,7 @@ module ThoughtBot # :nodoc:
         #
         # Options:
         # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>I18n.translate('active_record.error_messages')[:not_a_number]</tt>
+        #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages')[:not_a_number]</tt>
         #
         # Example:
         #   should_only_allow_numeric_values_for :age
@@ -623,7 +623,7 @@ module ThoughtBot # :nodoc:
         #
         # Options:
         # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-        #   Regexp or string.  Default = <tt>I18n.translate('active_record.error_messages')[:accepted]</tt>
+        #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages')[:accepted]</tt>
         #
         # Example:
         #   should_require_acceptance_of :eula
