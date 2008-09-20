@@ -64,9 +64,12 @@ class PostsControllerTest < Test::Unit::TestCase
         get :index, :user_id => users(:first)
       end
       should_respond_with :success
-      should_assign_to :user, :class => User
+      should_assign_to :user, :class => User, :equals => 'users(:first)'
       should_fail do
         should_assign_to :user, :class => Post
+      end
+      should_fail do
+        should_assign_to :user, :equals => 'posts(:first)'
       end
       should_assign_to :posts
       should_not_assign_to :foo, :bar

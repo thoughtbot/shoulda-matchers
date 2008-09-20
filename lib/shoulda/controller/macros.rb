@@ -101,19 +101,31 @@ module ThoughtBot # :nodoc:
         #
         # Options:
         # * <tt>:class</tt> - The expected class of the instance variable being checked.
+        # * <tt>:equals</tt> - A string which is evaluated and compared for equality with
+        # the instance variable being checked.
         #
         # Example:
         #
         #   should_assign_to :user, :posts
         #   should_assign_to :user, :class => User
+        #   should_assign_to :user, :equals => '@user'
         def should_assign_to(*names)
           opts = names.extract_options!
           names.each do |name|
             test_name = "assign @#{name}"
-            test_name << " as #{opts[:class]}" if opts[:class]
+            test_name << " as class #{opts[:class]}" if opts[:class]
+            test_name << " which is equal to #{opts[:equals]}" if opts[:equals]
             should test_name do
-              assert assigns(name.to_sym), "The action isn't assigning to @#{name}"
-              assert_kind_of opts[:class], assigns(name.to_sym) if opts[:class]
+              assigned_value = assigns(name.to_sym)
+              assert assigned_value, "The action isn't assigning to @#{name}"
+              assert_kind_of opts[:class], assigned_value if opts[:class]
+              if opts[:equals]
+                instantiate_variables_from_assigns do
+                  expected_value = eval(opts[:equals], self.send(:binding), __FILE__, __LINE__)
+                  assert_equal expected_value, assigned_value,
+                  "Instance variable @#{name} expected to be #{expected_value} but was #{assigned_value}"
+                end
+              end
             end
           end
         end
