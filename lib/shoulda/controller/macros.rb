@@ -99,13 +99,21 @@ module ThoughtBot # :nodoc:
         # Macro that creates a test asserting that the controller assigned to
         # each of the named instance variable(s).
         #
+        # Options:
+        # * <tt>:class</tt> - The expected class of the instance variable being checked.
+        #
         # Example:
         #
         #   should_assign_to :user, :posts
+        #   should_assign_to :user, :class => User
         def should_assign_to(*names)
+          opts = names.extract_options!
           names.each do |name|
             should "assign @#{name}" do
               assert assigns(name.to_sym), "The action isn't assigning to @#{name}"
+              unless opts[:class].nil?
+                assert_kind_of opts[:class], assigns(name.to_sym)
+              end
             end
           end
         end
