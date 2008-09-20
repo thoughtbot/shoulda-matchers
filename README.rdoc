@@ -90,19 +90,6 @@ Macros to test the most common controller patterns...
     end
   end
 
-Test entire controllers in a few lines...
-
-  class PostsControllerTest < Test::Unit::TestCase
-    should_be_restful do |resource|
-      resource.parent = :user
-
-      resource.create.params = { :title => "first post", :body => 'blah blah blah'}
-      resource.update.params = { :title => "changed" }
-    end
-  end
-
-should_be_restful generates 40 tests on the fly, for both html and xml requests.
-
 === Helpful Assertions (ThoughtBot::Shoulda::Assertions)
 
 More to come here, but have fun with what's there.
