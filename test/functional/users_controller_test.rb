@@ -31,4 +31,13 @@ class UsersControllerTest < Test::Unit::TestCase
     should_assign_to :users
   end
   
+  context "on GET to #show" do
+    setup { get :show, :id => @user }
+
+    should_respond_with :success
+    should_render_with_layout 'users'
+    should_render_template :show
+    should_assign_to :user
+  end
+  
 end
