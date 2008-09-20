@@ -123,7 +123,8 @@ module ThoughtBot # :nodoc:
                 instantiate_variables_from_assigns do
                   expected_value = eval(opts[:equals], self.send(:binding), __FILE__, __LINE__)
                   assert_equal expected_value, assigned_value,
-                  "Instance variable @#{name} expected to be #{expected_value} but was #{assigned_value}"
+                               "Instance variable @#{name} expected to be #{expected_value}" + 
+                               " but was #{assigned_value}"
                 end
               end
             end
