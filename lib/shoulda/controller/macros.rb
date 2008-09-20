@@ -109,11 +109,11 @@ module ThoughtBot # :nodoc:
         def should_assign_to(*names)
           opts = names.extract_options!
           names.each do |name|
-            should "assign @#{name}" do
+            test_name = "assign @#{name}"
+            test_name << " as #{opts[:class]}" if opts[:class]
+            should test_name do
               assert assigns(name.to_sym), "The action isn't assigning to @#{name}"
-              unless opts[:class].nil?
-                assert_kind_of opts[:class], assigns(name.to_sym)
-              end
+              assert_kind_of opts[:class], assigns(name.to_sym) if opts[:class]
             end
           end
         end
