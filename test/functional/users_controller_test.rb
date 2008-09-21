@@ -14,30 +14,23 @@ class UsersControllerTest < Test::Unit::TestCase
     @user       = User.find(:first)
   end
 
-  context "on GET to #index" do
-    setup { get :index }
+  should_be_restful do |resource|
+    resource.identifier = :id
+    resource.klass      = User
+    resource.object     = :user
+    resource.parent     = []
+    resource.actions    = [:index, :show, :new, :edit, :update, :create, :destroy]
+    resource.formats    = [:html, :xml]
 
-    should_respond_with :success
-    should_render_with_layout 'users'
-    should_render_template :index
-    should_assign_to :users
-  end
-  
-  context "on GET to #index.xml" do
-    setup { get :index, :format => 'xml' }
-  
-    should_respond_with :success
-    should_respond_with_xml_for
-    should_assign_to :users
-  end
-  
-  context "on GET to #show" do
-    setup { get :show, :id => @user }
+    resource.create.params = { :name => "bob", :email => 'bob@bob.com', :age => 13, :ssn => "123456789"}
+    resource.update.params = { :name => "sue" }
 
-    should_respond_with :success
-    should_render_with_layout 'users'
-    should_render_template :show
-    should_assign_to :user
+    resource.create.redirect  = "user_url(@user)"
+    resource.update.redirect  = "user_url(@user)"
+    resource.destroy.redirect = "users_url"
+
+    resource.create.flash  = /created/i
+    resource.update.flash  = /updated/i
+    resource.destroy.flash = /removed/i
   end
-  
 end
