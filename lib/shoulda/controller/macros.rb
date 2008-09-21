@@ -26,7 +26,10 @@ module ThoughtBot # :nodoc:
       # Furthermore, the should_be_restful helper will create an entire set of tests which will verify that your
       # controller responds restfully to a variety of requested formats.
       module Macros
-        # :section: should_be_restful
+        # <b>DEPRECATED:</b> Please see
+        # http://thoughtbot.lighthouseapp.com/projects/5807/tickets/78 for more
+        # information.
+        #
         # Generates a full suite of tests for a restful controller.
         #
         # The following definition will generate tests for the +index+, +show+, +new+,
@@ -52,6 +55,8 @@ module ThoughtBot # :nodoc:
         # is used to configure the tests for the details of your resources.
         #
         def should_be_restful(&blk) # :yields: resource
+          warn "[DEPRECATION] should_be_restful is deprecated.  Please see http://thoughtbot.lighthouseapp.com/projects/5807/tickets/78 for more information."
+
           resource = ResourceOptions.new
           blk.call(resource)
           resource.normalize!(self)
@@ -123,7 +128,7 @@ module ThoughtBot # :nodoc:
                 instantiate_variables_from_assigns do
                   expected_value = eval(opts[:equals], self.send(:binding), __FILE__, __LINE__)
                   assert_equal expected_value, assigned_value,
-                               "Instance variable @#{name} expected to be #{expected_value}" + 
+                               "Instance variable @#{name} expected to be #{expected_value}" +
                                " but was #{assigned_value}"
                 end
               end
@@ -204,13 +209,13 @@ module ThoughtBot # :nodoc:
           if expected_layout
             should "render with #{expected_layout} layout" do
               response_layout = @response.layout.blank? ? "" : @response.layout.split('/').last
-              assert_equal expected_layout, 
-                           response_layout, 
+              assert_equal expected_layout,
+                           response_layout,
                            "Expected to render with layout #{expected_layout} but was rendered with #{response_layout}"
             end
           else
             should "render without layout" do
-              assert_nil @response.layout, 
+              assert_nil @response.layout,
                          "Expected no layout, but was rendered using #{@response.layout}"
             end
           end
@@ -243,7 +248,7 @@ module ThoughtBot # :nodoc:
             assert_select "form", true, "The template doesn't contain a <form> element"
           end
         end
-        
+
         # Macro that creates a routing test. It tries to use the given HTTP
         # +method+ on the given +path+, and asserts that it routes to the
         # given +options+.
@@ -261,7 +266,7 @@ module ThoughtBot # :nodoc:
         #   should_route :put, '/posts/1', :action => :update, :id => "1"
         #   should_route :delete, '/posts/1', :action => :destroy, :id => 1
         #   should_route :get, '/posts/new', :action => :new
-        # 
+        #
         def should_route(method, path, options)
           unless options[:controller]
             options[:controller] = self.name.gsub(/ControllerTest$/, '').tableize

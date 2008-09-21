@@ -28,8 +28,9 @@ module ThoughtBot # :nodoc:
       # For all of these helpers, the last parameter may be a hash of options.
       #
       module Macros
+        # <b>DEPRECATED:</b> Use <tt>fixtures :all</tt> instead
+        #
         # Loads all fixture files (<tt>test/fixtures/*.yml</tt>)
-        # Deprecated: Use <tt>fixtures :all</tt> instead
         def load_all_fixtures
           warn "[DEPRECATION] load_all_fixtures is deprecated.  Use `fixtures :all` instead."
           fixtures :all
