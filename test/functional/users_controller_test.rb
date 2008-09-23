@@ -13,6 +13,8 @@ class UsersControllerTest < Test::Unit::TestCase
     @response   = ActionController::TestResponse.new
     @user       = User.find(:first)
   end
+  
+  should_filter :ssn
 
   should_be_restful do |resource|
     resource.identifier = :id

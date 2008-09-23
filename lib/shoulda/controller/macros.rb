@@ -100,6 +100,24 @@ module ThoughtBot # :nodoc:
         def should_not_set_the_flash
           should_set_the_flash_to nil
         end
+        
+        # Macro that creates a test asserting that b 
+        # is set for the specified keys
+        #
+        # Example:
+        #
+        #   should_filter :password, :ssn
+        def should_filter(*keys)
+          keys.each do |key|
+            should "filter #{key}" do
+              assert @controller.respond_to?(:filter_parameters),
+                "The key #{key} is not filtered"
+              filtered = @controller.send(:filter_parameters, {key.to_s => key.to_s})
+              assert_equal '[FILTERED]', filtered[key.to_s],
+                "The key #{key} is not filtered"
+            end
+          end
+        end
 
         # Macro that creates a test asserting that the controller assigned to
         # each of the named instance variable(s).

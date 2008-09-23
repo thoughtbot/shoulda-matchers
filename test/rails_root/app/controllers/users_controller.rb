@@ -1,4 +1,7 @@
 class UsersController < ApplicationController
+  
+  filter_parameter_logging :ssn
+  
   # GET /users
   # GET /users.xml
   def index
