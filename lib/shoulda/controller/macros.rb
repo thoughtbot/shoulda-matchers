@@ -101,7 +101,7 @@ module ThoughtBot # :nodoc:
           should_set_the_flash_to nil
         end
         
-        # Macro that creates a test asserting that b 
+        # Macro that creates a test asserting that filter_parameter_logging
         # is set for the specified keys
         #
         # Example:
