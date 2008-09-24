@@ -14,7 +14,7 @@ class UsersControllerTest < Test::Unit::TestCase
     @user       = User.find(:first)
   end
   
-  should_filter :ssn
+  should_filter_params :ssn
 
   should_be_restful do |resource|
     resource.identifier = :id

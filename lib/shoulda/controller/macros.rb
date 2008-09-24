@@ -106,8 +106,8 @@ module ThoughtBot # :nodoc:
         #
         # Example:
         #
-        #   should_filter :password, :ssn
-        def should_filter(*keys)
+        #   should_filter_params :password, :ssn
+        def should_filter_params(*keys)
           keys.each do |key|
             should "filter #{key}" do
               assert @controller.respond_to?(:filter_parameters),
