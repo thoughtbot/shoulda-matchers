@@ -603,7 +603,7 @@ module ThoughtBot # :nodoc:
         #   should_have_index :age
         #
         def should_have_indices(*columns)
-          table = model_class.name.tableize
+          table = model_class.table_name
           indices = ::ActiveRecord::Base.connection.indexes(table).map(&:columns)
 
           columns.each do |column|
