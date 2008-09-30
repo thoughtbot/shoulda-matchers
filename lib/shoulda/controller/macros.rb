@@ -182,6 +182,8 @@ module ThoughtBot # :nodoc:
         # Example:
         #
         #   should_respond_with_content_type 'application/rss+xml'
+        #   should_respond_with_content_type :rss
+        #   should_respond_with_content_type /rss/
         def should_respond_with_content_type(content_type)
           should "respond with content type of #{content_type}" do
             content_type = Mime::EXTENSION_LOOKUP[content_type.to_s].to_s if content_type.is_a? Symbol
