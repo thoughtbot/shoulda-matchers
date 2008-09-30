@@ -73,12 +73,12 @@ module Thoughtbot # :nodoc:
 
     # == Before statements
     #
-    # Before statements are simply should statements that run before the current
+    # Before statements are should statements that run before the current
     # context's setup. These are especially useful when setting expectations.
     #
     # === Example:
     #
-    #  class UserControllerTest << Test::Unit::TestCase
+    #  class UserControllerTest < Test::Unit::TestCase
     #    context "the index action" do
     #      setup do
     #        @users = [Factory(:user)]
@@ -86,11 +86,8 @@ module Thoughtbot # :nodoc:
     #      end
     #
     #      context "on GET" do
-    #        setup do
-    #          get :index
-    #        end
+    #        setup { get :index }
     #
-    #        # normal should statement
     #        should_respond_with :success
     #
     #        # runs before "get :index"
