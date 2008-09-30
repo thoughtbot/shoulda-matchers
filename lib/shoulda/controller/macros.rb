@@ -280,12 +280,15 @@ module ThoughtBot # :nodoc:
         #
         # Examples:
         #
-        #   should_route :get, '/posts', :action => :index
-        #   should_route :post, '/posts', :controller => :posts, :action => :create
-        #   should_route :get, '/posts/1', :action => :show, :id => 1
-        #   should_route :put, '/posts/1', :action => :update, :id => "1"
-        #   should_route :delete, '/posts/1', :action => :destroy, :id => 1
-        #   should_route :get, '/posts/new', :action => :new
+        #   should_route :get, "/posts", :controller => :posts, :action => :index
+        #   should_route :get, "/posts/new", :action => :new
+        #   should_route :post, "/posts", :action => :create
+        #   should_route :get, "/posts/#{@post.id}", :action => :show, :id => @post.id
+        #   should_route :edit, "/posts/#{@post.id}", :action => :show, :id => @post.id
+        #   should_route :put, "/posts/#{@post.id}", :action => :update, :id => @post.id
+        #   should_route :delete, "/posts/#{@post.id}", :action => :destroy, :id => @post.id
+        #   should_route :get, "/users/#{@user.id}/posts/#{@post.id}", 
+        #     :action => :show, :id => @post.id, :user_id => @user.id
         #
         def should_route(method, path, options)
           unless options[:controller]
