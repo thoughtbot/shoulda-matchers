@@ -43,7 +43,7 @@ spec = Gem::Specification.new do |s|
   s.homepage          = "http://thoughtbot.com/projects/shoulda"
   s.rubyforge_project = "shoulda"
 
-  s.files       = FileList["[A-Z]*", "{bin,lib,test}/**/*"]
+  s.files       = FileList["[A-Z]*", "{bin,lib,rails,test}/**/*"]
   s.executables = s.files.grep(/^bin/) { |f| File.basename(f) }
 
   s.has_rdoc         = true
@@ -53,7 +53,7 @@ spec = Gem::Specification.new do |s|
   s.authors = ["Tammer Saleh"]
   s.email   = "tsaleh@thoughtbot.com"
 
-  s.add_dependency "activesupport", ">= 2.0"
+  s.add_dependency "activesupport", ">= 2.0.0"
 end
 
 Rake::GemPackageTask.new spec do |pkg|
