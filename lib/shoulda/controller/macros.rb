@@ -253,7 +253,8 @@ module ThoughtBot # :nodoc:
         # Example:
         #
         #   should_redirect_to '"/"'
-        #   should_redirect_to "users_url(@user)"
+        #   should_redirect_to "user_url(@user)"
+        #   should_redirect_to "users_url"
         def should_redirect_to(url)
           should "redirect to #{url.inspect}" do
             instantiate_variables_from_assigns do
