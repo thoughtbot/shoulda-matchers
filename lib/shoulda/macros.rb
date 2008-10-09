@@ -26,8 +26,8 @@ module ThoughtBot # :nodoc:
       # Combinations of <tt>:by</tt>, <tt>:from</tt>, and <tt>:to</tt> are allowed:
       #
       #   should_change "@post.title"                # => assert the value changed in some way
-      #   should_change "@post.title" :from => "old" # => assert the value changed to anything other than "old"
-      #   should_change "@post.title" :to   => "new" # => assert the value changed from anything other than "new"
+      #   should_change "@post.title", :from => "old" # => assert the value changed to anything other than "old"
+      #   should_change "@post.title", :to   => "new" # => assert the value changed from anything other than "new"
       def should_change(expression, options = {})
         by, from, to = get_options!([options], :by, :from, :to)
         stmt = "change #{expression.inspect}"
