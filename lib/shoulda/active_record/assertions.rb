@@ -66,7 +66,10 @@ module ThoughtBot # :nodoc:
         end
 
         def pretty_error_messages(obj)
-          obj.errors.map { |a, m| "#{a} #{m} (#{obj.send(a).inspect})" }
+          obj.errors.map do |a, m| 
+            msg = "#{a} #{m}" 
+            msg << " (#{obj.send(a).inspect})" unless a.to_sym == :base
+          end
         end
 
         private
