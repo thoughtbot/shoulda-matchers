@@ -93,6 +93,7 @@ class PostsControllerTest < Test::Unit::TestCase
     context "viewing a post on GET to #show" do
       setup { get :show, :user_id => users(:first), :id => posts(:first) }
       should_render_with_layout 'wide'
+      should_render_with_layout :wide
     end
 
     context "on GET to #new" do

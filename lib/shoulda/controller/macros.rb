@@ -100,7 +100,7 @@ module ThoughtBot # :nodoc:
         def should_not_set_the_flash
           should_set_the_flash_to nil
         end
-        
+
         # Macro that creates a test asserting that filter_parameter_logging
         # is set for the specified keys
         #
@@ -227,9 +227,9 @@ module ThoughtBot # :nodoc:
         #   should_render_with_layout 'special'
         def should_render_with_layout(expected_layout = 'application')
           if expected_layout
-            should "render with #{expected_layout} layout" do
+            should "render with #{expected_layout.inspect} layout" do
               response_layout = @response.layout.blank? ? "" : @response.layout.split('/').last
-              assert_equal expected_layout,
+              assert_equal expected_layout.to_s,
                            response_layout,
                            "Expected to render with layout #{expected_layout} but was rendered with #{response_layout}"
             end
@@ -288,7 +288,7 @@ module ThoughtBot # :nodoc:
         #   should_route :edit, "/posts/1", :action => :show, :id => 1
         #   should_route :put, "/posts/1", :action => :update, :id => 1
         #   should_route :delete, "/posts/1", :action => :destroy, :id => 1
-        #   should_route :get, "/users/1/posts/1", 
+        #   should_route :get, "/users/1/posts/1",
         #     :action => :show, :id => 1, :user_id => 1
         #
         def should_route(method, path, options)
