@@ -11,7 +11,7 @@ module ThoughtBot # :nodoc:
       #
       # Example:
       #
-      #   context "Creating a post"
+      #   context "Creating a post" do
       #     setup { Post.create }
       #     should_change "Post.count", :by => 1
       #   end
@@ -53,7 +53,7 @@ module ThoughtBot # :nodoc:
       #
       # Example:
       #
-      #   context "Updating a post"
+      #   context "Updating a post" do
       #     setup { @post.update_attributes(:title => "new") }
       #     should_not_change "Post.count"
       #   end
