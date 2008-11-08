@@ -1,43 +1,30 @@
 module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
-    module MacroHelpers # :nodoc:
-      # Helper method that determines the default error message used by Active
-      # Record.  Works for both existing Rails 2.1 and Rails 2.2 with the newly
-      # introduced I18n module used for localization.
-      #
-      #   default_error_message(:blank)
-      #   default_error_message(:too_short, :count => 5)
-      #   default_error_message(:too_long, :count => 60)
-      def default_error_message(key, values = {})
-        if Object.const_defined?(:I18n) # Rails >= 2.2
-          I18n.translate("activerecord.errors.messages.#{key}", values)
-        else # Rails <= 2.1.x
-          ::ActiveRecord::Errors.default_error_messages[key] % values[:count]
-        end
-      end
-    end
-
     # = Macro test helpers for your active record models
     #
-    # These helpers will test most of the validations and associations for your ActiveRecord models.
+    # Loads all fixture files (<tt>test/fixtures/*.yml</tt>)
+    def load_all_fixtures
+      warn "[DEPRECATION] load_all_fixtures is deprecated.  Use `fixtures :all` instead."
+      fixtures :all
+    end
+
+    # Ensures that the model cannot be saved if one of the attributes listed is not present.
     #
-    #   class UserTest < Test::Unit::TestCase
-    #     should_require_attributes :name, :phone_number
-    #     should_not_allow_values_for :phone_number, "abcd", "1234"
-    #     should_allow_values_for :phone_number, "(123) 456-7890"
+    # If an instance variable has been created in the setup named after the
+    # model being tested, then this method will use that.  Otherwise, it will
+    # create a new instance to test against.
     #
-    #     should_protect_attributes :password
+    # Options:
+    # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
+    #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages.blank')</tt>
     #
-    #     should_have_one :profile
-    #     should_have_many :dogs
-    #     should_have_many :messes, :through => :dogs
-    #     should_belong_to :lover
-    #   end
+    # Example:
+    #   should_require_attributes :name, :phone_number
     #
     # For all of these helpers, the last parameter may be a hash of options.
     #
     module Macros
-      include MacroHelpers
+      include Helpers
 
       # <b>DEPRECATED:</b> Use <tt>fixtures :all</tt> instead
       #
