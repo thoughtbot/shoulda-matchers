@@ -180,4 +180,62 @@ class HelpersTest < Test::Unit::TestCase # :nodoc:
       end
     end
   end
+
+  context "a matching matcher" do
+    setup do
+      @matcher = stub('matcher', :matches?                 => true,
+                                 :failure_message          => 'bad failure message',
+                                 :negative_failure_message => 'big time failure')
+    end
+
+    should "pass when given to assert_accepts" do
+      assert_accepts @matcher, 'target'
+    end
+
+    context "when given to assert_rejects" do
+      setup do
+        begin
+          assert_rejects @matcher, 'target'
+        rescue Test::Unit::AssertionFailedError => @error
+        end
+      end
+
+      should "fail" do
+        assert_not_nil @error
+      end
+
+      should "use the error message from the matcher" do
+        assert_equal 'big time failure', @error.message
+      end
+    end
+  end
+
+  context "a non-matching matcher" do
+    setup do
+      @matcher = stub('matcher', :matches?                 => false,
+                                 :failure_message          => 'big time failure',
+                                 :negative_failure_message => 'bad failure message')
+    end
+
+    should "pass when given to assert_rejects" do
+      assert_rejects @matcher, 'target'
+    end
+
+    context "when given to assert_accepts" do
+      setup do
+        begin
+          assert_accepts @matcher, 'target'
+        rescue Test::Unit::AssertionFailedError => @error
+        end
+      end
+
+      should "fail" do
+        assert_not_nil @error
+      end
+
+      should "use the error message from the matcher" do
+        assert_equal 'big time failure', @error.message
+      end
+    end
+  end
 end
