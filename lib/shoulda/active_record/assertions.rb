@@ -32,11 +32,12 @@ module Shoulda # :nodoc:
       #
       #   @product = Product.new(:tangible => false)
       #   assert_good_value(Product, :price, "0")
-      def assert_good_value(object_or_klass, attribute, value, error_message_to_avoid = //)
+      def assert_good_value(object_or_klass, attribute, value, error_message_to_avoid = nil)
         object = get_instance_of(object_or_klass)
-        object.send("#{attribute}=", value)
-        object.valid?
-        assert_does_not_contain(object.errors.on(attribute), error_message_to_avoid, "when set to #{value.inspect}")
+        matcher = have_attribute(attribute).
+                    accepting_value(value).
+                    with_message(error_message_to_avoid)
+        assert_accepts(matcher, object)
       end
 
       # Asserts that an Active Record model invalidates the passed
@@ -56,12 +57,12 @@ module Shoulda # :nodoc:
       #   @product = Product.new(:tangible => true)
       #   assert_bad_value(Product, :price, "0")
       def assert_bad_value(object_or_klass, attribute, value,
-                           error_message_to_expect = self.class.default_error_message(:invalid))
+                           error_message_to_expect = nil)
         object = get_instance_of(object_or_klass)
-        object.send("#{attribute}=", value)
-        assert !object.valid?, "#{object.class} allowed #{value.inspect} as a value for #{attribute}"
-        assert object.errors.on(attribute), "There are no errors on #{attribute} after being set to #{value.inspect}"
-        assert_contains(object.errors.on(attribute), error_message_to_expect, "when set to #{value.inspect}")
+        matcher = have_attribute(attribute).
+                    accepting_value(value).
+                    with_message(error_message_to_expect)
+        assert_rejects(matcher, object)
       end
     end
   end
