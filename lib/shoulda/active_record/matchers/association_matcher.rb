@@ -35,6 +35,13 @@ module Shoulda # :nodoc:
           "Did not expect #{expectation}"
         end
 
+        def description
+          description = "#{macro_description} #{@name}"
+          description += " through #{@through}" if @through
+          description += " dependent => #{@dependent}" if @dependent
+          description
+        end
+
         protected
 
         def association_exists?
@@ -134,6 +141,13 @@ module Shoulda # :nodoc:
 
         def expectation
           "#{model_class.name} to have a #{@macro} association called #{@name}"
+        end
+
+        def macro_description
+          case @macro.to_s
+          when 'belongs_to' then 'belong to'
+          when 'has_many'   then 'have many'
+          end
         end
       end
 

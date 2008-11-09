@@ -21,6 +21,7 @@ module Shoulda # :nodoc:
     #
     module Macros
       include Helpers
+      include Matchers
 
       # <b>DEPRECATED:</b> Use <tt>fixtures :all</tt> instead
       #
@@ -407,12 +408,9 @@ module Shoulda # :nodoc:
         through, dependent = get_options!(associations, :through, :dependent)
         klass = model_class
         associations.each do |association|
-          name = "have many #{association}"
-          name += " through #{through}" if through
-          name += " dependent => #{dependent}" if dependent
-          should name do
-            assert_accepts(have_many(association).through(through).dependent(dependent),
-                           klass.new)
+          matcher = have_many(association).through(through).dependent(dependent)
+          should matcher.description do
+            assert_accepts(matcher, klass.new)
           end
         end
       end
@@ -490,8 +488,9 @@ module Shoulda # :nodoc:
         dependent = get_options!(associations, :dependent)
         klass = model_class
         associations.each do |association|
-          should "belong_to #{association}" do
-            assert_accepts(belong_to(association), klass.new)
+          matcher = belong_to(association)
+          should matcher.description do
+            assert_accepts(matcher, klass.new)
           end
         end
       end
