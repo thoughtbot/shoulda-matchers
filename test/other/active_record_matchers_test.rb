@@ -21,6 +21,16 @@ class ActiveRecordMatchersTest < Test::Unit::TestCase # :nodoc:
     end
   end
 
+  context "allow_blank_for(attr)" do
+    should "accept an attribute that allows a blank" do
+      assert_accepts allow_blank_for(:name), User.new
+    end
+
+    should "reject an attribute that doesn't allow a blank" do
+      assert_rejects allow_blank_for(:title), Product.new
+    end
+  end
+
   context "accept_value(value).for" do
     should "accept a good attribute value" do
       assert_accepts accept_value("good@example.com").for(:email), User.new

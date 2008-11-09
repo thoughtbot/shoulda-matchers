@@ -22,7 +22,10 @@ module Shoulda # :nodoc:
 
         def matches?(instance)
           @instance = instance
-          @expected_message ||= default_error_message(:invalid)
+          @expected_message ||= :invalid
+          if Symbol === @expected_message
+            @expected_message = default_error_message(@expected_message)
+          end
           @instance.send("#{@attribute}=", @value)
           !errors_match?
         end
@@ -33,6 +36,17 @@ module Shoulda # :nodoc:
 
         def negative_failure_message
           "Expected #{expectation}, got errors: #{pretty_error_messages(@instance)}"
+        end
+
+        def description
+          if @value.nil?
+            "allow #{@attribute} to be blank"
+          else
+            description = "have an attribute called #{@attribute}"
+            description << " accepting value #{@value.inspect}"
+            description << " without error #{@expected_message.inspect}"
+            description
+          end
         end
 
         private
@@ -77,7 +91,7 @@ module Shoulda # :nodoc:
       end
 
       def allow_blank_for(attr)
-        AttributeMatcher.new.for(attr).accepting_value(nil)
+        AttributeMatcher.new.for(attr).accepting_value(nil).with_message(:blank)
       end
     end
   end
