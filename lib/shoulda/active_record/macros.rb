@@ -2,24 +2,20 @@ module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
     # = Macro test helpers for your active record models
     #
-    # Loads all fixture files (<tt>test/fixtures/*.yml</tt>)
-    def load_all_fixtures
-      warn "[DEPRECATION] load_all_fixtures is deprecated.  Use `fixtures :all` instead."
-      fixtures :all
-    end
-
-    # Ensures that the model cannot be saved if one of the attributes listed is not present.
+    # These helpers will test most of the validations and associations for your ActiveRecord models.
     #
-    # If an instance variable has been created in the setup named after the
-    # model being tested, then this method will use that.  Otherwise, it will
-    # create a new instance to test against.
+    #   class UserTest < Test::Unit::TestCase
+    #     should_require_attributes :name, :phone_number
+    #     should_not_allow_values_for :phone_number, "abcd", "1234"
+    #     should_allow_values_for :phone_number, "(123) 456-7890"
     #
-    # Options:
-    # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-    #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages.blank')</tt>
+    #     should_protect_attributes :password
     #
-    # Example:
-    #   should_require_attributes :name, :phone_number
+    #     should_have_one :profile
+    #     should_have_many :dogs
+    #     should_have_many :messes, :through => :dogs
+    #     should_belong_to :lover
+    #   end
     #
     # For all of these helpers, the last parameter may be a hash of options.
     #
@@ -54,12 +50,9 @@ module Shoulda # :nodoc:
 
         attributes.each do |attribute|
           should "require #{attribute} to be set" do
-            reflection = klass.reflect_on_association(attribute)
-            if reflection && [:has_many, :has_and_belongs_to_many].include?(reflection.macro)
-              assert_bad_value(klass, attribute, [], message)
-            else
-              assert_bad_value(klass, attribute, nil, message)
-            end
+            object = get_instance_of(klass)
+            matcher = allow_blank_for(attribute).with_message(message)
+            assert_rejects(matcher, object)
           end
         end
       end
