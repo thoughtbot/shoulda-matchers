@@ -537,7 +537,7 @@ module Shoulda # :nodoc:
       #   should_belong_to :parent
       #
       def should_belong_to(*associations)
-        get_options!(associations)
+        dependent = get_options!(associations, :dependent)
         klass = model_class
         associations.each do |association|
           should "belong_to #{association}" do
@@ -549,6 +549,12 @@ module Shoulda # :nodoc:
               associated_klass = (reflection.options[:class_name] || association.to_s.camelize).constantize
               fk = reflection.options[:foreign_key] || reflection.primary_key_name
               assert klass.column_names.include?(fk.to_s), "#{klass.name} does not have a #{fk} foreign key."
+            end
+
+            if dependent
+              assert_equal dependent.to_s,
+                           reflection.options[:dependent].to_s,
+                           "#{association} should have #{dependent} dependency"
             end
           end
         end
