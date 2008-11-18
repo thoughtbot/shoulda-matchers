@@ -73,6 +73,8 @@ class PostsControllerTest < Test::Unit::TestCase
       end
       should_assign_to :posts
       should_not_assign_to :foo, :bar
+      should_render_page_with_metadata :description => /Posts/, :title => /index/
+      should_render_page_with_metadata :keywords => "posts"      
     end
 
     context "viewing posts for a user with rss format" do
