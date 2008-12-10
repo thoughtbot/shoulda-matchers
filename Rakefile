@@ -52,8 +52,6 @@ spec = Gem::Specification.new do |s|
 
   s.authors = ["Tammer Saleh"]
   s.email   = "tsaleh@thoughtbot.com"
-
-  s.add_dependency "activesupport", ">= 2.0.0"
 end
 
 Rake::GemPackageTask.new spec do |pkg|
