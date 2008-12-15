@@ -429,33 +429,9 @@ module Shoulda # :nodoc:
         dependent = get_options!(associations, :dependent)
         klass = model_class
         associations.each do |association|
-          name = "have one #{association}"
-          name += " dependent => #{dependent}" if dependent
-          should name do
-            reflection = klass.reflect_on_association(association)
-            assert reflection, "#{klass.name} does not have any relationship to #{association}"
-            assert_equal :has_one, reflection.macro
-
-            associated_klass = (reflection.options[:class_name] || association.to_s.camelize).constantize
-
-            if reflection.options[:foreign_key]
-              fk = reflection.options[:foreign_key]
-            elsif reflection.options[:as]
-              fk = reflection.options[:as].to_s.foreign_key
-              fk_type = fk.gsub(/_id$/, '_type')
-              assert associated_klass.column_names.include?(fk_type),
-                     "#{associated_klass.name} does not have a #{fk_type} column."
-            else
-              fk = klass.name.foreign_key
-            end
-            assert associated_klass.column_names.include?(fk.to_s),
-                   "#{associated_klass.name} does not have a #{fk} foreign key."
-
-            if dependent
-              assert_equal dependent.to_s,
-                           reflection.options[:dependent].to_s,
-                           "#{association} should have #{dependent} dependency"
-            end
+          matcher = have_one(association).dependent(dependent)
+          should matcher.description do
+            assert_accepts(matcher, klass.new)
           end
         end
       end

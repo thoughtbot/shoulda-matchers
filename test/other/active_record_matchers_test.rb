@@ -103,4 +103,30 @@ class ActiveRecordMatchersTest < Test::Unit::TestCase # :nodoc:
     end
   end
 
+  context "has_one" do
+    should "accept a valid association without any options" do
+      assert_accepts have_one(:friendship), User.new
+    end
+
+    should "accept a valid association with an :as option" do
+      assert_accepts have_one(:address), User.new
+    end
+
+    should "reject an association that has a nonexistent foreign key" do
+      assert_rejects have_one(:flea), User.new
+    end
+
+    should "reject an association with a bad :as option" do
+      assert_rejects have_one(:address), Flea.new
+    end
+
+    should "accept an association with a valid :dependent option" do
+      assert_accepts have_one(:friendship).dependent(:destroy), User.new
+    end
+
+    should "reject an association with a bad :dependent option" do
+      assert_rejects have_one(:friendship).dependent(:bad), User.new
+    end
+  end
+
 end
