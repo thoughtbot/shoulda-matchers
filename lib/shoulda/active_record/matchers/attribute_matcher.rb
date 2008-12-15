@@ -82,10 +82,6 @@ module Shoulda # :nodoc:
         end
       end
 
-      def have_attribute(attr)
-        AttributeMatcher.new.for(attr)
-      end
-
       def accept_value(value)
         AttributeMatcher.new.accepting_value(value)
       end
