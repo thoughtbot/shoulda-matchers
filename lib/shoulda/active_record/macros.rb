@@ -521,21 +521,7 @@ module Shoulda # :nodoc:
         klass = model_class
         associations.each do |association|
           should "belong_to #{association}" do
-            reflection = klass.reflect_on_association(association)
-            assert reflection, "#{klass.name} does not have any relationship to #{association}"
-            assert_equal :belongs_to, reflection.macro
-
-            unless reflection.options[:polymorphic]
-              associated_klass = (reflection.options[:class_name] || association.to_s.camelize).constantize
-              fk = reflection.options[:foreign_key] || reflection.primary_key_name
-              assert klass.column_names.include?(fk.to_s), "#{klass.name} does not have a #{fk} foreign key."
-            end
-
-            if dependent
-              assert_equal dependent.to_s,
-                           reflection.options[:dependent].to_s,
-                           "#{association} should have #{dependent} dependency"
-            end
+            assert_accepts(belong_to(association), klass.new)
           end
         end
       end

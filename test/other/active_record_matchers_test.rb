@@ -39,4 +39,30 @@ class ActiveRecordMatchersTest < Test::Unit::TestCase # :nodoc:
     end
   end
 
+  context "belong_to" do
+    should "accept a good association with the default foreign key" do
+      assert_accepts belong_to(:address), Dog.new
+    end
+
+    should "reject a nonexistent association" do
+      assert_rejects belong_to(:tag), Dog.new
+    end
+
+    should "reject an association of the wrong type" do
+      assert_rejects belong_to(:address), User.new
+    end
+
+    should "reject an association that has a nonexistent foreign key" do
+      assert_rejects belong_to(:atlantis), User.new
+    end
+
+    should "accept an association with an existing custom foreign key" do
+      assert_accepts belong_to(:user), Dog.new
+    end
+
+    should "accept a polymorphic association" do
+      assert_accepts belong_to(:addressable), Address.new
+    end
+  end
+
 end
