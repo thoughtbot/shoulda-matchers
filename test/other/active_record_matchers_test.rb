@@ -65,4 +65,42 @@ class ActiveRecordMatchersTest < Test::Unit::TestCase # :nodoc:
     end
   end
 
+  context "have_many" do
+    should "accept a valid association without any options" do
+      assert_accepts have_many(:dogs), User.new
+    end
+
+    should "accept a valid association with a :through option" do
+      assert_accepts have_many(:friends), User.new
+    end
+
+    should "accept a valid association with an :as option" do
+      assert_accepts have_many(:addresses), User.new
+    end
+
+    should "reject an association that has a nonexistent foreign key" do
+      assert_rejects have_many(:fleas), User.new
+    end
+
+    should "reject an association with a bad :as option" do
+      assert_rejects have_many(:addresses), Dog.new
+    end
+
+    should "reject an association that has a bad :through option" do
+      assert_rejects have_many(:enemies).through(:friends), User.new
+    end
+
+    should "reject an association that has the wrong :through option" do
+      assert_rejects have_many(:friends).through(:dogs), User.new
+    end
+
+    should "accept an association with a valid :dependent option" do
+      assert_accepts have_many(:posts).dependent(:destroy), User.new
+    end
+
+    should "reject an association with a bad :dependent option" do
+      assert_rejects have_many(:dogs).dependent(:destroy), User.new
+    end
+  end
+
 end

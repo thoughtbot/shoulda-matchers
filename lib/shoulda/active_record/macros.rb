@@ -411,38 +411,8 @@ module Shoulda # :nodoc:
           name += " through #{through}" if through
           name += " dependent => #{dependent}" if dependent
           should name do
-            reflection = klass.reflect_on_association(association)
-            assert reflection, "#{klass.name} does not have any relationship to #{association}"
-            assert_equal :has_many, reflection.macro
-
-            if through
-              through_reflection = klass.reflect_on_association(through)
-              assert through_reflection, "#{klass.name} does not have any relationship to #{through}"
-              assert_equal(through, reflection.options[:through])
-            end
-
-            if dependent
-              assert_equal dependent.to_s,
-                           reflection.options[:dependent].to_s,
-                           "#{association} should have #{dependent} dependency"
-            end
-
-            # Check for the existence of the foreign key on the other table
-            unless reflection.options[:through]
-              if reflection.options[:foreign_key]
-                fk = reflection.options[:foreign_key]
-              elsif reflection.options[:as]
-                fk = reflection.options[:as].to_s.foreign_key
-              else
-                fk = reflection.primary_key_name
-              end
-
-              associated_klass_name = (reflection.options[:class_name] || association.to_s.classify)
-              associated_klass = associated_klass_name.constantize
-
-              assert associated_klass.column_names.include?(fk.to_s),
-                     "#{associated_klass.name} does not have a #{fk} foreign key."
-            end
+            assert_accepts(have_many(association).through(through).dependent(dependent),
+                           klass.new)
           end
         end
       end
