@@ -446,12 +446,9 @@ module Shoulda # :nodoc:
         klass = model_class
 
         associations.each do |association|
-          should "should have and belong to many #{association}" do
-            reflection = klass.reflect_on_association(association)
-            assert reflection, "#{klass.name} does not have any relationship to #{association}"
-            assert_equal :has_and_belongs_to_many, reflection.macro
-            table = reflection.options[:join_table]
-            assert ::ActiveRecord::Base.connection.tables.include?(table.to_s), "table #{table} doesn't exist"
+          matcher = have_and_belong_to_many(association)
+          should matcher.description do
+            assert_accepts(matcher, klass.new)
           end
         end
       end

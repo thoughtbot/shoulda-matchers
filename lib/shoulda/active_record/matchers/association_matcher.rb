@@ -24,7 +24,8 @@ module Shoulda # :nodoc:
             macro_correct? && 
             foreign_key_exists? && 
             through_association_valid? && 
-            dependent_correct?
+            dependent_correct? &&
+            join_table_exists?
         end
 
         def failure_message
@@ -108,6 +109,16 @@ module Shoulda # :nodoc:
           end
         end
 
+        def join_table_exists?
+          if @macro != :has_and_belongs_to_many || 
+              ::ActiveRecord::Base.connection.tables.include?(join_table.to_s)
+            true
+          else
+            @missing = "join table #{join_table} doesn't exist"
+            false
+          end
+        end
+
         def class_has_foreign_key?(klass)
           if klass.column_names.include?(foreign_key.to_s)
             true
@@ -119,6 +130,10 @@ module Shoulda # :nodoc:
 
         def model_class
           @subject.class
+        end
+
+        def join_table
+          reflection.options[:join_table]
         end
 
         def associated_class
@@ -149,7 +164,9 @@ module Shoulda # :nodoc:
           case @macro.to_s
           when 'belongs_to' then 'belong to'
           when 'has_many'   then 'have many'
-          when 'has_one'    then 'has one'
+          when 'has_one'    then 'have one'
+          when 'has_and_belongs_to_many' then
+            'have and belong to many'
           end
         end
       end
@@ -164,6 +181,10 @@ module Shoulda # :nodoc:
 
       def have_one(name)
         AssociationMatcher.new(:has_one, name)
+      end
+
+      def have_and_belong_to_many(name)
+        AssociationMatcher.new(:has_and_belongs_to_many, name)
       end
 
     end

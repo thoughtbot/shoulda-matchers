@@ -103,7 +103,7 @@ class ActiveRecordMatchersTest < Test::Unit::TestCase # :nodoc:
     end
   end
 
-  context "has_one" do
+  context "have_one" do
     should "accept a valid association without any options" do
       assert_accepts have_one(:friendship), User.new
     end
@@ -126,6 +126,24 @@ class ActiveRecordMatchersTest < Test::Unit::TestCase # :nodoc:
 
     should "reject an association with a bad :dependent option" do
       assert_rejects have_one(:friendship).dependent(:bad), User.new
+    end
+  end
+
+  context "have_and_belong_to_many" do
+    should "accept a valid association" do
+      assert_accepts have_and_belong_to_many(:fleas), Dog.new
+    end
+
+    should "reject a nonexistent association" do
+      assert_rejects have_and_belong_to_many(:parties), User.new
+    end
+
+    should "reject an association with a nonexistent join table" do
+      assert_rejects have_and_belong_to_many(:stores), Product.new
+    end
+
+    should "reject an association of the wrong type" do
+      assert_rejects have_and_belong_to_many(:friends), User.new
     end
   end
 
