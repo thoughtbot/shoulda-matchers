@@ -3,157 +3,299 @@ require 'mocha'
 
 class ActiveRecordMatchersTest < Test::Unit::TestCase # :nodoc:
 
-  context "have_attribute(attr).accepting_value" do
-    should "accept a good attribute value" do
-      assert_accepts have_attribute(:email).accepting_value("good@example.com"), User.new
+  context "an attribute with a format validation" do
+    setup do
+      build_model_class :example, :attr => :string do
+        validates_format_of :attr, :with => /abc/
+      end
+      @model = Example.new
     end
 
-    should "reject a bad attribute value" do
-      assert_rejects have_attribute(:email).accepting_value("bad"), User.new
+    should "allow a good value" do
+      assert_accepts accept_value("abcde").for(:attr), @model
     end
-
-    should "accept a good attribute value and a custom message" do
-      assert_accepts have_attribute(:ssn).accepting_value("xxxxxxxxx").with_message(/length/), User.new
-    end
-
-    should "reject a bad attribute value and a custom message" do
-      assert_rejects have_attribute(:ssn).accepting_value("x").with_message(/length/), User.new
-    end
-  end
-
-  context "allow_blank_for(attr)" do
-    should "accept an attribute that allows a blank" do
-      assert_accepts allow_blank_for(:name), User.new
-    end
-
-    should "reject an attribute that doesn't allow a blank" do
-      assert_rejects allow_blank_for(:title), Product.new
+    
+    should "not allow a bad value" do
+      assert_rejects accept_value("xyz").for(:attr), @model
     end
   end
 
-  context "accept_value(value).for" do
-    should "accept a good attribute value" do
-      assert_accepts accept_value("good@example.com").for(:email), User.new
+  context "an attribute with a format validation and a custom message" do
+    setup do
+      build_model_class :example, :attr => :string do
+        validates_format_of :attr, :with => /abc/, :message => 'bad value'
+      end
+      @model = Example.new
     end
 
-    should "reject a bad attribute value" do
-      assert_rejects accept_value("bad").for(:email), User.new
+    should "allow a good value" do
+      assert_accepts accept_value('abcde').for(:attr).with_message(/bad/),
+                     @model
+    end
+    
+    should "not allow a bad value" do
+      assert_rejects accept_value('xyz').for(:attr).with_message(/bad/),
+                     @model
+    end
+  end
+
+  context "a required attribute" do
+    setup do
+      build_model_class :example, :attr => :string do
+        validates_presence_of :attr
+      end
+      @model = Example.new
     end
 
-    should "accept a good attribute value and a custom message" do
-      assert_accepts accept_value("xxxxxxxxx").for(:ssn).with_message(/length/), User.new
+    should "not allow a blank value" do
+      assert_rejects allow_blank_for(:attr), @model
+    end
+  end
+
+  context "an optional attribute" do
+    setup do
+      @model = build_model_class(:example, :attr => :string).new
     end
 
-    should "reject a bad attribute value and a custom message" do
-      assert_rejects accept_value("x").for(:ssn).with_message(/length/), User.new
+    should "allow a blank value" do
+      assert_accepts allow_blank_for(:attr), @model
     end
   end
 
   context "belong_to" do
+    setup do
+      @matcher = belong_to(:parent)
+    end
+
     should "accept a good association with the default foreign key" do
-      assert_accepts belong_to(:address), Dog.new
+      build_model_class :parent
+      build_model_class :child, :parent_id => :integer do
+        belongs_to :parent
+      end
+      assert_accepts @matcher, Child.new
     end
 
     should "reject a nonexistent association" do
-      assert_rejects belong_to(:tag), Dog.new
+      build_model_class :child
+      assert_rejects @matcher, Child.new
     end
 
     should "reject an association of the wrong type" do
-      assert_rejects belong_to(:address), User.new
+      build_model_class :parent, :child_id => :integer
+      child_class = build_model_class :child do
+        has_one :parent
+      end
+      assert_rejects @matcher, Child.new
     end
 
     should "reject an association that has a nonexistent foreign key" do
-      assert_rejects belong_to(:atlantis), User.new
+      build_model_class :parent
+      build_model_class :child do
+        belongs_to :parent
+      end
+      assert_rejects @matcher, Child.new
     end
 
     should "accept an association with an existing custom foreign key" do
-      assert_accepts belong_to(:user), Dog.new
+      build_model_class :parent
+      build_model_class :child, :guardian_id => :integer do
+        belongs_to :parent, :foreign_key => 'guardian_id'
+      end
+      assert_accepts @matcher, Child.new
     end
 
     should "accept a polymorphic association" do
-      assert_accepts belong_to(:addressable), Address.new
+      build_model_class :child, :parent_type => :string,
+                                :parent_id   => :integer do
+        belongs_to :parent, :polymorphic => true
+      end
+      assert_accepts @matcher, Child.new
     end
   end
 
   context "have_many" do
+    setup do
+      @matcher = have_many(:children)
+    end
+
     should "accept a valid association without any options" do
-      assert_accepts have_many(:dogs), User.new
+      build_model_class :child, :parent_id => :integer
+      build_model_class :parent do
+        has_many :children
+      end
+      assert_accepts @matcher, Parent.new
     end
 
     should "accept a valid association with a :through option" do
-      assert_accepts have_many(:friends), User.new
+      build_model_class :child
+      build_model_class :conception, :child_id  => :integer,
+                                     :parent_id => :integer do
+        belongs_to :child
+      end
+      build_model_class :parent do
+        has_many :conceptions
+        has_many :children, :through => :conceptions
+      end
+      assert_accepts @matcher, Parent.new
     end
 
     should "accept a valid association with an :as option" do
-      assert_accepts have_many(:addresses), User.new
+      build_model_class :child, :guardian_type => :string,
+                                :guardian_id   => :integer
+      build_model_class :parent do
+        has_many :children, :as => :guardian
+      end
+      assert_accepts @matcher, Parent.new
     end
 
     should "reject an association that has a nonexistent foreign key" do
-      assert_rejects have_many(:fleas), User.new
+      build_model_class :child
+      build_model_class :parent do
+        has_many :children
+      end
+      assert_rejects @matcher, Parent.new
     end
 
     should "reject an association with a bad :as option" do
-      assert_rejects have_many(:addresses), Dog.new
+      build_model_class :child, :caretaker_type => :string,
+                                :caretaker_id   => :integer
+      build_model_class :parent do
+        has_many :children, :as => :guardian
+      end
+      assert_rejects @matcher, Parent.new
     end
 
     should "reject an association that has a bad :through option" do
-      assert_rejects have_many(:enemies).through(:friends), User.new
+      build_model_class :child, :parent_id => :integer
+      build_model_class :parent do
+        has_many :children
+      end
+      assert_rejects @matcher.through(:conceptions), Parent.new
     end
 
     should "reject an association that has the wrong :through option" do
-      assert_rejects have_many(:friends).through(:dogs), User.new
+      build_model_class :child
+      build_model_class :conception, :child_id  => :integer,
+                                     :parent_id => :integer do
+        belongs_to :child
+      end
+      build_model_class :parent do
+        has_many :conceptions
+        has_many :children, :through => :conceptions
+      end
+      assert_rejects @matcher.through(:relationships), Parent.new
     end
 
     should "accept an association with a valid :dependent option" do
-      assert_accepts have_many(:posts).dependent(:destroy), User.new
+      build_model_class :child, :parent_id => :integer
+      build_model_class :parent do
+        has_many :children, :dependent => :destroy
+      end
+      assert_accepts @matcher.dependent(:destroy), Parent.new
     end
 
     should "reject an association with a bad :dependent option" do
-      assert_rejects have_many(:dogs).dependent(:destroy), User.new
+      build_model_class :child, :parent_id => :integer
+      build_model_class :parent do
+        has_many :children
+      end
+      assert_rejects @matcher.dependent(:destroy), Parent.new
     end
   end
 
   context "have_one" do
+    setup do
+      @matcher = have_one(:profile)
+    end
+
     should "accept a valid association without any options" do
-      assert_accepts have_one(:friendship), User.new
+      build_model_class :profile, :person_id => :integer
+      build_model_class :person do
+        has_one :profile
+      end
+      assert_accepts @matcher, Person.new
     end
 
     should "accept a valid association with an :as option" do
-      assert_accepts have_one(:address), User.new
+      build_model_class :profile, :profilable_id   => :integer,
+                                  :profilable_type => :string
+      build_model_class :person do
+        has_one :profile, :as => :profilable
+      end
+      assert_accepts @matcher, Person.new
     end
 
     should "reject an association that has a nonexistent foreign key" do
-      assert_rejects have_one(:flea), User.new
+      build_model_class :profile
+      build_model_class :person do
+        has_one :profile
+      end
+      assert_rejects @matcher, Person.new
     end
 
     should "reject an association with a bad :as option" do
-      assert_rejects have_one(:address), Flea.new
+      build_model_class :profile, :profilable_id   => :integer,
+                                  :profilable_type => :string
+      build_model_class :person do
+        has_one :profile, :as => :describable
+      end
+      assert_rejects @matcher, Person.new
     end
 
     should "accept an association with a valid :dependent option" do
-      assert_accepts have_one(:friendship).dependent(:destroy), User.new
+      build_model_class :profile, :person_id => :integer
+      build_model_class :person do
+        has_one :profile, :dependent => :destroy
+      end
+      assert_accepts @matcher.dependent(:destroy), Person.new
     end
 
     should "reject an association with a bad :dependent option" do
-      assert_rejects have_one(:friendship).dependent(:bad), User.new
+      build_model_class :profile, :person_id => :integer
+      build_model_class :person do
+        has_one :profile
+      end
+      assert_rejects @matcher.dependent(:destroy), Person.new
     end
   end
 
   context "have_and_belong_to_many" do
+    setup do
+      @matcher = have_and_belong_to_many(:relatives)
+    end
+
     should "accept a valid association" do
-      assert_accepts have_and_belong_to_many(:fleas), Dog.new
+      build_model_class :relatives
+      build_model_class :person do
+        has_and_belongs_to_many :relatives
+      end
+      build_model_class :people_relative, :person_id   => :integer,
+                                          :relative_id => :integer
+      assert_accepts @matcher, Person.new
     end
 
     should "reject a nonexistent association" do
-      assert_rejects have_and_belong_to_many(:parties), User.new
+      build_model_class :relatives
+      build_model_class :person
+      build_model_class :people_relative, :person_id   => :integer,
+                                          :relative_id => :integer
+      assert_rejects @matcher, Person.new
     end
 
     should "reject an association with a nonexistent join table" do
-      assert_rejects have_and_belong_to_many(:stores), Product.new
+      build_model_class :relatives
+      build_model_class :person do
+        has_and_belongs_to_many :relatives
+      end
+      assert_rejects @matcher, Person.new
     end
 
     should "reject an association of the wrong type" do
-      assert_rejects have_and_belong_to_many(:friends), User.new
+      build_model_class :relatives, :person_id => :integer
+      build_model_class :person do
+        has_many :relatives
+      end
+      assert_rejects @matcher, Person.new
     end
   end
 
