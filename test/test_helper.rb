@@ -31,3 +31,4 @@ class Test::Unit::TestCase #:nodoc:
 end
 
 require 'test/fail_macros'
+require 'test/model_builder'
