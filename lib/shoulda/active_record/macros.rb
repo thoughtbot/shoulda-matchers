@@ -46,7 +46,6 @@ module Shoulda # :nodoc:
       #
       def should_require_attributes(*attributes)
         message = get_options!(attributes, :message)
-        message ||= default_error_message(:blank)
         klass = model_class
 
         attributes.each do |attribute|
@@ -79,39 +78,16 @@ module Shoulda # :nodoc:
       def should_require_unique_attributes(*attributes)
         message, scope, case_sensitive = get_options!(attributes, :message, :scoped_to, :case_sensitive)
         scope = [*scope].compact
-        message ||= default_error_message(:taken)
         case_sensitive = true if case_sensitive.nil?
 
         klass = model_class
+
         attributes.each do |attribute|
-          attribute = attribute.to_sym
-          should "require#{' case insensitive' unless case_sensitive} unique value for #{attribute}#{" scoped to #{scope.join(', ')}" unless scope.blank?}" do
-            assert existing = klass.find(:first), "Can't find first #{klass}"
-            object = klass.new
-            existing_value = existing.send(attribute)
-            existing_value.swapcase! if existing_value.respond_to?(:swapcase!) unless case_sensitive
-
-            if !scope.blank?
-              scope.each do |s|
-                assert_respond_to object, :"#{s}=", "#{klass.name} doesn't seem to have a #{s} attribute."
-                object.send("#{s}=", existing.send(s))
-              end
-            end
-
-            assert_bad_value(object, attribute, existing_value, message)
-
-            # Now test that the object is valid when changing the scoped attribute
-            # TODO:  There is a chance that we could change the scoped field
-            # to a value that's already taken.  An alternative implementation
-            # could actually find all values for scope and create a unique
-            # one.
-            if !scope.blank?
-              scope.each do |s|
-                # Assume the scope is a foreign key if the field is nil
-                object.send("#{s}=", existing.send(s).nil? ? 1 : existing.send(s).next)
-                assert_good_value(object, attribute, existing_value, message)
-              end
-            end
+          matcher = require_unique_attribute(attribute).
+            with_message(message).scoped_to(scope)
+          matcher = matcher.case_insensitive unless case_sensitive
+          should matcher.description do
+            assert_accepts(matcher, klass.new)
           end
         end
       end
@@ -270,19 +246,14 @@ module Shoulda # :nodoc:
       #
       def should_ensure_length_at_least(attribute, min_length, opts = {})
         short_message = get_options!([opts], :short_message)
-        short_message ||= default_error_message(:too_short, :count => min_length)
-
         klass = model_class
 
-        if min_length > 0
-          min_value = "x" * (min_length - 1)
-          should "not allow #{attribute} to be less than #{min_length} chars long" do
-            assert_bad_value(klass, attribute, min_value, short_message)
-          end
-        end
-        should "allow #{attribute} to be at least #{min_length} chars long" do
-          valid_value = "x" * (min_length)
-          assert_good_value(klass, attribute, valid_value, short_message)
+        matcher = ensure_length_of(attribute).
+          is_at_least(min_length).
+          with_short_message(short_message)
+
+        should matcher.description do
+          assert_accepts matcher, klass.new
         end
       end
 
