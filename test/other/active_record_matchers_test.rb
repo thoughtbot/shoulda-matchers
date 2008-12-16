@@ -12,11 +12,11 @@ class ActiveRecordMatchersTest < Test::Unit::TestCase # :nodoc:
     end
 
     should "allow a good value" do
-      assert_accepts accept_value("abcde").for(:attr), @model
+      assert_accepts allow_value("abcde").for(:attr), @model
     end
     
     should "not allow a bad value" do
-      assert_rejects accept_value("xyz").for(:attr), @model
+      assert_rejects allow_value("xyz").for(:attr), @model
     end
   end
 
@@ -29,12 +29,12 @@ class ActiveRecordMatchersTest < Test::Unit::TestCase # :nodoc:
     end
 
     should "allow a good value" do
-      assert_accepts accept_value('abcde').for(:attr).with_message(/bad/),
+      assert_accepts allow_value('abcde').for(:attr).with_message(/bad/),
                      @model
     end
     
     should "not allow a bad value" do
-      assert_rejects accept_value('xyz').for(:attr).with_message(/bad/),
+      assert_rejects allow_value('xyz').for(:attr).with_message(/bad/),
                      @model
     end
   end
