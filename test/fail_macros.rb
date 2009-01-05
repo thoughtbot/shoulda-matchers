@@ -3,18 +3,20 @@ module Shoulda
     attr_accessor :expected_exceptions
   end
 
-  # Enables the core shoulda test suite to test for failure scenarios.  For
-  # example, to ensure that a set of test macros should fail, do this:
-  #
-  #   should_fail do
-  #     should_require_attributes :comments
-  #     should_protect_attributes :name
-  #   end
-  def should_fail(&block)
-    context "should fail when trying to run:" do
-      Shoulda.expected_exceptions = [Test::Unit::AssertionFailedError]
-      yield block
-      Shoulda.expected_exceptions = nil
+  module ClassMethods
+    # Enables the core shoulda test suite to test for failure scenarios.  For
+    # example, to ensure that a set of test macros should fail, do this:
+    #
+    #   should_fail do
+    #     should_require_attributes :comments
+    #     should_protect_attributes :name
+    #   end
+    def should_fail(&block)
+      context "should fail when trying to run:" do
+        Shoulda.expected_exceptions = [Test::Unit::AssertionFailedError]
+        yield block
+        Shoulda.expected_exceptions = nil
+      end
     end
   end
 

@@ -8,7 +8,7 @@ require 'shoulda/rails' if defined? RAILS_ROOT
 module Test # :nodoc: all
   module Unit
     class TestCase
-      extend Shoulda
+      extend Shoulda::ClassMethods
       include Shoulda::Assertions
       extend Shoulda::Macros
       include Shoulda::Helpers
