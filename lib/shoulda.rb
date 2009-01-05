@@ -8,10 +8,10 @@ require 'shoulda/rails' if defined? RAILS_ROOT
 module Test # :nodoc: all
   module Unit
     class TestCase
-      extend Thoughtbot::Shoulda
-      include ThoughtBot::Shoulda::Assertions
-      extend ThoughtBot::Shoulda::Macros
-      include ThoughtBot::Shoulda::Helpers
+      extend Shoulda
+      include Shoulda::Assertions
+      extend Shoulda::Macros
+      include Shoulda::Helpers
     end
   end
 end

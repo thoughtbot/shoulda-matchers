@@ -38,7 +38,7 @@ task :default => ['test']
 
 spec = Gem::Specification.new do |s|
   s.name              = "shoulda"
-  s.version           = Thoughtbot::Shoulda::VERSION
+  s.version           = Shoulda::VERSION
   s.summary           = "Making tests easy on the fingers and eyes"
   s.homepage          = "http://thoughtbot.com/projects/shoulda"
   s.rubyforge_project = "shoulda"

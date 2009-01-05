@@ -119,21 +119,21 @@ class ShouldTest < Test::Unit::TestCase # :nodoc:
 
   def test_should_create_a_new_context
     assert_nothing_raised do
-      Thoughtbot::Shoulda::Context.new("context name", self) do; end
+      Shoulda::Context.new("context name", self) do; end
     end
   end
 
   def test_should_create_a_nested_context
     assert_nothing_raised do
-      parent = Thoughtbot::Shoulda::Context.new("Parent", self) do; end
-      child  = Thoughtbot::Shoulda::Context.new("Child", parent) do; end
+      parent = Shoulda::Context.new("Parent", self) do; end
+      child  = Shoulda::Context.new("Child", parent) do; end
     end
   end
 
   def test_should_name_a_contexts_correctly
-    parent     = Thoughtbot::Shoulda::Context.new("Parent", self) do; end
-    child      = Thoughtbot::Shoulda::Context.new("Child", parent) do; end
-    grandchild = Thoughtbot::Shoulda::Context.new("GrandChild", child) do; end
+    parent     = Shoulda::Context.new("Parent", self) do; end
+    child      = Shoulda::Context.new("Child", parent) do; end
+    grandchild = Shoulda::Context.new("GrandChild", child) do; end
 
     assert_equal "Parent", parent.full_name
     assert_equal "Parent Child", child.full_name
@@ -143,7 +143,7 @@ class ShouldTest < Test::Unit::TestCase # :nodoc:
   # Should statements
 
   def test_should_have_should_hashes_when_given_should_statements
-    context = Thoughtbot::Shoulda::Context.new("name", self) do
+    context = Shoulda::Context.new("name", self) do
       should "be good" do; end
       should "another" do; end
     end
@@ -155,7 +155,7 @@ class ShouldTest < Test::Unit::TestCase # :nodoc:
   # setup and teardown
 
   def test_should_capture_setup_and_teardown_blocks
-    context = Thoughtbot::Shoulda::Context.new("name", self) do
+    context = Shoulda::Context.new("name", self) do
       setup    do; "setup";    end
       teardown do; "teardown"; end
     end
@@ -167,7 +167,7 @@ class ShouldTest < Test::Unit::TestCase # :nodoc:
   # building
 
   def test_should_create_shoulda_test_for_each_should_on_build
-    context = Thoughtbot::Shoulda::Context.new("name", self) do
+    context = Shoulda::Context.new("name", self) do
       should "one" do; end
       should "two" do; end
     end
@@ -178,7 +178,7 @@ class ShouldTest < Test::Unit::TestCase # :nodoc:
 
   def test_should_create_test_methods_on_build
     tu_class = Test::Unit::TestCase
-    context = Thoughtbot::Shoulda::Context.new("A Context", tu_class) do
+    context = Shoulda::Context.new("A Context", tu_class) do
       should "define the test" do; end
     end
 
@@ -188,7 +188,7 @@ class ShouldTest < Test::Unit::TestCase # :nodoc:
 
   def test_should_create_test_methods_on_build_when_subcontext
     tu_class = Test::Unit::TestCase
-    context = Thoughtbot::Shoulda::Context.new("A Context", tu_class) do
+    context = Shoulda::Context.new("A Context", tu_class) do
       context "with a child" do
         should "define the test" do; end
       end
@@ -203,21 +203,21 @@ class ShouldTest < Test::Unit::TestCase # :nodoc:
   def test_should_create_a_new_context_and_build_it_on_Test_Unit_context
     c = mock("context")
     c.expects(:build)
-    Thoughtbot::Shoulda::Context.expects(:new).with("foo", kind_of(Class)).returns(c)
+    Shoulda::Context.expects(:new).with("foo", kind_of(Class)).returns(c)
     self.class.context "foo" do; end
   end
 
   def test_should_create_a_one_off_context_and_build_it_on_Test_Unit_should
     s = mock("test")
-    Thoughtbot::Shoulda::Context.any_instance.expects(:should).with("rock", {}).returns(s)
-    Thoughtbot::Shoulda::Context.any_instance.expects(:build)
+    Shoulda::Context.any_instance.expects(:should).with("rock", {}).returns(s)
+    Shoulda::Context.any_instance.expects(:build)
     self.class.should "rock" do; end
   end
 
   def test_should_create_a_one_off_context_and_build_it_on_Test_Unit_should_eventually
     s = mock("test")
-    Thoughtbot::Shoulda::Context.any_instance.expects(:should_eventually).with("rock").returns(s)
-    Thoughtbot::Shoulda::Context.any_instance.expects(:build)
+    Shoulda::Context.any_instance.expects(:should_eventually).with("rock").returns(s)
+    Shoulda::Context.any_instance.expects(:build)
     self.class.should_eventually "rock" do; end
   end
 
