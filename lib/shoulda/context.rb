@@ -29,7 +29,7 @@ module Shoulda
     #
     # === Example:
     #
-    #  class UserTest << Test::Unit::TestCase
+    #  class UserTest < Test::Unit::TestCase
     #
     #    def setup
     #      @user = User.new("John", "Doe")
@@ -118,7 +118,7 @@ module Shoulda
     #
     # A context block can contain setup, should, should_eventually, and teardown blocks.
     #
-    #  class UserTest << Test::Unit::TestCase
+    #  class UserTest < Test::Unit::TestCase
     #    context "A User instance" do
     #      setup do
     #        @user = User.find(:first)
@@ -135,7 +135,7 @@ module Shoulda
     # Contexts may be nested.  Nested contexts run their setup blocks from out to in before each
     # should statement.  They then run their teardown blocks from in to out after each should statement.
     #
-    #  class UserTest << Test::Unit::TestCase
+    #  class UserTest < Test::Unit::TestCase
     #    context "A User instance" do
     #      setup do
     #        @user = User.find(:first)

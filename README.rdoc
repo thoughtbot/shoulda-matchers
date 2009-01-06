@@ -14,7 +14,7 @@ Assertions:: Many common rails testing idioms have been distilled into a set of 
 
 Stop killing your fingers with all of those underscores...  Name your tests with plain sentences!
 
-  class UserTest << Test::Unit::TestCase
+  class UserTest < Test::Unit::TestCase
     context "A User instance" do
       setup do
         @user = User.find(:first)
