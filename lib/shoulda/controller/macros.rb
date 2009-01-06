@@ -139,7 +139,7 @@ module Shoulda # :nodoc:
           test_name << " which is equal to #{opts[:equals]}" if opts[:equals]
           should test_name do
             assigned_value = assigns(name.to_sym)
-            assert assigned_value, "The action isn't assigning to @#{name}"
+            assert_not_nil assigned_value, "The action isn't assigning to @#{name}"
             assert_kind_of opts[:class], assigned_value if opts[:class]
             if opts[:equals]
               instantiate_variables_from_assigns do
