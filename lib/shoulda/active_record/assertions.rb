@@ -65,8 +65,8 @@ module Shoulda # :nodoc:
       end
 
       def pretty_error_messages(obj)
-        obj.errors.map do |a, m| 
-          msg = "#{a} #{m}" 
+        obj.errors.map do |a, m|
+          msg = "#{a} #{m}"
           msg << " (#{obj.send(a).inspect})" unless a.to_sym == :base
         end
       end
@@ -76,10 +76,14 @@ module Shoulda # :nodoc:
       def get_instance_of(object_or_klass)
         if object_or_klass.is_a?(Class)
           klass = object_or_klass
-          instance_variable_get("@#{klass.to_s.underscore}") || klass.new
+          instance_variable_get("@#{instance_variable_name_for(klass)}") || klass.new
         else
           object_or_klass
         end
+      end
+
+      def instance_variable_name_for(klass)
+        klass.to_s.split('::').last.underscore
       end
     end
   end
