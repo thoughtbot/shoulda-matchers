@@ -2,7 +2,9 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/gempackagetask'
-require 'lib/shoulda/context'
+
+$LOAD_PATH.unshift("lib")
+require 'shoulda'
 load 'tasks/shoulda.rake'
 
 # Test::Unit::UI::VERBOSE

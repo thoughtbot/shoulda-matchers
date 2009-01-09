@@ -1,6 +1,4 @@
 module Shoulda
-  VERSION = '2.0.6'
-
   class << self
     attr_accessor :contexts
     def contexts # :nodoc:
