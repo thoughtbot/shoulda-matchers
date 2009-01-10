@@ -79,25 +79,31 @@ module Shoulda # :nodoc:
       # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
       #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages.taken')</tt>
       # * <tt>:scoped_to</tt> - field(s) to scope the uniqueness to.
+      # * <tt>:case_sensitive</tt> - whether or not the value should match case sensitively.
+      #   Use <tt>true</tt> to explicitly test for a case sensitive match.
+      #   Use <tt>false</tt> to explicitly test for a case insensitive match.
+      #   Default = <tt>true</tt>.
       #
       # Examples:
       #   should_require_unique_attributes :keyword, :username
       #   should_require_unique_attributes :name, :message => "O NOES! SOMEONE STOELED YER NAME!"
       #   should_require_unique_attributes :email, :scoped_to => :name
       #   should_require_unique_attributes :address, :scoped_to => [:first_name, :last_name]
+      #   should_require_unique_attributes :email, :case_sensitive => false
       #
       def should_require_unique_attributes(*attributes)
-        message, scope = get_options!(attributes, :message, :scoped_to)
+        message, scope, case_sensitive = get_options!(attributes, :message, :scoped_to, :case_sensitive)
         scope = [*scope].compact
         message ||= default_error_message(:taken)
 
         klass = model_class
         attributes.each do |attribute|
           attribute = attribute.to_sym
-          should "require unique value for #{attribute}#{" scoped to #{scope.join(', ')}" unless scope.blank?}" do
+          should "require#{' case insensitive' if case_sensitive == false} unique value for #{attribute}#{" scoped to #{scope.join(', ')}" unless scope.blank?}" do
             assert existing = klass.find(:first), "Can't find first #{klass}"
             object = klass.new
             existing_value = existing.send(attribute)
+            existing_value.swapcase! if case_sensitive == false && existing_value.respond_to?(:swapcase!)
 
             if !scope.blank?
               scope.each do |s|
@@ -105,6 +111,7 @@ module Shoulda # :nodoc:
                 object.send("#{s}=", existing.send(s))
               end
             end
+            
             assert_bad_value(object, attribute, existing_value, message)
 
             # Now test that the object is valid when changing the scoped attribute
