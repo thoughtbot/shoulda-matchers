@@ -610,22 +610,34 @@ module Shoulda # :nodoc:
       # Ensures that there are DB indices on the given columns or tuples of columns.
       # Also aliased to should_have_index for readability
       #
+      # Options:
+      # * <tt>:unique</tt> - whether or not the index has a unique
+      #   constraint. Use <tt>true</tt> to explicitly test for a unique
+      #   constraint.  Use <tt>false</tt> to explicitly test for a non-unique
+      #   constraint. Use <tt>nil</tt> if you don't care whether the index is
+      #   unique or not.  Default = <tt>nil</tt>
+      #
+      # Examples:
+      #
       #   should_have_indices :email, :name, [:commentable_type, :commentable_id]
       #   should_have_index :age
       #   should_have_index :ssn, :unique => true
       #
       def should_have_indices(*columns)
-        unique = get_options!(columns, :unique) == true
+        unique = get_options!(columns, :unique)
         table = model_class.table_name
         indices = ::ActiveRecord::Base.connection.indexes(table)
+        index_types = { true => "unique", false => "non-unique" }
+        index_type = index_types[unique] || "an"
 
         columns.each do |column|
-          expected_uniqueness = unique ? 'unique' : 'non-unique'
-          should "have #{expected_uniqueness} index on #{table} for #{column.inspect}" do
+          should "have #{index_type} index on #{table} for #{column.inspect}" do
             columns = [column].flatten.map(&:to_s)
             index = indices.detect {|ind| ind.columns == columns }
             assert index, "#{table} does not have an index for #{column.inspect}"
-            assert_equal index.unique, unique, "Expected #{expected_uniqueness} index but was #{unique ? 'non-unique' : 'unique'}."
+            if [true, false].include?(unique)
+              assert_equal index.unique, unique, "Expected #{index_type} index but was #{index_types[!unique]}."
+            end
           end
         end
       end
