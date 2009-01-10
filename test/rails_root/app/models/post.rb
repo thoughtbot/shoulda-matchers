@@ -6,7 +6,6 @@ class Post < ActiveRecord::Base
   has_many :through_tags, :through => :taggings, :source => :tag
 
   validates_uniqueness_of :title
-  validates_uniqueness_of :title, :case_sensitive => false
   validates_presence_of :title
   validates_presence_of :body, :message => 'Seriously...  wtf'
   validates_numericality_of :user_id
