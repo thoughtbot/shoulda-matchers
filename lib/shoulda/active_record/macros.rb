@@ -636,7 +636,7 @@ module Shoulda # :nodoc:
             index = indices.detect {|ind| ind.columns == columns }
             assert index, "#{table} does not have an index for #{column.inspect}"
             if [true, false].include?(unique)
-              assert_equal index.unique, unique, "Expected #{index_type} index but was #{index_types[!unique]}."
+              assert_equal unique, index.unique, "Expected #{index_type} index but was #{index_types[index.unique]}."
             end
           end
         end
