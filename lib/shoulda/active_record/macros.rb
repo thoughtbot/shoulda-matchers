@@ -612,15 +612,20 @@ module Shoulda # :nodoc:
       #
       #   should_have_indices :email, :name, [:commentable_type, :commentable_id]
       #   should_have_index :age
+      #   should_have_index :ssn, :unique => true
       #
       def should_have_indices(*columns)
+        unique = get_options!(columns, :unique) == true
         table = model_class.table_name
-        indices = ::ActiveRecord::Base.connection.indexes(table).map(&:columns)
+        indices = ::ActiveRecord::Base.connection.indexes(table)
 
         columns.each do |column|
-          should "have index on #{table} for #{column.inspect}" do
+          expected_uniqueness = unique ? 'unique' : 'non-unique'
+          should "have #{expected_uniqueness} index on #{table} for #{column.inspect}" do
             columns = [column].flatten.map(&:to_s)
-            assert_contains(indices, columns)
+            index = indices.detect {|ind| ind.columns == columns }
+            assert index, "#{table} does not have an index for #{column.inspect}"
+            assert_equal index.unique, unique, "Expected #{expected_uniqueness} index but was #{unique ? 'non-unique' : 'unique'}."
           end
         end
       end

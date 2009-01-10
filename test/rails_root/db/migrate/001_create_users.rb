@@ -9,7 +9,7 @@ class CreateUsers < ActiveRecord::Migration
     add_index :users, :email
     add_index :users, :name
     add_index :users, :age
-    add_index :users, [:email, :name]
+    add_index :users, [:email, :name], :unique => true
   end
 
   def self.down

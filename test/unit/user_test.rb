@@ -12,7 +12,8 @@ class UserTest < Test::Unit::TestCase
   should_have_one :address
   should_have_one :address, :dependent => :destroy
 
-  should_have_indices :email, :name, [:email, :name]
+  should_have_indices :email, :name
+  should_have_index [:email, :name], :unique => true
   should_have_index :age
 
   should_have_named_scope :old,       :conditions => "age > 50"
