@@ -67,7 +67,12 @@ module Shoulda # :nodoc:
 
         attributes.each do |attribute|
           should "require #{attribute} to be set" do
-            assert_bad_value(klass, attribute, nil, message)
+            reflection = klass.reflect_on_association(attribute)
+            if reflection && [:has_many, :has_and_belongs_to_many].include?(reflection.macro)
+              assert_bad_value(klass, attribute, [], message)
+            else
+              assert_bad_value(klass, attribute, nil, message)
+            end
           end
         end
       end
