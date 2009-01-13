@@ -127,13 +127,13 @@ Then:
 
 === As a Plugin
 
-Use this if you like to use stay on the edge version of shoulda:
+Use this if you prefer to use the edge version of shoulda:
 
   $ script/plugin install git://github.com/thoughtbot/shoulda.git
 
 === As a Plugin (using git submodules)
 
-Use this if you like the idea of being able to easily switch between using edge or a tagged version of shoulda:
+Use this if you prefer the idea of being able to easily switch between using edge or a tagged version of shoulda:
 
   $ git submodule add git://github.com/thoughtbot/shoulda.git vendor/plugins/shoulda
 
