@@ -117,7 +117,7 @@ Any *.rb file under RAILS_ROOT/test/shoulda_macros/ or vendor/(plugins|gems)/gem
 Use this if you prefer to use versioned releases of shoulda.  Specify the gem dependency in your config/environment.rb file:
 
   Rails::Initializer.run do |config|
-    config.gem 'thoughtbot-shoulda', :lib => 'shoulda/rails', :source => "http://gems.github.com"
+    config.gem "thoughtbot-shoulda", :lib => "shoulda", :source => "http://gems.github.com"
   end
 
 Then:
