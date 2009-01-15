@@ -432,7 +432,7 @@ module Shoulda # :nodoc:
         dependent = get_options!(associations, :dependent)
         klass = model_class
         associations.each do |association|
-          matcher = belong_to(association)
+          matcher = belong_to(association).dependent(dependent)
           should matcher.description do
             assert_accepts(matcher, klass.new)
           end

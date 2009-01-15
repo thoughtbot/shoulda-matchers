@@ -367,6 +367,22 @@ class ActiveRecordMatchersTest < Test::Unit::TestCase # :nodoc:
       end
       assert_accepts @matcher, Child.new
     end
+
+    should "accept an association with a valid :dependent option" do
+      build_model_class :parent
+      build_model_class :child, :parent_id => :integer do
+        belongs_to :parent, :dependent => :destroy
+      end
+      assert_accepts @matcher.dependent(:destroy), Child.new
+    end
+
+    should "reject an association with a bad :dependent option" do
+      build_model_class :parent
+      build_model_class :child, :parent_id => :integer do
+        belongs_to :parent
+      end
+      assert_rejects @matcher.dependent(:destroy), Child.new
+    end
   end
 
   context "have_many" do
