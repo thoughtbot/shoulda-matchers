@@ -56,6 +56,60 @@ class ActiveRecordMatchersTest < Test::Unit::TestCase # :nodoc:
     end
   end
 
+  context "a required has_many association" do
+    setup do
+      build_model_class :child
+      @model = build_model_class :parent do
+        has_many :children
+        validates_presence_of :children
+      end.new
+    end
+
+    should "not allow a blank value" do
+      assert_rejects allow_blank_for(:children), @model
+    end
+  end
+
+  context "an optional has_many association" do
+    setup do
+      build_model_class :child
+      @model = build_model_class :parent do
+        has_many :children
+      end.new
+    end
+
+    should "allow a blank value" do
+      assert_accepts allow_blank_for(:children), @model
+    end
+  end
+
+  context "a required has_and_belongs_to_many association" do
+    setup do
+      build_model_class :child
+      @model = build_model_class :parent do
+        has_and_belongs_to_many :children
+        validates_presence_of :children
+      end.new
+    end
+
+    should "not allow a blank value" do
+      assert_rejects allow_blank_for(:children), @model
+    end
+  end
+
+  context "an optional has_and_belongs_to_many association" do
+    setup do
+      build_model_class :child
+      @model = build_model_class :parent do
+        has_and_belongs_to_many :children
+      end.new
+    end
+
+    should "allow a blank value" do
+      assert_accepts allow_blank_for(:children), @model
+    end
+  end
+
   context "an optional attribute" do
     setup do
       @model = build_model_class(:example, :attr => :string).new

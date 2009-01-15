@@ -25,6 +25,7 @@ module Shoulda # :nodoc:
           if Symbol === @expected_message
             @expected_message = default_error_message(@expected_message)
           end
+          fix_blank_value!
           @instance.send("#{@attribute}=", @value)
           !errors_match?
         end
@@ -38,7 +39,7 @@ module Shoulda # :nodoc:
         end
 
         def description
-          if @value.nil?
+          if @value.blank?
             "allow #{@attribute} to be blank"
           else
             description = "have an attribute called #{@attribute}"
@@ -85,6 +86,14 @@ module Shoulda # :nodoc:
             "no errors"
           else
             "errors: #{pretty_error_messages(@instance)}"
+          end
+        end
+
+        def fix_blank_value!
+          if @value.nil? && 
+            (reflection = @instance.class.reflect_on_association(@attribute)) &&
+            [:has_many, :has_and_belongs_to_many].include?(reflection.macro)
+            @value = []
           end
         end
       end
