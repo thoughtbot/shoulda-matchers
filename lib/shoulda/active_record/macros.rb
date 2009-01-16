@@ -87,7 +87,7 @@ module Shoulda # :nodoc:
             with_message(message).scoped_to(scope)
           matcher = matcher.case_insensitive unless case_sensitive
           should matcher.description do
-            assert_accepts(matcher, klass.new)
+            assert_accepts(matcher, get_instance_of(klass))
           end
         end
       end
@@ -195,39 +195,19 @@ module Shoulda # :nodoc:
       #   should_ensure_length_in_range :password, (6..20)
       #
       def should_ensure_length_in_range(attribute, range, opts = {})
-        short_message, long_message = get_options!([opts], :short_message, :long_message)
-        short_message ||= default_error_message(:too_short, :count => range.first)
-        long_message  ||= default_error_message(:too_long, :count => range.last)
-
+        short_message, long_message = get_options!([opts], 
+                                                   :short_message,
+                                                   :long_message)
         klass = model_class
-        min_length = range.first
-        max_length = range.last
-        same_length = (min_length == max_length)
 
-        if min_length > 0
-          should "not allow #{attribute} to be less than #{min_length} chars long" do
-            min_value = "x" * (min_length - 1)
-            assert_bad_value(klass, attribute, min_value, short_message)
-          end
-        end
+        matcher = ensure_length_of(attribute).
+          is_at_least(range.first).
+          with_short_message(short_message).
+          is_at_most(range.last).
+          with_long_message(long_message)
 
-        if min_length > 0
-          should "allow #{attribute} to be exactly #{min_length} chars long" do
-            min_value = "x" * min_length
-            assert_good_value(klass, attribute, min_value, short_message)
-          end
-        end
-
-        should "not allow #{attribute} to be more than #{max_length} chars long" do
-          max_value = "x" * (max_length + 1)
-          assert_bad_value(klass, attribute, max_value, long_message)
-        end
-
-        unless same_length
-          should "allow #{attribute} to be exactly #{max_length} chars long" do
-            max_value = "x" * max_length
-            assert_good_value(klass, attribute, max_value, long_message)
-          end
+        should matcher.description do
+          assert_accepts matcher, get_instance_of(klass)
         end
       end
 
@@ -253,7 +233,7 @@ module Shoulda # :nodoc:
           with_short_message(short_message)
 
         should matcher.description do
-          assert_accepts matcher, klass.new
+          assert_accepts matcher, get_instance_of(klass)
         end
       end
 

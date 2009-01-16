@@ -14,7 +14,17 @@ module Shoulda # :nodoc:
           @short_message ||= :too_short
           if Symbol === @short_message
             @short_message = default_error_message(@short_message,
-                                                      :count => @minimum)
+                                                   :count => @minimum)
+          end
+          self
+        end
+
+        def is_at_most(length)
+          @maximum = length
+          @long_message ||= :too_long
+          if Symbol === @long_message
+            @long_message = default_error_message(@long_message,
+                                                  :count => @maximum)
           end
           self
         end
@@ -24,45 +34,78 @@ module Shoulda # :nodoc:
           self
         end
 
+        def with_long_message(message)
+          @long_message = message if message
+          self
+        end
+
         attr_reader :failure_message, :negative_failure_message
 
         def description
-          "ensure #{@attribute} has a length of at least #{@minimum}"
+          description =  "ensure #{@attribute} has a length "
+          if @minimum && @maximum
+            description << "between #{@minimum} and #{@maximum}"
+          else
+            description << "of at least #{@minimum}" if @minimum
+            description << "of at most #{@maximum}" if @maximum
+          end
+          description
         end
 
         def matches?(subject)
           @subject = subject
-          disallows_lower_length && allows_correct_length
+          disallows_lower_length && 
+            allows_minimum_length &&
+            disallows_higher_length &&
+            allows_maximum_length
         end
 
         private
 
         def disallows_lower_length
-          return true if @minimum == 0
-          @disallow = AllowValueMatcher.
-            new(value_of_length(@minimum - 1)).
-            for(@attribute).
-            with_message(@short_message)
-          if @disallow.matches?(@subject)
-            @failure_message = @disallow.negative_failure_message
-            false
-          else
-            @negative_failure_message = @disallow.failure_message
-            true
-          end
+          return true if @minimum == 0 || @minimum.nil?
+          disallows_length_of(@minimum - 1, @short_message)
         end
 
-        def allows_correct_length
+        def disallows_higher_length
+          return true if @maximum.nil?
+          disallows_length_of(@maximum + 1, @long_message)
+        end
+
+        def allows_minimum_length
+          allows_length_of(@minimum, @short_message)
+        end
+
+        def allows_maximum_length
+          allows_length_of(@maximum, @long_message)
+        end
+
+        def allows_length_of(length, message)
+          return true if length.nil?
           @allow = AllowValueMatcher.
-            new(value_of_length(@minimum)).
+            new(value_of_length(length)).
             for(@attribute).
-            with_message(@short_message)
+            with_message(message)
           if @allow.matches?(@subject)
             @negative_failure_message = @allow.failure_message
             true
           else
             @failure_message = @allow.negative_failure_message
             false
+          end
+        end
+
+        def disallows_length_of(length, message)
+          @disallow = AllowValueMatcher.
+            new(value_of_length(length)).
+            for(@attribute).
+            with_message(message)
+          if @disallow.matches?(@subject)
+            @failure_message = @disallow.negative_failure_message
+            false
+          else
+            @negative_failure_message = @disallow.failure_message
+            true
           end
         end
 

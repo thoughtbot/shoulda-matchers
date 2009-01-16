@@ -47,6 +47,39 @@ class EnsureLengthOfMatcher < Test::Unit::TestCase # :nodoc:
     end
   end
 
+  context "an attribute with a maximum length" do
+    setup do
+      @model = build_model_class(:example, :attr => :string) do
+        validates_length_of :attr, :maximum => 4
+      end.new
+    end
+
+    should "accept ensuring the correct maximum length" do
+      assert_accepts ensure_length_of(:attr).is_at_most(4), @model
+    end
+
+    should "reject ensuring a lower maximum length with any message" do
+      assert_rejects ensure_length_of(:attr).
+                       is_at_most(3).
+                       with_long_message(/.*/),
+                     @model
+    end
+
+    should "reject ensuring a higher maximum length with any message" do
+      assert_rejects ensure_length_of(:attr).
+                       is_at_most(5).
+                       with_long_message(/.*/),
+                     @model
+    end
+
+    should "not override the default message with a blank" do
+      assert_accepts ensure_length_of(:attr).
+                       is_at_most(4).
+                       with_long_message(nil),
+                     @model
+    end
+  end
+
   context "an attribute with a custom minimum length validation" do
     setup do
       @model = build_model_class(:example, :attr => :string) do
@@ -58,6 +91,22 @@ class EnsureLengthOfMatcher < Test::Unit::TestCase # :nodoc:
       assert_accepts ensure_length_of(:attr).
                        is_at_least(4).
                        with_short_message(/short/),
+                     @model
+    end
+
+  end
+
+  context "an attribute with a custom maximum length validation" do
+    setup do
+      @model = build_model_class(:example, :attr => :string) do
+        validates_length_of :attr, :maximum => 4, :too_long => 'long'
+      end.new
+    end
+
+    should "accept ensuring the correct minimum length" do
+      assert_accepts ensure_length_of(:attr).
+                       is_at_most(4).
+                       with_long_message(/long/),
                      @model
     end
 
