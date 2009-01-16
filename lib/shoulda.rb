@@ -3,6 +3,7 @@ require 'shoulda/proc_extensions'
 require 'shoulda/assertions'
 require 'shoulda/macros'
 require 'shoulda/helpers'
+require 'shoulda/autoload_macros'
 require 'shoulda/rails' if defined? RAILS_ROOT
 
 module Shoulda
@@ -19,3 +20,4 @@ module Test # :nodoc: all
     end
   end
 end
+
