@@ -8,5 +8,5 @@ require 'shoulda/action_mailer' if defined? ActionMailer::Base
 
 if defined?(RAILS_ROOT)
   # load in the 3rd party macros from vendorized plugins and gems
-  Shoulda::Macros.autoload_macros RAILS_ROOT, File.join("vendor", "{plugins,gems}", "*")
+  Shoulda.autoload_macros RAILS_ROOT, File.join("vendor", "{plugins,gems}", "*")
 end
