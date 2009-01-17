@@ -1,4 +1,4 @@
-sqlite3:
+test:
   :adapter: sqlite3
   # :dbfile: db/sqlite3.db
   :dbfile: ":memory:"

@@ -6,7 +6,7 @@ The test directory contains the following files and subdirectories:
 
 * rails_root - contains the stripped down rails application that the tests run against.  The rails root contains:
 ** the models, controllers, and views defined under app/
-** the sqlite3.rb environment file
+** the test.rb environment file
 ** a migration file for each model
 ** a shoulda initializer that simulates loading the plugin but without relying on vendor/plugins
 * fixtures - contain the sample DB data for each model
@@ -14,7 +14,7 @@ The test directory contains the following files and subdirectories:
 * unit - model tests for each of the models under rails_root/app
 * other - tests for the shoulda contexts, should statements, and assertions
 * test_helper.rb - responsible for initializing the test environment
-** sets the rails_env to sqlite3
+** sets the rails_env to test
 ** sets the rails_root
 ** runs all the migrations against the in-memory sqlite3 db
 ** adds some magic to load the right fixture files
