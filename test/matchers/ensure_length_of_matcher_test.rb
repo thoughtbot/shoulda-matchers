@@ -80,6 +80,39 @@ class EnsureLengthOfMatcher < Test::Unit::TestCase # :nodoc:
     end
   end
 
+  context "an attribute with a required exact length" do
+    setup do
+      @model = build_model_class(:example, :attr => :string) do
+        validates_length_of :attr, :is => 4
+      end.new
+    end
+
+    should "accept ensuring the correct length" do
+      assert_accepts ensure_length_of(:attr).is_equal_to(4), @model
+    end
+
+    should "reject ensuring a lower maximum length with any message" do
+      assert_rejects ensure_length_of(:attr).
+                       is_equal_to(3).
+                       with_message(/.*/),
+                     @model
+    end
+
+    should "reject ensuring a higher maximum length with any message" do
+      assert_rejects ensure_length_of(:attr).
+                       is_equal_to(5).
+                       with_message(/.*/),
+                     @model
+    end
+
+    should "not override the default message with a blank" do
+      assert_accepts ensure_length_of(:attr).
+                       is_equal_to(4).
+                       with_message(nil),
+                     @model
+    end
+  end
+
   context "an attribute with a custom minimum length validation" do
     setup do
       @model = build_model_class(:example, :attr => :string) do

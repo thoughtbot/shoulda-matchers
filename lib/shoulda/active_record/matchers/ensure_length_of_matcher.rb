@@ -12,20 +12,19 @@ module Shoulda # :nodoc:
         def is_at_least(length)
           @minimum = length
           @short_message ||= :too_short
-          if Symbol === @short_message
-            @short_message = default_error_message(@short_message,
-                                                   :count => @minimum)
-          end
           self
         end
 
         def is_at_most(length)
           @maximum = length
           @long_message ||= :too_long
-          if Symbol === @long_message
-            @long_message = default_error_message(@long_message,
-                                                  :count => @maximum)
-          end
+          self
+        end
+
+        def is_equal_to(length)
+          @minimum = length
+          @maximum = length
+          @short_message ||= :wrong_length
           self
         end
 
@@ -33,6 +32,7 @@ module Shoulda # :nodoc:
           @short_message = message if message
           self
         end
+        alias_method :with_message, :with_short_message
 
         def with_long_message(message)
           @long_message = message if message
@@ -44,7 +44,11 @@ module Shoulda # :nodoc:
         def description
           description =  "ensure #{@attribute} has a length "
           if @minimum && @maximum
-            description << "between #{@minimum} and #{@maximum}"
+            if @minimum == @maximum
+              description << "of exactly #{@minimum}"
+            else
+              description << "between #{@minimum} and #{@maximum}"
+            end
           else
             description << "of at least #{@minimum}" if @minimum
             description << "of at most #{@maximum}" if @maximum
@@ -54,13 +58,27 @@ module Shoulda # :nodoc:
 
         def matches?(subject)
           @subject = subject
+          translate_messages!
           disallows_lower_length && 
             allows_minimum_length &&
-            disallows_higher_length &&
-            allows_maximum_length
+            ((@minimum == @maximum) ||
+              (disallows_higher_length &&
+              allows_maximum_length))
         end
 
         private
+
+        def translate_messages!
+          if Symbol === @short_message
+            @short_message = default_error_message(@short_message,
+                                                   :count => @minimum)
+          end
+
+          if Symbol === @long_message
+            @long_message = default_error_message(@long_message,
+                                                  :count => @maximum)
+          end
+        end
 
         def disallows_lower_length
           return true if @minimum == 0 || @minimum.nil?

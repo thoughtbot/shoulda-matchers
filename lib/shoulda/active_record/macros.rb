@@ -252,23 +252,13 @@ module Shoulda # :nodoc:
       #
       def should_ensure_length_is(attribute, length, opts = {})
         message = get_options!([opts], :message)
-        message ||= default_error_message(:wrong_length, :count => length)
+        klass   = model_class
+        matcher = ensure_length_of(attribute).
+          is_equal_to(length).
+          with_message(message)
 
-        klass = model_class
-
-        should "not allow #{attribute} to be less than #{length} chars long" do
-          min_value = "x" * (length - 1)
-          assert_bad_value(klass, attribute, min_value, message)
-        end
-
-        should "not allow #{attribute} to be greater than #{length} chars long" do
-          max_value = "x" * (length + 1)
-          assert_bad_value(klass, attribute, max_value, message)
-        end
-
-        should "allow #{attribute} to be #{length} chars long" do
-          valid_value = "x" * (length)
-          assert_good_value(klass, attribute, valid_value, message)
+        should matcher.description do
+          assert_accepts matcher, get_instance_of(klass)
         end
       end
 
