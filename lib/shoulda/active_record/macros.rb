@@ -5,7 +5,7 @@ module Shoulda # :nodoc:
     # These helpers will test most of the validations and associations for your ActiveRecord models.
     #
     #   class UserTest < Test::Unit::TestCase
-    #     should_require_attributes :name, :phone_number
+    #     should_validate_presence_of :name, :phone_number
     #     should_not_allow_values_for :phone_number, "abcd", "1234"
     #     should_allow_values_for :phone_number, "(123) 456-7890"
     #
@@ -42,9 +42,9 @@ module Shoulda # :nodoc:
       #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages.blank')</tt>
       #
       # Example:
-      #   should_require_attributes :name, :phone_number
+      #   should_validate_presence_of :name, :phone_number
       #
-      def should_require_attributes(*attributes)
+      def should_validate_presence_of(*attributes)
         message = get_options!(attributes, :message)
         klass = model_class
 
@@ -54,6 +54,12 @@ module Shoulda # :nodoc:
             assert_accepts(matcher, get_instance_of(klass))
           end
         end
+      end
+      
+      def should_require_attributes(*attributes)
+        warn "[DEPRECATION] should_require_attributes is deprecated. " <<
+             "Use should_validate_presence_of instead."
+        should_validate_presence_of(*attributes)
       end
 
       # Ensures that the model cannot be saved if one of the attributes listed is not unique.

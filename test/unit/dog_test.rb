@@ -6,5 +6,5 @@ class Pets::DogTest < Test::Unit::TestCase
   should_have_many :treats
   should_have_and_belong_to_many :fleas
   should_require_attributes :treats, :fleas
-  should_require_attributes :owner_id
+  should_validate_presence_of :owner_id
 end
