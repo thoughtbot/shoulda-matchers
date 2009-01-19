@@ -13,7 +13,12 @@ namespace :shoulda do
     test_files = Dir.glob(File.join('test', '**', '*_test.rb'))
     test_files.each do |file|
       load file
-      klass = File.basename(file, '.rb').classify.constantize
+      klass = File.basename(file, '.rb').classify
+      unless Object.const_defined?(klass.to_s)
+        puts "Skipping #{klass} because it doesn't map to a Class"
+        next
+      end
+      klass = klass.constantize
 
       puts klass.name.gsub('Test', '')
 
