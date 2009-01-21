@@ -2,12 +2,7 @@ module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
     module Matchers # :nodoc:
 
-      class EnsureInclusionOfMatcher
-        include Helpers
-
-        def initialize(attribute)
-          @attribute = attribute
-        end
+      class EnsureInclusionOfMatcher < ValidationMatcher
 
         def in_range(range)
           @range = range
@@ -21,18 +16,13 @@ module Shoulda # :nodoc:
           self
         end
 
-        attr_reader :failure_message, :negative_failure_message
-
         def description
           "ensure inclusion of #{@attribute} in #{@range.inspect}"
         end
 
         def matches?(subject)
-          @subject = subject
+          super(subject)
           @expected_message ||= :inclusion
-          if Symbol === @expected_message
-            @expected_message = default_error_message(@expected_message)
-          end
 
           disallows_lower_value && 
             allows_minimum_value &&
@@ -43,48 +33,19 @@ module Shoulda # :nodoc:
         private
 
         def disallows_lower_value
-          return true if @minimum == 0
-          disallows_value_of(@minimum - 1)
+          @minimum == 0 || disallows_value_of(@minimum - 1, @expected_message)
         end
 
         def disallows_higher_value
-          disallows_value_of(@maximum + 1)
+          disallows_value_of(@maximum + 1, @expected_message)
         end
 
         def allows_minimum_value
-          allows_value_of(@minimum)
+          allows_value_of(@minimum, @expected_message)
         end
 
         def allows_maximum_value
-          allows_value_of(@maximum)
-        end
-
-        def allows_value_of(value)
-          @allow = AllowValueMatcher.
-            new(value).
-            for(@attribute).
-            with_message(@expected_message)
-          if @allow.matches?(@subject)
-            @negative_failure_message = @allow.failure_message
-            true
-          else
-            @failure_message = @allow.negative_failure_message
-            false
-          end
-        end
-
-        def disallows_value_of(value)
-          @disallow = AllowValueMatcher.
-            new(value).
-            for(@attribute).
-            with_message(@expected_message)
-          if @disallow.matches?(@subject)
-            @failure_message = @disallow.negative_failure_message
-            false
-          else
-            @negative_failure_message = @disallow.failure_message
-            true
-          end
+          allows_value_of(@maximum, @expected_message)
         end
       end
 

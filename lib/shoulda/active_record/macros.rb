@@ -49,10 +49,9 @@ module Shoulda # :nodoc:
         klass = model_class
 
         attributes.each do |attribute|
-          should "require #{attribute} to be set" do
-            object = get_instance_of(klass)
-            matcher = allow_blank_for(attribute).with_message(message)
-            assert_rejects(matcher, object)
+          matcher = require_attribute(attribute).with_message(message)
+          should matcher.description do
+            assert_accepts(matcher, get_instance_of(klass))
           end
         end
       end

@@ -2,7 +2,7 @@ module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
     module Matchers # :nodoc:
 
-      class RequireUniqueAttributeMatcher
+      class RequireUniqueAttributeMatcher < ValidationMatcher
         include Helpers
 
         def initialize(attribute)
@@ -29,42 +29,12 @@ module Shoulda # :nodoc:
           result << "case sensitive " unless @case_insensitive
           result << "unique value for #{@attribute}"
           result << " scoped to #{@scopes.join(', ')}" unless @scopes.blank?
-        end
-
-        def failure_message
-          if @allow_value
-            @allow_value.failure_message
-          else
-            if @existing
-              if @reject_value
-                @reject_value.negative_failure_message
-              else
-                @failed_expectation
-              end
-            else
-              "Can't find first #{class_name}"
-            end
-          end
-        end
-
-        def negative_failure_message
-          if @allow_value
-            @allow_value.negative_failure_message
-          else
-            if @reject_value
-              @reject_value.failure_message
-            else
-              failure_message
-            end
-          end
+          result
         end
 
         def matches?(subject)
           @subject = subject
           @expected_message ||= :taken
-          if Symbol === @expected_message
-            @expected_message = default_error_message(@expected_message)
-          end
           find_existing && 
             set_scoped_attributes && 
             validate_attribute &&
@@ -74,11 +44,12 @@ module Shoulda # :nodoc:
         private
 
         def find_existing
-          @existing = @subject.class.find(:first)
-        end
-
-        def class_name
-          @subject.class.name
+          if @existing = @subject.class.find(:first)
+            @failure_message = "Can't find first #{class_name}"
+            true
+          else
+            false
+          end
         end
 
         def set_scoped_attributes
@@ -86,7 +57,7 @@ module Shoulda # :nodoc:
             @scopes.each do |scope|
               setter = :"#{scope}="
               unless @subject.respond_to?(setter)
-                @failed_expectation = 
+                @failure_message =
                   "#{class_name} doesn't seem to have a #{scope} attribute."
                 return false
               end
@@ -97,18 +68,16 @@ module Shoulda # :nodoc:
         end
 
         def validate_attribute
-          @reject_value = AllowValueMatcher.
-            new(existing_value).
-            for(@attribute).
-            with_message(@expected_message)
-          !@reject_value.matches?(@subject)
+          disallows_value_of(existing_value, @expected_message)
         end
 
         # TODO:  There is a chance that we could change the scoped field
         # to a value that's already taken.  An alternative implementation
         # could actually find all values for scope and create a unique
         def validate_after_scope_change
-          unless @scopes.blank?
+          if @scopes.blank?
+            true
+          else
             @scopes.each do |scope|
               previous_value = @existing.send(scope)
 
@@ -119,14 +88,13 @@ module Shoulda # :nodoc:
 
               @subject.send("#{scope}=", next_value)
 
-              @allow_value = AllowValueMatcher.
-                new(existing_value).
-                for(@attribute).
-                with_message(@expected_message)
-              return false unless @allow_value.matches?(@subject)
+              allows_value_of(existing_value, @expected_message)
             end
           end
-          true
+        end
+
+        def class_name
+          @subject.class.name
         end
 
         def existing_value

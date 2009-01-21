@@ -2,12 +2,8 @@ module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
     module Matchers # :nodoc:
 
-      class EnsureLengthOfMatcher
+      class EnsureLengthOfMatcher < ValidationMatcher
         include Helpers
-
-        def initialize(attribute)
-          @attribute = attribute
-        end
 
         def is_at_least(length)
           @minimum = length
@@ -39,8 +35,6 @@ module Shoulda # :nodoc:
           self
         end
 
-        attr_reader :failure_message, :negative_failure_message
-
         def description
           description =  "ensure #{@attribute} has a length "
           if @minimum && @maximum
@@ -57,7 +51,7 @@ module Shoulda # :nodoc:
         end
 
         def matches?(subject)
-          @subject = subject
+          super(subject)
           translate_messages!
           disallows_lower_length && 
             allows_minimum_length &&
@@ -81,13 +75,13 @@ module Shoulda # :nodoc:
         end
 
         def disallows_lower_length
-          return true if @minimum == 0 || @minimum.nil?
-          disallows_length_of(@minimum - 1, @short_message)
+          @minimum == 0 || 
+            @minimum.nil? ||
+            disallows_length_of(@minimum - 1, @short_message)
         end
 
         def disallows_higher_length
-          return true if @maximum.nil?
-          disallows_length_of(@maximum + 1, @long_message)
+          @maximum.nil? || disallows_length_of(@maximum + 1, @long_message)
         end
 
         def allows_minimum_length
@@ -99,35 +93,14 @@ module Shoulda # :nodoc:
         end
 
         def allows_length_of(length, message)
-          return true if length.nil?
-          @allow = AllowValueMatcher.
-            new(value_of_length(length)).
-            for(@attribute).
-            with_message(message)
-          if @allow.matches?(@subject)
-            @negative_failure_message = @allow.failure_message
-            true
-          else
-            @failure_message = @allow.negative_failure_message
-            false
-          end
+          length.nil? || allows_value_of(string_of_length(length), message)
         end
 
         def disallows_length_of(length, message)
-          @disallow = AllowValueMatcher.
-            new(value_of_length(length)).
-            for(@attribute).
-            with_message(message)
-          if @disallow.matches?(@subject)
-            @failure_message = @disallow.negative_failure_message
-            false
-          else
-            @negative_failure_message = @disallow.failure_message
-            true
-          end
+          length.nil? || disallows_value_of(string_of_length(length), message)
         end
 
-        def value_of_length(length)
+        def string_of_length(length)
           'x' * length
         end
       end

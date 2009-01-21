@@ -9,6 +9,7 @@ should_belong_to
 should_ensure_length_at_least
 should_ensure_length_in_range
 should_ensure_length_is
+should_ensure_value_in_range
 should_have_and_belong_to_many
 should_have_many
 should_have_one
@@ -17,7 +18,6 @@ should_require_attributes
 should_require_unique_attributes
 
 Incomplete:
-should_ensure_value_in_range
 should_have_db_column
 should_have_db_columns
 should_have_index
