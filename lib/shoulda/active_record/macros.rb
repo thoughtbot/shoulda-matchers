@@ -151,11 +151,11 @@ module Shoulda # :nodoc:
       #
       def should_not_allow_values_for(attribute, *bad_values)
         message = get_options!(bad_values, :message)
-        message ||= default_error_message(:invalid)
         klass = model_class
-        bad_values.each do |v|
-          should "not allow #{attribute} to be set to #{v.inspect}" do
-            assert_bad_value(klass, attribute, v, message)
+        bad_values.each do |value|
+          matcher = allow_value(value).for(attribute).with_message(message)
+          should "not #{matcher.description}" do
+            assert_rejects matcher, get_instance_of(klass)
           end
         end
       end
@@ -172,9 +172,11 @@ module Shoulda # :nodoc:
       def should_allow_values_for(attribute, *good_values)
         get_options!(good_values)
         klass = model_class
-        good_values.each do |v|
-          should "allow #{attribute} to be set to #{v.inspect}" do
-            assert_good_value(klass, attribute, v)
+        klass = model_class
+        good_values.each do |value|
+          matcher = allow_value(value).for(attribute)
+          should matcher.description do
+            assert_accepts matcher, get_instance_of(klass)
           end
         end
       end

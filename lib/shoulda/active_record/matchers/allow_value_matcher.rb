@@ -42,10 +42,7 @@ module Shoulda # :nodoc:
           if @value.blank?
             "allow #{@attribute} to be blank"
           else
-            description = "have an attribute called #{@attribute}"
-            description << " accepting value #{@value.inspect}"
-            description << " without error #{@expected_message.inspect}"
-            description
+            "allow #{@attribute} to be set to #{@value.inspect}"
           end
         end
 
