@@ -306,12 +306,12 @@ module Shoulda # :nodoc:
       #
       def should_only_allow_numeric_values_for(*attributes)
         message = get_options!(attributes, :message)
-        message ||= default_error_message(:not_a_number)
         klass = model_class
         attributes.each do |attribute|
-          attribute = attribute.to_sym
-          should "only allow numeric values for #{attribute}" do
-            assert_bad_value(klass, attribute, "abcd", message)
+          matcher = only_allow_numeric_values_for(attribute).
+            with_message(message)
+          should matcher.description do
+            assert_accepts matcher, get_instance_of(klass)
           end
         end
       end

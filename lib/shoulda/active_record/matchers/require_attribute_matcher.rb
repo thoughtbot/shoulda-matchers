@@ -12,7 +12,6 @@ module Shoulda # :nodoc:
         def matches?(subject)
           super(subject)
           @expected_message ||= :blank
-          @subject.send("#{@attribute}=", blank_value)
           disallows_value_of(blank_value, @expected_message)
         end
 
