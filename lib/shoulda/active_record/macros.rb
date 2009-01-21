@@ -278,32 +278,15 @@ module Shoulda # :nodoc:
       #   should_ensure_value_in_range :age, (0..100)
       #
       def should_ensure_value_in_range(attribute, range, opts = {})
-        low_message, high_message = get_options!([opts], :low_message, :high_message)
-        low_message  ||= default_error_message(:inclusion)
-        high_message ||= default_error_message(:inclusion)
+        message = get_options!([opts], :message)
+        message ||= default_error_message(:inclusion)
 
         klass = model_class
-        min   = range.first
-        max   = range.last
-
-        should "not allow #{attribute} to be less than #{min}" do
-          v = min - 1
-          assert_bad_value(klass, attribute, v, low_message)
-        end
-
-        should "allow #{attribute} to be #{min}" do
-          v = min
-          assert_good_value(klass, attribute, v, low_message)
-        end
-
-        should "not allow #{attribute} to be more than #{max}" do
-          v = max + 1
-          assert_bad_value(klass, attribute, v, high_message)
-        end
-
-        should "allow #{attribute} to be #{max}" do
-          v = max
-          assert_good_value(klass, attribute, v, high_message)
+        matcher = ensure_inclusion_of(attribute).
+          in_range(range).
+          with_message(message)
+        should matcher.description do
+          assert_accepts matcher, get_instance_of(klass)
         end
       end
 
