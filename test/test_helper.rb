@@ -1,4 +1,5 @@
 require 'fileutils'
+
 # Load the environment
 ENV['RAILS_ENV'] = 'test'
 
