@@ -510,12 +510,12 @@ module Shoulda # :nodoc:
       #
       def should_require_acceptance_of(*attributes)
         message = get_options!(attributes, :message)
-        message ||= default_error_message(:accepted)
         klass = model_class
 
         attributes.each do |attribute|
-          should "require #{attribute} to be accepted" do
-            assert_bad_value(klass, attribute, false, message)
+          matcher = require_acceptance_of(attribute).with_message(message)
+          should matcher.description do
+            assert_matches matcher, get_instance_of(klass)
           end
         end
       end
