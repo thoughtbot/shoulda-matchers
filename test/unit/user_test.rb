@@ -43,7 +43,7 @@ class UserTest < Test::Unit::TestCase
   should_have_class_methods :find, :destroy
   should_have_instance_methods :email, :age, :email=, :valid?
   should_have_db_columns :name, :email, :age
-  should_have_db_column :id, :type => "integer", :primary => true
+  should_have_db_column :id,    :type => "integer", :primary => true
   should_have_db_column :email, :type => "string", :default => nil,   :precision => nil, :limit    => 255,
                                 :null => true,     :primary => false, :scale     => nil, :sql_type => 'varchar(255)'
   should_require_acceptance_of :eula

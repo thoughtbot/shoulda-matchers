@@ -427,13 +427,11 @@ module Shoulda # :nodoc:
       #
       def should_have_db_columns(*columns)
         column_type = get_options!(columns, :type)
-        klass = model_class
+        klass       = model_class
         columns.each do |name|
-          test_name = "have column #{name}"
-          test_name += " of type #{column_type}" if column_type
-          should test_name do
-            column = klass.columns.detect {|c| c.name == name.to_s }
-            assert column, "#{klass.name} does not have column #{name}"
+          matcher = has_db_column(name, :type => column_type)
+          should matcher.description do
+            assert_accepts(matcher, klass.new)
           end
         end
       end

@@ -1,9 +1,5 @@
 require 'fileutils'
 
-require 'rubygems'
-require 'quietbacktrace'
-require 'redgreen'
-
 # Load the environment
 ENV['RAILS_ENV'] = 'test'
 
