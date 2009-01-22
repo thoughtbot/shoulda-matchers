@@ -8,7 +8,7 @@ require 'shoulda'
 load 'tasks/shoulda.rake'
 
 # Test::Unit::UI::VERBOSE
-test_files_pattern = 'test/{unit,functional,other}/**/*_test.rb'
+test_files_pattern = 'test/{unit,functional,other,matchers}/**/*_test.rb'
 Rake::TestTask.new do |t|
   t.libs << 'lib'
   t.pattern = test_files_pattern

@@ -78,7 +78,7 @@ module Shoulda # :nodoc:
           if @scopes.blank?
             true
           else
-            @scopes.each do |scope|
+            @scopes.all? do |scope|
               previous_value = @existing.send(scope)
 
               # Assume the scope is a foreign key if the field is nil
@@ -88,7 +88,14 @@ module Shoulda # :nodoc:
 
               @subject.send("#{scope}=", next_value)
 
-              allows_value_of(existing_value, @expected_message)
+              if allows_value_of(existing_value, @expected_message)
+                @negative_failure_message << 
+                  " (with different value of #{scope})"
+                true
+              else
+                @failure_message << " (with different value of #{scope})"
+                false
+              end
             end
           end
         end
