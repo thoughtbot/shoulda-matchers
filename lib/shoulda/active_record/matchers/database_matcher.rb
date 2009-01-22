@@ -3,14 +3,15 @@ module Shoulda # :nodoc:
     module Matchers # :nodoc:
 
       class DatabaseMatcher
-        def initialize(macro, column)
-          @macro  = macro
-          @column = column
+        def initialize(macro, column, opts)
+          @macro       = macro
+          @column      = column
+          @column_type = opts[:type]
         end
 
         def matches?(subject)
           @subject = subject
-          column_exists?
+          column_exists? && correct_column_type?
         end
 
         def failure_message
@@ -35,6 +36,21 @@ module Shoulda # :nodoc:
             false
           end
         end
+        
+        def correct_column_type?
+          return true unless @column_type 
+          if matched_column.type.to_s == @column_type.to_s
+            true
+          else
+            @missing = "#{model_class} has a db column named #{@column} " <<
+                       "of type #{matched_column.type}, not #{@column_type}."
+            false
+          end
+        end
+        
+        def matched_column
+          model_class.columns.select { |each| each.name == @column.to_s }.first
+        end
 
         def model_class
           @subject.class
@@ -51,8 +67,8 @@ module Shoulda # :nodoc:
         end
       end
 
-      def has_db_column(column)
-        DatabaseMatcher.new(:has_db_column, column)
+      def has_db_column(column, opts = {})
+        DatabaseMatcher.new(:has_db_column, column, opts)
       end
 
     end
