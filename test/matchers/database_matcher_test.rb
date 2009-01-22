@@ -8,13 +8,13 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
     end
 
     should "accept an existing database column" do
-      build_model_class :user, :avatar_file_name => :string
-      assert_accepts @matcher, User.new
+      build_model_class :account, :avatar_file_name => :string
+      assert_accepts @matcher, Account.new
     end
     
     should "reject a nonexistent database column" do
-      build_model_class :user
-      assert_rejects @matcher, User.new
+      build_model_class :account
+      assert_rejects @matcher, Account.new
     end
   end
   
@@ -24,18 +24,18 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
     end
 
     should "accept an existing database column" do
-      build_model_class :user, :avatar_file_name => :string
-      assert_accepts @matcher, User.new
+      build_model_class :account, :avatar_file_name => :string
+      assert_accepts @matcher, Account.new
     end
     
     should "reject a nonexistent database column" do
-      build_model_class :user
-      assert_rejects @matcher, User.new
+      build_model_class :account
+      assert_rejects @matcher, Account.new
     end
     
     should "reject a column with the correct name but wrong type" do
-      build_model_class :user, :avatar_file_name => :integer
-      assert_rejects @matcher, User.new
+      build_model_class :account, :avatar_file_name => :integer
+      assert_rejects @matcher, Account.new
     end
   end
 
