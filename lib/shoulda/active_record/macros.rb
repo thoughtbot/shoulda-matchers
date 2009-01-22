@@ -515,7 +515,7 @@ module Shoulda # :nodoc:
         attributes.each do |attribute|
           matcher = require_acceptance_of(attribute).with_message(message)
           should matcher.description do
-            assert_matches matcher, get_instance_of(klass)
+            assert_accepts matcher, get_instance_of(klass)
           end
         end
       end
