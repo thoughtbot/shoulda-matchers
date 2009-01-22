@@ -38,7 +38,7 @@ module Shoulda # :nodoc:
         end
         
         def correct_column_type?
-          return true unless @column_type 
+          return true unless @column_type
           if matched_column.type.to_s == @column_type.to_s
             true
           else
@@ -49,7 +49,7 @@ module Shoulda # :nodoc:
         end
         
         def matched_column
-          model_class.columns.select { |each| each.name == @column.to_s }.first
+          model_class.columns.detect { |each| each.name == @column.to_s }
         end
 
         def model_class
