@@ -123,14 +123,9 @@ module Shoulda # :nodoc:
         klass = model_class
 
         attributes.each do |attribute|
-          attribute = attribute.to_sym
-          should "make #{attribute} read-only" do
-            readonly = klass.readonly_attributes || []
-
-            assert readonly.include?(attribute.to_s),
-                   (readonly.empty? ?
-                     "#{klass} attribute #{attribute} is not read-only" :
-                     "#{klass} is making #{readonly.to_a.to_sentence} read-only, but not #{attribute}.")
+          matcher = have_readonly_attribute(attribute)
+          should matcher.description do
+            assert_accepts matcher, klass.new
           end
         end
       end
