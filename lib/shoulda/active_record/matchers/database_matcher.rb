@@ -3,15 +3,24 @@ module Shoulda # :nodoc:
     module Matchers # :nodoc:
 
       class DatabaseMatcher
-        def initialize(macro, column, opts)
+        def initialize(macro, column)
           @macro       = macro
           @column      = column
-          @column_type = opts[:type]
+        end
+        
+        def column_type(column_type)
+          @column_type = column_type
+          self
+        end
+        
+        def precision(precision)
+          @precision = precision
+          self
         end
 
         def matches?(subject)
           @subject = subject
-          column_exists? && correct_column_type?
+          column_exists? && correct_column_type? && correct_precision?
         end
 
         def failure_message
@@ -48,6 +57,18 @@ module Shoulda # :nodoc:
           end
         end
         
+        def correct_precision?
+          return true unless @precision
+          if matched_column.precision.to_s == @precision.to_s
+            true
+          else
+            @missing = "#{model_class} has a db column named #{@column} " <<
+                       "of precision #{matched_column.precision}, " <<
+                       "not #{@precision}."
+            false
+          end
+        end
+        
         def matched_column
           model_class.columns.detect { |each| each.name == @column.to_s }
         end
@@ -67,8 +88,8 @@ module Shoulda # :nodoc:
         end
       end
 
-      def has_db_column(column, opts = {})
-        DatabaseMatcher.new(:has_db_column, column, opts)
+      def has_db_column(column)
+        DatabaseMatcher.new(:has_db_column, column)
       end
 
     end

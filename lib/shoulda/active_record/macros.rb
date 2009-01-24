@@ -417,7 +417,7 @@ module Shoulda # :nodoc:
         column_type = get_options!(columns, :type)
         klass       = model_class
         columns.each do |name|
-          matcher = has_db_column(name, :type => column_type)
+          matcher = has_db_column(name).column_type(column_type)
           should matcher.description do
             assert_accepts(matcher, klass.new)
           end
@@ -428,8 +428,12 @@ module Shoulda # :nodoc:
       # the instance variables defined on the column definition:  :precision, :limit, :default, :null,
       # :primary, :type, :scale, and :sql_type.
       #
-      #   should_have_db_column :email, :type => "string", :default => nil,   :precision => nil, :limit    => 255,
-      #                                 :null => true,     :primary => false, :scale     => nil, :sql_type => 'varchar(255)'
+      #   should_have_db_column :email, :type     => "string", 
+      #                                 :limit    => 255, 
+      #                                 :primary  => false, 
+      #                                 :sql_type => 'varchar(255)'
+      #   should_have_db_column :money, :decimal, :precision => 15, :scale => 2
+      #   should_have_db_column :admin, :default => false, :null => false
       #
       def should_have_db_column(name, opts = {})
         klass = model_class

@@ -1,5 +1,9 @@
-class Test::Unit::TestCase
-  def build_model_class(name, columns = {}, &block)
+# TODO: raise an ArgumentError if name & type are not both provided
+class DatabaseColumn < Struct.new(:name, :type, :opts)
+end
+
+class Test::Unit::TestCase  
+  def build_model_class(name, *columns, &block)
     class_name = name.to_s.pluralize.classify
     table_name = class_name.tableize
     connection = ActiveRecord::Base.connection
@@ -7,8 +11,12 @@ class Test::Unit::TestCase
     begin
       connection.execute("DROP TABLE IF EXISTS #{table_name}")
       connection.create_table table_name do |t|
-        columns.each do |name, type|
-          t.column name, type
+        columns.each do |column|
+          if column.opts
+            t.column column.name, column.type, column.opts
+          else
+            t.column column.name, column.type
+          end
         end
       end
     rescue Exception => e
