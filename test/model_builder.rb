@@ -1,5 +1,5 @@
 class Test::Unit::TestCase  
-  def create_model_table(table_name, &block)
+  def create_table(table_name, &block)
     connection = ActiveRecord::Base.connection
     
     begin
@@ -29,7 +29,7 @@ class Test::Unit::TestCase
     class_name = name.to_s.pluralize.classify
     table_name = class_name.tableize
 
-    create_model_table(table_name) do |table|
+    create_table(table_name) do |table|
       columns.each do |name, type|
         table.column name, type
       end

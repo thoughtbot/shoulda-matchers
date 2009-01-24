@@ -8,7 +8,7 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
     end
 
     should "accept an existing database column" do
-      create_model_table 'superheros' do |table|
+      create_table 'superheros' do |table|
         table.string :nickname
       end
       define_model_class 'Superhero'
@@ -26,8 +26,8 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
       @matcher = has_db_column(:nickname).column_type(:string)
     end
 
-    should "accept an existing column of correct type" do
-      create_model_table 'superheros' do |table|
+    should "accept a column of correct type" do
+      create_table 'superheros' do |table|
         table.string :nickname
       end
       define_model_class 'Superhero'
@@ -39,8 +39,8 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
       assert_rejects @matcher, Superhero.new
     end
     
-    should "reject a column with the correct name but wrong type" do
-      create_model_table 'superheros' do |table|
+    should "reject a column of wrong type" do
+      create_table 'superheros' do |table|
         table.integer :nickname
       end
       define_model_class 'Superhero'
@@ -53,16 +53,16 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
       @matcher = has_db_column(:money).precision(15)
     end
     
-    should "accept an existing database column with correct precision" do
-      create_model_table 'superheros' do |table|
+    should "accept a column of correct precision" do
+      create_table 'superheros' do |table|
         table.decimal :money, :precision => 15
       end
       define_model_class 'Superhero'
       assert_accepts @matcher, Superhero.new
     end
 
-    should "reject a column with the wrong precision" do
-      create_model_table 'superheros' do |table|
+    should "reject a column of wrong precision" do
+      create_table 'superheros' do |table|
         table.decimal :money, :precision => 30
       end
       define_model_class 'Superhero'
@@ -76,14 +76,18 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
     end
     
     should "accept a column of correct limit" do
-      db_column = DatabaseColumn.new(:email, :string, :limit => 255)
-      build_model_class :superhero, db_column
+      create_table 'superheros' do |table|
+        table.string :email, :limit => 255
+      end
+      define_model_class 'Superhero'
       assert_accepts @matcher, Superhero.new
     end
 
     should "reject a column of wrong limit" do
-      db_column = DatabaseColumn.new(:email, :string, :limit => 500)
-      build_model_class :superhero, db_column
+      create_table 'superheros' do |table|
+        table.string :email, :limit => 500
+      end
+      define_model_class 'Superhero'
       assert_rejects @matcher, Superhero.new
     end
   end
@@ -94,14 +98,18 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
     end
     
     should "accept a column of correct default" do
-      db_column = DatabaseColumn.new(:admin, :boolean, :default => false)
-      build_model_class :superhero, db_column
+      create_table 'superheros' do |table|
+        table.boolean :admin, :default => false
+      end
+      define_model_class 'Superhero'
       assert_accepts @matcher, Superhero.new
     end
 
     should "reject a column of wrong default" do
-      db_column = DatabaseColumn.new(:admin, :boolean, :default => true)
-      build_model_class :superhero, db_column
+      create_table 'superheros' do |table|
+        table.boolean :admin, :default => true
+      end
+      define_model_class 'Superhero'
       assert_rejects @matcher, Superhero.new
     end
   end
