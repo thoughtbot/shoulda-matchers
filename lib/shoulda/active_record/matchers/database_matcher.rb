@@ -46,7 +46,7 @@ module Shoulda # :nodoc:
         end
 
         def description
-          "#{macro_description} #{@column}"
+          "has db column #{@column}"
         end
 
         protected
@@ -61,7 +61,7 @@ module Shoulda # :nodoc:
         end
         
         def correct_column_type?
-          return true unless @column_type
+          return true if @column_type.nil?
           if matched_column.type.to_s == @column_type.to_s
             true
           else
@@ -72,7 +72,7 @@ module Shoulda # :nodoc:
         end
         
         def correct_precision?
-          return true unless @precision
+          return true if @precision.nil?
           if matched_column.precision.to_s == @precision.to_s
             true
           else
@@ -84,7 +84,7 @@ module Shoulda # :nodoc:
         end
         
         def correct_limit?
-          return true unless @limit
+          return true if @limit.nil?
           if matched_column.limit.to_s == @limit.to_s
             true
           else
@@ -96,7 +96,7 @@ module Shoulda # :nodoc:
         end
         
         def correct_default?
-          return true unless @default
+          return true if @default.nil?
           if matched_column.default.to_s == @default.to_s
             true
           else
@@ -116,13 +116,7 @@ module Shoulda # :nodoc:
         end
 
         def expectation
-          "#{model_class.name} to have a db column named #{@column}"
-        end
-        
-        def macro_description
-          case @macro.to_s
-          when 'has_db_column' then 'has db column'
-          end
+          "#{model_class.name} to have db column named #{@column}"
         end
       end
 
