@@ -166,6 +166,4 @@ class HaveDbColumnMatcherTest < Test::Unit::TestCase # :nodoc:
     end
   end
   
-  # :sql_type
-
 end

@@ -412,13 +412,11 @@ module Shoulda # :nodoc:
       # Ensure that the given columns are defined on the models backing SQL table.
       # Also aliased to should_have_index for readability.
       # Takes the same options available in migrations: 
-      # :type, :precision, :limit, :default, :null, :scale, and :sql_type
+      # :type, :precision, :limit, :default, :null, and :scale
       #
       #   should_have_db_columns :id, :email, :name, :created_at
       #
-      #   should_have_db_column :email,  :type     => "string", 
-      #                                  :limit    => 255, 
-      #                                  :sql_type => 'varchar(255)'
+      #   should_have_db_column :email,  :type => "string", :limit => 255
       #   should_have_db_column :salary, :decimal, :precision => 15, :scale => 2
       #   should_have_db_column :admin,  :default => false, :null => false
       #
