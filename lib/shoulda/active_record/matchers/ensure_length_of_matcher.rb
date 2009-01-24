@@ -1,8 +1,39 @@
 module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
-    module Matchers # :nodoc:
+    module Matchers
 
-      class EnsureLengthOfMatcher < ValidationMatcher
+      # Ensures that the length of the attribute is validated.
+      #
+      # Options:
+      # * <tt>is_at_least</tt> - minimum length of this attribute
+      # * <tt>is_at_most</tt> - maximum length of this attribute
+      # * <tt>is_equal_to</tt> - exact requred length of this attribute
+      # * <tt>with_short_message</tt> - value the test expects to find in
+      #   <tt>errors.on(:attribute)</tt>. Regexp or string.  Defaults to the
+      #   translation for :too_short.
+      # * <tt>with_long_message</tt> - value the test expects to find in
+      #   <tt>errors.on(:attribute)</tt>. Regexp or string.  Defaults to the
+      #   translation for :too_long.
+      # * <tt>with_message</tt> - value the test expects to find in
+      #   <tt>errors.on(:attribute)</tt>. Regexp or string.  Defaults to the
+      #   translation for :wrong_length. Used in conjunction with
+      #   <tt>is_equal_to</tt>.
+      #
+      # Examples:
+      #   it { should ensure_length_of(:password).
+      #                 is_at_least(6).
+      #                 is_at_most(20) }
+      #   it { should ensure_length_of(:name).
+      #                 is_at_least(3).
+      #                 with_short_message(/not long enough/) }
+      #   it { should ensure_length_of(:ssn).
+      #                 is_equal_to(9).
+      #                 with_message(/is invalid/) }
+      def ensure_length_of(attr)
+        EnsureLengthOfMatcher.new(attr)
+      end
+
+      class EnsureLengthOfMatcher < ValidationMatcher # :nodoc:
         include Helpers
 
         def is_at_least(length)
@@ -103,10 +134,6 @@ module Shoulda # :nodoc:
         def string_of_length(length)
           'x' * length
         end
-      end
-
-      def ensure_length_of(attr)
-        EnsureLengthOfMatcher.new(attr)
       end
 
     end

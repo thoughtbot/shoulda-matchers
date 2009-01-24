@@ -1,8 +1,25 @@
 module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
-    module Matchers # :nodoc:
+    module Matchers
 
-      class RequireAttributeMatcher < ValidationMatcher
+      # Ensures that the model is not valid if the given attribute is not
+      # present.
+      #
+      # Options:
+      # * <tt>with_message</tt> - value the test expects to find in
+      #   <tt>errors.on(:attribute)</tt>. <tt>Regexp</tt> or <tt>String</tt>.
+      #   Defaults to the translation for <tt>:blank</tt>.
+      #
+      # Examples:
+      #   it { should require_attribute(:name) }
+      #   it { should require_attribute(:name).with_message(/is not optional/) }
+      #
+      def require_attribute(attr)
+        RequireAttributeMatcher.
+          new(attr)
+      end
+
+      class RequireAttributeMatcher < ValidationMatcher # :nodoc:
 
         def with_message(message)
           @expected_message = message if message
@@ -38,10 +55,6 @@ module Shoulda # :nodoc:
         end
       end
 
-      def require_attribute(attr)
-        RequireAttributeMatcher.
-          new(attr)
-      end
     end
   end
 end

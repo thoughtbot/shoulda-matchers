@@ -1,8 +1,26 @@
 module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
-    module Matchers # :nodoc:
+    module Matchers
 
-      class EnsureInclusionOfMatcher < ValidationMatcher
+      # Ensure that the attribute's value is in the range specified
+      #
+      # Options:
+      # * <tt>in_range</tt> - the range of allowed values for this attribute
+      # * <tt>with_low_message</tt> - value the test expects to find in
+      #   <tt>errors.on(:attribute)</tt>. Regexp or string. Defaults to the
+      #   translation for :inclusion.
+      # * <tt>with_high_message</tt> - value the test expects to find in
+      #   <tt>errors.on(:attribute)</tt>. Regexp or string. Defaults to the
+      #   translation for :inclusion.
+      #
+      # Example:
+      #   it { should ensure_inclusion_of(:age).in_range(0..100) }
+      #
+      def ensure_inclusion_of(attr)
+        EnsureInclusionOfMatcher.new(attr)
+      end
+
+      class EnsureInclusionOfMatcher < ValidationMatcher # :nodoc:
 
         def in_range(range)
           @range = range
@@ -62,10 +80,6 @@ module Shoulda # :nodoc:
         def allows_maximum_value
           allows_value_of(@maximum, @high_message)
         end
-      end
-
-      def ensure_inclusion_of(attr)
-        EnsureInclusionOfMatcher.new(attr)
       end
 
     end

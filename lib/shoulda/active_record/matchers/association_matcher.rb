@@ -1,8 +1,8 @@
 module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
-    module Matchers # :nodoc:
+    module Matchers
 
-      class AssociationMatcher
+      class AssociationMatcher # :nodoc:
         def initialize(macro, name)
           @macro = macro
           @name  = name

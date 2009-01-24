@@ -1,8 +1,40 @@
 module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
-    module Matchers # :nodoc:
+    module Matchers
 
-      class RequireUniqueAttributeMatcher < ValidationMatcher
+      # Ensures that the model is invalid if the given attribute is not unique.
+      #
+      # Internally, this uses values from existing records to test validations,
+      # so this will always fail if you have not saved at least one record for
+      # the model being tested, like so:
+      #
+      #   describe User do
+      #     before(:each) { User.create!(:email => 'address@example.com') }
+      #     it { should require_unique_attribute(:email) }
+      #   end
+      #
+      # Options:
+      #
+      # * <tt>with_message</tt> - value the test expects to find in
+      #   <tt>errors.on(:attribute)</tt>. <tt>Regexp</tt> or <tt>String</tt>.
+      #   Defaults to the translation for <tt>:taken</tt>.
+      # * <tt>scoped_to</tt> - field(s) to scope the uniqueness to.
+      # * <tt>case_insensitive</tt> - ensures that the validation does not
+      #   check case. Off by default. Ignored by non-text attributes.
+      #
+      # Examples:
+      #   it { should require_unique_attribute(:keyword) }
+      #   it { should require_unique_attribute(:keyword).with_message(/dup/) }
+      #   it { should require_unique_attribute(:email).scoped_to(:name) }
+      #   it { should require_unique_attribute(:email).
+      #                 scoped_to(:first_name, :last_name) }
+      #   it { should require_unique_attribute(:keyword).case_insensitive }
+      #
+      def require_unique_attribute(attr)
+        RequireUniqueAttributeMatcher.new(attr)
+      end
+
+      class RequireUniqueAttributeMatcher < ValidationMatcher # :nodoc:
         include Helpers
 
         def initialize(attribute)
@@ -109,10 +141,6 @@ module Shoulda # :nodoc:
           value.swapcase! if @case_insensitive && value.respond_to?(:swapcase!)
           value
         end
-      end
-
-      def require_unique_attribute(attr)
-        RequireUniqueAttributeMatcher.new(attr)
       end
 
     end

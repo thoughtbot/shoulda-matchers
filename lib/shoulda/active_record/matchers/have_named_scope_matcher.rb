@@ -1,8 +1,8 @@
 module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
-    module Matchers # :nodoc:
+    module Matchers
 
-      class HaveNamedScopeMatcher
+      class HaveNamedScopeMatcher # :nodoc:
 
         def initialize(scope_call)
           @scope_call = scope_call.to_s

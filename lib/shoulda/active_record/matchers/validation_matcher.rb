@@ -1,8 +1,8 @@
 module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
-    module Matchers # :nodoc:
+    module Matchers
 
-      class ValidationMatcher
+      class ValidationMatcher # :nodoc:
 
         attr_reader :failure_message
 

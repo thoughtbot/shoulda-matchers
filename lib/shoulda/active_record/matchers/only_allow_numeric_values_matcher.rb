@@ -1,8 +1,8 @@
 module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
-    module Matchers # :nodoc:
+    module Matchers
 
-      class OnlyAllowNumericValuesMatcher < ValidationMatcher
+      class OnlyAllowNumericValuesMatcher < ValidationMatcher # :nodoc:
 
         def with_message(message)
           @expected_message = message if message

@@ -1,8 +1,23 @@
 module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
-    module Matchers # :nodoc:
+    module Matchers
 
-      class AllowValueMatcher
+      # Ensures that the attribute can be set to the given value.
+      #
+      # Options:
+      # * <tt>with_message</tt> - value the test expects to find in
+      #   <tt>errors.on(:attribute)</tt>. Regexp or string. Defaults to the
+      #   translation for :invalid.
+      #
+      # Example:
+      #   it { should_not allow_value('bad').for(:isbn) }
+      #   it { should allow_value("isbn 1 2345 6789 0").for(:isbn) }
+      #
+      def allow_value(value)
+        AllowValueMatcher.new(value)
+      end
+
+      class AllowValueMatcher # :nodoc:
         include Helpers
 
         def initialize(value)
@@ -80,10 +95,6 @@ module Shoulda # :nodoc:
             "errors: #{pretty_error_messages(@instance)}"
           end
         end
-      end
-
-      def allow_value(value)
-        AllowValueMatcher.new(value)
       end
 
     end

@@ -1,8 +1,16 @@
 module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
-    module Matchers # :nodoc:
+    module Matchers
 
-      class ProtectAttributeMatcher
+      # Ensures that the attribute cannot be set on mass update.
+      #
+      #   it { should protect_attribute(:password) }
+      #
+      def protect_attribute(value)
+        ProtectAttributeMatcher.new(value)
+      end
+
+      class ProtectAttributeMatcher # :nodoc:
 
         def initialize(attribute)
           @attribute = attribute.to_s
@@ -67,10 +75,6 @@ module Shoulda # :nodoc:
           @subject.class.name
         end
 
-      end
-
-      def protect_attribute(value)
-        ProtectAttributeMatcher.new(value)
       end
 
     end
