@@ -4,7 +4,7 @@ class AllowValueMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "an attribute with a format validation" do
     setup do
-      build_model_class :example, :attr => :string do
+      define_model :example, :attr => :string do
         validates_format_of :attr, :with => /abc/
       end
       @model = Example.new
@@ -21,7 +21,7 @@ class AllowValueMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "an attribute with a format validation and a custom message" do
     setup do
-      build_model_class :example, :attr => :string do
+      define_model :example, :attr => :string do
         validates_format_of :attr, :with => /abc/, :message => 'bad value'
       end
       @model = Example.new

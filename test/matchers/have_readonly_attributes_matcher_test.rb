@@ -4,7 +4,7 @@ class HaveReadonlyAttributesMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "an attribute that cannot be set after being saved" do
     setup do
-      build_model_class :example, :attr => :string do
+      define_model :example, :attr => :string do
         attr_readonly :attr
       end
       @model = Example.new
@@ -17,7 +17,7 @@ class HaveReadonlyAttributesMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "an attribute that can be set after being saved" do
     setup do
-      build_model_class :example, :attr => :string
+      define_model :example, :attr => :string
       @model = Example.new
     end
 

@@ -4,7 +4,7 @@ class EnsureLengthOfMatcher < Test::Unit::TestCase # :nodoc:
 
   context "an attribute with a non-zero minimum length validation" do
     setup do
-      @model = build_model_class(:example, :attr => :string) do
+      @model = define_model(:example, :attr => :string) do
         validates_length_of :attr, :minimum => 4
       end.new
     end
@@ -37,7 +37,7 @@ class EnsureLengthOfMatcher < Test::Unit::TestCase # :nodoc:
 
   context "an attribute with a minimum length validation of 0" do
     setup do
-      @model = build_model_class(:example, :attr => :string) do
+      @model = define_model(:example, :attr => :string) do
         validates_length_of :attr, :minimum => 0
       end.new
     end
@@ -49,7 +49,7 @@ class EnsureLengthOfMatcher < Test::Unit::TestCase # :nodoc:
 
   context "an attribute with a maximum length" do
     setup do
-      @model = build_model_class(:example, :attr => :string) do
+      @model = define_model(:example, :attr => :string) do
         validates_length_of :attr, :maximum => 4
       end.new
     end
@@ -82,7 +82,7 @@ class EnsureLengthOfMatcher < Test::Unit::TestCase # :nodoc:
 
   context "an attribute with a required exact length" do
     setup do
-      @model = build_model_class(:example, :attr => :string) do
+      @model = define_model(:example, :attr => :string) do
         validates_length_of :attr, :is => 4
       end.new
     end
@@ -115,7 +115,7 @@ class EnsureLengthOfMatcher < Test::Unit::TestCase # :nodoc:
 
   context "an attribute with a custom minimum length validation" do
     setup do
-      @model = build_model_class(:example, :attr => :string) do
+      @model = define_model(:example, :attr => :string) do
         validates_length_of :attr, :minimum => 4, :too_short => 'short'
       end.new
     end
@@ -131,7 +131,7 @@ class EnsureLengthOfMatcher < Test::Unit::TestCase # :nodoc:
 
   context "an attribute with a custom maximum length validation" do
     setup do
-      @model = build_model_class(:example, :attr => :string) do
+      @model = define_model(:example, :attr => :string) do
         validates_length_of :attr, :maximum => 4, :too_long => 'long'
       end.new
     end
@@ -147,7 +147,7 @@ class EnsureLengthOfMatcher < Test::Unit::TestCase # :nodoc:
 
   context "an attribute without a length validation" do
     setup do
-      @model = build_model_class(:example, :attr => :string).new
+      @model = define_model(:example, :attr => :string).new
     end
 
     should "reject ensuring a minimum length" do

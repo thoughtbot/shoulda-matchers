@@ -8,13 +8,15 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
     end
 
     should "accept an existing database column" do
-      db_column = DatabaseColumn.new(:nickname, :string)
-      build_model_class :superhero, db_column
+      create_model_table 'superheros' do |table|
+        table.string :nickname
+      end
+      define_model_class 'Superhero'
       assert_accepts @matcher, Superhero.new
     end
     
     should "reject a nonexistent database column" do
-      build_model_class :superhero
+      define_model :superhero
       assert_rejects @matcher, Superhero.new
     end
   end
@@ -24,15 +26,24 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
       @matcher = has_db_column(:nickname).column_type(:string)
     end
 
-    should "accept a column of correct type" do
-      db_column = DatabaseColumn.new(:nickname, :string)
-      build_model_class :superhero, db_column
+    should "accept an existing column of correct type" do
+      create_model_table 'superheros' do |table|
+        table.string :nickname
+      end
+      define_model_class 'Superhero'
       assert_accepts @matcher, Superhero.new
     end
     
-    should "reject a column of wrong type" do
-      db_column = DatabaseColumn.new(:nickname, :integer)
-      build_model_class :superhero, db_column
+    should "reject a nonexistent database column" do
+      define_model :superhero
+      assert_rejects @matcher, Superhero.new
+    end
+    
+    should "reject a column with the correct name but wrong type" do
+      create_model_table 'superheros' do |table|
+        table.integer :nickname
+      end
+      define_model_class 'Superhero'
       assert_rejects @matcher, Superhero.new
     end
   end
@@ -42,15 +53,19 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
       @matcher = has_db_column(:money).precision(15)
     end
     
-    should "accept a column of correct precision" do
-      db_column = DatabaseColumn.new(:money, :decimal, :precision => 15)
-      build_model_class :superhero, db_column
+    should "accept an existing database column with correct precision" do
+      create_model_table 'superheros' do |table|
+        table.decimal :money, :precision => 15
+      end
+      define_model_class 'Superhero'
       assert_accepts @matcher, Superhero.new
     end
 
-    should "reject a column of wrong precision" do
-      db_column = DatabaseColumn.new(:money, :decimal, :precision => 30)
-      build_model_class :superhero, db_column
+    should "reject a column with the wrong precision" do
+      create_model_table 'superheros' do |table|
+        table.decimal :money, :precision => 30
+      end
+      define_model_class 'Superhero'
       assert_rejects @matcher, Superhero.new
     end
   end

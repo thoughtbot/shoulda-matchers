@@ -4,7 +4,7 @@ class RequireUniqueAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "a unique attribute" do
     setup do
-      @model = build_model_class(:example, :attr  => :string,
+      @model = define_model(:example, :attr  => :string,
                                            :other => :integer) do
         validates_uniqueness_of :attr
       end.new
@@ -37,7 +37,7 @@ class RequireUniqueAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "a unique attribute with a custom error and an existing value" do
     setup do
-      @model = build_model_class(:example, :attr => :string) do
+      @model = define_model(:example, :attr => :string) do
         validates_uniqueness_of :attr, :message => 'Bad value'
       end.new
       Example.create!
@@ -58,7 +58,7 @@ class RequireUniqueAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "a scoped unique attribute with an existing value" do
     setup do
-      @model = build_model_class(:example, :attr   => :string,
+      @model = define_model(:example, :attr   => :string,
                                            :scope1 => :integer,
                                            :scope2 => :integer) do
         validates_uniqueness_of :attr, :scope => [:scope1, :scope2]
@@ -86,7 +86,7 @@ class RequireUniqueAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "a non-unique attribute with an existing value" do
     setup do
-      @model = build_model_class(:example, :attr => :string).new
+      @model = define_model(:example, :attr => :string).new
       Example.create!(:attr => 'value')
     end
 
@@ -97,7 +97,7 @@ class RequireUniqueAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "a case sensitive unique attribute with an existing value" do
     setup do
-      @model = build_model_class(:example, :attr  => :string) do
+      @model = define_model(:example, :attr  => :string) do
         validates_uniqueness_of :attr, :case_sensitive => true
       end.new
       Example.create!(:attr => 'value')
@@ -114,7 +114,7 @@ class RequireUniqueAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "a case sensitive unique integer attribute with an existing value" do
     setup do
-      @model = build_model_class(:example, :attr  => :integer) do
+      @model = define_model(:example, :attr  => :integer) do
         validates_uniqueness_of :attr, :case_sensitive => true
       end.new
       Example.create!(:attr => 'value')

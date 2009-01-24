@@ -4,7 +4,7 @@ class HaveNamedScopeMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "an attribute with a named scope" do
     setup do
-      build_model_class :example, :attr => :string do
+      define_model :example, :attr => :string do
         named_scope :xyz, lambda {|n|
           { :order => :attr }
         }
@@ -33,7 +33,7 @@ class HaveNamedScopeMatcherTest < Test::Unit::TestCase # :nodoc:
   end
 
   should "evaluate the scope in the correct context" do
-    build_model_class :example, :attr => :string do
+    define_model :example, :attr => :string do
       named_scope :xyz, lambda {|n|
         { :order => n }
       }

@@ -4,7 +4,7 @@ class RequireAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "a required attribute" do
     setup do
-      build_model_class :example, :attr => :string do
+      define_model :example, :attr => :string do
         validates_presence_of :attr
       end
       @model = Example.new
@@ -21,7 +21,7 @@ class RequireAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "an optional attribute" do
     setup do
-      @model = build_model_class(:example, :attr => :string).new
+      @model = define_model(:example, :attr => :string).new
     end
 
     should "not require a value" do
@@ -31,8 +31,8 @@ class RequireAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "a required has_many association" do
     setup do
-      build_model_class :child
-      @model = build_model_class :parent do
+      define_model :child
+      @model = define_model :parent do
         has_many :children
         validates_presence_of :children
       end.new
@@ -45,8 +45,8 @@ class RequireAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "an optional has_many association" do
     setup do
-      build_model_class :child
-      @model = build_model_class :parent do
+      define_model :child
+      @model = define_model :parent do
         has_many :children
       end.new
     end
@@ -58,8 +58,8 @@ class RequireAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "a required has_and_belongs_to_many association" do
     setup do
-      build_model_class :child
-      @model = build_model_class :parent do
+      define_model :child
+      @model = define_model :parent do
         has_and_belongs_to_many :children
         validates_presence_of :children
       end.new
@@ -72,8 +72,8 @@ class RequireAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "an optional has_and_belongs_to_many association" do
     setup do
-      build_model_class :child
-      @model = build_model_class :parent do
+      define_model :child
+      @model = define_model :parent do
         has_and_belongs_to_many :children
       end.new
     end

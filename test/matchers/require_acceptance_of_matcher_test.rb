@@ -4,7 +4,7 @@ class RequireAcceptanceOfMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "an attribute which must be accepted" do
     setup do
-      @model = build_model_class(:example) do
+      @model = define_model(:example) do
         validates_acceptance_of :attr
       end.new
     end
@@ -20,7 +20,7 @@ class RequireAcceptanceOfMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "an attribute that does not need to be accepted" do
     setup do
-      @model = build_model_class(:example, :attr => :string).new
+      @model = define_model(:example, :attr => :string).new
     end
 
     should "not require that attribute to be accepted" do
@@ -30,7 +30,7 @@ class RequireAcceptanceOfMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "an attribute which must be accepted with a custom message" do
     setup do
-      @model = build_model_class(:example) do
+      @model = define_model(:example) do
         validates_acceptance_of :attr, :message => 'custom'
       end.new
     end

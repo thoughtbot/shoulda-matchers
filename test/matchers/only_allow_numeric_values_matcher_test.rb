@@ -4,7 +4,7 @@ class OnlyAllowNumericValuesMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "a numeric attribute" do
     setup do
-      build_model_class :example, :attr => :string do
+      define_model :example, :attr => :string do
         validates_numericality_of :attr
       end
       @model = Example.new
@@ -22,7 +22,7 @@ class OnlyAllowNumericValuesMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "a numeric attribute with a custom validation message" do
     setup do
-      build_model_class :example, :attr => :string do
+      define_model :example, :attr => :string do
         validates_numericality_of :attr, :message => 'custom'
       end
       @model = Example.new
@@ -41,7 +41,7 @@ class OnlyAllowNumericValuesMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "a non-numeric attribute" do
     setup do
-      @model = build_model_class(:example, :attr => :string).new
+      @model = define_model(:example, :attr => :string).new
     end
 
     should "not only allow numeric values for that attribute" do

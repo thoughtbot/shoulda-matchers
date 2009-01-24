@@ -4,7 +4,7 @@ class EnsureInclusionOfMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "an attribute which must be included in a range" do
     setup do
-      @model = build_model_class(:example, :attr => :integer) do
+      @model = define_model(:example, :attr => :integer) do
         validates_inclusion_of :attr, :in => 2..5
       end.new
     end
@@ -39,7 +39,7 @@ class EnsureInclusionOfMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "an attribute with a custom ranged value validation" do
     setup do
-      @model = build_model_class(:example, :attr => :string) do
+      @model = define_model(:example, :attr => :string) do
         validates_inclusion_of :attr, :in => 2..4, :message => 'not good'
 
       end.new

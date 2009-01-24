@@ -4,7 +4,7 @@ class ProtectAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "an attribute that is blacklisted from mass-assignment" do
     setup do
-      build_model_class :example, :attr => :string do
+      define_model :example, :attr => :string do
         attr_protected :attr
       end
       @model = Example.new
@@ -17,7 +17,7 @@ class ProtectAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "an attribute that is not whitelisted for mass-assignment" do
     setup do
-      build_model_class :example, :attr => :string, :other => :string do
+      define_model :example, :attr => :string, :other => :string do
         attr_accessible :other
       end
       @model = Example.new
@@ -30,7 +30,7 @@ class ProtectAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "an attribute that is whitelisted for mass-assignment" do
     setup do
-      build_model_class :example, :attr => :string do
+      define_model :example, :attr => :string do
         attr_accessible :attr
       end
       @model = Example.new
@@ -43,7 +43,7 @@ class ProtectAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "an attribute not included in the mass-assignment blacklist" do
     setup do
-      build_model_class :example, :attr => :string, :other => :string do
+      define_model :example, :attr => :string, :other => :string do
         attr_protected :other
       end
       @model = Example.new
@@ -56,7 +56,7 @@ class ProtectAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "an attribute on a class with no protected attributes" do
     setup do
-      build_model_class :example, :attr => :string
+      define_model :example, :attr => :string
       @model = Example.new
     end
 
