@@ -73,7 +73,25 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
     end
   end
   
-  # :limit, :default, :null,
+  context "has_db_column with default option" do
+    setup do
+      @matcher = has_db_column(:admin).column_type(:boolean).default(false)
+    end
+    
+    should "accept a column of correct default" do
+      db_column = DatabaseColumn.new(:admin, :boolean, :default => false)
+      build_model_class :superhero, db_column
+      assert_accepts @matcher, Superhero.new
+    end
+
+    should "reject a column of wrong default" do
+      db_column = DatabaseColumn.new(:admin, :boolean, :default => true)
+      build_model_class :superhero, db_column
+      assert_rejects @matcher, Superhero.new
+    end
+  end
+  
+  # :default, :null,
   # :primary, :scale, and :sql_type
 
 end

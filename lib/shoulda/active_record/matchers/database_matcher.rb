@@ -22,17 +22,23 @@ module Shoulda # :nodoc:
           @limit = limit
           self
         end
+        
+        def default(default)
+          @default = default
+          self
+        end
 
         def matches?(subject)
           @subject = subject
           column_exists? && 
             correct_column_type? && 
             correct_precision? &&
-            correct_limit?
+            correct_limit? &&
+            correct_default?
         end
 
         def failure_message
-          "Expected #{expectation}"
+          "Expected #{expectation} (#{@missing})"
         end
 
         def negative_failure_message
@@ -85,6 +91,18 @@ module Shoulda # :nodoc:
             @missing = "#{model_class} has a db column named #{@column} " <<
                        "of limit #{matched_column.limit}, " <<
                        "not #{@limit}."
+            false
+          end
+        end
+        
+        def correct_default?
+          return true unless @default
+          if matched_column.default.to_s == @default.to_s
+            true
+          else
+            @missing = "#{model_class} has a db column named #{@column} " <<
+                       "of default #{matched_column.default}, " <<
+                       "not #{@default}."
             false
           end
         end
