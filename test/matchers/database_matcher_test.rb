@@ -1,10 +1,10 @@
 require File.join(File.dirname(__FILE__), '..', 'test_helper')
 
-class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
+class HaveDbColumnMatcherTest < Test::Unit::TestCase # :nodoc:
 
-  context "has_db_column" do
+  context "have_db_column" do
     setup do
-      @matcher = has_db_column(:nickname)
+      @matcher = have_db_column(:nickname)
     end
 
     should "accept an existing database column" do
@@ -21,9 +21,9 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
     end
   end
   
-  context "has_db_column with column_type option" do
+  context "have_db_column with column_type option" do
     setup do
-      @matcher = has_db_column(:nickname).of_type(:string)
+      @matcher = have_db_column(:nickname).of_type(:string)
     end
 
     should "accept a column of correct type" do
@@ -48,9 +48,9 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
     end
   end
   
-  context "has_db_column with precision option" do
+  context "have_db_column with precision option" do
     setup do
-      @matcher = has_db_column(:money).with_options(:precision => 15)
+      @matcher = have_db_column(:money).with_options(:precision => 15)
     end
     
     should "accept a column of correct precision" do
@@ -70,9 +70,9 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
     end
   end
   
-  context "has_db_column with limit option" do
+  context "have_db_column with limit option" do
     setup do
-      @matcher = has_db_column(:email).
+      @matcher = have_db_column(:email).
                    of_type(:string).
                    with_options(:limit => 255)
     end
@@ -94,9 +94,9 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
     end
   end
   
-  context "has_db_column with default option" do
+  context "have_db_column with default option" do
     setup do
-      @matcher = has_db_column(:admin).
+      @matcher = have_db_column(:admin).
                    of_type(:boolean).
                    with_options(:default => false)
     end
@@ -118,9 +118,9 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
     end
   end
   
-  context "has_db_column with null option" do
+  context "have_db_column with null option" do
     setup do
-      @matcher = has_db_column(:admin).
+      @matcher = have_db_column(:admin).
                    of_type(:boolean).
                    with_options(:null => false)
     end

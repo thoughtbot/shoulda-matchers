@@ -2,7 +2,7 @@ module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
     module Matchers # :nodoc:
 
-      class DatabaseMatcher
+      class HaveDbColumnMatcher
         def initialize(macro, column)
           @macro       = macro
           @column      = column
@@ -133,8 +133,8 @@ module Shoulda # :nodoc:
         end
       end
 
-      def has_db_column(column)
-        DatabaseMatcher.new(:has_db_column, column)
+      def have_db_column(column)
+        HaveDbColumnMatcher.new(:have_db_column, column)
       end
 
     end
