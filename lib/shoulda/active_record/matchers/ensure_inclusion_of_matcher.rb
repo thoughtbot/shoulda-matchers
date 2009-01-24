@@ -12,7 +12,20 @@ module Shoulda # :nodoc:
         end
 
         def with_message(message)
-          @expected_message = message
+          if message
+            @low_message = message
+            @high_message = message
+          end
+          self
+        end
+
+        def with_low_message(message)
+          @low_message = message if message
+          self
+        end
+
+        def with_high_message(message)
+          @high_message = message if message
           self
         end
 
@@ -22,7 +35,9 @@ module Shoulda # :nodoc:
 
         def matches?(subject)
           super(subject)
-          @expected_message ||= :inclusion
+
+          @low_message  ||= :inclusion
+          @high_message ||= :inclusion
 
           disallows_lower_value && 
             allows_minimum_value &&
@@ -33,19 +48,19 @@ module Shoulda # :nodoc:
         private
 
         def disallows_lower_value
-          @minimum == 0 || disallows_value_of(@minimum - 1, @expected_message)
+          @minimum == 0 || disallows_value_of(@minimum - 1, @low_message)
         end
 
         def disallows_higher_value
-          disallows_value_of(@maximum + 1, @expected_message)
+          disallows_value_of(@maximum + 1, @high_message)
         end
 
         def allows_minimum_value
-          allows_value_of(@minimum, @expected_message)
+          allows_value_of(@minimum, @low_message)
         end
 
         def allows_maximum_value
-          allows_value_of(@maximum, @expected_message)
+          allows_value_of(@maximum, @high_message)
         end
       end
 

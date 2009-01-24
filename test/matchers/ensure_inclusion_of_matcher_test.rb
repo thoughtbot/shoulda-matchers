@@ -53,4 +53,28 @@ class EnsureInclusionOfMatcherTest < Test::Unit::TestCase # :nodoc:
     end
   end
 
+  context "an attribute with custom range validations" do
+    setup do
+      define_model :example, :attr => :integer do
+        def validate
+          if attr < 2
+            errors.add(:attr, 'too low')
+          elsif attr > 5
+            errors.add(:attr, 'too high')
+          end
+        end
+      end
+      @model = Example.new
+    end
+
+    should "accept ensuring the correct range and messages" do
+      assert_accepts ensure_inclusion_of(:attr).
+                       in_range(2..5).
+                       with_low_message(/low/).
+                       with_high_message(/high/),
+                     @model
+    end
+
+  end
+
 end
