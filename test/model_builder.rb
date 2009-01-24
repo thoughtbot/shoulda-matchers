@@ -1,5 +1,11 @@
-# TODO: raise an ArgumentError if name & type are not both provided
-class DatabaseColumn < Struct.new(:name, :type, :opts)
+class DatabaseColumn
+  attr_accessor :name, :type, :opts
+  
+  def initialize(name, type, opts = {})
+    @name = name
+    @type = type
+    @opts = opts
+  end
 end
 
 class Test::Unit::TestCase  

@@ -410,8 +410,18 @@ module Shoulda # :nodoc:
       end
 
       # Ensure that the given columns are defined on the models backing SQL table.
+      # Also aliased to should_have_index for readability.
+      # Takes the same options available in migrations: 
+      # :precision, :limit, :default, :null, :primary, :type, :scale, and :sql_type
       #
       #   should_have_db_columns :id, :email, :name, :created_at
+      #
+      #   should_have_db_column :email, :type     => "string", 
+      #                                 :limit    => 255, 
+      #                                 :primary  => false, 
+      #                                 :sql_type => 'varchar(255)'
+      #   should_have_db_column :money, :decimal, :precision => 15, :scale => 2
+      #   should_have_db_column :admin, :default => false, :null => false
       #
       def should_have_db_columns(*columns)
         column_type = get_options!(columns, :type)
@@ -423,30 +433,8 @@ module Shoulda # :nodoc:
           end
         end
       end
-
-      # Ensure that the given column is defined on the models backing SQL table.  The options are the same as
-      # the instance variables defined on the column definition:  :precision, :limit, :default, :null,
-      # :primary, :type, :scale, and :sql_type.
-      #
-      #   should_have_db_column :email, :type     => "string", 
-      #                                 :limit    => 255, 
-      #                                 :primary  => false, 
-      #                                 :sql_type => 'varchar(255)'
-      #   should_have_db_column :money, :decimal, :precision => 15, :scale => 2
-      #   should_have_db_column :admin, :default => false, :null => false
-      #
-      def should_have_db_column(name, opts = {})
-        klass = model_class
-        test_name = "have column named :#{name}"
-        test_name += " with options " + opts.inspect unless opts.empty?
-        should test_name do
-          column = klass.columns.detect {|c| c.name == name.to_s }
-          assert column, "#{klass.name} does not have column #{name}"
-          opts.each do |k, v|
-            assert_equal column.instance_variable_get("@#{k}").to_s, v.to_s, ":#{name} column on table for #{klass} does not match option :#{k}"
-          end
-        end
-      end
+      
+      alias_method :should_have_db_column, :should_have_db_columns
 
       # Ensures that there are DB indices on the given columns or tuples of columns.
       # Also aliased to should_have_index for readability

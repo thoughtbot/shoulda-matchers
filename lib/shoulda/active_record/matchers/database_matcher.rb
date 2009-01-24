@@ -17,10 +17,18 @@ module Shoulda # :nodoc:
           @precision = precision
           self
         end
+        
+        def limit(limit)
+          @limit = limit
+          self
+        end
 
         def matches?(subject)
           @subject = subject
-          column_exists? && correct_column_type? && correct_precision?
+          column_exists? && 
+            correct_column_type? && 
+            correct_precision? &&
+            correct_limit?
         end
 
         def failure_message
@@ -65,6 +73,18 @@ module Shoulda # :nodoc:
             @missing = "#{model_class} has a db column named #{@column} " <<
                        "of precision #{matched_column.precision}, " <<
                        "not #{@precision}."
+            false
+          end
+        end
+        
+        def correct_limit?
+          return true unless @limit
+          if matched_column.limit.to_s == @limit.to_s
+            true
+          else
+            @missing = "#{model_class} has a db column named #{@column} " <<
+                       "of limit #{matched_column.limit}, " <<
+                       "not #{@limit}."
             false
           end
         end
