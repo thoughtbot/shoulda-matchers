@@ -21,7 +21,7 @@ class HaveDbColumnMatcherTest < Test::Unit::TestCase # :nodoc:
     end
   end
   
-  context "have_db_column with column_type option" do
+  context "have_db_column of type string" do
     setup do
       @matcher = have_db_column(:nickname).of_type(:string)
     end
@@ -50,12 +50,12 @@ class HaveDbColumnMatcherTest < Test::Unit::TestCase # :nodoc:
   
   context "have_db_column with precision option" do
     setup do
-      @matcher = have_db_column(:money).with_options(:precision => 15)
+      @matcher = have_db_column(:salary).with_options(:precision => 5)
     end
     
     should "accept a column of correct precision" do
       create_table 'superheros' do |table|
-        table.decimal :money, :precision => 15
+        table.decimal :salary, :precision => 5
       end
       define_model_class 'Superhero'
       assert_accepts @matcher, Superhero.new
@@ -63,7 +63,7 @@ class HaveDbColumnMatcherTest < Test::Unit::TestCase # :nodoc:
 
     should "reject a column of wrong precision" do
       create_table 'superheros' do |table|
-        table.decimal :money, :precision => 30
+        table.decimal :salary, :precision => 15
       end
       define_model_class 'Superhero'
       assert_rejects @matcher, Superhero.new
@@ -142,6 +142,30 @@ class HaveDbColumnMatcherTest < Test::Unit::TestCase # :nodoc:
     end
   end
   
-  # :scale, and :sql_type
+  context "have_db_column with scale option" do
+    setup do
+      @matcher = have_db_column(:salary).
+                   of_type(:decimal).
+                   with_options(:scale => 2)
+    end
+    
+    should "accept a column of correct scale" do
+      create_table 'superheros' do |table|
+        table.decimal :salary, :precision => 10, :scale => 2
+      end
+      define_model_class 'Superhero'
+      assert_accepts @matcher, Superhero.new
+    end
+
+    should "reject a column of wrong scale" do
+      create_table 'superheros' do |table|
+        table.decimal :salary, :precision => 10, :scale => 4
+      end
+      define_model_class 'Superhero'
+      assert_rejects @matcher, Superhero.new
+    end
+  end
+  
+  # :sql_type
 
 end

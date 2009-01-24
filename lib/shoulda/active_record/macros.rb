@@ -416,23 +416,23 @@ module Shoulda # :nodoc:
       #
       #   should_have_db_columns :id, :email, :name, :created_at
       #
-      #   should_have_db_column :email, :type     => "string", 
-      #                                 :limit    => 255, 
-      #                                 :sql_type => 'varchar(255)'
-      #   should_have_db_column :money, :decimal, :precision => 15, :scale => 2
-      #   should_have_db_column :admin, :default => false, :null => false
+      #   should_have_db_column :email,  :type     => "string", 
+      #                                  :limit    => 255, 
+      #                                  :sql_type => 'varchar(255)'
+      #   should_have_db_column :salary, :decimal, :precision => 15, :scale => 2
+      #   should_have_db_column :admin,  :default => false, :null => false
       #
       def should_have_db_columns(*columns)
         column_type, precision, limit, default, null, scale, sql_type = 
           get_options!(columns, :type, :precision, :limit,
                                 :default, :null, :scale, :sql_type)
-        klass       = model_class
+        klass = model_class
         columns.each do |name|
           matcher = have_db_column(name).
                       of_type(column_type).
-                      with_options(:precision => precision, :limit => limit,
-                                   :default => default, :null => null,
-                                   :scale => scale, :sql_type => sql_type)
+                      with_options(:precision => precision, :limit    => limit,
+                                   :default   => default,   :null     => null,
+                                   :scale     => scale,     :sql_type => sql_type)
           should matcher.description do
             assert_accepts(matcher, klass.new)
           end

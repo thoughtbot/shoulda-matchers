@@ -18,6 +18,7 @@ module Shoulda # :nodoc:
           @limit     = opts[:limit]
           @default   = opts[:default]
           @null      = opts[:null]
+          @scale     = opts[:scale]
           self
         end
 
@@ -28,7 +29,8 @@ module Shoulda # :nodoc:
             correct_precision? &&
             correct_limit? &&
             correct_default? &&
-            correct_null?
+            correct_null? &&
+            correct_scale?
         end
 
         def failure_message
@@ -47,6 +49,7 @@ module Shoulda # :nodoc:
           desc << " of default #{@default}"     unless @default.nil?
           desc << " of null #{@null}"           unless @null.nil?
           desc << " of primary #{@primary}"     unless @primary.nil?
+          desc << " of scale #{@scale}"         unless @scale.nil?
           desc
         end
 
@@ -120,6 +123,17 @@ module Shoulda # :nodoc:
           end
         end
                 
+        def correct_scale?
+          return true if @scale.nil?
+          if matched_column.scale.to_s == @scale.to_s
+            true
+          else
+            @missing = "#{model_class} has a db column named #{@column} " <<
+                       "of scale #{matched_column.scale}, not #{@scale}."
+            false
+          end
+        end
+        
         def matched_column
           model_class.columns.detect { |each| each.name == @column.to_s }
         end
