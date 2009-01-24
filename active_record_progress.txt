@@ -20,9 +20,9 @@ should_only_allow_numeric_values_for
 should_require_acceptance_of
 should_have_db_columns
 should_have_readonly_attributes
+should_protect_attributes
 
 Incomplete:
 should_have_db_column
 should_have_index should_have_indices
 should_have_named_scope
-should_protect_attributes

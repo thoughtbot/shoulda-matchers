@@ -100,16 +100,9 @@ module Shoulda # :nodoc:
         klass = model_class
 
         attributes.each do |attribute|
-          attribute = attribute.to_sym
-          should "protect #{attribute} from mass updates" do
-            protected = klass.protected_attributes || []
-            accessible = klass.accessible_attributes || []
-
-            assert protected.include?(attribute.to_s) ||
-              (!accessible.empty? && !accessible.include?(attribute.to_s)),
-                   (accessible.empty? ?
-                     "#{klass} is protecting #{protected.to_a.to_sentence}, but not #{attribute}." :
-                     "#{klass} has made #{attribute} accessible")
+          matcher = protect_attribute(attribute)
+          should matcher.description do
+            assert_accepts matcher, klass.new
           end
         end
       end
