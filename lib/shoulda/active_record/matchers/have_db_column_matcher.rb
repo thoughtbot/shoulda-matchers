@@ -2,7 +2,24 @@ module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
     module Matchers # :nodoc:
 
-      class HaveDbColumnMatcher
+      # Ensures the database column exists.
+      #
+      # Options:
+      # * <tt>of_type</tt> - db column type (:integer, :string, etc.)
+      #   <tt>with_options</tt> - same options available in migrations
+      #     (:default, :null, :limit, :precision, :scale)
+      #
+      # Example:
+      #   it { should_not have_db_column(:admin).of_type(:boolean) }
+      #   it { should have_db_column(:salary).
+      #                 of_type(:decimal).
+      #                 with_options(:precision => 10, :scale => 2) }
+      #
+      def have_db_column(column)
+        HaveDbColumnMatcher.new(:have_db_column, column)
+      end
+
+      class HaveDbColumnMatcher # :nodoc:
         def initialize(macro, column)
           @macro       = macro
           @column      = column
@@ -145,10 +162,6 @@ module Shoulda # :nodoc:
         def expectation
           expected = "#{model_class.name} to #{description}"
         end
-      end
-
-      def have_db_column(column)
-        HaveDbColumnMatcher.new(:have_db_column, column)
       end
 
     end

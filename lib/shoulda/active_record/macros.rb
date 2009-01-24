@@ -414,6 +414,8 @@ module Shoulda # :nodoc:
       # Takes the same options available in migrations: 
       # :type, :precision, :limit, :default, :null, and :scale
       #
+      # Examples:
+      #
       #   should_have_db_columns :id, :email, :name, :created_at
       #
       #   should_have_db_column :email,  :type => "string", :limit => 255
