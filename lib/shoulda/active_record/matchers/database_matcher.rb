@@ -8,28 +8,16 @@ module Shoulda # :nodoc:
           @column      = column
         end
         
-        def column_type(column_type)
+        def of_type(column_type)
           @column_type = column_type
           self
         end
         
-        def precision(precision)
-          @precision = precision
-          self
-        end
-        
-        def limit(limit)
-          @limit = limit
-          self
-        end
-        
-        def default(default)
-          @default = default
-          self
-        end
-        
-        def null(null)
-          @null = null
+        def with_options(opts = {})
+          @precision = opts[:precision]
+          @limit     = opts[:limit]
+          @default   = opts[:default]
+          @null      = opts[:null]
           self
         end
 
@@ -52,7 +40,14 @@ module Shoulda # :nodoc:
         end
 
         def description
-          "has db column #{@column}"
+          desc = "have db column named #{@column}"
+          desc << " of type #{@column_type}"    unless @column_type.nil?
+          desc << " of precision #{@precision}" unless @precision.nil?
+          desc << " of limit #{@limit}"         unless @limit.nil?
+          desc << " of default #{@default}"     unless @default.nil?
+          desc << " of null #{@null}"           unless @null.nil?
+          desc << " of primary #{@primary}"     unless @primary.nil?
+          desc
         end
 
         protected
@@ -124,7 +119,7 @@ module Shoulda # :nodoc:
             false
           end
         end
-        
+                
         def matched_column
           model_class.columns.detect { |each| each.name == @column.to_s }
         end
@@ -134,7 +129,7 @@ module Shoulda # :nodoc:
         end
 
         def expectation
-          "#{model_class.name} to have db column named #{@column}"
+          expected = "#{model_class.name} to #{description}"
         end
       end
 

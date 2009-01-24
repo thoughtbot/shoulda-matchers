@@ -23,7 +23,7 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
   
   context "has_db_column with column_type option" do
     setup do
-      @matcher = has_db_column(:nickname).column_type(:string)
+      @matcher = has_db_column(:nickname).of_type(:string)
     end
 
     should "accept a column of correct type" do
@@ -50,7 +50,7 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
   
   context "has_db_column with precision option" do
     setup do
-      @matcher = has_db_column(:money).precision(15)
+      @matcher = has_db_column(:money).with_options(:precision => 15)
     end
     
     should "accept a column of correct precision" do
@@ -72,7 +72,9 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
   
   context "has_db_column with limit option" do
     setup do
-      @matcher = has_db_column(:email).column_type(:string).limit(255)
+      @matcher = has_db_column(:email).
+                   of_type(:string).
+                   with_options(:limit => 255)
     end
     
     should "accept a column of correct limit" do
@@ -94,7 +96,9 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
   
   context "has_db_column with default option" do
     setup do
-      @matcher = has_db_column(:admin).column_type(:boolean).default(false)
+      @matcher = has_db_column(:admin).
+                   of_type(:boolean).
+                   with_options(:default => false)
     end
     
     should "accept a column of correct default" do
@@ -116,7 +120,9 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
   
   context "has_db_column with null option" do
     setup do
-      @matcher = has_db_column(:admin).column_type(:boolean).null(false)
+      @matcher = has_db_column(:admin).
+                   of_type(:boolean).
+                   with_options(:null => false)
     end
     
     should "accept a column of correct null" do
@@ -136,6 +142,6 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
     end
   end
   
-  # :primary, :scale, and :sql_type
+  # :scale, and :sql_type
 
 end
