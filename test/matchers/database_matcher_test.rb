@@ -114,7 +114,28 @@ class DatabaseMatcherTest < Test::Unit::TestCase # :nodoc:
     end
   end
   
-  # :default, :null,
+  context "has_db_column with null option" do
+    setup do
+      @matcher = has_db_column(:admin).column_type(:boolean).null(false)
+    end
+    
+    should "accept a column of correct null" do
+      create_table 'superheros' do |table|
+        table.boolean :admin, :null => false
+      end
+      define_model_class 'Superhero'
+      assert_accepts @matcher, Superhero.new
+    end
+
+    should "reject a column of wrong null" do
+      create_table 'superheros' do |table|
+        table.boolean :admin, :null => true
+      end
+      define_model_class 'Superhero'
+      assert_rejects @matcher, Superhero.new
+    end
+  end
+  
   # :primary, :scale, and :sql_type
 
 end

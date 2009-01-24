@@ -27,6 +27,11 @@ module Shoulda # :nodoc:
           @default = default
           self
         end
+        
+        def null(null)
+          @null = null
+          self
+        end
 
         def matches?(subject)
           @subject = subject
@@ -34,7 +39,8 @@ module Shoulda # :nodoc:
             correct_column_type? && 
             correct_precision? &&
             correct_limit? &&
-            correct_default?
+            correct_default? &&
+            correct_null?
         end
 
         def failure_message
@@ -103,6 +109,18 @@ module Shoulda # :nodoc:
             @missing = "#{model_class} has a db column named #{@column} " <<
                        "of default #{matched_column.default}, " <<
                        "not #{@default}."
+            false
+          end
+        end
+        
+        def correct_null?
+          return true if @null.nil?
+          if matched_column.null.to_s == @null.to_s
+            true
+          else
+            @missing = "#{model_class} has a db column named #{@column} " <<
+                       "of null #{matched_column.null}, " <<
+                       "not #{@null}."
             false
           end
         end
