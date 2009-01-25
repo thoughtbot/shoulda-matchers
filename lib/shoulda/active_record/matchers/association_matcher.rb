@@ -2,6 +2,22 @@ module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
     module Matchers
 
+      def belong_to(name)
+        AssociationMatcher.new(:belongs_to, name)
+      end
+
+      def have_many(name)
+        AssociationMatcher.new(:has_many, name)
+      end
+
+      def have_one(name)
+        AssociationMatcher.new(:has_one, name)
+      end
+
+      def have_and_belong_to_many(name)
+        AssociationMatcher.new(:has_and_belongs_to_many, name)
+      end
+
       class AssociationMatcher # :nodoc:
         def initialize(macro, name)
           @macro = macro
@@ -169,22 +185,6 @@ module Shoulda # :nodoc:
             'have and belong to many'
           end
         end
-      end
-
-      def belong_to(name)
-        AssociationMatcher.new(:belongs_to, name)
-      end
-
-      def have_many(name)
-        AssociationMatcher.new(:has_many, name)
-      end
-
-      def have_one(name)
-        AssociationMatcher.new(:has_one, name)
-      end
-
-      def have_and_belong_to_many(name)
-        AssociationMatcher.new(:has_and_belongs_to_many, name)
       end
 
     end

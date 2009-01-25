@@ -21,8 +21,8 @@ module Shoulda # :nodoc:
 
       class HaveDbColumnMatcher # :nodoc:
         def initialize(macro, column)
-          @macro       = macro
-          @column      = column
+          @macro  = macro
+          @column = column
         end
         
         def of_type(column_type)

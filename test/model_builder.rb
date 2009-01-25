@@ -7,6 +7,7 @@ class Test::Unit::TestCase
       connection.create_table(table_name, &block)
       @created_tables ||= []
       @created_tables << table_name
+      connection
     rescue Exception => e
       connection.execute("DROP TABLE IF EXISTS #{table_name}")
       raise e
