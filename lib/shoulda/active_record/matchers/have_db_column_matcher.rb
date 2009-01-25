@@ -1,6 +1,6 @@
 module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
-    module Matchers # :nodoc:
+    module Matchers
 
       # Ensures the database column exists.
       #
