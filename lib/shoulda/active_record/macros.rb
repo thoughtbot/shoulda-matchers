@@ -459,19 +459,12 @@ module Shoulda # :nodoc:
       #
       def should_have_indices(*columns)
         unique = get_options!(columns, :unique)
-        table = model_class.table_name
-        indices = ::ActiveRecord::Base.connection.indexes(table)
-        index_types = { true => "unique", false => "non-unique" }
-        index_type = index_types[unique] || "an"
-
+        klass  = model_class
+        
         columns.each do |column|
-          should "have #{index_type} index on #{table} for #{column.inspect}" do
-            columns = [column].flatten.map(&:to_s)
-            index = indices.detect {|ind| ind.columns == columns }
-            assert index, "#{table} does not have an index for #{column.inspect}"
-            if [true, false].include?(unique)
-              assert_equal unique, index.unique, "Expected #{index_type} index but was #{index_types[index.unique]}."
-            end
+          matcher = have_index(column).unique(unique)
+          should matcher.description do
+            assert_accepts(matcher, klass.new)
           end
         end
       end

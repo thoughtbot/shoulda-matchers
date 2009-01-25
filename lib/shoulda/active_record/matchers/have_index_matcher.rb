@@ -10,14 +10,14 @@ module Shoulda # :nodoc:
       # Example:
       #   it { should have_index(:ssn).unique(true) }
       #
-      def have_index(index)
-        HaveIndexMatcher.new(:have_index, index)
+      def have_index(columns)
+        HaveIndexMatcher.new(:have_index, columns)
       end
 
       class HaveIndexMatcher # :nodoc:
-        def initialize(macro, index)
+        def initialize(macro, columns)
           @macro = macro
-          @index = normalize_index_to_array(index)
+          @columns = normalize_columns_to_array(columns)
         end
         
         def unique(unique)
@@ -39,7 +39,7 @@ module Shoulda # :nodoc:
         end
 
         def description
-          "have index named #{@column}"
+          "have a #{index_type} index on columns #{@columns}"
         end
 
         protected
@@ -53,33 +53,41 @@ module Shoulda # :nodoc:
           if matched_index.unique == @unique
             true
           else
-            @missing = "#{model_class} has an index named #{matched_index.name} " <<
+            @missing = "#{table_name} has an index named #{matched_index.name} " <<
                        "of unique #{matched_index.unique}, not #{@unique}."
             false
           end
         end
         
         def matched_index
-          indexes.detect { |each| each.columns == @index }
+          indexes.detect { |each| each.columns == @columns }
         end
 
         def model_class
           @subject.class
         end
         
+        def table_name
+          model_class.table_name
+        end
+        
         def indexes
-          ::ActiveRecord::Base.connection.indexes(model_class.table_name)
+          ::ActiveRecord::Base.connection.indexes(table_name)
         end
 
         def expectation
           expected = "#{model_class.name} to #{description}"
         end
         
-        def normalize_index_to_array(index)
-          if index.class == Array
-            index.collect { |each| each.to_s }
+        def index_type
+          @unique ? "unique" : "non-unique"
+        end
+        
+        def normalize_columns_to_array(columns)
+          if columns.class == Array
+            columns.collect { |each| each.to_s }
           else
-            [index.to_s]
+            [columns.to_s]
           end
         end
       end
