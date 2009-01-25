@@ -22,4 +22,28 @@ class HaveIndexMatcherTest < Test::Unit::TestCase # :nodoc:
     end
   end
   
+  context "have_index with unique option" do
+    setup do
+      @matcher = have_index(:ssn).unique(true)
+    end
+
+    should "accept an index of correct unique" do
+      db_connection = create_table 'superheros' do |table|
+        table.integer :ssn
+      end
+      db_connection.add_index :superheros, :ssn, :unique => true
+      define_model_class 'Superhero'
+      assert_accepts @matcher, Superhero.new
+    end
+    
+    should "reject an index of wrong unique" do
+      db_connection = create_table 'superheros' do |table|
+        table.integer :ssn
+      end
+      db_connection.add_index :superheros, :ssn, :unique => false
+      define_model_class 'Superhero'
+      assert_rejects @matcher, Superhero.new
+    end
+  end
+  
 end

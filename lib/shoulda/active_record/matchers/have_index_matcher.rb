@@ -19,10 +19,15 @@ module Shoulda # :nodoc:
           @macro = macro
           @index = index
         end
+        
+        def unique(unique)
+          @unique = unique
+          self
+        end
 
         def matches?(subject)
           @subject = subject
-          index_exists?
+          index_exists? && correct_unique?
         end
 
         def failure_message
@@ -41,6 +46,17 @@ module Shoulda # :nodoc:
         
         def index_exists?
           ! matched_index.nil?
+        end
+        
+        def correct_unique?
+          return true if @unique.nil?
+          if matched_index.unique == @unique
+            true
+          else
+            @missing = "#{model_class} has an index named #{matched_index.name} " <<
+                       "of unique #{matched_index.unique}, not #{@unique}."
+            false
+          end
         end
         
         def matched_index
