@@ -46,4 +46,29 @@ class HaveIndexMatcherTest < Test::Unit::TestCase # :nodoc:
     end
   end
   
+  context "have_index on multiple columns" do
+    setup do
+      @matcher = have_index([:geocodable_type, :geocodable_id])
+    end
+
+    should "accept an existing index" do
+      db_connection = create_table 'geocodings' do |table|
+        table.integer :geocodable_id
+        table.string  :geocodable_type
+      end
+      db_connection.add_index :geocodings, [:geocodable_type, :geocodable_id]
+      define_model_class 'Geocoding'
+      assert_accepts @matcher, Geocoding.new
+    end
+    
+    should "reject a nonexistant index" do
+      db_connection = create_table 'geocodings' do |table|
+        table.integer :geocodable_id
+        table.string  :geocodable_type
+      end
+      define_model_class 'Geocoding'
+      assert_rejects @matcher, Geocoding.new
+    end
+  end
+  
 end

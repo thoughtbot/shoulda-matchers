@@ -17,7 +17,7 @@ module Shoulda # :nodoc:
       class HaveIndexMatcher # :nodoc:
         def initialize(macro, index)
           @macro = macro
-          @index = index
+          @index = normalize_index_to_array(index)
         end
         
         def unique(unique)
@@ -60,7 +60,7 @@ module Shoulda # :nodoc:
         end
         
         def matched_index
-          indexes.detect { |each| each.columns.include?(@index.to_s) }
+          indexes.detect { |each| each.columns == @index }
         end
 
         def model_class
@@ -73,6 +73,14 @@ module Shoulda # :nodoc:
 
         def expectation
           expected = "#{model_class.name} to #{description}"
+        end
+        
+        def normalize_index_to_array(index)
+          if index.class == Array
+            index.collect { |each| each.to_s }
+          else
+            [index.to_s]
+          end
         end
       end
 
