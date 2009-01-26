@@ -7,6 +7,7 @@ Helpers:: #context and #should give you rSpec like test blocks.
 Macros:: Generate hundreds of lines of Controller and ActiveRecord tests with these powerful macros.
          They get you started quickly, and can help you ensure that your application is conforming to best practices.
 Assertions:: Many common rails testing idioms have been distilled into a set of useful assertions.
+Matchers:: Rspec-compatible matchers providing the same tests as Shoulda macros.
 
 = Usage
 
