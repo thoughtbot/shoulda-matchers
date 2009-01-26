@@ -2,18 +2,52 @@ module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
     module Matchers
 
+      # Ensure that the belongs_to relationship exists.
+      #
+      #   it { should belong_to(:parent) }
+      #
       def belong_to(name)
         AssociationMatcher.new(:belongs_to, name)
       end
 
+      # Ensures that the has_many relationship exists.  Will also test that the
+      # associated table has the required columns.  Works with polymorphic
+      # associations.
+      #
+      # Options:
+      # * <tt>through</tt> - association name for <tt>has_many :through</tt>
+      # * <tt>dependent</tt> - tests that the association makes use of the
+      #   dependent option.
+      #
+      # Example:
+      #   it { should_have_many(:friends) }
+      #   it { should_have_many(:enemies).through(:friends) }
+      #   it { should_have_many(:enemies).dependent(:destroy) }
+      #
       def have_many(name)
         AssociationMatcher.new(:has_many, name)
       end
 
+      # Ensure that the has_one relationship exists.  Will also test that the
+      # associated table has the required columns.  Works with polymorphic
+      # associations.
+      #
+      # Options:
+      # * <tt>:dependent</tt> - tests that the association makes use of the
+      #   dependent option.
+      #
+      # Example:
+      #   it { should have_one(:god) } # unless hindu
+      #
       def have_one(name)
         AssociationMatcher.new(:has_one, name)
       end
 
+      # Ensures that the has_and_belongs_to_many relationship exists, and that
+      # the join table is in place.
+      #
+      #   it { should have_and_belong_to_many(:posts) }
+      #
       def have_and_belong_to_many(name)
         AssociationMatcher.new(:has_and_belongs_to_many, name)
       end

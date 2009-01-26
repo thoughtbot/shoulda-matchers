@@ -2,12 +2,20 @@ module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
     module Matchers
 
-      # Ensures the database column has specified index.
+      # Ensures that there are DB indices on the given columns or tuples of
+      # columns.
       #
       # Options:
-      # * <tt>unique</tt> - 
+      # * <tt>unique</tt> - whether or not the index has a unique
+      #   constraint. Use <tt>true</tt> to explicitly test for a unique
+      #   constraint.  Use <tt>false</tt> to explicitly test for a non-unique
+      #   constraint. Use <tt>nil</tt> if you don't care whether the index is
+      #   unique or not.  Default = <tt>nil</tt>
       #
-      # Example:
+      # Examples:
+      #
+      #   it { should have_index(:age) }
+      #   it { should have_index([:commentable_type, :commentable_id]) }
       #   it { should have_index(:ssn).unique(true) }
       #
       def have_index(columns)

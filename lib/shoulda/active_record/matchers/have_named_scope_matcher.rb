@@ -2,6 +2,50 @@ module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
     module Matchers
 
+      # Ensures that the model has a method named scope_call that returns a
+      # NamedScope object with the proxy options set to the options you supply.
+      # scope_call can be either a symbol, or a Ruby expression in a String
+      # which will be evaled. The eval'd method call has access to all the same
+      # instance variables that an example would.
+      #
+      # Options:
+      #
+      #  * <tt>in_context</tt> - Any of the options that the named scope would
+      #    pass on to find.
+      #
+      # Example:
+      #
+      #   it { should have_named_scope(:visible).
+      #                 finding(:conditions => {:visible => true}) }
+      #
+      # Passes for
+      #
+      #   named_scope :visible, :conditions => {:visible => true}
+      #
+      # Or for
+      #
+      #   def self.visible
+      #     scoped(:conditions => {:visible => true})
+      #   end
+      #
+      # You can test lambdas or methods that return ActiveRecord#scoped calls:
+      #
+      #   it { should have_named_scope('recent(5)').finding(:limit => 5) }
+      #   it { should have_named_scope('recent(1)').finding(:limit => 1) }
+      #
+      # Passes for
+      #   named_scope :recent, lambda {|c| {:limit => c}}
+      #
+      # Or for
+      #
+      #   def self.recent(c)
+      #     scoped(:limit => c)
+      #   end
+      #
+      def have_named_scope(scope_call)
+        HaveNamedScopeMatcher.new(scope_call).in_context(self)
+      end
+
       class HaveNamedScopeMatcher # :nodoc:
 
         def initialize(scope_call)
@@ -74,10 +118,6 @@ module Shoulda # :nodoc:
           end
         end
 
-      end
-
-      def have_named_scope(scope_call)
-        HaveNamedScopeMatcher.new(scope_call).in_context(self)
       end
 
     end

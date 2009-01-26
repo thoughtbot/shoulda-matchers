@@ -6,10 +6,10 @@ module Shoulda # :nodoc:
       #
       # Options:
       # * <tt>of_type</tt> - db column type (:integer, :string, etc.)
-      #   <tt>with_options</tt> - same options available in migrations
-      #     (:default, :null, :limit, :precision, :scale)
+      # * <tt>with_options</tt> - same options available in migrations
+      #   (:default, :null, :limit, :precision, :scale)
       #
-      # Example:
+      # Examples:
       #   it { should_not have_db_column(:admin).of_type(:boolean) }
       #   it { should have_db_column(:salary).
       #                 of_type(:decimal).

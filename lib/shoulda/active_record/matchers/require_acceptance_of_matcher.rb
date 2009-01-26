@@ -2,6 +2,22 @@ module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
     module Matchers
 
+      # Ensures that the model cannot be saved the given attribute is not
+      # accepted.
+      #
+      # Options:
+      # * <tt>with_message</tt> - value the test expects to find in
+      #   <tt>errors.on(:attribute)</tt>. Regexp or string.  Defaults to the
+      #   translation for <tt>:accepted</tt>.
+      #
+      # Example:
+      #   it { should require_acceptance_of(:eula) }
+      #
+      def require_acceptance_of(attr)
+        RequireAcceptanceOfMatcher.
+          new(attr)
+      end
+
       class RequireAcceptanceOfMatcher < ValidationMatcher # :nodoc:
 
         def with_message(message)
@@ -21,10 +37,6 @@ module Shoulda # :nodoc:
 
       end
 
-      def require_acceptance_of(attr)
-        RequireAcceptanceOfMatcher.
-          new(attr)
-      end
     end
   end
 end
