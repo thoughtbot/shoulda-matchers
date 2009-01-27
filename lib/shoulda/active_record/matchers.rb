@@ -11,7 +11,7 @@ require 'shoulda/active_record/matchers/association_matcher'
 require 'shoulda/active_record/matchers/have_db_column_matcher'
 require 'shoulda/active_record/matchers/have_index_matcher'
 require 'shoulda/active_record/matchers/have_readonly_attribute_matcher'
-require 'shoulda/active_record/matchers/protect_attribute_matcher'
+require 'shoulda/active_record/matchers/allow_mass_assignment_of_matcher'
 require 'shoulda/active_record/matchers/have_named_scope_matcher'
 
 
@@ -29,7 +29,7 @@ module Shoulda # :nodoc:
     #       it { should_not allow_value(value).for(:phone_number) }
     #     end
     #     it { should allow_value("(123) 456-7890").for(:phone_number) }
-    #     it { should protect_attribute(:password) }
+    #     it { should_not allow_mass_assignment_of(:password) }
     #     it { should have_one(:profile) }
     #     it { should have_many(:dogs) }
     #     it { should have_many(:messes).through(:dogs) }

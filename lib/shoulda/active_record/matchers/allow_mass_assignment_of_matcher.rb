@@ -2,15 +2,16 @@ module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
     module Matchers
 
-      # Ensures that the attribute cannot be set on mass update.
+      # Ensures that the attribute can be set on mass update.
       #
-      #   it { should protect_attribute(:password) }
+      #   it { should_not allow_mass_assignment_of(:password) }
+      #   it { should allow_mass_assignment_of(:first_name) }
       #
-      def protect_attribute(value)
-        ProtectAttributeMatcher.new(value)
+      def allow_mass_assignment_of(value)
+        AllowMassAssignmentOfMatcher.new(value)
       end
 
-      class ProtectAttributeMatcher # :nodoc:
+      class AllowMassAssignmentOfMatcher # :nodoc:
 
         def initialize(attribute)
           @attribute = attribute.to_s
@@ -18,16 +19,7 @@ module Shoulda # :nodoc:
 
         def matches?(subject)
           @subject = subject
-          if attr_protected?
-            if whitelisting?
-              @negative_failure_message =
-                "Expected #{@attribute} to be accessible"
-            else
-              @negative_failure_message =
-                "Did not expect #{@attribute} to be protected"
-            end
-            true
-          else
+          if attr_mass_assignable?
             if whitelisting?
               @failure_message = "#{@attribute} was made accessible"
             else
@@ -38,6 +30,15 @@ module Shoulda # :nodoc:
                   "#{protected_attributes.to_a.to_sentence}, " <<
                   "but not #{@attribute}."
               end
+            end
+            true
+          else
+            if whitelisting?
+              @negative_failure_message =
+                "Expected #{@attribute} to be accessible"
+            else
+              @negative_failure_message =
+                "Did not expect #{@attribute} to be protected"
             end
             false
           end
@@ -63,11 +64,11 @@ module Shoulda # :nodoc:
           !accessible_attributes.empty?
         end
 
-        def attr_protected?
+        def attr_mass_assignable?
           if whitelisting?
-            !accessible_attributes.include?(@attribute)
+            accessible_attributes.include?(@attribute)
           else
-            protected_attributes.include?(@attribute)
+            !protected_attributes.include?(@attribute)
           end
         end
 

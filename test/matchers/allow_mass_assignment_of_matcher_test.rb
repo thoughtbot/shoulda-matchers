@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', 'test_helper')
 
-class ProtectAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
+class AllowMassAssignmentOfMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "an attribute that is blacklisted from mass-assignment" do
     setup do
@@ -10,8 +10,8 @@ class ProtectAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
       @model = Example.new
     end
 
-    should "accept being protected" do
-      assert_accepts protect_attribute(:attr), @model
+    should "reject being mass-assignable" do
+      assert_rejects allow_mass_assignment_of(:attr), @model
     end
   end
 
@@ -23,8 +23,8 @@ class ProtectAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
       @model = Example.new
     end
 
-    should "accept being protected" do
-      assert_accepts protect_attribute(:attr), @model
+    should "reject being mass-assignable" do
+      assert_rejects allow_mass_assignment_of(:attr), @model
     end
   end
 
@@ -36,8 +36,8 @@ class ProtectAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
       @model = Example.new
     end
 
-    should "reject being protected" do
-      assert_rejects protect_attribute(:attr), @model
+    should "accept being mass-assignable" do
+      assert_accepts allow_mass_assignment_of(:attr), @model
     end
   end
 
@@ -49,8 +49,8 @@ class ProtectAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
       @model = Example.new
     end
 
-    should "reject being protected" do
-      assert_rejects protect_attribute(:attr), @model
+    should "accept being mass-assignable" do
+      assert_accepts allow_mass_assignment_of(:attr), @model
     end
   end
 
@@ -60,8 +60,8 @@ class ProtectAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
       @model = Example.new
     end
 
-    should "reject being protected" do
-      assert_rejects protect_attribute(:attr), @model
+    should "accept being mass-assignable" do
+      assert_accepts allow_mass_assignment_of(:attr), @model
     end
   end
 

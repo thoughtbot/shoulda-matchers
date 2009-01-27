@@ -100,9 +100,9 @@ module Shoulda # :nodoc:
         klass = model_class
 
         attributes.each do |attribute|
-          matcher = protect_attribute(attribute)
-          should matcher.description do
-            assert_accepts matcher, klass.new
+          matcher = allow_mass_assignment_of(attribute)
+          should "not #{matcher.description}" do
+            assert_rejects matcher, klass.new
           end
         end
       end
