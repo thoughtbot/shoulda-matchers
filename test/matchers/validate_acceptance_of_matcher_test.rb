@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', 'test_helper')
 
-class RequireAcceptanceOfMatcherTest < Test::Unit::TestCase # :nodoc:
+class ValidateAcceptanceOfMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "an attribute which must be accepted" do
     setup do
@@ -10,11 +10,11 @@ class RequireAcceptanceOfMatcherTest < Test::Unit::TestCase # :nodoc:
     end
 
     should "require that attribute to be accepted" do
-      assert_accepts require_acceptance_of(:attr), @model
+      assert_accepts validate_acceptance_of(:attr), @model
     end
 
     should "not overwrite the default message with nil" do
-      assert_accepts require_acceptance_of(:attr).with_message(nil), @model
+      assert_accepts validate_acceptance_of(:attr).with_message(nil), @model
     end
   end
 
@@ -24,7 +24,7 @@ class RequireAcceptanceOfMatcherTest < Test::Unit::TestCase # :nodoc:
     end
 
     should "not require that attribute to be accepted" do
-      assert_rejects require_acceptance_of(:attr), @model
+      assert_rejects validate_acceptance_of(:attr), @model
     end
   end
 
@@ -36,7 +36,8 @@ class RequireAcceptanceOfMatcherTest < Test::Unit::TestCase # :nodoc:
     end
 
     should "require that attribute to be accepted with that message" do
-      assert_accepts require_acceptance_of(:attr).with_message(/custom/), @model
+      assert_accepts validate_acceptance_of(:attr).with_message(/custom/),
+                     @model
     end
   end
 

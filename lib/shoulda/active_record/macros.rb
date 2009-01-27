@@ -49,7 +49,7 @@ module Shoulda # :nodoc:
         klass = model_class
 
         attributes.each do |attribute|
-          matcher = require_attribute(attribute).with_message(message)
+          matcher = validate_presence_of(attribute).with_message(message)
           should matcher.description do
             assert_accepts(matcher, get_instance_of(klass))
           end
@@ -82,7 +82,7 @@ module Shoulda # :nodoc:
         klass = model_class
 
         attributes.each do |attribute|
-          matcher = require_unique_attribute(attribute).
+          matcher = validate_uniqueness_of(attribute).
             with_message(message).scoped_to(scope)
           matcher = matcher.case_insensitive unless case_sensitive
           should matcher.description do
@@ -296,7 +296,7 @@ module Shoulda # :nodoc:
         message = get_options!(attributes, :message)
         klass = model_class
         attributes.each do |attribute|
-          matcher = only_allow_numeric_values_for(attribute).
+          matcher = validate_numericality_of(attribute).
             with_message(message)
           should matcher.description do
             assert_accepts matcher, get_instance_of(klass)
@@ -489,7 +489,7 @@ module Shoulda # :nodoc:
         klass = model_class
 
         attributes.each do |attribute|
-          matcher = require_acceptance_of(attribute).with_message(message)
+          matcher = validate_acceptance_of(attribute).with_message(message)
           should matcher.description do
             assert_accepts matcher, get_instance_of(klass)
           end

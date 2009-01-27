@@ -10,13 +10,13 @@ module Shoulda # :nodoc:
       #   translation for <tt>:not_a_number</tt>.
       #
       # Example:
-      #   it { should only_allow_numeric_values_for(:age) }
+      #   it { should validate_numericality_of(:age) }
       #
-      def only_allow_numeric_values_for(attr)
-        OnlyAllowNumericValuesMatcher.new(attr)
+      def validate_numericality_of(attr)
+        ValidateNumericalityOfMatcher.new(attr)
       end
 
-      class OnlyAllowNumericValuesMatcher < ValidationMatcher # :nodoc:
+      class ValidateNumericalityOfMatcher < ValidationMatcher # :nodoc:
 
         def with_message(message)
           @expected_message = message if message

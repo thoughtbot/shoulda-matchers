@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', 'test_helper')
 
-class RequireUniqueAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
+class ValidateUniquenessOfMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "a unique attribute" do
     setup do
@@ -16,11 +16,11 @@ class RequireUniqueAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
       end
 
       should "require a unique value for that attribute" do
-        assert_accepts require_unique_attribute(:attr), @model
+        assert_accepts validate_uniqueness_of(:attr), @model
       end
 
       should "fail when a scope is specified" do
-        assert_rejects require_unique_attribute(:attr).scoped_to(:other), @model
+        assert_rejects validate_uniqueness_of(:attr).scoped_to(:other), @model
       end
     end
 
@@ -30,7 +30,7 @@ class RequireUniqueAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
       end
 
       should "fail to require a unique value" do
-        assert_rejects require_unique_attribute(:attr), @model
+        assert_rejects validate_uniqueness_of(:attr), @model
       end
     end
   end
@@ -44,15 +44,15 @@ class RequireUniqueAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
     end
 
     should "fail when checking the default message" do
-      assert_rejects require_unique_attribute(:attr), @model
+      assert_rejects validate_uniqueness_of(:attr), @model
     end
 
     should "fail when checking a message that doesn't match" do
-      assert_rejects require_unique_attribute(:attr).with_message(/abc/i), @model
+      assert_rejects validate_uniqueness_of(:attr).with_message(/abc/i), @model
     end
 
     should "pass when checking a message that matches" do
-      assert_accepts require_unique_attribute(:attr).with_message(/bad/i), @model
+      assert_accepts validate_uniqueness_of(:attr).with_message(/bad/i), @model
     end
   end
 
@@ -67,20 +67,20 @@ class RequireUniqueAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
     end
 
     should "pass when the correct scope is specified" do
-      assert_accepts require_unique_attribute(:attr).scoped_to(:scope1, :scope2),
+      assert_accepts validate_uniqueness_of(:attr).scoped_to(:scope1, :scope2),
         @model
     end
 
     should "fail when a different scope is specified" do
-      assert_rejects require_unique_attribute(:attr).scoped_to(:scope1), @model
+      assert_rejects validate_uniqueness_of(:attr).scoped_to(:scope1), @model
     end
 
     should "fail when no scope is specified" do
-      assert_rejects require_unique_attribute(:attr), @model
+      assert_rejects validate_uniqueness_of(:attr), @model
     end
 
     should "fail when a non-existent attribute is specified as a scope" do
-      assert_rejects require_unique_attribute(:attr).scoped_to(:fake), @model
+      assert_rejects validate_uniqueness_of(:attr).scoped_to(:fake), @model
     end
   end
 
@@ -91,7 +91,7 @@ class RequireUniqueAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
     end
 
     should "not require a unique value for that attribute" do
-      assert_rejects require_unique_attribute(:attr), @model
+      assert_rejects validate_uniqueness_of(:attr), @model
     end
   end
 
@@ -104,11 +104,11 @@ class RequireUniqueAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
     end
 
     should "not require a unique, case-insensitive value for that attribute" do
-      assert_rejects require_unique_attribute(:attr).case_insensitive, @model
+      assert_rejects validate_uniqueness_of(:attr).case_insensitive, @model
     end
 
     should "require a unique, case-sensitive value for that attribute" do
-      assert_accepts require_unique_attribute(:attr), @model
+      assert_accepts validate_uniqueness_of(:attr), @model
     end
   end
 
@@ -121,11 +121,11 @@ class RequireUniqueAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
     end
 
     should "require a unique, case-insensitive value for that attribute" do
-      assert_accepts require_unique_attribute(:attr).case_insensitive, @model
+      assert_accepts validate_uniqueness_of(:attr).case_insensitive, @model
     end
 
     should "require a unique, case-sensitive value for that attribute" do
-      assert_accepts require_unique_attribute(:attr), @model
+      assert_accepts validate_uniqueness_of(:attr), @model
     end
   end
 

@@ -11,14 +11,13 @@ module Shoulda # :nodoc:
       #   translation for <tt>:accepted</tt>.
       #
       # Example:
-      #   it { should require_acceptance_of(:eula) }
+      #   it { should validate_acceptance_of(:eula) }
       #
-      def require_acceptance_of(attr)
-        RequireAcceptanceOfMatcher.
-          new(attr)
+      def validate_acceptance_of(attr)
+        ValidateAcceptanceOfMatcher.new(attr)
       end
 
-      class RequireAcceptanceOfMatcher < ValidationMatcher # :nodoc:
+      class ValidateAcceptanceOfMatcher < ValidationMatcher # :nodoc:
 
         def with_message(message)
           @expected_message = message if message

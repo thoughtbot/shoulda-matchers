@@ -10,7 +10,7 @@ module Shoulda # :nodoc:
       #
       #   describe User do
       #     before(:each) { User.create!(:email => 'address@example.com') }
-      #     it { should require_unique_attribute(:email) }
+      #     it { should validate_uniqueness_of(:email) }
       #   end
       #
       # Options:
@@ -23,18 +23,18 @@ module Shoulda # :nodoc:
       #   check case. Off by default. Ignored by non-text attributes.
       #
       # Examples:
-      #   it { should require_unique_attribute(:keyword) }
-      #   it { should require_unique_attribute(:keyword).with_message(/dup/) }
-      #   it { should require_unique_attribute(:email).scoped_to(:name) }
-      #   it { should require_unique_attribute(:email).
+      #   it { should validate_uniqueness_of(:keyword) }
+      #   it { should validate_uniqueness_of(:keyword).with_message(/dup/) }
+      #   it { should validate_uniqueness_of(:email).scoped_to(:name) }
+      #   it { should validate_uniqueness_of(:email).
       #                 scoped_to(:first_name, :last_name) }
-      #   it { should require_unique_attribute(:keyword).case_insensitive }
+      #   it { should validate_uniqueness_of(:keyword).case_insensitive }
       #
-      def require_unique_attribute(attr)
-        RequireUniqueAttributeMatcher.new(attr)
+      def validate_uniqueness_of(attr)
+        ValidateUniquenessOfMatcher.new(attr)
       end
 
-      class RequireUniqueAttributeMatcher < ValidationMatcher # :nodoc:
+      class ValidateUniquenessOfMatcher < ValidationMatcher # :nodoc:
         include Helpers
 
         def initialize(attribute)

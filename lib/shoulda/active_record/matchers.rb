@@ -3,10 +3,10 @@ require 'shoulda/active_record/matchers/validation_matcher'
 require 'shoulda/active_record/matchers/allow_value_matcher'
 require 'shoulda/active_record/matchers/ensure_length_of_matcher'
 require 'shoulda/active_record/matchers/ensure_inclusion_of_matcher'
-require 'shoulda/active_record/matchers/require_attribute_matcher'
-require 'shoulda/active_record/matchers/require_unique_attribute_matcher'
-require 'shoulda/active_record/matchers/require_acceptance_of_matcher'
-require 'shoulda/active_record/matchers/only_allow_numeric_values_matcher'
+require 'shoulda/active_record/matchers/validate_presence_of_matcher'
+require 'shoulda/active_record/matchers/validate_uniqueness_of_matcher'
+require 'shoulda/active_record/matchers/validate_acceptance_of_matcher'
+require 'shoulda/active_record/matchers/validate_numericality_of_matcher'
 require 'shoulda/active_record/matchers/association_matcher'
 require 'shoulda/active_record/matchers/have_db_column_matcher'
 require 'shoulda/active_record/matchers/have_index_matcher'
@@ -23,8 +23,8 @@ module Shoulda # :nodoc:
     # ActiveRecord models.
     #
     #   describe User do
-    #     it { should require_attribute(:name) }
-    #     it { should require_attribute(:phone_number) }
+    #     it { should validate_presence_of(:name) }
+    #     it { should validate_presence_of(:phone_number) }
     #     %w(abcd 1234).each do |value|
     #       it { should_not allow_value(value).for(:phone_number) }
     #     end

@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', 'test_helper')
 
-class RequireAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
+class ValidatePresenceOfMatcherTest < Test::Unit::TestCase # :nodoc:
 
   context "a required attribute" do
     setup do
@@ -11,11 +11,11 @@ class RequireAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
     end
 
     should "require a value" do
-      assert_accepts require_attribute(:attr), @model
+      assert_accepts validate_presence_of(:attr), @model
     end
 
     should "not override the default message with a blank" do
-      assert_accepts require_attribute(:attr).with_message(nil), @model
+      assert_accepts validate_presence_of(:attr).with_message(nil), @model
     end
   end
 
@@ -25,7 +25,7 @@ class RequireAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
     end
 
     should "not require a value" do
-      assert_rejects require_attribute(:attr), @model
+      assert_rejects validate_presence_of(:attr), @model
     end
   end
 
@@ -39,7 +39,7 @@ class RequireAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
     end
 
     should "require the attribute to be set" do
-      assert_accepts require_attribute(:children), @model
+      assert_accepts validate_presence_of(:children), @model
     end
   end
 
@@ -52,7 +52,7 @@ class RequireAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
     end
 
     should "not require the attribute to be set" do
-      assert_rejects require_attribute(:children), @model
+      assert_rejects validate_presence_of(:children), @model
     end
   end
 
@@ -66,7 +66,7 @@ class RequireAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
     end
 
     should "require the attribute to be set" do
-      assert_accepts require_attribute(:children), @model
+      assert_accepts validate_presence_of(:children), @model
     end
   end
 
@@ -79,7 +79,7 @@ class RequireAttributeMatcherTest < Test::Unit::TestCase # :nodoc:
     end
 
     should "not require the attribute to be set" do
-      assert_rejects require_attribute(:children), @model
+      assert_rejects validate_presence_of(:children), @model
     end
   end
 

@@ -11,15 +11,15 @@ module Shoulda # :nodoc:
       #   Defaults to the translation for <tt>:blank</tt>.
       #
       # Examples:
-      #   it { should require_attribute(:name) }
-      #   it { should require_attribute(:name).with_message(/is not optional/) }
+      #   it { should validate_presence_of(:name) }
+      #   it { should validate_presence_of(:name).
+      #                 with_message(/is not optional/) }
       #
-      def require_attribute(attr)
-        RequireAttributeMatcher.
-          new(attr)
+      def validate_presence_of(attr)
+        ValidatePresenceOfMatcher.new(attr)
       end
 
-      class RequireAttributeMatcher < ValidationMatcher # :nodoc:
+      class ValidatePresenceOfMatcher < ValidationMatcher # :nodoc:
 
         def with_message(message)
           @expected_message = message if message
