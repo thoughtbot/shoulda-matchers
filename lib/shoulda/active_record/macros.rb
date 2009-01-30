@@ -56,6 +56,7 @@ module Shoulda # :nodoc:
         end
       end
       
+      # Deprecated. See should_validate_presence_of
       def should_require_attributes(*attributes)
         warn "[DEPRECATION] should_require_attributes is deprecated. " <<
              "Use should_validate_presence_of instead."
@@ -74,13 +75,13 @@ module Shoulda # :nodoc:
       #   exact match. Ignored by non-text attributes. Default = <tt>true</tt>
       #
       # Examples:
-      #   should_require_unique_attributes :keyword, :username
-      #   should_require_unique_attributes :name, :message => "O NOES! SOMEONE STOELED YER NAME!"
-      #   should_require_unique_attributes :email, :scoped_to => :name
-      #   should_require_unique_attributes :address, :scoped_to => [:first_name, :last_name]
-      #   should_require_unique_attributes :email, :case_sensitive => false
+      #   should_validate_uniqueness_of :keyword, :username
+      #   should_validate_uniqueness_of :name, :message => "O NOES! SOMEONE STOELED YER NAME!"
+      #   should_validate_uniqueness_of :email, :scoped_to => :name
+      #   should_validate_uniqueness_of :address, :scoped_to => [:first_name, :last_name]
+      #   should_validate_uniqueness_of :email, :case_sensitive => false
       #
-      def should_require_unique_attributes(*attributes)
+      def should_validate_uniqueness_of(*attributes)
         message, scope, case_sensitive = get_options!(attributes, :message, :scoped_to, :case_sensitive)
         scope = [*scope].compact
         case_sensitive = true if case_sensitive.nil?
@@ -95,6 +96,13 @@ module Shoulda # :nodoc:
             assert_accepts(matcher, get_instance_of(klass))
           end
         end
+      end
+
+      # Deprecated. See should_validate_uniqueness_of
+      def should_require_unique_attributes(*attributes)
+        warn "[DEPRECATION] should_require_unique_attributes is deprecated. " <<
+             "Use should_validate_uniqueness_of instead."
+        should_validate_uniqueness_of(*attributes)
       end
 
       # Ensures that the attribute cannot be set on mass update.

@@ -14,6 +14,6 @@ class PostTest < Test::Unit::TestCase
   should_only_allow_numeric_values_for :user_id
 
   should_fail do
-    should_require_unique_attributes :title, :case_sensitive => false
+    should_validate_uniqueness_of :title, :case_sensitive => false
   end
 end
