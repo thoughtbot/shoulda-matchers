@@ -304,9 +304,9 @@ module Shoulda # :nodoc:
       #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages.not_a_number')</tt>
       #
       # Example:
-      #   should_only_allow_numeric_values_for :age
+      #   should_validate_numericality_of :age
       #
-      def should_only_allow_numeric_values_for(*attributes)
+      def should_validate_numericality_of(*attributes)
         message = get_options!(attributes, :message)
         klass = model_class
         attributes.each do |attribute|
@@ -316,6 +316,13 @@ module Shoulda # :nodoc:
             assert_accepts matcher, get_instance_of(klass)
           end
         end
+      end
+
+      # Deprecated. See should_validate_uniqueness_of
+      def should_only_allow_numeric_values_for(*attributes)
+        warn "[DEPRECATION] should_only_allow_numeric_values_for is " <<
+             "deprecated. Use should_validate_numericality_of instead."
+        should_validate_numericality_of(*attributes)
       end
 
       # Ensures that the has_many relationship exists.  Will also test that the
