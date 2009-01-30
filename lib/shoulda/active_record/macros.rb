@@ -105,6 +105,22 @@ module Shoulda # :nodoc:
         should_validate_uniqueness_of(*attributes)
       end
 
+      # Ensures that the attribute can be set on mass update.
+      #
+      #   should_allow_mass_assignment_of :first_name, :last_name
+      #
+      def should_allow_mass_assignment_of(*attributes)
+        get_options!(attributes)
+        klass = model_class
+
+        attributes.each do |attribute|
+          matcher = allow_mass_assignment_of(attribute)
+          should matcher.description do
+            assert_accepts matcher, klass.new
+          end
+        end
+      end
+
       # Ensures that the attribute cannot be set on mass update.
       #
       #   should_not_allow_mass_assignment_of :password, :admin_flag
