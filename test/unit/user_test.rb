@@ -39,7 +39,7 @@ class UserTest < Test::Unit::TestCase
   should_allow_values_for :email, "a@b.com", "asdf@asdf.com"
   should_ensure_length_in_range :email, 1..100
   should_ensure_value_in_range :age, 1..100
-  should_protect_attributes :password
+  should_not_allow_mass_assignment_of :password
   should_have_class_methods :find, :destroy
   should_have_instance_methods :email, :age, :email=, :valid?
   should_have_db_columns :name, :email, :age
@@ -56,6 +56,6 @@ class UserTest < Test::Unit::TestCase
   should_have_readonly_attributes :name
 
   should_fail do
-    should_protect_attributes :name, :age
+    should_not_allow_mass_assignment_of :name, :age
   end
 end

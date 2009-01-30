@@ -9,6 +9,6 @@ class TagTest < Test::Unit::TestCase
   should_protect_attributes :secret
 
   should_fail do
-    should_protect_attributes :name
+    should_not_allow_mass_assignment_of :name
   end
 end

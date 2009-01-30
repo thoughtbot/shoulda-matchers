@@ -9,7 +9,7 @@ module Shoulda # :nodoc:
     #     should_not_allow_values_for :phone_number, "abcd", "1234"
     #     should_allow_values_for :phone_number, "(123) 456-7890"
     #
-    #     should_protect_attributes :password
+    #     should_not_allow_mass_assignment_of :password
     #
     #     should_have_one :profile
     #     should_have_many :dogs
@@ -107,9 +107,9 @@ module Shoulda # :nodoc:
 
       # Ensures that the attribute cannot be set on mass update.
       #
-      #   should_protect_attributes :password, :admin_flag
+      #   should_not_allow_mass_assignment_of :password, :admin_flag
       #
-      def should_protect_attributes(*attributes)
+      def should_not_allow_mass_assignment_of(*attributes)
         get_options!(attributes)
         klass = model_class
 
@@ -119,6 +119,13 @@ module Shoulda # :nodoc:
             assert_rejects matcher, klass.new
           end
         end
+      end
+
+      # Deprecated. See should_not_allow_mass_assignment_of
+      def should_protect_attributes(*attributes)
+        warn "[DEPRECATION] should_protect_attributes is deprecated. " <<
+             "Use should_not_allow_mass_assignment_of instead."
+        should_not_allow_mass_assignment_of(*attributes)
       end
 
       # Ensures that the attribute cannot be changed once the record has been created.
