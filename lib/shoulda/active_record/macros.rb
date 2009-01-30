@@ -503,9 +503,9 @@ module Shoulda # :nodoc:
       #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages.accepted')</tt>
       #
       # Example:
-      #   should_require_acceptance_of :eula
+      #   should_validate_acceptance_of :eula
       #
-      def should_require_acceptance_of(*attributes)
+      def should_validate_acceptance_of(*attributes)
         message = get_options!(attributes, :message)
         klass = model_class
 
@@ -515,6 +515,13 @@ module Shoulda # :nodoc:
             assert_accepts matcher, get_instance_of(klass)
           end
         end
+      end
+
+      # Deprecated. See should_validate_uniqueness_of
+      def should_require_acceptance_of(*attributes)
+        warn "[DEPRECATION] should_require_acceptance_of is deprecated. " <<
+             "Use should_validate_acceptance_of instead."
+        should_validate_acceptance_of(*attributes)
       end
 
       # Ensures that the model has a method named scope_name that returns a NamedScope object with the
