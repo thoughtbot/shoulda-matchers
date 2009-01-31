@@ -65,7 +65,7 @@ module Shoulda # :nodoc:
         end
 
         def matches?(subject)
-          @subject = subject
+          @subject = subject.class.new
           @expected_message ||= :taken
           find_existing && 
             set_scoped_attributes && 

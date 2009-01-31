@@ -12,11 +12,15 @@ class ValidateUniquenessOfMatcherTest < Test::Unit::TestCase # :nodoc:
 
     context "with an existing value" do
       setup do
-        Example.create!(:attr => 'value', :other => 1)
+        @existing = Example.create!(:attr => 'value', :other => 1)
       end
 
       should "require a unique value for that attribute" do
         assert_accepts validate_uniqueness_of(:attr), @model
+      end
+
+      should "pass when the subject is an existing record" do
+        assert_accepts validate_uniqueness_of(:attr), @existing
       end
 
       should "fail when a scope is specified" do
@@ -63,12 +67,17 @@ class ValidateUniquenessOfMatcherTest < Test::Unit::TestCase # :nodoc:
                                            :scope2 => :integer) do
         validates_uniqueness_of :attr, :scope => [:scope1, :scope2]
       end.new
-      Example.create!(:attr => 'value', :scope1 => 1, :scope2 => 2)
+      @existing = Example.create!(:attr => 'value', :scope1 => 1, :scope2 => 2)
     end
 
     should "pass when the correct scope is specified" do
       assert_accepts validate_uniqueness_of(:attr).scoped_to(:scope1, :scope2),
         @model
+    end
+
+    should "pass when the subject is an existing record" do
+      assert_accepts validate_uniqueness_of(:attr).scoped_to(:scope1, :scope2),
+        @existing
     end
 
     should "fail when a different scope is specified" do
