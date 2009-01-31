@@ -14,8 +14,8 @@ class Test::Unit::TestCase
     end
   end
 
-  def define_model_class(class_name, &block)
-    klass = Class.new(ActiveRecord::Base)
+  def define_constant(class_name, base, &block)
+    klass = Class.new(base)
     Object.const_set(class_name, klass)
 
     klass.class_eval(&block) if block_given?
@@ -24,6 +24,10 @@ class Test::Unit::TestCase
     @defined_constants << class_name
 
     klass
+  end
+
+  def define_model_class(class_name, &block)
+    define_constant(class_name, ActiveRecord::Base, &block)
   end
 
   def define_model(name, columns = {}, &block)
@@ -39,6 +43,34 @@ class Test::Unit::TestCase
     define_model_class(class_name, &block)
   end
 
+  def define_controller(class_name, &block)
+    define_constant(class_name, ActionController::Base, &block)
+  end
+
+  def define_routes(&block)
+    @replaced_routes = ActionController::Routing::Routes
+    new_routes = ActionController::Routing::RouteSet.new
+    silence_warnings do
+      ActionController::Routing.const_set('Routes', new_routes)
+    end
+    new_routes.draw(&block)
+    new_routes.load!
+  end
+
+  def build_response(&block)
+    klass = define_controller('Examples')
+    block ||= lambda { render :nothing => true }
+    klass.class_eval { define_method(:example, &block) }
+    define_routes {|map| map.resources :examples }
+
+    @controller = klass.new
+    @request    = ActionController::TestRequest.new
+    @response   = ActionController::TestResponse.new
+    get :example
+
+    @controller
+  end
+
   def teardown_with_models
     if @defined_constants
       @defined_constants.each do |class_name| 
@@ -52,6 +84,14 @@ class Test::Unit::TestCase
           connection.
           execute("DROP TABLE IF EXISTS #{table_name}")
       end
+    end
+
+    if @replaced_routes
+      ActionController::Routing::Routes.clear!
+      silence_warnings do
+        ActionController::Routing.const_set('Routes', @replaced_routes)
+      end
+      @replaced_routes.reload!
     end
 
     teardown_without_models
