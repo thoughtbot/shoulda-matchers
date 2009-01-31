@@ -1,7 +1,5 @@
 Unfinished:
-should_assign_to
 should_filter_params
-should_not_assign_to
 should_not_set_the_flash
 should_render_with_layout
 should_render_without_layout
@@ -12,9 +10,11 @@ should_route
 should_set_the_flash_to 
 
 Finished:
-should_be_restful
+should_assign_to
+should_not_assign_to
 
 Won't implement:
+should_be_restful
 
 Already implemented in spec-rails:
 should_redirect_to

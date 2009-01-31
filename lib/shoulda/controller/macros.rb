@@ -25,6 +25,8 @@ module Shoulda # :nodoc:
     # Furthermore, the should_be_restful helper will create an entire set of tests which will verify that your
     # controller responds restfully to a variety of requested formats.
     module Macros
+      include Matchers
+
       # <b>DEPRECATED:</b> Please see
       # http://thoughtbot.lighthouseapp.com/projects/5807/tickets/78 for more
       # information.
@@ -134,21 +136,21 @@ module Shoulda # :nodoc:
       def should_assign_to(*names)
         opts = names.extract_options!
         names.each do |name|
-          test_name = "assign @#{name}"
-          test_name << " as class #{opts[:class]}" if opts[:class]
+          matcher = assign_to(name).with_kind_of(opts[:class])
+          test_name = matcher.description
           test_name << " which is equal to #{opts[:equals]}" if opts[:equals]
           should test_name do
-            assigned_value = assigns(name.to_sym)
-            assert_not_nil assigned_value, "The action isn't assigning to @#{name}"
-            assert_kind_of opts[:class], assigned_value if opts[:class]
             if opts[:equals]
               instantiate_variables_from_assigns do
-                expected_value = eval(opts[:equals], self.send(:binding), __FILE__, __LINE__)
-                assert_equal expected_value, assigned_value,
-                             "Instance variable @#{name} expected to be #{expected_value}" +
-                             " but was #{assigned_value}"
+                expected_value = eval(opts[:equals],
+                                      self.send(:binding),
+                                      __FILE__,
+                                      __LINE__)
+                matcher = matcher.with(expected_value)
               end
             end
+
+            assert_accepts matcher, @controller
           end
         end
       end
@@ -161,8 +163,9 @@ module Shoulda # :nodoc:
       #   should_not_assign_to :user, :posts
       def should_not_assign_to(*names)
         names.each do |name|
-          should "not assign to @#{name}" do
-            assert !assigns(name.to_sym), "@#{name} was visible"
+          matcher = assign_to(name)
+          should "not #{matcher.description}" do
+            assert_rejects matcher, @controller
           end
         end
       end

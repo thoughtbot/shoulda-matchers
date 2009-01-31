@@ -1,3 +1,5 @@
+require 'shoulda/controller/matchers/assign_to_matcher'
+
 module Shoulda # :nodoc:
   module Controller # :nodoc:
 

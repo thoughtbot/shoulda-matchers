@@ -7,8 +7,9 @@ require 'shoulda/controller/macros'
 module Test # :nodoc: all
   module Unit
     class TestCase
-      extend Shoulda::Controller::Macros
+      include Shoulda::Controller::Matchers
       include Shoulda::Controller::Helpers
+      extend Shoulda::Controller::Macros
       Shoulda::Controller::VALID_FORMATS.each do |format|
         include "Shoulda::Controller::#{format.to_s.upcase}".constantize
       end
