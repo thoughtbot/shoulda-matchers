@@ -1,0 +1,25 @@
+Unfinished:
+should_assign_to
+should_filter_params
+should_not_assign_to
+should_not_set_the_flash
+should_render_with_layout
+should_render_without_layout
+should_respond_with
+should_respond_with_content_type
+should_return_from_session
+should_route
+should_set_the_flash_to 
+
+Finished:
+should_be_restful
+
+Won't implement:
+
+Already implemented in spec-rails:
+should_redirect_to
+should_render_template
+
+View macros:
+should_render_a_form
+should_render_page_with_metadata
