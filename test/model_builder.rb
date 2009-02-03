@@ -15,6 +15,8 @@ class Test::Unit::TestCase
   end
 
   def define_constant(class_name, base, &block)
+    class_name = class_name.to_s.camelize
+
     klass = Class.new(base)
     Object.const_set(class_name, klass)
 
@@ -44,6 +46,8 @@ class Test::Unit::TestCase
   end
 
   def define_controller(class_name, &block)
+    class_name = class_name.to_s
+    class_name << 'Controller' unless class_name =~ /Controller$/
     define_constant(class_name, ActionController::Base, &block)
   end
 

@@ -1,4 +1,5 @@
 require 'shoulda/controller/matchers/assign_to_matcher'
+require 'shoulda/controller/matchers/filter_param_matcher'
 
 module Shoulda # :nodoc:
   module Controller # :nodoc:
