@@ -10,7 +10,6 @@ module Shoulda # :nodoc:
       #   it { should set_the_flash }
       #   it { should set_the_flash.to("Thank you for placing this order.") }
       #   it { should set_the_flash.to(/created/i) }
-      #   it { should set_the_flash.to(nil) }
       #   it { should_not set_the_flash }
       def set_the_flash
         SetTheFlashMatcher.new

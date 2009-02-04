@@ -86,18 +86,21 @@ module Shoulda # :nodoc:
       #   should_set_the_flash_to nil
       def should_set_the_flash_to(val)
         matcher = set_the_flash.to(val)
-        should matcher.description do
-          assert_accepts matcher, @controller
+        if val
+          should matcher.description do
+            assert_accepts matcher, @controller
+          end
+        else
+          should "not #{matcher.description}" do
+            assert_rejects matcher, @controller
+          end
         end
       end
 
       # Macro that creates a test asserting that the flash is empty.  Same as
       # @should_set_the_flash_to nil@
       def should_not_set_the_flash
-        matcher = set_the_flash
-        should "not #{matcher.description}" do
-          assert_rejects matcher, @controller
-        end
+        should_set_the_flash_to nil
       end
 
       # Macro that creates a test asserting that filter_parameter_logging
