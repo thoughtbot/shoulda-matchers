@@ -1,5 +1,6 @@
 require 'shoulda/controller/matchers/assign_to_matcher'
 require 'shoulda/controller/matchers/filter_param_matcher'
+require 'shoulda/controller/matchers/set_the_flash_matcher'
 
 module Shoulda # :nodoc:
   module Controller # :nodoc:
