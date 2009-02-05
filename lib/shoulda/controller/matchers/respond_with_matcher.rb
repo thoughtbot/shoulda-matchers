@@ -2,7 +2,19 @@ module Shoulda # :nodoc:
   module Controller # :nodoc:
     module Matchers
 
-      # docs
+      # Ensures a controller responded with expected 'response' status code.
+      #
+      # You can pass an explicit status number like 200, 301, 404, 500
+      # or its symbolic equivalent :success, :redirect, :missing, :error.
+      # See ActionController::StatusCodes for a full list.
+      #
+      # Example:
+      #
+      #   it { should respond_with(:success)  }
+      #   it { should respond_with(:redirect) }
+      #   it { should respond_with(:missing)  }
+      #   it { should respond_with(:error)    }
+      #   it { should respond_with(501)       }
       def respond_with(status)
         RespondWithMatcher.new(status)
       end

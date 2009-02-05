@@ -174,7 +174,8 @@ module Shoulda # :nodoc:
       #   should_respond_with :success
       def should_respond_with(response)
         should "respond with #{response}" do
-          assert_response response
+          matcher = respond_with(response)
+          assert_accepts matcher, @controller
         end
       end
 
