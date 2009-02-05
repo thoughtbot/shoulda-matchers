@@ -1,5 +1,4 @@
 Unfinished:
-should_respond_with
 should_respond_with_content_type
 
 Finished:

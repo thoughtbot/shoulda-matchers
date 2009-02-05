@@ -31,11 +31,11 @@ module Shoulda # :nodoc:
         end
         
         def failure_message
-          "Expected status to be #{@status}"
+          "Expected #{expectation}"
         end
         
         def negative_failure_message
-          "Did not expect status to be #{@status} but was #{response_code}"
+          "Did not expect #{expectation}"
         end
         
         protected
@@ -64,6 +64,10 @@ module Shoulda # :nodoc:
           else
             potential_symbol
           end
+        end
+        
+        def expectation
+          "response to be a #{@status}, but was #{response_code}"
         end
         
       end

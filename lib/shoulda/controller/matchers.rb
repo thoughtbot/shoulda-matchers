@@ -3,6 +3,7 @@ require 'shoulda/controller/matchers/filter_param_matcher'
 require 'shoulda/controller/matchers/set_the_flash_matcher'
 require 'shoulda/controller/matchers/render_with_layout_matcher'
 require 'shoulda/controller/matchers/respond_with_matcher'
+require 'shoulda/controller/matchers/respond_with_content_type_matcher'
 require 'shoulda/controller/matchers/set_session_matcher'
 require 'shoulda/controller/matchers/route_matcher'
 
