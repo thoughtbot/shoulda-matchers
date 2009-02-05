@@ -1,7 +1,6 @@
 Unfinished:
 should_respond_with
 should_respond_with_content_type
-should_route
 
 Finished:
 should_assign_to

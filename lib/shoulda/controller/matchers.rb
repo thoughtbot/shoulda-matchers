@@ -4,6 +4,7 @@ require 'shoulda/controller/matchers/set_the_flash_matcher'
 require 'shoulda/controller/matchers/render_with_layout_matcher'
 require 'shoulda/controller/matchers/respond_with_matcher'
 require 'shoulda/controller/matchers/set_session_matcher'
+require 'shoulda/controller/matchers/route_matcher'
 
 module Shoulda # :nodoc:
   module Controller # :nodoc:
