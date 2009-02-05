@@ -203,10 +203,15 @@ module Shoulda # :nodoc:
       #   should_return_from_session :user_id, '@user.id'
       #   should_return_from_session :message, '"Free stuff"'
       def should_return_from_session(key, expected)
-        should "return the correct value from the session for key #{key}" do
+        matcher = set_session(key)
+        should matcher.description do
           instantiate_variables_from_assigns do
-            expected_value = eval(expected, self.send(:binding), __FILE__, __LINE__)
-            assert_equal expected_value, session[key], "Expected #{expected_value.inspect} but was #{session[key]}"
+            expected_value = eval(expected, 
+                                  self.send(:binding),
+                                  __FILE__,
+                                  __LINE__)
+            matcher = matcher.to(expected_value)
+            assert_accepts matcher, @controller
           end
         end
       end
