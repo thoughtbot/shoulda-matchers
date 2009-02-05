@@ -1,1 +1,7 @@
-require 'shoulda/rails' if RAILS_ENV == 'test'
+if RAILS_ENV == 'test'
+  if defined? Spec
+    require 'shoulda/rspec'
+  else
+    require 'shoulda/rails' 
+  end
+end
