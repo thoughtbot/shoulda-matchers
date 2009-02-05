@@ -1,6 +1,3 @@
-Unfinished:
-should_respond_with_content_type
-
 Finished:
 should_assign_to
 should_not_assign_to
@@ -10,6 +7,8 @@ should_set_the_flash_to
 should_render_with_layout
 should_render_without_layout
 should_return_from_session
+should_respond_with
+should_respond_with_content_type
 
 Won't implement:
 should_be_restful
