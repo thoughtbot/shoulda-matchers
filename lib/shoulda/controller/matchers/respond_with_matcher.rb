@@ -22,15 +22,23 @@ module Shoulda # :nodoc:
           "Expected status to be #{@status}"
         end
         
+        def negative_failure_message
+          "Did not expect status to be #{@status} but was #{response_code}"
+        end
+        
         protected
         
         def correct_status_code?
-          @controller.response.response_code == @status
+          response_code == @status
         end
         
         def correct_status_code_range?
           @status.is_a?(Range) &&
-            @status.include?(@controller.response.response_code)
+            @status.include?(response_code)
+        end
+        
+        def response_code
+          @controller.response.response_code
         end
         
         def symbol_to_status_code(potential_symbol)

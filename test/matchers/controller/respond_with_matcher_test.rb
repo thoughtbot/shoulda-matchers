@@ -14,6 +14,10 @@ class RespondWithMatcherTest < Test::Unit::TestCase # :nodoc:
     should "accept responding with :success" do
       assert_accepts respond_with(:success), @controller
     end
+    
+    should "reject responding with another status" do
+      assert_rejects respond_with(:error), @controller
+    end
   end
   
   context "a controller responding with redirect" do
@@ -27,6 +31,10 @@ class RespondWithMatcherTest < Test::Unit::TestCase # :nodoc:
     
     should "accept responding with :redirect" do
       assert_accepts respond_with(:redirect), @controller
+    end
+    
+    should "reject responding with another status" do
+      assert_rejects respond_with(:error), @controller
     end
   end
   
@@ -42,6 +50,10 @@ class RespondWithMatcherTest < Test::Unit::TestCase # :nodoc:
     should "accept responding with :missing" do
       assert_accepts respond_with(:missing), @controller
     end
+    
+    should "reject responding with another status" do
+      assert_rejects respond_with(:success), @controller
+    end
   end
   
   context "a controller responding with error" do
@@ -56,6 +68,10 @@ class RespondWithMatcherTest < Test::Unit::TestCase # :nodoc:
     should "accept responding with :error" do
       assert_accepts respond_with(:error), @controller
     end
+    
+    should "reject responding with another status" do
+      assert_rejects respond_with(:success), @controller
+    end
   end
   
   context "a controller responding with not implemented" do
@@ -69,6 +85,20 @@ class RespondWithMatcherTest < Test::Unit::TestCase # :nodoc:
     
     should "accept responding with :not_implemented" do
       assert_accepts respond_with(:not_implemented), @controller
+    end
+    
+    should "reject responding with another status" do
+      assert_rejects respond_with(:success), @controller
+    end
+  end
+  
+  context "a controller raising an error" do
+    setup do
+      @controller = build_response { raise RailsError }
+    end
+
+    should "reject responding with any status" do
+      assert_rejects respond_with(:success), @controller
     end
   end
 
