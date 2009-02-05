@@ -58,14 +58,15 @@ class Test::Unit::TestCase
       ActionController::Routing.const_set('Routes', new_routes)
     end
     new_routes.draw(&block)
-    new_routes.load!
   end
 
   def build_response(&block)
     klass = define_controller('Examples')
     block ||= lambda { render :nothing => true }
     klass.class_eval { define_method(:example, &block) }
-    define_routes {|map| map.resources :examples }
+    define_routes do |map| 
+      map.connect 'examples', :controller => 'examples', :action => 'example'
+    end
 
     @controller = klass.new
     @request    = ActionController::TestRequest.new
