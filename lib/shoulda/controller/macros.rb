@@ -217,14 +217,21 @@ module Shoulda # :nodoc:
       # set by the controller are available to the evaled string.
       # Example:
       #
-      #   should_redirect_to '"/"'
-      #   should_redirect_to "user_url(@user)"
-      #   should_redirect_to "users_url"
-      def should_redirect_to(url)
-        should "redirect to #{url.inspect}" do
-          instantiate_variables_from_assigns do
-            assert_redirected_to eval(url, self.send(:binding), __FILE__, __LINE__)
+      #   should_redirect_to("the user's profile") { user_url(@user) }
+      def should_redirect_to(description, &block)
+        unless block
+          warn "[DEPRECATION] should_redirect_to without a block is " <<
+               "deprecated. Use should_redirect_to('somewhere') { } instead."
+        end
+        should "redirect to #{description}" do
+          if block
+            url = instance_eval(&block)
+          else
+            instantiate_variables_from_assigns do
+              url = eval(description, self.send(:binding), __FILE__, __LINE__)
+            end
           end
+          assert_redirected_to url
         end
       end
 

@@ -90,6 +90,24 @@ class PostsControllerTest < Test::Unit::TestCase
       setup { get :new, :user_id => users(:first) }
       should_render_without_layout
     end
+
+    context "on POST to #create" do
+      setup do
+        post :create, :user_id => users(:first),
+                      :post    => { :title => "first post",
+                                    :body  => 'blah blah blah' }
+      end
+
+      should_redirect_to 'user_post_url(@post.user, @post)'
+      should_redirect_to('the created post') { user_post_url(users(:first),
+                                                             assigns(:post)) }
+      should_fail do
+        should_redirect_to 'user_posts_url(@post.user)'
+      end
+      should_fail do
+        should_redirect_to('elsewhere') { user_posts_url(users(:first)) }
+      end
+    end
   end
 
 end
