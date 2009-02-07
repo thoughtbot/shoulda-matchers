@@ -153,19 +153,29 @@ module Shoulda # :nodoc:
       # set by the controller are available to the evaled string.
       # Example:
       #
-      #   should_return_from_session :user_id, '@user.id'
-      #   should_return_from_session :message, '"Free stuff"'
-      def should_return_from_session(key, expected)
+      #   should_return_from_session(:user_id) { '@user.id' }
+      #   should_return_from_session(:message) { "Free stuff" }
+      def should_return_from_session(key, expected = nil, &block)
         matcher = set_session(key)
+        if expected
+          warn "[DEPRECATION] should_return_from_session :key, 'val' is " <<
+               "deprecated. Use should_return_from_session(:key) { 'val' } " <<
+               "instead."
+        end
         should matcher.description do
-          instantiate_variables_from_assigns do
-            expected_value = eval(expected, 
-                                  self.send(:binding),
-                                  __FILE__,
-                                  __LINE__)
+          if expected
+            instantiate_variables_from_assigns do
+              expected_value = eval(expected, 
+                                    self.send(:binding),
+                                    __FILE__,
+                                    __LINE__)
+              matcher = matcher.to(expected_value)
+            end
+          else
+            expected_value = instance_eval(&block)
             matcher = matcher.to(expected_value)
-            assert_accepts matcher, @controller
           end
+          assert_accepts matcher, @controller
         end
       end
 
