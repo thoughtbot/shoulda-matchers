@@ -79,9 +79,13 @@ module Shoulda # :nodoc:
       #
       #   should_assign_to :user, :posts
       #   should_assign_to :user, :class => User
-      #   should_assign_to :user, :equals => '@user'
-      def should_assign_to(*names)
+      #   should_assign_to(:user) { @user }
+      def should_assign_to(*names, &block)
         opts = names.extract_options!
+        if opts[:equals]
+          warn "[DEPRECATION] should_assign_to :var, :equals => 'val' " <<
+               "is deprecated. Use should_assign_to(:var) { 'val' } instead."
+        end
         names.each do |name|
           matcher = assign_to(name).with_kind_of(opts[:class])
           test_name = matcher.description
@@ -95,6 +99,9 @@ module Shoulda # :nodoc:
                                       __LINE__)
                 matcher = matcher.with(expected_value)
               end
+            elsif block
+              expected_value = instance_eval(&block)
+              matcher = matcher.with(expected_value)
             end
 
             assert_accepts matcher, @controller
