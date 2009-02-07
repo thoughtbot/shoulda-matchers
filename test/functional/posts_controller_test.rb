@@ -33,30 +33,9 @@ class PostsControllerTest < Test::Unit::TestCase
   should_route :get,    '/users/5/posts/new', :action => :new, :user_id => 5
   should_route :put,    '/users/5/posts/1',   :action => :update, :id => 1, :user_id => 5
 
-  context "The public" do
-    setup do
-      @request.session[:logged_in] = false
-    end
-
-    should_be_restful do |resource|
-      resource.parent = :user
-
-      resource.denied.actions = [:index, :show, :edit, :new, :create, :update, :destroy]
-      resource.denied.flash = /what/i
-      resource.denied.redirect = '"/"'
-    end
-  end
-
   context "Logged in" do
     setup do
       @request.session[:logged_in] = true
-    end
-
-    should_be_restful do |resource|
-      resource.parent = :user
-
-      resource.create.params = { :title => "first post", :body => 'blah blah blah'}
-      resource.update.params = { :title => "changed" }
     end
 
     context "viewing posts for a user" do
