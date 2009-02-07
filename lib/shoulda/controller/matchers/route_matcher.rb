@@ -2,6 +2,26 @@ module Shoulda # :nodoc:
   module Controller # :nodoc:
     module Matchers
 
+      # Ensures that requesting +path+ using +method+ routes to +options+.
+      #
+      # If you don't specify a controller, it will use the controller from the
+      # example group.
+      #
+      # +to_param+ is called on the +options+ given.
+      #
+      # Examples:
+      #
+      #   it { should route(:get, "/posts").
+      #                 to(:controller => :posts, :action => :index) }
+      #   it { should route(:get, "/posts/new").to(:action => :new) }
+      #   it { should route(:post, "/posts").to(:action => :create) }
+      #   it { should route(:get, "/posts/1").to(:action => :show, :id => 1) }
+      #   it { should route(:edit, "/posts/1").to(:action => :show, :id => 1) }
+      #   it { should route(:put, "/posts/1").to(:action => :update, :id => 1) }
+      #   it { should route(:delete, "/posts/1").
+      #                 to(:action => :destroy, :id => 1) }
+      #   it { should route(:get, "/users/1/posts/1").
+      #                 to(:action => :show, :id => 1, :user_id => 1) }
       def route(method, path)
         RouteMatcher.new(method, path, self)
       end
