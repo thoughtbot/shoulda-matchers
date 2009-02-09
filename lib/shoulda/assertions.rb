@@ -45,15 +45,27 @@ module Shoulda # :nodoc:
     end
 
     # Asserts that the given matcher returns true when +target+ is passed to #matches?
-    def assert_accepts(matcher, target)
-      success = matcher.matches?(target)
-      assert_block(matcher.failure_message) { success }
+    def assert_accepts(matcher, target, options = {})
+      if matcher.matches?(target)
+        assert_block { true }
+        if options[:message]
+          assert_match options[:message], matcher.negative_failure_message
+        end
+      else
+        assert_block(matcher.failure_message) { false }
+      end
     end
 
     # Asserts that the given matcher returns false when +target+ is passed to #matches?
-    def assert_rejects(matcher, target)
-      success = !matcher.matches?(target)
-      assert_block(matcher.negative_failure_message) { success }
+    def assert_rejects(matcher, target, options = {})
+      unless matcher.matches?(target)
+        assert_block { true }
+        if options[:message]
+          assert_match options[:message], matcher.failure_message
+        end
+      else
+        assert_block(matcher.negative_failure_message) { false }
+      end
     end
   end
 end

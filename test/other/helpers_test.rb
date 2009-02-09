@@ -188,8 +188,18 @@ class HelpersTest < Test::Unit::TestCase # :nodoc:
                                  :negative_failure_message => 'big time failure')
     end
 
-    should "pass when given to assert_accepts" do
+    should "pass when given to assert_accepts with no message expectation" do
       assert_accepts @matcher, 'target'
+    end
+
+    should "pass when given to assert_accepts with a matching message" do
+      assert_accepts @matcher, 'target', :message => /big time/
+    end
+
+    should "fail when given to assert_accepts with non-matching message" do
+      assert_raise Test::Unit::AssertionFailedError do
+        assert_accepts @matcher, 'target', :message => /small time/
+      end
     end
 
     context "when given to assert_rejects" do
@@ -217,8 +227,18 @@ class HelpersTest < Test::Unit::TestCase # :nodoc:
                                  :negative_failure_message => 'bad failure message')
     end
 
-    should "pass when given to assert_rejects" do
+    should "pass when given to assert_rejects with no message expectation" do
       assert_rejects @matcher, 'target'
+    end
+
+    should "pass when given to assert_rejects with a matching message" do
+      assert_rejects @matcher, 'target', :message => /big time/
+    end
+
+    should "fail when given to assert_rejects with a non-matching message" do
+      assert_raise Test::Unit::AssertionFailedError do
+        assert_rejects @matcher, 'target', :message => /small time/
+      end
     end
 
     context "when given to assert_accepts" do
