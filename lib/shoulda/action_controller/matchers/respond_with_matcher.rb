@@ -1,5 +1,5 @@
 module Shoulda # :nodoc:
-  module Controller # :nodoc:
+  module ActionController # :nodoc:
     module Matchers
 
       # Ensures a controller responded with expected 'response' status code.
@@ -60,7 +60,7 @@ module Shoulda # :nodoc:
           when :missing  then 404
           when :error    then 500..599
           when Symbol 
-            ActionController::StatusCodes::SYMBOL_TO_STATUS_CODE[potential_symbol]
+            ::ActionController::StatusCodes::SYMBOL_TO_STATUS_CODE[potential_symbol]
           else
             potential_symbol
           end

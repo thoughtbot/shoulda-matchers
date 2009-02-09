@@ -1,5 +1,5 @@
 module Shoulda # :nodoc:
-  module Controller # :nodoc:
+  module ActionController # :nodoc:
     module Matchers
 
       # Ensures that filter_parameter_logging is set for the specified key.

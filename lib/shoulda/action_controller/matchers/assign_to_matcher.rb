@@ -1,5 +1,5 @@
 module Shoulda # :nodoc:
-  module Controller # :nodoc:
+  module ActionController # :nodoc:
     module Matchers
 
       # Ensures that the controller assigned to the named instance variable.

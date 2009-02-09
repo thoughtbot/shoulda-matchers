@@ -1,5 +1,5 @@
 module Shoulda # :nodoc:
-  module Controller # :nodoc:
+  module ActionController # :nodoc:
     module Matchers
 
       # Ensures that requesting +path+ using +method+ routes to +options+.
@@ -77,7 +77,7 @@ module Shoulda # :nodoc:
 
             @negative_failure_message = "Didn't expect to #{description}"
             true
-          rescue ActionController::RoutingError => error
+          rescue ::ActionController::RoutingError => error
             @failure_message = error.message
             false
           rescue Test::Unit::AssertionFailedError => error

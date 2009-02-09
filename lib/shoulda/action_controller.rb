@@ -1,14 +1,14 @@
 require 'shoulda'
-require 'shoulda/controller/helpers'
-require 'shoulda/controller/matchers'
-require 'shoulda/controller/macros'
+require 'shoulda/action_controller/helpers'
+require 'shoulda/action_controller/matchers'
+require 'shoulda/action_controller/macros'
 
 module Test # :nodoc: all
   module Unit
     class TestCase
-      include Shoulda::Controller::Matchers
-      include Shoulda::Controller::Helpers
-      extend Shoulda::Controller::Macros
+      include Shoulda::ActionController::Matchers
+      include Shoulda::ActionController::Helpers
+      extend Shoulda::ActionController::Macros
     end
   end
 end

@@ -1,14 +1,14 @@
-require 'shoulda/controller/matchers/assign_to_matcher'
-require 'shoulda/controller/matchers/filter_param_matcher'
-require 'shoulda/controller/matchers/set_the_flash_matcher'
-require 'shoulda/controller/matchers/render_with_layout_matcher'
-require 'shoulda/controller/matchers/respond_with_matcher'
-require 'shoulda/controller/matchers/respond_with_content_type_matcher'
-require 'shoulda/controller/matchers/set_session_matcher'
-require 'shoulda/controller/matchers/route_matcher'
+require 'shoulda/action_controller/matchers/assign_to_matcher'
+require 'shoulda/action_controller/matchers/filter_param_matcher'
+require 'shoulda/action_controller/matchers/set_the_flash_matcher'
+require 'shoulda/action_controller/matchers/render_with_layout_matcher'
+require 'shoulda/action_controller/matchers/respond_with_matcher'
+require 'shoulda/action_controller/matchers/respond_with_content_type_matcher'
+require 'shoulda/action_controller/matchers/set_session_matcher'
+require 'shoulda/action_controller/matchers/route_matcher'
 
 module Shoulda # :nodoc:
-  module Controller # :nodoc:
+  module ActionController # :nodoc:
 
     # By using the macro helpers you can quickly and easily create concise and
     # easy to read test suites.
