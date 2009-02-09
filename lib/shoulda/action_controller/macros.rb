@@ -152,14 +152,13 @@ module Shoulda # :nodoc:
       # set by the controller are available to the evaled string.
       # Example:
       #
-      #   should_return_from_session(:user_id) { '@user.id' }
-      #   should_return_from_session(:message) { "Free stuff" }
-      def should_return_from_session(key, expected = nil, &block)
+      #   should_set_session(:user_id) { '@user.id' }
+      #   should_set_session(:message) { "Free stuff" }
+      def should_set_session(key, expected = nil, &block)
         matcher = set_session(key)
         if expected
-          warn "[DEPRECATION] should_return_from_session :key, 'val' is " <<
-               "deprecated. Use should_return_from_session(:key) { 'val' } " <<
-               "instead."
+          warn "[DEPRECATION] should_set_session :key, 'val' is deprecated. " <<
+               "Use should_set_session(:key) { 'val' } instead."
         end
         should matcher.description do
           if expected
@@ -176,6 +175,13 @@ module Shoulda # :nodoc:
           end
           assert_accepts matcher, @controller
         end
+      end
+
+      # Deprecated. See should_set_session
+      def should_return_from_session(key, expected)
+        warn "[DEPRECATION] should_require_attributes is deprecated. " <<
+             "Use should_set_session instead."
+        should_set_session(key, expected)
       end
 
       # Macro that creates a test asserting that the controller rendered the given template.

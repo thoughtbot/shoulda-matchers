@@ -70,10 +70,11 @@ class PostsControllerTest < Test::Unit::TestCase
       should_respond_with_content_type :rss
       should_respond_with_content_type /rss/
       should_return_from_session :special, "'$2 off your next purchase'"
-      should_return_from_session :special_user_id, '@user.id'
-      should_return_from_session(:special_user_id) { @user.id }
+      should_set_session :special, "'$2 off your next purchase'"
+      should_set_session :special_user_id, '@user.id'
+      should_set_session(:special_user_id) { @user.id }
       should_fail do
-        should_return_from_session(:special_user_id) { 'value' }
+        should_set_session(:special_user_id) { 'value' }
       end
       should_assign_to :user, :posts
       should_not_assign_to :foo, :bar
