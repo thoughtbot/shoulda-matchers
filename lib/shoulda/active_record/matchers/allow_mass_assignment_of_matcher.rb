@@ -47,7 +47,7 @@ module Shoulda # :nodoc:
         attr_reader :failure_message, :negative_failure_message
 
         def description
-          "protect #{@attribute} from mass updates"
+          "allow mass assignment of #{@attribute}"
         end
 
         private
