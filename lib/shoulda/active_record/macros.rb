@@ -23,14 +23,6 @@ module Shoulda # :nodoc:
       include Helpers
       include Matchers
 
-      # <b>DEPRECATED:</b> Use <tt>fixtures :all</tt> instead
-      #
-      # Loads all fixture files (<tt>test/fixtures/*.yml</tt>)
-      def load_all_fixtures
-        warn "[DEPRECATION] load_all_fixtures is deprecated.  Use `fixtures :all` instead."
-        fixtures :all
-      end
-
       # Ensures that the model cannot be saved if one of the attributes listed is not present.
       #
       # If an instance variable has been created in the setup named after the
