@@ -42,21 +42,6 @@ module Shoulda # :nodoc:
           instance_variable_set("@#{name}", old[name])
         end
       end
-
-      def get_existing_record(res) # :nodoc:
-        returning(instance_variable_get("@#{res.object}")) do |record|
-          assert(record, "This test requires you to set @#{res.object} in your setup block")
-        end
-      end
-
-      def make_parent_params(resource, record = nil, parent_names = nil) # :nodoc:
-        parent_names ||= resource.parents.reverse
-        return {} if parent_names == [] # Base case
-        parent_name = parent_names.shift
-        parent = record ? record.send(parent_name) : parent_name.to_s.classify.constantize.find(:first)
-
-        { :"#{parent_name}_id" => parent.to_param }.merge(make_parent_params(resource, parent, parent_names))
-      end
     end
   end
 end
