@@ -296,13 +296,16 @@ module Shoulda # :nodoc:
       #   should_ensure_value_in_range :age, (0..100)
       #
       def should_ensure_value_in_range(attribute, range, opts = {})
-        message = get_options!([opts], :message)
-        message ||= default_error_message(:inclusion)
-
+        message, low_message, high_message = get_options!([opts],
+                                                          :message,
+                                                          :low_message,
+                                                          :high_message)
         klass = model_class
         matcher = ensure_inclusion_of(attribute).
           in_range(range).
-          with_message(message)
+          with_message(message).
+          with_low_message(low_message).
+          with_high_message(high_message)
         should matcher.description do
           assert_accepts matcher, get_instance_of(klass)
         end

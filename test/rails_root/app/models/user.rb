@@ -20,7 +20,8 @@ class User < ActiveRecord::Base
 
   validates_format_of :email, :with => /\w*@\w*.com/
   validates_length_of :email, :in => 1..100
-  validates_inclusion_of :age, :in => 1..100
+  validates_numericality_of :age, :greater_than_or_equal_to => 1,
+                                  :less_than_or_equal_to    => 100
   validates_acceptance_of :eula
   validates_uniqueness_of :email, :scope => :name, :case_sensitive => false
   validates_length_of :ssn, :is => 9, :message => "Social Security Number is not the right length"
