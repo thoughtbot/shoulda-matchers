@@ -336,7 +336,7 @@ module Shoulda # :nodoc:
         end
       end
 
-      # Deprecated. See should_validate_uniqueness_of
+      # Deprecated. See should_validate_numericality_of
       def should_only_allow_numeric_values_for(*attributes)
         warn "[DEPRECATION] should_only_allow_numeric_values_for is " <<
              "deprecated. Use should_validate_numericality_of instead."
