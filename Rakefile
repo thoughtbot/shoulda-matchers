@@ -18,7 +18,7 @@ end
 Rake::RDocTask.new { |rdoc|
   rdoc.rdoc_dir = 'doc'
   rdoc.title    = "Shoulda -- Making tests easy on the fingers and eyes"
-  rdoc.options << '--line-numbers' << '--inline-source'
+  rdoc.options << '--line-numbers'
   rdoc.template = "#{ENV['template']}.rb" if ENV['template']
   rdoc.rdoc_files.include('README.rdoc', 'CONTRIBUTION_GUIDELINES.rdoc', 'lib/**/*.rb')
 }
@@ -50,7 +50,7 @@ spec = Gem::Specification.new do |s|
 
   s.has_rdoc         = true
   s.extra_rdoc_files = ["README.rdoc", "CONTRIBUTION_GUIDELINES.rdoc"]
-  s.rdoc_options     = ["--line-numbers", "--inline-source", "--main", "README.rdoc"]
+  s.rdoc_options     = ["--line-numbers", "--main", "README.rdoc"]
 
   s.authors = ["Tammer Saleh"]
   s.email   = "tsaleh@thoughtbot.com"
