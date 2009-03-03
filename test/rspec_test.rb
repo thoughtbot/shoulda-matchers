@@ -138,6 +138,7 @@ else
     def assert_configured
       create_model
       migrate
+      create_controller
       assert_spec_passes
     end
 
@@ -146,15 +147,26 @@ else
       insert "validates_presence_of :name",
              "app/models/person.rb",
              /class Person/
-      insert shoulda_example,
+      insert "it { should validate_presence_of(:name) }",
              "spec/models/person_spec.rb",
              /describe Person do/
     end
 
-    def shoulda_example
-      return <<-EOS
-        it { should validate_presence_of(:name) }
+    def create_controller
+      project_command "script/generate rspec_controller people"
+      insert "def index; render :text => 'Hello'; end",
+             "app/controllers/people_controller.rb",
+             /class PeopleController/
+      shoulda_controller_example = <<-EOS
+        describe PeopleController, "on GET index" do
+          integrate_views
+          subject { controller }
+          before(:each) { get :index }
+          it { should respond_with(:success) }
+        end
       EOS
+      insert shoulda_controller_example,
+             "spec/controllers/people_controller_spec.rb"
     end
 
     def migrate
@@ -162,8 +174,9 @@ else
     end
 
     def assert_spec_passes
-      assert_match /should require name to be set/,
-                   project_command("rake spec SPEC_OPTS=-fs")
+      result = project_command("rake spec SPEC_OPTS=-fs")
+      assert_match /should require name to be set/, result
+      assert_match /should respond with 200/, result
     end
 
     def shoulda_root
