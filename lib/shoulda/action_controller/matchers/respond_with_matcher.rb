@@ -37,6 +37,10 @@ module Shoulda # :nodoc:
         def negative_failure_message
           "Did not expect #{expectation}"
         end
+
+        def description
+          "respond with #{@status}"
+        end
         
         protected
         
