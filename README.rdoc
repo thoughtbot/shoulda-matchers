@@ -140,9 +140,9 @@ Use this if you prefer the idea of being able to easily switch between using edg
 
 = Rails Installation (RSpec)
 
-We recommend that you add config.gem lines for RSpec and Shoulda in your
-config/environment/test.rb file, but do not ask Rails to load the RSpec and
-Shoulda libraries:
+If you're using Shoulda with RSpec, we recommend that you add config.gem lines
+for RSpec and Shoulda in your config/environment/test.rb file, but do not ask
+Rails to load the RSpec and Shoulda libraries:
 
   config.gem 'rspec', :lib => false
   config.gem 'rspec-rails', :lib => false
