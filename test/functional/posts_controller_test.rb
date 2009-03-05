@@ -69,11 +69,20 @@ class PostsControllerTest < Test::Unit::TestCase
       should_respond_with_content_type 'application/rss+xml'
       should_respond_with_content_type :rss
       should_respond_with_content_type /rss/
-      should_return_from_session :special, "'$2 off your next purchase'"
+      context "deprecated" do # to avoid redefining a test
+        should_return_from_session :special, "'$2 off your next purchase'"
+      end
+      should_fail do
+        should_return_from_session :special, "'not special'"
+      end
+      should_set_session(:mischief) { nil }
+      should_return_from_session :malarky, "nil"
       should_set_session :special, "'$2 off your next purchase'"
       should_set_session :special_user_id, '@user.id'
-      should_set_session(:special_user_id) { @user.id }
-      should_fail do
+      context "with a block" do
+        should_set_session(:special_user_id) { @user.id }
+      end
+      should_fail do # to avoid redefining a test
         should_set_session(:special_user_id) { 'value' }
       end
       should_assign_to :user, :posts
@@ -83,7 +92,9 @@ class PostsControllerTest < Test::Unit::TestCase
     context "viewing a post on GET to #show" do
       setup { get :show, :user_id => users(:first), :id => posts(:first) }
       should_render_with_layout 'wide'
-      should_render_with_layout :wide
+      context "with a symbol" do # to avoid redefining a test
+        should_render_with_layout :wide
+      end
       should_assign_to :false_flag
     end
 

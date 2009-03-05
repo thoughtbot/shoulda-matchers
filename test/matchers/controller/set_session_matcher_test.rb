@@ -22,6 +22,10 @@ class SetSessionMatcherTest < Test::Unit::TestCase # :nodoc:
     should "reject assigning to another variable" do
       assert_rejects set_session(:other), @controller
     end
+
+    should "accept assigning nil to another variable" do
+      assert_accepts set_session(:other).to(nil), @controller
+    end
   end
 
 end
