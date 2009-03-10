@@ -4,7 +4,10 @@ class SetSessionMatcherTest < ActionController::TestCase # :nodoc:
 
   context "a controller that sets a session variable" do
     setup do
-      @controller = build_response { session[:var] = 'value' }
+      @controller = build_response do
+        session[:var] = 'value'
+        session[:false_var] = false
+      end
     end
 
     should "accept assigning to that variable" do
@@ -25,6 +28,10 @@ class SetSessionMatcherTest < ActionController::TestCase # :nodoc:
 
     should "accept assigning nil to another variable" do
       assert_accepts set_session(:other).to(nil), @controller
+    end
+
+    should "accept assigning false to that variable" do
+      assert_accepts set_session(:false_var).to(false), @controller
     end
   end
 

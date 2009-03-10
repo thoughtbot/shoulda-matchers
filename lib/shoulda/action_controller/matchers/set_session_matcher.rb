@@ -46,7 +46,7 @@ module Shoulda # :nodoc:
         private
 
         def assigned_value?
-          !assigned_value.blank?
+          !assigned_value.nil?
         end
 
         def cleared_value?

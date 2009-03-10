@@ -12,6 +12,7 @@ class PostsController < ApplicationController
         headers['Content-Type'] = 'application/rss+xml'
         session[:special] = '$2 off your next purchase'
         session[:special_user_id] = @user.id
+        session[:false_var] = false
         head :ok
       end
     end

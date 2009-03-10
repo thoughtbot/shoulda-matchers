@@ -70,6 +70,7 @@ class PostsControllerTest < ActionController::TestCase
       should_set_session(:mischief) { nil }
       should_set_session(:special) { '$2 off your next purchase' }
       should_set_session(:special_user_id) { @user.id }
+      should_set_session(:false_var) { false }
       should_fail do
         should_set_session(:special_user_id) { 'value' }
       end
