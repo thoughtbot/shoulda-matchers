@@ -188,7 +188,6 @@ module Shoulda # :nodoc:
       def should_allow_values_for(attribute, *good_values)
         get_options!(good_values)
         klass = model_class
-        klass = model_class
         good_values.each do |value|
           matcher = allow_value(value).for(attribute)
           should matcher.description do
