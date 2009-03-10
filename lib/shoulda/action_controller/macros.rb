@@ -179,7 +179,7 @@ module Shoulda # :nodoc:
 
       # Deprecated. See should_set_session
       def should_return_from_session(key, expected)
-        warn "[DEPRECATION] should_require_attributes is deprecated. " <<
+        warn "[DEPRECATION] should_return_from_session is deprecated. " <<
              "Use should_set_session instead."
         should_set_session(key, expected)
       end
