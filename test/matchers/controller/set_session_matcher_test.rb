@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
-class SetSessionMatcherTest < Test::Unit::TestCase # :nodoc:
+class SetSessionMatcherTest < ActionController::TestCase # :nodoc:
 
   context "a controller that sets a session variable" do
     setup do

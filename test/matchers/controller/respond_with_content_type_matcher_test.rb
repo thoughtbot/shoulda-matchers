@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
-class RespondWithContentTypeMatcherTest < Test::Unit::TestCase # :nodoc:
+class RespondWithContentTypeMatcherTest < ActionController::TestCase # :nodoc:
   
   context "a controller responding with content type :xml" do
     setup do

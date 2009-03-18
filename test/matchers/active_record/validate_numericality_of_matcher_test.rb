@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
-class ValidateNumericalityOfMatcherTest < Test::Unit::TestCase # :nodoc:
+class ValidateNumericalityOfMatcherTest < ActiveSupport::TestCase # :nodoc:
 
   context "a numeric attribute" do
     setup do

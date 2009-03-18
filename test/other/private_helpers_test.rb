@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', 'test_helper')
 
-class PrivateHelpersTest < Test::Unit::TestCase # :nodoc:
+class PrivateHelpersTest < ActiveSupport::TestCase # :nodoc:
   include Shoulda::Private
   context "get_options!" do
     should "remove opts from args" do

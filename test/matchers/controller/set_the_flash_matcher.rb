@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
-class SetTheFlashMatcherTest < Test::Unit::TestCase # :nodoc:
+class SetTheFlashMatcherTest < ActionController::TestCase # :nodoc:
 
   context "a controller that sets a flash message" do
     setup do

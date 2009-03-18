@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
-class HaveDbColumnMatcherTest < Test::Unit::TestCase # :nodoc:
+class HaveDbColumnMatcherTest < ActiveSupport::TestCase # :nodoc:
 
   context "have_db_column" do
     setup do

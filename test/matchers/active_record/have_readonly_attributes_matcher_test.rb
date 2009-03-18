@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
-class HaveReadonlyAttributesMatcherTest < Test::Unit::TestCase # :nodoc:
+class HaveReadonlyAttributesMatcherTest < ActiveSupport::TestCase # :nodoc:
 
   context "an attribute that cannot be set after being saved" do
     setup do

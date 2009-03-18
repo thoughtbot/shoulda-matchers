@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class AddressTest < Test::Unit::TestCase
+class AddressTest < ActiveSupport::TestCase
   fixtures :all
 
   should_belong_to :addressable

@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
-class FilterParamMatcherTest < Test::Unit::TestCase # :nodoc:
+class FilterParamMatcherTest < ActionController::TestCase # :nodoc:
 
   context "a controller that filters no parameters" do
     setup do

@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
-class EnsureLengthOfMatcher < Test::Unit::TestCase # :nodoc:
+class EnsureLengthOfMatcher < ActiveSupport::TestCase # :nodoc:
 
   context "an attribute with a non-zero minimum length validation" do
     setup do

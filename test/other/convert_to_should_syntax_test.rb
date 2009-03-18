@@ -1,9 +1,9 @@
 require 'test/unit'
 
-class ConvertToShouldSyntaxTest < Test::Unit::TestCase # :nodoc:
+class ConvertToShouldSyntaxTest < ActiveSupport::TestCase # :nodoc:
 
   BEFORE_FIXTURE = <<-EOS
-    class DummyTest < Test::Unit::TestCase
+    class DummyTest < ActiveSupport::TestCase
 
       should "Not change this_word_with_underscores" do
       end
@@ -23,7 +23,7 @@ class ConvertToShouldSyntaxTest < Test::Unit::TestCase # :nodoc:
   EOS
 
   AFTER_FIXTURE = <<-EOS
-    class DummyTest < Test::Unit::TestCase
+    class DummyTest < ActiveSupport::TestCase
 
       should "Not change this_word_with_underscores" do
       end

@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
-class EnsureInclusionOfMatcherTest < Test::Unit::TestCase # :nodoc:
+class EnsureInclusionOfMatcherTest < ActiveSupport::TestCase # :nodoc:
 
   context "an attribute which must be included in a range" do
     setup do

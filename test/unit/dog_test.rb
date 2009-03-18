@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class Pets::DogTest < Test::Unit::TestCase
+class Pets::DogTest < ActiveSupport::TestCase
   should_belong_to :user
   should_belong_to :address, :dependent => :destroy
   should_have_many :treats

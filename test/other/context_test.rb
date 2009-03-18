@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', 'test_helper')
 
-class ContextTest < Test::Unit::TestCase # :nodoc:
+class ContextTest < ActiveSupport::TestCase # :nodoc:
   
   def self.context_macro(&blk)
     context "with a subcontext made by a macro" do

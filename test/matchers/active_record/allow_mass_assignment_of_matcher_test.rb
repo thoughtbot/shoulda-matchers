@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
-class AllowMassAssignmentOfMatcherTest < Test::Unit::TestCase # :nodoc:
+class AllowMassAssignmentOfMatcherTest < ActiveSupport::TestCase # :nodoc:
 
   context "an attribute that is blacklisted from mass-assignment" do
     setup do

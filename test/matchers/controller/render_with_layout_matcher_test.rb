@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
-class RenderWithLayoutMatcherTest < Test::Unit::TestCase # :nodoc:
+class RenderWithLayoutMatcherTest < ActionController::TestCase # :nodoc:
 
   context "a controller that renders with a layout" do
     setup do

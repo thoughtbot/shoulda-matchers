@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
-class RouteToMatcherTest < Test::Unit::TestCase # :nodoc:
+class RouteToMatcherTest < ActionController::TestCase # :nodoc:
 
   context "given a controller with a defined route" do
     setup do

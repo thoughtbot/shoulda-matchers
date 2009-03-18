@@ -2,7 +2,7 @@ require File.join(File.dirname(__FILE__), '..', 'test_helper')
 require 'action_mailer'
 require 'mocha'
 
-class HelpersTest < Test::Unit::TestCase # :nodoc:
+class HelpersTest < ActiveSupport::TestCase # :nodoc:
 
   context "given delivered emails" do
     setup do

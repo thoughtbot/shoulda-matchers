@@ -2,5 +2,5 @@ module PluginMacro
   def plugin_macro
   end
 end
-Test::Unit::TestCase.extend(PluginMacro)
+ActiveSupport::TestCase.extend(PluginMacro)
 

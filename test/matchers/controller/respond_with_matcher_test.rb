@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
-class RespondWithMatcherTest < Test::Unit::TestCase # :nodoc:
+class RespondWithMatcherTest < ActionController::TestCase # :nodoc:
 
   context "a controller responding with success" do
     setup do

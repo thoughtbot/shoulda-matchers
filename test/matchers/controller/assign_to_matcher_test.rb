@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
-class AssignToMatcherTest < Test::Unit::TestCase # :nodoc:
+class AssignToMatcherTest < ActionController::TestCase # :nodoc:
 
   context "a controller that assigns to an instance variable" do
     setup do

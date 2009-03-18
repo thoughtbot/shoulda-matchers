@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
-class ValidateUniquenessOfMatcherTest < Test::Unit::TestCase # :nodoc:
+class ValidateUniquenessOfMatcherTest < ActiveSupport::TestCase # :nodoc:
 
   context "a unique attribute" do
     setup do

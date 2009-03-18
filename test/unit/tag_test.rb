@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class TagTest < Test::Unit::TestCase
+class TagTest < ActiveSupport::TestCase
   should_have_many :taggings, :dependent => :destroy
   should_have_many :posts
 

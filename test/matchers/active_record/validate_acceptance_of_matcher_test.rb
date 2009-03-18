@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
-class ValidateAcceptanceOfMatcherTest < Test::Unit::TestCase # :nodoc:
+class ValidateAcceptanceOfMatcherTest < ActiveSupport::TestCase # :nodoc:
 
   context "an attribute which must be accepted" do
     setup do

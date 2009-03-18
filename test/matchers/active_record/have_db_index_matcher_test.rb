@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
-class HaveDbIndexMatcherTest < Test::Unit::TestCase # :nodoc:
+class HaveDbIndexMatcherTest < ActiveSupport::TestCase # :nodoc:
   
   context "have_db_index" do
     setup do

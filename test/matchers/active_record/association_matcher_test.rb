@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
-class AssociationMatcherTest < Test::Unit::TestCase # :nodoc:
+class AssociationMatcherTest < ActiveSupport::TestCase # :nodoc:
 
   context "belong_to" do
     setup do

@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
-class HaveNamedScopeMatcherTest < Test::Unit::TestCase # :nodoc:
+class HaveNamedScopeMatcherTest < ActiveSupport::TestCase # :nodoc:
 
   context "an attribute with a named scope" do
     setup do

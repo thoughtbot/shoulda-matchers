@@ -1,4 +1,4 @@
-class Test::Unit::TestCase  
+class ActiveSupport::TestCase  
   def create_table(table_name, &block)
     connection = ActiveRecord::Base.connection
     
