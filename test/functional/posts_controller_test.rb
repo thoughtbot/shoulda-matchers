@@ -44,6 +44,7 @@ class PostsControllerTest < ActionController::TestCase
       end
       should_respond_with :success
       should_assign_to :user, :class => User
+      should_render_template :index
       should_assign_to(:user) { users(:first) }
       should_fail do
         should_assign_to :user, :class => Post
