@@ -46,7 +46,7 @@ module Shoulda # :nodoc:
       end
 
       # Macro that creates a test asserting that the flash is empty.  Same as
-      # @should_set_the_flash_to nil@
+      # <code>should_set_the_flash_to nil</code>
       def should_not_set_the_flash
         should_set_the_flash_to nil
       end
@@ -71,8 +71,11 @@ module Shoulda # :nodoc:
       #
       # Options:
       # * <tt>:class</tt> - The expected class of the instance variable being checked.
-      # * <tt>:equals</tt> - A string which is evaluated and compared for equality with
-      # the instance variable being checked.
+      # * <tt>:equals</tt> - [DEPRECATED] A string which is evaluated and
+      #   compared for equality with the instance variable being checked.
+      #
+      # If a block is passed, the assigned variable is expected to be equal to
+      # the return value of that block.
       #
       # Example:
       #
@@ -147,12 +150,13 @@ module Shoulda # :nodoc:
         end
       end
 
-      # Macro that creates a test asserting that a value returned from the session is correct.
-      # The given string is evaled to produce the resulting redirect path.  All of the instance variables
-      # set by the controller are available to the evaled string.
+      # Macro that creates a test asserting that a value returned from the
+      # session is correct. Expects the session key as a parameter, and a block
+      # that returns the expected value.
+      #
       # Example:
       #
-      #   should_set_session(:user_id) { '@user.id' }
+      #   should_set_session(:user_id) { @user.id }
       #   should_set_session(:message) { "Free stuff" }
       def should_set_session(key, expected = nil, &block)
         matcher = set_session(key)
@@ -217,9 +221,11 @@ module Shoulda # :nodoc:
         should_render_with_layout nil
       end
 
-      # Macro that creates a test asserting that the controller returned a redirect to the given path.
-      # The given string is evaled to produce the resulting redirect path.  All of the instance variables
-      # set by the controller are available to the evaled string.
+      # Macro that creates a test asserting that the controller returned a
+      # redirect to the given path. The passed description will be used when
+      # generating a test name. Expects a block that returns the expected path
+      # for the redirect.
+      #
       # Example:
       #
       #   should_redirect_to("the user's profile") { user_url(@user) }
