@@ -448,7 +448,7 @@ module Shoulda # :nodoc:
       end
 
       # Ensure that the given columns are defined on the models backing SQL table.
-      # Also aliased to should_have_index for readability.
+      # Also aliased to should_have_db_column for readability.
       # Takes the same options available in migrations: 
       # :type, :precision, :limit, :default, :null, and :scale
       #
@@ -480,7 +480,7 @@ module Shoulda # :nodoc:
       alias_method :should_have_db_column, :should_have_db_columns
 
       # Ensures that there are DB indices on the given columns or tuples of columns.
-      # Also aliased to should_have_index for readability
+      # Also aliased to should_have_db_index for readability
       #
       # Options:
       # * <tt>:unique</tt> - whether or not the index has a unique
@@ -491,23 +491,37 @@ module Shoulda # :nodoc:
       #
       # Examples:
       #
-      #   should_have_indices :email, :name, [:commentable_type, :commentable_id]
-      #   should_have_index :age
-      #   should_have_index :ssn, :unique => true
+      #   should_have_db_indices :email, :name, [:commentable_type, :commentable_id]
+      #   should_have_db_index :age
+      #   should_have_db_index :ssn, :unique => true
       #
-      def should_have_indices(*columns)
+      def should_have_db_indices(*columns)
         unique = get_options!(columns, :unique)
         klass  = model_class
         
         columns.each do |column|
-          matcher = have_index(column).unique(unique)
+          matcher = have_db_index(column).unique(unique)
           should matcher.description do
             assert_accepts(matcher, klass.new)
           end
         end
       end
 
-      alias_method :should_have_index, :should_have_indices
+      alias_method :should_have_db_index, :should_have_db_indices
+
+      # Deprecated. See should_have_db_index
+      def should_have_index(*args)
+        warn "[DEPRECATION] should_have_index is deprecated. " <<
+             "Use should_have_db_index instead."
+        should_have_db_index(*args)
+      end
+
+      # Deprecated. See should_have_db_indices
+      def should_have_indices(*args)
+        warn "[DEPRECATION] should_have_indices is deprecated. " <<
+             "Use should_have_db_indices instead."
+        should_have_db_indices(*args)
+      end
 
       # Ensures that the model cannot be saved if one of the attributes listed is not accepted.
       #

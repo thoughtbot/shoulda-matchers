@@ -1,10 +1,10 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
-class HaveIndexMatcherTest < Test::Unit::TestCase # :nodoc:
+class HaveDbIndexMatcherTest < Test::Unit::TestCase # :nodoc:
   
-  context "have_index" do
+  context "have_db_index" do
     setup do
-      @matcher = have_index(:age)
+      @matcher = have_db_index(:age)
     end
 
     should "accept an existing index" do
@@ -22,9 +22,9 @@ class HaveIndexMatcherTest < Test::Unit::TestCase # :nodoc:
     end
   end
   
-  context "have_index with unique option" do
+  context "have_db_index with unique option" do
     setup do
-      @matcher = have_index(:ssn).unique(true)
+      @matcher = have_db_index(:ssn).unique(true)
     end
 
     should "accept an index of correct unique" do
@@ -46,9 +46,9 @@ class HaveIndexMatcherTest < Test::Unit::TestCase # :nodoc:
     end
   end
   
-  context "have_index on multiple columns" do
+  context "have_db_index on multiple columns" do
     setup do
-      @matcher = have_index([:geocodable_type, :geocodable_id])
+      @matcher = have_db_index([:geocodable_type, :geocodable_id])
     end
 
     should "accept an existing index" do
