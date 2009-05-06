@@ -71,8 +71,6 @@ module Shoulda # :nodoc:
       #
       # Options:
       # * <tt>:class</tt> - The expected class of the instance variable being checked.
-      # * <tt>:equals</tt> - [DEPRECATED] A string which is evaluated and
-      #   compared for equality with the instance variable being checked.
       #
       # If a block is passed, the assigned variable is expected to be equal to
       # the return value of that block.
@@ -83,25 +81,11 @@ module Shoulda # :nodoc:
       #   should_assign_to :user, :class => User
       #   should_assign_to(:user) { @user }
       def should_assign_to(*names, &block)
-        opts = names.extract_options!
-        if opts[:equals]
-          warn "[DEPRECATION] should_assign_to :var, :equals => 'val' " <<
-               "is deprecated. Use should_assign_to(:var) { 'val' } instead."
-        end
+        klass = get_options!(names, :class)
         names.each do |name|
-          matcher = assign_to(name).with_kind_of(opts[:class])
-          test_name = matcher.description
-          test_name << " which is equal to #{opts[:equals]}" if opts[:equals]
-          should test_name do
-            if opts[:equals]
-              instantiate_variables_from_assigns do
-                expected_value = eval(opts[:equals],
-                                      self.send(:binding),
-                                      __FILE__,
-                                      __LINE__)
-                matcher = matcher.with(expected_value)
-              end
-            elsif block
+          matcher = assign_to(name).with_kind_of(klass)
+          should matcher.description do
+            if block
               expected_value = instance_eval(&block)
               matcher = matcher.with(expected_value)
             end
@@ -158,34 +142,13 @@ module Shoulda # :nodoc:
       #
       #   should_set_session(:user_id) { @user.id }
       #   should_set_session(:message) { "Free stuff" }
-      def should_set_session(key, expected = nil, &block)
+      def should_set_session(key, &block)
         matcher = set_session(key)
-        if expected
-          warn "[DEPRECATION] should_set_session :key, 'val' is deprecated. " <<
-               "Use should_set_session(:key) { 'val' } instead."
-        end
         should matcher.description do
-          if expected
-            instantiate_variables_from_assigns do
-              expected_value = eval(expected, 
-                                    self.send(:binding),
-                                    __FILE__,
-                                    __LINE__)
-              matcher = matcher.to(expected_value)
-            end
-          else
-            expected_value = instance_eval(&block)
-            matcher = matcher.to(expected_value)
-          end
+          expected_value = instance_eval(&block)
+          matcher = matcher.to(expected_value)
           assert_accepts matcher, @controller
         end
-      end
-
-      # Deprecated. See should_set_session
-      def should_return_from_session(key, expected)
-        warn "[DEPRECATION] should_return_from_session is deprecated. " <<
-             "Use should_set_session instead."
-        should_set_session(key, expected)
       end
 
       # Macro that creates a test asserting that the controller rendered the given template.
@@ -230,19 +193,9 @@ module Shoulda # :nodoc:
       #
       #   should_redirect_to("the user's profile") { user_url(@user) }
       def should_redirect_to(description, &block)
-        unless block
-          warn "[DEPRECATION] should_redirect_to without a block is " <<
-               "deprecated. Use should_redirect_to('somewhere') { } instead."
-        end
         should "redirect to #{description}" do
-          if block
-            url = instance_eval(&block)
-          else
-            instantiate_variables_from_assigns do
-              url = eval(description, self.send(:binding), __FILE__, __LINE__)
-            end
-          end
-          assert_redirected_to url
+          expected_url = instance_eval(&block)
+          assert_redirected_to expected_url
         end
       end
 

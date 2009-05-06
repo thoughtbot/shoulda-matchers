@@ -6,7 +6,7 @@ class TagTest < ActiveSupport::TestCase
 
   should_ensure_length_at_least :name, 2
 
-  should_protect_attributes :secret
+  should_not_allow_mass_assignment_of :secret
   should_allow_mass_assignment_of :name
 
   should_fail do

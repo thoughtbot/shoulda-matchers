@@ -56,7 +56,6 @@ class UserTest < ActiveSupport::TestCase
   should_have_db_column :email, :type => "string", :default => nil, :precision => nil, :limit    => 255,
                                 :null => true,     :scale   => nil
   should_validate_acceptance_of :eula
-  should_require_acceptance_of :eula
   should_validate_uniqueness_of :email, :scoped_to => :name, :case_sensitive => false
 
   should_ensure_length_is :ssn, 9, :message => "Social Security Number is not the right length"

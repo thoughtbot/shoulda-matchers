@@ -48,13 +48,6 @@ module Shoulda # :nodoc:
         end
       end
       
-      # Deprecated. See should_validate_presence_of
-      def should_require_attributes(*attributes)
-        warn "[DEPRECATION] should_require_attributes is deprecated. " <<
-             "Use should_validate_presence_of instead."
-        should_validate_presence_of(*attributes)
-      end
-
       # Ensures that the model cannot be saved if one of the attributes listed is not unique.
       # Requires an existing record
       #
@@ -90,13 +83,6 @@ module Shoulda # :nodoc:
         end
       end
 
-      # Deprecated. See should_validate_uniqueness_of
-      def should_require_unique_attributes(*attributes)
-        warn "[DEPRECATION] should_require_unique_attributes is deprecated. " <<
-             "Use should_validate_uniqueness_of instead."
-        should_validate_uniqueness_of(*attributes)
-      end
-
       # Ensures that the attribute can be set on mass update.
       #
       #   should_allow_mass_assignment_of :first_name, :last_name
@@ -127,13 +113,6 @@ module Shoulda # :nodoc:
             assert_rejects matcher, klass.new
           end
         end
-      end
-
-      # Deprecated. See should_not_allow_mass_assignment_of
-      def should_protect_attributes(*attributes)
-        warn "[DEPRECATION] should_protect_attributes is deprecated. " <<
-             "Use should_not_allow_mass_assignment_of instead."
-        should_not_allow_mass_assignment_of(*attributes)
       end
 
       # Ensures that the attribute cannot be changed once the record has been created.
@@ -333,13 +312,6 @@ module Shoulda # :nodoc:
             assert_accepts matcher, get_instance_of(klass)
           end
         end
-      end
-
-      # Deprecated. See should_validate_numericality_of
-      def should_only_allow_numeric_values_for(*attributes)
-        warn "[DEPRECATION] should_only_allow_numeric_values_for is " <<
-             "deprecated. Use should_validate_numericality_of instead."
-        should_validate_numericality_of(*attributes)
       end
 
       # Ensures that the has_many relationship exists.  Will also test that the
@@ -546,13 +518,6 @@ module Shoulda # :nodoc:
             assert_accepts matcher, get_instance_of(klass)
           end
         end
-      end
-
-      # Deprecated. See should_validate_uniqueness_of
-      def should_require_acceptance_of(*attributes)
-        warn "[DEPRECATION] should_require_acceptance_of is deprecated. " <<
-             "Use should_validate_acceptance_of instead."
-        should_validate_acceptance_of(*attributes)
       end
 
       # Ensures that the model has a method named scope_name that returns a NamedScope object with the
