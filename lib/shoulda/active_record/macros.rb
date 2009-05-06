@@ -38,12 +38,11 @@ module Shoulda # :nodoc:
       #
       def should_validate_presence_of(*attributes)
         message = get_options!(attributes, :message)
-        klass = described_type
 
         attributes.each do |attribute|
           matcher = validate_presence_of(attribute).with_message(message)
           should matcher.description do
-            assert_accepts(matcher, get_instance_of(klass))
+            assert_accepts(matcher, subject)
           end
         end
       end
@@ -71,14 +70,12 @@ module Shoulda # :nodoc:
         scope = [*scope].compact
         case_sensitive = true if case_sensitive.nil?
 
-        klass = described_type
-
         attributes.each do |attribute|
           matcher = validate_uniqueness_of(attribute).
             with_message(message).scoped_to(scope)
           matcher = matcher.case_insensitive unless case_sensitive
           should matcher.description do
-            assert_accepts(matcher, get_instance_of(klass))
+            assert_accepts(matcher, subject)
           end
         end
       end
@@ -89,12 +86,11 @@ module Shoulda # :nodoc:
       #
       def should_allow_mass_assignment_of(*attributes)
         get_options!(attributes)
-        klass = described_type
 
         attributes.each do |attribute|
           matcher = allow_mass_assignment_of(attribute)
           should matcher.description do
-            assert_accepts matcher, klass.new
+            assert_accepts matcher, subject
           end
         end
       end
@@ -105,12 +101,11 @@ module Shoulda # :nodoc:
       #
       def should_not_allow_mass_assignment_of(*attributes)
         get_options!(attributes)
-        klass = described_type
 
         attributes.each do |attribute|
           matcher = allow_mass_assignment_of(attribute)
           should "not #{matcher.description}" do
-            assert_rejects matcher, klass.new
+            assert_rejects matcher, subject
           end
         end
       end
@@ -121,12 +116,11 @@ module Shoulda # :nodoc:
       #
       def should_have_readonly_attributes(*attributes)
         get_options!(attributes)
-        klass = described_type
 
         attributes.each do |attribute|
           matcher = have_readonly_attribute(attribute)
           should matcher.description do
-            assert_accepts matcher, klass.new
+            assert_accepts matcher, subject
           end
         end
       end
@@ -146,11 +140,10 @@ module Shoulda # :nodoc:
       #
       def should_not_allow_values_for(attribute, *bad_values)
         message = get_options!(bad_values, :message)
-        klass = described_type
         bad_values.each do |value|
           matcher = allow_value(value).for(attribute).with_message(message)
           should "not #{matcher.description}" do
-            assert_rejects matcher, get_instance_of(klass)
+            assert_rejects matcher, subject
           end
         end
       end
@@ -166,11 +159,10 @@ module Shoulda # :nodoc:
       #
       def should_allow_values_for(attribute, *good_values)
         get_options!(good_values)
-        klass = described_type
         good_values.each do |value|
           matcher = allow_value(value).for(attribute)
           should matcher.description do
-            assert_accepts matcher, get_instance_of(klass)
+            assert_accepts matcher, subject
           end
         end
       end
@@ -194,8 +186,6 @@ module Shoulda # :nodoc:
         short_message, long_message = get_options!([opts], 
                                                    :short_message,
                                                    :long_message)
-        klass = described_type
-
         matcher = ensure_length_of(attribute).
           is_at_least(range.first).
           with_short_message(short_message).
@@ -203,7 +193,7 @@ module Shoulda # :nodoc:
           with_long_message(long_message)
 
         should matcher.description do
-          assert_accepts matcher, get_instance_of(klass)
+          assert_accepts matcher, subject
         end
       end
 
@@ -222,14 +212,13 @@ module Shoulda # :nodoc:
       #
       def should_ensure_length_at_least(attribute, min_length, opts = {})
         short_message = get_options!([opts], :short_message)
-        klass = described_type
 
         matcher = ensure_length_of(attribute).
           is_at_least(min_length).
           with_short_message(short_message)
 
         should matcher.description do
-          assert_accepts matcher, get_instance_of(klass)
+          assert_accepts matcher, subject
         end
       end
 
@@ -248,13 +237,12 @@ module Shoulda # :nodoc:
       #
       def should_ensure_length_is(attribute, length, opts = {})
         message = get_options!([opts], :message)
-        klass   = described_type
         matcher = ensure_length_of(attribute).
           is_equal_to(length).
           with_message(message)
 
         should matcher.description do
-          assert_accepts matcher, get_instance_of(klass)
+          assert_accepts matcher, subject
         end
       end
 
@@ -278,14 +266,13 @@ module Shoulda # :nodoc:
                                                           :message,
                                                           :low_message,
                                                           :high_message)
-        klass = described_type
         matcher = ensure_inclusion_of(attribute).
           in_range(range).
           with_message(message).
           with_low_message(low_message).
           with_high_message(high_message)
         should matcher.description do
-          assert_accepts matcher, get_instance_of(klass)
+          assert_accepts matcher, subject
         end
       end
 
@@ -304,12 +291,11 @@ module Shoulda # :nodoc:
       #
       def should_validate_numericality_of(*attributes)
         message = get_options!(attributes, :message)
-        klass = described_type
         attributes.each do |attribute|
           matcher = validate_numericality_of(attribute).
             with_message(message)
           should matcher.description do
-            assert_accepts matcher, get_instance_of(klass)
+            assert_accepts matcher, subject
           end
         end
       end
@@ -329,11 +315,10 @@ module Shoulda # :nodoc:
       #
       def should_have_many(*associations)
         through, dependent = get_options!(associations, :through, :dependent)
-        klass = described_type
         associations.each do |association|
           matcher = have_many(association).through(through).dependent(dependent)
           should matcher.description do
-            assert_accepts(matcher, klass.new)
+            assert_accepts(matcher, subject)
           end
         end
       end
@@ -350,11 +335,10 @@ module Shoulda # :nodoc:
       #
       def should_have_one(*associations)
         dependent, through = get_options!(associations, :dependent, :through)
-        klass = described_type
         associations.each do |association|
           matcher = have_one(association).dependent(dependent).through(through)
           should matcher.description do
-            assert_accepts(matcher, klass.new)
+            assert_accepts(matcher, subject)
           end
         end
       end
@@ -366,12 +350,11 @@ module Shoulda # :nodoc:
       #
       def should_have_and_belong_to_many(*associations)
         get_options!(associations)
-        klass = described_type
 
         associations.each do |association|
           matcher = have_and_belong_to_many(association)
           should matcher.description do
-            assert_accepts(matcher, klass.new)
+            assert_accepts(matcher, subject)
           end
         end
       end
@@ -382,11 +365,10 @@ module Shoulda # :nodoc:
       #
       def should_belong_to(*associations)
         dependent = get_options!(associations, :dependent)
-        klass = described_type
         associations.each do |association|
           matcher = belong_to(association).dependent(dependent)
           should matcher.description do
-            assert_accepts(matcher, klass.new)
+            assert_accepts(matcher, subject)
           end
         end
       end
@@ -436,7 +418,6 @@ module Shoulda # :nodoc:
         column_type, precision, limit, default, null, scale, sql_type = 
           get_options!(columns, :type, :precision, :limit,
                                 :default, :null, :scale, :sql_type)
-        klass = described_type
         columns.each do |name|
           matcher = have_db_column(name).
                       of_type(column_type).
@@ -444,7 +425,7 @@ module Shoulda # :nodoc:
                                    :default   => default,   :null     => null,
                                    :scale     => scale,     :sql_type => sql_type)
           should matcher.description do
-            assert_accepts(matcher, klass.new)
+            assert_accepts(matcher, subject)
           end
         end
       end
@@ -469,12 +450,11 @@ module Shoulda # :nodoc:
       #
       def should_have_db_indices(*columns)
         unique = get_options!(columns, :unique)
-        klass  = described_type
         
         columns.each do |column|
           matcher = have_db_index(column).unique(unique)
           should matcher.description do
-            assert_accepts(matcher, klass.new)
+            assert_accepts(matcher, subject)
           end
         end
       end
@@ -510,12 +490,11 @@ module Shoulda # :nodoc:
       #
       def should_validate_acceptance_of(*attributes)
         message = get_options!(attributes, :message)
-        klass = described_type
 
         attributes.each do |attribute|
           matcher = validate_acceptance_of(attribute).with_message(message)
           should matcher.description do
-            assert_accepts matcher, get_instance_of(klass)
+            assert_accepts matcher, subject
           end
         end
       end
@@ -556,10 +535,9 @@ module Shoulda # :nodoc:
       #   end
       #
       def should_have_named_scope(scope_call, find_options = nil)
-        klass = described_type
         matcher = have_named_scope(scope_call).finding(find_options)
         should matcher.description do
-          assert_accepts matcher.in_context(self), klass.new
+          assert_accepts matcher.in_context(self), subject
         end
       end
     end
