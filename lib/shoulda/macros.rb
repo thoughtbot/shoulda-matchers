@@ -65,7 +65,46 @@ module Shoulda # :nodoc:
       end
     end
 
+    # Macro that creates a test asserting that a record of the given class was
+    # created.
+    #
+    # Example:
+    #
+    #   context "creating a post" do
+    #     setup { Post.create(post_attributes) }
+    #     should_create :post
+    #   end
+    def should_create(class_name)
+      should_change_record_count_of(class_name, 1, 'create')
+    end
+
+    # Macro that creates a test asserting that a record of the given class was
+    # destroyed.
+    #
+    # Example:
+    #
+    #   context "destroying a post" do
+    #     setup { Post.first.destroy }
+    #     should_destroy :post
+    #   end
+    def should_destroy(class_name)
+      should_change_record_count_of(class_name, -1, 'destroy')
+    end
+
     private
+
+    def should_change_record_count_of(class_name, amount, action) # :nodoc:
+      klass = class_name.to_s.camelize.constantize
+      before = lambda do
+        @_before_change_record_count = klass.count
+      end
+      human_name = class_name.to_s.humanize.downcase
+      should "#{action} a #{human_name}", :before => before do
+        assert_equal @_before_change_record_count + amount,
+                     klass.count,
+                     "Expected to #{action} a #{human_name}"
+      end
+    end
 
     include Shoulda::Private
   end

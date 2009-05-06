@@ -4,3 +4,4 @@ coverage
 .svn/
 pkg
 *.swp
+tags

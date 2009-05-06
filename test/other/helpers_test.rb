@@ -238,4 +238,68 @@ class HelpersTest < Test::Unit::TestCase # :nodoc:
       end
     end
   end
+
+  context "given one treat exists and one post exists" do
+    setup do
+      Treat.create!
+      Post.create!(:title => 'title', :body => 'body', :user_id => 1)
+    end
+
+    teardown do
+      Treat.delete_all
+      Post.delete_all
+    end
+
+    context "creating a treat" do
+      setup do
+        Treat.create!
+      end
+
+      should_create :treat
+      should_fail do
+        should_create :post
+      end
+    end
+
+    context "creating a treat and a post" do
+      setup do
+        Treat.create!
+        Post.create!(:title => 'title 2', :body => 'body', :user_id => 1)
+      end
+
+      should_create :treat
+      should_create :post
+    end
+
+    context "destroying a treat" do
+      setup do
+        Treat.first.destroy
+      end
+
+      should_destroy :treat
+      should_fail do
+        should_destroy :post
+      end
+    end
+
+    context "destroying a treat and a post" do
+      setup do
+        Treat.first.destroy
+        Post.first.destroy
+      end
+
+      should_destroy :treat
+      should_destroy :post
+    end
+
+    context "doing nothing" do
+      should_fail do
+        should_create :treat
+      end
+
+      should_fail do
+        should_destroy :treat
+      end
+    end
+  end
 end
