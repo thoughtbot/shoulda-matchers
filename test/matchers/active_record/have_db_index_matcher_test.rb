@@ -70,5 +70,22 @@ class HaveDbIndexMatcherTest < ActiveSupport::TestCase # :nodoc:
       assert_rejects @matcher, Geocoding.new
     end
   end
+
+  should "join columns with and describing multiple columns" do
+    assert_match /on columns user_id and post_id/,
+      have_db_index([:user_id, :post_id]).description
+  end
+
+  should "describe a unique index as unique" do
+    assert_match /a unique index/, have_db_index(:user_id).unique(true).description
+  end
+
+  should "describe a non-unique index as non-unique" do
+    assert_match /a non-unique index/, have_db_index(:user_id).unique(false).description
+  end
+
+  should "not describe an index's uniqueness when it isn't important" do
+    assert_no_match /unique/, have_db_index(:user_id).description
+  end
   
 end

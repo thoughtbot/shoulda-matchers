@@ -47,7 +47,7 @@ module Shoulda # :nodoc:
         end
 
         def description
-          "have a #{index_type} index on columns #{@columns}"
+          "have a #{index_type} index on columns #{@columns.join(' and ')}"
         end
 
         protected
@@ -88,7 +88,14 @@ module Shoulda # :nodoc:
         end
         
         def index_type
-          @unique ? "unique" : "non-unique"
+          case @unique
+          when nil
+            ''
+          when false
+            'non-unique'
+          else
+            'unique'
+          end
         end
         
         def normalize_columns_to_array(columns)
