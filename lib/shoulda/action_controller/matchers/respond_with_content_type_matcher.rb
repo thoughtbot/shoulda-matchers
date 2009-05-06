@@ -30,6 +30,10 @@ module Shoulda # :nodoc:
             content_type
           end
         end
+
+        def description
+          "respond with content type of #{@content_type}"
+        end
         
         def matches?(controller)
           @controller = controller

@@ -144,8 +144,8 @@ module Shoulda # :nodoc:
       #   should_respond_with_content_type :rss
       #   should_respond_with_content_type /rss/
       def should_respond_with_content_type(content_type)
-        should "respond with content type of #{content_type}" do
-          matcher = respond_with_content_type(content_type)
+        matcher = respond_with_content_type(content_type)
+        should matcher.description do
           assert_accepts matcher, @controller
         end
       end
