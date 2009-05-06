@@ -170,6 +170,14 @@ module Shoulda
         context.build
       end
     end
+
+    # Returns the class being tested, as determined by the test class name.
+    #
+    #   class UserTest; described_type; end
+    #   # => User
+    def described_type
+      self.name.gsub(/Test$/, '').constantize
+    end
   end
 
   class Context # :nodoc:

@@ -142,4 +142,12 @@ class ContextTest < ActiveSupport::TestCase # :nodoc:
       should_eventually "only print this statement once for a should_eventually"
     end
   end
+
+  class ::SomeModel; end
+  context "described_type" do
+    should "sniff the class constant from the test class" do
+      self.class.expects(:name).returns("SomeModelTest")
+      assert_equal SomeModel, self.class.described_type
+    end
+  end
 end

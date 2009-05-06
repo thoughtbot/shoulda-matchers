@@ -9,12 +9,5 @@ module Shoulda # :nodoc:
       raise ArgumentError, "Unsupported options given: #{opts.keys.join(', ')}" unless opts.keys.empty?
       return *ret
     end
-
-    # Returns the model class constant, as determined by the test class name.
-    #
-    #   class TestUser; model_class; end => User
-    def model_class
-      self.name.gsub(/Test$/, '').constantize
-    end
   end
 end

@@ -23,12 +23,4 @@ class PrivateHelpersTest < ActiveSupport::TestCase # :nodoc:
       end
     end
   end
-
-  class ::SomeModel; end
-  context "model_class" do
-    should "sniff the class constant from the test class" do
-      self.expects(:name).returns("SomeModelTest")
-      assert_equal SomeModel, model_class
-    end
-  end
 end
