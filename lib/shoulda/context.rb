@@ -180,6 +180,43 @@ module Shoulda
     end
   end
 
+  module InstanceMethods
+    # Returns an instance of the class under test.
+    #
+    #   class UserTest
+    #     should "be a user" do
+    #       assert_kind_of User, subject # passes
+    #     end
+    #   end
+    #
+    # If an instance variable exists named after the described class, that
+    # instance variable will be used as the subject.
+    #
+    #   class UserTest
+    #     should "be the existing user" do
+    #       @user = User.new
+    #       assert_equal @user, subject # passes
+    #     end
+    #   end
+    def subject
+      get_instance_of(self.class.described_type)
+    end
+
+    def get_instance_of(object_or_klass) # :nodoc:
+      if object_or_klass.is_a?(Class)
+        klass = object_or_klass
+        instance_variable_get("@#{instance_variable_name_for(klass)}") || klass.new
+      else
+        object_or_klass
+      end
+    end
+
+    def instance_variable_name_for(klass) # :nodoc:
+      klass.to_s.split('::').last.underscore
+    end
+
+  end
+
   class Context # :nodoc:
 
     attr_accessor :name               # my name

@@ -144,10 +144,23 @@ class ContextTest < ActiveSupport::TestCase # :nodoc:
   end
 
   class ::SomeModel; end
-  context "described_type" do
-    should "sniff the class constant from the test class" do
-      self.class.expects(:name).returns("SomeModelTest")
+
+  context "given a test named after a class" do
+    setup do
+      self.class.stubs(:name).returns("SomeModelTest")
+    end
+
+    should "determine the described type" do
       assert_equal SomeModel, self.class.described_type
+    end
+
+    should "return a new instance of the described type as the subject if none exists" do
+      assert_kind_of SomeModel, subject
+    end
+
+    should "return an existing instance of the described type as the subject" do
+      @some_model = SomeModel.new
+      assert_equal @some_model, subject
     end
   end
 end

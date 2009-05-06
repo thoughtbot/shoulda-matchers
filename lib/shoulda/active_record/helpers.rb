@@ -8,19 +8,6 @@ module Shoulda # :nodoc:
         end
       end
 
-      def get_instance_of(object_or_klass)
-        if object_or_klass.is_a?(Class)
-          klass = object_or_klass
-          instance_variable_get("@#{instance_variable_name_for(klass)}") || klass.new
-        else
-          object_or_klass
-        end
-      end
-
-      def instance_variable_name_for(klass)
-        klass.to_s.split('::').last.underscore
-      end
-
       # Helper method that determines the default error message used by Active
       # Record.  Works for both existing Rails 2.1 and Rails 2.2 with the newly
       # introduced I18n module used for localization.
