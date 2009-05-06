@@ -349,10 +349,10 @@ module Shoulda # :nodoc:
       #   should_have_one :god # unless hindu
       #
       def should_have_one(*associations)
-        dependent = get_options!(associations, :dependent)
+        dependent, through = get_options!(associations, :dependent, :through)
         klass = model_class
         associations.each do |association|
-          matcher = have_one(association).dependent(dependent)
+          matcher = have_one(association).dependent(dependent).through(through)
           should matcher.description do
             assert_accepts(matcher, klass.new)
           end

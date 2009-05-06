@@ -6,6 +6,8 @@ class User < ActiveRecord::Base
   has_many :friends, :through => :friendships
 
   has_one :address, :as => :addressable, :dependent => :destroy
+  has_one :registration
+  has_one :profile, :through => :registration
 
   named_scope :old,      :conditions => "age > 50"
   named_scope :eighteen, :conditions => { :age => 18 }

@@ -133,7 +133,7 @@ module Shoulda # :nodoc:
 
         def through_association_exists?
           if through_reflection.nil?
-            "#{model_class.name} does not have any relationship to #{@through}"
+            @missing = "#{model_class.name} does not have any relationship to #{@through}"
             false
           else
             true
@@ -142,10 +142,10 @@ module Shoulda # :nodoc:
 
         def through_association_correct?
           if @through == reflection.options[:through]
-            "Expected #{model_class.name} to have #{@name} through #{@through}, " <<
-              " but got it through #{reflection.options[:through]}"
             true
           else
+            @missing = "Expected #{model_class.name} to have #{@name} through #{@through}, " <<
+              "but got it through #{reflection.options[:through]}"
             false
           end
         end

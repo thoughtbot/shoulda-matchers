@@ -66,4 +66,11 @@ class UserTest < ActiveSupport::TestCase
   should_fail do
     should_not_allow_mass_assignment_of :name, :age
   end
+
+  should_have_one :profile, :through => :registration
+
+  should_fail do
+    should_have_one :profile, :through => :interview
+    should_have_one :address, :through => :registration
+  end
 end

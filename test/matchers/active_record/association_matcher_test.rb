@@ -126,7 +126,9 @@ class AssociationMatcherTest < ActiveSupport::TestCase # :nodoc:
       define_model :parent do
         has_many :children
       end
-      assert_rejects @matcher.through(:conceptions), Parent.new
+      assert_rejects @matcher.through(:conceptions),
+        Parent.new,
+        :message => /does not have any relationship to conceptions/
     end
 
     should "reject an association that has the wrong :through option" do
@@ -137,9 +139,12 @@ class AssociationMatcherTest < ActiveSupport::TestCase # :nodoc:
       end
       define_model :parent do
         has_many :conceptions
+        has_many :relationships
         has_many :children, :through => :conceptions
       end
-      assert_rejects @matcher.through(:relationships), Parent.new
+      assert_rejects @matcher.through(:relationships),
+                     Parent.new,
+                     :message => /through relationships, but got it through conceptions/
     end
 
     should "accept an association with a valid :dependent option" do
