@@ -25,10 +25,6 @@ module Shoulda # :nodoc:
 
       # Ensures that the model cannot be saved if one of the attributes listed is not present.
       #
-      # If an instance variable has been created in the setup named after the
-      # model being tested, then this method will use that.  Otherwise, it will
-      # create a new instance to test against.
-      #
       # Options:
       # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
       #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages.blank')</tt>
@@ -127,10 +123,6 @@ module Shoulda # :nodoc:
 
       # Ensures that the attribute cannot be set to the given values
       #
-      # If an instance variable has been created in the setup named after the
-      # model being tested, then this method will use that.  Otherwise, it will
-      # create a new instance to test against.
-      #
       # Options:
       # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
       #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages.invalid')</tt>
@@ -150,10 +142,6 @@ module Shoulda # :nodoc:
 
       # Ensures that the attribute can be set to the given values.
       #
-      # If an instance variable has been created in the setup named after the
-      # model being tested, then this method will use that.  Otherwise, it will
-      # create a new instance to test against.
-      #
       # Example:
       #   should_allow_values_for :isbn, "isbn 1 2345 6789 0", "ISBN 1-2345-6789-0"
       #
@@ -168,10 +156,6 @@ module Shoulda # :nodoc:
       end
 
       # Ensures that the length of the attribute is in the given range
-      #
-      # If an instance variable has been created in the setup named after the
-      # model being tested, then this method will use that.  Otherwise, it will
-      # create a new instance to test against.
       #
       # Options:
       # * <tt>:short_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
@@ -199,10 +183,6 @@ module Shoulda # :nodoc:
 
       # Ensures that the length of the attribute is at least a certain length
       #
-      # If an instance variable has been created in the setup named after the
-      # model being tested, then this method will use that.  Otherwise, it will
-      # create a new instance to test against.
-      #
       # Options:
       # * <tt>:short_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
       #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages.too_short') % min_length</tt>
@@ -224,10 +204,6 @@ module Shoulda # :nodoc:
 
       # Ensures that the length of the attribute is exactly a certain length
       #
-      # If an instance variable has been created in the setup named after the
-      # model being tested, then this method will use that.  Otherwise, it will
-      # create a new instance to test against.
-      #
       # Options:
       # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
       #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages.wrong_length') % length</tt>
@@ -247,10 +223,6 @@ module Shoulda # :nodoc:
       end
 
       # Ensure that the attribute is in the range specified
-      #
-      # If an instance variable has been created in the setup named after the
-      # model being tested, then this method will use that.  Otherwise, it will
-      # create a new instance to test against.
       #
       # Options:
       # * <tt>:low_message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
@@ -277,10 +249,6 @@ module Shoulda # :nodoc:
       end
 
       # Ensure that the attribute is numeric
-      #
-      # If an instance variable has been created in the setup named after the
-      # model being tested, then this method will use that.  Otherwise, it will
-      # create a new instance to test against.
       #
       # Options:
       # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
@@ -476,10 +444,6 @@ module Shoulda # :nodoc:
       end
 
       # Ensures that the model cannot be saved if one of the attributes listed is not accepted.
-      #
-      # If an instance variable has been created in the setup named after the
-      # model being tested, then this method will use that.  Otherwise, it will
-      # create a new instance to test against.
       #
       # Options:
       # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.

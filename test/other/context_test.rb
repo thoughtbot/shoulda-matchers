@@ -162,5 +162,28 @@ class ContextTest < ActiveSupport::TestCase # :nodoc:
       @some_model = SomeModel.new
       assert_equal @some_model, subject
     end
+
+    context "with an explicit subject block" do
+      setup { @expected = SomeModel.new }
+      subject { @expected }
+      should "return the result of the block as the subject" do
+        assert_equal @expected, subject
+      end
+    end
+  end
+end
+
+class Subject; end
+
+class SubjectTest < ActiveSupport::TestCase
+
+  def setup
+    @expected = Subject.new
+  end
+
+  subject { @expected }
+
+  should "return a specified subject" do
+    assert_equal @expected, subject
   end
 end

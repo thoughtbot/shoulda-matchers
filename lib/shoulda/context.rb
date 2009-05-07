@@ -178,6 +178,22 @@ module Shoulda
     def described_type
       self.name.gsub(/Test$/, '').constantize
     end
+
+    # Sets the return value of the subject instance method:
+    #
+    #   class UserTest < Test::Unit::TestCase
+    #     subject { User.first }
+    #
+    #     # uses the existing user
+    #     should_validate_uniqueness_of :email
+    #   end
+    def subject(&block)
+      @subject_block = block
+    end
+
+    def subject_block # :nodoc:
+      @subject_block
+    end
   end
 
   module InstanceMethods
@@ -186,6 +202,15 @@ module Shoulda
     #   class UserTest
     #     should "be a user" do
     #       assert_kind_of User, subject # passes
+    #     end
+    #   end
+    #
+    # The subject can be explicitly set using the subject class method:
+    #
+    #   class UserTest
+    #     subject { User.first }
+    #     should "be an existing user" do
+    #       assert !subject.new_record? # uses the first user
     #     end
     #   end
     #
@@ -198,8 +223,19 @@ module Shoulda
     #       assert_equal @user, subject # passes
     #     end
     #   end
+    #
+    # The subject is used by all macros that require an instance of the class
+    # being tested.
     def subject
-      get_instance_of(self.class.described_type)
+      if subject_block
+        instance_eval(&subject_block)
+      else
+        get_instance_of(self.class.described_type)
+      end
+    end
+
+    def subject_block # :nodoc:
+      (@shoulda_context && @shoulda_context.subject_block) || self.class.subject_block
     end
 
     def get_instance_of(object_or_klass) # :nodoc:
@@ -214,7 +250,6 @@ module Shoulda
     def instance_variable_name_for(klass) # :nodoc:
       klass.to_s.split('::').last.underscore
     end
-
   end
 
   class Context # :nodoc:
@@ -226,6 +261,7 @@ module Shoulda
     attr_accessor :teardown_blocks    # blocks given via teardown methods
     attr_accessor :shoulds            # array of hashes representing the should statements
     attr_accessor :should_eventuallys # array of hashes representing the should eventually statements
+    attr_accessor :subject_block
 
     def initialize(name, parent, &blk)
       Shoulda.add_context(self)
@@ -269,6 +305,10 @@ module Shoulda
       self.should_eventuallys << { :name => name, :block => blk }
     end
 
+    def subject(&block)
+      self.subject_block = block
+    end
+
     def full_name
       parent_name = parent.full_name if am_subcontext?
       return [parent_name, name].join(" ").strip
@@ -291,6 +331,7 @@ module Shoulda
 
       context = self
       test_unit_class.send(:define_method, test_name) do
+        @shoulda_context = context
         begin
           context.run_parent_setup_blocks(self)
           should[:before].bind(self).call if should[:before]
