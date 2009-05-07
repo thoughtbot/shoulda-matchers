@@ -2,6 +2,8 @@ module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
     module Matchers
 
+      # Deprecated.
+      #
       # Ensures that the model has a method named scope_call that returns a
       # NamedScope object with the proxy options set to the options you supply.
       # scope_call can be either a symbol, or a Ruby expression in a String
@@ -43,6 +45,7 @@ module Shoulda # :nodoc:
       #   end
       #
       def have_named_scope(scope_call)
+        warn "[DEPRECATION] should_have_named_scope is deprecated."
         HaveNamedScopeMatcher.new(scope_call).in_context(self)
       end
 

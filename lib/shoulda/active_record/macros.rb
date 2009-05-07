@@ -463,6 +463,8 @@ module Shoulda # :nodoc:
         end
       end
 
+      # Deprecated.
+      #
       # Ensures that the model has a method named scope_name that returns a NamedScope object with the
       # proxy options set to the options you supply.  scope_name can be either a symbol, or a method
       # call which will be evaled against the model.  The eval'd method call has access to all the same
