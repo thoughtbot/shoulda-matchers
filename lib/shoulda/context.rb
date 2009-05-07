@@ -248,7 +248,8 @@ module Shoulda
         if instance = instance_variable_get(ivar)
           warn "[WARNING] Using #{ivar} as the subject. Future versions " <<
                "of Shoulda will require an explicit subject using the " <<
-               "subject class method."
+               "subject class method. Add this after your setup to avoid " <<
+               "this warning: subject { #{ivar} }"
           instance
         else
           klass.new
