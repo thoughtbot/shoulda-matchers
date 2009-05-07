@@ -11,7 +11,6 @@ module Shoulda # :nodoc:
     #       get :new
     #     end
     #
-    #     should_render_a_form
     #     should_render_page_with_metadata :title => /index/
     #
     #     should "do something else really cool" do
@@ -23,7 +22,10 @@ module Shoulda # :nodoc:
     module Macros
 
       # Macro that creates a test asserting that the rendered view contains a <form> element.
+      #
+      # Deprecated.
       def should_render_a_form
+        warn "[DEPRECATION] should_render_a_form is deprecated."
         should "display a form" do
           assert_select "form", true, "The template doesn't contain a <form> element"
         end

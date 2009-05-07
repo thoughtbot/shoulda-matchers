@@ -93,6 +93,7 @@ class PostsControllerTest < ActionController::TestCase
       setup { get :new, :user_id => users(:first) }
       should_render_without_layout
       should_not_set_the_flash
+      should_render_a_form
     end
 
     context "on POST to #create" do
