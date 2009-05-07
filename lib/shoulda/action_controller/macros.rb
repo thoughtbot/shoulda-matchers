@@ -24,31 +24,35 @@ module Shoulda # :nodoc:
     module Macros
       include Matchers
 
-      # Macro that creates a test asserting that the flash contains the given value.
-      # val can be a String, a Regex, or nil (indicating that the flash should not be set)
+      # Macro that creates a test asserting that the flash contains the given
+      # value. Expects a +String+ or +Regexp+.
+      #
+      # If the argument is +nil+, it will assert that the flash is not set.
+      # This behavior is deprecated.
       #
       # Example:
       #
       #   should_set_the_flash_to "Thank you for placing this order."
       #   should_set_the_flash_to /created/i
-      #   should_set_the_flash_to nil
       def should_set_the_flash_to(val)
-        matcher = set_the_flash.to(val)
         if val
+          matcher = set_the_flash.to(val)
           should matcher.description do
             assert_accepts matcher, @controller
           end
         else
-          should "not #{matcher.description}" do
-            assert_rejects matcher, @controller
-          end
+          warn "[DEPRECATION] should_set_the_flash_to nil is deprecated. " <<
+               "Use should_not_set_the_flash instead."
+          should_not_set_the_flash
         end
       end
 
-      # Macro that creates a test asserting that the flash is empty.  Same as
-      # <code>should_set_the_flash_to nil</code>
+      # Macro that creates a test asserting that the flash is empty.
       def should_not_set_the_flash
-        should_set_the_flash_to nil
+        matcher = set_the_flash
+        should "not #{matcher.description}" do
+          assert_rejects matcher, @controller
+        end
       end
 
       # Macro that creates a test asserting that filter_parameter_logging

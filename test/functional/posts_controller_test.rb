@@ -83,11 +83,16 @@ class PostsControllerTest < ActionController::TestCase
         should_render_with_layout :wide
       end
       should_assign_to :false_flag
+      should_set_the_flash_to nil
+      should_fail do
+        should_set_the_flash_to /.*/
+      end
     end
 
     context "on GET to #new" do
       setup { get :new, :user_id => users(:first) }
       should_render_without_layout
+      should_not_set_the_flash
     end
 
     context "on POST to #create" do
@@ -101,6 +106,11 @@ class PostsControllerTest < ActionController::TestCase
                                                              assigns(:post)) }
       should_fail do
         should_redirect_to('elsewhere') { user_posts_url(users(:first)) }
+      end
+
+      should_set_the_flash_to /success/
+      should_fail do
+        should_not_set_the_flash
       end
     end
   end
