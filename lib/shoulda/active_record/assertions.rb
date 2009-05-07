@@ -30,8 +30,8 @@ module Shoulda # :nodoc:
       #
       #   assert_good_value(User, :email, "user@example.com")
       #
-      #   @product = Product.new(:tangible => false)
-      #   assert_good_value(Product, :price, "0")
+      #   product = Product.new(:tangible => false)
+      #   assert_good_value(product, :price, "0")
       def assert_good_value(object_or_klass, attribute, value, error_message_to_avoid = nil)
         object = get_instance_of(object_or_klass)
         matcher = allow_value(value).
@@ -54,8 +54,8 @@ module Shoulda # :nodoc:
       #
       #   assert_bad_value(User, :email, "invalid")
       #
-      #   @product = Product.new(:tangible => true)
-      #   assert_bad_value(Product, :price, "0")
+      #   product = Product.new(:tangible => true)
+      #   assert_bad_value(product, :price, "0")
       def assert_bad_value(object_or_klass, attribute, value,
                            error_message_to_expect = nil)
         object = get_instance_of(object_or_klass)
