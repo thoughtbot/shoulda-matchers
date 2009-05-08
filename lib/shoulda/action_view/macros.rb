@@ -31,6 +31,8 @@ module Shoulda # :nodoc:
         end
       end
 
+      # Deprecated.
+      #
       # Macro that creates a test asserting that the rendered view contains the selected metatags.
       # Values can be string or Regexps.
       # Example:
@@ -42,6 +44,7 @@ module Shoulda # :nodoc:
       # Example:
       #   should_render_page_with_metadata :title => /index/
       def should_render_page_with_metadata(options)
+        warn "[DEPRECATION] should_render_page_with_metadata is deprecated."
         options.each do |key, value|
           should "have metatag #{key}" do
             if key.to_sym == :title
