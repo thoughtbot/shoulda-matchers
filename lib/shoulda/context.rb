@@ -59,7 +59,7 @@ module Shoulda
 
     def should(name, options = {}, &blk)
       if Shoulda.current_context
-        block_given? ? Shoulda.current_context.should(name, options, &blk) : Should.current_context.should_eventually(name)
+        block_given? ? Shoulda.current_context.should(name, options, &blk) : Shoulda.current_context.should_eventually(name)
       else
         context_name = self.name.gsub(/Test/, "")
         context = Shoulda::Context.new(context_name, self) do
