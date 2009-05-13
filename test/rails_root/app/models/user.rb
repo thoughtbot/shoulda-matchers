@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
   has_many :posts
   has_many :dogs, :foreign_key => :owner_id, :class_name => "Pets::Dog"
+  has_many :cats, :foreign_key => :owner_id, :class_name => "Pets::Cat"
 
   has_many :friendships
   has_many :friends, :through => :friendships

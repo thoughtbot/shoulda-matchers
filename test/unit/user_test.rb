@@ -5,6 +5,7 @@ class UserTest < ActiveSupport::TestCase
 
   should_have_many :posts
   should_have_many :dogs
+  should_have_many :cats
 
   should_have_many :friendships
   should_have_many :friends
