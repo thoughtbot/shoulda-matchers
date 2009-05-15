@@ -6,8 +6,8 @@ module Shoulda # :nodoc:
       #
       # Options:
       # * <tt>with_message</tt> - value the test expects to find in
-      #   <tt>errors.on(:attribute)</tt>. Regexp or string. Defaults to the
-      #   translation for :invalid.
+      #   <tt>errors.on(:attribute)</tt>. Regexp or string. If omitted,
+      #   the test looks for any errors in <tt>errors.on(:attribute)</tt>.
       #
       # Example:
       #   it { should_not allow_value('bad').for(:isbn) }
@@ -36,7 +36,6 @@ module Shoulda # :nodoc:
 
         def matches?(instance)
           @instance = instance
-          @expected_message ||= :invalid
           if Symbol === @expected_message
             @expected_message = default_error_message(@expected_message)
           end
@@ -62,7 +61,7 @@ module Shoulda # :nodoc:
           @instance.valid?
           @errors = @instance.errors.on(@attribute)
           @errors = [@errors] unless @errors.is_a?(Array)
-          errors_match_regexp? || errors_match_string?
+          @expected_message ? (errors_match_regexp? || errors_match_string?) : (@errors != [nil])
         end
 
         def errors_match_regexp?
@@ -84,7 +83,8 @@ module Shoulda # :nodoc:
         end
 
         def expectation
-          "errors to include #{@expected_message.inspect} " <<
+          "errors " <<
+          (@expected_message ? "to include #{@expected_message.inspect} " : "") <<
           "when #{@attribute} is set to #{@value.inspect}"
         end
 

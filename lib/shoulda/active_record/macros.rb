@@ -125,7 +125,8 @@ module Shoulda # :nodoc:
       #
       # Options:
       # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
-      #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages.invalid')</tt>
+      #   Regexp or string. If omitted, the test will pass if there is ANY error in
+      #   <tt>errors.on(:attribute)</tt>.
       #
       # Example:
       #   should_not_allow_values_for :isbn, "bad 1", "bad 2"

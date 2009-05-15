@@ -38,6 +38,9 @@ class UserTest < ActiveSupport::TestCase
 
   should_not_allow_values_for :email, "blah", "b lah"
   should_allow_values_for :email, "a@b.com", "asdf@asdf.com"
+  should_allow_values_for :age, 1, 10, 99
+  should_not_allow_values_for :age, "a", "-"
+  should_not_allow_values_for :ssn, "a", 1234567890
   should_ensure_length_in_range :email, 1..100
   should_ensure_value_in_range :age, 1..100, :low_message  => /greater/,
                                              :high_message => /less/
