@@ -13,10 +13,10 @@ module Shoulda # :nodoc:
       # * <tt>not_with(string to test against)</tt>
       #
       # Examples:
-      #   it { should validate_format_ofof(:name).
+      #   it { should validate_format_of(:name).
       #                 with('12345').
       #                 with_message(/is not optional/) }
-      #   it { should validate_format_ofof(:name).
+      #   it { should validate_format_of(:name).
       #                 not_with('12D45').
       #                 with_message(/is not optional/) }
       #
