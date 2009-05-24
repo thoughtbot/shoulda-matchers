@@ -36,10 +36,17 @@ module Shoulda # :nodoc:
       stmt << " to #{to.inspect}" if to
       stmt << " by #{by.inspect}" if by
 
-      before = lambda { @_before_should_change = block.bind(self).call }
+      if block_given?
+        code = block
+      else
+        warn "[DEPRECATION] should_change(expression, options) is deprecated. " <<
+             "Use should_change(description, options) { code } instead."
+        code = lambda { eval(description) }
+      end
+      before = lambda { @_before_should_change = code.bind(self).call }
       should stmt, :before => before do
         old_value = @_before_should_change
-        new_value = block.bind(self).call
+        new_value = code.bind(self).call
         assert_operator from, :===, old_value, "#{description} did not originally match #{from.inspect}" if from
         assert_not_equal old_value, new_value, "#{description} did not change" unless by == 0
         assert_operator to, :===, new_value, "#{description} was not changed to match #{to.inspect}" if to
@@ -60,9 +67,16 @@ module Shoulda # :nodoc:
     #     should_not_change("the number of posts") { Post.count }
     #   end
     def should_not_change(description, &block)
-      before = lambda { @_before_should_not_change = block.bind(self).call }
+      if block_given?
+        code = block
+      else
+        warn "[DEPRECATION] should_not_change(expression) is deprecated. " <<
+             "Use should_not_change(description) { code } instead."
+        code = lambda { eval(description) }
+      end
+      before = lambda { @_before_should_not_change = code.bind(self).call }
       should "not change #{description}", :before => before do
-        new_value = block.bind(self).call
+        new_value = code.bind(self).call
         assert_equal @_before_should_not_change, new_value, "#{description} changed"
       end
     end
