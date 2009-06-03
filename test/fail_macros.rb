@@ -13,7 +13,12 @@ module Shoulda
     #   end
     def should_fail(&block)
       context "should fail when trying to run:" do
-        Shoulda.expected_exceptions = [Test::Unit::AssertionFailedError]
+        if defined?(Test::Unit::AssertionFailedError)
+          failures = [Test::Unit::AssertionFailedError]
+        elsif defined?(MiniTest::Assertion)
+          failures = [MiniTest::Assertion]
+        end
+        Shoulda.expected_exceptions = failures
         yield block
         Shoulda.expected_exceptions = nil
       end
