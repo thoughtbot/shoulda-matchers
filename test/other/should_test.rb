@@ -15,6 +15,10 @@ class ShouldTest < ActiveSupport::TestCase # :nodoc:
     end
   end
 
+  def self.should_be_able_to_setup_a_should_eventually_in_a_class_method
+    should "be able to setup a should eventually in a class method"
+  end
+
   def self.should_see_a_context_block_like_a_Test_Unit_class
     should "see a context block as a Test::Unit class" do
       assert_equal "ShouldTest", self.class.name
@@ -46,6 +50,7 @@ class ShouldTest < ActiveSupport::TestCase # :nodoc:
     should_see_class_methods
     should_see_a_context_block_like_a_Test_Unit_class
     should_be_able_to_make_context_macros("Context ")
+    should_be_able_to_setup_a_should_eventually_in_a_class_method
 
     should "not define @blah" do
       assert ! self.instance_variables.include?("@blah")
