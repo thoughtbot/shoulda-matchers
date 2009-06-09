@@ -26,9 +26,14 @@ module Shoulda # :nodoc:
     #
     # Combinations of <tt>:by</tt>, <tt>:from</tt>, and <tt>:to</tt> are allowed:
     #
-    #   should_change("the post title") { @post.title }                 # => assert the value changed in some way
-    #   should_change("the post title", :from => "old") { @post.title } # => assert the value changed to anything other than "old"
-    #   should_change("the post title", :to   => "new") { @post.title } # => assert the value changed from anything other than "new"
+    #   # Assert the value changed in some way:
+    #   should_change("the post title") { @post.title }
+    #
+    #   # Assert the value changed to anything other than "old:"
+    #   should_change("the post title", :from => "old") { @post.title }
+    #
+    #   # Assert the value changed to "new:"
+    #   should_change("the post title", :to => "new") { @post.title }
     def should_change(description, options = {}, &block)
       by, from, to = get_options!([options], :by, :from, :to)
       stmt = "change #{description}"
