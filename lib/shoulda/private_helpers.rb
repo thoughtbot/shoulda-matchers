@@ -7,7 +7,7 @@ module Shoulda # :nodoc:
       opts = (args.last.is_a?(Hash) ? args.pop : {})
       wanted.each {|w| ret << opts.delete(w)}
       raise ArgumentError, "Unsupported options given: #{opts.keys.join(', ')}" unless opts.keys.empty?
-      return *ret
+      return wanted.size == 1 ? ret.first : ret
     end
   end
 end

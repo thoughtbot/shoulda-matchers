@@ -1,3 +1,5 @@
+require 'test/unit'
+
 require 'shoulda/context'
 require 'shoulda/proc_extensions'
 require 'shoulda/assertions'

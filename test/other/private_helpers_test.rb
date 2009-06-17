@@ -22,5 +22,11 @@ class PrivateHelpersTest < ActiveSupport::TestCase # :nodoc:
         get_options!(args, :one)
       end
     end
+    
+    should "return single wanted option" do
+      args = [:a, :b, {:class => Object}]
+      klass = get_options!(args,:class)
+      assert_equal Object, klass
+    end
   end
 end
