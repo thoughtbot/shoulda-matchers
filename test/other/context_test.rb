@@ -187,3 +187,11 @@ class SubjectTest < ActiveSupport::TestCase
     assert_equal @expected, subject
   end
 end
+
+class SubjectLazinessTest < ActiveSupport::TestCase
+  subject { Subject.new }
+  
+  should "only build the subject once" do
+    assert_equal subject, subject
+  end
+end

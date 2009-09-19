@@ -230,11 +230,7 @@ module Shoulda
     # The subject is used by all macros that require an instance of the class
     # being tested.
     def subject
-      if subject_block
-        instance_eval(&subject_block)
-      else
-        get_instance_of(self.class.described_type)
-      end
+      @shoulda_subject ||= construct_subject
     end
 
     def subject_block # :nodoc:
@@ -261,6 +257,16 @@ module Shoulda
 
     def instance_variable_name_for(klass) # :nodoc:
       klass.to_s.split('::').last.underscore
+    end
+    
+    private
+    
+    def construct_subject
+      if subject_block
+        instance_eval(&subject_block)
+      else
+        get_instance_of(self.class.described_type)
+      end
     end
   end
 
