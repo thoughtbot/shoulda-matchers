@@ -169,6 +169,12 @@ class ContextTest < ActiveSupport::TestCase # :nodoc:
       should "return the result of the block as the subject" do
         assert_equal @expected, subject
       end
+      
+      context "nested context block without a subject block" do
+        should "return the result of the parent context's subject block" do
+          assert_equal @expected, subject
+        end
+      end
     end
   end
 end

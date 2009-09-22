@@ -258,9 +258,9 @@ module Shoulda
     def instance_variable_name_for(klass) # :nodoc:
       klass.to_s.split('::').last.underscore
     end
-    
+
     private
-    
+
     def construct_subject
       if subject_block
         instance_eval(&subject_block)
@@ -325,6 +325,11 @@ module Shoulda
 
     def subject(&block)
       self.subject_block = block
+    end
+
+    def subject_block
+      return @subject_block if @subject_block
+      parent.subject_block
     end
 
     def full_name
