@@ -65,7 +65,7 @@ module Shoulda # :nodoc:
 
         def stringify_params!
           @params.each do |key, value|
-            @params[key] = value.to_param
+            @params[key] = value.is_a?(Array) ? value.collect {|v| v.to_param } : value.to_param
           end
         end
 

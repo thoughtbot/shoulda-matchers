@@ -2,6 +2,23 @@ require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
 class RouteToMatcherTest < ActionController::TestCase # :nodoc:
 
+  context "given a controller with a defined glob url" do
+    setup do
+      @controller = define_controller('Examples').new
+      define_routes do |map|
+        map.connect 'examples/*id', :controller => 'examples',
+                                    :action     => 'example'
+      end
+    end
+
+    should "accept glob route" do
+      assert_accepts route(:get, '/examples/foo/bar').
+                      to(:action => 'example', :id => ['foo', 'bar']),
+                    @controller
+    end
+
+  end
+
   context "given a controller with a defined route" do
     setup do
       @controller = define_controller('Examples').new
