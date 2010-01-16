@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Tammer Saleh"]
-  s.date = %q{2009-07-15}
+  s.date = %q{2010-01-16}
   s.default_executable = %q{convert_to_should_syntax}
   s.email = %q{tsaleh@thoughtbot.com}
   s.executables = ["convert_to_should_syntax"]
@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--line-numbers", "--main", "README.rdoc"]
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{shoulda}
-  s.rubygems_version = %q{1.3.4}
+  s.rubygems_version = %q{1.3.5}
   s.summary = %q{Making tests easy on the fingers and eyes}
 
   if s.respond_to? :specification_version then
