@@ -33,6 +33,16 @@ class SetSessionMatcherTest < ActionController::TestCase # :nodoc:
     should "accept assigning false to that variable" do
       assert_accepts set_session(:false_var).to(false), @controller
     end
+
+    should "accept assigning to the same value in the test context" do
+      @expected = 'value'
+      assert_accepts set_session(:var).to { @expected }, @controller
+    end
+
+    should "reject assigning to the another value in the test context" do
+      @expected = 'other'
+      assert_rejects set_session(:var).to { @expected }, @controller
+    end
   end
 
 end

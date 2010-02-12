@@ -19,13 +19,15 @@ module Shoulda # :nodoc:
           @key = key.to_s
         end
 
-        def to(value)
+        def to(value = nil, &block)
           @value = value
+          @value_block = block
           self
         end
 
         def matches?(controller)
           @controller = controller
+          @value = @context.instance_eval(&@value_block) if @value_block
           (assigned_value? && assigned_correct_value?) || cleared_value?
         end
 
@@ -41,6 +43,11 @@ module Shoulda # :nodoc:
           description = "set session variable #{@key.inspect}"
           description << " to #{@value.inspect}" if defined?(@value)
           description
+        end
+
+        def in_context(context)
+          @context = context
+          self
         end
 
         private
