@@ -239,6 +239,18 @@ class HelpersTest < ActiveSupport::TestCase # :nodoc:
     end
   end
 
+  should "assign context to a support matching on assert_accepts" do
+    matcher = stub('matcher', :matches? => true)
+    matcher.expects(:in_context).with(self)
+    assert_accepts matcher, nil
+  end
+
+  should "assign context to a support matching on assert_rejects" do
+    matcher = stub('matcher', :matches? => false)
+    matcher.expects(:in_context).with(self)
+    assert_rejects matcher, nil
+  end
+
   context "given one treat exists and one post exists" do
     setup do
       Treat.create!

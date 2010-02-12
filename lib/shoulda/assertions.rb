@@ -46,6 +46,10 @@ module Shoulda # :nodoc:
 
     # Asserts that the given matcher returns true when +target+ is passed to #matches?
     def assert_accepts(matcher, target, options = {})
+      if matcher.respond_to?(:in_context)
+        matcher.in_context(self)
+      end
+
       if matcher.matches?(target)
         assert_block { true }
         if options[:message]
@@ -58,6 +62,10 @@ module Shoulda # :nodoc:
 
     # Asserts that the given matcher returns false when +target+ is passed to #matches?
     def assert_rejects(matcher, target, options = {})
+      if matcher.respond_to?(:in_context)
+        matcher.in_context(self)
+      end
+
       unless matcher.matches?(target)
         assert_block { true }
         if options[:message]
