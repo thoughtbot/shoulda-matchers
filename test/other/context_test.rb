@@ -348,8 +348,25 @@ end
 
 class SubjectLazinessTest < ActiveSupport::TestCase
   subject { Subject.new }
-  
+
   should "only build the subject once" do
     assert_equal subject, subject
+  end
+end
+
+class SomeController < ActionController::Base
+end
+
+class ControllerSubjectTest < ActionController::TestCase
+  tests SomeController
+
+  should "use the controller as the subject outside a context" do
+    assert_equal @controller, subject
+  end
+
+  context "in a context" do
+    should "use the controller as the subject" do
+      assert_equal @controller, subject
+    end
   end
 end
