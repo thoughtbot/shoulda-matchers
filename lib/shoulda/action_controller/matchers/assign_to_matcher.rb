@@ -30,13 +30,15 @@ module Shoulda # :nodoc:
           self
         end
 
-        def with(expected_value)
+        def with(expected_value = nil, &block)
           @expected_value = expected_value
+          @expectation_block = block
           self
         end
 
         def matches?(controller)
           @controller = controller
+          @expected_value = @context.instance_eval(&@expectation_block) if @expectation_block
           assigned_value? && kind_of_expected_class? && equal_to_expected_value?
         end
 
@@ -46,6 +48,11 @@ module Shoulda # :nodoc:
           description = "assign @#{@variable}"
           description << " with a kind of #{@expected_class}" if @expected_class
           description
+        end
+
+        def in_context(context)
+          @context = context
+          self
         end
 
         private
@@ -99,7 +106,7 @@ module Shoulda # :nodoc:
         end
 
         def assigns
-          @controller.response.template.assigns 
+          @controller.response.template.assigns
         end
 
       end

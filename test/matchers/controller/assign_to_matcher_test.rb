@@ -30,6 +30,16 @@ class AssignToMatcherTest < ActionController::TestCase # :nodoc:
     should "reject assigning to another variable" do
       assert_rejects assign_to(:other), @controller
     end
+
+    should "accept assigning to the same value in the test context" do
+      @expected = 'value'
+      assert_accepts assign_to(:var).with { @expected }, @controller
+    end
+
+    should "reject assigning to the another value in the test context" do
+      @expected = 'other'
+      assert_rejects assign_to(:var).with { @expected }, @controller
+    end
   end
 
 end
