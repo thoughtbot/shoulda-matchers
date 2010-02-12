@@ -21,9 +21,10 @@ module Shoulda
   module ClassMethods
     # == Should statements
     #
-    # Should statements are just syntactic sugar over normal Test::Unit test methods.  A should block
-    # contains all the normal code and assertions you're used to seeing, with the added benefit that
-    # they can be wrapped inside context blocks (see below).
+    # Should statements are just syntactic sugar over normal Test::Unit test
+    # methods.  A should block contains all the normal code and assertions
+    # you're used to seeing, with the added benefit that they can be wrapped
+    # inside context blocks (see below).
     #
     # === Example:
     #
@@ -56,17 +57,42 @@ module Shoulda
     #      assert true
     #    end
     #  end
+    #
+    # Should statements can also wrap matchers, making virtually any matcher
+    # usable in a macro style. The matcher's description is used to generate a
+    # test name and failure message, and the test will pass if the matcher
+    # matches the subject.
+    #
+    # === Example:
+    #
+    #   should validate_presence_of(:first_name).with_message(/gotta be there/)
+    #
 
-    def should(name, options = {}, &blk)
+    def should(name_or_matcher, options = {}, &blk)
       if Shoulda.current_context
-        block_given? ? Shoulda.current_context.should(name, options, &blk) : Shoulda.current_context.should_eventually(name)
+        Shoulda.current_context.should(name_or_matcher, options, &blk)
       else
         context_name = self.name.gsub(/Test/, "")
         context = Shoulda::Context.new(context_name, self) do
-          block_given? ? should(name, options, &blk) : should_eventually(name)
+          should(name_or_matcher, options, &blk)
         end
         context.build
       end
+    end
+
+    # Allows negative tests using matchers. The matcher's description is used
+    # to generate a test name and negative failure message, and the test will
+    # pass unless the matcher matches the subject.
+    #
+    # === Example:
+    #
+    #   should_not set_the_flash
+    def should_not(matcher)
+      context_name = self.name.gsub(/Test/, "")
+      context = Shoulda::Context.new(context_name, self) do
+        should_not(matcher)
+      end
+      context.build
     end
 
     # == Before statements
@@ -288,12 +314,25 @@ module Shoulda
       self.teardown_blocks << blk
     end
 
-    def should(name, options = {}, &blk)
-      if block_given?
+    def should(name_or_matcher, options = {}, &blk)
+      if name_or_matcher.respond_to?(:description) && name_or_matcher.respond_to?(:matches?)
+        name = name_or_matcher.description
+        blk = lambda { assert_accepts name_or_matcher, subject }
+      else
+        name = name_or_matcher
+      end
+
+      if blk
         self.shoulds << { :name => name, :before => options[:before], :block => blk }
       else
        self.should_eventuallys << { :name => name }
      end
+    end
+
+    def should_not(matcher)
+      name = matcher.description
+      blk = lambda { assert_rejects matcher, subject }
+      self.shoulds << { :name => "not #{name}", :block => blk }
     end
 
     def should_eventually(name, &blk)

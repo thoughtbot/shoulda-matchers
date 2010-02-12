@@ -174,6 +174,163 @@ class ContextTest < ActiveSupport::TestCase # :nodoc:
   end
 end
 
+class ShouldMatcherTest < Test::Unit::TestCase
+  class FakeMatcher
+    attr_reader :subject
+    attr_accessor :fail
+
+    def description
+      "do something"
+    end
+
+    def matches?(subject)
+      @subject = subject
+      !@fail
+    end
+
+    def failure_message
+      "a failure message"
+    end
+
+    def negative_failure_message
+      "not a failure message"
+    end
+  end
+
+  def run_test
+    @test_suite.run(@test_result) { |event, name |}
+  end
+
+  def setup
+    @matcher = FakeMatcher.new
+    @test_result = Test::Unit::TestResult.new
+    class << @test_result
+      def failure_messages
+        @failures.map { |failure| failure.message }
+      end
+    end
+  end
+
+  def create_test_suite(&definition)
+    test_class = Class.new(Test::Unit::TestCase, &definition)
+    test_class.suite
+  end
+
+  def assert_failed_with(message, test_result)
+    assert_equal 1, test_result.failure_count
+    assert_equal [message], test_result.failure_messages
+  end
+
+  def assert_passed(test_result)
+    assert_equal 0, test_result.failure_count
+  end
+
+  def assert_test_named(expected_name, test_suite)
+    name = test_suite.tests.map { |test| test.method_name }.first
+    assert name.include?(expected_name), "Expected #{name} to include #{expected_name}"
+  end
+
+  def self.should_use_positive_matcher
+    should "generate a test using the matcher's description" do
+      assert_test_named "should #{@matcher.description}", @test_suite
+    end
+
+    should "pass with a passing matcher" do
+      @matcher.fail = false
+      run_test
+      assert_passed @test_result
+    end
+
+    should "fail with a failing matcher" do
+      @matcher.fail = true
+      run_test
+      assert_failed_with @matcher.failure_message, @test_result
+    end
+
+    should "provide the subject" do
+      @matcher.fail = false
+      run_test
+      assert_equal 'a subject', @matcher.subject
+    end
+  end
+
+  def self.should_use_negative_matcher
+    should "generate a test using the matcher's description" do
+      assert_test_named "should not #{@matcher.description}", @test_suite
+    end
+
+    should "pass with a failing matcher" do
+      @matcher.fail = true
+      run_test
+      assert_passed @test_result
+    end
+
+    should "fail with a passing matcher" do
+      @matcher.fail = false
+      run_test
+      assert_failed_with @matcher.negative_failure_message, @test_result
+    end
+
+    should "provide the subject" do
+      @matcher.fail = false
+      run_test
+      assert_equal 'a subject', @matcher.subject
+    end
+  end
+
+  context "a should block with a matcher" do
+    setup do
+      matcher = @matcher
+      @test_suite = create_test_suite do
+        subject { 'a subject' }
+        should matcher
+      end
+    end
+
+    should_use_positive_matcher
+  end
+
+  context "a should block with a matcher within a context" do
+    setup do
+      matcher = @matcher
+      @test_suite = create_test_suite do
+        context "in context" do
+          subject { 'a subject' }
+          should matcher
+        end
+      end
+    end
+
+    should_use_positive_matcher
+  end
+
+  context "a should_not block with a matcher" do
+    setup do
+      matcher = @matcher
+      @test_suite = create_test_suite do
+        subject { 'a subject' }
+        should_not matcher
+      end
+    end
+
+    should_use_negative_matcher
+  end
+
+  context "a should_not block with a matcher within a context" do
+    setup do
+      matcher = @matcher
+      @test_suite = create_test_suite do
+        context "in context" do
+          subject { 'a subject' }
+          should_not matcher
+        end
+      end
+    end
+
+    should_use_negative_matcher
+  end
+end
+
 class Subject; end
 
 class SubjectTest < ActiveSupport::TestCase
