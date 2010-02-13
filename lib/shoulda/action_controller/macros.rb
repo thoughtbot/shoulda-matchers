@@ -27,23 +27,14 @@ module Shoulda # :nodoc:
       # Macro that creates a test asserting that the flash contains the given
       # value. Expects a +String+ or +Regexp+.
       #
-      # If the argument is +nil+, it will assert that the flash is not set.
-      # This behavior is deprecated.
-      #
       # Example:
       #
       #   should_set_the_flash_to "Thank you for placing this order."
       #   should_set_the_flash_to /created/i
       def should_set_the_flash_to(val)
-        if val
-          matcher = set_the_flash.to(val)
-          should matcher.description do
-            assert_accepts matcher, @controller
-          end
-        else
-          warn "[DEPRECATION] should_set_the_flash_to nil is deprecated. " <<
-               "Use should_not_set_the_flash instead."
-          should_not_set_the_flash
+        matcher = set_the_flash.to(val)
+        should matcher.description do
+          assert_accepts matcher, @controller
         end
       end
 

@@ -14,7 +14,7 @@ class UserTest < ActiveSupport::TestCase
   should_have_one :address, :dependent => :destroy
 
   should_have_db_indices :email, :name
-  should_have_index :age
+  should_have_db_index :age
   should_have_db_index [:email, :name], :unique => true
   should_have_db_index :age, :unique => false
 
@@ -22,18 +22,6 @@ class UserTest < ActiveSupport::TestCase
     should_have_db_index :phone
     should_have_db_index :email, :unique => false
     should_have_db_index :age, :unique => true
-  end
-
-  should_have_named_scope :old,       :conditions => "age > 50"
-  should_have_named_scope :eighteen,  :conditions => { :age => 18 }
-
-  should_have_named_scope 'recent(5)',            :limit => 5
-  should_have_named_scope 'recent(1)',            :limit => 1
-  should_have_named_scope 'recent_via_method(7)', :limit => 7
-
-  context "when given an instance variable" do
-    setup { @count = 2 }
-    should_have_named_scope 'recent(@count)', :limit => 2
   end
 
   should_not_allow_values_for :email, "blah", "b lah"
@@ -44,14 +32,21 @@ class UserTest < ActiveSupport::TestCase
   should_ensure_length_in_range :email, 1..100
   should_ensure_value_in_range :age, 1..100, :low_message  => /greater/,
                                              :high_message => /less/
-  should_fail do
-    should_ensure_value_in_range :age, 1..100, :low_message  => /more/,
-                                               :high_message => /less/
+
+  context "with a different low message" do
+    should_fail do
+      should_ensure_value_in_range :age, 1..100, :low_message  => /more/,
+                                                 :high_message => /less/
+    end
   end
-  should_fail do
-    should_ensure_value_in_range :age, 1..100, :low_message  => /greater/,
-                                               :high_message => /fewer/
+
+  context "with a different high message" do
+    should_fail do
+      should_ensure_value_in_range :age, 1..100, :low_message  => /greater/,
+                                                 :high_message => /fewer/
+    end
   end
+
   should_not_allow_mass_assignment_of :password
   should_have_class_methods :find, :destroy
   should_have_instance_methods :email, :age, :email=, :valid?

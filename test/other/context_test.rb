@@ -158,11 +158,6 @@ class ContextTest < ActiveSupport::TestCase # :nodoc:
       assert_kind_of SomeModel, subject
     end
 
-    should "return an existing instance of the described type as the subject" do
-      @some_model = SomeModel.new
-      assert_equal @some_model, subject
-    end
-
     context "with an explicit subject block" do
       setup { @expected = SomeModel.new }
       subject { @expected }

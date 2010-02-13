@@ -54,8 +54,6 @@ class PostsControllerTest < ActionController::TestCase
       end
       should_assign_to :posts
       should_not_assign_to :foo, :bar
-      should_render_page_with_metadata :description => /Posts/, :title => /index/
-      should_render_page_with_metadata :keywords => "posts"
     end
 
     context "viewing posts for a user with rss format" do
@@ -65,8 +63,12 @@ class PostsControllerTest < ActionController::TestCase
       end
       should_respond_with :success
       should_respond_with_content_type 'application/rss+xml'
-      should_respond_with_content_type :rss
-      should_respond_with_content_type /rss/
+      context "with a symbol" do
+        should_respond_with_content_type :rss
+      end
+      context "with a regexp" do
+        should_respond_with_content_type /rss/
+      end
       should_set_session(:mischief) { nil }
       should_set_session(:special) { '$2 off your next purchase' }
       should_set_session(:special_user_id) { @user.id }
@@ -85,7 +87,6 @@ class PostsControllerTest < ActionController::TestCase
         should_render_with_layout :wide
       end
       should_assign_to :false_flag
-      should_set_the_flash_to nil
       should_fail do
         should_set_the_flash_to /.*/
       end
@@ -95,7 +96,6 @@ class PostsControllerTest < ActionController::TestCase
       setup { get :new, :user_id => users(:first) }
       should_render_without_layout
       should_not_set_the_flash
-      should_render_a_form
     end
 
     context "on POST to #create" do

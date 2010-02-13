@@ -214,19 +214,6 @@ module Shoulda
     #     end
     #   end
     #
-    # If an instance variable exists named after the described class, that
-    # instance variable will be used as the subject. This behavior is
-    # deprecated, and will be removed in a future version of Shoulda. The
-    # recommended approach for using a different subject is to use the subject
-    # class method.
-    #
-    #   class UserTest
-    #     should "be the existing user" do
-    #       @user = User.new
-    #       assert_equal @user, subject # passes
-    #     end
-    #   end
-    #
     # The subject is used by all macros that require an instance of the class
     # being tested.
     def subject
@@ -239,17 +226,7 @@ module Shoulda
 
     def get_instance_of(object_or_klass) # :nodoc:
       if object_or_klass.is_a?(Class)
-        klass = object_or_klass
-        ivar = "@#{instance_variable_name_for(klass)}"
-        if instance = instance_variable_get(ivar)
-          warn "[WARNING] Using #{ivar} as the subject. Future versions " <<
-               "of Shoulda will require an explicit subject using the " <<
-               "subject class method. Add this after your setup to avoid " <<
-               "this warning: subject { #{ivar} }"
-          instance
-        else
-          klass.new
-        end
+        object_or_klass.new
       else
         object_or_klass
       end

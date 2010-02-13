@@ -430,20 +430,6 @@ module Shoulda # :nodoc:
 
       alias_method :should_have_db_index, :should_have_db_indices
 
-      # Deprecated. See should_have_db_index
-      def should_have_index(*args)
-        warn "[DEPRECATION] should_have_index is deprecated. " <<
-             "Use should_have_db_index instead."
-        should_have_db_index(*args)
-      end
-
-      # Deprecated. See should_have_db_indices
-      def should_have_indices(*args)
-        warn "[DEPRECATION] should_have_indices is deprecated. " <<
-             "Use should_have_db_indices instead."
-        should_have_db_indices(*args)
-      end
-
       # Ensures that the model cannot be saved if one of the attributes listed is not accepted.
       #
       # Options:
@@ -461,50 +447,6 @@ module Shoulda # :nodoc:
           should matcher.description do
             assert_accepts matcher, subject
           end
-        end
-      end
-
-      # Deprecated.
-      #
-      # Ensures that the model has a method named scope_name that returns a NamedScope object with the
-      # proxy options set to the options you supply.  scope_name can be either a symbol, or a method
-      # call which will be evaled against the model.  The eval'd method call has access to all the same
-      # instance variables that a should statement would.
-      #
-      # Options: Any of the options that the named scope would pass on to find.
-      #
-      # Example:
-      #
-      #   should_have_named_scope :visible, :conditions => {:visible => true}
-      #
-      # Passes for
-      #
-      #   named_scope :visible, :conditions => {:visible => true}
-      #
-      # Or for
-      #
-      #   def self.visible
-      #     scoped(:conditions => {:visible => true})
-      #   end
-      #
-      # You can test lambdas or methods that return ActiveRecord#scoped calls:
-      #
-      #   should_have_named_scope 'recent(5)', :limit => 5
-      #   should_have_named_scope 'recent(1)', :limit => 1
-      #
-      # Passes for
-      #   named_scope :recent, lambda {|c| {:limit => c}}
-      #
-      # Or for
-      #
-      #   def self.recent(c)
-      #     scoped(:limit => c)
-      #   end
-      #
-      def should_have_named_scope(scope_call, find_options = nil)
-        matcher = have_named_scope(scope_call).finding(find_options)
-        should matcher.description do
-          assert_accepts matcher.in_context(self), subject
         end
       end
     end
