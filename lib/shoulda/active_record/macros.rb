@@ -36,10 +36,7 @@ module Shoulda # :nodoc:
         message = get_options!(attributes, :message)
 
         attributes.each do |attribute|
-          matcher = validate_presence_of(attribute).with_message(message)
-          should matcher.description do
-            assert_accepts(matcher, subject)
-          end
+          should validate_presence_of(attribute).with_message(message)
         end
       end
       
@@ -70,9 +67,7 @@ module Shoulda # :nodoc:
           matcher = validate_uniqueness_of(attribute).
             with_message(message).scoped_to(scope)
           matcher = matcher.case_insensitive unless case_sensitive
-          should matcher.description do
-            assert_accepts(matcher, subject)
-          end
+          should matcher
         end
       end
 
@@ -84,10 +79,7 @@ module Shoulda # :nodoc:
         get_options!(attributes)
 
         attributes.each do |attribute|
-          matcher = allow_mass_assignment_of(attribute)
-          should matcher.description do
-            assert_accepts matcher, subject
-          end
+          should allow_mass_assignment_of(attribute)
         end
       end
 
@@ -99,10 +91,7 @@ module Shoulda # :nodoc:
         get_options!(attributes)
 
         attributes.each do |attribute|
-          matcher = allow_mass_assignment_of(attribute)
-          should "not #{matcher.description}" do
-            assert_rejects matcher, subject
-          end
+          should_not allow_mass_assignment_of(attribute)
         end
       end
 
@@ -114,10 +103,7 @@ module Shoulda # :nodoc:
         get_options!(attributes)
 
         attributes.each do |attribute|
-          matcher = have_readonly_attribute(attribute)
-          should matcher.description do
-            assert_accepts matcher, subject
-          end
+          should have_readonly_attribute(attribute)
         end
       end
 
@@ -134,10 +120,7 @@ module Shoulda # :nodoc:
       def should_not_allow_values_for(attribute, *bad_values)
         message = get_options!(bad_values, :message)
         bad_values.each do |value|
-          matcher = allow_value(value).for(attribute).with_message(message)
-          should "not #{matcher.description}" do
-            assert_rejects matcher, subject
-          end
+          should_not allow_value(value).for(attribute).with_message(message)
         end
       end
 
@@ -149,10 +132,7 @@ module Shoulda # :nodoc:
       def should_allow_values_for(attribute, *good_values)
         get_options!(good_values)
         good_values.each do |value|
-          matcher = allow_value(value).for(attribute)
-          should matcher.description do
-            assert_accepts matcher, subject
-          end
+          should allow_value(value).for(attribute)
         end
       end
 
@@ -171,15 +151,11 @@ module Shoulda # :nodoc:
         short_message, long_message = get_options!([opts], 
                                                    :short_message,
                                                    :long_message)
-        matcher = ensure_length_of(attribute).
+        should ensure_length_of(attribute).
           is_at_least(range.first).
           with_short_message(short_message).
           is_at_most(range.last).
           with_long_message(long_message)
-
-        should matcher.description do
-          assert_accepts matcher, subject
-        end
       end
 
       # Ensures that the length of the attribute is at least a certain length
@@ -194,13 +170,9 @@ module Shoulda # :nodoc:
       def should_ensure_length_at_least(attribute, min_length, opts = {})
         short_message = get_options!([opts], :short_message)
 
-        matcher = ensure_length_of(attribute).
+        should ensure_length_of(attribute).
           is_at_least(min_length).
           with_short_message(short_message)
-
-        should matcher.description do
-          assert_accepts matcher, subject
-        end
       end
 
       # Ensures that the length of the attribute is exactly a certain length
@@ -214,13 +186,9 @@ module Shoulda # :nodoc:
       #
       def should_ensure_length_is(attribute, length, opts = {})
         message = get_options!([opts], :message)
-        matcher = ensure_length_of(attribute).
+        should ensure_length_of(attribute).
           is_equal_to(length).
           with_message(message)
-
-        should matcher.description do
-          assert_accepts matcher, subject
-        end
       end
 
       # Ensure that the attribute is in the range specified
@@ -239,14 +207,11 @@ module Shoulda # :nodoc:
                                                           :message,
                                                           :low_message,
                                                           :high_message)
-        matcher = ensure_inclusion_of(attribute).
+        should ensure_inclusion_of(attribute).
           in_range(range).
           with_message(message).
           with_low_message(low_message).
           with_high_message(high_message)
-        should matcher.description do
-          assert_accepts matcher, subject
-        end
       end
 
       # Ensure that the attribute is numeric
@@ -261,11 +226,8 @@ module Shoulda # :nodoc:
       def should_validate_numericality_of(*attributes)
         message = get_options!(attributes, :message)
         attributes.each do |attribute|
-          matcher = validate_numericality_of(attribute).
+          should validate_numericality_of(attribute).
             with_message(message)
-          should matcher.description do
-            assert_accepts matcher, subject
-          end
         end
       end
 
@@ -285,10 +247,7 @@ module Shoulda # :nodoc:
       def should_have_many(*associations)
         through, dependent = get_options!(associations, :through, :dependent)
         associations.each do |association|
-          matcher = have_many(association).through(through).dependent(dependent)
-          should matcher.description do
-            assert_accepts(matcher, subject)
-          end
+          should have_many(association).through(through).dependent(dependent)
         end
       end
 
@@ -305,10 +264,7 @@ module Shoulda # :nodoc:
       def should_have_one(*associations)
         dependent, through = get_options!(associations, :dependent, :through)
         associations.each do |association|
-          matcher = have_one(association).dependent(dependent).through(through)
-          should matcher.description do
-            assert_accepts(matcher, subject)
-          end
+          should have_one(association).dependent(dependent).through(through)
         end
       end
 
@@ -321,10 +277,7 @@ module Shoulda # :nodoc:
         get_options!(associations)
 
         associations.each do |association|
-          matcher = have_and_belong_to_many(association)
-          should matcher.description do
-            assert_accepts(matcher, subject)
-          end
+          should have_and_belong_to_many(association)
         end
       end
 
@@ -335,10 +288,7 @@ module Shoulda # :nodoc:
       def should_belong_to(*associations)
         dependent = get_options!(associations, :dependent)
         associations.each do |association|
-          matcher = belong_to(association).dependent(dependent)
-          should matcher.description do
-            assert_accepts(matcher, subject)
-          end
+          should belong_to(association).dependent(dependent)
         end
       end
 
@@ -388,14 +338,11 @@ module Shoulda # :nodoc:
           get_options!(columns, :type, :precision, :limit,
                                 :default, :null, :scale, :sql_type)
         columns.each do |name|
-          matcher = have_db_column(name).
+          should have_db_column(name).
                       of_type(column_type).
                       with_options(:precision => precision, :limit    => limit,
                                    :default   => default,   :null     => null,
                                    :scale     => scale,     :sql_type => sql_type)
-          should matcher.description do
-            assert_accepts(matcher, subject)
-          end
         end
       end
       
@@ -421,10 +368,7 @@ module Shoulda # :nodoc:
         unique = get_options!(columns, :unique)
         
         columns.each do |column|
-          matcher = have_db_index(column).unique(unique)
-          should matcher.description do
-            assert_accepts(matcher, subject)
-          end
+          should have_db_index(column).unique(unique)
         end
       end
 
@@ -443,10 +387,7 @@ module Shoulda # :nodoc:
         message = get_options!(attributes, :message)
 
         attributes.each do |attribute|
-          matcher = validate_acceptance_of(attribute).with_message(message)
-          should matcher.description do
-            assert_accepts matcher, subject
-          end
+          should validate_acceptance_of(attribute).with_message(message)
         end
       end
     end

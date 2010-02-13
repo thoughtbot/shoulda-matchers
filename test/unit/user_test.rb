@@ -18,12 +18,6 @@ class UserTest < ActiveSupport::TestCase
   should_have_db_index [:email, :name], :unique => true
   should_have_db_index :age, :unique => false
 
-  should_fail do
-    should_have_db_index :phone
-    should_have_db_index :email, :unique => false
-    should_have_db_index :age, :unique => true
-  end
-
   should_not_allow_values_for :email, "blah", "b lah"
   should_allow_values_for :email, "a@b.com", "asdf@asdf.com"
   should_allow_values_for :age, 1, 10, 99
@@ -32,20 +26,6 @@ class UserTest < ActiveSupport::TestCase
   should_ensure_length_in_range :email, 1..100
   should_ensure_value_in_range :age, 1..100, :low_message  => /greater/,
                                              :high_message => /less/
-
-  context "with a different low message" do
-    should_fail do
-      should_ensure_value_in_range :age, 1..100, :low_message  => /more/,
-                                                 :high_message => /less/
-    end
-  end
-
-  context "with a different high message" do
-    should_fail do
-      should_ensure_value_in_range :age, 1..100, :low_message  => /greater/,
-                                                 :high_message => /fewer/
-    end
-  end
 
   should_not_allow_mass_assignment_of :password
   should_have_class_methods :find, :destroy
@@ -62,14 +42,5 @@ class UserTest < ActiveSupport::TestCase
 
   should_have_readonly_attributes :name
 
-  should_fail do
-    should_not_allow_mass_assignment_of :name, :age
-  end
-
   should_have_one :profile, :through => :registration
-
-  should_fail do
-    should_have_one :profile, :through => :interview
-    should_have_one :address, :through => :registration
-  end
 end
