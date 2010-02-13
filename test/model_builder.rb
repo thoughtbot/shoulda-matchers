@@ -1,4 +1,8 @@
 class ActiveSupport::TestCase  
+
+  TMP_VIEW_PATH =
+    File.expand_path(File.join(File.dirname(__FILE__), '..', 'rails_root', 'tmp', 'views')).freeze
+
   def create_table(table_name, &block)
     connection = ActiveRecord::Base.connection
     
@@ -60,20 +64,30 @@ class ActiveSupport::TestCase
     new_routes.draw(&block)
   end
 
-  def build_response(&block)
+  def build_response(opts = {}, &block)
+    action = opts[:action] || 'example'
     klass = define_controller('Examples')
     block ||= lambda { render :nothing => true }
-    klass.class_eval { define_method(:example, &block) }
+    klass.class_eval { define_method(action, &block) }
     define_routes do |map| 
-      map.connect 'examples', :controller => 'examples', :action => 'example'
+      map.connect 'examples', :controller => 'examples', :action => action
     end
+
+    create_view("examples/#{action}.html.erb", "abc")
+    klass.view_paths = [TMP_VIEW_PATH]
 
     @controller = klass.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
-    get :example
+    get action
 
     @controller
+  end
+
+  def create_view(path, contents)
+    full_path = File.join(TMP_VIEW_PATH, path)
+    FileUtils.mkdir_p(File.dirname(full_path))
+    File.open(full_path, 'w') { |file| file.write(contents) }
   end
 
   def teardown_with_models
@@ -98,6 +112,8 @@ class ActiveSupport::TestCase
       end
       @replaced_routes.reload!
     end
+
+    FileUtils.rm_rf(TMP_VIEW_PATH)
 
     teardown_without_models
   end

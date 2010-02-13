@@ -4,6 +4,7 @@ class RenderWithLayoutMatcherTest < ActionController::TestCase # :nodoc:
 
   context "a controller that renders with a layout" do
     setup do
+      create_view('layouts/wide.html.erb', '123')
       @controller = build_response { render :layout => 'wide' }
     end
 

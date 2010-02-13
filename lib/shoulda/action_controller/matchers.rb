@@ -7,6 +7,7 @@ require 'shoulda/action_controller/matchers/respond_with_content_type_matcher'
 require 'shoulda/action_controller/matchers/set_session_matcher'
 require 'shoulda/action_controller/matchers/route_matcher'
 require 'shoulda/action_controller/matchers/redirect_to_matcher'
+require 'shoulda/action_controller/matchers/render_template_matcher'
 
 module Shoulda # :nodoc:
   module ActionController # :nodoc:
