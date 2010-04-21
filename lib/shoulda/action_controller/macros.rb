@@ -32,18 +32,12 @@ module Shoulda # :nodoc:
       #   should_set_the_flash_to "Thank you for placing this order."
       #   should_set_the_flash_to /created/i
       def should_set_the_flash_to(val)
-        matcher = set_the_flash.to(val)
-        should matcher.description do
-          assert_accepts matcher, @controller
-        end
+        should set_the_flash.to(val)
       end
 
       # Macro that creates a test asserting that the flash is empty.
       def should_not_set_the_flash
-        matcher = set_the_flash
-        should "not #{matcher.description}" do
-          assert_rejects matcher, @controller
-        end
+        should_not set_the_flash
       end
 
       # Macro that creates a test asserting that filter_parameter_logging
@@ -54,10 +48,7 @@ module Shoulda # :nodoc:
       #   should_filter_params :password, :ssn
       def should_filter_params(*keys)
         keys.each do |key|
-          matcher = filter_param(key)
-          should matcher.description do
-            assert_accepts matcher, @controller
-          end
+          should filter_param(key)
         end
       end
 
@@ -79,14 +70,8 @@ module Shoulda # :nodoc:
         klass = get_options!(names, :class)
         names.each do |name|
           matcher = assign_to(name).with_kind_of(klass)
-          should matcher.description do
-            if block
-              expected_value = instance_eval(&block)
-              matcher = matcher.with(expected_value)
-            end
-
-            assert_accepts matcher, @controller
-          end
+          matcher = matcher.with(&block) if block
+          should matcher
         end
       end
 
@@ -98,10 +83,7 @@ module Shoulda # :nodoc:
       #   should_not_assign_to :user, :posts
       def should_not_assign_to(*names)
         names.each do |name|
-          matcher = assign_to(name)
-          should "not #{matcher.description}" do
-            assert_rejects matcher, @controller
-          end
+          should_not assign_to(name)
         end
       end
 
@@ -110,10 +92,7 @@ module Shoulda # :nodoc:
       #
       #   should_respond_with :success
       def should_respond_with(response)
-        should "respond with #{response}" do
-          matcher = respond_with(response)
-          assert_accepts matcher, @controller
-        end
+        should respond_with(response)
       end
 
       # Macro that creates a test asserting that the response content type was 'content_type'.
@@ -123,10 +102,7 @@ module Shoulda # :nodoc:
       #   should_respond_with_content_type :rss
       #   should_respond_with_content_type /rss/
       def should_respond_with_content_type(content_type)
-        matcher = respond_with_content_type(content_type)
-        should matcher.description do
-          assert_accepts matcher, @controller
-        end
+        should respond_with_content_type(content_type)
       end
 
       # Macro that creates a test asserting that a value returned from the
@@ -139,11 +115,8 @@ module Shoulda # :nodoc:
       #   should_set_session(:message) { "Free stuff" }
       def should_set_session(key, &block)
         matcher = set_session(key)
-        should matcher.description do
-          expected_value = instance_eval(&block)
-          matcher = matcher.to(expected_value)
-          assert_accepts matcher, @controller
-        end
+        matcher = matcher.to(&block) if block
+        should matcher
       end
 
       # Macro that creates a test asserting that the controller rendered the given template.
@@ -151,9 +124,7 @@ module Shoulda # :nodoc:
       #
       #   should_render_template :new
       def should_render_template(template)
-        should "render template #{template.inspect}" do
-          assert_template template.to_s
-        end
+        should render_template(template)
       end
 
       # Macro that creates a test asserting that the controller rendered with the given layout.
@@ -161,22 +132,13 @@ module Shoulda # :nodoc:
       #
       #   should_render_with_layout 'special'
       def should_render_with_layout(expected_layout = 'application')
-        matcher = render_with_layout(expected_layout)
-        if expected_layout
-          should matcher.description do
-            assert_accepts matcher, @controller
-          end
-        else
-          should "render without layout" do
-            assert_rejects matcher, @controller
-          end
-        end
+        should render_with_layout(expected_layout)
       end
 
       # Macro that creates a test asserting that the controller rendered without a layout.
       # Same as @should_render_with_layout false@
       def should_render_without_layout
-        should_render_with_layout nil
+        should_not render_with_layout
       end
 
       # Macro that creates a test asserting that the controller returned a
@@ -188,10 +150,7 @@ module Shoulda # :nodoc:
       #
       #   should_redirect_to("the user's profile") { user_url(@user) }
       def should_redirect_to(description, &block)
-        should "redirect to #{description}" do
-          expected_url = instance_eval(&block)
-          assert_redirected_to expected_url
-        end
+        should redirect_to(description, &block)
       end
 
       # Macro that creates a routing test. It tries to use the given HTTP
@@ -216,15 +175,7 @@ module Shoulda # :nodoc:
       #     :action => :show, :id => 1, :user_id => 1
       #
       def should_route(method, path, options)
-        unless options[:controller]
-          options[:controller] = self.name.gsub(/ControllerTest$/, '').tableize
-        end
-
-        matcher = route(method, path).to(options)
-
-        should matcher.description do
-          assert_accepts matcher.in_context(self), self
-        end
+        should route(method, path).to(options)
       end
     end
   end

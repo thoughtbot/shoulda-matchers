@@ -88,11 +88,15 @@ module Shoulda
     #
     #   should_not set_the_flash
     def should_not(matcher)
-      context_name = self.name.gsub(/Test/, "")
-      context = Shoulda::Context.new(context_name, self) do
-        should_not(matcher)
+      if Shoulda.current_context
+        Shoulda.current_context.should_not(matcher)
+      else
+        context_name = self.name.gsub(/Test/, "")
+        context = Shoulda::Context.new(context_name, self) do
+          should_not(matcher)
+        end
+        context.build
       end
-      context.build
     end
 
     # == Before statements

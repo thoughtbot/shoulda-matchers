@@ -27,13 +27,29 @@ module Shoulda
 
   class Context
     # alias_method_chain hack to allow the should_fail macro to work
-    def should_with_failure_scenario(name, options = {}, &block)
-      if Shoulda.expected_exceptions
-        expected_exceptions = Shoulda.expected_exceptions
-        failure_block = lambda { assert_raise(*expected_exceptions, &block.bind(self)) }
-      end
-      should_without_failure_scenario(name, options, &(failure_block || block))
+    def should_with_failure_scenario(*args, &block)
+      should_without_failure_scenario(*args, &block)
+      wrap_last_should_with_failure_expectation
     end
     alias_method_chain :should, :failure_scenario
+
+    # alias_method_chain hack to allow the should_fail macro to work
+    def should_not_with_failure_scenario(*args, &block)
+      should_not_without_failure_scenario(*args, &block)
+      wrap_last_should_with_failure_expectation
+    end
+    alias_method_chain :should_not, :failure_scenario
+
+    def wrap_last_should_with_failure_expectation
+      if Shoulda.expected_exceptions
+        expected_exceptions = Shoulda.expected_exceptions
+        should = self.shoulds.last
+        assertion_block = should[:block]
+        failure_block = lambda do
+          assert_raise(*expected_exceptions, &assertion_block.bind(self))
+        end
+        should[:block] = failure_block
+      end
+    end
   end
 end
