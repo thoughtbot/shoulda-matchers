@@ -24,7 +24,7 @@ module Shoulda # :nodoc:
               @failure_message = "#{@attribute} was made accessible"
             else
               if protected_attributes.empty?
-                @failure_message = "no attributes were protected"
+                @negative_failure_message = "no attributes were protected"
               else
                 @failure_message = "#{class_name} is protecting " <<
                   "#{protected_attributes.to_a.to_sentence}, " <<

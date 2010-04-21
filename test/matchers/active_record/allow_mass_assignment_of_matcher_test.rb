@@ -63,6 +63,12 @@ class AllowMassAssignmentOfMatcherTest < ActiveSupport::TestCase # :nodoc:
     should "accept being mass-assignable" do
       assert_accepts allow_mass_assignment_of(:attr), @model
     end
+
+    should "assign a negative failure message" do
+      matcher = allow_mass_assignment_of(:attr)
+      matcher.matches?(@model)
+      assert_not_nil matcher.negative_failure_message
+    end
   end
 
 end
