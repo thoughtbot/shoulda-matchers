@@ -1,9 +1,12 @@
-require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
+require 'test_helper'
 
 class FilterParamMatcherTest < ActionController::TestCase # :nodoc:
 
   context "a controller that filters no parameters" do
     setup do
+      if Rails.respond_to?(:application)
+        Rails.application.config.filter_parameters = []
+      end
       @controller = define_controller(:examples).new
     end
 
@@ -14,8 +17,13 @@ class FilterParamMatcherTest < ActionController::TestCase # :nodoc:
 
   context "a controller that filters a parameter" do
     setup do
+      if Rails.respond_to?(:application)
+        Rails.application.config.filter_parameters = [:password]
+      end
       @controller = define_controller :examples do
-        filter_parameter_logging :password
+        unless Rails.respond_to?(:application)
+          filter_parameter_logging :password
+        end
       end.new
     end
 

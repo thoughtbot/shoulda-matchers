@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class Pets::DogTest < ActiveSupport::TestCase
   should_belong_to :user

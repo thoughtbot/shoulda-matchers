@@ -9,14 +9,21 @@ module Shoulda # :nodoc:
       #   it { should render_with_layout }
       #   it { should render_with_layout(:special) }
       #   it { should_not render_with_layout }
-      def render_with_layout(layout = nil)
-        RenderWithLayout.new(layout)
+      def render_with_layout(expected_layout = nil)
+        RenderWithLayout.new(expected_layout)
       end
 
       class RenderWithLayout # :nodoc:
 
-        def initialize(layout)
-          @layout = layout.to_s unless layout.nil?
+        def initialize(expected_layout)
+          @expected_layout = expected_layout.to_s unless expected_layout.nil?
+        end
+
+        # Used to provide access to layouts recorded by
+        # ActionController::TemplateAssertions in Rails 3
+        def in_context(context)
+          @context = context
+          self
         end
 
         def matches?(controller)
@@ -34,10 +41,10 @@ module Shoulda # :nodoc:
 
         def description
           description = "render with "
-          if @layout.nil?
+          if @expected_layout.nil?
             description << "a layout"
           else
-            description << "the #{@layout.inspect} layout"
+            description << "the #{@expected_layout.inspect} layout"
           end
           description
         end
@@ -45,20 +52,30 @@ module Shoulda # :nodoc:
         private
 
         def rendered_with_layout?
-          !layout.blank?
+          !rendered_layouts.empty?
         end
 
         def rendered_with_expected_layout?
-          return true if @layout.nil?
-          layout == @layout
+          return true if @expected_layout.nil?
+          rendered_layouts.include?(@expected_layout)
         end
 
-        def layout
-          layout = @controller.response.layout
-          if layout.nil?
-            nil
+        def rendered_layouts
+          if recorded_layouts
+            recorded_layouts.keys.compact.map { |layout| layout.sub(%r{^layouts/}, '') }
           else
-            layout.split('/').last
+            layout = @controller.response.layout
+            if layout.nil?
+              []
+            else
+              [layout.split('/').last]
+            end
+          end
+        end
+
+        def recorded_layouts
+          if @context
+            @context.instance_variable_get('@layouts')
           end
         end
 
@@ -68,7 +85,8 @@ module Shoulda # :nodoc:
 
         def result
           if rendered_with_layout?
-            "rendered with the #{layout.inspect} layout"
+            "rendered with " <<
+              rendered_layouts.map { |layout| layout.inspect }.join(", ")
           else
             "rendered without a layout"
           end

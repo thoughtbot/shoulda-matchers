@@ -5,13 +5,24 @@ class HaveSentEmailTest < ActiveSupport::TestCase # :nodoc:
     setup do
       define_mailer :mailer, [:the_email] do
         def the_email
-          from       "do-not-reply@example.com"
-          recipients "myself@me.com"
-          subject    "This is spam"
-          body       :body => "Every email is spam."
+          if defined?(AbstractController::Rendering)
+            mail :from    => "do-not-reply@example.com",
+                 :to      => "myself@me.com",
+                 :subject => "This is spam",
+                 :body    => "Every email is spam."
+          else
+            from       "do-not-reply@example.com"
+            recipients "myself@me.com"
+            subject    "This is spam"
+            body       "Every email is spam."
+          end
         end
       end
-      @mail = Mailer.create_the_email
+      if defined?(AbstractController::Rendering)
+        @mail = Mailer.the_email
+      else
+        @mail = Mailer.create_the_email
+      end
     end
 
     should "accept based on the subject" do

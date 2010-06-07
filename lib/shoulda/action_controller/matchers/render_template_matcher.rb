@@ -14,7 +14,7 @@ module Shoulda # :nodoc:
       class RenderTemplateMatcher # :nodoc:
 
         def initialize(template, context)
-          @template = template
+          @template = template.to_s
           @context  = context
         end
 

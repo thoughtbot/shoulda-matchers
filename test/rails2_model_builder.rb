@@ -1,7 +1,7 @@
 class ActiveSupport::TestCase  
 
   TMP_VIEW_PATH =
-    File.expand_path(File.join(File.dirname(__FILE__), '..', 'rails_root', 'tmp', 'views')).freeze
+    File.expand_path(File.join(File.dirname(__FILE__), 'rails2_root', 'tmp', 'views')).freeze
 
   def create_table(table_name, &block)
     connection = ActiveRecord::Base.connection
@@ -53,7 +53,7 @@ class ActiveSupport::TestCase
     class_name = name.to_s.pluralize.classify
     klass = define_constant(class_name, ActionMailer::Base, &block)
 
-    paths.each {|path| create_view("#{name}/#{path}", "<%= @body %>")}
+    paths.each {|path| create_view("#{name}/#{path}", "<%= @message %>")}
     klass.template_root = TMP_VIEW_PATH
   end
 

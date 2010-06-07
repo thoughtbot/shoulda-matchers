@@ -1,19 +1,24 @@
 require 'fileutils'
+require 'test/unit'
 
-# Load the environment
 ENV['RAILS_ENV'] = 'test'
 
-rails_root = File.dirname(__FILE__) + '/rails_root'
+ENV['RAILS_VERSION'] ||= '2.3.8'
+RAILS_GEM_VERSION = ENV['RAILS_VERSION']
 
-require "#{rails_root}/config/environment.rb"
+if ENV['RAILS_VERSION'].to_s =~ /^2/
+  require 'test/rails2_test_helper'
+else
+  require 'test/rails3_test_helper'
+end
 
-# Load the testing framework
-require 'test_help'
-silence_warnings { RAILS_ENV = ENV['RAILS_ENV'] }
+shoulda_path = File.join(File.dirname(__FILE__), '..', 'lib')
+$LOAD_PATH << shoulda_path
+require 'shoulda'
 
 # Run the migrations
 ActiveRecord::Migration.verbose = false
-ActiveRecord::Migrator.migrate("#{RAILS_ROOT}/db/migrate")
+ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate")
 
 # Setup the fixtures path
 ActiveSupport::TestCase.fixture_path =
@@ -25,4 +30,7 @@ class ActiveSupport::TestCase #:nodoc:
 end
 
 require 'test/fail_macros'
-require 'test/model_builder'
+
+Shoulda.autoload_macros File.join(File.dirname(__FILE__), 'rails2_root'),
+                        File.join("vendor", "{plugins,gems}", "*")
+

@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
+require 'test_helper'
 
 class AssociationMatcherTest < ActiveSupport::TestCase # :nodoc:
 
@@ -166,55 +166,55 @@ class AssociationMatcherTest < ActiveSupport::TestCase # :nodoc:
 
   context "have_one" do
     setup do
-      @matcher = have_one(:profile)
+      @matcher = have_one(:detail)
     end
 
     should "accept a valid association without any options" do
-      define_model :profile, :person_id => :integer
+      define_model :detail, :person_id => :integer
       define_model :person do
-        has_one :profile
+        has_one :detail
       end
       assert_accepts @matcher, Person.new
     end
 
     should "accept a valid association with an :as option" do
-      define_model :profile, :profilable_id   => :integer,
-                                  :profilable_type => :string
+      define_model :detail, :detailable_id   => :integer,
+                                  :detailable_type => :string
       define_model :person do
-        has_one :profile, :as => :profilable
+        has_one :detail, :as => :detailable
       end
       assert_accepts @matcher, Person.new
     end
 
     should "reject an association that has a nonexistent foreign key" do
-      define_model :profile
+      define_model :detail
       define_model :person do
-        has_one :profile
+        has_one :detail
       end
       assert_rejects @matcher, Person.new
     end
 
     should "reject an association with a bad :as option" do
-      define_model :profile, :profilable_id   => :integer,
-                                  :profilable_type => :string
+      define_model :detail, :detailable_id   => :integer,
+                                  :detailable_type => :string
       define_model :person do
-        has_one :profile, :as => :describable
+        has_one :detail, :as => :describable
       end
       assert_rejects @matcher, Person.new
     end
 
     should "accept an association with a valid :dependent option" do
-      define_model :profile, :person_id => :integer
+      define_model :detail, :person_id => :integer
       define_model :person do
-        has_one :profile, :dependent => :destroy
+        has_one :detail, :dependent => :destroy
       end
       assert_accepts @matcher.dependent(:destroy), Person.new
     end
 
     should "reject an association with a bad :dependent option" do
-      define_model :profile, :person_id => :integer
+      define_model :detail, :person_id => :integer
       define_model :person do
-        has_one :profile
+        has_one :detail
       end
       assert_rejects @matcher.dependent(:destroy), Person.new
     end

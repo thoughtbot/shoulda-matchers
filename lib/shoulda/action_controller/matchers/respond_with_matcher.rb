@@ -64,7 +64,11 @@ module Shoulda # :nodoc:
           when :missing  then 404
           when :error    then 500..599
           when Symbol 
-            ::ActionController::StatusCodes::SYMBOL_TO_STATUS_CODE[potential_symbol]
+            if defined?(::Rack::Utils::SYMBOL_TO_STATUS_CODE)
+              ::Rack::Utils::SYMBOL_TO_STATUS_CODE[potential_symbol]
+            else
+              ::ActionController::Base::SYMBOL_TO_STATUS_CODE[potential_symbol]
+            end
           else
             potential_symbol
           end

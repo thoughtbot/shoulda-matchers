@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), '..', 'test_helper')
+require 'test_helper'
 
 class ShouldTest < ActiveSupport::TestCase # :nodoc:
   should "be able to define a should statement outside of a context" do

@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
+require 'test_helper'
 
 class RespondWithMatcherTest < ActionController::TestCase # :nodoc:
 
@@ -88,16 +88,6 @@ class RespondWithMatcherTest < ActionController::TestCase # :nodoc:
     end
     
     should "reject responding with another status" do
-      assert_rejects respond_with(:success), @controller
-    end
-  end
-  
-  context "a controller raising an error" do
-    setup do
-      @controller = build_response { raise RailsError }
-    end
-
-    should "reject responding with any status" do
       assert_rejects respond_with(:success), @controller
     end
   end

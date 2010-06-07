@@ -10,7 +10,7 @@ load 'tasks/shoulda.rake'
 # Test::Unit::UI::VERBOSE
 test_files_pattern = 'test/{unit,functional,other,matchers}/**/*_test.rb'
 Rake::TestTask.new do |t|
-  t.libs << 'lib'
+  t.libs << 'lib' << 'test'
   t.pattern = test_files_pattern
   t.verbose = false
 end
@@ -35,8 +35,12 @@ task :sync_docs => 'rdoc' do
   `rsync -ave ssh doc/ dev@dev.thoughtbot.com:/home/dev/www/dev.thoughtbot.com/shoulda`
 end
 
-desc 'Default: run tests.'
-task :default => ['test']
+desc 'Default: run tests for all supported versions of Rails'
+task :default do
+  %w(2.3.8 3.0.0.beta3).each do |version|
+    system("RAILS_VERSION=#{version} rake -s test;")
+  end
+end
 
 spec = Gem::Specification.new do |s|
   s.name              = "shoulda"

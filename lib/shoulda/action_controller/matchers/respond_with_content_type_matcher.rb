@@ -55,7 +55,7 @@ module Shoulda # :nodoc:
         protected
         
         def response_content_type
-          @controller.response.content_type
+          @controller.response.content_type.to_s
         end
         
         def lookup_by_extension(extension)

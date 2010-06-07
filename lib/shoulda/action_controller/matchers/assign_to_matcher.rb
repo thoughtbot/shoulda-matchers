@@ -102,11 +102,7 @@ module Shoulda # :nodoc:
         end
 
         def assigned_value
-          assigns[@variable]
-        end
-
-        def assigns
-          @controller.response.template.assigns
+          @controller.instance_variable_get("@#{@variable}")
         end
 
       end

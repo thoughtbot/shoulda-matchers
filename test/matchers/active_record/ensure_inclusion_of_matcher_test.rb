@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
+require 'test_helper'
 
 class EnsureInclusionOfMatcherTest < ActiveSupport::TestCase # :nodoc:
 
@@ -56,7 +56,8 @@ class EnsureInclusionOfMatcherTest < ActiveSupport::TestCase # :nodoc:
   context "an attribute with custom range validations" do
     setup do
       define_model :example, :attr => :integer do
-        def validate
+        validate :custom_validation
+        def custom_validation
           if attr < 2
             errors.add(:attr, 'too low')
           elsif attr > 5

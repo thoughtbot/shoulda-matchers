@@ -70,7 +70,11 @@ module Shoulda # :nodoc:
         end
 
         def session
-          @controller.response.session.data
+          if @controller.request.respond_to?(:session)
+            @controller.request.session.to_hash
+          else
+            @controller.response.session.data
+          end
         end
 
         def expectation

@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class TagTest < ActiveSupport::TestCase
   should_have_many :taggings, :dependent => :destroy

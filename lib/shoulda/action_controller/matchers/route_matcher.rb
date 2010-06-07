@@ -36,6 +36,7 @@ module Shoulda # :nodoc:
 
         def to(params)
           @params = params
+          stringify_params!
           self
         end
 
@@ -47,7 +48,6 @@ module Shoulda # :nodoc:
         def matches?(controller)
           @controller = controller
           guess_controller!
-          stringify_params!
           route_recognized?
         end
 

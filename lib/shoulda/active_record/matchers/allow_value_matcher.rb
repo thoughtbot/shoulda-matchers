@@ -59,9 +59,17 @@ module Shoulda # :nodoc:
 
         def errors_match?
           @instance.valid?
-          @errors = @instance.errors.on(@attribute)
+          @errors = errors_for_attribute(@instance, @attribute)
           @errors = [@errors] unless @errors.is_a?(Array)
-          @expected_message ? (errors_match_regexp? || errors_match_string?) : (@errors != [nil])
+          @expected_message ? (errors_match_regexp? || errors_match_string?) : (@errors.compact.any?)
+        end
+
+        def errors_for_attribute(instance, attribute)
+          if instance.errors.respond_to?(:[])
+            instance.errors[attribute]
+          else
+            instance.errors.on(attribute)
+          end
         end
 
         def errors_match_regexp?
