@@ -23,6 +23,8 @@ module Shoulda # :nodoc:
       include Helpers
       include Matchers
 
+      # Deprecated: use ActiveRecord::Matchers#validate_presence_of instead.
+      #
       # Ensures that the model cannot be saved if one of the attributes listed is not present.
       #
       # Options:
@@ -40,12 +42,13 @@ module Shoulda # :nodoc:
           should validate_presence_of(attribute).with_message(message)
         end
       end
-      
+
+      # Deprecated: use ActiveRecord::Matchers#validate_uniqueness_of instead.
+      #
       # Ensures that the model cannot be saved if one of the attributes listed is not unique.
       # Requires an existing record
       #
       # Options:
-
       # * <tt>:message</tt> - value the test expects to find in <tt>errors.on(:attribute)</tt>.
       #   Regexp or string.  Default = <tt>I18n.translate('activerecord.errors.messages.taken')</tt>
       # * <tt>:scoped_to</tt> - field(s) to scope the uniqueness to.
@@ -73,6 +76,8 @@ module Shoulda # :nodoc:
         end
       end
 
+      # Deprecated: use ActiveRecord::Matchers#allow_mass_assignment_of instead.
+      #
       # Ensures that the attribute can be set on mass update.
       #
       #   should_allow_mass_assignment_of :first_name, :last_name
@@ -86,6 +91,8 @@ module Shoulda # :nodoc:
         end
       end
 
+      # Deprecated: use ActiveRecord::Matchers#allow_mass_assignment_of instead.
+      #
       # Ensures that the attribute cannot be set on mass update.
       #
       #   should_not_allow_mass_assignment_of :password, :admin_flag
@@ -99,6 +106,8 @@ module Shoulda # :nodoc:
         end
       end
 
+      # Deprecated: use ActiveRecord::Matchers#have_readonly_attribute instead.
+      #
       # Ensures that the attribute cannot be changed once the record has been created.
       #
       #   should_have_readonly_attributes :password, :admin_flag
@@ -112,6 +121,8 @@ module Shoulda # :nodoc:
         end
       end
 
+      # Deprecated: use ActiveRecord::Matchers#allow_value instead.
+      #
       # Ensures that the attribute cannot be set to the given values
       #
       # Options:
@@ -130,6 +141,8 @@ module Shoulda # :nodoc:
         end
       end
 
+      # Deprecated: use ActiveRecord::Matchers#allow_value instead.
+      #
       # Ensures that the attribute can be set to the given values.
       #
       # Example:
@@ -143,6 +156,8 @@ module Shoulda # :nodoc:
         end
       end
 
+      # Deprecated: use ActiveRecord::Matchers#ensure_length_of instead.
+      #
       # Ensures that the length of the attribute is in the given range
       #
       # Options:
@@ -166,6 +181,8 @@ module Shoulda # :nodoc:
           with_long_message(long_message)
       end
 
+      # Deprecated: use ActiveRecord::Matchers#ensure_length_of instead.
+      #
       # Ensures that the length of the attribute is at least a certain length
       #
       # Options:
@@ -184,6 +201,8 @@ module Shoulda # :nodoc:
           with_short_message(short_message)
       end
 
+      # Deprecated: use ActiveRecord::Matchers#ensure_length_of instead.
+      #
       # Ensures that the length of the attribute is exactly a certain length
       #
       # Options:
@@ -201,6 +220,8 @@ module Shoulda # :nodoc:
           with_message(message)
       end
 
+      # Deprecated: use ActiveRecord::Matchers#ensure_inclusion_of instead.
+      #
       # Ensure that the attribute is in the range specified
       #
       # Options:
@@ -225,6 +246,8 @@ module Shoulda # :nodoc:
           with_high_message(high_message)
       end
 
+      # Deprecated: use ActiveRecord::Matchers#validate_numericality_of instead.
+      #
       # Ensure that the attribute is numeric
       #
       # Options:
@@ -243,6 +266,8 @@ module Shoulda # :nodoc:
         end
       end
 
+      # Deprecated: use ActiveRecord::Matchers#have_many instead.
+      #
       # Ensures that the has_many relationship exists.  Will also test that the
       # associated table has the required columns.  Works with polymorphic
       # associations.
@@ -264,6 +289,8 @@ module Shoulda # :nodoc:
         end
       end
 
+      # Deprecated: use ActiveRecord::Matchers#have_one instead.
+      #
       # Ensure that the has_one relationship exists.  Will also test that the
       # associated table has the required columns.  Works with polymorphic
       # associations.
@@ -282,6 +309,8 @@ module Shoulda # :nodoc:
         end
       end
 
+      # Deprecated: use ActiveRecord::Matchers#have_and_belong_to_many instead.
+      #
       # Ensures that the has_and_belongs_to_many relationship exists, and that the join
       # table is in place.
       #
@@ -296,6 +325,8 @@ module Shoulda # :nodoc:
         end
       end
 
+      # Deprecated: use ActiveRecord::Matchers#belong_to instead.
+      #
       # Ensure that the belongs_to relationship exists.
       #
       #   should_belong_to :parent
@@ -308,6 +339,8 @@ module Shoulda # :nodoc:
         end
       end
 
+      # Deprecated.
+      #
       # Ensure that the given class methods are defined on the model.
       #
       #   should_have_class_methods :find, :destroy
@@ -323,6 +356,8 @@ module Shoulda # :nodoc:
         end
       end
 
+      # Deprecated.
+      #
       # Ensure that the given instance methods are defined on the model.
       #
       #   should_have_instance_methods :email, :name, :name=
@@ -338,6 +373,8 @@ module Shoulda # :nodoc:
         end
       end
 
+      # Deprecated: use ActiveRecord::Matchers#have_db_column instead.
+      #
       # Ensure that the given columns are defined on the models backing SQL table.
       # Also aliased to should_have_db_column for readability.
       # Takes the same options available in migrations: 
@@ -367,6 +404,8 @@ module Shoulda # :nodoc:
 
       alias_method :should_have_db_column, :should_have_db_columns
 
+      # Deprecated: use ActiveRecord::Matchers#have_db_index instead.
+      #
       # Ensures that there are DB indices on the given columns or tuples of columns.
       # Also aliased to should_have_db_index for readability
       #
@@ -394,6 +433,8 @@ module Shoulda # :nodoc:
 
       alias_method :should_have_db_index, :should_have_db_indices
 
+      # Deprecated: use ActiveRecord::Matchers#validate_acceptance_of instead.
+      #
       # Ensures that the model cannot be saved if one of the attributes listed is not accepted.
       #
       # Options:

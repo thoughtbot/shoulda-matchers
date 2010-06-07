@@ -2,6 +2,8 @@ require 'shoulda/private_helpers'
 
 module Shoulda # :nodoc:
   module Macros
+    # Deprecated.
+    #
     # Macro that creates a test asserting a change between the return value
     # of a block that is run before and after the current setup block
     # is run. This is similar to Active Support's <tt>assert_difference</tt>
@@ -53,6 +55,8 @@ module Shoulda # :nodoc:
       end
     end
 
+    # Deprecated.
+    #
     # Macro that creates a test asserting no change between the return value
     # of a block that is run before and after the current setup block
     # is run. This is the logical opposite of should_change.
@@ -74,6 +78,8 @@ module Shoulda # :nodoc:
       end
     end
 
+    # Deprecated.
+    #
     # Macro that creates a test asserting that a record of the given class was
     # created.
     #
@@ -88,6 +94,8 @@ module Shoulda # :nodoc:
       should_change_record_count_of(class_name, 1, 'create')
     end
 
+    # Deprecated.
+    #
     # Macro that creates a test asserting that a record of the given class was
     # destroyed.
     #

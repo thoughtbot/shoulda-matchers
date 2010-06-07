@@ -24,6 +24,8 @@ module Shoulda # :nodoc:
     module Macros
       include Matchers
 
+      # Deprecated: use ActionController::Matchers#set_the_flash instead.
+      #
       # Macro that creates a test asserting that the flash contains the given
       # value. Expects a +String+ or +Regexp+.
       #
@@ -36,12 +38,16 @@ module Shoulda # :nodoc:
         should set_the_flash.to(val)
       end
 
+      # Deprecated: use ActionController::Matchers#set_the_flash instead.
+      #
       # Macro that creates a test asserting that the flash is empty.
       def should_not_set_the_flash
         ::ActiveSupport::Deprecation.warn("use: should_not set_the_flash")
         should_not set_the_flash
       end
 
+      # Deprecated: use ActionController::Matchers#filter_param instead.
+      #
       # Macro that creates a test asserting that filter_parameter_logging
       # is set for the specified keys
       #
@@ -55,6 +61,8 @@ module Shoulda # :nodoc:
         end
       end
 
+      # Deprecated: use ActionController::Matchers#assign_to instead.
+      #
       # Macro that creates a test asserting that the controller assigned to
       # each of the named instance variable(s).
       #
@@ -79,6 +87,8 @@ module Shoulda # :nodoc:
         end
       end
 
+      # Deprecated: use ActionController::Matchers#assign_to instead.
+      #
       # Macro that creates a test asserting that the controller did not assign to
       # any of the named instance variable(s).
       #
@@ -92,6 +102,8 @@ module Shoulda # :nodoc:
         end
       end
 
+      # Deprecated: use ActionController::Matchers#respond_with instead.
+      #
       # Macro that creates a test asserting that the controller responded with a 'response' status code.
       # Example:
       #
@@ -101,6 +113,8 @@ module Shoulda # :nodoc:
         should respond_with(response)
       end
 
+      # Deprecated: use ActionController::Matchers#respond_with_content_type instead.
+      #
       # Macro that creates a test asserting that the response content type was 'content_type'.
       # Example:
       #
@@ -112,6 +126,8 @@ module Shoulda # :nodoc:
         should respond_with_content_type(content_type)
       end
 
+      # Deprecated: use ActionController::Matchers#set_session instead.
+      #
       # Macro that creates a test asserting that a value returned from the
       # session is correct. Expects the session key as a parameter, and a block
       # that returns the expected value.
@@ -127,6 +143,8 @@ module Shoulda # :nodoc:
         should matcher
       end
 
+      # Deprecated: use ActionController::Matchers#render_template instead.
+      #
       # Macro that creates a test asserting that the controller rendered the given template.
       # Example:
       #
@@ -136,6 +154,8 @@ module Shoulda # :nodoc:
         should render_template(template)
       end
 
+      # Deprecated: use ActionController::Matchers#render_with_layout instead.
+      #
       # Macro that creates a test asserting that the controller rendered with the given layout.
       # Example:
       #
@@ -145,6 +165,8 @@ module Shoulda # :nodoc:
         should render_with_layout(expected_layout)
       end
 
+      # Deprecated: use ActionController::Matchers#render_with_layout instead.
+      #
       # Macro that creates a test asserting that the controller rendered without a layout.
       # Same as @should_render_with_layout false@
       def should_render_without_layout
@@ -152,6 +174,8 @@ module Shoulda # :nodoc:
         should_not render_with_layout
       end
 
+      # Deprecated: use ActionController::Matchers#redirect_to instead.
+      #
       # Macro that creates a test asserting that the controller returned a
       # redirect to the given path. The passed description will be used when
       # generating a test name. Expects a block that returns the expected path
@@ -165,6 +189,8 @@ module Shoulda # :nodoc:
         should redirect_to(description, &block)
       end
 
+      # Deprecated: use ActionController::Matchers#route instead.
+      #
       # Macro that creates a routing test. It tries to use the given HTTP
       # +method+ on the given +path+, and asserts that it routes to the
       # given +options+.
