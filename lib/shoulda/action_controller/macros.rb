@@ -32,11 +32,13 @@ module Shoulda # :nodoc:
       #   should_set_the_flash_to "Thank you for placing this order."
       #   should_set_the_flash_to /created/i
       def should_set_the_flash_to(val)
+        ::ActiveSupport::Deprecation.warn("use: should set_the_flash")
         should set_the_flash.to(val)
       end
 
       # Macro that creates a test asserting that the flash is empty.
       def should_not_set_the_flash
+        ::ActiveSupport::Deprecation.warn("use: should_not set_the_flash")
         should_not set_the_flash
       end
 
@@ -47,6 +49,7 @@ module Shoulda # :nodoc:
       #
       #   should_filter_params :password, :ssn
       def should_filter_params(*keys)
+        ::ActiveSupport::Deprecation.warn("use: should filter_param")
         keys.each do |key|
           should filter_param(key)
         end
@@ -67,6 +70,7 @@ module Shoulda # :nodoc:
       #   should_assign_to :user, :class => User
       #   should_assign_to(:user) { @user }
       def should_assign_to(*names, &block)
+        ::ActiveSupport::Deprecation.warn("use: should assign_to")
         klass = get_options!(names, :class)
         names.each do |name|
           matcher = assign_to(name).with_kind_of(klass)
@@ -82,6 +86,7 @@ module Shoulda # :nodoc:
       #
       #   should_not_assign_to :user, :posts
       def should_not_assign_to(*names)
+        ::ActiveSupport::Deprecation.warn("use: should_not assign_to")
         names.each do |name|
           should_not assign_to(name)
         end
@@ -92,6 +97,7 @@ module Shoulda # :nodoc:
       #
       #   should_respond_with :success
       def should_respond_with(response)
+        ::ActiveSupport::Deprecation.warn("use: should respond_with")
         should respond_with(response)
       end
 
@@ -102,6 +108,7 @@ module Shoulda # :nodoc:
       #   should_respond_with_content_type :rss
       #   should_respond_with_content_type /rss/
       def should_respond_with_content_type(content_type)
+        ::ActiveSupport::Deprecation.warn("use: should respond_with_content_type")
         should respond_with_content_type(content_type)
       end
 
@@ -114,6 +121,7 @@ module Shoulda # :nodoc:
       #   should_set_session(:user_id) { @user.id }
       #   should_set_session(:message) { "Free stuff" }
       def should_set_session(key, &block)
+        ::ActiveSupport::Deprecation.warn("use: should set_session")
         matcher = set_session(key)
         matcher = matcher.to(&block) if block
         should matcher
@@ -124,6 +132,7 @@ module Shoulda # :nodoc:
       #
       #   should_render_template :new
       def should_render_template(template)
+        ::ActiveSupport::Deprecation.warn("use: should render_template")
         should render_template(template)
       end
 
@@ -132,12 +141,14 @@ module Shoulda # :nodoc:
       #
       #   should_render_with_layout 'special'
       def should_render_with_layout(expected_layout = 'application')
+        ::ActiveSupport::Deprecation.warn("use: should render_with_layout")
         should render_with_layout(expected_layout)
       end
 
       # Macro that creates a test asserting that the controller rendered without a layout.
       # Same as @should_render_with_layout false@
       def should_render_without_layout
+        ::ActiveSupport::Deprecation.warn("use: should_not render_with_layout")
         should_not render_with_layout
       end
 
@@ -150,6 +161,7 @@ module Shoulda # :nodoc:
       #
       #   should_redirect_to("the user's profile") { user_url(@user) }
       def should_redirect_to(description, &block)
+        ::ActiveSupport::Deprecation.warn("use: should redirect_to")
         should redirect_to(description, &block)
       end
 
@@ -175,6 +187,7 @@ module Shoulda # :nodoc:
       #     :action => :show, :id => 1, :user_id => 1
       #
       def should_route(method, path, options)
+        ::ActiveSupport::Deprecation.warn("use: should route")
         should route(method, path).to(options)
       end
     end

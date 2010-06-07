@@ -33,6 +33,7 @@ module Shoulda # :nodoc:
       #   should_validate_presence_of :name, :phone_number
       #
       def should_validate_presence_of(*attributes)
+        ::ActiveSupport::Deprecation.warn("use: should validate_presence_of")
         message = get_options!(attributes, :message)
 
         attributes.each do |attribute|
@@ -59,6 +60,7 @@ module Shoulda # :nodoc:
       #   should_validate_uniqueness_of :email, :case_sensitive => false
       #
       def should_validate_uniqueness_of(*attributes)
+        ::ActiveSupport::Deprecation.warn("use: should validate_uniqueness_of")
         message, scope, case_sensitive = get_options!(attributes, :message, :scoped_to, :case_sensitive)
         scope = [*scope].compact
         case_sensitive = true if case_sensitive.nil?
@@ -76,6 +78,7 @@ module Shoulda # :nodoc:
       #   should_allow_mass_assignment_of :first_name, :last_name
       #
       def should_allow_mass_assignment_of(*attributes)
+        ::ActiveSupport::Deprecation.warn("use: should allow_mass_assignment_of")
         get_options!(attributes)
 
         attributes.each do |attribute|
@@ -88,6 +91,7 @@ module Shoulda # :nodoc:
       #   should_not_allow_mass_assignment_of :password, :admin_flag
       #
       def should_not_allow_mass_assignment_of(*attributes)
+        ::ActiveSupport::Deprecation.warn("use: should_not allow_mass_assignment_of")
         get_options!(attributes)
 
         attributes.each do |attribute|
@@ -100,6 +104,7 @@ module Shoulda # :nodoc:
       #   should_have_readonly_attributes :password, :admin_flag
       #
       def should_have_readonly_attributes(*attributes)
+        ::ActiveSupport::Deprecation.warn("use: should have_readonly_attribute")
         get_options!(attributes)
 
         attributes.each do |attribute|
@@ -118,6 +123,7 @@ module Shoulda # :nodoc:
       #   should_not_allow_values_for :isbn, "bad 1", "bad 2"
       #
       def should_not_allow_values_for(attribute, *bad_values)
+        ::ActiveSupport::Deprecation.warn("use: should_not allow_value")
         message = get_options!(bad_values, :message)
         bad_values.each do |value|
           should_not allow_value(value).for(attribute).with_message(message)
@@ -130,6 +136,7 @@ module Shoulda # :nodoc:
       #   should_allow_values_for :isbn, "isbn 1 2345 6789 0", "ISBN 1-2345-6789-0"
       #
       def should_allow_values_for(attribute, *good_values)
+        ::ActiveSupport::Deprecation.warn("use: should allow_value")
         get_options!(good_values)
         good_values.each do |value|
           should allow_value(value).for(attribute)
@@ -148,7 +155,8 @@ module Shoulda # :nodoc:
       #   should_ensure_length_in_range :password, (6..20)
       #
       def should_ensure_length_in_range(attribute, range, opts = {})
-        short_message, long_message = get_options!([opts], 
+        ::ActiveSupport::Deprecation.warn("use: should ensure_length_of.is_at_least.is_at_most")
+        short_message, long_message = get_options!([opts],
                                                    :short_message,
                                                    :long_message)
         should ensure_length_of(attribute).
@@ -168,6 +176,7 @@ module Shoulda # :nodoc:
       #   should_ensure_length_at_least :name, 3
       #
       def should_ensure_length_at_least(attribute, min_length, opts = {})
+        ::ActiveSupport::Deprecation.warn("use: should ensure_length_of.is_at_least")
         short_message = get_options!([opts], :short_message)
 
         should ensure_length_of(attribute).
@@ -185,6 +194,7 @@ module Shoulda # :nodoc:
       #   should_ensure_length_is :ssn, 9
       #
       def should_ensure_length_is(attribute, length, opts = {})
+        ::ActiveSupport::Deprecation.warn("use: should ensure_length_of.is_equal_to")
         message = get_options!([opts], :message)
         should ensure_length_of(attribute).
           is_equal_to(length).
@@ -203,6 +213,7 @@ module Shoulda # :nodoc:
       #   should_ensure_value_in_range :age, (0..100)
       #
       def should_ensure_value_in_range(attribute, range, opts = {})
+        ::ActiveSupport::Deprecation.warn("use: should ensure_inclusion_of.in_range")
         message, low_message, high_message = get_options!([opts],
                                                           :message,
                                                           :low_message,
@@ -224,6 +235,7 @@ module Shoulda # :nodoc:
       #   should_validate_numericality_of :age
       #
       def should_validate_numericality_of(*attributes)
+        ::ActiveSupport::Deprecation.warn("use: should validate_numericality_of")
         message = get_options!(attributes, :message)
         attributes.each do |attribute|
           should validate_numericality_of(attribute).
@@ -245,6 +257,7 @@ module Shoulda # :nodoc:
       #   should_have_many :enemies, :dependent => :destroy
       #
       def should_have_many(*associations)
+        ::ActiveSupport::Deprecation.warn("use: should have_many")
         through, dependent = get_options!(associations, :through, :dependent)
         associations.each do |association|
           should have_many(association).through(through).dependent(dependent)
@@ -262,6 +275,7 @@ module Shoulda # :nodoc:
       #   should_have_one :god # unless hindu
       #
       def should_have_one(*associations)
+        ::ActiveSupport::Deprecation.warn("use: should have_one")
         dependent, through = get_options!(associations, :dependent, :through)
         associations.each do |association|
           should have_one(association).dependent(dependent).through(through)
@@ -274,6 +288,7 @@ module Shoulda # :nodoc:
       #   should_have_and_belong_to_many :posts, :cars
       #
       def should_have_and_belong_to_many(*associations)
+        ::ActiveSupport::Deprecation.warn("use: should have_and_belong_to_many")
         get_options!(associations)
 
         associations.each do |association|
@@ -286,6 +301,7 @@ module Shoulda # :nodoc:
       #   should_belong_to :parent
       #
       def should_belong_to(*associations)
+        ::ActiveSupport::Deprecation.warn("use: should belong_to")
         dependent = get_options!(associations, :dependent)
         associations.each do |association|
           should belong_to(association).dependent(dependent)
@@ -297,6 +313,7 @@ module Shoulda # :nodoc:
       #   should_have_class_methods :find, :destroy
       #
       def should_have_class_methods(*methods)
+        ::ActiveSupport::Deprecation.warn
         get_options!(methods)
         klass = described_type
         methods.each do |method|
@@ -311,6 +328,7 @@ module Shoulda # :nodoc:
       #   should_have_instance_methods :email, :name, :name=
       #
       def should_have_instance_methods(*methods)
+        ::ActiveSupport::Deprecation.warn
         get_options!(methods)
         klass = described_type
         methods.each do |method|
@@ -334,6 +352,7 @@ module Shoulda # :nodoc:
       #   should_have_db_column :admin,  :default => false, :null => false
       #
       def should_have_db_columns(*columns)
+        ::ActiveSupport::Deprecation.warn("use: should have_db_column")
         column_type, precision, limit, default, null, scale, sql_type = 
           get_options!(columns, :type, :precision, :limit,
                                 :default, :null, :scale, :sql_type)
@@ -345,7 +364,7 @@ module Shoulda # :nodoc:
                                    :scale     => scale,     :sql_type => sql_type)
         end
       end
-      
+
       alias_method :should_have_db_column, :should_have_db_columns
 
       # Ensures that there are DB indices on the given columns or tuples of columns.
@@ -365,8 +384,9 @@ module Shoulda # :nodoc:
       #   should_have_db_index :ssn, :unique => true
       #
       def should_have_db_indices(*columns)
+        ::ActiveSupport::Deprecation.warn("use: should have_db_index")
         unique = get_options!(columns, :unique)
-        
+
         columns.each do |column|
           should have_db_index(column).unique(unique)
         end
@@ -384,6 +404,7 @@ module Shoulda # :nodoc:
       #   should_validate_acceptance_of :eula
       #
       def should_validate_acceptance_of(*attributes)
+        ::ActiveSupport::Deprecation.warn("use: should validate_acceptance_of")
         message = get_options!(attributes, :message)
 
         attributes.each do |attribute|
