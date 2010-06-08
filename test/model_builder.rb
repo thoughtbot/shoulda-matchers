@@ -49,6 +49,14 @@ class ActiveSupport::TestCase
     define_model_class(class_name, &block)
   end
 
+  def define_mailer(name, paths, &block)
+    class_name = name.to_s.pluralize.classify
+    klass = define_constant(class_name, ActionMailer::Base, &block)
+
+    paths.each {|path| create_view("#{name}/#{path}", "<%= @body %>")}
+    klass.template_root = TMP_VIEW_PATH
+  end
+
   def define_controller(class_name, &block)
     class_name = class_name.to_s
     class_name << 'Controller' unless class_name =~ /Controller$/

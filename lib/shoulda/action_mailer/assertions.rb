@@ -25,6 +25,8 @@ module Shoulda # :nodoc:
         end
       end
 
+      # should have_sent_email.with_subject(/hi there/).to('none@none.com').from('noreply@example.com').with_body(/reach out/)
+
       # Asserts that no ActionMailer mails were delivered
       #
       #  assert_did_not_send_email
