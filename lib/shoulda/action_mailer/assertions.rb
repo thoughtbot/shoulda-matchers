@@ -1,4 +1,3 @@
-### TODO: replace with matches
 module Shoulda # :nodoc:
   module ActionMailer # :nodoc:
     module Assertions
@@ -32,6 +31,7 @@ module Shoulda # :nodoc:
       #
       #  assert_did_not_send_email
       def assert_did_not_send_email
+        ::ActiveSupport::Deprecation.warn("use: should_not have_sent_email")
         msg = "Sent #{::ActionMailer::Base.deliveries.size} emails.\n"
         ::ActionMailer::Base.deliveries.each { |m| msg << "  '#{m.subject}' sent to #{m.to.to_sentence}\n" }
         assert ::ActionMailer::Base.deliveries.empty?, msg
