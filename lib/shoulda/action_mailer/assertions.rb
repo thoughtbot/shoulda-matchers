@@ -17,6 +17,7 @@ module Shoulda # :nodoc:
       # 'none@none.com' as one of the recipients.
       #
       def assert_sent_email
+      ::ActiveSupport::Deprecation.warn("use: should have_sent_email")
         emails = ::ActionMailer::Base.deliveries
         assert !emails.empty?, "No emails were sent"
         if block_given?
