@@ -1,4 +1,3 @@
-### TODO: replace with matches
 module Shoulda # :nodoc:
   module ActiveRecord # :nodoc:
     module Assertions
