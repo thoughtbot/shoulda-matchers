@@ -1,6 +1,4 @@
-module Shoulda
-  VERSION = "2.10.3"
-end
+require 'shoulda/version'
 
 if defined? Spec
   require 'shoulda/rspec'
