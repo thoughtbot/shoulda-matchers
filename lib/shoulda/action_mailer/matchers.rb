@@ -1,7 +1,7 @@
 require 'shoulda/action_mailer/matchers/have_sent_email'
 
 module Shoulda # :nodoc:
-  module ActiveRecord # :nodoc:
+  module ActionMailer # :nodoc:
     # = Matchers for your mailers
     #
     # This matcher will test that email is sent properly
