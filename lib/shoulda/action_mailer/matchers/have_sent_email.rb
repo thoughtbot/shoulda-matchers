@@ -32,13 +32,15 @@ module Shoulda # :nodoc:
         end
 
         def matches?(subject)
-          @mail = subject
-          @subject_failed = !regexp_or_string_match(@mail.subject, @email_subject) if @email_subject
-          @body_failed = !regexp_or_string_match(@mail.body, @body) if @body
-          @sender_failed = !regexp_or_string_match_in_array(@mail.from, @sender) if @sender
-          @recipient_failed = !regexp_or_string_match_in_array(@mail.to, @recipient) if @recipient
+          ::ActionMailer::Base.deliveries.each do |mail|
+            @subject_failed = !regexp_or_string_match(mail.subject, @email_subject) if @email_subject
+            @body_failed = !regexp_or_string_match(mail.body, @body) if @body
+            @sender_failed = !regexp_or_string_match_in_array(mail.from, @sender) if @sender
+            @recipient_failed = !regexp_or_string_match_in_array(mail.to, @recipient) if @recipient
+            return true unless anything_failed?
+          end
 
-          !anything_failed?
+          false
         end
 
         def failure_message
