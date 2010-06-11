@@ -7,6 +7,7 @@ module Test # :nodoc: all
     class TestCase
       include Shoulda::ActionMailer::Assertions
       include Shoulda::ActionMailer::Matchers
+      extend Shoulda::ActionMailer::Matchers
     end
   end
 end
