@@ -115,30 +115,16 @@ Any *.rb file under RAILS_ROOT/test/shoulda_macros/ or vendor/(plugins|gems)/gem
 
 = Rails Installation (Test::Unit)
 
-=== As a Gem
-
-Use this if you prefer to use versioned releases of shoulda.  Specify the gem dependency in your config/environment.rb file:
+Specify the gem dependency in your config/environment.rb file:
 
   Rails::Initializer.run do |config|
-    config.gem "thoughtbot-shoulda", :lib => "shoulda", :source => "http://gems.github.com"
+    config.gem "shoulda", :lib => "shoulda", :source => "http://gems.github.com"
   end
 
 Then:
 
   $ rake gems:install
   $ rake gems:unpack
-
-=== As a Plugin
-
-Use this if you prefer to use the edge version of shoulda:
-
-  $ script/plugin install git://github.com/thoughtbot/shoulda.git
-
-=== As a Plugin (using git submodules)
-
-Use this if you prefer the idea of being able to easily switch between using edge or a tagged version of shoulda:
-
-  $ git submodule add git://github.com/thoughtbot/shoulda.git vendor/plugins/shoulda
 
 = Rails Installation (RSpec)
 
@@ -148,7 +134,7 @@ Rails to load the RSpec and Shoulda libraries:
 
   config.gem 'rspec', :lib => false
   config.gem 'rspec-rails', :lib => false
-  config.gem 'thoughtbot-shoulda',
+  config.gem 'shoulda',
              :lib => false,
              :source => 'http://gems.github.com'
 
@@ -164,7 +150,7 @@ You should not need to require anything besides the top-level shoulda library.
 
 = Credits
 
-Shoulda is maintained by {Tammer Saleh}[mailto:tsaleh@thoughtbot.com], and is funded by Thoughtbot[http://www.thoughtbot.com], inc.
+Shoulda is maintained and funded by {thougthbot}[http://thoughtbot.com/community]
 
 = License
 
