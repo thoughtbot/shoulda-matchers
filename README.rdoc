@@ -108,7 +108,7 @@ More to come here, but have fun with what's there.
 Specify the gem dependency in your config/environment.rb file:
 
   Rails::Initializer.run do |config|
-    config.gem "shoulda", :lib => "shoulda", :source => "http://gems.github.com"
+    config.gem "shoulda", :lib => "shoulda"
   end
 
 Then:
@@ -122,11 +122,9 @@ If you're using Shoulda with RSpec, we recommend that you add config.gem lines
 for RSpec and Shoulda in your config/environment/test.rb file, but do not ask
 Rails to load the RSpec and Shoulda libraries:
 
-  config.gem 'rspec', :lib => false
+  config.gem 'rspec',       :lib => false
   config.gem 'rspec-rails', :lib => false
-  config.gem 'shoulda',
-             :lib => false,
-             :source => 'http://gems.github.com'
+  config.gem 'shoulda',     :lib => false
 
 Then require shoulda from your spec/spec_helper.rb file, before Spec::Runner is
 configured:
@@ -144,4 +142,4 @@ Shoulda is maintained and funded by {thougthbot}[http://thoughtbot.com/community
 
 = License
 
-Shoulda is Copyright © 2006-2008 Tammer Saleh, Thoughtbot. It is free software, and may be redistributed under the terms specified in the MIT-LICENSE file.
+Shoulda is Copyright © 2006-2010 Tammer Saleh, Thoughtbot. It is free software, and may be redistributed under the terms specified in the MIT-LICENSE file.
