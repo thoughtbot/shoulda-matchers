@@ -1,15 +1,63 @@
 = Shoulda - Making tests easy on the fingers and eyes
 
-Shoulda makes it easy to write elegant, understandable, and maintainable tests.  Shoulda consists of test macros, assertions, and helpers added on to the Test::Unit framework.  It's fully compatible with your existing tests, and requires no retooling to use.
+Shoulda makes it easy to write elegant, understandable, and maintainable tests. Shoulda consists of matchers, test helpers, and assertions. It's fully compatible with your existing tests in Test::Unit or RSpec, and requires no retooling to use.
 
-Helpers:: #context and #should give you RSpec like test blocks.
+Matchers:: Test::Unit- and RSpec-compatible one-liners that test common Rails functionality.
+           These tests would otherwise be much longer, more complex, and error-prone.
+Helpers:: #context and #should give you RSpec like test blocks in Test::Unit.
           In addition, you get nested contexts and a much more readable syntax.
-Macros:: Generate hundreds of lines of Controller and ActiveRecord tests with these powerful macros.
-         They get you started quickly, and can help you ensure that your application is conforming to best practices.
-Assertions:: Many common rails testing idioms have been distilled into a set of useful assertions.
-Matchers:: Rspec-compatible matchers providing the same tests as Shoulda macros.
+Assertions:: Many common Rails testing idioms have been distilled into a set of useful assertions.
 
 = Usage
+
+=== ActiveRecord Tests (Shoulda::ActiveRecord::Matchers)
+
+Test your ActiveRecord associations and validations with these powerful matchers:
+
+  class PostTest < Test::Unit::TestCase
+    should belong_to(:user)
+    should have_many(:tags).through(:taggings)
+
+    should validate_uniqueness_of(:title)
+    should validate_presence_of(:body).with_message(/wtf/)
+    should validate_presence_of(:title)
+    should validate_numericality_of(:user_id)
+  end
+
+  class UserTest < Test::Unit::TestCase
+    should have_many(:posts)
+
+    should_not allow_value("blah").for(:email)
+    should_not allow_value("b lah").for(:email)
+    should allow_value("a@b.com").for(:email)
+    should allow_value("asdf@asdf.com").for(:email)
+    should ensure_inclusion_of(:email).in_range(1..100)
+    should ensure_inclusion_of(:age).in_range(1..100)
+    should_not allow_mass_assignment_of(:password)
+  end
+
+Makes TDD so much easier.
+
+=== Controller Tests (Shoulda::Controller::Matchers)
+
+Matchers to test the most common controller patterns...
+
+  class PostsControllerTest < ActionController::TestCase
+    context "on GET to :show for first record" do
+      setup do
+        get :show, :id => 1
+      end
+
+      should assign_to(:user)
+      should respond_with(:success)
+      should render_template(:show)
+      should_not set_the_flash
+
+      should "do something else really cool" do
+        assert_equal 1, assigns(:user).id
+      end
+    end
+  end
 
 === Context Helpers (Shoulda::Context)
 
@@ -44,57 +92,6 @@ Produces the following test methods:
 
 So readable!
 
-=== ActiveRecord Tests (Shoulda::ActiveRecord::Macros)
-
-Quick macro tests for your ActiveRecord associations and validations:
-
-  class PostTest < Test::Unit::TestCase
-    fixtures :all
-
-    should belong_to(:user)
-    should have_many(:tags).through(:taggings)
-
-    should validate_uniqueness_of(:title)
-    should validate_presence_of(:body).with_message(/wtf/)
-    should validate_presence_of(:title)
-    should validate_numericality_of(:user_id)
-  end
-
-  class UserTest < Test::Unit::TestCase
-    should have_many(:posts)
-
-    should_not allow_value("blah").for(:email)
-    should_not allow_value("b lah").for(:email)
-    should allow_value("a@b.com").for(:email)
-    should allow_value("asdf@asdf.com").for(:email)
-    should ensure_inclusion_of(:email).in_range(1..100)
-    should ensure_inclusion_of(:age).in_range(1..100)
-    should_not allow_mass_assignment_of(:password)
-  end
-
-Makes TDD so much easier.
-
-=== Controller Tests (Shoulda::Controller::Macros)
-
-Macros to test the most common controller patterns...
-  
-  class PostsControllerTest < ActionController::TestCase
-    context "on GET to :show for first record" do
-      setup do
-        get :show, :id => 1
-      end
-
-      should assign_to(:user)
-      should respond_with(:success)
-      should render_template(:show)
-      should_not set_the_flash
-
-      should "do something else really cool" do
-        assert_equal 1, assigns(:user).id
-      end
-    end
-  end
-  
 === Helpful Assertions (Shoulda::Assertions)
 
 More to come here, but have fun with what's there.
