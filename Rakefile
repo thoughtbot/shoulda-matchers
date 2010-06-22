@@ -37,7 +37,7 @@ end
 
 desc 'Default: run tests for all supported versions of Rails'
 task :default do
-  %w(2.3.8 3.0.0.beta3).each do |version|
+  %w(2.3.8 3.0.0.beta4).each do |version|
     system("RAILS_VERSION=#{version} rake -s test;")
   end
 end
