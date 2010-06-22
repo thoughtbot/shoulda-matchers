@@ -20,9 +20,9 @@ module Shoulda # :nodoc:
       #   dependent option.
       #
       # Example:
-      #   it { should_have_many(:friends) }
-      #   it { should_have_many(:enemies).through(:friends) }
-      #   it { should_have_many(:enemies).dependent(:destroy) }
+      #   it { should have_many(:friends) }
+      #   it { should have_many(:enemies).through(:friends) }
+      #   it { should have_many(:enemies).dependent(:destroy) }
       #
       def have_many(name)
         AssociationMatcher.new(:has_many, name)

@@ -116,7 +116,7 @@ module Shoulda
     #      context "on GET" do
     #        setup { get :index }
     #
-    #        should_respond_with :success
+    #        should respond_with(:success)
     #
     #        # runs before "get :index"
     #        before_should "find all users" do
@@ -215,7 +215,7 @@ module Shoulda
     #     subject { User.first }
     #
     #     # uses the existing user
-    #     should_validate_uniqueness_of :email
+    #     should validate_uniqueness_of(:email)
     #   end
     def subject(&block)
       @subject_block = block
