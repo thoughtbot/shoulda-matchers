@@ -84,7 +84,7 @@ module Shoulda # :nodoc:
         def matches?(subject)
           super(subject)
           translate_messages!
-          disallows_lower_length && 
+          disallows_lower_length &&
             allows_minimum_length &&
             ((@minimum == @maximum) ||
               (disallows_higher_length &&
@@ -106,7 +106,7 @@ module Shoulda # :nodoc:
         end
 
         def disallows_lower_length
-          @minimum == 0 || 
+          @minimum == 0 ||
             @minimum.nil? ||
             disallows_length_of(@minimum - 1, @short_message)
         end

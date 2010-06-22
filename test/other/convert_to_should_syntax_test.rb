@@ -41,7 +41,7 @@ class ConvertToShouldSyntaxTest < ActiveSupport::TestCase # :nodoc:
 
     end
   EOS
-  
+
   FIXTURE_PATH = "./convert_to_should_syntax_fixture.dat"
 
   RUBY = ENV['RUBY'] || 'ruby'

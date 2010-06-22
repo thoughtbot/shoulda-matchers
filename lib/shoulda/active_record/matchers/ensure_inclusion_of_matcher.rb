@@ -57,7 +57,7 @@ module Shoulda # :nodoc:
           @low_message  ||= :inclusion
           @high_message ||= :inclusion
 
-          disallows_lower_value && 
+          disallows_lower_value &&
             allows_minimum_value &&
             disallows_higher_value &&
             allows_maximum_value

@@ -71,7 +71,7 @@ module Shoulda # :nodoc:
 
         def route_recognized?
           begin
-            @context.send(:assert_routing, 
+            @context.send(:assert_routing,
                           { :method => @method, :path => @path },
                           @params)
 

@@ -25,7 +25,7 @@ module Shoulda # :nodoc:
       end
 
       class ValidateFormatOfMatcher < ValidationMatcher # :nodoc:
-        
+
         def initialize(attribute)
           super
         end
@@ -34,20 +34,18 @@ module Shoulda # :nodoc:
           @expected_message = message if message
           self
         end
-        
+
         def with(value)
           raise "You may not call both with and not_with" if @value_to_fail
           @value_to_pass = value
           self
         end
-        
 
         def not_with(value)
           raise "You may not call both with and not_with" if @value_to_pass
           @value_to_fail = value
           self
         end
-
 
         def matches?(subject)
           super(subject)

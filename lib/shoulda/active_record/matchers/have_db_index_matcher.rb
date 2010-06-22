@@ -27,7 +27,7 @@ module Shoulda # :nodoc:
           @macro = macro
           @columns = normalize_columns_to_array(columns)
         end
-        
+
         def unique(unique)
           @unique = unique
           self
@@ -51,11 +51,11 @@ module Shoulda # :nodoc:
         end
 
         protected
-        
+
         def index_exists?
           ! matched_index.nil?
         end
-        
+
         def correct_unique?
           return true if @unique.nil?
           if matched_index.unique == @unique
@@ -66,7 +66,7 @@ module Shoulda # :nodoc:
             false
           end
         end
-        
+
         def matched_index
           indexes.detect { |each| each.columns == @columns }
         end
@@ -74,11 +74,11 @@ module Shoulda # :nodoc:
         def model_class
           @subject.class
         end
-        
+
         def table_name
           model_class.table_name
         end
-        
+
         def indexes
           ::ActiveRecord::Base.connection.indexes(table_name)
         end
@@ -86,7 +86,7 @@ module Shoulda # :nodoc:
         def expectation
           expected = "#{model_class.name} to #{description}"
         end
-        
+
         def index_type
           case @unique
           when nil
@@ -97,7 +97,7 @@ module Shoulda # :nodoc:
             'unique'
           end
         end
-        
+
         def normalize_columns_to_array(columns)
           if columns.class == Array
             columns.collect { |each| each.to_s }

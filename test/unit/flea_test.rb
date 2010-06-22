@@ -4,7 +4,7 @@ class FleaTest < ActiveSupport::TestCase
   should_have_and_belong_to_many :dogs
 
   context "when a flea is created" do
-    setup do 
+    setup do
       Flea.create
     end
 

@@ -1,11 +1,11 @@
-class ActiveSupport::TestCase  
+class ActiveSupport::TestCase
 
   TMP_VIEW_PATH =
     File.expand_path(File.join(File.dirname(__FILE__), 'rails3_root', 'tmp', 'views')).freeze
 
   def create_table(table_name, &block)
     connection = ActiveRecord::Base.connection
-    
+
     begin
       connection.execute("DROP TABLE IF EXISTS #{table_name}")
       connection.create_table(table_name, &block)
@@ -69,7 +69,7 @@ class ActiveSupport::TestCase
     klass = define_controller('Examples')
     block ||= lambda { render :nothing => true }
     klass.class_eval { layout false; define_method(action, &block) }
-    define_routes do |map| 
+    define_routes do |map|
       map.connect 'examples', :controller => 'examples', :action => action
     end
 
@@ -94,7 +94,7 @@ class ActiveSupport::TestCase
 
   def teardown_with_models
     if @defined_constants
-      @defined_constants.each do |class_name| 
+      @defined_constants.each do |class_name|
         Object.send(:remove_const, class_name)
       end
     end

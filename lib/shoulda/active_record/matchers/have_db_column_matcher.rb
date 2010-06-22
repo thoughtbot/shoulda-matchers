@@ -24,12 +24,12 @@ module Shoulda # :nodoc:
           @macro  = macro
           @column = column
         end
-        
+
         def of_type(column_type)
           @column_type = column_type
           self
         end
-        
+
         def with_options(opts = {})
           @precision = opts[:precision]
           @limit     = opts[:limit]
@@ -41,8 +41,8 @@ module Shoulda # :nodoc:
 
         def matches?(subject)
           @subject = subject
-          column_exists? && 
-            correct_column_type? && 
+          column_exists? &&
+            correct_column_type? &&
             correct_precision? &&
             correct_limit? &&
             correct_default? &&
@@ -80,7 +80,7 @@ module Shoulda # :nodoc:
             false
           end
         end
-        
+
         def correct_column_type?
           return true if @column_type.nil?
           if matched_column.type.to_s == @column_type.to_s
@@ -91,7 +91,7 @@ module Shoulda # :nodoc:
             false
           end
         end
-        
+
         def correct_precision?
           return true if @precision.nil?
           if matched_column.precision.to_s == @precision.to_s
@@ -103,7 +103,7 @@ module Shoulda # :nodoc:
             false
           end
         end
-        
+
         def correct_limit?
           return true if @limit.nil?
           if matched_column.limit.to_s == @limit.to_s
@@ -115,7 +115,7 @@ module Shoulda # :nodoc:
             false
           end
         end
-        
+
         def correct_default?
           return true if @default.nil?
           if matched_column.default.to_s == @default.to_s
@@ -127,7 +127,7 @@ module Shoulda # :nodoc:
             false
           end
         end
-        
+
         def correct_null?
           return true if @null.nil?
           if matched_column.null.to_s == @null.to_s
@@ -139,7 +139,7 @@ module Shoulda # :nodoc:
             false
           end
         end
-                
+
         def correct_scale?
           return true if @scale.nil?
           if matched_column.scale.to_s == @scale.to_s
@@ -150,7 +150,7 @@ module Shoulda # :nodoc:
             false
           end
         end
-        
+
         def matched_column
           model_class.columns.detect { |each| each.name == @column.to_s }
         end

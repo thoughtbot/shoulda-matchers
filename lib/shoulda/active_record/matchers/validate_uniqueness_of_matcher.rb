@@ -67,8 +67,8 @@ module Shoulda # :nodoc:
         def matches?(subject)
           @subject = subject.class.new
           @expected_message ||= :taken
-          find_existing && 
-            set_scoped_attributes && 
+          find_existing &&
+            set_scoped_attributes &&
             validate_attribute &&
             validate_after_scope_change
         end
@@ -121,7 +121,7 @@ module Shoulda # :nodoc:
               @subject.send("#{scope}=", next_value)
 
               if allows_value_of(existing_value, @expected_message)
-                @negative_failure_message << 
+                @negative_failure_message <<
                   " (with different value of #{scope})"
                 true
               else

@@ -34,7 +34,7 @@ module Shoulda # :nodoc:
         def description
           "respond with content type of #{@content_type}"
         end
-        
+
         def matches?(controller)
           @controller = controller
           if @content_type.is_a?(Regexp)
@@ -43,32 +43,32 @@ module Shoulda # :nodoc:
             response_content_type == @content_type
           end
         end
-        
+
         def failure_message
           "Expected #{expectation}"
         end
-        
+
         def negative_failure_message
           "Did not expect #{expectation}"
         end
-        
+
         protected
-        
+
         def response_content_type
           @controller.response.content_type.to_s
         end
-        
+
         def lookup_by_extension(extension)
           Mime::Type.lookup_by_extension(extension.to_s).to_s
         end
-        
+
         def expectation
           "content type to be #{@content_type}, " <<
           "but was #{response_content_type}"
         end
-        
+
       end
-      
+
     end
   end
 end

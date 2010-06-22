@@ -18,7 +18,6 @@ module Shoulda # :nodoc:
           @subject = subject
           false
         end
-        
 
         private
 

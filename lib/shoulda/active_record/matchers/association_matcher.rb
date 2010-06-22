@@ -70,10 +70,10 @@ module Shoulda # :nodoc:
 
         def matches?(subject)
           @subject = subject
-          association_exists? && 
-            macro_correct? && 
-            foreign_key_exists? && 
-            through_association_valid? && 
+          association_exists? &&
+            macro_correct? &&
+            foreign_key_exists? &&
+            through_association_valid? &&
             dependent_correct? &&
             join_table_exists?
         end
@@ -160,7 +160,7 @@ module Shoulda # :nodoc:
         end
 
         def join_table_exists?
-          if @macro != :has_and_belongs_to_many || 
+          if @macro != :has_and_belongs_to_many ||
               ::ActiveRecord::Base.connection.tables.include?(join_table.to_s)
             true
           else

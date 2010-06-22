@@ -377,7 +377,7 @@ module Shoulda # :nodoc:
       #
       # Ensure that the given columns are defined on the models backing SQL table.
       # Also aliased to should_have_db_column for readability.
-      # Takes the same options available in migrations: 
+      # Takes the same options available in migrations:
       # :type, :precision, :limit, :default, :null, and :scale
       #
       # Examples:
@@ -390,7 +390,7 @@ module Shoulda # :nodoc:
       #
       def should_have_db_columns(*columns)
         ::ActiveSupport::Deprecation.warn("use: should have_db_column")
-        column_type, precision, limit, default, null, scale, sql_type = 
+        column_type, precision, limit, default, null, scale, sql_type =
           get_options!(columns, :type, :precision, :limit,
                                 :default, :null, :scale, :sql_type)
         columns.each do |name|
