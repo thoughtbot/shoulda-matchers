@@ -133,6 +133,26 @@ configured:
 
 You should not need to require anything besides the top-level shoulda library.
 
+= Rails 3 Installation (RSpec)
+
+With Rails 3 and Bundler, requiring Shoulda is as easy as adding it to your Gemfile:
+
+  group :test do
+    gem "shoulda"
+    gem "rspec-rails", "2.0.0.beta.12"
+  end
+
+Require shoulda from your spec/spec_helper.rb file, before Rspec is
+configured, and tell Rspec to include the Shoulda matchers.
+
+  require "shoulda"
+  Rspec.configure do |config|
+    config.include Shoulda::ActionController::Matchers
+    config.include Shoulda::ActiveRecord::Matchers
+    config.include Shoulda::ActionMailer::Matchers
+    # ...
+  end
+
 = Credits
 
 Shoulda is maintained and funded by {thougthbot}[http://thoughtbot.com/community]
