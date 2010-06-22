@@ -36,8 +36,23 @@ module Shoulda # :nodoc:
     #
     #   # Assert the value changed to "new:"
     #   should_change("the post title", :to => "new") { @post.title }
+    #
+    # This macro was deprecated because these tests aren't as valuable as
+    # alternative tests that explicitly test the final state.
+    #
+    # Consider an alternative:
+    #
+    #   context "updating a post" do
+    #     setup do
+    #       @post = Post.create(:title => "old")
+    #       put :update, :post => {:title => "new"}, :id => @post.to_param
+    #     end
+    #     should "update the title" do
+    #       assert_equal "new", @post.reload.title
+    #     end
+    #   end
     def should_change(description, options = {}, &block)
-      ::ActiveSupport::Deprecation.warn
+      ::ActiveSupport::Deprecation.warn("Not considered a useful test. Instead, test the end state explicitly.")
       by, from, to = get_options!([options], :by, :from, :to)
       stmt = "change #{description}"
       stmt << " from #{from.inspect}" if from
@@ -69,8 +84,23 @@ module Shoulda # :nodoc:
     #     setup { @post.update_attributes(:title => "new") }
     #     should_not_change("the number of posts") { Post.count }
     #   end
+    #
+    # This macro was deprecated because these tests aren't as valuable as
+    # alternative tests that explicitly test the final state.
+    #
+    # Consider an alternative:
+    #
+    #   context "updating a post" do
+    #     setup do
+    #       @post = Post.create(:title => "old")
+    #       put :update, :post => {:title => ""}, :id => @post.to_param
+    #     end
+    #     should "not update the title" do
+    #       assert_equal "old", @post.reload.title
+    #     end
+    #   end
     def should_not_change(description, &block)
-      ::ActiveSupport::Deprecation.warn
+      ::ActiveSupport::Deprecation.warn("Not considered a useful test. Instead, test the end state explicitly.")
       before = lambda { @_before_should_not_change = block.bind(self).call }
       should "not change #{description}", :before => before do
         new_value = block.bind(self).call
