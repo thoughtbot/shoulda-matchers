@@ -54,35 +54,11 @@ module Shoulda # :nodoc:
         end
 
         def failure_message
-          msg = "expected a sent email"
-          msg += " with subject #{@email_subject.inspect}" if @subject_failed
-          msg += " with body #{@body.inspect}" if @body_failed
-          msg += " from #{@sender.inspect}" if @sender_failed
-          msg += " to #{@recipient.inspect}" if @recipient_failed
-          if anything_failed?
-            msg += " but got"
-            msg += " the subject #{@mail.subject.inspect}" if @subject_failed
-            msg += " the body #{@mail.body.inspect}" if @body_failed
-            msg += " from #{@mail.from.inspect}" if @sender_failed
-            msg += " to #{@mail.to.inspect}" if @recipient_failed
-          end
-          msg
+          "Expected #{expectation}"
         end
 
         def negative_failure_message
-          msg = "expected no sent email"
-          msg += " with subject #{@email_subject.inspect}" if @subject_failed
-          msg += " with body #{@body.inspect}" if @body_failed
-          msg += " from #{@sender.inspect}" if @sender_failed
-          msg += " to #{@recipient.inspect}" if @recipient_failed
-          if anything_failed?
-            msg += " but got"
-            msg += " the subject #{@mail.subject.inspect}" if @subject_failed
-            msg += " the body #{@mail.body.inspect}" if @body_failed
-            msg += " from #{@mail.from.inspect}" if @sender_failed
-            msg += " to #{@mail.to.inspect}" if @recipient_failed
-          end
-          msg
+          "Did not expect #{expectation}"
         end
 
         def description
@@ -90,6 +66,21 @@ module Shoulda # :nodoc:
         end
 
         private
+
+        def expectation
+          expectation = "sent email"
+          expectation << " with subject #{@email_subject.inspect}" if @subject_failed
+          expectation << " with body #{@body.inspect}" if @body_failed
+          expectation << " from #{@sender.inspect}" if @sender_failed
+          expectation << " to #{@recipient.inspect}" if @recipient_failed
+          expectation << "\nDeliveries:\n#{inspect_deliveries}"
+        end
+
+        def inspect_deliveries
+          ::ActionMailer::Base.deliveries.map do |delivery|
+            "#{delivery.subject.inspect} to #{delivery.to.inspect}"
+          end.join("\n")
+        end
 
         def anything_failed?
           @subject_failed || @body_failed || @sender_failed || @recipient_failed
