@@ -142,16 +142,8 @@ With Rails 3 and Bundler, requiring Shoulda is as easy as adding it to your Gemf
     gem "rspec-rails", "2.0.0.beta.12"
   end
 
-Require shoulda from your spec/spec_helper.rb file, before Rspec is
-configured, and tell Rspec to include the Shoulda matchers.
-
-  require "shoulda"
-  Rspec.configure do |config|
-    config.include Shoulda::ActionController::Matchers
-    config.include Shoulda::ActiveRecord::Matchers
-    config.include Shoulda::ActionMailer::Matchers
-    # ...
-  end
+Shoulda will automatically include matchers into the appropriate example
+groups.
 
 = Credits
 
