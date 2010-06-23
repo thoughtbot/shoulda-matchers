@@ -1,0 +1,2 @@
+rails2: -r features/support -r features/step_definitions/common_steps.rb -r features/step_definitions/rails2_steps.rb
+rails3: -r features/support -r features/step_definitions/common_steps.rb -r features/step_definitions/rails3_steps.rb
