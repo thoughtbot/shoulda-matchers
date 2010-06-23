@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Tammer Saleh", "Joe Ferris", "Ryan McGeary", "Dan Croak",
     "Matt Jankowski"]
-  s.date = %q{2010-06-11}
+  s.date = Time.now.strftime("%Y-%m-%d")
   s.default_executable = %q{convert_to_should_syntax}
   s.email = %q{support@thoughtbot.com}
   s.executables = ["convert_to_should_syntax"]
