@@ -28,6 +28,36 @@ class SetTheFlashMatcherTest < ActionController::TestCase # :nodoc:
     end
   end
 
+  context "a controller that sets a flash.now message" do
+    setup do
+      @controller = build_response { flash.now[:notice] = 'value' }
+    end
+
+    should "reject setting any flash message" do
+      assert_rejects set_the_flash, @controller
+    end
+
+    should "accept setting any flash.now message" do
+      assert_accepts set_the_flash.now, @controller
+    end
+
+    should "accept setting the exact flash.now message" do
+      assert_accepts set_the_flash.to('value').now, @controller
+    end
+
+    should "accept setting a matched flash.now message" do
+      assert_accepts set_the_flash.to(/value/).now, @controller
+    end
+
+    should "reject setting a different flash.now message" do
+      assert_rejects set_the_flash.to('other').now, @controller
+    end
+
+    should "reject setting a different flash.now pattern" do
+      assert_rejects set_the_flash.to(/other/).now, @controller
+    end
+  end
+
   context "a controller that doesn't set a flash message" do
     setup do
       @controller = build_response
