@@ -66,10 +66,11 @@ module Shoulda # :nodoc:
         end
 
         def flash
-          flash_and_now = @controller.request.session["flash"]
+          return @flash if @flash
+          flash_and_now = @controller.request.session["flash"].dup if @controller.request.session["flash"]
           flash         = @controller.send(:flash)
 
-          if @now
+          @flash = if @now
             flash.keys.each {|key| flash_and_now.delete(key) }
             flash_and_now
           else
@@ -78,7 +79,7 @@ module Shoulda # :nodoc:
         end
 
         def expectation
-          expectation = "the flash to be set"
+          expectation = "the flash#{".now" if @now} to be set"
           expectation << " to #{@value.inspect}" unless @value.nil?
           expectation << ", but #{flash_description}"
           expectation
