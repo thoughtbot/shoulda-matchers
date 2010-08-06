@@ -147,7 +147,7 @@ groups.
 
 = Credits
 
-Shoulda is maintained and funded by {thougthbot}[http://thoughtbot.com/community]
+Shoulda is maintained and funded by {thoughtbot}[http://thoughtbot.com/community]
 
 = License
 
