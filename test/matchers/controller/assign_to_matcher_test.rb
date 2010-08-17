@@ -42,4 +42,14 @@ class AssignToMatcherTest < ActionController::TestCase # :nodoc:
     end
   end
 
+  context "a controller that assigns a nil value to an instance variable" do
+    setup do
+      @controller = build_response { @var = nil }
+    end
+
+    should "accept assigning to that variable" do
+      assert_accepts assign_to(:var), @controller
+    end
+  end
+
 end

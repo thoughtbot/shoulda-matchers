@@ -22,7 +22,8 @@ module Shoulda # :nodoc:
       class AssignToMatcher # :nodoc:
 
         def initialize(variable)
-          @variable = variable.to_s
+          @variable    = variable.to_s
+          @check_value = false
         end
 
         def with_kind_of(expected_class)
@@ -31,7 +32,8 @@ module Shoulda # :nodoc:
         end
 
         def with(expected_value = nil, &block)
-          @expected_value = expected_value
+          @check_value       = true
+          @expected_value    = expected_value
           @expectation_block = block
           self
         end
@@ -58,7 +60,7 @@ module Shoulda # :nodoc:
         private
 
         def assigned_value?
-          if assigned_value.nil?
+          if !@controller.instance_variables.include?("@#{@variable}")
             @failure_message =
               "Expected action to assign a value for @#{@variable}"
             false
@@ -87,7 +89,7 @@ module Shoulda # :nodoc:
         end
 
         def equal_to_expected_value?
-          return true unless @expected_value
+          return true unless @check_value
           if @expected_value == assigned_value
             @negative_failure_message =
               "Didn't expect action to assign #{@expected_value.inspect} " <<
