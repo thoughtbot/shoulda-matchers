@@ -98,7 +98,7 @@ module Shoulda # :nodoc:
         def regexp_or_string_match_in_array(an_array, a_regexp_or_string)
           case a_regexp_or_string
           when Regexp
-            an_array.detect{|e| e =~ a_regexp_or_string}.any?
+            an_array.any? { |string| string =~ a_regexp_or_string }
           when String
             an_array.include?(a_regexp_or_string)
           end

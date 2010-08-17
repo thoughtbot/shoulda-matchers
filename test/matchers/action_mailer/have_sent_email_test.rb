@@ -37,9 +37,15 @@ class HaveSentEmailTest < ActiveSupport::TestCase # :nodoc:
                      :message => /Expected sent email with subject/
     end
 
-    should "accept based on the sender" do
+    should "accept based on a string sender" do
       assert_accepts have_sent_email.from('do-not-reply@example.com'), nil
       assert_rejects have_sent_email.from('you@example.com'), nil,
+                     :message => /Expected sent email from/
+    end
+
+    should "accept based on a regexp sender" do
+      assert_accepts have_sent_email.from(/@example\.com/), nil
+      assert_rejects have_sent_email.from(/you@/), nil,
                      :message => /Expected sent email from/
     end
 
