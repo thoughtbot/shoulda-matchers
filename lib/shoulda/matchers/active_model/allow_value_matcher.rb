@@ -79,7 +79,6 @@ module Shoulda # :nodoc:
         def errors_match_regexp?
           if Regexp === @expected_message
             @matched_error = @errors.detect { |e| e =~ @expected_message }
-            !@matched_error.nil?
           else
             false
           end
