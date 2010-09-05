@@ -30,6 +30,7 @@ Dependencies:
 
 * Rails gem installed in the host system
 * A working sqlite3 installation.
+* Cucumber gem if you want to run the Rails acceptance tests
 
 If you have problems running these tests, please notify the mailing list:  shoulda@googlegroups.com
 
