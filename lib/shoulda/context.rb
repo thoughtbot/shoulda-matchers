@@ -365,12 +365,20 @@ module Shoulda
       am_subcontext? ? parent.test_unit_class : parent
     end
 
+    def test_methods
+      @test_methods ||= Hash.new { |h,k|
+        h[k] = Hash[k.instance_methods.map { |n| [n, true] }]
+      }
+    end
+
     def create_test_from_should_hash(should)
       test_name = ["test:", full_name, "should", "#{should[:name]}. "].flatten.join(' ').to_sym
 
-      if test_unit_class.instance_methods.include?(test_name.to_s)
+      if test_methods[test_unit_class][test_name.to_s] then
         warn "  * WARNING: '#{test_name}' is already defined"
       end
+
+      test_methods[test_unit_class][test_name.to_s] = true
 
       context = self
       test_unit_class.send(:define_method, test_name) do
