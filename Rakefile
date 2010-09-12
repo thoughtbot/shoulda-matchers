@@ -3,7 +3,11 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/gempackagetask'
-require 'cucumber/rake/task'
+begin
+  require 'cucumber/rake/task'
+rescue LoadError
+  warn "couldn't load cucumber, skipping"
+end
 
 $LOAD_PATH.unshift("lib")
 require 'shoulda/version'
@@ -53,7 +57,7 @@ namespace :cucumber do
     t.cucumber_opts = ['--format', (ENV['CUCUMBER_FORMAT'] || 'progress')]
     t.profile = 'rails3'
   end
-end
+end rescue nil
 
 desc "Run the cucumber features in both Rails 2 and 3"
 task :cucumber => ["cucumber:rails2", "cucumber:rails3"]
