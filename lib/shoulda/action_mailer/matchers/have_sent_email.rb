@@ -36,6 +36,12 @@ module Shoulda # :nodoc:
           self
         end
 
+        def with_part(content_type, body)
+          @parts ||= []
+          @parts << [/#{Regexp.escape(content_type)}/, body]
+          self
+        end
+
         def to(recipient)
           @recipient = recipient
           self
@@ -49,6 +55,7 @@ module Shoulda # :nodoc:
         def matches?(subject)
           ::ActionMailer::Base.deliveries.each do |mail|
             @subject_failed = !regexp_or_string_match(mail.subject, @email_subject) if @email_subject
+            @part_failed = !parts_match(mail, @parts) if @parts
             @body_failed = !body_match(mail, @body) if @body
             @sender_failed = !regexp_or_string_match_in_array(mail.from, @sender) if @sender
             @recipient_failed = !regexp_or_string_match_in_array(mail.to, @recipient) if @recipient
@@ -121,6 +128,23 @@ module Shoulda # :nodoc:
             end
           else
             regexp_or_string_match(mail.body, a_regexp_or_string)
+          end
+        end
+
+        def parts_match(mail, parts)
+          return false if mail.parts.empty?
+
+          parts.all? do |content_type, match|
+            part_match(mail, content_type, match)
+          end
+        end
+
+        def part_match(mail, content_type, a_regexp_or_string)
+          matching = mail.parts.select {|p| p.content_type =~ content_type}
+          return false if matching.empty?
+
+          matching.all? do |part|
+            regexp_or_string_match(part.body, a_regexp_or_string)
           end
         end
 
