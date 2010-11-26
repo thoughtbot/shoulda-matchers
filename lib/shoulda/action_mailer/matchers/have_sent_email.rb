@@ -41,12 +41,18 @@ module Shoulda # :nodoc:
           self
         end
 
+        def multipart(flag = true)
+          @multipart = !!flag
+          self
+        end
+
         def matches?(subject)
           ::ActionMailer::Base.deliveries.each do |mail|
             @subject_failed = !regexp_or_string_match(mail.subject, @email_subject) if @email_subject
             @body_failed = !body_match(mail, @body) if @body
             @sender_failed = !regexp_or_string_match_in_array(mail.from, @sender) if @sender
             @recipient_failed = !regexp_or_string_match_in_array(mail.to, @recipient) if @recipient
+            @multipart_failed = mail.multipart? != @multipart if defined?(@multipart)
             return true unless anything_failed?
           end
 
@@ -73,6 +79,7 @@ module Shoulda # :nodoc:
           expectation << " with body #{@body.inspect}" if @body_failed
           expectation << " from #{@sender.inspect}" if @sender_failed
           expectation << " to #{@recipient.inspect}" if @recipient_failed
+          expectation << " multipart" if @multipart_failed
           expectation << "\nDeliveries:\n#{inspect_deliveries}"
         end
 
