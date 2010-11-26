@@ -44,7 +44,7 @@ module Shoulda # :nodoc:
         def matches?(subject)
           ::ActionMailer::Base.deliveries.each do |mail|
             @subject_failed = !regexp_or_string_match(mail.subject, @email_subject) if @email_subject
-            @body_failed = !regexp_or_string_match(mail.body, @body) if @body
+            @body_failed = !body_match(mail, @body) if @body
             @sender_failed = !regexp_or_string_match_in_array(mail.from, @sender) if @sender
             @recipient_failed = !regexp_or_string_match_in_array(mail.to, @recipient) if @recipient
             return true unless anything_failed?
@@ -103,6 +103,20 @@ module Shoulda # :nodoc:
             an_array.include?(a_regexp_or_string)
           end
         end
+
+        def body_match(mail, a_regexp_or_string)
+          # Mail objects instantiated by ActionMailer3 return a blank
+          # body if the e-mail is multipart. TMail concatenates the
+          # String representation of each part instead.
+          if mail.body.blank? && mail.multipart?
+            mail.parts.select {|p| p.content_type =~ /^text\//}.all? do |part|
+              regexp_or_string_match(part.body, a_regexp_or_string)
+            end
+          else
+            regexp_or_string_match(mail.body, a_regexp_or_string)
+          end
+        end
+
       end
     end
   end
