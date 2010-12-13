@@ -2,7 +2,6 @@ Feature: integrate with Rails
 
   Background:
     When I generate a new rails application
-    And I configure the application to use "shoulda" from this project
     And I save the following as "db/migrate/1_create_users.rb"
       """
       class CreateUsers < ActiveRecord::Migration
@@ -31,36 +30,9 @@ Feature: integrate with Rails
       """
     When I configure a wildcard route
 
-  Scenario: generate a rails application and use macros in Test::Unit
-    When I save the following as "test/unit/user_test.rb"
-      """
-      require 'test_helper'
-
-      class UserTest < ActiveSupport::TestCase
-        should_validate_presence_of :name
-      end
-      """
-    When I save the following as "test/functional/examples_controller_test.rb"
-      """
-      require 'test_helper'
-
-      class ExamplesControllerTest < ActionController::TestCase
-        def setup
-          get :show
-        end
-
-        should_respond_with :success
-        should_assign_to :example
-      end
-      """
-    When I run "rake test TESTOPTS=-v"
-    Then I should see "1 tests, 1 assertions, 0 failures, 0 errors"
-    And I should see "2 tests, 2 assertions, 0 failures, 0 errors"
-    And I should see "User should require name to be set"
-    And I should see "ExamplesController should assign @example"
-
   Scenario: generate a rails application and use matchers in Test::Unit
-    When I save the following as "test/unit/user_test.rb"
+    When I configure the application to use "shoulda" from this project
+    And I save the following as "test/unit/user_test.rb"
       """
       require 'test_helper'
 
@@ -89,6 +61,7 @@ Feature: integrate with Rails
 
   Scenario: generate a rails application and use matchers in Rspec
     When I configure the application to use rspec-rails
+    And I configure the application to use "shoulda" from this project
     And I run the rspec generator
     And I save the following as "spec/models/user_spec.rb"
       """

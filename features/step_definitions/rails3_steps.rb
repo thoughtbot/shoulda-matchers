@@ -13,7 +13,7 @@ end
 
 When /^I configure the application to use "([^\"]+)" from this project$/ do |name|
   append_to_gemfile "gem '#{name}', :path => '../../'"
-  steps %{And I run "bundle lock"}
+  steps %{And I run "bundle install"}
 end
 
 When /^I run the "([^"]*)" generator$/ do |name|
@@ -30,7 +30,7 @@ end
 
 When /^I configure the application to use rspec\-rails$/ do
   append_to_gemfile "gem 'rspec-rails', '>= 2.0.0.beta.12'"
-  steps %{And I run "bundle lock"}
+  steps %{And I run "bundle install"}
 end
 
 When /^I configure a wildcard route$/ do

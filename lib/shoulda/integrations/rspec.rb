@@ -1,13 +1,22 @@
 require 'shoulda/active_record/matchers'
 require 'shoulda/action_controller/matchers'
 require 'shoulda/action_mailer/matchers'
-require 'active_support/test_case'
 
 # :enddoc:
-module ActiveSupport
-  class TestCase
+
+module RSpec
+  module Matchers
     include Shoulda::ActiveRecord::Matchers
-    include Shoulda::ActionController::Matchers
-    include Shoulda::ActionMailer::Matchers
+  end
+
+  module Rails
+    module ControllerExampleGroup
+      include Shoulda::ActionController::Matchers
+    end
+
+    module MailerExampleGroup
+      include Shoulda::ActionMailer::Matchers
+    end
   end
 end
+
