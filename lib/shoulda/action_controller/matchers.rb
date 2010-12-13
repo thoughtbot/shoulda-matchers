@@ -12,7 +12,7 @@ require 'shoulda/action_controller/matchers/render_template_matcher'
 module Shoulda # :nodoc:
   module ActionController # :nodoc:
 
-    # By using the macro helpers you can quickly and easily create concise and
+    # By using the matchers you can quickly and easily create concise and
     # easy to read test suites.
     #
     # This code segment:

@@ -29,8 +29,6 @@ class ActiveSupport::TestCase #:nodoc:
   self.use_instantiated_fixtures  = false
 end
 
-require 'test/fail_macros'
-
 Shoulda.autoload_macros File.join(File.dirname(__FILE__), 'rails2_root'),
                         File.join("vendor", "{plugins,gems}", "*")
 
