@@ -29,7 +29,7 @@ When /^I run the rspec generator$/ do
 end
 
 When /^I configure the application to use rspec\-rails$/ do
-  append_to_gemfile "gem 'rspec-rails', '>= 2.0.0.beta.12'"
+  append_to_gemfile "gem 'rspec-rails', '= 2.0.0.beta.12'"
   steps %{And I run "bundle install"}
 end
 

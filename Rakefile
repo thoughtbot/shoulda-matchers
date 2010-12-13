@@ -1,25 +1,13 @@
 require 'rubygems'
+require 'bundler/setup'
 require 'rake'
-require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/gempackagetask'
-begin
-  require 'cucumber/rake/task'
-rescue LoadError
-  warn "couldn't load cucumber, skipping"
-end
+require 'rspec/core/rake_task'
+require 'cucumber/rake/task'
 
 $LOAD_PATH.unshift("lib")
 require 'shoulda/version'
-load 'tasks/shoulda.rake'
-
-# Test::Unit::UI::VERBOSE
-test_files_pattern = 'test/{unit,functional,other,matchers}/**/*_test.rb'
-Rake::TestTask.new do |t|
-  t.libs << 'lib' << 'test'
-  t.pattern = test_files_pattern
-  t.verbose = false
-end
 
 Rake::RDocTask.new { |rdoc|
   rdoc.rdoc_dir = 'doc'
@@ -29,11 +17,15 @@ Rake::RDocTask.new { |rdoc|
   rdoc.rdoc_files.include('README.rdoc', 'CONTRIBUTION_GUIDELINES.rdoc', 'lib/**/*.rb')
 }
 
+RSpec::Core::RakeTask.new do |t|
+  t.pattern = "spec/**/*_spec.rb"
+end
+
 desc "Run code-coverage analysis using rcov"
-task :coverage do
-  rm_rf "coverage"
-  files = Dir[test_files_pattern]
-  system "rcov --rails --sort coverage -Ilib #{files.join(' ')}"
+RSpec::Core::RakeTask.new(:coverage) do |t|
+  t.rcov = true
+  t.rcov_opts = %{--exclude osx\/objc,spec,gems\/ --failure-threshold 100}
+  t.pattern = "spec/**/*_spec.rb"
 end
 
 eval("$specification = begin; #{IO.read('shoulda.gemspec')}; end")
@@ -51,6 +43,6 @@ Cucumber::Rake::Task.new do |t|
   t.profile = 'default'
 end
 
-desc 'Default: run test and cucumber features for support versions'
-task :default => [:test, :cucumber]
+desc 'Default: run specs and cucumber features'
+task :default => [:spec, :cucumber]
 

@@ -5,3 +5,4 @@ if defined?(RSpec)
 else
   require 'shoulda/integrations/test_unit'
 end
+

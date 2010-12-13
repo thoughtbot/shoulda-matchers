@@ -1,17 +1,40 @@
-require 'test/unit'
+# :enddoc:
 
-require 'shoulda/context'
-require 'shoulda/proc_extensions'
-require 'shoulda/assertions'
-require 'shoulda/autoload_macros'
-require 'shoulda/rails' if defined? RAILS_ROOT
+if defined?(ActionController)
+  require 'shoulda/action_controller'
 
-module Test # :nodoc: all
-  module Unit
-    class TestCase
-      include Shoulda::InstanceMethods
-      extend Shoulda::ClassMethods
-      include Shoulda::Assertions
+  class ActionController::TestCase
+    include Shoulda::ActionController::Matchers
+    extend Shoulda::ActionController::Matchers
+
+    def subject
+      @controller
+    end
+  end
+end
+
+if defined?(ActionMailer)
+  require 'shoulda/action_mailer'
+
+  module Test
+    module Unit
+      class TestCase
+        include Shoulda::ActionMailer::Matchers
+        extend Shoulda::ActionMailer::Matchers
+      end
+    end
+  end
+end
+
+if defined?(ActiveRecord)
+  require 'shoulda/active_record'
+
+  module Test
+    module Unit
+      class TestCase
+        include Shoulda::ActiveRecord::Matchers
+        extend Shoulda::ActiveRecord::Matchers
+      end
     end
   end
 end

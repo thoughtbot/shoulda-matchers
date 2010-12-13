@@ -1,22 +1,23 @@
-require 'shoulda/active_record/matchers'
-require 'shoulda/action_controller/matchers'
-require 'shoulda/action_mailer/matchers'
-
 # :enddoc:
 
-module RSpec
-  module Matchers
+if defined?(::ActiveRecord)
+  require 'shoulda/active_record'
+  module RSpec::Matchers
     include Shoulda::ActiveRecord::Matchers
   end
+end
 
-  module Rails
-    module ControllerExampleGroup
-      include Shoulda::ActionController::Matchers
-    end
+if defined?(::ActionController)
+  require 'shoulda/action_controller'
+  module Rails::ControllerExampleGroup
+    include Shoulda::ActionController::Matchers
+  end
+end
 
-    module MailerExampleGroup
-      include Shoulda::ActionMailer::Matchers
-    end
+if defined?(::ActionMailer)
+  require 'shoulda/action_mailer'
+  module Rails::MailerExampleGroup
+    include Shoulda::ActionMailer::Matchers
   end
 end
 
