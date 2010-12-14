@@ -1,11 +1,11 @@
 When /^I generate a new rails application$/ do
   @terminal.cd(TEMP_ROOT)
-  @terminal.run("rails _3.0.0.beta4_ new #{APP_NAME}")
+  @terminal.run("rails _3.0.3_ new #{APP_NAME}")
   steps %{
     When I save the following as "Gemfile"
       """
       source "http://rubygems.org"
-      gem 'rails', '3.0.0.beta4'
+      gem 'rails', '3.0.3'
       gem 'sqlite3-ruby', :require => 'sqlite3'
       """
   }
@@ -29,7 +29,7 @@ When /^I run the rspec generator$/ do
 end
 
 When /^I configure the application to use rspec\-rails$/ do
-  append_to_gemfile "gem 'rspec-rails', '= 2.0.0.beta.12'"
+  append_to_gemfile "gem 'rspec-rails'"
   steps %{And I run "bundle install"}
 end
 

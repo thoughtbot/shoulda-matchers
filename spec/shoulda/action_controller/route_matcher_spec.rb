@@ -5,15 +5,14 @@ describe Shoulda::ActionController::Matchers::RouteMatcher do
   context "given a controller with a defined glob url" do
     before do
       @controller = define_controller('Examples').new
-      define_routes do |map|
-        map.connect 'examples/*id', :controller => 'examples',
-                                    :action     => 'example'
+      define_routes do
+        match 'examples/*id', :to => 'examples#example'
       end
     end
 
     it "should accept glob route" do
       @controller.should route(:get, '/examples/foo/bar').
-                           to(:action => 'example', :id => ['foo', 'bar'])
+                           to(:action => 'example', :id => 'foo/bar')
     end
 
   end
@@ -21,9 +20,8 @@ describe Shoulda::ActionController::Matchers::RouteMatcher do
   context "given a controller with a defined route" do
     before do
       @controller = define_controller('Examples').new
-      define_routes do |map|
-        map.connect 'examples/:id', :controller => 'examples',
-                                    :action     => 'example'
+      define_routes do
+        match 'examples/:id', :to => 'examples#example'
       end
     end
 

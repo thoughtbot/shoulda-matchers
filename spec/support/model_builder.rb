@@ -6,7 +6,6 @@ module ModelBuilder
     example_group.class_eval do
       before do
         @created_tables ||= []
-        @defined_constants ||= []
       end
 
       after { teardown_defined_constants }
@@ -32,10 +31,9 @@ module ModelBuilder
 
     klass = Class.new(base)
     Object.const_set(class_name, klass)
+    klass.unloadable
 
     klass.class_eval(&block) if block_given?
-
-    @defined_constants << class_name
 
     klass
   end
@@ -81,8 +79,8 @@ module ModelBuilder
     klass = define_controller('Examples')
     block ||= lambda { render :nothing => true }
     klass.class_eval { layout false; define_method(action, &block) }
-    define_routes do |map|
-      map.connect 'examples', :controller => 'examples', :action => action
+    define_routes do
+      match 'examples', :to => "examples##{action}"
     end
 
     create_view("examples/#{action}.html.erb", "abc")
@@ -111,10 +109,7 @@ module ModelBuilder
   end
 
   def teardown_defined_constants
-    @defined_constants.each do |class_name|
-      Object.send(:remove_const, class_name)
-    end
-    @defined_constants = []
+    ActiveSupport::Dependencies.clear
 
     @created_tables.each do |table_name|
       ActiveRecord::Base.
@@ -124,7 +119,7 @@ module ModelBuilder
 
     FileUtils.rm_rf(TMP_VIEW_PATH)
 
-    Rails.application.routes_reloader.reload!
+    Rails.application.reload_routes!
   end
 end
 

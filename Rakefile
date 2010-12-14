@@ -19,10 +19,13 @@ Rake::RDocTask.new { |rdoc|
 
 RSpec::Core::RakeTask.new do |t|
   t.pattern = "spec/**/*_spec.rb"
+  t.rspec_opts = '--color --format progress'
+  t.verbose = false
 end
 
 desc "Run code-coverage analysis using rcov"
 RSpec::Core::RakeTask.new(:coverage) do |t|
+  t.rspec_opts = '--color --format progress'
   t.rcov = true
   t.rcov_opts = %{--exclude osx\/objc,spec,gems\/ --failure-threshold 100}
   t.pattern = "spec/**/*_spec.rb"

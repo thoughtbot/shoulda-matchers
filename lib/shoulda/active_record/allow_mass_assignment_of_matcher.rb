@@ -21,12 +21,12 @@ module Shoulda # :nodoc:
           @subject = subject
           if attr_mass_assignable?
             if whitelisting?
-              @failure_message = "#{@attribute} was made accessible"
+              @negative_failure_message = "#{@attribute} was made accessible"
             else
               if protected_attributes.empty?
                 @negative_failure_message = "no attributes were protected"
               else
-                @failure_message = "#{class_name} is protecting " <<
+                @negative_failure_message = "#{class_name} is protecting " <<
                   "#{protected_attributes.to_a.to_sentence}, " <<
                   "but not #{@attribute}."
               end
@@ -34,10 +34,10 @@ module Shoulda # :nodoc:
             true
           else
             if whitelisting?
-              @negative_failure_message =
+              @failure_message =
                 "Expected #{@attribute} to be accessible"
             else
-              @negative_failure_message =
+              @failure_message =
                 "Did not expect #{@attribute} to be protected"
             end
             false

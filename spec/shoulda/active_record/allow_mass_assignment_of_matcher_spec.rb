@@ -66,7 +66,7 @@ describe Shoulda::ActiveRecord::Matchers::AllowMassAssignmentOfMatcher do
 
     it "should assign a negative failure message" do
       matcher = allow_mass_assignment_of(:attr)
-      matcher.matches?(@model)
+      matcher.matches?(@model).should == true
       matcher.negative_failure_message.should_not be_nil
     end
   end

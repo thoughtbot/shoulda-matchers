@@ -1,5 +1,5 @@
 ENV['RAILS_ENV'] = 'test'
-ENV['RAILS_VERSION'] ||= '3.0.0.beta4'
+ENV['RAILS_VERSION'] ||= '3.0.3'
 RAILS_GEM_VERSION = ENV['RAILS_VERSION']
 
 rails_root = File.dirname(__FILE__) + '/rails3_root'
