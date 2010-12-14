@@ -4,8 +4,8 @@ if defined?(ActionController)
   require 'shoulda/action_controller'
 
   class ActionController::TestCase
-    include Shoulda::ActionController::Matchers
-    extend Shoulda::ActionController::Matchers
+    include Shoulda::ActionController
+    extend Shoulda::ActionController
 
     def subject
       @controller
@@ -19,8 +19,8 @@ if defined?(ActionMailer)
   module Test
     module Unit
       class TestCase
-        include Shoulda::ActionMailer::Matchers
-        extend Shoulda::ActionMailer::Matchers
+        include Shoulda::ActionMailer
+        extend Shoulda::ActionMailer
       end
     end
   end
@@ -32,8 +32,8 @@ if defined?(ActiveRecord)
   module Test
     module Unit
       class TestCase
-        include Shoulda::ActiveRecord::Matchers
-        extend Shoulda::ActiveRecord::Matchers
+        include Shoulda::ActiveRecord
+        extend Shoulda::ActiveRecord
       end
     end
   end

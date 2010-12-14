@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::ActiveRecord::Matchers::ValidatePresenceOfMatcher do
+describe Shoulda::ActiveRecord::ValidatePresenceOfMatcher do
 
   context "a required attribute" do
     before do

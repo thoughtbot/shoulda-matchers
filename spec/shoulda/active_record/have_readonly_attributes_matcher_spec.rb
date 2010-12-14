@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::ActiveRecord::Matchers::HaveReadonlyAttributeMatcher do
+describe Shoulda::ActiveRecord::HaveReadonlyAttributeMatcher do
 
   context "an attribute that cannot be set after being saved" do
     before do

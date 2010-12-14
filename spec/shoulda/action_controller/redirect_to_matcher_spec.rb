@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::ActionController::Matchers::RedirectToMatcher do
+describe Shoulda::ActionController::RedirectToMatcher do
 
   context "a controller that redirects" do
     before do

@@ -24,9 +24,9 @@ ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate")
 
 RSpec.configure do |config|
   config.mock_with :mocha
-  config.include Shoulda::ActionController::Matchers,
+  config.include Shoulda::ActionController,
                  :example_group => { :file_path => /action_controller/ }
-  config.include Shoulda::ActionMailer::Matchers,
+  config.include Shoulda::ActionMailer,
                  :example_group => { :file_path => /action_mailer/ }
 end
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::ActionController::Matchers::RenderTemplateMatcher do
+describe Shoulda::ActionController::RenderTemplateMatcher do
   include ActionController::TemplateAssertions
 
   context "a controller that renders a template" do

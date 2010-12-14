@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::ActiveRecord::Matchers::HaveDbColumnMatcher do
+describe Shoulda::ActiveRecord::HaveDbColumnMatcher do
 
   context "have_db_column" do
     before do

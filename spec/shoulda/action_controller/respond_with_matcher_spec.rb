@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::ActionController::Matchers::RespondWithMatcher do
+describe Shoulda::ActionController::RespondWithMatcher do
 
   context "a controller responding with success" do
     before do

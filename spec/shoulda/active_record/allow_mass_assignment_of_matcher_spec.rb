@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::ActiveRecord::Matchers::AllowMassAssignmentOfMatcher do
+describe Shoulda::ActiveRecord::AllowMassAssignmentOfMatcher do
 
   context "an attribute that is blacklisted from mass-assignment" do
     before do
