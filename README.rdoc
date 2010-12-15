@@ -31,7 +31,7 @@ Matchers to test associations and validations:
     it { should_not allow_mass_assignment_of(:password) }
   end
 
-=== Controller Matchers
+=== ActionController Matchers
 
 Matchers to test common patterns:
 
