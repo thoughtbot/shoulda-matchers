@@ -7,7 +7,7 @@ require 'rspec/core/rake_task'
 require 'cucumber/rake/task'
 
 $LOAD_PATH.unshift("lib")
-require 'shoulda/version'
+require 'shoulda/matchers/version'
 
 Rake::RDocTask.new { |rdoc|
   rdoc.rdoc_dir = 'doc'
@@ -31,7 +31,7 @@ RSpec::Core::RakeTask.new(:coverage) do |t|
   t.pattern = "spec/**/*_spec.rb"
 end
 
-eval("$specification = begin; #{IO.read('shoulda.gemspec')}; end")
+eval("$specification = begin; #{IO.read('shoulda-matchers.gemspec')}; end")
 Rake::GemPackageTask.new $specification do |pkg|
   pkg.need_tar = true
   pkg.need_zip = true

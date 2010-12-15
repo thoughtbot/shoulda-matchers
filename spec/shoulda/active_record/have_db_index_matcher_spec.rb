@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::ActiveRecord::HaveDbIndexMatcher do
+describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher do
 
   context "have_db_index" do
     before do

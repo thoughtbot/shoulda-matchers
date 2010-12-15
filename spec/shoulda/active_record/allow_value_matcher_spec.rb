@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::ActiveRecord::AllowValueMatcher do
+describe Shoulda::Matchers::ActiveRecord::AllowValueMatcher do
 
   context "an attribute with a format validation" do
     before do

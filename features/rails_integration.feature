@@ -33,7 +33,7 @@ Feature: integrate with Rails
 
   Scenario: generate a rails application and use matchers in Test::Unit
     When I configure the application to use shoulda-context
-    And I configure the application to use "shoulda" from this project
+    And I configure the application to use "shoulda-matchers" from this project
     And I write to "test/unit/user_test.rb" with:
       """
       require 'test_helper'
@@ -63,7 +63,7 @@ Feature: integrate with Rails
 
   Scenario: generate a rails application and use matchers in Rspec
     When I configure the application to use rspec-rails
-    And I configure the application to use "shoulda" from this project
+    And I configure the application to use "shoulda-matchers" from this project
     And I run the rspec generator
     And I write to "spec/models/user_spec.rb" with:
       """

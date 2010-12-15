@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::ActionController::FilterParamMatcher do
+describe Shoulda::Matchers::ActionController::FilterParamMatcher do
 
   context "given parameter filters" do
     before do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::ActiveRecord::ValidateNumericalityOfMatcher do
+describe Shoulda::Matchers::ActiveRecord::ValidateNumericalityOfMatcher do
 
   context "a numeric attribute" do
     before do

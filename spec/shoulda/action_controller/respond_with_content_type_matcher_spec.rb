@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::ActionController::RespondWithContentTypeMatcher do
+describe Shoulda::Matchers::ActionController::RespondWithContentTypeMatcher do
 
   context "a controller responding with content type :xml" do
     before do

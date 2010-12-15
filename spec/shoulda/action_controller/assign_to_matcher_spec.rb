@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::ActionController::AssignToMatcher do
+describe Shoulda::Matchers::ActionController::AssignToMatcher do
 
   context "a controller that assigns to an instance variable" do
     before do

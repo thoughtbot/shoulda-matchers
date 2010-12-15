@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::ActiveRecord::AssociationMatcher do
+describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
   context "belong_to" do
     before do

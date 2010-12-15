@@ -15,7 +15,7 @@ $LOAD_PATH << File.join(PROJECT_ROOT, 'lib')
 
 Dir[File.join(PROJECT_ROOT, 'spec', 'support', '**', '*.rb')].each { |file| require(file) }
 
-require 'shoulda'
+require 'shoulda-matchers'
 require 'rspec/rails'
 
 # Run the migrations
@@ -24,9 +24,9 @@ ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate")
 
 RSpec.configure do |config|
   config.mock_with :mocha
-  config.include Shoulda::ActionController,
+  config.include Shoulda::Matchers::ActionController,
                  :example_group => { :file_path => /action_controller/ }
-  config.include Shoulda::ActionMailer,
+  config.include Shoulda::Matchers::ActionMailer,
                  :example_group => { :file_path => /action_mailer/ }
 end
 

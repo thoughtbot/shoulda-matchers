@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::ActionController::RouteMatcher do
+describe Shoulda::Matchers::ActionController::RouteMatcher do
 
   context "given a controller with a defined glob url" do
     before do

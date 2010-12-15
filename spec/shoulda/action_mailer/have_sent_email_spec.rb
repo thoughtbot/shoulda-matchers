@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::ActionMailer::HaveSentEmailMatcher do
+describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
   def add_mail_to_deliveries
     ::ActionMailer::Base.deliveries << Mailer.the_email
   end

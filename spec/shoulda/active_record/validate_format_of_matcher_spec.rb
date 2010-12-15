@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::ActiveRecord::ValidateFormatOfMatcher do
+describe Shoulda::Matchers::ActiveRecord::ValidateFormatOfMatcher do
 
   context "a postal code" do
     before do

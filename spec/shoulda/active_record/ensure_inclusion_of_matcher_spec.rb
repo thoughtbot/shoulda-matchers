@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::ActiveRecord::EnsureInclusionOfMatcher do
+describe Shoulda::Matchers::ActiveRecord::EnsureInclusionOfMatcher do
 
   context "an attribute which must be included in a range" do
     before do

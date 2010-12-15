@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::ActionController::SetTheFlashMatcher do
+describe Shoulda::Matchers::ActionController::SetTheFlashMatcher do
 
   context "a controller that sets a flash message" do
     before do

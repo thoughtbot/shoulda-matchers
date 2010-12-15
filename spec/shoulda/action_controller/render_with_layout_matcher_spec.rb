@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::ActionController::RenderWithLayoutMatcher do
+describe Shoulda::Matchers::ActionController::RenderWithLayoutMatcher do
   include ActionController::TemplateAssertions
 
   context "a controller that renders with a layout" do
