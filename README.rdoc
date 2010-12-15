@@ -1,18 +1,11 @@
-= Shoulda - Making tests easy on the fingers and eyes
+= shoulda-matchers
 
-Shoulda makes it easy to write elegant, understandable, and maintainable tests. Shoulda consists of matchers, test helpers, and assertions. It's fully compatible with your existing tests in Test::Unit or RSpec, and requires no retooling to use.
+Test::Unit- and RSpec-compatible one-liners that test common Rails functionality.
+These tests would otherwise be much longer, more complex, and error-prone.
 
-Matchers:: Test::Unit- and RSpec-compatible one-liners that test common Rails functionality.
-           These tests would otherwise be much longer, more complex, and error-prone.
-Helpers:: #context and #should give you RSpec like test blocks in Test::Unit.
-          In addition, you get nested contexts and a much more readable syntax.
-Assertions:: Many common Rails testing idioms have been distilled into a set of useful assertions.
+=== ActiveRecord Matchers
 
-= Usage
-
-=== ActiveRecord Tests (Shoulda::ActiveRecord::Matchers)
-
-Test your ActiveRecord associations and validations with these powerful matchers:
+Matchers to test associations and validations:
 
   class PostTest < Test::Unit::TestCase
     should belong_to(:user)
@@ -36,11 +29,9 @@ Test your ActiveRecord associations and validations with these powerful matchers
     should_not allow_mass_assignment_of(:password)
   end
 
-Makes TDD so much easier.
+=== Controller Matchers
 
-=== Controller Tests (Shoulda::Controller::Matchers)
-
-Matchers to test the most common controller patterns...
+Matchers to test common patterns:
 
   class PostsControllerTest < ActionController::TestCase
     context "on GET to :show for first record" do
@@ -59,96 +50,22 @@ Matchers to test the most common controller patterns...
     end
   end
 
-=== Context Helpers (Shoulda::Context)
+= Installation
 
-Stop killing your fingers with all of those underscores...  Name your tests with plain sentences!
-
-  class UserTest < Test::Unit::TestCase
-    context "A User instance" do
-      setup do
-        @user = User.find(:first)
-      end
-
-      should "return its full name" do
-        assert_equal 'John Doe', @user.full_name
-      end
-
-      context "with a profile" do
-        setup do
-          @user.profile = Profile.find(:first)
-        end
-
-        should "return true when sent #has_profile?" do
-          assert @user.has_profile?
-        end
-      end
-    end
-  end
-
-Produces the following test methods:
-
-  "test: A User instance should return its full name."
-  "test: A User instance with a profile should return true when sent #has_profile?."
-
-So readable!
-
-=== Helpful Assertions (Shoulda::Assertions)
-
-More to come here, but have fun with what's there.
-
-  assert_same_elements([:a, :b, :c], [:c, :a, :b])
-  assert_contains(['a', '1'], /\d/)
-  assert_contains(['a', '1'], 'a')
-
-= Rails Installation (Test::Unit)
-
-Specify the gem dependency in your config/environment.rb file:
-
-  Rails::Initializer.run do |config|
-    config.gem "shoulda", :lib => "shoulda"
-  end
-
-Then:
-
-  $ rake gems:install
-  $ rake gems:unpack
-
-= Rails Installation (RSpec)
-
-If you're using Shoulda with RSpec, we recommend that you add config.gem lines
-for RSpec and Shoulda in your config/environment/test.rb file, but do not ask
-Rails to load the RSpec and Shoulda libraries:
-
-  config.gem 'rspec',       :lib => false
-  config.gem 'rspec-rails', :lib => false
-  config.gem 'shoulda',     :lib => false
-
-Then require shoulda from your spec/spec_helper.rb file, before Spec::Runner is
-configured:
-
-  # requires for RSpec
-  require 'shoulda'
-  Spec::Runner.configure do |config|
-  # ...
-
-You should not need to require anything besides the top-level shoulda library.
-
-= Rails 3 Installation (RSpec)
-
-With Rails 3 and Bundler, requiring Shoulda is as easy as adding it to your Gemfile:
+In Rails 3 and Bundler, add the following to your Gemfile:
 
   group :test do
-    gem "shoulda"
-    gem "rspec-rails", "2.0.0.beta.12"
+    gem "shoulda-matchers"
+    gem "rspec-rails"
   end
 
-Shoulda will automatically include matchers into the appropriate example
-groups.
+Shoulda will automatically include matchers into the appropriate example groups.
 
 = Credits
 
-Shoulda is maintained and funded by {thoughtbot}[http://thoughtbot.com/community]
+Shoulda is maintained and funded by {thoughtbot}[http://thoughtbot.com/community].
 
 = License
 
-Shoulda is Copyright © 2006-2010 Tammer Saleh, Thoughtbot. It is free software, and may be redistributed under the terms specified in the MIT-LICENSE file.
+Shoulda is Copyright © 2006-2010 thoughtbot, inc.
+It is free software, and may be redistributed under the terms specified in the MIT-LICENSE file.
