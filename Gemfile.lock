@@ -29,6 +29,10 @@ GEM
       activesupport (= 3.0.3)
     activesupport (3.0.3)
     arel (2.0.6)
+    aruba (0.2.7)
+      background_process
+      cucumber (~> 0.10.0)
+    background_process (1.2)
     builder (2.1.2)
     columnize (0.3.2)
     cucumber (0.10.0)
@@ -103,6 +107,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  aruba
   cucumber
   mocha
   rails (= 3.0.3)

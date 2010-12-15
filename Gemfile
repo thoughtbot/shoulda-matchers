@@ -6,4 +6,5 @@ gem 'mocha'
 gem 'rspec-rails'
 gem 'ruby-debug'
 gem 'cucumber'
+gem "aruba"
 

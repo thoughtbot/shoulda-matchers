@@ -1,1 +1,0 @@
-default: -r features/support -r features/step_definitions/common_steps.rb -r features/step_definitions/rails3_steps.rb

@@ -9,9 +9,7 @@ Gem::Specification.new do |s|
   s.authors = ["Tammer Saleh", "Joe Ferris", "Ryan McGeary", "Dan Croak",
     "Matt Jankowski"]
   s.date = Time.now.strftime("%Y-%m-%d")
-  s.default_executable = %q{convert_to_should_syntax}
   s.email = %q{support@thoughtbot.com}
-  s.executables = ["convert_to_should_syntax"]
   s.extra_rdoc_files = ["README.rdoc", "CONTRIBUTION_GUIDELINES.rdoc"]
   s.files = Dir["[A-Z]*", "{bin,lib,rails,test}/**/*"]
   s.homepage = %q{http://thoughtbot.com/community/}

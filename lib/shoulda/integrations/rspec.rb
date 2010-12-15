@@ -9,14 +9,14 @@ end
 
 if defined?(::ActionController)
   require 'shoulda/action_controller'
-  module Rails::ControllerExampleGroup
+  module RSpec::Rails::ControllerExampleGroup
     include Shoulda::ActionController
   end
 end
 
 if defined?(::ActionMailer)
   require 'shoulda/action_mailer'
-  module Rails::MailerExampleGroup
+  module RSpec::Rails::MailerExampleGroup
     include Shoulda::ActionMailer
   end
 end

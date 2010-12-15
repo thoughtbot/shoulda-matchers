@@ -43,7 +43,6 @@ task :clobber => [:clobber_rdoc, :clobber_package]
 Cucumber::Rake::Task.new do |t|
   t.fork = true
   t.cucumber_opts = ['--format', (ENV['CUCUMBER_FORMAT'] || 'progress')]
-  t.profile = 'default'
 end
 
 desc 'Default: run specs and cucumber features'
