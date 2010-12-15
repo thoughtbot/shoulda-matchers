@@ -1,52 +1,50 @@
 = shoulda-matchers
 
+{Official Documentation}[http://rubydoc.info/github/thoughtbot/shoulda-matchers/master/frames]
+
 Test::Unit- and RSpec-compatible one-liners that test common Rails functionality.
 These tests would otherwise be much longer, more complex, and error-prone.
+
+Refer to the {shoulda}[https://github.com/thoughtbot/shoulda] gem if you want to know more
+about using shoulda with Test::Unit.
 
 === ActiveRecord Matchers
 
 Matchers to test associations and validations:
 
-  class PostTest < Test::Unit::TestCase
-    should belong_to(:user)
-    should have_many(:tags).through(:taggings)
+  describe Post do
+    it { should belong_to(:user) }
+    it { should have_many(:tags).through(:taggings) }
 
-    should validate_uniqueness_of(:title)
-    should validate_presence_of(:body).with_message(/wtf/)
-    should validate_presence_of(:title)
-    should validate_numericality_of(:user_id)
+    it { should validate_uniqueness_of(:title) }
+    it { should validate_presence_of(:body).with_message(/wtf/) }
+    it { should validate_presence_of(:title) }
+    it { should validate_numericality_of(:user_id) }
   end
 
-  class UserTest < Test::Unit::TestCase
-    should have_many(:posts)
+  describe User do
+    it { should have_many(:posts) }
 
-    should_not allow_value("blah").for(:email)
-    should_not allow_value("b lah").for(:email)
-    should allow_value("a@b.com").for(:email)
-    should allow_value("asdf@asdf.com").for(:email)
-    should ensure_inclusion_of(:email).in_range(1..100)
-    should ensure_inclusion_of(:age).in_range(1..100)
-    should_not allow_mass_assignment_of(:password)
+    it { should_not allow_value("blah").for(:email) }
+    it { should allow_value("a@b.com").for(:email) }
+    it { should ensure_inclusion_of(:age).in_range(1..100) }
+    it { should_not allow_mass_assignment_of(:password) }
   end
 
 === Controller Matchers
 
 Matchers to test common patterns:
 
-  class PostsControllerTest < ActionController::TestCase
-    context "on GET to :show for first record" do
-      setup do
+  describe PostsController, "#show" do
+    context "for a fictional user" do
+      before do
         get :show, :id => 1
       end
 
-      should assign_to(:user)
-      should respond_with(:success)
-      should render_template(:show)
-      should_not set_the_flash
-
-      should "do something else really cool" do
-        assert_equal 1, assigns(:user).id
-      end
+      it { should assign_to(:user) }
+      it { should respond_with(:success) }
+      it { should render_template(:show) }
+      it { should_not set_the_flash }
     end
   end
 
@@ -64,6 +62,7 @@ Shoulda will automatically include matchers into the appropriate example groups.
 = Credits
 
 Shoulda is maintained and funded by {thoughtbot}[http://thoughtbot.com/community].
+Thank you to all the {contributors}[https://github.com/thoughtbot/shoulda-matchers/contributors].
 
 = License
 
