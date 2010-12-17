@@ -68,4 +68,17 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
       should_not have_sent_email.with_subject(/ham/).from('you@example.com').with_body(/ham/).to('them@example.com')
     end
   end
+
+  it "should provide a detailed description of the e-mail expected to be sent" do
+    matcher = have_sent_email
+    matcher.description.should == 'send an email'
+    matcher = matcher.with_subject("Welcome!")
+    matcher.description.should == 'send an email with a subject of "Welcome!"'
+    matcher = matcher.with_body("Welcome, human!")
+    matcher.description.should == 'send an email with a subject of "Welcome!" containing "Welcome, human!"'
+    matcher = matcher.from("alien@example.com")
+    matcher.description.should == 'send an email with a subject of "Welcome!" containing "Welcome, human!" from "alien@example.com"'
+    matcher = matcher.to("human@example.com")
+    matcher.description.should == 'send an email with a subject of "Welcome!" containing "Welcome, human!" from "alien@example.com" to "human@example.com"'
+  end
 end

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActionController::RedirectToMatcher do
-
   context "a controller that redirects" do
     before do
       @controller = build_response { redirect_to '/some/url' }
@@ -34,4 +33,8 @@ describe Shoulda::Matchers::ActionController::RedirectToMatcher do
     end
   end
 
+  it "should use the correct description when provided a block" do
+    matcher = redirect_to('somewhere else') { '/some/other/url' }
+    matcher.description.should == 'redirect to somewhere else'
+  end
 end

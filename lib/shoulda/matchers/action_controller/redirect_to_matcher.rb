@@ -17,7 +17,7 @@ module Shoulda # :nodoc:
         def initialize(url_or_description, context, &block)
           if block
             @url_block = block
-            @location = @url_or_description
+            @location = url_or_description
           else
             @url = url_or_description
             @location = @url
