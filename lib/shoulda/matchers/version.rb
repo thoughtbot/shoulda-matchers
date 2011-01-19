@@ -1,6 +1,5 @@
 module Shoulda
   module Matchers
-    VERSION = "2.11.3"
+    VERSION = "1.0.0.beta1"
   end
-
 end
