@@ -19,9 +19,36 @@ describe Shoulda::Matchers::ActiveRecord::ValidatePresenceOfMatcher do
     end
   end
 
+  context "a required attribute on a class using ActiveModel::Validations" do
+    before do
+      define_active_model_class("Example", :accessors => [:attr]) do
+        validates_presence_of :attr
+      end
+      @model = Example.new
+    end
+
+    it "should require a value" do
+      @model.should validate_presence_of(:attr)
+    end
+
+    it "should not override the default message with a blank" do
+      @model.should validate_presence_of(:attr).with_message(nil)
+    end
+  end
+
   context "an optional attribute" do
     before do
       @model = define_model(:example, :attr => :string).new
+    end
+
+    it "should not require a value" do
+      @model.should_not validate_presence_of(:attr)
+    end
+  end
+
+  context "an optional attribute on a class using ActiveModel::Validations" do
+    before do
+      @model = define_active_model_class("Example", :accessors => [:attr]).new
     end
 
     it "should not require a value" do
