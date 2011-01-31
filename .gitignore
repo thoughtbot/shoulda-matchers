@@ -7,3 +7,5 @@ pkg
 *.swo
 tags
 tmp
+.bundle
+Gemfile.lock
