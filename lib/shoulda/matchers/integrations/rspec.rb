@@ -9,15 +9,23 @@ end
 
 if defined?(::ActionController)
   require 'shoulda/matchers/action_controller'
-  module RSpec::Rails::ControllerExampleGroup
-    include Shoulda::Matchers::ActionController
+  module RSpec
+    module Rails
+      module ControllerExampleGroup
+        include Shoulda::Matchers::ActionController
+      end
+    end
   end
 end
 
 if defined?(::ActionMailer)
   require 'shoulda/matchers/action_mailer'
-  module RSpec::Rails::MailerExampleGroup
-    include Shoulda::Matchers::ActionMailer
+  module RSpec
+    module Rails
+      module MailerExampleGroup
+        include Shoulda::Matchers::ActionMailer
+      end
+    end
   end
 end
 

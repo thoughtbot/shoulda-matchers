@@ -19,6 +19,14 @@ Gem::Specification.new do |s|
   s.summary = %q{Making tests easy on the fingers and eyes}
   s.description = %q{Making tests easy on the fingers and eyes}
 
+  s.add_development_dependency("rails", "3.0.3")
+  s.add_development_dependency("sqlite3-ruby", "~> 1.3.2")
+  s.add_development_dependency("mocha", "~> 0.9.10")
+  s.add_development_dependency("rspec-rails", "~> 2.3.0")
+  s.add_development_dependency("ruby-debug", "~> 0.10.4")
+  s.add_development_dependency("cucumber", "~> 0.10.0")
+  s.add_development_dependency("aruba", "~> 0.2.7")
+
   if s.respond_to? :specification_version then
     s.specification_version = 3
   else
