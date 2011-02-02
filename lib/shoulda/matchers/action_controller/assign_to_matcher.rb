@@ -60,7 +60,7 @@ module Shoulda # :nodoc:
         private
 
         def assigned_value?
-          if !@controller.instance_variables.include?("@#{@variable}")
+          if !@controller.instance_variables.map(&:to_s).include?("@#{@variable}")
             @failure_message =
               "Expected action to assign a value for @#{@variable}"
             false
