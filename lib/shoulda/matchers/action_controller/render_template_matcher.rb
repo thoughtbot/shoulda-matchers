@@ -41,7 +41,7 @@ module Shoulda # :nodoc:
             @context.send(:assert_template, @template)
             @negative_failure_message = "Didn't expect to render #{@template}"
             true
-          rescue Test::Unit::AssertionFailedError => error
+          rescue Shoulda::Matchers::AssertionError => error
             @failure_message = error.message
             false
           end
