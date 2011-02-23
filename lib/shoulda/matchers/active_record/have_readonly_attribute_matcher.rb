@@ -29,7 +29,7 @@ module Shoulda # :nodoc:
                 "is not read-only"
             else
               @failure_message = "#{class_name} is making " <<
-                "#{readonly_attributes.to_sentence} " <<
+                "#{readonly_attributes.to_a.to_sentence} " <<
                 "read-only, but not #{@attribute}."
             end
             false
