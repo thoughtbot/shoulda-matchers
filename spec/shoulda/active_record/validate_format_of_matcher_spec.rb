@@ -15,15 +15,15 @@ describe Shoulda::Matchers::ActiveRecord::ValidateFormatOfMatcher do
     end
 
     it "should not be valid with alpha in zip" do
-      @model.should_not validate_format_of(:attr).not_with('1234a')
+      @model.should validate_format_of(:attr).not_with('1234a')
     end
 
     it "should not be valid with to few digits" do
-      @model.should_not validate_format_of(:attr).not_with('1234')
+      @model.should validate_format_of(:attr).not_with('1234')
     end
 
     it "should not be valid with to many digits" do
-      @model.should_not validate_format_of(:attr).not_with('123456')
+      @model.should validate_format_of(:attr).not_with('123456')
     end
 
     it "should raise error if you try to call both with and not_with" do

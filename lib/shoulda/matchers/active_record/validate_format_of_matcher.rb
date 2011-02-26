@@ -49,7 +49,7 @@ module Shoulda # :nodoc:
 
         def matches?(subject)
           super(subject)
-          @expected_message ||= :blank
+          @expected_message ||= :invalid
           return disallows_value_of(@value_to_fail, @expected_message) if @value_to_fail
           allows_value_of(@value_to_pass, @expected_message) if @value_to_pass
         end
