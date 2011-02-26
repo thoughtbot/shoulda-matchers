@@ -8,7 +8,7 @@ module Shoulda # :nodoc:
       # Options:
       # * <tt>with_message</tt> - value the test expects to find in
       #   <tt>errors.on(:attribute)</tt>. <tt>Regexp</tt> or <tt>String</tt>.
-      #   Defaults to the translation for <tt>:blank</tt>.
+      #   Defaults to the translation for <tt>:invalid</tt>.
       # * <tt>with(string to test against)</tt>
       # * <tt>not_with(string to test against)</tt>
       #
