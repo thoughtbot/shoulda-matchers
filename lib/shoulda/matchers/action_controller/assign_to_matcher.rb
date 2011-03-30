@@ -82,8 +82,8 @@ module Shoulda # :nodoc:
           else
             @failure_message =
               "Expected action to assign a kind of #{@expected_class} " <<
-              "for #{@variable}, but got #{@variable.inspect} " <<
-              "(#{@variable.class.name})"
+              "for #{@variable}, but got #{assigned_value.inspect} " <<
+              "(#{assigned_value.class.name})"
             false
           end
         end
