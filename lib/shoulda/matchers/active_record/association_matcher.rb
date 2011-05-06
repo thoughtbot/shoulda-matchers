@@ -191,7 +191,7 @@ module Shoulda # :nodoc:
         end
 
         def foreign_key
-          reflection.primary_key_name
+          reflection.foreign_key
         end
 
         def through?
