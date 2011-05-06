@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::Matchers::ActiveRecord::EnsureLengthOfMatcher do
+describe Shoulda::Matchers::ActiveModel::EnsureLengthOfMatcher do
 
   context "an attribute with a non-zero minimum length validation" do
     before do

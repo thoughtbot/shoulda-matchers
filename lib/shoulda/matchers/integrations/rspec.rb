@@ -7,6 +7,13 @@ if defined?(::ActiveRecord)
   end
 end
 
+if defined?(::ActiveModel)
+  require 'shoulda/matchers/active_model'
+  module RSpec::Matchers
+    include Shoulda::Matchers::ActiveModel
+  end
+end
+
 if defined?(::ActionController)
   require 'shoulda/matchers/action_controller'
   module RSpec

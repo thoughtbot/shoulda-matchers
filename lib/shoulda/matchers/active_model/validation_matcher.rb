@@ -1,6 +1,6 @@
 module Shoulda # :nodoc:
   module Matchers
-    module ActiveRecord # :nodoc:
+    module ActiveModel # :nodoc:
 
       class ValidationMatcher # :nodoc:
 

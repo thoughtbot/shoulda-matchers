@@ -1,6 +1,6 @@
 module Shoulda # :nodoc:
   module Matchers
-    module ActiveRecord # :nodoc:
+    module ActiveModel # :nodoc:
       module Helpers
         def pretty_error_messages(obj) # :nodoc:
           obj.errors.map do |a, m|

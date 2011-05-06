@@ -26,7 +26,7 @@ if defined?(ActionMailer)
   end
 end
 
-if defined?(ActiveRecord)
+if defined?(ActionRecord)
   require 'shoulda/matchers/active_record'
 
   module Test
@@ -39,3 +39,15 @@ if defined?(ActiveRecord)
   end
 end
 
+if defined?(ActiveModel)
+  require 'shoulda/matchers/active_model'
+
+  module Test
+    module Unit
+      class TestCase
+        include Shoulda::Matchers::ActiveModel
+        extend Shoulda::Matchers::ActiveModel
+      end
+    end
+  end
+end
