@@ -26,7 +26,7 @@ if defined?(ActionMailer)
   end
 end
 
-if defined?(ActionRecord)
+if defined?(ActiveRecord)
   require 'shoulda/matchers/active_record'
 
   module Test
