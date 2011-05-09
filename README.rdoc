@@ -23,7 +23,7 @@ Matchers to test associations:
 
 === ActiveModel Matchers
 
-Matchers to test validations:
+Matchers to test validations and mass assignments:
 
   describe Post do
     it { should validate_uniqueness_of(:title) }
