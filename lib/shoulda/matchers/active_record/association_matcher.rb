@@ -191,7 +191,11 @@ module Shoulda # :nodoc:
         end
 
         def foreign_key
-          reflection.foreign_key
+          if defined?(Rails) && Rails::VERSION::MAJOR >= 3 && Rails::VERSION::MINOR >= 1
+            reflection.foreign_key
+          else
+            reflection.primary_key_name
+          end
         end
 
         def through?
