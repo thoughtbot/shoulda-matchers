@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher do
+describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
 
   context "a unique attribute" do
     before do

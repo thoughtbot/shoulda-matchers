@@ -2,8 +2,15 @@
 
 if defined?(::ActiveRecord)
   require 'shoulda/matchers/active_record'
+  require 'shoulda/matchers/active_model'
   module RSpec::Matchers
     include Shoulda::Matchers::ActiveRecord
+    include Shoulda::Matchers::ActiveModel
+  end
+elsif defined?(::ActiveModel)
+  require 'shoulda/matchers/active_model'
+  module RSpec::Matchers
+    include Shoulda::Matchers::ActiveModel
   end
 end
 
