@@ -1,6 +1,6 @@
 module Shoulda # :nodoc:
   module Matchers
-    module ActiveRecord # :nodoc:
+    module ActiveModel # :nodoc:
 
       # Ensures that the model cannot be saved the given attribute is not
       # accepted.

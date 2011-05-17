@@ -1,6 +1,6 @@
 module Shoulda # :nodoc:
   module Matchers
-    module ActiveRecord # :nodoc:
+    module ActiveModel # :nodoc:
 
       # Ensures that the attribute can be set on mass update.
       #

@@ -1,6 +1,6 @@
 module Shoulda # :nodoc:
   module Matchers
-    module ActiveRecord # :nodoc:
+    module ActiveModel # :nodoc:
 
       # Ensures that the model is not valid if the given attribute is not
       # formatted correctly.

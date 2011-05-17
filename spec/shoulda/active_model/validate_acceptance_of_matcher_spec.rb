@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::Matchers::ActiveRecord::ValidateAcceptanceOfMatcher do
+describe Shoulda::Matchers::ActiveModel::ValidateAcceptanceOfMatcher do
 
   context "an attribute which must be accepted" do
     before do
