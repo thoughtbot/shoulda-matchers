@@ -36,17 +36,30 @@ module Shoulda # :nodoc:
           self
         end
 
+        def with_part(content_type, body)
+          @parts ||= []
+          @parts << [/#{Regexp.escape(content_type)}/, body]
+          self
+        end
+
         def to(recipient)
           @recipient = recipient
+          self
+        end
+
+        def multipart(flag = true)
+          @multipart = !!flag
           self
         end
 
         def matches?(subject)
           ::ActionMailer::Base.deliveries.each do |mail|
             @subject_failed = !regexp_or_string_match(mail.subject, @email_subject) if @email_subject
-            @body_failed = !regexp_or_string_match(mail.body, @body) if @body
+            @part_failed = !parts_match(mail, @parts) if @parts
+            @body_failed = !body_match(mail, @body) if @body
             @sender_failed = !regexp_or_string_match_in_array(mail.from, @sender) if @sender
             @recipient_failed = !regexp_or_string_match_in_array(mail.to, @recipient) if @recipient
+            @multipart_failed = mail.multipart? != @multipart if defined?(@multipart)
             return true unless anything_failed?
           end
 
@@ -78,6 +91,7 @@ module Shoulda # :nodoc:
           expectation << " with body #{@body.inspect}" if @body_failed
           expectation << " from #{@sender.inspect}" if @sender_failed
           expectation << " to #{@recipient.inspect}" if @recipient_failed
+          expectation << " multipart" if @multipart_failed
           expectation << "\nDeliveries:\n#{inspect_deliveries}"
         end
 
@@ -108,6 +122,35 @@ module Shoulda # :nodoc:
             an_array.include?(a_regexp_or_string)
           end
         end
+
+        def body_match(mail, a_regexp_or_string)
+          # Mail objects instantiated by ActionMailer3 return a blank
+          # body if the e-mail is multipart. TMail concatenates the
+          # String representation of each part instead.
+          if mail.body.blank? && mail.multipart?
+            part_match(mail, /^text\//, a_regexp_or_string)
+          else
+            regexp_or_string_match(mail.body, a_regexp_or_string)
+          end
+        end
+
+        def parts_match(mail, parts)
+          return false if mail.parts.empty?
+
+          parts.all? do |content_type, match|
+            part_match(mail, content_type, match)
+          end
+        end
+
+        def part_match(mail, content_type, a_regexp_or_string)
+          matching = mail.parts.select {|p| p.content_type =~ content_type}
+          return false if matching.empty?
+
+          matching.all? do |part|
+            regexp_or_string_match(part.body, a_regexp_or_string)
+          end
+        end
+
       end
     end
   end
