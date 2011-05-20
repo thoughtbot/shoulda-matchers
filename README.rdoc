@@ -61,8 +61,8 @@ Matchers to test common patterns:
 In Rails 3 and Bundler, add the following to your Gemfile:
 
   group :test do
-    gem "shoulda-matchers"
     gem "rspec-rails"
+    gem "shoulda-matchers"
   end
 
 Shoulda will automatically include matchers into the appropriate example groups.
