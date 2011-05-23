@@ -51,6 +51,20 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
       matcher.failure_message.should =~ /Expected sent email with body/
     end
 
+    it "accepts sent e-mail based on a text/plain part" do
+      should have_sent_email.with_part('text/plain', /is spam\./)
+      matcher = have_sent_email.with_part('text/plain', /HTML is spam/)
+      matcher.matches?(nil)
+      matcher.failure_message.should =~ /Expected sent email with a text\/plain part containing/
+    end
+
+    it "accepts sent e-mail based on a text/html part" do
+      should have_sent_email.with_part('text/html', /HTML is spam/)
+      matcher = have_sent_email.with_part('text/html', /HTML is not spam\./)
+      matcher.matches?(nil)
+      matcher.failure_message.should =~ /Expected sent email with a text\/html part containing/
+    end
+
     it "accept sent e-mail based on the recipient" do
       should have_sent_email.to('myself@me.com')
       matcher = have_sent_email.to('you@example.com')
@@ -74,8 +88,10 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
     end
 
     it "allows chaining" do
-      should have_sent_email.with_subject(/spam/).from('do-not-reply@example.com').with_body(/spam/).to('myself@me.com')
-      should_not have_sent_email.with_subject(/ham/).from('you@example.com').with_body(/ham/).to('them@example.com')
+      should have_sent_email.with_subject(/spam/).from('do-not-reply@example.com').with_body(/spam/).
+        with_part('text/plain', /is spam\./).with_part('text/html', /HTML is spam/).to('myself@me.com')
+      should_not have_sent_email.with_subject(/ham/).from('you@example.com').with_body(/ham/).
+        with_part('text/plain', /is ham/).with_part('text/html', /HTML is ham/).to('them@example.com')
     end
   end
 
@@ -86,9 +102,13 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
     matcher.description.should == 'send an email with a subject of "Welcome!"'
     matcher = matcher.with_body("Welcome, human!")
     matcher.description.should == 'send an email with a subject of "Welcome!" containing "Welcome, human!"'
+    matcher = matcher.with_part('text/plain', 'plain')
+    matcher.description.should == 'send an email with a subject of "Welcome!" containing "Welcome, human!" having a text/plain part containing "plain"'
+    matcher = matcher.with_part('text/html', 'html')
+    matcher.description.should == 'send an email with a subject of "Welcome!" containing "Welcome, human!" having a text/plain part containing "plain" having a text/html part containing "html"'
     matcher = matcher.from("alien@example.com")
-    matcher.description.should == 'send an email with a subject of "Welcome!" containing "Welcome, human!" from "alien@example.com"'
+    matcher.description.should == 'send an email with a subject of "Welcome!" containing "Welcome, human!" having a text/plain part containing "plain" having a text/html part containing "html" from "alien@example.com"'
     matcher = matcher.to("human@example.com")
-    matcher.description.should == 'send an email with a subject of "Welcome!" containing "Welcome, human!" from "alien@example.com" to "human@example.com"'
+    matcher.description.should == 'send an email with a subject of "Welcome!" containing "Welcome, human!" having a text/plain part containing "plain" having a text/html part containing "html" from "alien@example.com" to "human@example.com"'
   end
 end
