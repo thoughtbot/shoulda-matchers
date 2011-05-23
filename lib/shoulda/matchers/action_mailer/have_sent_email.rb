@@ -36,6 +36,12 @@ module Shoulda # :nodoc:
           self
         end
 
+        def with_part(content_type, body)
+          @parts ||= []
+          @parts << [/#{Regexp.escape(content_type)}/, body, content_type]
+          self
+        end
+
         def to(recipient)
           @recipient = recipient
           self
@@ -49,6 +55,7 @@ module Shoulda # :nodoc:
         def matches?(subject)
           ::ActionMailer::Base.deliveries.each do |mail|
             @subject_failed = !regexp_or_string_match(mail.subject, @email_subject) if @email_subject
+            @parts_failed = !parts_match(mail, @parts) if @parts
             @body_failed = !body_match(mail, @body) if @body
             @sender_failed = !regexp_or_string_match_in_array(mail.from, @sender) if @sender
             @recipient_failed = !regexp_or_string_match_in_array(mail.to, @recipient) if @recipient
@@ -71,6 +78,9 @@ module Shoulda # :nodoc:
           description  = "send an email"
           description << " with a subject of #{@email_subject.inspect}" if @email_subject
           description << " containing #{@body.inspect}" if @body
+          @parts.each do |_, body, content_type|
+            description << " having a #{content_type} part containing #{body.inspect}"
+          end if @parts
           description << " from #{@sender.inspect}" if @sender
           description << " to #{@recipient.inspect}" if @recipient
           description
@@ -82,6 +92,9 @@ module Shoulda # :nodoc:
           expectation = "sent email"
           expectation << " with subject #{@email_subject.inspect}" if @subject_failed
           expectation << " with body #{@body.inspect}" if @body_failed
+          @parts.each do |_, body, content_type|
+            expectation << " with a #{content_type} part containing #{body}"
+          end if @parts && @parts_failed
           expectation << " from #{@sender.inspect}" if @sender_failed
           expectation << " to #{@recipient.inspect}" if @recipient_failed
           expectation << " #{!@multipart && 'not '}being multipart" if @multipart_failed
@@ -95,7 +108,8 @@ module Shoulda # :nodoc:
         end
 
         def anything_failed?
-          @subject_failed || @body_failed || @sender_failed || @recipient_failed || @multipart_failed
+          @subject_failed || @body_failed || @parts_failed || @sender_failed ||
+              @recipient_failed || @multipart_failed
         end
 
         def regexp_or_string_match(a_string, a_regexp_or_string)
@@ -126,6 +140,23 @@ module Shoulda # :nodoc:
             end
           else
             regexp_or_string_match(mail.body, a_regexp_or_string)
+          end
+        end
+
+        def parts_match(mail, parts)
+          return false if mail.parts.empty?
+
+          parts.all? do |content_type, match, _|
+            part_match(mail, content_type, match)
+          end
+        end
+
+        def part_match(mail, content_type, a_regexp_or_string)
+          matching = mail.parts.select {|p| p.content_type =~ content_type}
+          return false if matching.empty?
+
+          matching.all? do |part|
+            regexp_or_string_match(part.body, a_regexp_or_string)
           end
         end
 
