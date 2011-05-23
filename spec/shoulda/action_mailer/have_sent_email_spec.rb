@@ -11,8 +11,11 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
         def the_email
           mail :from    => "do-not-reply@example.com",
                :to      => "myself@me.com",
-               :subject => "This is spam",
-               :body    => "Every email is spam."
+               :subject => "This is spam" do |format|
+
+            format.text { render :text => "Every email is spam." }
+            format.html { render :text => "<h1>HTML is spam.</h1><p>Notably.</p>" }
+          end
         end
       end
       add_mail_to_deliveries
@@ -53,6 +56,13 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
       matcher = have_sent_email.to('you@example.com')
       matcher.matches?(nil)
       matcher.failure_message.should =~ /Expected sent email to/
+    end
+
+    it "accepts sent-email when it is multipart" do
+      should have_sent_email.multipart
+      matcher = have_sent_email.multipart(false)
+      matcher.matches?(nil)
+      matcher.failure_message.should =~ /Expected sent email not being multipart/
     end
 
     it "lists all the deliveries within failure message" do
