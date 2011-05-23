@@ -135,9 +135,7 @@ module Shoulda # :nodoc:
           # body if the e-mail is multipart. TMail concatenates the
           # String representation of each part instead.
           if mail.body.blank? && mail.multipart?
-            mail.parts.select {|p| p.content_type =~ /^text\//}.all? do |part|
-              regexp_or_string_match(part.body, a_regexp_or_string)
-            end
+            part_match(mail, /^text\//, a_regexp_or_string)
           else
             regexp_or_string_match(mail.body, a_regexp_or_string)
           end
