@@ -8,6 +8,7 @@ module Shoulda # :nodoc:
       #   it { should have_sent_email.from('do-not-reply@example.com') }
       #   it { should have_sent_email.with_body(/is spam\./) }
       #   it { should have_sent_email.to('myself@me.com') }
+      #   it { should have_sent_email.with_part('text/html', /HTML spam/) }
       #   it { should have_sent_email.with_subject(/spam/).
       #                               from('do-not-reply@example.com').
       #                               with_body(/spam/).
