@@ -14,6 +14,7 @@ When /^I generate a new rails application$/ do
   steps %{
     When I run `rails new #{APP_NAME}`
     And I cd to "#{APP_NAME}"
+    And I comment out the gem "turn" from the Gemfile
     And I append gems from Appraisal Gemfile
     And I reset Bundler environment variable
     And I successfully run `bundle install --local`
@@ -66,6 +67,10 @@ When /^I reset Bundler environment variable$/ do
   end
 end
 
+When /^I comment out the gem "([^"]*)" from the Gemfile$/ do |gemname|
+  comment_out_gem_in_gemfile gemname
+end
+
 module FileHelpers
   def append_to(path, contents)
     in_current_dir do
@@ -78,6 +83,14 @@ module FileHelpers
 
   def append_to_gemfile(contents)
     append_to('Gemfile', contents)
+  end
+
+  def comment_out_gem_in_gemfile(gemname)
+    in_current_dir do
+      gemfile = File.read("Gemfile")
+      gemfile.sub!(/^(\s*)(gem\s*['"]#{gemname})/, "\\1# \\2")
+      File.open("Gemfile", 'w'){ |file| file.write(gemfile) }
+    end
   end
 end
 
