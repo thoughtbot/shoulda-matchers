@@ -1,6 +1,6 @@
 module ModelBuilder
   TMP_VIEW_PATH =
-    File.expand_path(File.join(File.dirname(__FILE__), 'rails3_root', 'tmp', 'views')).freeze
+    File.expand_path(File.join(TESTAPP_ROOT, 'tmp', 'views')).freeze
 
   def self.included(example_group)
     example_group.class_eval do

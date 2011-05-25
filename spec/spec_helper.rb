@@ -1,11 +1,12 @@
+# Create Rails environment based on the version given from Appraisal
+TESTAPP_ROOT = File.join(File.dirname(__FILE__), '..', 'tmp', 'aruba', 'testapp')
+FileUtils.rm_rf(TESTAPP_ROOT) if File.exists?(TESTAPP_ROOT)
+`rails new #{TESTAPP_ROOT}`
+
 ENV['RAILS_ENV'] = 'test'
-ENV['RAILS_VERSION'] ||= '3.0.3'
-RAILS_GEM_VERSION = ENV['RAILS_VERSION']
+ENV['BUNDLE_GEMFILE'] = TESTAPP_ROOT + '/Gemfile'
 
-rails_root = File.dirname(__FILE__) + '/rails3_root'
-ENV['BUNDLE_GEMFILE'] = rails_root + '/Gemfile'
-
-require "#{rails_root}/config/environment"
+require "#{TESTAPP_ROOT}/config/environment"
 require 'rspec'
 require 'rspec/autorun'
 
