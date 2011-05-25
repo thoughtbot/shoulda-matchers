@@ -4,7 +4,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateAcceptanceOfMatcher do
 
   context "an attribute which must be accepted" do
     before do
-      @model = define_model(:example) do
+      @model = define_model(:example, :attr => :string) do
         validates_acceptance_of :attr
       end.new
     end
@@ -30,7 +30,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateAcceptanceOfMatcher do
 
   context "an attribute which must be accepted with a custom message" do
     before do
-      @model = define_model(:example) do
+      @model = define_model(:example, :attr => :string) do
         validates_acceptance_of :attr, :message => 'custom'
       end.new
     end

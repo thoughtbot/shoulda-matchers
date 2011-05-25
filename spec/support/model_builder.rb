@@ -34,6 +34,7 @@ module ModelBuilder
     klass.unloadable
 
     klass.class_eval(&block) if block_given?
+    klass.reset_column_information if klass.respond_to?(:reset_column_information)
 
     klass
   end
