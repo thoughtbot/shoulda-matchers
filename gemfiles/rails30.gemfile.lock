@@ -33,7 +33,7 @@ GEM
       activemodel (= 3.0.3)
       activesupport (= 3.0.3)
     activesupport (3.0.3)
-    appraisal (0.3.2)
+    appraisal (0.3.3)
       aruba (~> 0.3.6)
       bundler
       rake
@@ -98,7 +98,7 @@ GEM
     rspec-expectations (2.6.0)
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.6.0)
-    rspec-rails (2.6.1.beta1)
+    rspec-rails (2.6.1)
       actionpack (~> 3.0)
       activesupport (~> 3.0)
       railties (~> 3.0)
@@ -126,7 +126,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  appraisal (~> 0.3.1)
+  appraisal (~> 0.3.3)
   cucumber (~> 0.10.0)
   mocha (~> 0.9.10)
   rails (= 3.0.3)
