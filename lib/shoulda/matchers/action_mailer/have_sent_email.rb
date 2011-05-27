@@ -40,6 +40,26 @@ module Shoulda # :nodoc:
           @recipient = recipient
           self
         end
+        
+        def cc(recipient)
+          @cc = recipient
+          self
+        end
+        
+        def with_cc(recipients)
+          @cc_recipients = recipients
+          self
+        end
+        
+        def bcc(recipient)
+          @bcc = recipient
+          self
+        end
+        
+        def with_bcc(recipients)
+          @bcc_recipients = recipients
+          self
+        end
 
         def matches?(subject)
           ::ActionMailer::Base.deliveries.each do |mail|
@@ -47,6 +67,10 @@ module Shoulda # :nodoc:
             @body_failed = !regexp_or_string_match(mail.body, @body) if @body
             @sender_failed = !regexp_or_string_match_in_array(mail.from, @sender) if @sender
             @recipient_failed = !regexp_or_string_match_in_array(mail.to, @recipient) if @recipient
+            @cc_failed = !regexp_or_string_match_in_array(mail.cc, @cc) if @cc
+            @cc_recipients_failed = !match_array_in_array(mail.cc, @cc_recipients) if @cc_recipients
+            @bcc_failed = !regexp_or_string_match_in_array(mail.bcc, @bcc) if @bcc
+            @bcc_recipients_failed = !match_array_in_array(mail.bcc, @bcc_recipients) if @bcc_recipients
             return true unless anything_failed?
           end
 
@@ -67,6 +91,10 @@ module Shoulda # :nodoc:
           description << " containing #{@body.inspect}" if @body
           description << " from #{@sender.inspect}" if @sender
           description << " to #{@recipient.inspect}" if @recipient
+          description << " cc #{@cc.inspect}" if @cc
+          description << " with cc #{@cc_recipients.inspect}" if @cc_recipients
+          description << " bcc #{@bcc.inspect}" if @bcc
+          description << " with bcc #{@bcc_recipients.inspect}" if @bcc_recipients
           description
         end
 
@@ -78,6 +106,10 @@ module Shoulda # :nodoc:
           expectation << " with body #{@body.inspect}" if @body_failed
           expectation << " from #{@sender.inspect}" if @sender_failed
           expectation << " to #{@recipient.inspect}" if @recipient_failed
+          expectation << " cc #{@cc.inspect}" if @cc_failed
+          expectation << " with cc #{@cc_recipients.inspect}" if @cc_recipients_failed
+          expectation << " bcc #{@bcc.inspect}" if @bcc_failed
+          expectation << " with bcc #{@bcc_recipients.inspect}" if @bcc_recipients_failed
           expectation << "\nDeliveries:\n#{inspect_deliveries}"
         end
 
@@ -88,7 +120,7 @@ module Shoulda # :nodoc:
         end
 
         def anything_failed?
-          @subject_failed || @body_failed || @sender_failed || @recipient_failed
+          @subject_failed || @body_failed || @sender_failed || @recipient_failed || @cc_failed || @cc_recipients_failed || @bcc_failed || @bcc_recipients_failed
         end
 
         def regexp_or_string_match(a_string, a_regexp_or_string)
@@ -107,6 +139,13 @@ module Shoulda # :nodoc:
           when String
             an_array.include?(a_regexp_or_string)
           end
+        end
+        
+        def match_array_in_array(target_array, match_array)
+          target_array.sort!
+          match_array.sort!
+          
+          target_array.each_cons(match_array.size).include? match_array
         end
       end
     end

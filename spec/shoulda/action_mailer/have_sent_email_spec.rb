@@ -12,6 +12,8 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
           mail :from    => "do-not-reply@example.com",
                :to      => "myself@me.com",
                :subject => "This is spam",
+               :cc      => ["you@you.com", "joe@bob.com", "hello@goodbye.com"],
+               :bcc     => ["test@example.com", "sam@bob.com", "goodbye@hello.com"],
                :body    => "Every email is spam."
         end
       end
@@ -48,11 +50,53 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
       matcher.failure_message.should =~ /Expected sent email with body/
     end
 
-    it "accept sent e-mail based on the recipient" do
+    it "accepts sent e-mail based on the recipient" do
       should have_sent_email.to('myself@me.com')
       matcher = have_sent_email.to('you@example.com')
       matcher.matches?(nil)
       matcher.failure_message.should =~ /Expected sent email to/
+    end
+    
+    it "accepts sent e-mail based on cc string" do
+      should have_sent_email.cc('joe@bob.com')
+      matcher = have_sent_email.cc('you@example.com')
+      matcher.matches?(nil)
+      matcher.failure_message.should =~ /Expected sent email cc/
+    end
+    
+    it "accepts sent-email based on cc regex" do
+      should have_sent_email.cc(/@bob\.com/)
+      matcher = have_sent_email.cc(/us@/)
+      matcher.matches?(nil)
+      matcher.failure_message.should =~ /Expected sent email cc/
+    end
+    
+    it "accepts sent e-mail based on cc list" do
+      should have_sent_email.with_cc(['you@you.com', 'joe@bob.com'])
+      matcher = have_sent_email.with_cc(['you@example.com'])
+      matcher.matches?(nil)
+      matcher.failure_message.should =~ /Expected sent email with cc/
+    end
+    
+    it "accepts sent e-mail based on bcc string" do
+      should have_sent_email.bcc("goodbye@hello.com")
+      matcher = have_sent_email.bcc("test@hello.com")
+      matcher.matches?(nil)
+      matcher.failure_message.should =~ /Expected sent email bcc/
+    end
+    
+    it "accepts sent e-mail based on bcc regex" do
+      should have_sent_email.bcc(/@example\.com/)
+      matcher = have_sent_email.bcc(/you@/)
+      matcher.matches?(nil)
+      matcher.failure_message.should =~ /Expected sent email bcc/
+    end
+    
+    it "accepts sent e-mail based on bcc list" do
+      should have_sent_email.with_bcc(['sam@bob.com', 'test@example.com'])
+      matcher = have_sent_email.with_bcc(['you@you.com', 'joe@bob.com'])
+      matcher.matches?(nil)
+      matcher.failure_message.should =~ /Expected sent email with bcc/
     end
 
     it "lists all the deliveries within failure message" do
