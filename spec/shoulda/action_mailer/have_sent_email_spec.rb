@@ -1,14 +1,67 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
-  def add_mail_to_deliveries
-    ::ActionMailer::Base.deliveries << Mailer.the_email
+  def add_mail_to_deliveries(params = nil)
+    ::ActionMailer::Base.deliveries << Mailer.the_email(params)
+  end
+
+  context "testing with instance variables" do
+    before do
+      @info = {
+      :from => "do-not-reply@example.com",
+      :to => "myself@me.com",
+      :cc => ["you@you.com", "joe@bob.com", "hello@goodbye.com"],
+      :bcc => ["test@example.com", "sam@bob.com", "goodbye@hello.com"],
+      :subject => "This is spam",
+      :body => "Every email is spam." }
+
+      define_mailer :mailer, [:the_email] do
+        def the_email(params)
+          mail params
+        end
+      end
+      add_mail_to_deliveries(@info)
+    end
+
+    after { ::ActionMailer::Base.deliveries.clear }
+
+    it "should send an e-mail based on subject" do
+      should have_sent_email.with_subject{ @info[:subject] }
+    end
+
+    it "should send an e-mail based on recipient" do
+      should have_sent_email.to{ @info[:to] }
+    end
+
+    it "should send an e-mail based on sender" do
+      should have_sent_email.from{ @info[:from] }
+    end
+
+    it "should send an e-mail based on cc" do
+      should have_sent_email.cc{ @info[:cc][0] }
+    end
+
+    it "should send an e-mail based on cc list" do
+      should have_sent_email.with_cc{ @info[:cc] }
+    end
+
+    it "should send an e-mail based on bcc" do
+      should have_sent_email.bcc{ @info[:bcc][0] }
+    end
+
+    it "should send an e-mail based on bcc list" do
+      should have_sent_email.with_bcc{ @info[:bcc] }
+    end
+
+    it "should send an e-mail based on body" do
+      should have_sent_email.with_body{ @info[:body] }
+    end
   end
 
   context "an email" do
     before do
       define_mailer :mailer, [:the_email] do
-        def the_email
+        def the_email(params)
           mail :from    => "do-not-reply@example.com",
                :to      => "myself@me.com",
                :subject => "This is spam",
@@ -56,42 +109,42 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
       matcher.matches?(nil)
       matcher.failure_message.should =~ /Expected sent email to/
     end
-    
+
     it "accepts sent e-mail based on cc string" do
       should have_sent_email.cc('joe@bob.com')
       matcher = have_sent_email.cc('you@example.com')
       matcher.matches?(nil)
       matcher.failure_message.should =~ /Expected sent email cc/
     end
-    
+
     it "accepts sent-email based on cc regex" do
       should have_sent_email.cc(/@bob\.com/)
       matcher = have_sent_email.cc(/us@/)
       matcher.matches?(nil)
       matcher.failure_message.should =~ /Expected sent email cc/
     end
-    
+
     it "accepts sent e-mail based on cc list" do
       should have_sent_email.with_cc(['you@you.com', 'joe@bob.com'])
       matcher = have_sent_email.with_cc(['you@example.com'])
       matcher.matches?(nil)
       matcher.failure_message.should =~ /Expected sent email with cc/
     end
-    
+
     it "accepts sent e-mail based on bcc string" do
       should have_sent_email.bcc("goodbye@hello.com")
       matcher = have_sent_email.bcc("test@hello.com")
       matcher.matches?(nil)
       matcher.failure_message.should =~ /Expected sent email bcc/
     end
-    
+
     it "accepts sent e-mail based on bcc regex" do
       should have_sent_email.bcc(/@example\.com/)
       matcher = have_sent_email.bcc(/you@/)
       matcher.matches?(nil)
       matcher.failure_message.should =~ /Expected sent email bcc/
     end
-    
+
     it "accepts sent e-mail based on bcc list" do
       should have_sent_email.with_bcc(['sam@bob.com', 'test@example.com'])
       matcher = have_sent_email.with_bcc(['you@you.com', 'joe@bob.com'])

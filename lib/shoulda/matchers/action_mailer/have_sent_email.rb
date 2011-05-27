@@ -12,56 +12,74 @@ module Shoulda # :nodoc:
       #                               from('do-not-reply@example.com').
       #                               with_body(/spam/).
       #                               to('myself@me.com') }
+      #
+      # Use values of instance variables
+      #   it {should have_sent_email.to {@user.email} }
       def have_sent_email
-        HaveSentEmailMatcher.new
+        HaveSentEmailMatcher.new(self)
       end
 
       class HaveSentEmailMatcher # :nodoc:
 
-        def initialize
+        def initialize(context)
+          @context = context
         end
 
-        def with_subject(email_subject)
+        def in_context(context)
+          @context = context
+          self
+        end
+
+        def with_subject(email_subject = nil, &block)
           @email_subject = email_subject
+          @email_subject_block = block
           self
         end
 
-        def from(sender)
+        def from(sender = nil, &block)
           @sender = sender
+          @sender_block = block
           self
         end
 
-        def with_body(body)
+        def with_body(body = nil, &block)
           @body = body
+          @body_block = block
           self
         end
 
-        def to(recipient)
+        def to(recipient = nil, &block)
           @recipient = recipient
+          @recipient_block = block
           self
         end
         
-        def cc(recipient)
+        def cc(recipient = nil, &block)
           @cc = recipient
+          @cc_block = block
           self
         end
         
-        def with_cc(recipients)
+        def with_cc(recipients = nil, &block)
           @cc_recipients = recipients
+          @cc_recipients_block = block
           self
         end
         
-        def bcc(recipient)
+        def bcc(recipient = nil, &block)
           @bcc = recipient
+          @bcc_block = block
           self
         end
         
-        def with_bcc(recipients)
+        def with_bcc(recipients = nil, &block)
           @bcc_recipients = recipients
+          @bcc_recipients_block = block
           self
         end
 
         def matches?(subject)
+          normalize_blocks
           ::ActionMailer::Base.deliveries.each do |mail|
             @subject_failed = !regexp_or_string_match(mail.subject, @email_subject) if @email_subject
             @body_failed = !regexp_or_string_match(mail.body, @body) if @body
@@ -123,6 +141,17 @@ module Shoulda # :nodoc:
           @subject_failed || @body_failed || @sender_failed || @recipient_failed || @cc_failed || @cc_recipients_failed || @bcc_failed || @bcc_recipients_failed
         end
 
+        def normalize_blocks
+          @email_subject = @context.instance_eval(&@email_subject_block) if @email_subject_block
+          @sender = @context.instance_eval(&@sender_block) if @sender_block
+          @body = @context.instance_eval(&@body_block) if @body_block
+          @recipient = @context.instance_eval(&@recipient_block) if @recipient_block
+          @cc = @context.instance_eval(&@cc_block) if @cc_block
+          @cc_recipients = @context.instance_eval(&@cc_recipients_block) if @cc_recipients_block
+          @bcc = @context.instance_eval(&@bcc_block) if @bcc_block
+          @bcc_recipients = @context.instance_eval(&@bcc_recipients_block) if @bcc_recipients_block
+        end
+
         def regexp_or_string_match(a_string, a_regexp_or_string)
           case a_regexp_or_string
           when Regexp
@@ -150,5 +179,4 @@ module Shoulda # :nodoc:
       end
     end
   end
-
 end
