@@ -8,7 +8,7 @@ describe Shoulda::Matchers::ActionController::AssignToMatcher do
     end
 
     controller = build_response { @var = WrongClass.new }
-    matcher = AssignToMatcher.new(:var).with_kind_of(Fixnum)
+    matcher = Shoulda::Matchers::ActionController::AssignToMatcher.new(:var).with_kind_of(Fixnum)
     matcher.matches?(controller)
 
     matcher.failure_message.should =~ /but got wrong class \(WrongClass\)$/
