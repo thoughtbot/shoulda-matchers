@@ -50,6 +50,6 @@ desc 'Default: run specs and cucumber features'
 task :default => [:all]
 
 desc 'Test the plugin under all supported Rails versions.'
-task :all, "appraisal:install" do |t|
+task :all => ["appraisal:cleanup", "appraisal:install"] do |t|
   exec('rake appraisal spec cucumber')
 end
