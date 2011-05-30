@@ -36,7 +36,7 @@ GEM
       activesupport (= 3.1.0.rc1)
     activesupport (3.1.0.rc1)
       multi_json (~> 1.0)
-    appraisal (0.3.3)
+    appraisal (0.3.4)
       aruba (~> 0.3.6)
       bundler
       rake
@@ -60,7 +60,7 @@ GEM
     diff-lcs (1.1.2)
     erubis (2.7.0)
     ffi (1.0.9)
-    gherkin (2.3.9)
+    gherkin (2.3.10)
       json (>= 1.4.6)
     hike (1.0.0)
     i18n (0.6.0)
