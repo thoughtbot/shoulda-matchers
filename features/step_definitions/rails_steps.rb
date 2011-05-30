@@ -21,7 +21,7 @@ When /^I generate a new rails application$/ do
     And I comment out the gem "turn" from the Gemfile
     And I append gems from Appraisal Gemfile
     And I reset Bundler environment variable
-    And I successfully run `bundle install --local`
+    And I successfully run `bundle install`
   }
 end
 
