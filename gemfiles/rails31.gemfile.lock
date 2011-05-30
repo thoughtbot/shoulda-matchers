@@ -140,7 +140,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  appraisal (~> 0.3.3)
+  appraisal (~> 0.3.4)
   cucumber (~> 0.10.0)
   mocha (~> 0.9.10)
   rails (= 3.1.0.rc1)
