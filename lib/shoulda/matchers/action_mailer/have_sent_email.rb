@@ -98,7 +98,7 @@ module Shoulda # :nodoc:
           end if @parts && @parts_failed
           expectation << " from #{@sender.inspect}" if @sender_failed
           expectation << " to #{@recipient.inspect}" if @recipient_failed
-          expectation << " #{!@multipart && 'not '}being multipart" if @multipart_failed
+          expectation << " #{'not ' if !@multipart}being multipart" if @multipart_failed
           expectation << "\nDeliveries:\n#{inspect_deliveries}"
         end
 

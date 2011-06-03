@@ -5,7 +5,39 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
     ::ActionMailer::Base.deliveries << Mailer.the_email
   end
 
-  context "an email" do
+  context "an email without multiple parts" do
+      before do
+      define_mailer :mailer, [:the_email] do
+        def the_email
+          mail :from    => "do-not-reply@example.com",
+               :to      => "myself@me.com",
+               :body    => "Every email is spam",
+               :subject => "This is spam"
+        end
+      end
+      add_mail_to_deliveries
+    end
+
+    after { ::ActionMailer::Base.deliveries.clear }
+
+    it "accepts sent-email when it is not multipart" do
+      should_not have_sent_email.multipart
+      matcher = have_sent_email.multipart(true)
+      matcher.matches?(Mailer.the_email)
+      matcher.failure_message.should =~ /Expected sent email being multipart/
+    end
+
+    it "matches the body with a regexp" do
+      should have_sent_email.with_body(/email is spam/)
+    end
+
+    it "matches the body with a string" do
+      should have_sent_email.with_body("Every email is spam")
+      should_not have_sent_email.with_body("emails is")
+    end
+  end
+
+  context "an email with both a text/plain and text/html part" do
     before do
       define_mailer :mailer, [:the_email] do
         def the_email
