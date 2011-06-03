@@ -61,23 +61,21 @@ module Shoulda # :nodoc:
         end
 
         def whitelisting?
-          !accessible_attributes.empty?
+          authorizer.kind_of?(::ActiveModel::MassAssignmentSecurity::WhiteList)
         end
 
         def attr_mass_assignable?
-          if whitelisting?
-            accessible_attributes.include?(@attribute)
-          else
-            !protected_attributes.include?(@attribute)
-          end
+          !authorizer.deny?(@attribute)
+        end
+
+        def authorizer
+          @subject.class.active_authorizer
         end
 
         def class_name
           @subject.class.name
         end
-
       end
-
     end
   end
 end

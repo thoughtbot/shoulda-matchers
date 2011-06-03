@@ -71,4 +71,16 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
     end
   end
 
+  context "an attribute on a class with all protected attributes" do
+    before do
+      define_model :example, :attr => :string do
+        attr_accessible
+      end
+      @model = Example.new
+    end
+
+    it "should reject being mass-assignable" do
+      @model.should_not allow_mass_assignment_of(:attr)
+    end
+  end
 end
