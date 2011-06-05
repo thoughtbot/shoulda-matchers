@@ -6,7 +6,7 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
   end
 
   context "an email without multiple parts" do
-      before do
+    before do
       define_mailer :mailer, [:the_email] do
         def the_email
           mail :from    => "do-not-reply@example.com",
