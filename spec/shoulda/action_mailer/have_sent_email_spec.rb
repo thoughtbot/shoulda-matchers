@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
+  subject { Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher.new(self) }
+  
   def add_mail_to_deliveries(params = nil)
     ::ActionMailer::Base.deliveries << Mailer.the_email(params)
   end
@@ -30,7 +32,7 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
     end
 
     it "should send an e-mail based on recipient" do
-      should have_sent_email.to{ @info[:to] }
+      should have_sent_email.to(nil) { @info[:to] }
     end
 
     it "should send an e-mail based on sender" do
