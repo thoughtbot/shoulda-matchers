@@ -160,6 +160,23 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       end
       Parent.new.should_not @matcher.dependent(:destroy)
     end
+
+    it "should accept an association with a valid :order option" do
+      define_model :child, :parent_id => :integer
+      define_model :parent do
+        has_many :children, :order => :id
+      end
+      Parent.new.should @matcher.order(:id)
+    end
+    
+    it "should reject an association with a bad :order option" do
+      define_model :child, :parent_id => :integer
+      define_model :parent do
+        has_many :children
+      end
+      Parent.new.should_not @matcher.order(:id)
+    end
+    
   end
 
   context "have_one" do
@@ -216,6 +233,23 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       end
       Person.new.should_not @matcher.dependent(:destroy)
     end
+
+    it "should accept an association with a valid :order option" do
+      define_model :detail, :person_id => :integer
+      define_model :person do
+        has_one :detail, :order => :id
+      end
+      Person.new.should @matcher.order(:id)
+    end
+
+    it "should reject an association with a bad :order option" do
+      define_model :detail, :person_id => :integer
+      define_model :person do
+        has_one :detail
+      end
+      Person.new.should_not @matcher.order(:id)
+    end
+    
   end
 
   context "have_and_belong_to_many" do
