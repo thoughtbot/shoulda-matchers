@@ -71,4 +71,35 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
     end
   end
 
+  context "an attribute on a class with all protected attributes" do
+    before do
+      define_model :example, :attr => :string do
+        attr_accessible
+      end
+      @model = Example.new
+    end
+
+    it "should reject being mass-assignable" do
+      @model.should_not allow_mass_assignment_of(:attr)
+    end
+  end
+
+  if ::ActiveModel::VERSION::MAJOR == 3 && ::ActiveModel::VERSION::MINOR >= 1
+    context "an attribute included in the mass-assignment whitelist for admin role only" do
+      before do
+        define_model :example, :attr => :string do
+          attr_accessible :attr, :as => :admin
+        end
+        @model = Example.new
+      end
+
+      it "should reject being mass-assignable" do
+        @model.should_not allow_mass_assignment_of(:attr)
+      end
+
+      it "should accept being mass-assignable for admin" do
+        @model.should allow_mass_assignment_of(:attr).as(:admin)
+      end
+    end
+  end
 end
