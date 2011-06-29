@@ -7,6 +7,10 @@ module Shoulda # :nodoc:
       #   it { should_not allow_mass_assignment_of(:password) }
       #   it { should allow_mass_assignment_of(:first_name) }
       #
+      # In Rails 3.1 you can check role as well:
+      #
+      #   it { should allow_mass_assigment_of(:first_name).as(:admin) }
+      #
       def allow_mass_assignment_of(value)
         AllowMassAssignmentOfMatcher.new(value)
       end
@@ -17,8 +21,15 @@ module Shoulda # :nodoc:
           @attribute = attribute.to_s
         end
 
+        def as(role)
+          raise "You can specify role only in Rails 3.1 or greater" unless rails_3_1?
+          @role = role
+          self
+        end
+
         def matches?(subject)
           @subject = subject
+          @role ||= :default
           if attr_mass_assignable?
             if whitelisting?
               @negative_failure_message = "#{@attribute} was made accessible"
@@ -61,14 +72,18 @@ module Shoulda # :nodoc:
         end
 
         def whitelisting?
-          !accessible_attributes.empty?
+          authorizer.kind_of?(::ActiveModel::MassAssignmentSecurity::WhiteList)
         end
 
         def attr_mass_assignable?
-          if whitelisting?
-            accessible_attributes.include?(@attribute)
+          !authorizer.deny?(@attribute)
+        end
+
+        def authorizer
+          if rails_3_1?
+            @subject.class.active_authorizer[@role]
           else
-            !protected_attributes.include?(@attribute)
+            @subject.class.active_authorizer
           end
         end
 
@@ -76,8 +91,10 @@ module Shoulda # :nodoc:
           @subject.class.name
         end
 
+        def rails_3_1?
+          ::ActiveModel::VERSION::MAJOR == 3 && ::ActiveModel::VERSION::MINOR >= 1
+        end
       end
-
     end
   end
 end

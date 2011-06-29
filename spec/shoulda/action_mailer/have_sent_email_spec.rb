@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
   subject { Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher.new(self) }
-  
+
   def add_mail_to_deliveries(params = nil)
     ::ActionMailer::Base.deliveries << Mailer.the_email(params)
   end
 
-  context "testing with instance variables" do
+  context "testing with instance variables with no multipart" do
     before do
       @info = {
       :from => "do-not-reply@example.com",
@@ -60,7 +60,40 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
     end
   end
 
-  context "an email" do
+  context "testing with instance variables with multiple parts" do
+    before do
+      @info = {
+      :from => "do-not-reply@example.com",
+      :to => "myself@me.com",
+      :cc => ["you@you.com", "joe@bob.com", "hello@goodbye.com"],
+      :bcc => ["test@example.com", "sam@bob.com", "goodbye@hello.com"],
+      :subject => "This is spam",
+      :text => "Every email is spam.",
+      :html => "<h1>HTML is spam.</h1><p>Notably.</p>" }
+
+      define_mailer :mailer, [:the_email] do
+        def the_email(params)
+          mail params do |format|
+            format.text { render :text => params[:text] }
+            format.html { render :text => params[:html] }
+          end
+        end
+      end
+      add_mail_to_deliveries(@info)
+    end
+
+    after { ::ActionMailer::Base.deliveries.clear }
+
+    it "should send emails with text and html parts" do
+      should have_sent_email.with_part('text/plain') { @info[:text] }.with_part('text/html') { @info[:html] }
+    end
+
+    it "should have the block override the method argument" do
+      should have_sent_email.with_part('text/plain', 'foo') { @info[:text] }.with_part('text/html', /bar/) { @info[:html] }
+    end
+  end
+
+  context "an email without multiple parts" do
     before do
       define_mailer :mailer, [:the_email] do
         def the_email(params)
@@ -70,6 +103,43 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
                :cc      => ["you@you.com", "joe@bob.com", "hello@goodbye.com"],
                :bcc     => ["test@example.com", "sam@bob.com", "goodbye@hello.com"],
                :body    => "Every email is spam."
+        end
+      end
+      add_mail_to_deliveries
+    end
+
+    after { ::ActionMailer::Base.deliveries.clear }
+
+    it "accepts sent-email when it is not multipart" do
+      should_not have_sent_email.multipart
+      matcher = have_sent_email.multipart(true)
+      matcher.matches?(Mailer.the_email(nil))
+      matcher.failure_message.should =~ /Expected sent email being multipart/
+    end
+
+    it "matches the body with a regexp" do
+      should have_sent_email.with_body(/email is spam/)
+    end
+
+    it "matches the body with a string" do
+      should have_sent_email.with_body("Every email is spam.")
+      should_not have_sent_email.with_body("emails is")
+    end
+  end
+
+  context "an email with both a text/plain and text/html part" do
+    before do
+      define_mailer :mailer, [:the_email] do
+        def the_email(params)
+          mail :from    => "do-not-reply@example.com",
+               :to      => "myself@me.com",
+               :cc      => ["you@you.com", "joe@bob.com", "hello@goodbye.com"],
+               :bcc     => ["test@example.com", "sam@bob.com", "goodbye@hello.com"],
+               :subject => "This is spam" do |format|
+
+            format.text { render :text => "Every email is spam." }
+            format.html { render :text => "<h1>HTML is spam.</h1><p>Notably.</p>" }
+          end
         end
       end
       add_mail_to_deliveries
@@ -105,7 +175,21 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
       matcher.failure_message.should =~ /Expected sent email with body/
     end
 
-    it "accepts sent e-mail based on the recipient" do
+    it "accepts sent e-mail based on a text/plain part" do
+      should have_sent_email.with_part('text/plain', /is spam\./)
+      matcher = have_sent_email.with_part('text/plain', /HTML is spam/)
+      matcher.matches?(nil)
+      matcher.failure_message.should =~ /Expected sent email with a text\/plain part containing/
+    end
+
+    it "accepts sent e-mail based on a text/html part" do
+      should have_sent_email.with_part('text/html', /HTML is spam/)
+      matcher = have_sent_email.with_part('text/html', /HTML is not spam\./)
+      matcher.matches?(nil)
+      matcher.failure_message.should =~ /Expected sent email with a text\/html part containing/
+    end
+
+    it "accept sent e-mail based on the recipient" do
       should have_sent_email.to('myself@me.com')
       matcher = have_sent_email.to('you@example.com')
       matcher.matches?(nil)
@@ -154,6 +238,13 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
       matcher.failure_message.should =~ /Expected sent email with bcc/
     end
 
+    it "accepts sent-email when it is multipart" do
+      should have_sent_email.multipart
+      matcher = have_sent_email.multipart(false)
+      matcher.matches?(nil)
+      matcher.failure_message.should =~ /Expected sent email not being multipart/
+    end
+
     it "lists all the deliveries within failure message" do
       add_mail_to_deliveries
 
@@ -163,8 +254,10 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
     end
 
     it "allows chaining" do
-      should have_sent_email.with_subject(/spam/).from('do-not-reply@example.com').with_body(/spam/).to('myself@me.com')
-      should_not have_sent_email.with_subject(/ham/).from('you@example.com').with_body(/ham/).to('them@example.com')
+      should have_sent_email.with_subject(/spam/).from('do-not-reply@example.com').with_body(/spam/).
+        with_part('text/plain', /is spam\./).with_part('text/html', /HTML is spam/).to('myself@me.com')
+      should_not have_sent_email.with_subject(/ham/).from('you@example.com').with_body(/ham/).
+        with_part('text/plain', /is ham/).with_part('text/html', /HTML is ham/).to('them@example.com')
     end
   end
 
@@ -175,9 +268,13 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
     matcher.description.should == 'send an email with a subject of "Welcome!"'
     matcher = matcher.with_body("Welcome, human!")
     matcher.description.should == 'send an email with a subject of "Welcome!" containing "Welcome, human!"'
+    matcher = matcher.with_part('text/plain', 'plain')
+    matcher.description.should == 'send an email with a subject of "Welcome!" containing "Welcome, human!" having a text/plain part containing "plain"'
+    matcher = matcher.with_part('text/html', 'html')
+    matcher.description.should == 'send an email with a subject of "Welcome!" containing "Welcome, human!" having a text/plain part containing "plain" having a text/html part containing "html"'
     matcher = matcher.from("alien@example.com")
-    matcher.description.should == 'send an email with a subject of "Welcome!" containing "Welcome, human!" from "alien@example.com"'
+    matcher.description.should == 'send an email with a subject of "Welcome!" containing "Welcome, human!" having a text/plain part containing "plain" having a text/html part containing "html" from "alien@example.com"'
     matcher = matcher.to("human@example.com")
-    matcher.description.should == 'send an email with a subject of "Welcome!" containing "Welcome, human!" from "alien@example.com" to "human@example.com"'
+    matcher.description.should == 'send an email with a subject of "Welcome!" containing "Welcome, human!" having a text/plain part containing "plain" having a text/html part containing "html" from "alien@example.com" to "human@example.com"'
   end
 end

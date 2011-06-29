@@ -50,7 +50,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
       @model = define_model(:example, :attr => :string) do
         validates_uniqueness_of :attr, :message => 'Bad value'
       end.new
-      Example.create!
+      Example.create!(:attr => 'value')
     end
 
     it "should fail when checking the default message" do

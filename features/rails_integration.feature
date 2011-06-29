@@ -1,4 +1,3 @@
-@disable-bundler
 Feature: integrate with Rails
 
   Background:
@@ -13,7 +12,7 @@ Feature: integrate with Rails
         end
       end
       """
-    When I successfully run "rake db:migrate --trace"
+    When I successfully run `bundle exec rake db:migrate --trace`
     And I write to "app/models/user.rb" with:
       """
       class User < ActiveRecord::Base
@@ -55,7 +54,7 @@ Feature: integrate with Rails
         should assign_to(:example)
       end
       """
-    When I successfully run "rake test TESTOPTS=-v --trace"
+    When I successfully run `bundle exec rake test TESTOPTS=-v --trace`
     Then the output should contain "1 tests, 1 assertions, 0 failures, 0 errors"
     And the output should contain "2 tests, 2 assertions, 0 failures, 0 errors"
     And the output should contain "User should require name to be set"
@@ -82,7 +81,7 @@ Feature: integrate with Rails
         it { should assign_to(:example) }
       end
       """
-    When I successfully run "rake spec SPEC_OPTS=-fs --trace"
+    When I successfully run `bundle exec rake spec SPEC_OPTS=-fs --trace`
     Then the output should contain "2 examples, 0 failures"
     And the output should contain "should require name to be set"
     And the output should contain "should assign @example"

@@ -68,6 +68,11 @@ module Shoulda # :nodoc:
           self
         end
 
+        def order(order)
+          @order = order
+          self
+        end        
+
         def matches?(subject)
           @subject = subject
           association_exists? &&
@@ -75,6 +80,7 @@ module Shoulda # :nodoc:
             foreign_key_exists? &&
             through_association_valid? &&
             dependent_correct? &&
+            order_correct? &&
             join_table_exists?
         end
 
@@ -90,6 +96,7 @@ module Shoulda # :nodoc:
           description = "#{macro_description} #{@name}"
           description += " through #{@through}" if @through
           description += " dependent => #{@dependent}" if @dependent
+          description += " order => #{@order}" if @order
           description
         end
 
@@ -158,6 +165,15 @@ module Shoulda # :nodoc:
             false
           end
         end
+
+        def order_correct?
+          if @order.nil? || @order.to_s == reflection.options[:order].to_s
+            true
+          else
+            @missing = "#{@name} should be ordered by #{@order}"
+            false
+          end
+        end        
 
         def join_table_exists?
           if @macro != :has_and_belongs_to_many ||
