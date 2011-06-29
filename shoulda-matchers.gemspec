@@ -24,7 +24,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency("rspec-rails", "~> 2.6.1.beta1")
   s.add_development_dependency("cucumber", "~> 0.10.0")
   s.add_development_dependency("appraisal", "~> 0.3.4")
-  s.add_development_dependency("rails", ">= 2.3.8")
 
   if RUBY_VERSION >= "1.9"
     s.add_development_dependency("ruby-debug19", "~> 0.11.6")
