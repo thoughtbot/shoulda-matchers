@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Tammer Saleh", "Joe Ferris", "Ryan McGeary", "Dan Croak",
-    "Matt Jankowski"]
+    "Matt Jankowski", "Stafford Brunk"]
   s.date = Time.now.strftime("%Y-%m-%d")
   s.email = %q{support@thoughtbot.com}
   s.extra_rdoc_files = ["README.rdoc", "CONTRIBUTION_GUIDELINES.rdoc"]
@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency("rspec-rails", "~> 2.6.1.beta1")
   s.add_development_dependency("cucumber", "~> 0.10.0")
   s.add_development_dependency("appraisal", "~> 0.3.4")
+  s.add_development_dependency("rails", ">= 2.3.8")
 
   if RUBY_VERSION >= "1.9"
     s.add_development_dependency("ruby-debug19", "~> 0.11.6")
