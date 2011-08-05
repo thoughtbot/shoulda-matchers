@@ -30,27 +30,32 @@ module Shoulda # :nodoc:
         def matches?(subject)
           @subject = subject
           @role ||= :default
-          if attr_mass_assignable?
-            if whitelisting?
-              @negative_failure_message = "#{@attribute} was made accessible"
-            else
-              if protected_attributes.empty?
-                @negative_failure_message = "no attributes were protected"
+          if @subject.class.attribute_method?(@attribute)
+            if attr_mass_assignable?
+              if whitelisting?
+                @negative_failure_message = "#{@attribute} was made accessible"
               else
-                @negative_failure_message = "#{class_name} is protecting " <<
-                  "#{protected_attributes.to_a.to_sentence}, " <<
-                  "but not #{@attribute}."
+                if protected_attributes.empty?
+                  @negative_failure_message = "no attributes were protected"
+                else
+                  @negative_failure_message = "#{class_name} is protecting " <<
+                    "#{protected_attributes.to_a.to_sentence}, " <<
+                    "but not #{@attribute}."
+                end
               end
-            end
-            true
-          else
-            if whitelisting?
-              @failure_message =
-                "Expected #{@attribute} to be accessible"
+              true
             else
-              @failure_message =
-                "Did not expect #{@attribute} to be protected"
+              if whitelisting?
+                @failure_message =
+                  "Expected #{@attribute} to be accessible"
+              else
+                @failure_message =
+                  "Did not expect #{@attribute} to be protected"
+              end
+              false
             end
+          else
+            @failure_message = "Unknown attribute '#{@attribute}'"
             false
           end
         end
