@@ -8,6 +8,8 @@ These tests would otherwise be much longer, more complex, and error-prone.
 Refer to the {shoulda}[https://github.com/thoughtbot/shoulda] gem if you want to know more
 about using shoulda with Test::Unit.
 
+Please report bugs on the {shoulda issue tracker}[https://github.com/thoughtbot/shoulda/issues].
+
 === ActiveRecord Matchers
 
 Matchers to test associations:
