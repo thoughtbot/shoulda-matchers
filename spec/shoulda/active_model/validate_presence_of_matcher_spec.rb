@@ -90,6 +90,10 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
         has_and_belongs_to_many :children
         validates_presence_of :children
       end.new
+      create_table "children_parents", :id => false do |t|
+        t.integer :child_id
+        t.integer :parent_id
+      end
     end
 
     it "should require the attribute to be set" do
@@ -103,6 +107,10 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
       @model = define_model :parent do
         has_and_belongs_to_many :children
       end.new
+      create_table "children_parents", :id => false do |t|
+        t.integer :child_id
+        t.integer :parent_id
+      end
     end
 
     it "should not require the attribute to be set" do

@@ -12,12 +12,12 @@ module ModelBuilder
     end
   end
 
-  def create_table(table_name, &block)
+  def create_table(table_name, options = {}, &block)
     connection = ActiveRecord::Base.connection
 
     begin
       connection.execute("DROP TABLE IF EXISTS #{table_name}")
-      connection.create_table(table_name, &block)
+      connection.create_table(table_name, options, &block)
       @created_tables << table_name
       connection
     rescue Exception => e
