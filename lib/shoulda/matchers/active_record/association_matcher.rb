@@ -71,7 +71,7 @@ module Shoulda # :nodoc:
         def order(order)
           @order = order
           self
-        end        
+        end
 
         def matches?(subject)
           @subject = subject
@@ -173,7 +173,7 @@ module Shoulda # :nodoc:
             @missing = "#{@name} should be ordered by #{@order}"
             false
           end
-        end        
+        end
 
         def join_table_exists?
           if @macro != :has_and_belongs_to_many ||
