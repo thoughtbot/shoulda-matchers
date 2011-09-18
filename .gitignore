@@ -9,3 +9,4 @@ tags
 tmp
 .bundle
 Gemfile.lock
+gemfiles/*.lock
