@@ -3,12 +3,12 @@
 source "http://rubygems.org"
 
 gem "rake", "~> 0.9.2"
-gem "sqlite3", :platform=>:ruby
-gem "activerecord-jdbc-adapter", :platform=>:jruby
 gem "activerecord-jdbcsqlite3-adapter", :platform=>:jruby
-gem "jdbc-sqlite3", :platform=>:jruby
+gem "sqlite3", :platform=>:ruby
 gem "jruby-openssl", :platform=>:jruby
 gem "shoulda-context", "~> 1.0.0.beta1"
+gem "activerecord-jdbc-adapter", :platform=>:jruby
+gem "jdbc-sqlite3", :platform=>:jruby
 gem "rails", "3.0.10"
 
 gemspec :path=>"../"

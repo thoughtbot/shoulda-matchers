@@ -68,6 +68,7 @@ module Shoulda # :nodoc:
         def flash
           return @flash if @flash
           @flash = @controller.flash.dup
+          @flash.instance_variable_set(:@used, @controller.flash.instance_variable_get(:@used).dup)
           @flash.sweep unless @now
           @flash
         end
