@@ -58,11 +58,11 @@ module Shoulda # :nodoc:
 
         def correct_unique?
           return true if @unique.nil?
-          if matched_index.unique == @unique
+          if !!matched_index.unique == @unique
             true
           else
             @missing = "#{table_name} has an index named #{matched_index.name} " <<
-                       "of unique #{matched_index.unique}, not #{@unique}."
+                       "of unique #{!!matched_index.unique}, not #{@unique}."
             false
           end
         end
