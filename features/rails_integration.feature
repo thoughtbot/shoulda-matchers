@@ -54,7 +54,8 @@ Feature: integrate with Rails
         should assign_to(:example)
       end
       """
-    When I successfully run `bundle exec rake test TESTOPTS=-v --trace`
+    When I set the "TESTOPTS" environment variable to "-v"
+    When I successfully run `bundle exec rake test --trace`
     Then the output should contain "1 tests, 1 assertions, 0 failures, 0 errors"
     And the output should contain "2 tests, 2 assertions, 0 failures, 0 errors"
     And the output should contain "User should require name to be set"

@@ -19,10 +19,14 @@ When /^I generate a new rails application$/ do
     When I run `rails new #{APP_NAME}`
     And I cd to "#{APP_NAME}"
     And I comment out the gem "turn" from the Gemfile
-    And I append gems from Appraisal Gemfile
     And I reset Bundler environment variable
+    And I set the "BUNDLE_GEMFILE" environment variable to "Gemfile"
     And I successfully run `bundle install --local`
   }
+  if RUBY_VERSION >= "1.9.3"
+    append_to_gemfile %(gem "rake", "~> 0.9.3.beta.1")
+    Then %(I successfully run `bundle update rake`)
+  end
 end
 
 When /^I configure the application to use "([^\"]+)" from this project$/ do |name|
@@ -42,8 +46,12 @@ When /^I configure the application to use rspec\-rails$/ do
 end
 
 When /^I configure the application to use shoulda-context$/ do
-  append_to_gemfile "gem 'shoulda-context', :git => 'git@github.com:thoughtbot/shoulda-context.git'"
+  append_to_gemfile "gem 'shoulda-context', '~> 1.0.0.beta1'"
   steps %{And I run `bundle install --local`}
+end
+
+When /^I set the "([^"]*)" environment variable to "([^"]*)"$/ do |key, value|
+  ENV[key] = value
 end
 
 When /^I configure a wildcard route$/ do
