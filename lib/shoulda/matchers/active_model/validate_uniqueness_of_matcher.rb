@@ -119,7 +119,7 @@ module Shoulda # :nodoc:
               next_value = if previous_value.respond_to?(:next)
                 previous_value.next
               else
-                previous_value + 1
+                previous_value.to_s.next
               end
 
               @subject.send("#{scope}=", next_value)
