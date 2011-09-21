@@ -5,7 +5,7 @@ module Shoulda # :nodoc:
       # Ensures that the attribute cannot be changed once the record has been
       # created.
       #
-      #   it { should have_readonly_attributes(:password) }
+      #   it { should have_readonly_attribute(:password) }
       #
       def have_readonly_attribute(value)
         HaveReadonlyAttributeMatcher.new(value)
