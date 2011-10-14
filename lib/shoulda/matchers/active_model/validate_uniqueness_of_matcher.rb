@@ -116,7 +116,11 @@ module Shoulda # :nodoc:
               # Assume the scope is a foreign key if the field is nil
               previous_value ||= 0
 
-              next_value = previous_value.next
+              next_value = if previous_value.respond_to?(:next)
+                previous_value.next
+              else
+                previous_value.to_s.next
+              end
 
               @subject.send("#{scope}=", next_value)
 
