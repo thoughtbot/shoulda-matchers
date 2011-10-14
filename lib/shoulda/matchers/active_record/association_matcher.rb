@@ -72,6 +72,11 @@ module Shoulda # :nodoc:
           @order = order
           self
         end
+        
+        def conditions(conditions)
+          @conditions = conditions
+          self
+        end
 
         def matches?(subject)
           @subject = subject
@@ -81,6 +86,7 @@ module Shoulda # :nodoc:
             through_association_valid? &&
             dependent_correct? &&
             order_correct? &&
+            conditions_correct? &&
             join_table_exists?
         end
 
@@ -171,6 +177,15 @@ module Shoulda # :nodoc:
             true
           else
             @missing = "#{@name} should be ordered by #{@order}"
+            false
+          end
+        end
+
+        def conditions_correct?
+          if @conditions.nil? || @conditions.to_s == reflection.options[:conditions].to_s
+            true
+          else
+            @missing = "#{@name} should have the following conditions: #{@conditions}"
             false
           end
         end
