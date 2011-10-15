@@ -7,14 +7,25 @@ module Shoulda # :nodoc:
       # Example:
       #
       #   it { should render_template(:show)  }
-      def render_template(template)
-        RenderTemplateMatcher.new(template, self)
+      #
+      #   assert that the "_customer" partial was rendered
+      #   it { should render_template(:partial => '_customer')  }
+      #
+      #   assert that the "_customer" partial was rendered twice
+      #   it { should render_template(:partial => '_customer', :count => 2)  }
+      #
+      #   assert that no partials were rendered
+      #   it { should render_template(:partial => false)  }
+      def render_template(options = {}, message = nil)
+        RenderTemplateMatcher.new(options, message, self)
       end
 
       class RenderTemplateMatcher # :nodoc:
 
-        def initialize(template, context)
-          @template = template.to_s
+        def initialize(options, message, context)
+          @options = options
+          @message = message
+          @template = options.is_a?(Hash) ? options[:partial] : options
           @context  = context
         end
 
@@ -38,7 +49,7 @@ module Shoulda # :nodoc:
 
         def renders_template?
           begin
-            @context.send(:assert_template, @template)
+            @context.send(:assert_template, @options, @message)
             @negative_failure_message = "Didn't expect to render #{@template}"
             true
           rescue Shoulda::Matchers::AssertionError => error
