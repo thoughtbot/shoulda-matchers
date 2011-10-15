@@ -2,7 +2,7 @@ require 'rubygems'
 require 'bundler/setup'
 require 'rake'
 require 'rake/rdoctask'
-require 'rake/gempackagetask'
+require 'rubygems/package_task'
 require 'rspec/core/rake_task'
 require 'cucumber/rake/task'
 require 'appraisal'
@@ -33,7 +33,7 @@ RSpec::Core::RakeTask.new(:coverage) do |t|
 end
 
 eval("$specification = begin; #{IO.read('shoulda-matchers.gemspec')}; end")
-Rake::GemPackageTask.new $specification do |pkg|
+Gem::PackageTask.new $specification do |pkg|
   pkg.need_tar = true
   pkg.need_zip = true
 end
