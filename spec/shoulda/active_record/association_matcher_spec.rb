@@ -83,6 +83,22 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       end
       Child.new.should_not @matcher.conditions(:adopter => true)
     end
+    
+    it "should accept an association with a valid :class_name option" do
+      define_model :tree_parent, :adopter => :boolean
+      define_model :child, :parent_id => :integer do
+        belongs_to :parent, :class_name => 'TreeParent'
+      end
+      Child.new.should @matcher.class_name('TreeParent')
+    end
+    
+    it "should reject an association with a bad :class_name option" do
+      define_model :parent, :adopter => :boolean
+      define_model :child, :parent_id => :integer do
+        belongs_to :parent
+      end
+      Child.new.should_not @matcher.class_name('TreeChild')
+    end
   end
 
   context "have_many" do
@@ -208,6 +224,22 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       end
       Parent.new.should_not @matcher.conditions({ :adopted => true })
     end
+
+    it "should accept an association with a valid :class_name option" do
+      define_model :node, :parent_id => :integer, :adopted => :boolean
+      define_model :parent do
+        has_many :children, :class_name => 'Node'
+      end
+      Parent.new.should @matcher.class_name('Node')
+    end
+    
+    it "should reject an association with a bad :class_name option" do
+      define_model :child, :parent_id => :integer, :adopted => :boolean
+      define_model :parent do
+        has_many :children
+      end
+      Parent.new.should_not @matcher.class_name('Node')
+    end
     
   end
 
@@ -297,7 +329,23 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       end
       Person.new.should_not @matcher.conditions(:disabled => true)
     end
-    
+
+    it "should accept an association with a valid :class_name option" do
+      define_model :person_detail, :person_id => :integer, :disabled => :boolean
+      define_model :person do
+        has_one :detail, :class_name => 'PersonDetail'
+      end
+      Person.new.should @matcher.class_name('PersonDetail')
+    end
+
+    it "should reject an association with a bad :class_name option" do
+      define_model :detail, :person_id => :integer, :disabled => :boolean
+      define_model :person do
+        has_one :detail
+      end
+      Person.new.should_not @matcher.class_name('PersonDetail')
+    end
+
   end
 
   context "have_and_belong_to_many" do
@@ -357,6 +405,26 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       define_model :people_relative, :person_id   => :integer,
                                      :relative_id => :integer
       Person.new.should_not @matcher.conditions(:adopted => true)
+    end
+    
+    it "should accept an association with a valid :class_name option" do
+      define_model :person_relatives, :adopted => :boolean
+      define_model :person do
+        has_and_belongs_to_many :relatives, :class_name => 'PersonRelatives'
+      end
+      define_model :people_person_relative, :person_id   => :integer,
+                                     :person_relative_id => :integer
+      Person.new.should @matcher.class_name('PersonRelatives')
+    end
+    
+    it "should reject an association with a bad :class_name option" do
+      define_model :relatives, :adopted => :boolean
+      define_model :person do
+        has_and_belongs_to_many :relatives
+      end
+      define_model :people_relative, :person_id   => :integer,
+                                     :relative_id => :integer
+      Person.new.should_not @matcher.class_name('PersonRelatives')
     end
     
   end
