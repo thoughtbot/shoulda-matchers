@@ -18,6 +18,7 @@ module Shoulda # :nodoc:
       # * <tt>through</tt> - association name for <tt>has_many :through</tt>
       # * <tt>dependent</tt> - tests that the association makes use of the
       #   dependent option.
+      # * <tt>:class_name</tt> - tests that the association makes use of the class_name option.
       #
       # Example:
       #   it { should have_many(:friends) }
@@ -35,6 +36,7 @@ module Shoulda # :nodoc:
       # Options:
       # * <tt>:dependent</tt> - tests that the association makes use of the
       #   dependent option.
+      # * <tt>:class_name</tt> - tests that the association makes use of the class_name option.
       #
       # Example:
       #   it { should have_one(:god) } # unless hindu
@@ -72,9 +74,14 @@ module Shoulda # :nodoc:
           @order = order
           self
         end
-        
+
         def conditions(conditions)
           @conditions = conditions
+          self
+        end
+
+        def class_name(class_name)
+          @class_name = class_name
           self
         end
 
@@ -85,6 +92,7 @@ module Shoulda # :nodoc:
             foreign_key_exists? &&
             through_association_valid? &&
             dependent_correct? &&
+            class_name_correct? &&
             order_correct? &&
             conditions_correct? &&
             join_table_exists?
@@ -102,6 +110,7 @@ module Shoulda # :nodoc:
           description = "#{macro_description} #{@name}"
           description += " through #{@through}" if @through
           description += " dependent => #{@dependent}" if @dependent
+          description += " class_name => #{@class_name}" if @class_name
           description += " order => #{@order}" if @order
           description
         end
@@ -168,6 +177,15 @@ module Shoulda # :nodoc:
             true
           else
             @missing = "#{@name} should have #{@dependent} dependency"
+            false
+          end
+        end
+
+        def class_name_correct?
+          if @class_name.nil? || @class_name.to_s == reflection.options[:class_name].to_s
+            true
+          else
+            @missing = "#{@name} should have #{@class_name} as class_name"
             false
           end
         end
