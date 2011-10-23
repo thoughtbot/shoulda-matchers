@@ -8,6 +8,7 @@ require 'shoulda/matchers/active_model/validate_presence_of_matcher'
 require 'shoulda/matchers/active_model/validate_format_of_matcher'
 require 'shoulda/matchers/active_model/validate_uniqueness_of_matcher'
 require 'shoulda/matchers/active_model/validate_acceptance_of_matcher'
+require 'shoulda/matchers/active_model/validate_confirmation_of_matcher'
 require 'shoulda/matchers/active_model/validate_numericality_of_matcher'
 require 'shoulda/matchers/active_model/allow_mass_assignment_of_matcher'
 
