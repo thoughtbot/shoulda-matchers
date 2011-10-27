@@ -19,6 +19,19 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
     end
   end
 
+  context "a numeric attribute which must be integer" do
+    before do
+      define_model :example, :attr => :string do
+          validates_numericality_of :attr, { :only_integer => true }
+      end
+      @model = Example.new
+    end
+
+    it "should only allow integer values for that attribute" do
+      @model.should validate_numericality_of(:attr).only_integer
+    end
+  end
+
   context "a numeric attribute with a custom validation message" do
     before do
       define_model :example, :attr => :string do
