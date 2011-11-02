@@ -19,6 +19,8 @@ When /^I generate a new rails application$/ do
     When I run `rails new #{APP_NAME}`
     And I cd to "#{APP_NAME}"
     And I comment out the gem "turn" from the Gemfile
+    And I comment out the gem "coffee-rails" from the Gemfile
+    And I comment out the gem "uglifier" from the Gemfile
     And I reset Bundler environment variable
     And I set the "BUNDLE_GEMFILE" environment variable to "Gemfile"
     And I successfully run `bundle install --local`
