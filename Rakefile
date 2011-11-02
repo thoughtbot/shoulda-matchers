@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'bundler/setup'
 require 'rake'
-require 'rake/rdoctask'
+require 'rdoc/task'
 require 'rubygems/package_task'
 require 'rspec/core/rake_task'
 require 'cucumber/rake/task'
