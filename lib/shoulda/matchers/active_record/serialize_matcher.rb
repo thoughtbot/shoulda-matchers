@@ -5,7 +5,7 @@ module Shoulda # :nodoc:
       # Ensure that the field becomes serialized.
       #
       # Options:
-      # * <tt>:as</tt> - tests that the association makes use of the class_name option.
+      # * <tt>:as</tt> - tests that the serialized attribute makes use of the class_name option.
       #
       # Example:
       #   it { should serialize(:details) }
