@@ -42,7 +42,7 @@ module Shoulda # :nodoc:
         attr_reader :failure_message, :negative_failure_message
 
         def description
-          description = "set the flash"
+          description = "set the #{expected_flash_invocation}"
           description << " to #{@value.inspect}" unless @value.nil?
           description
         end
@@ -88,7 +88,7 @@ module Shoulda # :nodoc:
         end
 
         def expectation
-          expectation = "the flash#{".now" if @now}#{":[%s]" % @key if @key} to be set"
+          expectation = "the #{expected_flash_invocation} to be set"
           expectation << " to #{@value.inspect}" unless @value.nil?
           expectation << ", but #{flash_description}"
           expectation
@@ -102,7 +102,12 @@ module Shoulda # :nodoc:
           end
         end
 
+        def expected_flash_invocation
+          "flash#{".now" if @now}#{"[:%s]" % @key if @key}"
+        end
+
       end
+
 
     end
   end
