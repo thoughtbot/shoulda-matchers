@@ -58,6 +58,44 @@ describe Shoulda::Matchers::ActionController::SetTheFlashMatcher do
     end
   end
 
+  context "a controller that sets a flash message of notice and alert" do
+    before do
+      @controller = build_response do
+        flash[:notice] = 'value'
+        flash[:alert]  = 'other'
+      end
+    end
+
+    it "should accept flash message of notice" do
+      @controller.should set_the_flash[:notice]
+    end
+
+    it "should accept flash message of alert" do
+      @controller.should set_the_flash[:notice]
+    end
+
+    it "should reject flash message of warning" do
+      @controller.should_not set_the_flash[:warning]
+    end
+
+    it "should accept exact flash message of notice" do
+      @controller.should set_the_flash[:notice].to('value')
+    end
+
+    it "should accept setting a matched flash message of notice" do
+      @controller.should set_the_flash[:notice].to(/value/)
+    end
+
+    it "should reject setting a different flash message of notice" do
+      @controller.should_not set_the_flash[:notice].to('other')
+    end
+
+    it "should reject setting a different pattern" do
+      @controller.should_not set_the_flash[:notice].to(/other/)
+    end
+
+  end
+
   context "a controller that sets multiple flash messages" do
     before do
       @controller = build_response {

@@ -10,6 +10,7 @@ module Shoulda # :nodoc:
       #   it { should set_the_flash }
       #   it { should set_the_flash.to("Thank you for placing this order.") }
       #   it { should set_the_flash.to(/created/i) }
+      #   it { should set_the_flash[:alert].to("Password doesn't match") }
       #   it { should set_the_flash.to(/logged in/i).now }
       #   it { should_not set_the_flash }
       def set_the_flash
@@ -25,6 +26,11 @@ module Shoulda # :nodoc:
 
         def now
           @now = true
+          self
+        end
+
+        def [](key)
+          @key = key
           self
         end
 
@@ -52,17 +58,25 @@ module Shoulda # :nodoc:
         private
 
         def sets_the_flash?
-          !flash.blank?
+          flash_values.any?
         end
 
         def string_value_matches?
           return true unless String === @value
-          flash.to_hash.values.any? {|value| value == @value }
+          flash_values.any? {|value| value == @value }
         end
 
         def regexp_value_matches?
           return true unless Regexp === @value
-          flash.to_hash.values.any? {|value| value =~ @value }
+          flash_values.any? {|value| value =~ @value }
+        end
+
+        def flash_values
+          if @key
+            [flash.to_hash[@key]]
+          else
+            flash.to_hash.values
+          end
         end
 
         def flash
@@ -74,7 +88,7 @@ module Shoulda # :nodoc:
         end
 
         def expectation
-          expectation = "the flash#{".now" if @now} to be set"
+          expectation = "the flash#{".now" if @now}#{":[%s]" % @key if @key} to be set"
           expectation << " to #{@value.inspect}" unless @value.nil?
           expectation << ", but #{flash_description}"
           expectation
