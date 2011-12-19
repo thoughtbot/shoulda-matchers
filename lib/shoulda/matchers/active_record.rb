@@ -2,6 +2,7 @@ require 'shoulda/matchers/active_record/association_matcher'
 require 'shoulda/matchers/active_record/have_db_column_matcher'
 require 'shoulda/matchers/active_record/have_db_index_matcher'
 require 'shoulda/matchers/active_record/have_readonly_attribute_matcher'
+require 'shoulda/matchers/active_record/have_secure_password_matcher'
 require 'shoulda/matchers/active_record/serialize_matcher'
 
 module Shoulda
