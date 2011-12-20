@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::Matchers::ActiveRecord::HaveSecurePasswordMatcher do
+describe Shoulda::Matchers::ActiveModel::HaveSecurePasswordMatcher do
   context "a model that does have secure password" do
     before do
       define_model :example do

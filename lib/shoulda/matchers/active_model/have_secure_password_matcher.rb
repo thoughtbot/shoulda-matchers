@@ -1,10 +1,10 @@
 module Shoulda # :nodoc:
   module Matchers
-    module ActiveRecord # :nodoc:
+    module ActiveModel # :nodoc:
 
       # Ensures that the model uses has_secure_password
       #
-      #   it { should have_secure_password(:password) }
+      #   it { should have_secure_password }
       #
       def have_secure_password
         HaveSecurePasswordMatcher.new
@@ -12,8 +12,7 @@ module Shoulda # :nodoc:
 
       class HaveSecurePasswordMatcher # :nodoc:
         def matches?(subject)
-          @subject = subject
-          @subject.class.included_modules.collect(&:to_s).include?('ActiveModel::SecurePassword::InstanceMethodsOnActivation')
+          subject.class.included_modules.collect(&:to_s).include?('ActiveModel::SecurePassword::InstanceMethodsOnActivation')
         end
 
         def failure_message
