@@ -17,23 +17,16 @@ module Shoulda # :nodoc:
         end
 
         def failure_message
-          "#{class_name} does not have secure password"
+          'does not have secure password'
         end
 
         def negative_failure_message
-          "#{class_name} does have secure password"
+          'does have secure password'
         end
 
         def description
-          "make #{class_name} have secure password"
+          'have secure password'
         end
-
-        private
-
-        def class_name
-          @subject.class.name
-        end
-
       end
 
     end
