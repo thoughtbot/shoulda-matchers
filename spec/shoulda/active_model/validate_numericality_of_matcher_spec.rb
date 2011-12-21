@@ -36,6 +36,48 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
     end
   end
 
+  [:greater_than, :less_than, :greater_than_or_equal_to, :less_than_or_equal_to, :equal_to].each do |parameter|
+    context "a numeric attribute with a '#{parameter.to_s}' parameter" do
+      before do
+        define_model(:example, :attr => :integer) do
+          validates_numericality_of :attr, parameter => 0
+        end
+        @model = Example.new
+      end
+
+      it "should only allow numeric values #{parameter} indicated value for that attribute" do
+        @model.should validate_numericality_of(:attr).send(parameter, 0)
+      end
+    end
+
+    context "a numeric attribute without a '#{parameter.to_s}' parameter" do
+      before do
+        define_model(:example, :attr => :integer) do
+          validates_numericality_of :attr
+        end
+        @model = Example.new
+      end
+
+      it "should not allow numeric values without #{parameter} indicated value for that attribute" do
+        @model.should_not validate_numericality_of(:attr).send(parameter, 0)
+      end
+    end
+
+    context "a numeric attribute with a '#{parameter.to_s}' parameter and a custom message" do
+      before do
+        define_model(:example, :attr => :integer) do
+          validates_numericality_of :attr
+          validates_numericality_of :attr, parameter => 0, :message => "#{parameter} custom message"
+        end
+        @model = Example.new
+      end
+
+      it "should only allow numeric values #{parameter} indicated value for that attribute with message '#{parameter} custom message'" do
+        @model.should validate_numericality_of(:attr).send(parameter, 0).send("with_#{parameter}_message", "#{parameter} custom message")
+      end
+    end
+  end
+
   context "a non-numeric attribute" do
     before do
       @model = define_model(:example, :attr => :string).new
