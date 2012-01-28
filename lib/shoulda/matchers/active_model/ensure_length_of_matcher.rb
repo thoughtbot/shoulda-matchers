@@ -96,11 +96,13 @@ module Shoulda # :nodoc:
         def translate_messages!
           if Symbol === @short_message
             @short_message = default_error_message(@short_message,
+                                                   :attribute => @attribute,
                                                    :count => @minimum)
           end
 
           if Symbol === @long_message
             @long_message = default_error_message(@long_message,
+                                                  :attribute => @attribute,
                                                   :count => @maximum)
           end
         end
