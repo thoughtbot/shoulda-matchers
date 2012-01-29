@@ -36,11 +36,11 @@ module Shoulda # :nodoc:
         def matches?(subject)
           super(subject)
           @expected_message ||= :confirmation
-          subject[@attribute] ||= (@test_value || 'some value')
-          subject.send("#{@attribute}_confirmation=", subject[@attribute])
-          allows_confirmed = allows_value_of(subject[@attribute], @expected_message)
-          subject.send("#{@attribute}_confirmation=", (@unconfirmed_value || (subject[@attribute] + ' something')))
-          allows_confirmed && disallows_value_of(subject[@attribute], @expected_message)
+          subject.send("#{@attribute}=", (@test_value || 'some value')) unless subject.send("#{@attribute}")
+          subject.send("#{@attribute}_confirmation=", subject.send("#{@attribute}"))
+          allows_confirmed = allows_value_of(subject.send("#{@attribute}"), @expected_message)
+          subject.send("#{@attribute}_confirmation=", (@unconfirmed_value || (subject.send("#{@attribute}") + ' something')))
+          allows_confirmed && disallows_value_of(subject.send("#{@attribute}"), @expected_message)
         end
 
         def description
