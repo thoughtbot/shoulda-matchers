@@ -36,10 +36,10 @@ module Shoulda # :nodoc:
 
         def matches?(instance)
           @instance = instance
-          if Symbol === @expected_message
-            @expected_message = default_error_message(@expected_message, :model_name => @instance.class.to_s.underscore, :attribute => @attribute)
-          end
           @instance.send("#{@attribute}=", @value)
+          if Symbol === @expected_message
+            @expected_message = default_error_message(@expected_message, :attribute => @attribute)
+          end
           !errors_match?
         end
 
