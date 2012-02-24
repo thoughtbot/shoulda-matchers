@@ -1,10 +1,38 @@
-We're using GitHub[http://github.com/thoughtbot/shoulda/tree/master], and we've been getting any combination of github pull requests, tickets, patches, emails, etc.  We need to normalize this workflow to make sure we don't miss any fixes.
+We love pull requests. Here's a quick guide:
 
-* Make sure you're accessing the source from the {official repository}[http://github.com/thoughtbot/shoulda/tree/master].
-* We prefer git branches over patches, but we can take either.
-* If you're using git, please make a branch for each separate contribution.  We can cherry pick your commits, but pulling from a branch is easier.
-* If you're submitting patches, please cut each fix or feature into a separate patch.
-* There should be an issue[http://github.com/thoughtbot/shoulda/issues] for any submission.  If you've found a bug and want to fix it, open a new ticket at the same time.
-* Please <b>don't send pull requests</b>  Just update the issue with the url for your fix (or attach the patch) when it's ready.  The github pull requests pretty much get dropped on the floor until someone with commit rights notices them in the mailbox.
-* Contributions without tests won't be accepted.  The file <tt>/test/README</tt> explains the testing system pretty thoroughly.
+1. Fork the repo.
 
+2. Run the tests. We only take pull requests with passing tests, and it's great
+to know that you have a clean slate: `bundle && rake`
+
+3. Add a test for your change. Only refactoring and documentation changes
+require no new tests. If you are adding functionality or fixing a bug, we need
+a test!
+
+4. Make the test pass.
+
+5. Push to your fork and submit a pull request.
+
+
+At this point you're waiting on us. We like to at least comment on, if not
+accept, pull requests within a week. We may suggest some changes or
+improvements or alternatives.
+
+Some things that will increase the chance that your pull request is accepted,
+taken straight from the Ruby on Rails guide:
+
+* Use Rails idioms and helpers
+* Include tests that fail without your code, and pass with it
+* Update the documentation, the surrounding one, examples elsewhere, guides,
+  whatever is affected by your contribution
+
+Syntax:
+
+* Two spaces, no tabs.
+* No trailing whitespace. Blank lines should not have any space.
+* Prefer &&/|| over and/or.
+* MyClass.my_method(my_arg) not my_method( my_arg ) or my_method my_arg.
+* a = b and not a=b.
+* Follow the conventions you see used in the source already.
+
+And in case we didn't emphasize it enough: we love tests!
