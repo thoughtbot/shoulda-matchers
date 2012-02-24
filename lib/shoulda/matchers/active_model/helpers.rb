@@ -16,17 +16,11 @@ module Shoulda # :nodoc:
         #   default_error_message(:blank)
         #   default_error_message(:too_short, :count => 5)
         #   default_error_message(:too_long, :count => 60)
-        #   default_error_message(:blank, :model_name => 'user', :attribute => 'name')
+        #   default_error_message(:blank, :attribute => 'name')
         def default_error_message(key, options = {})
-          model_name = options.delete(:model_name)
           attribute = options.delete(:attribute)
           if Object.const_defined?(:I18n) # Rails >= 2.2
-            I18n.translate( :"activerecord.errors.models.#{model_name}.attributes.#{attribute}.#{key}", {
-              :default => [ :"activerecord.errors.models.#{model_name}.#{key}",
-                            :"activerecord.errors.messages.#{key}",
-                            :"errors.attributes.#{attribute}.#{key}",
-                            :"errors.messages.#{key}"
-                          ]}.merge(options))
+            (@instance || @subject).errors.generate_message(attribute, key, options)
           else # Rails <= 2.1.x
             ::ActiveRecord::Errors.default_error_messages[key] % options[:count]
           end
