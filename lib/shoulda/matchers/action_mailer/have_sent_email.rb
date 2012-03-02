@@ -11,6 +11,7 @@ module Shoulda # :nodoc:
       #   it { should have_sent_email.with_part('text/html', /HTML spam/) }
       #   it { should have_sent_email.with_subject(/spam/).
       #                               from('do-not-reply@example.com').
+      #                               reply_to('reply-to-me@example.com').
       #                               with_body(/spam/).
       #                               to('myself@me.com') }
       #
@@ -40,6 +41,12 @@ module Shoulda # :nodoc:
         def from(sender = nil, &block)
           @sender = sender
           @sender_block = block
+          self
+        end
+
+        def reply_to(reply_to = nil, &block)
+          @reply_to = reply_to
+          @reply_to_block = block
           self
         end
 
@@ -99,6 +106,7 @@ module Shoulda # :nodoc:
             @parts_failed = !parts_match(mail, @parts) if @parts
             @body_failed = !body_match(mail, @body) if @body
             @sender_failed = !regexp_or_string_match_in_array(mail.from, @sender) if @sender
+            @reply_to_failed = !regexp_or_string_match_in_array(mail.reply_to, @reply_to) if @reply_to
             @recipient_failed = !regexp_or_string_match_in_array(mail.to, @recipient) if @recipient
             @cc_failed = !regexp_or_string_match_in_array(mail.cc, @cc) if @cc
             @cc_recipients_failed = !match_array_in_array(mail.cc, @cc_recipients) if @cc_recipients
@@ -127,6 +135,7 @@ module Shoulda # :nodoc:
             description << " having a #{content_type} part containing #{body.inspect}"
           end if @parts
           description << " from #{@sender.inspect}" if @sender
+          description << " reply to #{@reply_to.inspect}" if @reply_to
           description << " to #{@recipient.inspect}" if @recipient
           description << " cc #{@cc.inspect}" if @cc
           description << " with cc #{@cc_recipients.inspect}" if @cc_recipients
@@ -145,6 +154,7 @@ module Shoulda # :nodoc:
             expectation << " with a #{content_type} part containing #{body}"
           end if @parts && @parts_failed
           expectation << " from #{@sender.inspect}" if @sender_failed
+          expectation << " reply to #{@reply_to.inspect}" if @reply_to_failed
           expectation << " to #{@recipient.inspect}" if @recipient_failed
           expectation << " cc #{@cc.inspect}" if @cc_failed
           expectation << " with cc #{@cc_recipients.inspect}" if @cc_recipients_failed
@@ -161,14 +171,15 @@ module Shoulda # :nodoc:
         end
 
         def anything_failed?
-          @subject_failed || @body_failed || @sender_failed || @recipient_failed ||
-            @cc_failed || @cc_recipients_failed || @bcc_failed || @bcc_recipients_failed ||
-            @parts_failed || @multipart_failed
+          @subject_failed || @body_failed || @sender_failed || @reply_to_failed ||
+          @recipient_failed || @cc_failed || @cc_recipients_failed || @bcc_failed ||
+          @bcc_recipients_failed || @parts_failed || @multipart_failed
         end
 
         def normalize_blocks
           @email_subject = @context.instance_eval(&@email_subject_block) if @email_subject_block
           @sender = @context.instance_eval(&@sender_block) if @sender_block
+          @reply_to = @context.instance_eval(&@reply_to_block) if @reply_to_block
           @body = @context.instance_eval(&@body_block) if @body_block
           @recipient = @context.instance_eval(&@recipient_block) if @recipient_block
           @cc = @context.instance_eval(&@cc_block) if @cc_block
