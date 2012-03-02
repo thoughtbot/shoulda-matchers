@@ -9,7 +9,7 @@ module Shoulda # :nodoc:
       #
       # In Rails 3.1 you can check role as well:
       #
-      #   it { should allow_mass_assigment_of(:first_name).as(:admin) }
+      #   it { should allow_mass_assignment_of(:first_name).as(:admin) }
       #
       def allow_mass_assignment_of(value)
         AllowMassAssignmentOfMatcher.new(value)
