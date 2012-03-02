@@ -11,6 +11,7 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
     before do
       @info = {
       :from => "do-not-reply@example.com",
+      :reply_to => "reply-to-me@example.com",
       :to => "myself@me.com",
       :cc => ["you@you.com", "joe@bob.com", "hello@goodbye.com"],
       :bcc => ["test@example.com", "sam@bob.com", "goodbye@hello.com"],
@@ -37,6 +38,10 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
 
     it "should send an e-mail based on sender" do
       should have_sent_email.from{ @info[:from] }
+    end
+
+    it "should send an e-email based on reply_to" do
+      should have_sent_email.reply_to { @info[:reply_to] }
     end
 
     it "should send an e-mail based on cc" do
@@ -276,5 +281,7 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
     matcher.description.should == 'send an email with a subject of "Welcome!" containing "Welcome, human!" having a text/plain part containing "plain" having a text/html part containing "html" from "alien@example.com"'
     matcher = matcher.to("human@example.com")
     matcher.description.should == 'send an email with a subject of "Welcome!" containing "Welcome, human!" having a text/plain part containing "plain" having a text/html part containing "html" from "alien@example.com" to "human@example.com"'
+    matcher = matcher.reply_to("reply-to-me@example.com")
+    matcher.description.should == 'send an email with a subject of "Welcome!" containing "Welcome, human!" having a text/plain part containing "plain" having a text/html part containing "html" from "alien@example.com" reply to "reply-to-me@example.com" to "human@example.com"'
   end
 end
