@@ -112,6 +112,7 @@ module Shoulda # :nodoc:
           else
             @scopes.all? do |scope|
               previous_value = @existing.send(scope)
+              next if scope.match(/_type$/) && previous_value.is_a?(String) && Object.const_defined?(previous_value)
 
               # Assume the scope is a foreign key if the field is nil
               previous_value ||= 0
