@@ -172,8 +172,8 @@ module Shoulda # :nodoc:
 
         def anything_failed?
           @subject_failed || @body_failed || @sender_failed || @reply_to_failed ||
-          @recipient_failed || @cc_failed || @cc_recipients_failed || @bcc_failed ||
-          @bcc_recipients_failed || @parts_failed || @multipart_failed
+            @recipient_failed || @cc_failed || @cc_recipients_failed || @bcc_failed ||
+            @bcc_recipients_failed || @parts_failed || @multipart_failed
         end
 
         def normalize_blocks
