@@ -67,11 +67,17 @@ module Shoulda # :nodoc:
           if @expected_query_count
             "Expected ##{@method_name} to cause #{@expected_query_count} database queries but it actually caused #{@queries.length} queries:" + friendly_queries
           else
-            "Expected ##{@method_name} to not query the database but it actually caused #{@queries.length} queries:" + friendly_queries
+            "Expected ##{@method_name} to query the database but it actually caused #{@queries.length} queries:" + friendly_queries
           end
         end
 
-        alias_method :negative_failure_message, :failure_message
+        def negative_failure_message
+          if @expected_query_count
+            "Expected ##{@method_name} to not cause #{@expected_query_count} database queries but it actually caused #{@queries.length} queries:" + friendly_queries
+          else
+            "Expected ##{@method_name} to not query the database but it actually caused #{@queries.length} queries:" + friendly_queries
+          end
+        end
 
         private
 

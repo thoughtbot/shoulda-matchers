@@ -17,6 +17,14 @@ describe Shoulda::Matchers::ActiveRecord::QueryTheDatabaseMatcher do
       @parent.should query_the_database(1.times).when_calling(:count)
     end
 
+    it "should accept any number of queries when none specified" do
+      @parent.should query_the_database.when_calling(:count)
+    end
+
+    it "should reject any number of queries when non specified" do
+      @parent.should_not query_the_database.when_calling(:to_s)
+    end
+
     it "should accept the correct number of queries when there are two queries" do
       nonsense = lambda do
         @parent.create.kittens.create
