@@ -103,12 +103,20 @@ module Shoulda # :nodoc:
         end
 
         def expected_flash_invocation
-          "flash#{".now" if @now}#{"[:%s]" % @key if @key}"
+          now = ""
+          key = ""
+
+          if @now
+            now = ".now"
+          end
+
+          if @key
+            key = "[:#{@key}]"
+          end
+
+          "flash#{now}#{key}"
         end
-
       end
-
-
     end
   end
 end

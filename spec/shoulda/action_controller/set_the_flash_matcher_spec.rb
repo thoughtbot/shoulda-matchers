@@ -93,7 +93,6 @@ describe Shoulda::Matchers::ActionController::SetTheFlashMatcher do
     it "should reject setting a different pattern" do
       @controller.should_not set_the_flash[:notice].to(/other/)
     end
-
   end
 
   context "a controller that sets multiple flash messages" do
