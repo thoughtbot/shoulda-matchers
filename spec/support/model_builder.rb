@@ -8,7 +8,9 @@ module ModelBuilder
         @created_tables ||= []
       end
 
-      after { teardown_defined_constants }
+      after do
+        teardown_defined_constants
+      end
     end
   end
 
@@ -29,14 +31,18 @@ module ModelBuilder
   def define_constant(class_name, base, &block)
     class_name = class_name.to_s.camelize
 
-    klass = Class.new(base)
-    Object.const_set(class_name, klass)
-    klass.unloadable
+    Class.new(base).tap do |constant_class|
+      Object.const_set(class_name, constant_class)
+      constant_class.unloadable
 
-    klass.class_eval(&block) if block_given?
-    klass.reset_column_information if klass.respond_to?(:reset_column_information)
+      if block_given?
+        constant_class.class_eval(&block)
+      end
 
-    klass
+      if constant_class.respond_to?(:reset_column_information)
+        constant_class.reset_column_information
+      end
+    end
   end
 
   def define_model_class(class_name, &block)
@@ -51,7 +57,9 @@ module ModelBuilder
         attr_accessor column.to_sym
       end
 
-      class_eval(&block) if block_given?
+      if block_given?
+        class_eval(&block)
+      end
     end
   end
 
@@ -70,7 +78,7 @@ module ModelBuilder
 
   def define_mailer(name, paths, &block)
     class_name = name.to_s.pluralize.classify
-    klass = define_constant(class_name, ActionMailer::Base, &block)
+    define_constant(class_name, ActionMailer::Base, &block)
   end
 
   def define_controller(class_name, &block)
@@ -126,10 +134,10 @@ module ModelBuilder
   def teardown_defined_constants
     ActiveSupport::Dependencies.clear
 
+    connection = ActiveRecord::Base.connection
+
     @created_tables.each do |table_name|
-      ActiveRecord::Base.
-        connection.
-        execute("DROP TABLE IF EXISTS #{table_name}")
+      connection.execute("DROP TABLE IF EXISTS #{table_name}")
     end
 
     FileUtils.rm_rf(TMP_VIEW_PATH)
@@ -141,4 +149,3 @@ end
 RSpec.configure do |config|
   config.include ModelBuilder
 end
-
