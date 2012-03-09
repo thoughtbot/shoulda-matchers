@@ -91,14 +91,14 @@ module Shoulda # :nodoc:
         end
 
         def filter_query(query)
-          query[:name] == 'SCHEMA' || looks_like_schema(query[:sql])
+          query[:name] == 'SCHEMA' || looks_like_schema?(query[:sql])
         end
 
         def schema_terms
-          ['FROM sqlite_master', 'PRAGMA', 'SHOW TABLES', 'SHOW KEYS FROM', 'SHOW FIELDS FROM']
+          ['FROM sqlite_master', 'PRAGMA', 'SHOW TABLES', 'SHOW KEYS FROM', 'SHOW FIELDS FROM', 'begin transaction', 'commit transaction']
         end
 
-        def looks_like_schema(sql)
+        def looks_like_schema?(sql)
           schema_terms.any? { |term| sql.include?(term) }
         end
       end

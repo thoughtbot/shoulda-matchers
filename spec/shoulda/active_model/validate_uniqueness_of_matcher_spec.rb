@@ -5,6 +5,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
     before do
       @model = define_model(:example, :attr  => :string,
                                       :other => :integer) do
+        attr_accessible :attr, :other
         validates_uniqueness_of :attr
       end.new
     end
@@ -47,6 +48,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
   context "a unique attribute with a custom error and an existing value" do
     before do
       @model = define_model(:example, :attr => :string) do
+        attr_accessible :attr
         validates_uniqueness_of :attr, :message => 'Bad value'
       end.new
       Example.create!(:attr => 'value')
@@ -70,6 +72,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
       @model = define_model(:example, :attr   => :string,
                                       :scope1 => :integer,
                                       :scope2 => :integer) do
+        attr_accessible :attr, :scope1, :scope2
         validates_uniqueness_of :attr, :scope => [:scope1, :scope2]
       end.new
       @existing = Example.create!(:attr => 'value', :scope1 => 1, :scope2 => 2)
@@ -98,7 +101,9 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
 
   context "a non-unique attribute with an existing value" do
     before do
-      @model = define_model(:example, :attr => :string).new
+      @model = define_model(:example, :attr => :string) do
+        attr_accessible :attr
+      end.new
       Example.create!(:attr => 'value')
     end
 
@@ -110,6 +115,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
   context "a case sensitive unique attribute with an existing value" do
     before do
       @model = define_model(:example, :attr  => :string) do
+        attr_accessible :attr
         validates_uniqueness_of :attr, :case_sensitive => true
       end.new
       Example.create!(:attr => 'value')
@@ -127,6 +133,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
   context "a case sensitive unique integer attribute with an existing value" do
     before do
       @model = define_model(:example, :attr  => :integer) do
+        attr_accessible :attr
         validates_uniqueness_of :attr, :case_sensitive => true
       end.new
       Example.create!(:attr => 'value')

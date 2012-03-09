@@ -49,17 +49,19 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
     end
   end
 
-  context "an attribute on a class with no protected attributes" do
-    let(:model) { define_model(:example, :attr => :string).new }
+  unless active_model_3_2?
+    context "an attribute on a class with no protected attributes" do
+      let(:model) { define_model(:example, :attr => :string).new }
 
-    it "should accept being mass-assignable" do
-      model.should allow_mass_assignment_of(:attr)
-    end
+      it "should accept being mass-assignable" do
+        model.should allow_mass_assignment_of(:attr)
+      end
 
-    it "should assign a negative failure message" do
-      matcher = allow_mass_assignment_of(:attr)
-      matcher.matches?(model).should == true
-      matcher.negative_failure_message.should_not be_nil
+      it "should assign a negative failure message" do
+        matcher = allow_mass_assignment_of(:attr)
+        matcher.matches?(model).should == true
+        matcher.negative_failure_message.should_not be_nil
+      end
     end
   end
 
@@ -75,7 +77,7 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
     end
   end
 
-  if ::ActiveModel::VERSION::MAJOR == 3 && ::ActiveModel::VERSION::MINOR >= 1
+  if active_model_3_1?
     context "an attribute included in the mass-assignment whitelist for admin role only" do
       let(:model) do
         define_model(:example, :attr => :string) do
