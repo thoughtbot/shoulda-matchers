@@ -1,4 +1,4 @@
-= shoulda-matchers
+= shoulda-matchers {<img src="https://secure.travis-ci.org/thoughtbot/shoulda-matchers.png" alt="Build Status" />}[http://travis-ci.org/thoughtbot/shoulda-matchers]
 
 {Official Documentation}[http://rubydoc.info/github/thoughtbot/shoulda-matchers/master/frames]
 
