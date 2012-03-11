@@ -246,9 +246,13 @@ module Shoulda # :nodoc:
               reflection.options[:inverse_of]
             )
           end
-          fk_reflection.respond_to?(:foreign_key) ?
-            fk_reflection.foreign_key :
-            fk_reflection.primary_key_name
+          if fk_reflection
+            fk_reflection.respond_to?(:foreign_key) ?
+              fk_reflection.foreign_key :
+              fk_reflection.primary_key_name
+          else
+            nil
+          end
         end
 
         def through?

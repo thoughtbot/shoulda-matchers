@@ -240,6 +240,25 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       Parent.new.should_not @matcher.class_name('Node')
     end
 
+    it "should accept an association with a nonstandard reverse foreign key, using :inverse_of" do
+      define_model :child, :ancestor_id => :integer, :adopted => :boolean do
+        belongs_to :ancestor, :inverse_of => :children, :class_name => :Parent
+      end
+      define_model :parent do
+        has_many :children, :inverse_of => :ancestor
+      end
+      Parent.new.should @matcher
+    end
+
+    it "should reject an association with a nonstandard reverse foreign key, if :inverse_of is not correct" do
+      define_model :child, :mother_id => :integer, :adopted => :boolean do
+        belongs_to :mother, :inverse_of => :children, :class_name => :Parent
+      end
+      define_model :parent do
+        has_many :children, :inverse_of => :ancestor
+      end
+      Parent.new.should_not @matcher
+    end
   end
 
   context "have_one" do
