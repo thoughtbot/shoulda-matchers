@@ -68,4 +68,44 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
 
   end
 
+  context "an attribute which must be included in a array" do
+    before do
+      @model = define_model(:example_foo, :attr => :boolean) do
+        validates_inclusion_of :attr, :in => [true,false]
+      end.new(:attr=>true)
+    end
+
+    it "should accept ensuring the correct array" do
+      @model.should ensure_inclusion_of(:attr).in_array [true,false]
+    end
+    it "should have the array in the description" do
+      ensure_inclusion_of(:attr).in_array([true,false]).description.should  ==  "ensure inclusion of attr in [true, false]"
+    end
+  end
+  
+  context "an attribute not included in the array" do
+    before do
+      @model = define_model(:example_foo, :attr => :boolean) do
+        validate :custom_validation
+        def custom_validation
+          unless [true,false].include? attr 
+            errors.add(:attr, 'not boolean')
+          end
+        end
+      end.new
+    end
+
+    it "should have an error on attr" do
+      @model.should ensure_inclusion_of(:attr).in_array([true,false]).with_message(/boolean/)
+    end
+    context "should not accept other value then specified" do
+      before do
+        @model.attr = "foo"
+      end
+      it  "should not be valid" do
+        @model.should ensure_inclusion_of(:attr).in_array([true,false]).with_message(/inclusion/)
+      end
+    end
+  end
+  
 end
