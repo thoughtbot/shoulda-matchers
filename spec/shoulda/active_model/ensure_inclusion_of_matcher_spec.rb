@@ -68,4 +68,16 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
 
   end
 
+  
+  context "an attribute which must be included in a array" do
+    before do
+      @model = define_model(:example, :attr => :boolean) do
+        validates_inclusion_of :attr, :in => [true,false]
+      end.new
+    end
+
+    it "should accept ensuring the correct range" do
+      @model.should ensure_inclusion_of(:attr).in_array [true,false]
+    end
+  end
 end
