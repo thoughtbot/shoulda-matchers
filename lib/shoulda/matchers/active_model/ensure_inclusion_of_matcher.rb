@@ -23,6 +23,7 @@ module Shoulda # :nodoc:
 
       class EnsureInclusionOfMatcher < ValidationMatcher # :nodoc:
 
+        
         def in_array(array)
           @array = array
           self
@@ -61,6 +62,8 @@ module Shoulda # :nodoc:
         def matches?(subject)
           super(subject)
 
+          puts subject.inspect
+          
           if @range
             @low_message  ||= :inclusion
             @high_message ||= :inclusion
@@ -69,15 +72,21 @@ module Shoulda # :nodoc:
               allows_minimum_value &&
               disallows_higher_value &&
               allows_maximum_value
-          else
-            check_value_in_array
+          elsif @array
+            @low_message ||= :inclusion
+            if check_value_in_array(subject.attr)
+              true
+            else
+              @failure_message = "#{@array} doesn't include #{subject.attr}"
+              false
+            end
           end
         end
 
         private
 
-        def check_value_in_array
-          true
+        def check_value_in_array(subject)
+          @array.include? subject
         end
         
         def disallows_lower_value
