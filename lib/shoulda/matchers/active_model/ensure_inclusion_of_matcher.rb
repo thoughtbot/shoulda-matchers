@@ -62,8 +62,6 @@ module Shoulda # :nodoc:
         def matches?(subject)
           super(subject)
 
-          puts subject.inspect
-          
           if @range
             @low_message  ||= :inclusion
             @high_message ||= :inclusion
