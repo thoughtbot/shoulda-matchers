@@ -24,6 +24,11 @@ module Shoulda # :nodoc:
           @type = type
           self
         end
+        
+        def as_instance_of(type)
+          @instance_type = type
+          self
+        end
 
         def matches?(subject)
           @subject = subject
@@ -58,24 +63,26 @@ module Shoulda # :nodoc:
             false
           end
         end
-
-        def type_valid?
+        
+        def class_valid?
           if @type
-            klass = model_class.serialized_attributes[@name]
-
-            if klass == @type
-              true
-            else
-              if klass.object_class == @type
-                true
-              else
-                @missing = ":#{@name} should be a type of #{@type}"
-                false
-              end
-            end
+            model_class.serialized_attributes[@name] == @type
           else
             true
           end
+        end
+        
+        def instance_class_valid?
+          if @instance_type
+            klass = model_class.serialized_attributes[@name].class
+            klass == @instance_type
+          else
+            true
+          end
+        end
+
+        def type_valid?
+          class_valid? && instance_class_valid?
         end
 
         def expectation
