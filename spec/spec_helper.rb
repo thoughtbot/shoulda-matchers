@@ -30,4 +30,3 @@ RSpec.configure do |config|
   config.include Shoulda::Matchers::ActionMailer,
                  :example_group => { :file_path => /action_mailer/ }
 end
-

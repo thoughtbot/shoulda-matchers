@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher do
-
   context "have_db_index" do
     before do
       @matcher = have_db_index(:age)
@@ -86,5 +85,4 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher do
   it "should not context an index's uniqueness when it isn't important" do
     have_db_index(:user_id).description.should_not =~ /unique/
   end
-
 end

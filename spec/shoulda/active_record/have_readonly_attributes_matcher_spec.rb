@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveRecord::HaveReadonlyAttributeMatcher do
-
   context "an attribute that cannot be set after being saved" do
     before do
       define_model :example, :attr => :string do
@@ -44,5 +43,4 @@ describe Shoulda::Matchers::ActiveRecord::HaveReadonlyAttributeMatcher do
       matcher.failure_message.should_not be_nil
     end
   end
-
 end

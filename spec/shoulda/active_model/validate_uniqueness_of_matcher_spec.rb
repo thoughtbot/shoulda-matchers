@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
-
   context "a unique attribute" do
     before do
       @model = define_model(:example, :attr  => :string,
@@ -141,5 +140,4 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
       @model.should validate_uniqueness_of(:attr)
     end
   end
-
 end

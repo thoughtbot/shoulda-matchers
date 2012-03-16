@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveRecord::HaveDbColumnMatcher do
-
   context "have_db_column" do
     before do
       @matcher = have_db_column(:nickname)
@@ -165,5 +164,4 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbColumnMatcher do
       Superhero.new.should_not @matcher
     end
   end
-
 end
