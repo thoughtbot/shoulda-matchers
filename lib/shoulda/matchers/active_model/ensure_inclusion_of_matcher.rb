@@ -22,7 +22,6 @@ module Shoulda # :nodoc:
       end
 
       class EnsureInclusionOfMatcher < ValidationMatcher # :nodoc:
-
         
         def in_array(array)
           @array = array
