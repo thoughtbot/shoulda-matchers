@@ -76,7 +76,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
       end.new(:attr=>true)
     end
 
-    it "should accept ensuring the correct range" do
+    it "should accept ensuring the correct array" do
       @model.should ensure_inclusion_of(:attr).in_array [true,false]
     end
   end
