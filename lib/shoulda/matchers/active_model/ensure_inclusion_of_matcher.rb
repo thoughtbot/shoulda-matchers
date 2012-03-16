@@ -70,18 +70,22 @@ module Shoulda # :nodoc:
               disallows_higher_value &&
               allows_maximum_value
           elsif @array
-            @low_message ||= :inclusion
-            if check_value_in_array(subject.attr)
-              true
-            else
+            unless allows_all_values_in_array #check_value_in_array(subject.attr)
               @failure_message = "#{@array} doesn't include #{subject.attr}"
-              false
+              return false
             end
+            true
           end
         end
 
         private
 
+        def allows_all_values_in_array
+          @array.each do |value|
+            allows_value_of(@attribute, :inclusion)
+          end
+        end
+        
         def check_value_in_array(subject)
           @array.include? subject
         end
