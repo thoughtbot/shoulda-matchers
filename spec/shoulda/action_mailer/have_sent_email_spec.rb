@@ -8,75 +8,81 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
   end
 
   context "testing with instance variables with no multipart" do
-    before do
-      @info = {
-      :from => "do-not-reply@example.com",
-      :reply_to => "reply-to-me@example.com",
-      :to => "myself@me.com",
-      :cc => ["you@you.com", "joe@bob.com", "hello@goodbye.com"],
-      :bcc => ["test@example.com", "sam@bob.com", "goodbye@hello.com"],
-      :subject => "This is spam",
-      :body => "Every email is spam." }
+    let(:info) do
+      {
+        :from => "do-not-reply@example.com",
+        :reply_to => "reply-to-me@example.com",
+        :to => "myself@me.com",
+        :cc => ["you@you.com", "joe@bob.com", "hello@goodbye.com"],
+        :bcc => ["test@example.com", "sam@bob.com", "goodbye@hello.com"],
+        :subject => "This is spam",
+        :body => "Every email is spam."
+      }
+    end
 
-      define_mailer :mailer, [:the_email] do
+    before do
+      define_mailer(:mailer, [:the_email]) do
         def the_email(params)
           mail params
         end
       end
-      add_mail_to_deliveries(@info)
+      add_mail_to_deliveries(info)
     end
 
     after { ::ActionMailer::Base.deliveries.clear }
 
     it "should send an e-mail based on subject" do
-      should have_sent_email.with_subject{ @info[:subject] }
+      should have_sent_email.with_subject{ info[:subject] }
     end
 
     it "should send an e-mail based on recipient" do
-      should have_sent_email.to(nil) { @info[:to] }
+      should have_sent_email.to(nil) { info[:to] }
     end
 
     it "should send an e-mail based on sender" do
-      should have_sent_email.from{ @info[:from] }
+      should have_sent_email.from{ info[:from] }
     end
 
     it "should send an e-email based on reply_to" do
-      should have_sent_email.reply_to { @info[:reply_to] }
+      should have_sent_email.reply_to { info[:reply_to] }
     end
 
     it "should send an e-mail based on cc" do
-      should have_sent_email.cc{ @info[:cc][0] }
+      should have_sent_email.cc{ info[:cc][0] }
     end
 
     it "should send an e-mail based on cc list" do
-      should have_sent_email.with_cc{ @info[:cc] }
+      should have_sent_email.with_cc{ info[:cc] }
     end
 
     it "should send an e-mail based on bcc" do
-      should have_sent_email.bcc{ @info[:bcc][0] }
+      should have_sent_email.bcc{ info[:bcc][0] }
     end
 
     it "should send an e-mail based on bcc list" do
-      should have_sent_email.with_bcc{ @info[:bcc] }
+      should have_sent_email.with_bcc{ info[:bcc] }
     end
 
     it "should send an e-mail based on body" do
-      should have_sent_email.with_body{ @info[:body] }
+      should have_sent_email.with_body{ info[:body] }
     end
   end
 
   context "testing with instance variables with multiple parts" do
-    before do
-      @info = {
-      :from => "do-not-reply@example.com",
-      :to => "myself@me.com",
-      :cc => ["you@you.com", "joe@bob.com", "hello@goodbye.com"],
-      :bcc => ["test@example.com", "sam@bob.com", "goodbye@hello.com"],
-      :subject => "This is spam",
-      :text => "Every email is spam.",
-      :html => "<h1>HTML is spam.</h1><p>Notably.</p>" }
+    let(:info) do
+      {
+        :from => "do-not-reply@example.com",
+        :to => "myself@me.com",
+        :cc => ["you@you.com", "joe@bob.com", "hello@goodbye.com"],
+        :bcc => ["test@example.com", "sam@bob.com", "goodbye@hello.com"],
+        :subject => "This is spam",
+        :text => "Every email is spam.",
+        :html => "<h1>HTML is spam.</h1><p>Notably.</p>"
+      }
+    end
 
-      define_mailer :mailer, [:the_email] do
+    before do
+      define_mailer(:mailer, [:the_email]) do
         def the_email(params)
           mail params do |format|
             format.text { render :text => params[:text] }
@@ -84,17 +90,17 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
           end
         end
       end
-      add_mail_to_deliveries(@info)
+      add_mail_to_deliveries(info)
     end
 
     after { ::ActionMailer::Base.deliveries.clear }
 
     it "should send emails with text and html parts" do
-      should have_sent_email.with_part('text/plain') { @info[:text] }.with_part('text/html') { @info[:html] }
+      should have_sent_email.with_part('text/plain') { info[:text] }.with_part('text/html') { info[:html] }
     end
 
     it "should have the block override the method argument" do
-      should have_sent_email.with_part('text/plain', 'foo') { @info[:text] }.with_part('text/html', /bar/) { @info[:html] }
+      should have_sent_email.with_part('text/plain', 'foo') { info[:text] }.with_part('text/html', /bar/) { info[:html] }
     end
   end
 
@@ -103,11 +109,11 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
       define_mailer :mailer, [:the_email] do
         def the_email(params)
           mail :from    => "do-not-reply@example.com",
-               :to      => "myself@me.com",
-               :subject => "This is spam",
-               :cc      => ["you@you.com", "joe@bob.com", "hello@goodbye.com"],
-               :bcc     => ["test@example.com", "sam@bob.com", "goodbye@hello.com"],
-               :body    => "Every email is spam."
+            :to      => "myself@me.com",
+            :subject => "This is spam",
+            :cc      => ["you@you.com", "joe@bob.com", "hello@goodbye.com"],
+            :bcc     => ["test@example.com", "sam@bob.com", "goodbye@hello.com"],
+            :body    => "Every email is spam."
         end
       end
       add_mail_to_deliveries
@@ -137,14 +143,14 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
       define_mailer :mailer, [:the_email] do
         def the_email(params)
           mail :from    => "do-not-reply@example.com",
-               :to      => "myself@me.com",
-               :cc      => ["you@you.com", "joe@bob.com", "hello@goodbye.com"],
-               :bcc     => ["test@example.com", "sam@bob.com", "goodbye@hello.com"],
-               :subject => "This is spam" do |format|
+            :to      => "myself@me.com",
+            :cc      => ["you@you.com", "joe@bob.com", "hello@goodbye.com"],
+            :bcc     => ["test@example.com", "sam@bob.com", "goodbye@hello.com"],
+            :subject => "This is spam" do |format|
 
             format.text { render :text => "Every email is spam." }
             format.html { render :text => "<h1>HTML is spam.</h1><p>Notably.</p>" }
-          end
+            end
         end
       end
       add_mail_to_deliveries

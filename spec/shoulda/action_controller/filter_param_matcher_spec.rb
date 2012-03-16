@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActionController::FilterParamMatcher do
-
   context "given parameter filters" do
     before do
       Rails.application.config.filter_parameters = [:secret]
@@ -18,6 +17,4 @@ describe Shoulda::Matchers::ActionController::FilterParamMatcher do
       matcher.failure_message.should =~ /secret/
     end
   end
-
 end
-

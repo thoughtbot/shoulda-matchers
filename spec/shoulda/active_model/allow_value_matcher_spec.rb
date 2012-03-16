@@ -42,7 +42,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
         validates_presence_of     :attr
         validates_length_of       :attr, :within => 1..5
         validates_numericality_of :attr, :greater_than_or_equal_to => 1,
-                                         :less_than_or_equal_to    => 50000
+          :less_than_or_equal_to    => 50000
       end
       @model = Example.new
     end

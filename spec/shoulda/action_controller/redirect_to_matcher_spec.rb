@@ -2,34 +2,34 @@ require 'spec_helper'
 
 describe Shoulda::Matchers::ActionController::RedirectToMatcher do
   context "a controller that redirects" do
-    before do
-      @controller = build_response { redirect_to '/some/url' }
+    let(:controller) do
+      build_response { redirect_to '/some/url' }
     end
 
     it "accepts redirecting to that url" do
-      @controller.should redirect_to('/some/url')
+      controller.should redirect_to('/some/url')
     end
 
     it "rejects redirecting to a different url" do
-      @controller.should_not redirect_to('/some/other/url')
+      controller.should_not redirect_to('/some/other/url')
     end
 
     it "accepts redirecting to that url in a block" do
-      @controller.should redirect_to('somewhere') { '/some/url' }
+      controller.should redirect_to('somewhere') { '/some/url' }
     end
 
     it "rejects redirecting to a different url in a block" do
-      @controller.should_not redirect_to('somewhere else') { '/some/other/url' }
+      controller.should_not redirect_to('somewhere else') { '/some/other/url' }
     end
   end
 
   context "a controller that doesn't redirect" do
-    before do
-      @controller = build_response { render :text => 'hello' }
+    let(:controller) do
+      build_response { render :text => 'hello' }
     end
 
     it "rejects redirecting to a url" do
-      @controller.should_not redirect_to('/some/url')
+      controller.should_not redirect_to('/some/url')
     end
   end
 
