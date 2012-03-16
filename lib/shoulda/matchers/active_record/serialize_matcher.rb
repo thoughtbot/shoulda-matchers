@@ -63,21 +63,36 @@ module Shoulda # :nodoc:
             false
           end
         end
-        
+
         def class_valid?
-          if @type
-            model_class.serialized_attributes[@name] == @type
-          else
+          if(!@type)
+            return true
+          end
+          
+          klass = model_class.serialized_attributes[@name]
+          
+          if klass == @type
             true
+          else
+            if klass.respond_to?(:object_class) && klass.object_class == @type
+              true
+            else
+              @missing = ":#{@name} should be a type of #{@type}"
+              false
+            end
           end
         end
-        
+
         def instance_class_valid?
-          if @instance_type
-            klass = model_class.serialized_attributes[@name].class
-            klass == @instance_type
-          else
+          if !@instance_type
+            return true
+          end
+          
+          if model_class.serialized_attributes[@name].class == @instance_type
             true
+          else
+            @missing = ":#{@name} should be an instance of #{@type}"
+            false
           end
         end
 
@@ -88,6 +103,7 @@ module Shoulda # :nodoc:
         def expectation
           expectation = "#{model_class.name} to serialize the attribute called :#{@name}"
           expectation += " with a type of #{@type}" if @type
+          expectation += " with an instance of #{@instance_type}" if @instance_type
           expectation
         end
       end
