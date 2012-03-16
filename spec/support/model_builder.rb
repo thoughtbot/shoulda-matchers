@@ -28,7 +28,7 @@ module ModelBuilder
     end
   end
 
-  def define_constant(class_name, base, &block)
+  def define_constant(class_name, base = Object, &block)
     class_name = class_name.to_s.camelize
 
     Class.new(base).tap do |constant_class|
