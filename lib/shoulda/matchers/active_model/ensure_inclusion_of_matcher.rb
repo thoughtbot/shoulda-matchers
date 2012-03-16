@@ -71,7 +71,7 @@ module Shoulda # :nodoc:
               allows_maximum_value
           elsif @array
             unless allows_all_values_in_array #check_value_in_array(subject.attr)
-              @failure_message = "#{@array} doesn't include #{subject.attr}"
+              @failure_message = "#{@array} doesn't include #{@attribute}"
               return false
             end
             true
