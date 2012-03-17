@@ -70,7 +70,7 @@ module Shoulda # :nodoc:
               disallows_higher_value &&
               allows_maximum_value
           elsif @array
-            unless allows_all_values_in_array #check_value_in_array(subject.attr)
+            unless allows_all_values_in_array
               @failure_message = "#{@array} doesn't include #{@attribute}"
               return false
             end
@@ -85,11 +85,7 @@ module Shoulda # :nodoc:
             allows_value_of(@attribute, :inclusion)
           end
         end
-        
-        def check_value_in_array(subject)
-          @array.include? subject
-        end
-        
+              
         def disallows_lower_value
           @minimum == 0 || disallows_value_of(@minimum - 1, @low_message)
         end

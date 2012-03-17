@@ -68,7 +68,6 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
 
   end
 
-  
   context "an attribute which must be included in a array" do
     before do
       @model = define_model(:example_foo, :attr => :boolean) do
