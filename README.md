@@ -5,10 +5,8 @@
 Test::Unit- and RSpec-compatible one-liners that test common Rails functionality.
 These tests would otherwise be much longer, more complex, and error-prone.
 
-Refer to the [shoulda](https://github.com/thoughtbot/shoulda) gem if you want to know more
+Refer to the [shoulda-context](https://github.com/thoughtbot/shoulda-context) gem if you want to know more
 about using shoulda with Test::Unit.
-
-Please report bugs on the [shoulda issue tracker](https://github.com/thoughtbot/shoulda/issues).
 
 ## ActiveRecord Matchers
 
