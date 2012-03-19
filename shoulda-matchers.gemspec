@@ -17,12 +17,12 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_development_dependency("mocha", "~> 0.9.10")
-  s.add_development_dependency("rspec-rails", "~> 2.6.1")
-  s.add_development_dependency("cucumber", "~> 0.10.0")
-  s.add_development_dependency("aruba")
-  s.add_development_dependency("appraisal", "~> 0.4.0")
-  s.add_development_dependency("rake", "~> 0.9.2")
-  s.add_development_dependency('bundler', '~> 1.0.15')
-  s.add_development_dependency("rails", "~> 3.0")
+  s.add_development_dependency('mocha',       '~> 0.10.5')
+  s.add_development_dependency('rspec-rails', '~> 2.6.1')
+  s.add_development_dependency('cucumber',    '~> 1.1.9')
+  s.add_development_dependency('aruba')
+  s.add_development_dependency('appraisal',   '~> 0.4.0')
+  s.add_development_dependency('rake',        '~> 0.9.2')
+  s.add_development_dependency('bundler',     '~> 1.1.1')
+  s.add_development_dependency('rails',       '~> 3.0')
 end
