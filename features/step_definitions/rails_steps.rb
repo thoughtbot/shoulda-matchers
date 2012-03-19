@@ -27,7 +27,7 @@ When /^I generate a new rails application$/ do
   }
   if RUBY_VERSION >= "1.9.3"
     append_to_gemfile %(gem "rake", "~> 0.9.3.beta.1")
-    Then %(I successfully run `bundle update rake`)
+    step %(I successfully run `bundle update rake`)
   end
 end
 
