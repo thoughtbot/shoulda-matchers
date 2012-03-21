@@ -41,11 +41,8 @@ describe Shoulda::Matchers::ActiveRecord::QueryTheDatabaseMatcher do
     end
 
     it "should pass arguments to the method to examine" do
-      model = Class.new do
-        def self.count(arguments)
-          arguments.should == "arguments"
-        end
-      end
+      model = stub("Model", :count => nil)
+      model.expects(:count).with("arguments")
       model.should_not query_the_database.when_calling(:count).with("arguments")
     end
 
