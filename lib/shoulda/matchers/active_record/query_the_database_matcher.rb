@@ -44,6 +44,8 @@ module Shoulda # :nodoc:
         end
 
         def matches?(subject)
+          raise "Rails 3.1 or greater is required" unless rails_3_1?
+
           @queries = []
 
           subscriber = ActiveSupport::Notifications.subscribe('sql.active_record') do |name, started, finished, id, payload|
@@ -88,7 +90,6 @@ module Shoulda # :nodoc:
         end
 
         def filter_query(query_name)
-          raise "Rails 3.1 or greater is required" unless rails_3_1?
           query_name == 'SCHEMA'
         end
 
