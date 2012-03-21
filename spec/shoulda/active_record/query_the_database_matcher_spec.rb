@@ -17,11 +17,11 @@ describe Shoulda::Matchers::ActiveRecord::QueryTheDatabaseMatcher do
       @parent.should query_the_database(1.times).when_calling(:count)
     end
 
-    it "should accept any number of queries when none specified" do
+    it "should accept any number of queries when no number is specified" do
       @parent.should query_the_database.when_calling(:count)
     end
 
-    it "should reject any number of queries when non specified" do
+    it "should reject any number of queries when no number is specified" do
       @parent.should_not query_the_database.when_calling(:to_s)
     end
 
@@ -36,7 +36,7 @@ describe Shoulda::Matchers::ActiveRecord::QueryTheDatabaseMatcher do
       @parent.should_not query_the_database(10.times).when_calling(:count)
     end
 
-    it "should accept fewer than the required count" do
+    it "should accept fewer than the specified maximum" do
       @parent.should query_the_database(5.times).or_less.when_calling(:count)
     end
 
