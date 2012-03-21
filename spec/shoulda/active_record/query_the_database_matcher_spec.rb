@@ -49,6 +49,14 @@ describe Shoulda::Matchers::ActiveRecord::QueryTheDatabaseMatcher do
       model.should_not query_the_database.when_calling(:count).with("arguments")
     end
 
+  else
+
+    it "should raise an exception on Rails < 3.1" do
+      lambda {
+        @parent.should query_the_database(1.times).when_calling(:count)
+      }.should raise_exception
+    end
+
   end
 
 end
