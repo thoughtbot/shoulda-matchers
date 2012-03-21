@@ -46,8 +46,8 @@ module Shoulda # :nodoc:
         def matches?(subject)
           @queries = []
 
-          subscriber = ActiveSupport::Notifications.subscribe('sql.active_record') do |*args|
-            @queries << args[4] unless filter_query(args[4][:name])
+          subscriber = ActiveSupport::Notifications.subscribe('sql.active_record') do |name, started, finished, id, payload|
+            @queries << payload unless filter_query(payload[:name])
           end
 
           subject.send(@method_name, *@method_arguments)
