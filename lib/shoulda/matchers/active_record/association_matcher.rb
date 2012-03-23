@@ -166,7 +166,7 @@ module Shoulda # :nodoc:
           if @through == reflection.options[:through]
             true
           else
-            @missing = "Expected #{model_class.name} to have #{@name} through #{@through}, " <<
+            @missing = "Expected #{model_class.name} to have #{@name} through #{@through}, " +
               "but got it through #{reflection.options[:through]}"
             false
           end
@@ -210,7 +210,7 @@ module Shoulda # :nodoc:
 
         def join_table_exists?
           if @macro != :has_and_belongs_to_many ||
-              ::ActiveRecord::Base.connection.tables.include?(join_table.to_s)
+              ::ActiveRecord::Base.connection.tables.include?(join_table)
             true
           else
             @missing = "join table #{join_table} doesn't exist"
@@ -219,7 +219,7 @@ module Shoulda # :nodoc:
         end
 
         def class_has_foreign_key?(klass)
-          if klass.column_names.include?(foreign_key.to_s)
+          if klass.column_names.include?(foreign_key)
             true
           else
             @missing = "#{klass} does not have a #{foreign_key} foreign key."
@@ -232,7 +232,7 @@ module Shoulda # :nodoc:
         end
 
         def join_table
-          reflection.options[:join_table]
+          reflection.options[:join_table].to_s
         end
 
         def associated_class
@@ -240,18 +240,12 @@ module Shoulda # :nodoc:
         end
 
         def foreign_key
-          fk_reflection = reflection
-          if [:has_one, :has_many].include?(@macro) && reflection.options.include?(:inverse_of)
-            fk_reflection = associated_class.reflect_on_association(
-              reflection.options[:inverse_of]
-            )
-          end
-          if fk_reflection
-            fk_reflection.respond_to?(:foreign_key) ?
-              fk_reflection.foreign_key :
-              fk_reflection.primary_key_name
-          else
-            nil
+          if foreign_key_reflection
+            if foreign_key_reflection.respond_to?(:foreign_key)
+              foreign_key_reflection.foreign_key.to_s
+            else
+              foreign_key_reflection.primary_key_name.to_s
+            end
           end
         end
 
@@ -261,6 +255,14 @@ module Shoulda # :nodoc:
 
         def reflection
           @reflection ||= model_class.reflect_on_association(@name)
+        end
+
+        def foreign_key_reflection
+          if [:has_one, :has_many].include?(@macro) && reflection.options.include?(:inverse_of)
+            associated_class.reflect_on_association(reflection.options[:inverse_of])
+          else
+            reflection
+          end
         end
 
         def through_reflection

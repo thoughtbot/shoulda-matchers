@@ -40,8 +40,8 @@ describe Shoulda::Matchers::ActiveRecord::QueryTheDatabaseMatcher do
 
     it "passes arguments to the method to examine" do
       model = stub("Model", :count => nil)
-      model.expects(:count).with("arguments")
       model.should_not query_the_database.when_calling(:count).with("arguments")
+      model.should have_received(:count).with("arguments")
     end
   else
     it "should raise an exception on Rails < 3.1" do
