@@ -87,4 +87,12 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
       @matcher.description.should eq('allow baz to be set to "foo"')
     end
   end
+
+  context "an AllowValueMatcher with no values" do
+    it "raises an error" do
+      lambda do
+        allow_value.for(:baz)
+      end.should raise_error(ArgumentError, /at least one argument/)
+    end
+  end
 end
