@@ -43,10 +43,10 @@ module Shoulda # :nodoc:
 
         def matches?(instance)
           @instance = instance
-          @values_to_match.all? do |value|
+          @values_to_match.none? do |value|
             @value = value
             @instance.send("#{@attribute}=", @value)
-            ! errors_match?
+            errors_match?
           end
         end
 
