@@ -45,8 +45,9 @@ describe Shoulda::Matchers::ActiveRecord::QueryTheDatabaseMatcher do
     end
   else
     it "should raise an exception on Rails < 3.1" do
+      model = define_model(:litter)
       lambda do
-        @parent.should query_the_database(1.times).when_calling(:count)
+        model.should query_the_database(1.times).when_calling(:count)
       end.should raise_exception(RuntimeError, "Rails 3.1 or greater is required")
     end
   end
