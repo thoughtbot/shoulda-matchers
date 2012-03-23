@@ -17,8 +17,11 @@ module Shoulda # :nodoc:
       #   it { should allow_value("isbn 1 2345 6789 0").for(:isbn) }
       #
       def allow_value(*values)
-        raise ArgumentError.new("need at least one argument") if values.empty?
-        AllowValueMatcher.new(*values)
+        if values.empty?
+          raise ArgumentError, "need at least one argument"
+        else
+          AllowValueMatcher.new(*values)
+        end
       end
 
       class AllowValueMatcher # :nodoc:
@@ -34,21 +37,17 @@ module Shoulda # :nodoc:
         end
 
         def with_message(message)
-          @expected_message = message if message
+          @expected_message = message
           self
         end
 
         def matches?(instance)
           @instance = instance
-          if Symbol === @expected_message
-            @expected_message = default_error_message(@expected_message, :model_name => @instance.class.to_s.underscore, :attribute => @attribute)
-          end
-          @values_to_match.each do |value|
+          @values_to_match.all? do |value|
             @value = value
             @instance.send("#{@attribute}=", @value)
-            return false if errors_match?
+            ! errors_match?
           end
-          true
         end
 
         def failure_message
@@ -60,56 +59,47 @@ module Shoulda # :nodoc:
         end
 
         def description
-          "allow #{@attribute} to be set to " <<
-            if @values_to_match.length > 1
-              "any of [#{@values_to_match.map {|v| v.inspect }.join(', ')}]"
-            else
-              @values_to_match.first.inspect
-            end
+          "allow #{@attribute} to be set to #{allowed_values}"
         end
 
         private
 
         def errors_match?
-          if ! @instance.valid?
-            @errors = errors_for_attribute(@instance, @attribute)
-            @errors = [@errors] unless @errors.is_a?(Array)
-            @expected_message ? (errors_match_regexp? || errors_match_string?) : (@errors.compact.any?)
-          else
-            @errors = []
+          if @instance.valid?
             false
+          else
+            if expected_message
+              errors_match_regexp? || errors_match_string?
+            else
+              errors_for_attribute.compact.any?
+            end
           end
         end
 
-        def errors_for_attribute(instance, attribute)
-          if instance.errors.respond_to?(:[])
-            instance.errors[attribute]
+        def errors_for_attribute
+          if @instance.errors.respond_to?(:[])
+            errors = @instance.errors[@attribute]
           else
-            instance.errors.on(attribute)
+            errors = @instance.errors.on(@attribute)
           end
+          Array.wrap(errors)
         end
 
         def errors_match_regexp?
-          if Regexp === @expected_message
-            @matched_error = @errors.detect { |e| e =~ @expected_message }
-          else
-            false
+          if Regexp === expected_message
+            @matched_error = errors_for_attribute.detect { |e| e =~ expected_message }
           end
         end
 
         def errors_match_string?
-          if @errors.include?(@expected_message)
-            @matched_error = @expected_message
-            true
-          else
-            false
+          if errors_for_attribute.include?(expected_message)
+            @matched_error = expected_message
           end
         end
 
         def expectation
-          "errors " <<
-          (@expected_message ? "to include #{@expected_message.inspect} " : "") <<
-          "when #{@attribute} is set to #{@value.inspect}"
+          includes_expected_message = expected_message ? "to include #{expected_message.inspect}" : ''
+          ["errors", includes_expected_message, "when #{@attribute} is set to #{@value.inspect}"].join(' ')
         end
 
         def error_description
@@ -119,8 +109,29 @@ module Shoulda # :nodoc:
             "errors: #{pretty_error_messages(@instance)}"
           end
         end
-      end
 
+        def allowed_values
+          if @values_to_match.length > 1
+            "any of [#{@values_to_match.map(&:inspect).join(', ')}]"
+          else
+            @values_to_match.first.inspect
+          end
+        end
+
+        def expected_message
+          if @expected_message
+            if Symbol === @expected_message
+              default_error_message(@expected_message, :model_name => model_name, :attribute => @attribute)
+            else
+              @expected_message
+            end
+          end
+        end
+
+        def model_name
+          @instance.class.to_s.underscore
+        end
+      end
     end
   end
 end
