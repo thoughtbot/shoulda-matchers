@@ -251,7 +251,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
     end
 
     it "should reject an association with a nonstandard reverse foreign key, if :inverse_of is not correct" do
-      define_model :child, :mother_id => :integer, :adopted => :boolean do
+      define_model :child, :mother_id => :integer do
         belongs_to :mother, :inverse_of => :children, :class_name => :Parent
       end
       define_model :parent do
