@@ -52,7 +52,11 @@ module Shoulda # :nodoc:
             @queries << payload unless filter_query(payload[:name])
           end
 
-          subject.send(@method_name, *@method_arguments)
+          if @method_arguments
+            subject.send(@method_name, *@method_arguments)
+          else
+            subject.send(@method_name)
+          end
 
           ActiveSupport::Notifications.unsubscribe(subscriber)
 
