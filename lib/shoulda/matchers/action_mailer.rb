@@ -1,4 +1,4 @@
-require 'shoulda/matchers/action_mailer/have_sent_email'
+require 'shoulda/matchers/action_mailer/have_sent_email_matcher'
 
 module Shoulda
   module Matchers
