@@ -1,9 +1,7 @@
 module Shoulda # :nodoc:
   module Matchers
     module ActiveModel # :nodoc:
-
       class ValidationMatcher # :nodoc:
-
         attr_reader :failure_message
 
         def initialize(attribute)
@@ -49,8 +47,6 @@ module Shoulda # :nodoc:
           end
         end
       end
-
     end
   end
-
-    end
+end
