@@ -240,7 +240,19 @@ module Shoulda # :nodoc:
         end
 
         def foreign_key
-          reflection.respond_to?(:foreign_key) ? reflection.foreign_key : reflection.primary_key_name
+          fk_reflection = reflection
+          if [:has_one, :has_many].include?(@macro) && reflection.options.include?(:inverse_of)
+            fk_reflection = associated_class.reflect_on_association(
+              reflection.options[:inverse_of]
+            )
+          end
+          if fk_reflection
+            fk_reflection.respond_to?(:foreign_key) ?
+              fk_reflection.foreign_key :
+              fk_reflection.primary_key_name
+          else
+            nil
+          end
         end
 
         def through?
