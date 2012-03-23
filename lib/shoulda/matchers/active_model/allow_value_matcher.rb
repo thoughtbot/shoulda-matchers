@@ -2,7 +2,10 @@ module Shoulda # :nodoc:
   module Matchers
     module ActiveModel # :nodoc:
 
-      # Ensures that the attribute can be set to the given value.
+      # Ensures that the attribute can be set to the given value or values. If
+      # multiple values are given the match succeeds only if all given values
+      # are allowed. Otherwise, the matcher fails at the first bad value in the
+      # argument list (the remaining arguments are not processed then).
       #
       # Options:
       # * <tt>with_message</tt> - value the test expects to find in
@@ -13,15 +16,16 @@ module Shoulda # :nodoc:
       #   it { should_not allow_value('bad').for(:isbn) }
       #   it { should allow_value("isbn 1 2345 6789 0").for(:isbn) }
       #
-      def allow_value(value)
-        AllowValueMatcher.new(value)
+      def allow_value(*values)
+        raise ArgumentError.new("need at least one argument") if values.empty?
+        AllowValueMatcher.new(*values)
       end
 
       class AllowValueMatcher # :nodoc:
         include Helpers
 
-        def initialize(value)
-          @value = value
+        def initialize(*values)
+          @values_to_match = values
         end
 
         def for(attribute)
@@ -39,8 +43,12 @@ module Shoulda # :nodoc:
           if Symbol === @expected_message
             @expected_message = default_error_message(@expected_message, :model_name => @instance.class.to_s.underscore, :attribute => @attribute)
           end
-          @instance.send("#{@attribute}=", @value)
-          !errors_match?
+          @values_to_match.each do |value|
+            @value = value
+            @instance.send("#{@attribute}=", @value)
+            return false if errors_match?
+          end
+          true
         end
 
         def failure_message
@@ -52,16 +60,25 @@ module Shoulda # :nodoc:
         end
 
         def description
-          "allow #{@attribute} to be set to #{@value.inspect}"
+          "allow #{@attribute} to be set to " <<
+            if @values_to_match.length > 1
+              "any of [#{@values_to_match.map {|v| v.inspect }.join(', ')}]"
+            else
+              @values_to_match.first.inspect
+            end
         end
 
         private
 
         def errors_match?
-          @instance.valid?
-          @errors = errors_for_attribute(@instance, @attribute)
-          @errors = [@errors] unless @errors.is_a?(Array)
-          @expected_message ? (errors_match_regexp? || errors_match_string?) : (@errors.compact.any?)
+          if ! @instance.valid?
+            @errors = errors_for_attribute(@instance, @attribute)
+            @errors = [@errors] unless @errors.is_a?(Array)
+            @expected_message ? (errors_match_regexp? || errors_match_string?) : (@errors.compact.any?)
+          else
+            @errors = []
+            false
+          end
         end
 
         def errors_for_attribute(instance, attribute)
@@ -75,7 +92,6 @@ module Shoulda # :nodoc:
         def errors_match_regexp?
           if Regexp === @expected_message
             @matched_error = @errors.detect { |e| e =~ @expected_message }
-            !@matched_error.nil?
           else
             false
           end
