@@ -69,7 +69,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
 
   context "an AllowValueMatcher with multiple values" do
     it "should describe itself" do
-      matcher = allow_value("foo", "bar").for(:baz) }
+      matcher = allow_value("foo", "bar").for(:baz)
       matcher.description.should == 'allow baz to be set to any of ["foo", "bar"]'
     end
   end
