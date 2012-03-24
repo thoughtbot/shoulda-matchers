@@ -8,7 +8,6 @@ ENV['BUNDLE_GEMFILE'] ||= TESTAPP_ROOT + '/Gemfile'
 
 require "#{TESTAPP_ROOT}/config/environment"
 require 'rspec'
-require 'rspec/autorun'
 require 'bourne'
 
 PROJECT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..')).freeze
