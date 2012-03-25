@@ -43,12 +43,10 @@ module Shoulda # :nodoc:
         end
 
         def matches?(subject)
-          ensure_at_least_rails_3_1
-
           @queries = []
 
           subscriber = ActiveSupport::Notifications.subscribe('sql.active_record') do |name, started, finished, id, payload|
-            @queries << payload unless filter_query(payload[:name])
+            @queries << payload unless filter_query(payload)
           end
 
           if @method_arguments
@@ -92,16 +90,16 @@ module Shoulda # :nodoc:
           end.join
         end
 
-        def filter_query(query_name)
-          query_name == 'SCHEMA'
+        def filter_query(query)
+          query[:name] == 'SCHEMA' || looks_like_schema(query[:sql])
         end
 
-        def ensure_at_least_rails_3_1
-          raise "Rails 3.1 or greater is required" unless rails_3_1?
+        def schema_terms
+          ['FROM sqlite_master', 'PRAGMA', 'SHOW TABLES', 'SHOW KEYS FROM', 'SHOW FIELDS FROM']
         end
 
-        def rails_3_1?
-          ::ActiveRecord::VERSION::MAJOR == 3 && ::ActiveRecord::VERSION::MINOR >= 1
+        def looks_like_schema(sql)
+          schema_terms.any? { |term| sql.include?(term) }
         end
       end
     end
