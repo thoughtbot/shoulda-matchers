@@ -1,7 +1,6 @@
 module Shoulda # :nodoc:
   module Matchers
     module ActiveRecord # :nodoc:
-
       # Ensure that the belongs_to relationship exists.
       #
       #   it { should belong_to(:parent) }
@@ -283,7 +282,6 @@ module Shoulda # :nodoc:
           end
         end
       end
-
     end
   end
 end
