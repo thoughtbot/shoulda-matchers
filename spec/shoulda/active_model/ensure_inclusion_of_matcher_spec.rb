@@ -78,6 +78,9 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     it "should accept ensuring the correct array" do
       @model.should ensure_inclusion_of(:attr).in_array [true,false]
     end
+    it "should have the array in the description" do
+      ensure_inclusion_of(:attr).in_array([true,false]).description.should  ==  "ensure inclusion of attr in [true, false]"
+    end
   end
   
   context "an attribute not included in the array" do

@@ -53,9 +53,9 @@ module Shoulda # :nodoc:
           self
         end
 
+        
         def description
-          @our_value = @range.nil? ? @array.inspect : @range.inspect 
-          "ensure inclusion of #{@attribute} in #{@our_value}"
+          "ensure inclusion of #{@attribute} in #{inspect_message}"
         end
 
         def matches?(subject)
@@ -79,6 +79,10 @@ module Shoulda # :nodoc:
         end
 
         private
+
+        def inspect_message
+          @range.nil? ? @array.inspect : @range.inspect 
+        end
 
         def allows_all_values_in_array
           @array.each do |value|
