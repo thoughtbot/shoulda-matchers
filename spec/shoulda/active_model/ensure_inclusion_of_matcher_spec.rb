@@ -98,6 +98,14 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     it "should have an error on attr" do
       @model.should ensure_inclusion_of(:attr).in_array([true,false]).with_message(/boolean/)
     end
+    context "should not accept other value then specified" do
+      before do
+        @model.attr = "foo"
+      end
+      it  "should not be valid" do
+        @model.should ensure_inclusion_of(:attr).in_array([true,false]).with_message(/inclusion/)
+      end
+    end
   end
   
 end

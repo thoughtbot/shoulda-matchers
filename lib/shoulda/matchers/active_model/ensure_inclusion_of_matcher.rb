@@ -85,7 +85,7 @@ module Shoulda # :nodoc:
         end
 
         def allows_all_values_in_array
-          @array.each do |value|
+          @array.any? do |value|
             allows_value_of(@attribute, :inclusion)
           end
         end
