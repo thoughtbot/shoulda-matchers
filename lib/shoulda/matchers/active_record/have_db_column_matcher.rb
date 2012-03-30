@@ -16,12 +16,11 @@ module Shoulda # :nodoc:
       #                 with_options(:precision => 10, :scale => 2) }
       #
       def have_db_column(column)
-        HaveDbColumnMatcher.new(:have_db_column, column)
+        HaveDbColumnMatcher.new(column)
       end
 
       class HaveDbColumnMatcher # :nodoc:
-        def initialize(macro, column)
-          @macro  = macro
+        def initialize(column)
           @column = column
         end
 
@@ -163,7 +162,6 @@ module Shoulda # :nodoc:
           expected = "#{model_class.name} to #{description}"
         end
       end
-
     end
   end
 end

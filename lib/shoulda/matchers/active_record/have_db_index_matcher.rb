@@ -19,12 +19,11 @@ module Shoulda # :nodoc:
       #   it { should have_db_index(:ssn).unique(true) }
       #
       def have_db_index(columns)
-        HaveDbIndexMatcher.new(:have_index, columns)
+        HaveDbIndexMatcher.new(columns)
       end
 
       class HaveDbIndexMatcher # :nodoc:
-        def initialize(macro, columns)
-          @macro = macro
+        def initialize(columns)
           @columns = normalize_columns_to_array(columns)
         end
 
