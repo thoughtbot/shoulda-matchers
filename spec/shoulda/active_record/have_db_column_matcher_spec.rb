@@ -164,4 +164,22 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbColumnMatcher do
       Superhero.new.should_not @matcher
     end
   end
+
+  context "have_db_column with primary option" do
+    it "should accept a column that is primary" do
+      create_table 'superheros' do |table|
+        table.integer :id, :primary => true
+      end
+      define_model_class 'Superhero'
+      Superhero.new.should have_db_column(:id).with_options(:primary => true)
+    end
+
+    it "should reject a column that is not primary" do
+      create_table 'superheros' do |table|
+        table.integer :primary
+      end
+      define_model_class 'Superhero'
+      Superhero.new.should_not have_db_column(:primary).with_options(:primary => true)
+    end
+  end
 end
