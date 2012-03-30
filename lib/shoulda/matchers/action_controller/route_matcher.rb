@@ -27,16 +27,16 @@ module Shoulda # :nodoc:
       end
 
       class RouteMatcher # :nodoc:
-
         def initialize(method, path, context)
           @method  = method
           @path    = path
           @context = context
         end
 
+        attr_reader :failure_message, :negative_failure_message
+
         def to(params)
-          @params = params
-          stringify_params!
+          @params = stringify_params(params)
           self
         end
 
@@ -46,12 +46,9 @@ module Shoulda # :nodoc:
         end
 
         def matches?(controller)
-          @controller = controller
-          guess_controller!
+          guess_controller!(controller)
           route_recognized?
         end
-
-        attr_reader :failure_message, :negative_failure_message
 
         def description
           "route #{@method.to_s.upcase} #{@path} to/from #{@params.inspect}"
@@ -59,13 +56,21 @@ module Shoulda # :nodoc:
 
         private
 
-        def guess_controller!
-          @params[:controller] ||= @controller.controller_path
+        def guess_controller!(controller)
+          @params[:controller] ||= controller.controller_path
         end
 
-        def stringify_params!
-          @params.each do |key, value|
-            @params[key] = value.is_a?(Array) ? value.collect {|v| v.to_param } : value.to_param
+        def stringify_params(params)
+          params.each do |key, value|
+            params[key] = stringify(value)
+          end
+        end
+
+        def stringify(value)
+          if value.is_a?(Array)
+            value.map(&:to_param)
+          else
+            value.to_param
           end
         end
 
@@ -85,9 +90,7 @@ module Shoulda # :nodoc:
             false
           end
         end
-
       end
-
     end
   end
 end
