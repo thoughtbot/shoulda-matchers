@@ -3,9 +3,9 @@ module Shoulda # :nodoc:
     module ActiveModel # :nodoc:
       module Helpers
         def pretty_error_messages(obj) # :nodoc:
-          obj.errors.map do |a, m|
-            msg = "#{a} #{m}"
-            msg << " (#{obj.send(a).inspect})" unless a.to_sym == :base
+          obj.errors.map do |attribute, model|
+            msg = "#{attribute} #{model}"
+            msg << " (#{obj.send(attribute).inspect})" unless attribute.to_sym == :base
           end
         end
 

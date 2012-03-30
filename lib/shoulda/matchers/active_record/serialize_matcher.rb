@@ -24,7 +24,7 @@ module Shoulda # :nodoc:
           @type = type
           self
         end
-        
+
         def as_instance_of(type)
           @instance_type = type
           self
@@ -51,10 +51,6 @@ module Shoulda # :nodoc:
 
         protected
 
-        def model_class
-          @subject.class
-        end
-
         def serialization_valid?
           if model_class.serialized_attributes.keys.include?(@name)
             true
@@ -80,6 +76,10 @@ module Shoulda # :nodoc:
           else
             true
           end
+        end
+
+        def model_class
+          @subject.class
         end
 
         def instance_class_valid?

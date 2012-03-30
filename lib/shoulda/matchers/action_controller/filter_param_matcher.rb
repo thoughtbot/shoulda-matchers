@@ -12,7 +12,6 @@ module Shoulda # :nodoc:
       end
 
       class FilterParamMatcher # :nodoc:
-
         def initialize(key)
           @key = key.to_s
         end
@@ -41,10 +40,9 @@ module Shoulda # :nodoc:
         end
 
         def filtered_keys
-          Rails.application.config.filter_parameters.map { |filter| filter.to_s }
+          Rails.application.config.filter_parameters.map(&:to_s)
         end
       end
-
     end
   end
 end

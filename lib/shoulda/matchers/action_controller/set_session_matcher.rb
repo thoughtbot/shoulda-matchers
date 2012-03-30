@@ -14,7 +14,6 @@ module Shoulda # :nodoc:
       end
 
       class SetSessionMatcher # :nodoc:
-
         def initialize(key)
           @key = key.to_s
         end
@@ -27,8 +26,10 @@ module Shoulda # :nodoc:
 
         def matches?(controller)
           @controller = controller
-          @value = @context.instance_eval(&@value_block) if @value_block
-          (assigned_value? && assigned_correct_value?) || cleared_value?
+          if @value_block
+            @value = @context.instance_eval(&@value_block)
+          end
+          assigned_correct_value? || cleared_value?
         end
 
         def failure_message
@@ -41,7 +42,9 @@ module Shoulda # :nodoc:
 
         def description
           description = "set session variable #{@key.inspect}"
-          description << " to #{@value.inspect}" if defined?(@value)
+          if @value
+            description << " to #{@value.inspect}" 
+          end
           description
         end
 
@@ -61,25 +64,24 @@ module Shoulda # :nodoc:
         end
 
         def assigned_correct_value?
-          return true if @value.nil?
-          assigned_value == @value
+          if assigned_value?
+            if @value.nil?
+              true
+            else
+              assigned_value == @value
+            end
+          end
         end
 
         def assigned_value
           session[@key]
         end
 
-        def session
-          if @controller.request.respond_to?(:session)
-            @controller.request.session.to_hash
-          else
-            @controller.response.session.data
-          end
-        end
-
         def expectation
           expectation = "session variable #{@key} to be set"
-          expectation << " to #{@value.inspect}" if @value
+          if @value
+            expectation << " to #{@value.inspect}"
+          end
           expectation
         end
 
@@ -91,8 +93,14 @@ module Shoulda # :nodoc:
           end
         end
 
+        def session
+          if @controller.request.respond_to?(:session)
+            @controller.request.session.to_hash
+          else
+            @controller.response.session.data
+          end
+        end
       end
-
     end
   end
 end

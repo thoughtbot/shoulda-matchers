@@ -21,6 +21,7 @@ module Shoulda # :nodoc:
       end
 
       class RenderTemplateMatcher # :nodoc:
+        attr_reader :failure_message, :negative_failure_message
 
         def initialize(options, message, context)
           @options = options
@@ -33,8 +34,6 @@ module Shoulda # :nodoc:
           @controller = controller
           renders_template?
         end
-
-        attr_reader :failure_message, :negative_failure_message
 
         def description
           "render template #{@template}"
@@ -57,9 +56,7 @@ module Shoulda # :nodoc:
             false
           end
         end
-
       end
-
     end
   end
 end

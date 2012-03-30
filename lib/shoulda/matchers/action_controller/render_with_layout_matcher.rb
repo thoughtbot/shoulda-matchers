@@ -56,8 +56,11 @@ module Shoulda # :nodoc:
         end
 
         def rendered_with_expected_layout?
-          return true if @expected_layout.nil?
-          rendered_layouts.include?(@expected_layout)
+          if @expected_layout.nil?
+            true
+          else
+            rendered_layouts.include?(@expected_layout)
+          end
         end
 
         def rendered_layouts
@@ -85,15 +88,12 @@ module Shoulda # :nodoc:
 
         def result
           if rendered_with_layout?
-            "rendered with " <<
-              rendered_layouts.map { |layout| layout.inspect }.join(", ")
+            "rendered with " + rendered_layouts.map(&:inspect).join(", ")
           else
             "rendered without a layout"
           end
         end
-
       end
-
     end
   end
 end

@@ -22,13 +22,8 @@ module Shoulda # :nodoc:
       end
 
       class RespondWithContentTypeMatcher # :nodoc:
-
         def initialize(content_type)
-          @content_type = if content_type.is_a?(Symbol)
-            lookup_by_extension(content_type)
-          else
-            content_type
-          end
+          @content_type = look_up_content_type(content_type)
         end
 
         def description
@@ -58,17 +53,23 @@ module Shoulda # :nodoc:
           @controller.response.content_type.to_s
         end
 
-        def lookup_by_extension(extension)
+        def look_up_by_extension(extension)
           Mime::Type.lookup_by_extension(extension.to_s).to_s
+        end
+
+        def look_up_content_type(content_type)
+          if content_type.is_a?(Symbol)
+            look_up_by_extension(content_type)
+          else
+            content_type
+          end
         end
 
         def expectation
           "content type to be #{@content_type}, " <<
-          "but was #{response_content_type}"
+            "but was #{response_content_type}"
         end
-
       end
-
     end
   end
 end

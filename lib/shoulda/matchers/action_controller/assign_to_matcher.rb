@@ -20,6 +20,7 @@ module Shoulda # :nodoc:
       end
 
       class AssignToMatcher # :nodoc:
+        attr_reader :failure_message, :negative_failure_message
 
         def initialize(variable)
           @variable    = variable.to_s
@@ -44,8 +45,6 @@ module Shoulda # :nodoc:
           assigned_value? && kind_of_expected_class? && equal_to_expected_value?
         end
 
-        attr_reader :failure_message, :negative_failure_message
-
         def description
           description = "assign @#{@variable}"
           description << " with a kind of #{@expected_class}" if @expected_class
@@ -60,15 +59,15 @@ module Shoulda # :nodoc:
         private
 
         def assigned_value?
-          if !@controller.instance_variables.map(&:to_s).include?("@#{@variable}")
-            @failure_message =
-              "Expected action to assign a value for @#{@variable}"
-            false
-          else
+          if @controller.instance_variables.map(&:to_s).include?("@#{@variable}")
             @negative_failure_message =
               "Didn't expect action to assign a value for @#{@variable}, " <<
               "but it was assigned to #{assigned_value.inspect}"
             true
+          else
+            @failure_message =
+              "Expected action to assign a value for @#{@variable}"
+            false
           end
         end
 
@@ -106,9 +105,7 @@ module Shoulda # :nodoc:
         def assigned_value
           @controller.instance_variable_get("@#{@variable}")
         end
-
       end
-
     end
   end
 end

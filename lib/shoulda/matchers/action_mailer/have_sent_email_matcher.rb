@@ -101,22 +101,9 @@ module Shoulda # :nodoc:
 
         def matches?(subject)
           normalize_blocks
-          ::ActionMailer::Base.deliveries.each do |mail|
-            @subject_failed = !regexp_or_string_match(mail.subject, @email_subject) if @email_subject
-            @parts_failed = !parts_match(mail, @parts) if @parts
-            @body_failed = !body_match(mail, @body) if @body
-            @sender_failed = !regexp_or_string_match_in_array(mail.from, @sender) if @sender
-            @reply_to_failed = !regexp_or_string_match_in_array(mail.reply_to, @reply_to) if @reply_to
-            @recipient_failed = !regexp_or_string_match_in_array(mail.to, @recipient) if @recipient
-            @cc_failed = !regexp_or_string_match_in_array(mail.cc, @cc) if @cc
-            @cc_recipients_failed = !match_array_in_array(mail.cc, @cc_recipients) if @cc_recipients
-            @bcc_failed = !regexp_or_string_match_in_array(mail.bcc, @bcc) if @bcc
-            @bcc_recipients_failed = !match_array_in_array(mail.bcc, @bcc_recipients) if @bcc_recipients
-            @multipart_failed = (mail.multipart? != @multipart) if defined?(@multipart)
-            return true unless anything_failed?
+          ::ActionMailer::Base.deliveries.all? do |mail|
+            mail_matches?(mail)
           end
-
-          false
         end
 
         def failure_message
@@ -131,9 +118,11 @@ module Shoulda # :nodoc:
           description  = "send an email"
           description << " with a subject of #{@email_subject.inspect}" if @email_subject
           description << " containing #{@body.inspect}" if @body
-          @parts.each do |_, body, content_type|
-            description << " having a #{content_type} part containing #{body.inspect}"
-          end if @parts
+          if @parts
+            @parts.each do |_, body, content_type|
+              description << " having a #{content_type} part containing #{body.inspect}"
+            end
+          end
           description << " from #{@sender.inspect}" if @sender
           description << " reply to #{@reply_to.inspect}" if @reply_to
           description << " to #{@recipient.inspect}" if @recipient
@@ -168,6 +157,22 @@ module Shoulda # :nodoc:
           ::ActionMailer::Base.deliveries.map do |delivery|
             "#{delivery.subject.inspect} to #{delivery.to.inspect}"
           end.join("\n")
+        end
+
+        def mail_matches?(mail)
+          @subject_failed = !regexp_or_string_match(mail.subject, @email_subject) if @email_subject
+          @parts_failed = !parts_match(mail, @parts) if @parts
+          @body_failed = !body_match(mail, @body) if @body
+          @sender_failed = !regexp_or_string_match_in_array(mail.from, @sender) if @sender
+          @reply_to_failed = !regexp_or_string_match_in_array(mail.reply_to, @reply_to) if @reply_to
+          @recipient_failed = !regexp_or_string_match_in_array(mail.to, @recipient) if @recipient
+          @cc_failed = !regexp_or_string_match_in_array(mail.cc, @cc) if @cc
+          @cc_recipients_failed = !match_array_in_array(mail.cc, @cc_recipients) if @cc_recipients
+          @bcc_failed = !regexp_or_string_match_in_array(mail.bcc, @bcc) if @bcc
+          @bcc_recipients_failed = !match_array_in_array(mail.bcc, @bcc_recipients) if @bcc_recipients
+          @multipart_failed = (mail.multipart? != @multipart) if defined?(@multipart)
+
+          ! anything_failed?
         end
 
         def anything_failed?
@@ -216,7 +221,7 @@ module Shoulda # :nodoc:
           target_array.sort!
           match_array.sort!
 
-          target_array.each_cons(match_array.size).include? match_array
+          target_array.each_cons(match_array.size).include?(match_array)
         end
 
         def body_match(mail, a_regexp_or_string)

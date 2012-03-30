@@ -19,7 +19,6 @@ module Shoulda # :nodoc:
       end
 
       class QueryTheDatabaseMatcher # :nodoc:
-
         def initialize(times)
           if times.respond_to?(:count)
             @expected_query_count = times.count
@@ -44,7 +43,7 @@ module Shoulda # :nodoc:
         end
 
         def matches?(subject)
-          raise "Rails 3.1 or greater is required" unless rails_3_1?
+          ensure_at_least_rails_3_1
 
           @queries = []
 
@@ -88,7 +87,7 @@ module Shoulda # :nodoc:
         private
 
         def friendly_queries
-          @queries.collect do |query|
+          @queries.map do |query|
             "\n  (#{query[:name]}) #{query[:sql]}"
           end.join
         end
@@ -97,10 +96,13 @@ module Shoulda # :nodoc:
           query_name == 'SCHEMA'
         end
 
+        def ensure_at_least_rails_3_1
+          raise "Rails 3.1 or greater is required" unless rails_3_1?
+        end
+
         def rails_3_1?
           ::ActiveRecord::VERSION::MAJOR == 3 && ::ActiveRecord::VERSION::MINOR >= 1
         end
-
       end
     end
   end

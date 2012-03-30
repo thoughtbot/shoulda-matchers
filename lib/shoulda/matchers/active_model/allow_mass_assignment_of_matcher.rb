@@ -16,13 +16,16 @@ module Shoulda # :nodoc:
       end
 
       class AllowMassAssignmentOfMatcher # :nodoc:
+        attr_reader :failure_message, :negative_failure_message
 
         def initialize(attribute)
           @attribute = attribute.to_s
         end
 
         def as(role)
-          raise "You can specify role only in Rails 3.1 or greater" unless rails_3_1?
+          unless at_least_rails_3_1?
+            raise "You can specify role only in Rails 3.1 or greater" 
+          end
           @role = role
           self
         end
@@ -45,17 +48,13 @@ module Shoulda # :nodoc:
             true
           else
             if whitelisting?
-              @failure_message =
-                "Expected #{@attribute} to be accessible"
+              @failure_message = "Expected #{@attribute} to be accessible"
             else
-              @failure_message =
-                "Did not expect #{@attribute} to be protected"
+              @failure_message = "Did not expect #{@attribute} to be protected"
             end
             false
           end
         end
-
-        attr_reader :failure_message, :negative_failure_message
 
         def description
           "allow mass assignment of #{@attribute}"
@@ -80,7 +79,7 @@ module Shoulda # :nodoc:
         end
 
         def authorizer
-          if rails_3_1?
+          if at_least_rails_3_1?
             @subject.class.active_authorizer[@role]
           else
             @subject.class.active_authorizer
@@ -91,7 +90,7 @@ module Shoulda # :nodoc:
           @subject.class.name
         end
 
-        def rails_3_1?
+        def at_least_rails_3_1?
           ::ActiveModel::VERSION::MAJOR == 3 && ::ActiveModel::VERSION::MINOR >= 1
         end
       end

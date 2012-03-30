@@ -77,9 +77,7 @@ module Shoulda # :nodoc:
         def expectation
           "response to be a #{@status}, but was #{response_code}"
         end
-
       end
-
     end
   end
 end

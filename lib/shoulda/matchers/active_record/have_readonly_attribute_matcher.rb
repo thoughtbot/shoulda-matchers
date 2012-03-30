@@ -12,16 +12,16 @@ module Shoulda # :nodoc:
       end
 
       class HaveReadonlyAttributeMatcher # :nodoc:
-
         def initialize(attribute)
           @attribute = attribute.to_s
         end
 
+        attr_reader :failure_message, :negative_failure_message
+
         def matches?(subject)
           @subject = subject
           if readonly_attributes.include?(@attribute)
-            @negative_failure_message =
-              "Did not expect #{@attribute} to be read-only"
+            @negative_failure_message = "Did not expect #{@attribute} to be read-only"
             true
           else
             if readonly_attributes.empty?
@@ -36,8 +36,6 @@ module Shoulda # :nodoc:
           end
         end
 
-        attr_reader :failure_message, :negative_failure_message
-
         def description
           "make #{@attribute} read-only"
         end
@@ -51,9 +49,7 @@ module Shoulda # :nodoc:
         def class_name
           @subject.class.name
         end
-
       end
-
     end
   end
 end

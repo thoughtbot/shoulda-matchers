@@ -84,7 +84,7 @@ module Shoulda # :nodoc:
         end
 
         def expectation
-          expected = "#{model_class.name} to #{description}"
+          "#{model_class.name} to #{description}"
         end
 
         def index_type
@@ -100,13 +100,12 @@ module Shoulda # :nodoc:
 
         def normalize_columns_to_array(columns)
           if columns.class == Array
-            columns.collect { |each| each.to_s }
+            columns.map(&:to_s)
           else
             [columns.to_s]
           end
         end
       end
-
     end
   end
 end
