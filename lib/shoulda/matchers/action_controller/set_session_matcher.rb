@@ -43,7 +43,7 @@ module Shoulda # :nodoc:
         def description
           description = "set session variable #{@key.inspect}"
           if @value
-            description << " to #{@value.inspect}" 
+            description << " to #{@value.inspect}"
           end
           description
         end
