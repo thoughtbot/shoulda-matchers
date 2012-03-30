@@ -1,7 +1,6 @@
 module Shoulda # :nodoc:
   module Matchers
     module ActiveModel # :nodoc:
-
       # Ensure that the attribute is numeric
       #
       # Options:
@@ -17,23 +16,28 @@ module Shoulda # :nodoc:
       end
 
       class ValidateNumericalityOfMatcher < ValidationMatcher # :nodoc:
-
         def with_message(message)
-          @expected_message = message if message
+          if message
+            @expected_message = message
+          end
           self
         end
 
         def matches?(subject)
           super(subject)
-          @expected_message ||= :not_a_number
-          disallows_value_of('abcd', @expected_message)
+          disallows_value_of('abcd', expected_message)
         end
 
         def description
           "only allow numeric values for #{@attribute}"
         end
-      end
 
+        private
+
+        def expected_message
+          @expected_message || :not_a_number
+        end
+      end
     end
   end
 end
