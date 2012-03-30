@@ -18,6 +18,7 @@ module Shoulda # :nodoc:
       end
 
       class SetTheFlashMatcher # :nodoc:
+        attr_reader :failure_message, :negative_failure_message
 
         def to(value)
           @value = value
@@ -38,8 +39,6 @@ module Shoulda # :nodoc:
           @controller = controller
           sets_the_flash? && string_value_matches? && regexp_value_matches?
         end
-
-        attr_reader :failure_message, :negative_failure_message
 
         def description
           description = "set the #{expected_flash_invocation}"
@@ -62,13 +61,19 @@ module Shoulda # :nodoc:
         end
 
         def string_value_matches?
-          return true unless String === @value
-          flash_values.any? {|value| value == @value }
+          if @value.is_a?(String)
+            flash_values.any? {|value| value == @value }
+          else
+            true
+          end
         end
 
         def regexp_value_matches?
-          return true unless Regexp === @value
-          flash_values.any? {|value| value =~ @value }
+          if @value.is_a?(Regexp)
+            flash_values.any? {|value| value =~ @value }
+          else
+            true
+          end
         end
 
         def flash_values
@@ -80,11 +85,16 @@ module Shoulda # :nodoc:
         end
 
         def flash
-          return @flash if @flash
-          @flash = @controller.flash.dup
-          @flash.instance_variable_set(:@used, @controller.flash.instance_variable_get(:@used).dup)
-          @flash.sweep unless @now
-          @flash
+          if @flash
+            @flash
+          else
+            @flash = @controller.flash.dup
+            @flash.instance_variable_set(:@used, @controller.flash.instance_variable_get(:@used).dup)
+            if ! @now
+              @flash.sweep
+            end
+            @flash
+          end
         end
 
         def expectation
