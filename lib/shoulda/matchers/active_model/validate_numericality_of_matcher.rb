@@ -91,11 +91,10 @@ module Shoulda # :nodoc:
         end
 
         def description
-          result = "only allow #{allowed_type} values for #{@attribute}"
-          [:greater_than, :less_than, :greater_than_or_equal_to, :less_than_or_equal_to, :equal_to].each do |method|
-            result << "#{method} #{instance_variable_get("@#{method}")}" if instance_variable_get("@#{method}")
+          result = [:greater_than, :greater_than_or_equal_to, :less_than, :less_than_or_equal_to, :equal_to].map do |method|
+            "#{method} #{instance_variable_get("@#{method}")}" if instance_variable_get("@#{method}")
           end
-          result.join(', ') + " for #{@attribute}"
+          ["only allow #{allowed_type} values", result.compact.join(', '), "for", @attribute].join(" ")
         end
         private
 

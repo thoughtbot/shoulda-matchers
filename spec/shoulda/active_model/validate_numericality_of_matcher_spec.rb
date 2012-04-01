@@ -91,6 +91,20 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
     end
   end
 
+  context "description tests" do
+    [:greater_than, :greater_than_or_equal_to, :equal_to, :less_than, :less_than_or_equal_to].each do |parameter|
+      it "should return the correct description when the #{parameter} validation fails" do
+        validate_numericality_of(:attr).send(parameter, 0).description.should == "allow numeric values #{parameter} 0 for attr"
+      end
+    end
+
+    [:greater_than, :greater_than_or_equal_to].product([:less_than_or_equal_to, :less_than]).each do |parameters|
+      it "should return the correct description when the #{parameters.join(", ")} validations fails" do
+        validate_numericality_of(:attr).send(parameters.first, 0).send(parameters.last, 10).description.should == "allow numeric values #{parameters.first} 0, #{parameters.last} 10 for attr"
+      end
+    end
+  end
+
   context "a non-numeric attribute" do
     before do
       @model = define_model(:example, :attr => :string).new
