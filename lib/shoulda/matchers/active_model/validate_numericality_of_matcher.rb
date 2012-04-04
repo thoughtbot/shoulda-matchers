@@ -55,17 +55,59 @@ module Shoulda # :nodoc:
           self
         end
 
-        [:greater_than, :less_than, :greater_than_or_equal_to, :less_than_or_equal_to, :equal_to].each do |method|
-          define_method(method) do |number|
-            instance_variable_set("@#{method}".to_sym, number) if number
-            instance_variable_set("@#{method}_message".to_sym, method) unless instance_variable_get("@#{method}_message")
-            self
-          end
+        def greater_than(number)
+          @greater_than = number if number
+          @greater_than_message = :greater_than unless @greater_than_message
+          self
+        end
 
-          define_method("with_#{method}_message") do |message|
-            instance_variable_set("@#{method}_message".to_sym, message) if message
-            self
-          end
+        def with_greater_than_message(message)
+          @greater_than_message = message if message
+          self
+        end
+
+        def less_than(number)
+          @less_than = number if number
+          @less_than_message = :less_than unless @less_than_message
+          self
+        end
+
+        def with_less_than_message(message)
+          @less_than_message = message if message
+          self
+        end
+
+        def greater_than_or_equal_to(number)
+          @greater_than_or_equal_to = number if number
+          @greater_than_or_equal_to_message = :greater_than_or_equal_to unless @greater_than_or_equal_to_message
+          self
+        end
+
+        def with_greater_than_or_equal_to_message(message)
+          @greater_than_or_equal_to_message = message if message
+          self
+        end
+
+        def less_than_or_equal_to(number)
+          @less_than_or_equal_to = number if number
+          @less_than_or_equal_to_message = :less_than_or_equal_to unless @less_than_or_equal_to_message
+          self
+        end
+
+        def with_less_than_or_equal_to_message(message)
+          @less_than_or_equal_to_message = message if message
+          self
+        end
+
+        def equal_to(number)
+          @equal_to = number if number
+          @equal_to_message = :equal_to unless @equal_to_message
+          self
+        end
+
+        def with_equal_to_message(message)
+          @equal_to_message = message if message
+          self
         end
 
         def with_message(message)
