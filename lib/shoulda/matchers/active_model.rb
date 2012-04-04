@@ -10,7 +10,7 @@ require 'shoulda/matchers/active_model/validate_uniqueness_of_matcher'
 require 'shoulda/matchers/active_model/validate_acceptance_of_matcher'
 require 'shoulda/matchers/active_model/validate_numericality_of_matcher'
 require 'shoulda/matchers/active_model/allow_mass_assignment_of_matcher'
-
+require 'shoulda/matchers/active_model/have_a_default_matcher'
 
 module Shoulda
   module Matchers
