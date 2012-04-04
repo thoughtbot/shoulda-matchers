@@ -159,7 +159,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
       lambda { @model.should validate_uniqueness_of(:attr).scoped_to(:scope1, :magic_column) }.should raise_error(NameError)
     end
 
-    pending "should no longer throw a type error when we tell the matcher to skip the magic column" do
+    it "should no longer throw a type error when we tell the matcher to skip the magic column" do
       lambda { @model.should validate_uniqueness_of(:attr).scoped_to(:scope1, :magic_column).skip_mutation_of(:magic_column) }.should_not raise_error(NameError)
       @model.should validate_uniqueness_of(:attr).scoped_to(:scope1, :magic_column).skip_mutation_of(:magic_column)
     end

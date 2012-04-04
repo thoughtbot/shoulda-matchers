@@ -19,6 +19,8 @@ module Shoulda # :nodoc:
       #   <tt>errors.on(:attribute)</tt>. <tt>Regexp</tt> or <tt>String</tt>.
       #   Defaults to the translation for <tt>:taken</tt>.
       # * <tt>scoped_to</tt> - field(s) to scope the uniqueness to.
+      # * <tt>skip_mutation_of</tt> - field(s) to skip the mutation of when testing for uniqueness.
+      #
       # * <tt>case_insensitive</tt> - ensures that the validation does not
       #   check case. Off by default. Ignored by non-text attributes.
       #
@@ -28,6 +30,9 @@ module Shoulda # :nodoc:
       #   it { should validate_uniqueness_of(:email).scoped_to(:name) }
       #   it { should validate_uniqueness_of(:email).
       #                 scoped_to(:first_name, :last_name) }
+      #   it { should validate_uniqueness_of(:user_id).
+      #                 scoped_to(:commentable_id, :commentable_type).
+      #                 skip_mutation_of(:commentable_type) }
       #   it { should validate_uniqueness_of(:keyword).case_insensitive }
       #
       def validate_uniqueness_of(attr)
@@ -43,6 +48,11 @@ module Shoulda # :nodoc:
 
         def scoped_to(*scopes)
           @scopes = [*scopes].flatten
+          self
+        end
+
+        def skip_mutation_of(*columns)
+          @skip_mutation_columns = [*columns].flatten
           self
         end
 
@@ -111,6 +121,7 @@ module Shoulda # :nodoc:
             true
           else
             @scopes.all? do |scope|
+              return true if @skip_mutation_columns.present? && @skip_mutation_columns.include?(scope)
               previous_value = @existing.send(scope)
 
               # Assume the scope is a foreign key if the field is nil
