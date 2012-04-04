@@ -135,7 +135,6 @@ module Shoulda # :nodoc:
           'x' * length
         end
       end
-
     end
   end
 end

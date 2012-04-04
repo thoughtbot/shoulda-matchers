@@ -33,19 +33,24 @@ module Shoulda # :nodoc:
 
         def matches?(subject)
           super(subject)
-          disallows_double_if_only_integer &&
-            disallows_text
+          disallows_non_integers? && disallows_text?
         end
 
         def description
-          type = if @only_integer then "integer" else "numeric" end
-          description = "only allow #{type} values for #{@attribute}"
-          description
+          "only allow #{allowed_type} values for #{@attribute}"
         end
 
         private
 
-        def disallows_double_if_only_integer
+        def allowed_type
+          if @only_integer
+            "integer"
+          else
+            "numeric"
+          end
+        end
+
+        def disallows_non_integers?
           if @only_integer
             message = @expected_message || :not_an_integer
             disallows_value_of(0.1, message) && disallows_value_of('0.1', message)
@@ -54,7 +59,7 @@ module Shoulda # :nodoc:
           end
         end
 
-        def disallows_text
+        def disallows_text?
           message = @expected_message || :not_a_number
           disallows_value_of('abcd', message)
         end
