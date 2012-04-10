@@ -23,3 +23,6 @@
 
 * Added `serialize` matcher:
   `it { should serialize(:details).as(Hash).as_instance_of(Hash) }`
+
+* shoulda-matchers checks for all possible I18n keys, instead of just
+  e.g. `activerecord.errors.messages.blank`
