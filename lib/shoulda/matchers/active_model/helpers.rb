@@ -20,12 +20,12 @@ module Shoulda # :nodoc:
         def default_error_message(key, options = {})
           model_name = options.delete(:model_name)
           attribute = options.delete(:attribute)
-          I18n.translate( :"activerecord.errors.models.#{model_name}.attributes.#{attribute}.#{key}", {
-            :default => [ :"activerecord.errors.models.#{model_name}.#{key}",
-                          :"activerecord.errors.messages.#{key}",
-                          :"errors.attributes.#{attribute}.#{key}",
-                          :"errors.messages.#{key}"
-                        ]}.merge(options))
+          default_translation = [ :"activerecord.errors.models.#{model_name}.#{key}",
+                                  :"activerecord.errors.messages.#{key}",
+                                  :"errors.attributes.#{attribute}.#{key}",
+                                  :"errors.messages.#{key}" ]
+          I18n.translate(:"activerecord.errors.models.#{model_name}.attributes.#{attribute}.#{key}",
+            { :default => default_translation }.merge(options))
         end
       end
     end
