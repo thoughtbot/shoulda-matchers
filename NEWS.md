@@ -1,8 +1,9 @@
 # HEAD
 
-* Added only_integer option to validate_numericality_of:
+* Added `only_integer` option to `validate_numericality_of`:
   `should validate_numericality_of(:attribute).only_integer`
-* Added a query_the_database matcher:
+
+* Added a `query_the_database` matcher:
 
     `it { should query_the_database(4.times).when_calling(:complicated_method) }`
     `it { should query_the_database(4.times).or_less.when_calling(:complicated_method) }`
@@ -14,12 +15,11 @@
 * The flash matcher can check specific flash keys using [], like so:
   `it { should set_the_flash[:alert].to("Password doesn't match") }`
 
-* The have_sent_email matcher can check reply_to:
+* The `have_sent_email` matcher can check `reply_to`:
   ` it { should have_sent_email.reply_to([user, other]) }`
 
-* Added validates_confirmation_of matcher:
+* Added `validates_confirmation_of` matcher:
   `it { should validate_confirmation_of(:password) }`
 
-* Added serialize matcher:
+* Added `serialize` matcher:
   `it { should serialize(:details).as(Hash).as_instance_of(Hash) }`
-
