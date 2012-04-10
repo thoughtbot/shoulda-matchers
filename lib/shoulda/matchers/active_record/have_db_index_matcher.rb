@@ -98,11 +98,7 @@ module Shoulda # :nodoc:
         end
 
         def normalize_columns_to_array(columns)
-          if columns.class == Array
-            columns.map(&:to_s)
-          else
-            [columns.to_s]
-          end
+          Array.wrap(columns).map(&:to_s)
         end
       end
     end
