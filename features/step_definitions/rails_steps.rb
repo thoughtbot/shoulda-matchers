@@ -14,14 +14,14 @@ After do
   end
 end
 
-When /^I generate a new rails application$/ do
+When 'I generate a new rails application' do
   steps %{
     When I run `rails new #{APP_NAME}`
     And I cd to "#{APP_NAME}"
     And I comment out the gem "turn" from the Gemfile
     And I comment out the gem "coffee-rails" from the Gemfile
     And I comment out the gem "uglifier" from the Gemfile
-    And I reset Bundler environment variable
+    And I reset Bundler environment variables
     And I set the "BUNDLE_GEMFILE" environment variable to "Gemfile"
     And I successfully run `bundle install --local`
   }
@@ -36,18 +36,18 @@ When /^I configure the application to use "([^\"]+)" from this project$/ do |nam
   steps %{And I run `bundle install --local`}
 end
 
-When /^I run the rspec generator$/ do
+When 'I run the rspec generator' do
   steps %{
     When I successfully run `rails generate rspec:install`
   }
 end
 
-When /^I configure the application to use rspec\-rails$/ do
+When 'I configure the application to use rspec-rails' do
   append_to_gemfile "gem 'rspec-rails', '~> 2.6.1'"
   steps %{And I run `bundle install --local`}
 end
 
-When /^I configure the application to use shoulda-context$/ do
+When 'I configure the application to use shoulda-context' do
   append_to_gemfile "gem 'shoulda-context', '~> 1.0.0'"
   steps %{And I run `bundle install --local`}
 end
@@ -56,7 +56,7 @@ When /^I set the "([^"]*)" environment variable to "([^"]*)"$/ do |key, value|
   ENV[key] = value
 end
 
-When /^I configure a wildcard route$/ do
+When 'I configure a wildcard route' do
   steps %{
     When I write to "config/routes.rb" with:
     """
@@ -67,7 +67,7 @@ When /^I configure a wildcard route$/ do
   }
 end
 
-When /^I append gems from Appraisal Gemfile$/ do
+When 'I append gems from Appraisal Gemfile' do
   File.read(ENV['BUNDLE_GEMFILE']).split(/\n/).each do |line|
     if line =~ /^gem "(?!rails|appraisal)/
       append_to_gemfile line.strip
@@ -75,7 +75,7 @@ When /^I append gems from Appraisal Gemfile$/ do
   end
 end
 
-When /^I reset Bundler environment variable$/ do
+When 'I reset Bundler environment variables' do
   BUNDLE_ENV_VARS.each do |key|
     ENV[key] = nil
   end
