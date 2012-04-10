@@ -43,12 +43,12 @@ When /^I run the rspec generator$/ do
 end
 
 When /^I configure the application to use rspec\-rails$/ do
-  append_to_gemfile "gem 'rspec-rails', '~> 2.6.1.beta1'"
+  append_to_gemfile "gem 'rspec-rails', '~> 2.6.1'"
   steps %{And I run `bundle install --local`}
 end
 
 When /^I configure the application to use shoulda-context$/ do
-  append_to_gemfile "gem 'shoulda-context', '~> 1.0.0.beta1'"
+  append_to_gemfile "gem 'shoulda-context', '~> 1.0.0'"
   steps %{And I run `bundle install --local`}
 end
 
