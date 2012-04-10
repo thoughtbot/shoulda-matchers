@@ -15,10 +15,10 @@ Cucumber::Rake::Task.new do |t|
   t.cucumber_opts = ['--format', (ENV['CUCUMBER_FORMAT'] || 'progress')]
 end
 
-desc 'Default: run specs and cucumber features'
-task :default => [:all]
-
 desc 'Test the plugin under all supported Rails versions.'
-task :all => ["appraisal:cleanup", "appraisal:install"] do |t|
+task :all => ["appraisal:cleanup", "appraisal:install"] do
   exec('rake appraisal spec cucumber')
 end
+
+desc 'Default: run specs and cucumber features'
+task :default => [:all]
