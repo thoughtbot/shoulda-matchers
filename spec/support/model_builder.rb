@@ -112,10 +112,6 @@ module ModelBuilder
     @controller = klass.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
-    if ActionPack::VERSION::MAJOR < 3
-      @controller.send :assign_shortcuts, @request, @response
-      @controller.send :initialize_template_class, @response
-    end
 
     class << self
       include ActionController::TestCase::Behavior
