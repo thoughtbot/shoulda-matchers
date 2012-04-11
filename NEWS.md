@@ -26,3 +26,5 @@
 
 * shoulda-matchers checks for all possible I18n keys, instead of just
   e.g. `activerecord.errors.messages.blank`
+
+* Our very first dependency: ActiveSupport >= 3.0.0

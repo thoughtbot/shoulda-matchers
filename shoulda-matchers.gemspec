@@ -17,6 +17,8 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
+  s.add_dependency('activesupport', '>= 3.0.0')
+
   s.add_development_dependency('appraisal',   '~> 0.4.0')
   s.add_development_dependency('aruba')
   s.add_development_dependency('bourne',      '~> 1.1.2')

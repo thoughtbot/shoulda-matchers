@@ -112,8 +112,6 @@ module ModelBuilder
     @controller = klass.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
-    @controller.send :assign_shortcuts, @request, @response
-    @controller.send :initialize_template_class, @response
 
     class << self
       include ActionController::TestCase::Behavior
