@@ -84,6 +84,11 @@ module Shoulda # :nodoc:
           self
         end
 
+        def validate(validate = true)
+          @validate = validate
+          self
+        end
+
         def matches?(subject)
           @subject = subject
           association_exists? &&
@@ -94,7 +99,8 @@ module Shoulda # :nodoc:
             class_name_correct? &&
             order_correct? &&
             conditions_correct? &&
-            join_table_exists?
+            join_table_exists? &&
+            validate_correct?
         end
 
         def failure_message
@@ -213,6 +219,15 @@ module Shoulda # :nodoc:
             true
           else
             @missing = "join table #{join_table} doesn't exist"
+            false
+          end
+        end
+
+        def validate_correct?
+          if @validate.nil? || @validate == reflection.options[:validate]
+            true
+          else
+            @missing = "#{@name} should have #{@validate} as validate"
             false
           end
         end

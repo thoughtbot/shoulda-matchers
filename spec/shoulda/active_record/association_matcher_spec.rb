@@ -98,6 +98,23 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       end
       Child.new.should_not @matcher.class_name('TreeChild')
     end
+
+    it "should accept an association with a valid :validate option" do
+      define_model :parent, :adopter => :boolean
+      define_model :child, :parent_id => :integer do
+        belongs_to :parent, :validate => false
+      end
+      Child.new.should @matcher.validate(false)
+    end
+
+    it "should reject an association with a bad :validate option" do
+      define_model :parent, :adopter => :boolean
+      define_model :child, :parent_id => :integer do
+        belongs_to :parent, :validate => false
+      end
+      Child.new.should_not @matcher.validate
+    end
+
   end
 
   context "have_many" do
@@ -240,6 +257,22 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       Parent.new.should_not @matcher.class_name('Node')
     end
 
+    it "should accept an association with a valid :validate option" do
+      define_model :child, :parent_id => :integer, :adopted => :boolean
+      define_model :parent do
+        has_many :children, :validate => false
+      end
+      Parent.new.should @matcher.validate(false)
+    end
+
+    it "should reject an association with a bad :validate option" do
+      define_model :child, :parent_id => :integer, :adopted => :boolean
+      define_model :parent do
+        has_many :children, :validate => false
+      end
+      Parent.new.should_not @matcher.validate
+    end
+
     it "should accept an association with a nonstandard reverse foreign key, using :inverse_of" do
       define_model :child, :ancestor_id => :integer do
         belongs_to :ancestor, :inverse_of => :children, :class_name => :Parent
@@ -364,6 +397,22 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       Person.new.should_not @matcher.class_name('PersonDetail')
     end
 
+    it "should accept an association with a valid :validate option" do
+      define_model :detail, :person_id => :integer, :disabled => :boolean
+      define_model :person do
+        has_one :detail, :validate => false
+      end
+      Person.new.should @matcher.validate(false)
+    end
+
+    it "should reject an association with a bad :validate option" do
+      define_model :detail, :person_id => :integer, :disabled => :boolean
+      define_model :person do
+        has_one :detail, :validate => false
+      end
+      Person.new.should_not @matcher.validate
+    end
+
   end
 
   context "have_and_belong_to_many" do
@@ -443,6 +492,26 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       define_model :people_relative, :person_id   => :integer,
                                      :relative_id => :integer
       Person.new.should_not @matcher.class_name('PersonRelatives')
+    end
+
+    it "should accept an association with a valid :validate option" do
+      define_model :relatives, :adopted => :boolean
+      define_model :person do
+        has_and_belongs_to_many :relatives, :validate => false
+      end
+      define_model :people_relative, :person_id   => :integer,
+                                     :relative_id => :integer
+      Person.new.should @matcher.validate(false)
+    end
+
+    it "should reject an association with a bad :validate option" do
+      define_model :relatives, :adopted => :boolean
+      define_model :person do
+        has_and_belongs_to_many :relatives, :validate => false
+      end
+      define_model :people_relative, :person_id   => :integer,
+                                     :relative_id => :integer
+      Person.new.should_not @matcher.validate
     end
 
   end
