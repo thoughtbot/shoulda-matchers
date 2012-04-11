@@ -3,6 +3,11 @@ module Shoulda # :nodoc:
     module ActiveRecord # :nodoc:
       # Ensure that the belongs_to relationship exists.
       #
+      # Options:
+      # * <tt>:class_name</tt> - tests that the association makes use of the class_name option.
+      # * <tt>:validate</tt> - tests that the association makes use of the validate option.
+      #
+      # Example:
       #   it { should belong_to(:parent) }
       #
       def belong_to(name)
@@ -18,6 +23,7 @@ module Shoulda # :nodoc:
       # * <tt>dependent</tt> - tests that the association makes use of the
       #   dependent option.
       # * <tt>:class_name</tt> - tests that the association makes use of the class_name option.
+      # * <tt>:validate</tt> - tests that the association makes use of the validate option.
       #
       # Example:
       #   it { should have_many(:friends) }
@@ -36,6 +42,7 @@ module Shoulda # :nodoc:
       # * <tt>:dependent</tt> - tests that the association makes use of the
       #   dependent option.
       # * <tt>:class_name</tt> - tests that the association makes use of the class_name option.
+      # * <tt>:validate</tt> - tests that the association makes use of the validate option.
       #
       # Example:
       #   it { should have_one(:god) } # unless hindu
@@ -47,6 +54,10 @@ module Shoulda # :nodoc:
       # Ensures that the has_and_belongs_to_many relationship exists, and that
       # the join table is in place.
       #
+      # Options:
+      # * <tt>:validate</tt> - tests that the association makes use of the validate option.
+      #
+      # Example:
       #   it { should have_and_belong_to_many(:posts) }
       #
       def have_and_belong_to_many(name)
