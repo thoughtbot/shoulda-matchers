@@ -3,6 +3,12 @@ module Shoulda # :nodoc:
     module ActiveRecord # :nodoc:
       # Ensure that the belongs_to relationship exists.
       #
+      # Options:
+      # * <tt>:class_name</tt> - tests that the association makes use of the class_name option.
+      # * <tt>:validate</tt> - tests that the association makes use of the validate
+      # option.
+      #
+      # Example:
       #   it { should belong_to(:parent) }
       #
       def belong_to(name)
@@ -18,6 +24,8 @@ module Shoulda # :nodoc:
       # * <tt>dependent</tt> - tests that the association makes use of the
       #   dependent option.
       # * <tt>:class_name</tt> - tests that the association makes use of the class_name option.
+      # * <tt>:validate</tt> - tests that the association makes use of the validate
+      # option.
       #
       # Example:
       #   it { should have_many(:friends) }
@@ -36,6 +44,8 @@ module Shoulda # :nodoc:
       # * <tt>:dependent</tt> - tests that the association makes use of the
       #   dependent option.
       # * <tt>:class_name</tt> - tests that the association makes use of the class_name option.
+      # * <tt>:validate</tt> - tests that the association makes use of the validate
+      # option.
       #
       # Example:
       #   it { should have_one(:god) } # unless hindu
@@ -47,6 +57,11 @@ module Shoulda # :nodoc:
       # Ensures that the has_and_belongs_to_many relationship exists, and that
       # the join table is in place.
       #
+      # Options:
+      # * <tt>:validate</tt> - tests that the association makes use of the validate
+      # option.
+      #
+      # Example:
       #   it { should have_and_belong_to_many(:posts) }
       #
       def have_and_belong_to_many(name)
@@ -85,6 +100,11 @@ module Shoulda # :nodoc:
           self
         end
 
+        def validate(validate = true)
+          @validate = validate
+          self
+        end
+
         def matches?(subject)
           @subject = subject
           association_exists? &&
@@ -95,7 +115,8 @@ module Shoulda # :nodoc:
             class_name_correct? &&
             order_correct? &&
             conditions_correct? &&
-            join_table_exists?
+            join_table_exists? &&
+            validate_correct?
         end
 
         def failure_message
@@ -226,6 +247,15 @@ module Shoulda # :nodoc:
             true
           else
             @missing = "join table #{join_table} doesn't exist"
+            false
+          end
+        end
+
+        def validate_correct?
+          if !@validate && !reflection.options[:validate] || @validate == reflection.options[:validate]
+            true
+          else
+            @missing = "#{@name} should have #{@validate} as validate"
             false
           end
         end
