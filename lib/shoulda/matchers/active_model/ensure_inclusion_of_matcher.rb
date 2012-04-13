@@ -5,6 +5,7 @@ module Shoulda # :nodoc:
       # Ensure that the attribute's value is in the range specified
       #
       # Options:
+      # * <tt>in_array</tt> - the range of allowed values for this attribute
       # * <tt>in_range</tt> - the range of allowed values for this attribute
       # * <tt>with_low_message</tt> - value the test expects to find in
       #   <tt>errors.on(:attribute)</tt>. Regexp or string. Defaults to the
@@ -21,7 +22,12 @@ module Shoulda # :nodoc:
       end
 
       class EnsureInclusionOfMatcher < ValidationMatcher # :nodoc:
-
+        
+        def in_array(array)
+          @array = array
+          self
+        end
+        
         def in_range(range)
           @range = range
           @minimum = range.first
@@ -47,24 +53,43 @@ module Shoulda # :nodoc:
           self
         end
 
+        
         def description
-          "ensure inclusion of #{@attribute} in #{@range.inspect}"
+          "ensure inclusion of #{@attribute} in #{inspect_message}"
         end
 
         def matches?(subject)
           super(subject)
 
-          @low_message  ||= :inclusion
-          @high_message ||= :inclusion
+          if @range
+            @low_message  ||= :inclusion
+            @high_message ||= :inclusion
 
-          disallows_lower_value &&
-            allows_minimum_value &&
-            disallows_higher_value &&
-            allows_maximum_value
+            disallows_lower_value &&
+              allows_minimum_value &&
+              disallows_higher_value &&
+              allows_maximum_value
+          elsif @array
+            unless allows_all_values_in_array
+              @failure_message = "#{@array} doesn't include #{@attribute}"
+              return false
+            end
+            true
+          end
         end
 
         private
 
+        def inspect_message
+          @range.nil? ? @array.inspect : @range.inspect 
+        end
+
+        def allows_all_values_in_array
+          @array.any? do |value|
+            allows_value_of(@attribute, :inclusion)
+          end
+        end
+              
         def disallows_lower_value
           @minimum == 0 || disallows_value_of(@minimum - 1, @low_message)
         end
