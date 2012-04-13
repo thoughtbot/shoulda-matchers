@@ -27,4 +27,6 @@
 * shoulda-matchers checks for all possible I18n keys, instead of just
   e.g. `activerecord.errors.messages.blank`
 
+* Add `accept_nested_attributes` matcher
+
 * Our very first dependency: ActiveSupport &gt;= 3.0.0
