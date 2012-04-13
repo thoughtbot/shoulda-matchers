@@ -1,4 +1,4 @@
-# HEAD
+# v1.1.0
 
 * Added `only_integer` option to `validate_numericality_of`:
   `should validate_numericality_of(:attribute).only_integer`
