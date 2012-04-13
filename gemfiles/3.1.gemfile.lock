@@ -161,3 +161,4 @@ DEPENDENCIES
   shoulda-context (~> 1.0.0)
   shoulda-matchers!
   sqlite3
+  therubyrhino
