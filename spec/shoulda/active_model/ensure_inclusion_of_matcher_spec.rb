@@ -65,47 +65,29 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     it "should accept ensuring the correct range and messages" do
       @model.should ensure_inclusion_of(:attr).in_range(2..5).with_low_message(/low/).with_high_message(/high/)
     end
-
   end
 
-  context "an attribute which must be included in a array" do
+  context "an attribute which must be included in an array" do
     before do
-      @model = define_model(:example_foo, :attr => :boolean) do
-        validates_inclusion_of :attr, :in => [true,false]
-      end.new(:attr=>true)
-    end
-
-    it "should accept ensuring the correct array" do
-      @model.should ensure_inclusion_of(:attr).in_array [true,false]
-    end
-    it "should have the array in the description" do
-      ensure_inclusion_of(:attr).in_array([true,false]).description.should  ==  "ensure inclusion of attr in [true, false]"
-    end
-  end
-  
-  context "an attribute not included in the array" do
-    before do
-      @model = define_model(:example_foo, :attr => :boolean) do
-        validate :custom_validation
-        def custom_validation
-          unless [true,false].include? attr 
-            errors.add(:attr, 'not boolean')
-          end
-        end
+      @model = define_model(:example, :attr => :string) do
+        validates_inclusion_of :attr, :in => %w(one two)
       end.new
     end
 
-    it "should have an error on attr" do
-      @model.should ensure_inclusion_of(:attr).in_array([true,false]).with_message(/boolean/)
+    it "accepts with correct array" do
+      @model.should ensure_inclusion_of(:attr).in_array(%w(one two))
     end
-    context "should not accept other value then specified" do
-      before do
-        @model.attr = "foo"
-      end
-      it  "should not be valid" do
-        @model.should ensure_inclusion_of(:attr).in_array([true,false]).with_message(/inclusion/)
-      end
+
+    it "rejects when only part of array matches" do
+      @model.should_not ensure_inclusion_of(:attr).in_array(%w(one wrong_value))
+    end
+
+    it "rejects when array doesn't match at all" do
+      @model.should_not ensure_inclusion_of(:attr).in_array(%w(cat dog))
+    end
+
+    it "has correct description" do
+      ensure_inclusion_of(:attr).in_array([true, 'dog']).description.should  ==  'ensure inclusion of attr in [true, "dog"]'
     end
   end
-  
 end

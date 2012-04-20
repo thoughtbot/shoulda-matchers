@@ -18,7 +18,7 @@ module Shoulda # :nodoc:
         end
 
         private
-        
+
         def allows_value_of(value, message = nil)
           allow = AllowValueMatcher.
             new(value).

@@ -22,12 +22,12 @@ module Shoulda # :nodoc:
       end
 
       class EnsureInclusionOfMatcher < ValidationMatcher # :nodoc:
-        
+
         def in_array(array)
           @array = array
           self
         end
-        
+
         def in_range(range)
           @range = range
           @minimum = range.first
@@ -53,7 +53,6 @@ module Shoulda # :nodoc:
           self
         end
 
-        
         def description
           "ensure inclusion of #{@attribute} in #{inspect_message}"
         end
@@ -70,26 +69,27 @@ module Shoulda # :nodoc:
               disallows_higher_value &&
               allows_maximum_value
           elsif @array
-            unless allows_all_values_in_array
-              @failure_message = "#{@array} doesn't include #{@attribute}"
-              return false
+            if allows_all_values_in_array?
+              true
+            else
+              @failure_message = "#{@array} doesn't match array in validation"
+              false
             end
-            true
           end
         end
 
         private
 
         def inspect_message
-          @range.nil? ? @array.inspect : @range.inspect 
+          @range.nil? ? @array.inspect : @range.inspect
         end
 
-        def allows_all_values_in_array
-          @array.any? do |value|
-            allows_value_of(@attribute, :inclusion)
+        def allows_all_values_in_array?
+          @array.all? do |value|
+            allows_value_of(value, @low_message)
           end
         end
-              
+
         def disallows_lower_value
           @minimum == 0 || disallows_value_of(@minimum - 1, @low_message)
         end
