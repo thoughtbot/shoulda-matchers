@@ -2,7 +2,7 @@ HEAD
 
 * `ensure_inclusion_of` now has an `in_array` parameter:
   `ensure_inclusion_of(:attr).in_array(['foo', 'bar'])`. It cannot be used with
-  the `.in_range` option.
+  the `.in_range` option. (vpereira)
 
 # v1.1.0
 
