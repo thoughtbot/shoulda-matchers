@@ -1,3 +1,9 @@
+HEAD
+
+* `ensure_inclusion_of` now has an `in_array` parameter:
+  `ensure_inclusion_of(:attr).in_array(['foo', 'bar'])`. It cannot be used with
+  the `.in_range` option.
+
 # v1.1.0
 
 * Added `only_integer` option to `validate_numericality_of`:
