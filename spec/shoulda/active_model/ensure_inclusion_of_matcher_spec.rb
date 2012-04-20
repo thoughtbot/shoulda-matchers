@@ -87,7 +87,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     end
 
     it "has correct description" do
-      ensure_inclusion_of(:attr).in_array([true, 'dog']).description.should  ==  'ensure inclusion of attr in [true, "dog"]'
+      ensure_inclusion_of(:attr).in_array([true, 'dog']).description.should == 'ensure inclusion of attr in [true, "dog"]'
     end
   end
 end
