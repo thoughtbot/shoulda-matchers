@@ -59,7 +59,7 @@ describe Shoulda::Matchers::ActiveRecord::SerializeMatcher do
 
     context "a serializer that is an instance of a class" do
       before do
-        define_constant(:ExampleSerializer, Object) do
+        define_class(:ExampleSerializer, Object) do
           def load(*); end
           def dump(*); end
         end

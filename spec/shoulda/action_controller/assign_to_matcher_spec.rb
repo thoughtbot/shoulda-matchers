@@ -2,12 +2,14 @@ require 'spec_helper'
 
 describe Shoulda::Matchers::ActionController::AssignToMatcher do
   it "should include the actual class in the failure message" do
-    define_constant(:WrongClass) do
-      def to_s; "wrong class" end
+    define_class(:WrongClass) do
+      def to_s
+        'wrong class'
+      end
     end
 
     controller = build_response { @var = WrongClass.new }
-    matcher = Shoulda::Matchers::ActionController::AssignToMatcher.new(:var).with_kind_of(Fixnum)
+    matcher = assign_to(:var).with_kind_of(Fixnum)
     matcher.matches?(controller)
 
     matcher.failure_message.should =~ /but got wrong class \(WrongClass\)$/

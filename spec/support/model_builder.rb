@@ -28,7 +28,7 @@ module ModelBuilder
     end
   end
 
-  def define_constant(class_name, base = Object, &block)
+  def define_class(class_name, base = Object, &block)
     class_name = class_name.to_s.camelize
 
     Class.new(base).tap do |constant_class|
@@ -46,11 +46,11 @@ module ModelBuilder
   end
 
   def define_model_class(class_name, &block)
-    define_constant(class_name, ActiveRecord::Base, &block)
+    define_class(class_name, ActiveRecord::Base, &block)
   end
 
   def define_active_model_class(class_name, options = {}, &block)
-    define_constant(class_name, Object) do
+    define_class(class_name, Object) do
       include ActiveModel::Validations
 
       options[:accessors].each do |column|
@@ -78,13 +78,13 @@ module ModelBuilder
 
   def define_mailer(name, paths, &block)
     class_name = name.to_s.pluralize.classify
-    define_constant(class_name, ActionMailer::Base, &block)
+    define_class(class_name, ActionMailer::Base, &block)
   end
 
   def define_controller(class_name, &block)
     class_name = class_name.to_s
     class_name << 'Controller' unless class_name =~ /Controller$/
-    define_constant(class_name, ActionController::Base, &block)
+    define_class(class_name, ActionController::Base, &block)
   end
 
   def define_routes(&block)
