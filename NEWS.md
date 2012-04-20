@@ -6,6 +6,8 @@ HEAD
 
 * Test against Rails 3.2.
 
+* Fix `ensure_length_of` to use all possible I18n error messages.
+
 # v1.1.0
 
 * Added `only_integer` option to `validate_numericality_of`:
