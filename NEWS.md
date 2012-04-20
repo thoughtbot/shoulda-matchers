@@ -4,6 +4,8 @@ HEAD
   `ensure_inclusion_of(:attr).in_array(['foo', 'bar'])`. It cannot be used with
   the `.in_range` option. (vpereira)
 
+* Test against Rails 3.2.
+
 # v1.1.0
 
 * Added `only_integer` option to `validate_numericality_of`:
