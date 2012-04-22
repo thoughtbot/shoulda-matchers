@@ -147,4 +147,28 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
       @model.should validate_uniqueness_of(:attr)
     end
   end
+
+  context "allow protection of columns from mutation" do
+    before do
+      @model = define_model(:example, :scope1 => :integer, :magic_column => :string, :attr => :integer) do
+        validates_uniqueness_of :attr, :scope => [:scope1, :magic_column]
+
+        def magic_column=(class_string)
+          class_string.constantize
+          super
+        end
+
+      end.new
+      Example.create!(:attr => 'value', :scope1 => 1, :magic_column => 'Example')
+    end
+
+    it "should throw a NameError error when the magic column is mutated" do
+      lambda { @model.should validate_uniqueness_of(:attr).scoped_to(:scope1, :magic_column) }.should raise_error(NameError)
+    end
+
+    it "should no longer throw a type error when we tell the matcher to skip the magic column" do
+      lambda { @model.should validate_uniqueness_of(:attr).scoped_to(:scope1, :magic_column).skip_mutation_of(:magic_column) }.should_not raise_error(NameError)
+      @model.should validate_uniqueness_of(:attr).scoped_to(:scope1, :magic_column).skip_mutation_of(:magic_column)
+    end
+  end
 end
