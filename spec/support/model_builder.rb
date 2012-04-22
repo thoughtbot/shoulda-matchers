@@ -1,7 +1,4 @@
 module ModelBuilder
-  TMP_VIEW_PATH =
-    File.expand_path(File.join(TESTAPP_ROOT, 'tmp', 'views')).freeze
-
   def self.included(example_group)
     example_group.class_eval do
       before do
@@ -9,7 +6,7 @@ module ModelBuilder
       end
 
       after do
-        teardown_defined_constants
+        drop_created_tables
       end
     end
   end
@@ -28,37 +25,12 @@ module ModelBuilder
     end
   end
 
-  def define_class(class_name, base = Object, &block)
-    class_name = class_name.to_s.camelize
-
-    # FIXME: ActionMailer 3.2 calls `name.underscore` immediately upon
-    # subclassing. Class.new.name == nil. So, Class.new(ActionMailer::Base)
-    # errors out since it's trying to do `nil.underscore`. This is very ugly but
-    # allows us to test against ActionMailer 3.2.x.
-    eval <<-A_REAL_CLASS_FOR_ACTION_MAILER_3_2
-    class ::#{class_name} < #{base}
-    end
-    A_REAL_CLASS_FOR_ACTION_MAILER_3_2
-
-    Object.const_get(class_name).tap do |constant_class|
-      constant_class.unloadable
-
-      if block_given?
-        constant_class.class_eval(&block)
-      end
-
-      if constant_class.respond_to?(:reset_column_information)
-        constant_class.reset_column_information
-      end
-    end
-  end
-
   def define_model_class(class_name, &block)
     define_class(class_name, ActiveRecord::Base, &block)
   end
 
   def define_active_model_class(class_name, options = {}, &block)
-    define_class(class_name, Object) do
+    define_class(class_name) do
       include ActiveModel::Validations
 
       options[:accessors].each do |column|
@@ -89,66 +61,12 @@ module ModelBuilder
     define_class(class_name, ActionMailer::Base, &block)
   end
 
-  def define_controller(class_name, &block)
-    class_name = class_name.to_s
-    class_name << 'Controller' unless class_name =~ /Controller$/
-    define_class(class_name, ActionController::Base, &block)
-  end
-
-  def define_routes(&block)
-    Rails.application.routes.draw(&block)
-    @routes = Rails.application.routes
-    class << self
-      include ActionDispatch::Assertions
-    end
-  end
-
-  def build_response(opts = {}, &block)
-    action = opts[:action] || 'example'
-    partial = opts[:partial] || '_partial'
-    klass = define_controller('Examples')
-    block ||= lambda { render :nothing => true }
-    klass.class_eval { layout false; define_method(action, &block) }
-    define_routes do
-      match 'examples', :to => "examples##{action}"
-    end
-
-    create_view("examples/#{action}.html.erb", "abc")
-    create_view("examples/#{partial}.html.erb", "partial")
-    klass.view_paths = [TMP_VIEW_PATH]
-
-    @controller = klass.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-
-    class << self
-      include ActionController::TestCase::Behavior
-    end
-    @routes = Rails.application.routes
-
-    get action
-
-    @controller
-  end
-
-  def create_view(path, contents)
-    full_path = File.join(TMP_VIEW_PATH, path)
-    FileUtils.mkdir_p(File.dirname(full_path))
-    File.open(full_path, 'w') { |file| file.write(contents) }
-  end
-
-  def teardown_defined_constants
-    ActiveSupport::Dependencies.clear
-
+  def drop_created_tables
     connection = ActiveRecord::Base.connection
 
     @created_tables.each do |table_name|
       connection.execute("DROP TABLE IF EXISTS #{table_name}")
     end
-
-    FileUtils.rm_rf(TMP_VIEW_PATH)
-
-    Rails.application.reload_routes!
   end
 end
 
