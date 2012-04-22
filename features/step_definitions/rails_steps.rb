@@ -43,7 +43,7 @@ When 'I run the rspec generator' do
 end
 
 When 'I configure the application to use rspec-rails' do
-  append_to_gemfile "gem 'rspec-rails', '~> 2.6.1'"
+  append_to_gemfile "gem 'rspec-rails', '~> 2.8.1'"
   steps %{And I run `bundle install --local`}
 end
 
@@ -68,7 +68,7 @@ When 'I configure a wildcard route' do
 end
 
 When 'I append gems from Appraisal Gemfile' do
-  File.read(ENV['BUNDLE_GEMFILE']).split(/\n/).each do |line|
+  File.read(ENV['BUNDLE_GEMFILE']).split("\n").each do |line|
     if line =~ /^gem "(?!rails|appraisal)/
       append_to_gemfile line.strip
     end
@@ -82,7 +82,7 @@ When 'I reset Bundler environment variables' do
 end
 
 When /^I comment out the gem "([^"]*)" from the Gemfile$/ do |gemname|
-  comment_out_gem_in_gemfile gemname
+  comment_out_gem_in_gemfile(gemname)
 end
 
 module FileHelpers
