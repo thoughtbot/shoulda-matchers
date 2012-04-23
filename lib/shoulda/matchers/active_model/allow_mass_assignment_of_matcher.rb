@@ -20,19 +20,19 @@ module Shoulda # :nodoc:
 
         def initialize(attribute)
           @attribute = attribute.to_s
+          @options = {}
         end
 
         def as(role)
-          unless at_least_rails_3_1?
+          if less_than_active_model_3_1?
             raise "You can specify role only in Rails 3.1 or greater" 
           end
-          @role = role
+          @options[:role] = role
           self
         end
 
         def matches?(subject)
           @subject = subject
-          @role ||= :default
           if attr_mass_assignable?
             if whitelisting?
               @negative_failure_message = "#{@attribute} was made accessible"
@@ -62,6 +62,10 @@ module Shoulda # :nodoc:
 
         private
 
+        def role
+          @options[:role] || :default
+        end
+
         def protected_attributes
           @protected_attributes ||= (@subject.class.protected_attributes || [])
         end
@@ -79,10 +83,10 @@ module Shoulda # :nodoc:
         end
 
         def authorizer
-          if at_least_rails_3_1?
-            @subject.class.active_authorizer[@role]
-          else
+          if less_than_active_model_3_1?
             @subject.class.active_authorizer
+          else
+            @subject.class.active_authorizer[role]
           end
         end
 
@@ -90,8 +94,8 @@ module Shoulda # :nodoc:
           @subject.class.name
         end
 
-        def at_least_rails_3_1?
-          ::ActiveModel::VERSION::MAJOR == 3 && ::ActiveModel::VERSION::MINOR >= 1
+        def less_than_active_model_3_1?
+          ! (::ActiveModel::VERSION::MAJOR == 3 && ::ActiveModel::VERSION::MINOR >= 1)
         end
       end
     end

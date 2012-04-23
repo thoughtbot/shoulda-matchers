@@ -18,15 +18,16 @@ module Shoulda # :nodoc:
       class SerializeMatcher # :nodoc:
         def initialize(name)
           @name = name.to_s
+          @options = {}
         end
 
         def as(type)
-          @type = type
+          @options[:type] = type
           self
         end
 
         def as_instance_of(type)
-          @instance_type = type
+          @options[:instance_type] = type
           self
         end
 
@@ -45,7 +46,7 @@ module Shoulda # :nodoc:
 
         def description
           description = "serialize :#{@name}"
-          description += " class_name => #{@type}" if @type
+          description += " class_name => #{@options[:type]}" if @options.key?(:type)
           description
         end
 
@@ -61,15 +62,15 @@ module Shoulda # :nodoc:
         end
 
         def class_valid?
-          if @type
+          if @options[:type]
             klass = model_class.serialized_attributes[@name]
-            if klass == @type
+            if klass == @options[:type]
               true
             else
-              if klass.respond_to?(:object_class) && klass.object_class == @type
+              if klass.respond_to?(:object_class) && klass.object_class == @options[:type]
                 true
               else
-                @missing = ":#{@name} should be a type of #{@type}"
+                @missing = ":#{@name} should be a type of #{@options[:type]}"
                 false
               end
             end
@@ -83,11 +84,11 @@ module Shoulda # :nodoc:
         end
 
         def instance_class_valid?
-          if @instance_type
-            if model_class.serialized_attributes[@name].class == @instance_type
+          if @options.key?(:instance_type)
+            if model_class.serialized_attributes[@name].class == @options[:instance_type]
               true
             else
-              @missing = ":#{@name} should be an instance of #{@type}"
+              @missing = ":#{@name} should be an instance of #{@options[:type]}"
               false
             end
           else
@@ -101,8 +102,8 @@ module Shoulda # :nodoc:
 
         def expectation
           expectation = "#{model_class.name} to serialize the attribute called :#{@name}"
-          expectation += " with a type of #{@type}" if @type
-          expectation += " with an instance of #{@instance_type}" if @instance_type
+          expectation += " with a type of #{@options[:type]}" if @options[:type]
+          expectation += " with an instance of #{@options[:instance_type]}" if @options[:instance_type]
           expectation
         end
       end
