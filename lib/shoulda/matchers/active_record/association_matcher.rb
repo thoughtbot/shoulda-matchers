@@ -56,31 +56,32 @@ module Shoulda # :nodoc:
       class AssociationMatcher # :nodoc:
         def initialize(macro, name)
           @macro = macro
-          @name  = name
+          @name = name
+          @options = {}
         end
 
         def through(through)
-          @through = through
+          @options[:through] = through
           self
         end
 
         def dependent(dependent)
-          @dependent = dependent
+          @options[:dependent] = dependent
           self
         end
 
         def order(order)
-          @order = order
+          @options[:order] = order
           self
         end
 
         def conditions(conditions)
-          @conditions = conditions
+          @options[:conditions] = conditions
           self
         end
 
         def class_name(class_name)
-          @class_name = class_name
+          @options[:class_name] = class_name
           self
         end
 
@@ -107,10 +108,10 @@ module Shoulda # :nodoc:
 
         def description
           description = "#{macro_description} #{@name}"
-          description += " through #{@through}" if @through
-          description += " dependent => #{@dependent}" if @dependent
-          description += " class_name => #{@class_name}" if @class_name
-          description += " order => #{@order}" if @order
+          description += " through #{@options[:through]}"          if @options.key?(:through)
+          description += " dependent => #{@options[:dependent]}"   if @options.key?(:dependent)
+          description += " class_name => #{@options[:class_name]}" if @options.key?(:class_name)
+          description += " order => #{@options[:order]}"           if @options.key?(:order)
           description
         end
 
@@ -149,12 +150,12 @@ module Shoulda # :nodoc:
         end
 
         def through_association_valid?
-          @through.nil? || (through_association_exists? && through_association_correct?)
+          @options[:through].nil? || (through_association_exists? && through_association_correct?)
         end
 
         def through_association_exists?
           if through_reflection.nil?
-            @missing = "#{model_class.name} does not have any relationship to #{@through}"
+            @missing = "#{model_class.name} does not have any relationship to #{@options[:through]}"
             false
           else
             true
@@ -162,48 +163,60 @@ module Shoulda # :nodoc:
         end
 
         def through_association_correct?
-          if @through == reflection.options[:through]
+          if @options[:through] == reflection.options[:through]
             true
           else
-            @missing = "Expected #{model_class.name} to have #{@name} through #{@through}, " +
+            @missing = "Expected #{model_class.name} to have #{@name} through #{@options[:through]}, " +
               "but got it through #{reflection.options[:through]}"
             false
           end
         end
 
         def dependent_correct?
-          if @dependent.nil? || @dependent.to_s == reflection.options[:dependent].to_s
+          if @options[:dependent].nil? || @options[:dependent].to_s == reflection.options[:dependent].to_s
             true
           else
-            @missing = "#{@name} should have #{@dependent} dependency"
+            @missing = "#{@name} should have #{@options[:dependent]} dependency"
             false
           end
         end
 
         def class_name_correct?
-          if @class_name.nil? || @class_name.to_s == reflection.options[:class_name].to_s
-            true
+          if @options.key?(:class_name)
+            if @options[:class_name].to_s == reflection.options[:class_name].to_s
+              true
+            else
+              @missing = "#{@name} should have #{@options[:class_name]} as class_name"
+              false
+            end
           else
-            @missing = "#{@name} should have #{@class_name} as class_name"
-            false
+            true
           end
         end
 
         def order_correct?
-          if @order.nil? || @order.to_s == reflection.options[:order].to_s
-            true
+          if @options.key?(:order)
+            if @options[:order].to_s == reflection.options[:order].to_s
+              true
+            else
+              @missing = "#{@name} should be ordered by #{@options[:order]}"
+              false
+            end
           else
-            @missing = "#{@name} should be ordered by #{@order}"
-            false
+            true
           end
         end
 
         def conditions_correct?
-          if @conditions.nil? || @conditions.to_s == reflection.options[:conditions].to_s
-            true
+          if @options.key?(:conditions)
+            if @options[:conditions].to_s == reflection.options[:conditions].to_s
+              true
+            else
+              @missing = "#{@name} should have the following conditions: #{@options[:conditions]}"
+              false
+            end
           else
-            @missing = "#{@name} should have the following conditions: #{@conditions}"
-            false
+            true
           end
         end
 
@@ -265,7 +278,7 @@ module Shoulda # :nodoc:
         end
 
         def through_reflection
-          @through_reflection ||= model_class.reflect_on_association(@through)
+          @through_reflection ||= model_class.reflect_on_association(@options[:through])
         end
 
         def expectation

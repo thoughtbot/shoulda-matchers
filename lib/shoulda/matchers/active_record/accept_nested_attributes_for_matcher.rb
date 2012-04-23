@@ -24,21 +24,21 @@ module Shoulda
       class AcceptNestedAttributesForMatcher
         def initialize(name)
           @name = name
-          self
+          @options = {}
         end
 
         def allow_destroy(allow_destroy)
-          @allow_destroy = allow_destroy
+          @options[:allow_destroy] = allow_destroy
           self
         end
 
         def limit(limit)
-          @limit = limit
+          @options[:limit] = limit
           self
         end
 
         def update_only(update_only)
-          @update_only = update_only
+          @options[:update_only] = update_only
           self
         end
 
@@ -60,9 +60,9 @@ module Shoulda
 
         def description
           description = "accepts_nested_attributes_for :#{@name}"
-          description += " allow_destroy => #{@allow_destroy}" if @allow_destroy
-          description += " limit => #{@limit}" if @limit
-          description += " update_only => #{@update_only}" if @update_only
+          description += " allow_destroy => #{@options[:allow_destroy]}" if @options[:allow_destroy]
+          description += " limit => #{@options[:limit]}" if @options[:limit]
+          description += " update_only => #{@options[:update_only]}" if @options[:update_only]
           description
         end
 
@@ -78,31 +78,43 @@ module Shoulda
         end
 
         def allow_destroy_correct?
-          if @allow_destroy.nil? || @allow_destroy == config[:allow_destroy]
-            true
+          if @options.key?(:allow_destroy)
+            if @options[:allow_destroy] == config[:allow_destroy]
+              true
+            else
+              @problem = (@options[:allow_destroy] ? "should" : "should not") +
+                " allow destroy"
+              false
+            end
           else
-            @problem = (@allow_destroy ? "should" : "should not") +
-              " allow destroy"
-            false
+            true
           end
         end
 
         def limit_correct?
-          if @limit.nil? || @limit == config[:limit]
-            true
+          if @options.key?(:limit)
+            if @options[:limit] == config[:limit]
+              true
+            else
+              @problem = "limit should be #{@options[:limit]}, got #{config[:limit]}"
+              false
+            end
           else
-            @problem = "limit should be #@limit, got #{config[:limit]}"
-            false
+            true
           end
         end
 
         def update_only_correct?
-          if @update_only.nil? || @update_only == config[:update_only]
-            true
+          if @options.key?(:update_only)
+            if @options[:update_only] == config[:update_only]
+              true
+            else
+              @problem = (@options[:update_only] ? "should" : "should not") +
+                " be update only"
+              false
+            end
           else
-            @problem = (@update_only ? "should" : "should not") +
-              " be update only"
-            false
+            true
           end
         end
 
