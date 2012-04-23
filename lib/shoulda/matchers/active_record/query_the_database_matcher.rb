@@ -20,65 +20,66 @@ module Shoulda # :nodoc:
 
       class QueryTheDatabaseMatcher # :nodoc:
         def initialize(times)
+          @queries = []
+          @options = {}
+
           if times.respond_to?(:count)
-            @expected_query_count = times.count
+            @options[:expected_query_count] = times.count
           else
-            @expected_query_count = times
+            @options[:expected_query_count] = times
           end
         end
 
         def when_calling(method_name)
-          @method_name = method_name
+          @options[:method_name] = method_name
           self
         end
 
         def with(*method_arguments)
-          @method_arguments = method_arguments
+          @options[:method_arguments] = method_arguments
           self
         end
 
         def or_less
-          @expected_count_is_maximum = true
+          @options[:expected_count_is_maximum] = true
           self
         end
 
         def matches?(subject)
-          @queries = []
-
           subscriber = ActiveSupport::Notifications.subscribe('sql.active_record') do |name, started, finished, id, payload|
             @queries << payload unless filter_query(payload)
           end
 
-          if @method_arguments
-            subject.send(@method_name, *@method_arguments)
+          if @options[:method_arguments]
+            subject.send(@options[:method_name], *@options[:method_arguments])
           else
-            subject.send(@method_name)
+            subject.send(@options[:method_name])
           end
 
           ActiveSupport::Notifications.unsubscribe(subscriber)
 
-          if @expected_count_is_maximum
-            @queries.length <= @expected_query_count
-          elsif @expected_query_count.present?
-            @queries.length == @expected_query_count
+          if @options[:expected_count_is_maximum]
+            @queries.length <= @options[:expected_query_count]
+          elsif @options[:expected_query_count].present?
+            @queries.length == @options[:expected_query_count]
           else
             @queries.length > 0
           end
         end
 
         def failure_message
-          if @expected_query_count
-            "Expected ##{@method_name} to cause #{@expected_query_count} database queries but it actually caused #{@queries.length} queries:" + friendly_queries
+          if @options.key?(:expected_query_count)
+            "Expected ##{@options[:method_name]} to cause #{@options[:expected_query_count]} database queries but it actually caused #{@queries.length} queries:" + friendly_queries
           else
-            "Expected ##{@method_name} to query the database but it actually caused #{@queries.length} queries:" + friendly_queries
+            "Expected ##{@options[:method_name]} to query the database but it actually caused #{@queries.length} queries:" + friendly_queries
           end
         end
 
         def negative_failure_message
-          if @expected_query_count
-            "Expected ##{@method_name} to not cause #{@expected_query_count} database queries but it actually caused #{@queries.length} queries:" + friendly_queries
+          if @options[:expected_query_count]
+            "Expected ##{@options[:method_name]} to not cause #{@options[:expected_query_count]} database queries but it actually caused #{@queries.length} queries:" + friendly_queries
           else
-            "Expected ##{@method_name} to not query the database but it actually caused #{@queries.length} queries:" + friendly_queries
+            "Expected ##{@options[:method_name]} to not query the database but it actually caused #{@queries.length} queries:" + friendly_queries
           end
         end
 
