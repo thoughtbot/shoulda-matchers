@@ -36,47 +36,56 @@ module Shoulda # :nodoc:
       class EnsureLengthOfMatcher < ValidationMatcher # :nodoc:
         include Helpers
 
+        def initialize(attribute)
+          super(attribute)
+          @options = {}
+        end
+
         def is_at_least(length)
-          @minimum = length
+          @options[:minimum] = length
           @short_message ||= :too_short
           self
         end
 
         def is_at_most(length)
-          @maximum = length
+          @options[:maximum] = length
           @long_message ||= :too_long
           self
         end
 
         def is_equal_to(length)
-          @minimum = length
-          @maximum = length
+          @options[:minimum] = length
+          @options[:maximum] = length
           @short_message ||= :wrong_length
           self
         end
 
         def with_short_message(message)
-          @short_message = message if message
+          if message
+            @short_message = message
+          end
           self
         end
         alias_method :with_message, :with_short_message
 
         def with_long_message(message)
-          @long_message = message if message
+          if message
+            @long_message = message
+          end
           self
         end
 
         def description
           description =  "ensure #{@attribute} has a length "
-          if @minimum && @maximum
-            if @minimum == @maximum
-              description << "of exactly #{@minimum}"
+          if @options.key?(:minimum) && @options.key?(:maximum)
+            if @options[:minimum] == @options[:maximum]
+              description << "of exactly #{@options[:minimum]}"
             else
-              description << "between #{@minimum} and #{@maximum}"
+              description << "between #{@options[:minimum]} and #{@options[:maximum]}"
             end
           else
-            description << "of at least #{@minimum}" if @minimum
-            description << "of at most #{@maximum}" if @maximum
+            description << "of at least #{@options[:minimum]}" if @options[:minimum]
+            description << "of at most #{@options[:maximum]}" if @options[:maximum]
           end
           description
         end
@@ -84,11 +93,11 @@ module Shoulda # :nodoc:
         def matches?(subject)
           super(subject)
           translate_messages!
-          disallows_lower_length &&
-            allows_minimum_length &&
-            ((@minimum == @maximum) ||
-              (disallows_higher_length &&
-              allows_maximum_length))
+          disallows_lower_length? &&
+            allows_minimum_length? &&
+            ((@options[:minimum] == @options[:maximum]) ||
+              (disallows_higher_length? &&
+              allows_maximum_length?))
         end
 
         private
@@ -98,41 +107,56 @@ module Shoulda # :nodoc:
             @short_message = default_error_message(@short_message,
                                                    :model_name => @subject.class.to_s.underscore,
                                                    :attribute => @attribute,
-                                                   :count => @minimum)
+                                                   :count => @options[:minimum])
           end
 
           if Symbol === @long_message
             @long_message = default_error_message(@long_message,
                                                   :model_name => @subject.class.to_s.underscore,
                                                   :attribute => @attribute,
-                                                  :count => @maximum)
+                                                  :count => @options[:maximum])
           end
         end
 
-        def disallows_lower_length
-          @minimum == 0 ||
-            @minimum.nil? ||
-            disallows_length_of(@minimum - 1, @short_message)
+        def disallows_lower_length?
+          if @options.key?(:minimum)
+            @options[:minimum] == 0 ||
+              disallows_length_of?(@options[:minimum] - 1, @short_message)
+          else
+            true
+          end
         end
 
-        def disallows_higher_length
-          @maximum.nil? || disallows_length_of(@maximum + 1, @long_message)
+        def disallows_higher_length?
+          if @options.key?(:maximum)
+            disallows_length_of?(@options[:maximum] + 1, @long_message)
+          else
+            true
+          end
         end
 
-        def allows_minimum_length
-          allows_length_of(@minimum, @short_message)
+        def allows_minimum_length?
+          if @options.key?(:minimum)
+            allows_length_of?(@options[:minimum], @short_message)
+          else
+            true
+          end
         end
 
-        def allows_maximum_length
-          allows_length_of(@maximum, @long_message)
+        def allows_maximum_length?
+          if @options.key?(:maximum)
+            allows_length_of?(@options[:maximum], @long_message)
+          else
+            true
+          end
         end
 
-        def allows_length_of(length, message)
-          length.nil? || allows_value_of(string_of_length(length), message)
+        def allows_length_of?(length, message)
+          allows_value_of(string_of_length(length), message)
         end
 
-        def disallows_length_of(length, message)
-          length.nil? || disallows_value_of(string_of_length(length), message)
+        def disallows_length_of?(length, message)
+          disallows_value_of(string_of_length(length), message)
         end
 
         def string_of_length(length)
