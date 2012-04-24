@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
-
   context "a required attribute" do
     before do
       define_model :example, :attr => :string do
