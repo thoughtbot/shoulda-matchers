@@ -24,8 +24,8 @@ module Shoulda # :nodoc:
         end
 
         def as(role)
-          if less_than_active_model_3_1?
-            raise "You can specify role only in Rails 3.1 or greater" 
+          if active_model_less_than_3_1?
+            raise "You can specify role only in Rails 3.1 or greater"
           end
           @options[:role] = role
           self
@@ -83,7 +83,7 @@ module Shoulda # :nodoc:
         end
 
         def authorizer
-          if less_than_active_model_3_1?
+          if active_model_less_than_3_1?
             @subject.class.active_authorizer
           else
             @subject.class.active_authorizer[role]
@@ -94,8 +94,8 @@ module Shoulda # :nodoc:
           @subject.class.name
         end
 
-        def less_than_active_model_3_1?
-          ! (::ActiveModel::VERSION::MAJOR == 3 && ::ActiveModel::VERSION::MINOR >= 1)
+        def active_model_less_than_3_1?
+          ::ActiveModel::VERSION::STRING.to_f < 3.1
         end
       end
     end
