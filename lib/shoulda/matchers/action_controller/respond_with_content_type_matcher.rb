@@ -32,11 +32,7 @@ module Shoulda # :nodoc:
 
         def matches?(controller)
           @controller = controller
-          if @content_type.is_a?(Regexp)
-            response_content_type =~ @content_type
-          else
-            response_content_type == @content_type
-          end
+          content_type_matches_regexp? || content_type_matches_string?
         end
 
         def failure_message
@@ -48,6 +44,16 @@ module Shoulda # :nodoc:
         end
 
         protected
+
+        def content_type_matches_regexp?
+          if @content_type.is_a?(Regexp)
+            response_content_type =~ @content_type
+          end
+        end
+
+        def content_type_matches_string?
+          response_content_type == @content_type
+        end
 
         def response_content_type
           @controller.response.content_type.to_s
@@ -66,8 +72,7 @@ module Shoulda # :nodoc:
         end
 
         def expectation
-          "content type to be #{@content_type}, " <<
-            "but was #{response_content_type}"
+          "content type to be #{@content_type}, but was #{response_content_type}"
         end
       end
     end

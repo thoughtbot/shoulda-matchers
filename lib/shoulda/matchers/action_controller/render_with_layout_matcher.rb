@@ -16,7 +16,9 @@ module Shoulda # :nodoc:
       class RenderWithLayoutMatcher # :nodoc:
 
         def initialize(expected_layout)
-          @expected_layout = expected_layout.to_s unless expected_layout.nil?
+          unless expected_layout.nil?
+            @expected_layout = expected_layout.to_s
+          end
         end
 
         # Used to provide access to layouts recorded by
@@ -64,7 +66,7 @@ module Shoulda # :nodoc:
         end
 
         def rendered_layouts
-          if recorded_layouts
+          if recorded_layouts.size > 0
             recorded_layouts.keys.compact.map { |layout| layout.sub(%r{^layouts/}, '') }
           else
             layout = @controller.response.layout
@@ -79,6 +81,8 @@ module Shoulda # :nodoc:
         def recorded_layouts
           if @context
             @context.instance_variable_get('@layouts')
+          else
+            {}
           end
         end
 
