@@ -59,7 +59,6 @@ module Shoulda # :nodoc:
             @subject.class.reflect_on_association(@attribute)
         end
       end
-
     end
   end
 end
