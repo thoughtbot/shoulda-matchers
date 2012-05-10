@@ -22,6 +22,10 @@ module Shoulda # :nodoc:
       end
 
       class EnsureInclusionOfMatcher < ValidationMatcher # :nodoc:
+        def initialize(attribute)
+          super(attribute)
+          @options = {}
+        end
 
         def in_array(array)
           @array = array
@@ -32,6 +36,16 @@ module Shoulda # :nodoc:
           @range = range
           @minimum = range.first
           @maximum = range.last
+          self
+        end
+
+        def allow_blank(allow_blank = true)
+          @options[:allow_blank] = allow_blank
+          self
+        end
+
+        def allow_nil(allow_nil = true)
+          @options[:allow_nil] = allow_nil
           self
         end
 
@@ -69,7 +83,7 @@ module Shoulda # :nodoc:
               disallows_higher_value &&
               allows_maximum_value
           elsif @array
-            if allows_all_values_in_array?
+            if allows_all_values_in_array? && allows_blank_value? && allows_nil_value?
               true
             else
               @failure_message = "#{@array} doesn't match array in validation"
@@ -79,6 +93,22 @@ module Shoulda # :nodoc:
         end
 
         private
+
+        def allows_blank_value?
+          if @options.key?(:allow_blank)
+            @options[:allow_blank] == allows_value_of('')
+          else
+            true
+          end
+        end
+
+        def allows_nil_value?
+          if @options.key?(:allow_nil)
+            @options[:allow_nil] == allows_value_of(nil)
+          else
+            true
+          end
+        end
 
         def inspect_message
           @range.nil? ? @array.inspect : @range.inspect
