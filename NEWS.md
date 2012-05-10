@@ -4,6 +4,8 @@ HEAD
   `ensure_inclusion_of(:attr).in_array(['foo', 'bar'])`. It cannot be used with
   the `.in_range` option. (vpereira)
 
+* `ensure_in_inclusion_of` with `in_array` will accept `allow_blank(bool)` and `allow_nil(false)`
+
 * Test against Rails 3.2.
 
 * Fix `ensure_length_of` to use all possible I18n error messages.
