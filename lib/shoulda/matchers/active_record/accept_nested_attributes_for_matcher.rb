@@ -60,9 +60,15 @@ module Shoulda
 
         def description
           description = "accepts_nested_attributes_for :#{@name}"
-          description += " allow_destroy => #{@options[:allow_destroy]}" if @options[:allow_destroy]
-          description += " limit => #{@options[:limit]}" if @options[:limit]
-          description += " update_only => #{@options[:update_only]}" if @options[:update_only]
+          if @options.key?(:allow_destroy)
+            description += " allow_destroy => #{@options[:allow_destroy]}"
+          end
+          if @options.key?(:limit)
+            description += " limit => #{@options[:limit]}"
+          end
+          if @options.key?(:update_only)
+            description += " update_only => #{@options[:update_only]}"
+          end
           description
         end
 
