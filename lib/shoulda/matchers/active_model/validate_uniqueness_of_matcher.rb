@@ -68,20 +68,20 @@ module Shoulda # :nodoc:
         def matches?(subject)
           @subject = subject.class.new
           @expected_message ||= :taken
-          has_existing? &&
-            set_scoped_attributes &&
+          check_or_setup_existing
+          set_scoped_attributes &&
             validate_attribute? &&
             validate_after_scope_change?
         end
 
         private
 
-        def has_existing?
-          if @existing = @subject.class.find(:first)
-            true
-          else
-            @failure_message = "Can't find first #{class_name}"
-            false
+        def check_or_setup_existing
+          unless @existing = @subject.class.find(:first)
+            entry = @subject.class.new
+            entry.send("#{@attribute}=", "AbitraryStringToTestUniqueness")
+            entry.save(:validate => false)
+            @existing = entry
           end
         end
 

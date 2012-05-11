@@ -30,12 +30,7 @@ Matchers to test validations and mass assignments:
       it { should validate_presence_of(:body).with_message(/wtf/) }
       it { should validate_presence_of(:title) }
       it { should validate_numericality_of(:user_id) }
-
-      # validates_uniqueness_of requires an entry to be in the database already
-      it "validates uniqueness of title" do
-        Post.create!(title: "My Awesome Post", body: "whatever")
-        should validate_uniqueness_of(:title)
-      end
+      it { should validate_uniqueness_of(:title) }
     end
 
     describe User do
