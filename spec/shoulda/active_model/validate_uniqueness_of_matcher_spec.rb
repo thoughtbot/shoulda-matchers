@@ -34,14 +34,10 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
         @matcher = validate_uniqueness_of(:attr)
       end
 
-      it "should fail to require a unique value" do
-        @model.should_not @matcher
+      it "should still match properly" do
+        @model.should @matcher
       end
 
-      it "should alert the tester that an existing value is not present" do
-        @matcher.matches?(@model)
-        @matcher.negative_failure_message.should =~ /^Can't find first .*/
-      end
     end
   end
 

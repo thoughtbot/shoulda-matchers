@@ -1,5 +1,8 @@
 HEAD
 
+* `validates_uniqueness_of` will now create an entry if one does not exist
+  so the requirement to create an entry beforehand is removed
+
 * `ensure_inclusion_of` now has an `in_array` parameter:
   `ensure_inclusion_of(:attr).in_array(['foo', 'bar'])`. It cannot be used with
   the `.in_range` option. (vpereira)
