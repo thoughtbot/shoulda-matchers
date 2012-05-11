@@ -84,39 +84,26 @@ module Shoulda
         end
 
         def allow_destroy_correct?
-          if @options.key?(:allow_destroy)
-            if @options[:allow_destroy] == config[:allow_destroy]
-              true
-            else
-              @problem = (@options[:allow_destroy] ? "should" : "should not") +
-                " allow destroy"
-              false
-            end
-          else
-            true
-          end
+          failure_message = "#{should_or_should_not(@options[:allow_destroy])} allow destroy"
+          verify_option_is_correct(:allow_destroy, failure_message)
         end
 
         def limit_correct?
-          if @options.key?(:limit)
-            if @options[:limit] == config[:limit]
-              true
-            else
-              @problem = "limit should be #{@options[:limit]}, got #{config[:limit]}"
-              false
-            end
-          else
-            true
-          end
+          failure_message = "limit should be #{@options[:limit]}, got #{config[:limit]}"
+          verify_option_is_correct(:limit, failure_message)
         end
 
         def update_only_correct?
-          if @options.key?(:update_only)
-            if @options[:update_only] == config[:update_only]
+          failure_message = "#{should_or_should_not(@options[:update_only])} be update only"
+          verify_option_is_correct(:update_only, failure_message)
+        end
+
+        def verify_option_is_correct(option, failure_message)
+          if @options.key?(option)
+            if @options[option] == config[option]
               true
             else
-              @problem = (@options[:update_only] ? "should" : "should not") +
-                " be update only"
+              @problem = failure_message
               false
             end
           else
@@ -138,6 +125,14 @@ module Shoulda
 
         def expectation
           "#{model_class.name} to accept nested attributes for #{@name}"
+        end
+
+        def should_or_should_not(value)
+          if value
+            "should"
+          else
+            "should not"
+          end
         end
       end
     end
