@@ -93,11 +93,7 @@ module Shoulda # :nodoc:
         def matches?(subject)
           super(subject)
           translate_messages!
-          disallows_lower_length? &&
-            allows_minimum_length? &&
-            ((@options[:minimum] == @options[:maximum]) ||
-              (disallows_higher_length? &&
-              allows_maximum_length?))
+          lower_bound_matches? && upper_bound_matches?
         end
 
         private
@@ -116,6 +112,14 @@ module Shoulda # :nodoc:
                                                   :attribute => @attribute,
                                                   :count => @options[:maximum])
           end
+        end
+
+        def lower_bound_matches?
+          disallows_lower_length? && allows_minimum_length?
+        end
+
+        def upper_bound_matches?
+          disallows_higher_length? && allows_maximum_length?
         end
 
         def disallows_lower_length?
