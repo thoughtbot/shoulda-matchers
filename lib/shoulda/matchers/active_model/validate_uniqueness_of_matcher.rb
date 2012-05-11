@@ -68,20 +68,25 @@ module Shoulda # :nodoc:
         def matches?(subject)
           @subject = subject.class.new
           @expected_message ||= :taken
-          has_existing? &&
-            set_scoped_attributes &&
+          set_scoped_attributes &&
             validate_attribute? &&
             validate_after_scope_change?
         end
 
         private
 
-        def has_existing?
-          if @existing = @subject.class.find(:first)
-            true
-          else
-            @failure_message = "Can't find first #{class_name}"
-            false
+        def existing
+          @existing ||= first_instance
+        end
+
+        def first_instance
+          @subject.class.first || create_instance_in_database
+        end
+
+        def create_instance_in_database
+          @subject.class.new.tap do |instance|
+            instance.send("#{@attribute}=", "arbitrary_string")
+            instance.save(:validate => false)
           end
         end
 
@@ -90,7 +95,7 @@ module Shoulda # :nodoc:
             @options[:scopes].all? do |scope|
               setter = :"#{scope}="
               if @subject.respond_to?(setter)
-                @subject.send("#{scope}=", @existing.send(scope))
+                @subject.send("#{scope}=", existing.send(scope))
                 true
               else
                 @failure_message = "#{class_name} doesn't seem to have a #{scope} attribute."
@@ -114,7 +119,7 @@ module Shoulda # :nodoc:
             true
           else
             @options[:scopes].all? do |scope|
-              previous_value = @existing.send(scope)
+              previous_value = existing.send(scope)
 
               # Assume the scope is a foreign key if the field is nil
               previous_value ||= 0
@@ -144,7 +149,7 @@ module Shoulda # :nodoc:
         end
 
         def existing_value
-          value = @existing.send(@attribute)
+          value = existing.send(@attribute)
           if @options[:case_insensitive] && value.respond_to?(:swapcase!)
             value.swapcase!
           end
