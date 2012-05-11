@@ -94,10 +94,14 @@ module Shoulda # :nodoc:
           else
             @flash = @controller.flash.dup
             @flash.instance_variable_set(:@used, @controller.flash.instance_variable_get(:@used).dup)
-            if ! @options[:now]
-              @flash.sweep
-            end
+            sweep_flash_if_necessary
             @flash
+          end
+        end
+
+        def sweep_flash_if_necessary
+          unless @options[:now]
+            @flash.sweep
           end
         end
 
