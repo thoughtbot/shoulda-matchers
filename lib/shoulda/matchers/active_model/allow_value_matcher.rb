@@ -29,6 +29,7 @@ module Shoulda # :nodoc:
 
         def initialize(*values)
           @values_to_match = values
+          @options = {}
         end
 
         def for(attribute)
@@ -37,7 +38,7 @@ module Shoulda # :nodoc:
         end
 
         def with_message(message)
-          @expected_message = message
+          @options[:expected_message] = message
           self
         end
 
@@ -69,7 +70,7 @@ module Shoulda # :nodoc:
             false
           else
             if expected_message
-              errors_match_regexp? || errors_match_string?
+              @matched_error = errors_match_regexp? || errors_match_string?
             else
               errors_for_attribute.compact.any?
             end
@@ -87,13 +88,13 @@ module Shoulda # :nodoc:
 
         def errors_match_regexp?
           if Regexp === expected_message
-            @matched_error = errors_for_attribute.detect { |e| e =~ expected_message }
+            errors_for_attribute.detect { |e| e =~ expected_message }
           end
         end
 
         def errors_match_string?
           if errors_for_attribute.include?(expected_message)
-            @matched_error = expected_message
+            expected_message
           end
         end
 
@@ -119,11 +120,11 @@ module Shoulda # :nodoc:
         end
 
         def expected_message
-          if @expected_message
-            if Symbol === @expected_message
-              default_error_message(@expected_message, :model_name => model_name, :attribute => @attribute)
+          if @options.key?(:expected_message)
+            if Symbol === @options[:expected_message]
+              default_error_message(@options[:expected_message], :model_name => model_name, :attribute => @attribute)
             else
-              @expected_message
+              @options[:expected_message]
             end
           end
         end

@@ -38,11 +38,12 @@ module Shoulda # :nodoc:
         include Helpers
 
         def initialize(attribute)
-          @attribute = attribute
+          super(attribute)
+          @options = {}
         end
 
         def scoped_to(*scopes)
-          @scopes = [*scopes].flatten
+          @options[:scopes] = [*scopes].flatten
           self
         end
 
@@ -52,30 +53,30 @@ module Shoulda # :nodoc:
         end
 
         def case_insensitive
-          @case_insensitive = true
+          @options[:case_insensitive] = true
           self
         end
 
         def description
           result = "require "
-          result << "case sensitive " unless @case_insensitive
+          result << "case sensitive " unless @options[:case_insensitive]
           result << "unique value for #{@attribute}"
-          result << " scoped to #{@scopes.join(', ')}" unless @scopes.blank?
+          result << " scoped to #{@options[:scopes].join(', ')}" if @options[:scopes].present?
           result
         end
 
         def matches?(subject)
           @subject = subject.class.new
           @expected_message ||= :taken
-          find_existing &&
+          has_existing? &&
             set_scoped_attributes &&
-            validate_attribute &&
-            validate_after_scope_change
+            validate_attribute? &&
+            validate_after_scope_change?
         end
 
         private
 
-        def find_existing
+        def has_existing?
           if @existing = @subject.class.find(:first)
             true
           else
@@ -85,32 +86,34 @@ module Shoulda # :nodoc:
         end
 
         def set_scoped_attributes
-          unless @scopes.blank?
-            @scopes.each do |scope|
+          if @options[:scopes].present?
+            @options[:scopes].all? do |scope|
               setter = :"#{scope}="
-              unless @subject.respond_to?(setter)
-                @failure_message =
-                  "#{class_name} doesn't seem to have a #{scope} attribute."
-                return false
+              if @subject.respond_to?(setter)
+                @subject.send("#{scope}=", @existing.send(scope))
+                true
+              else
+                @failure_message = "#{class_name} doesn't seem to have a #{scope} attribute."
+                false
               end
-              @subject.send("#{scope}=", @existing.send(scope))
             end
+          else
+            true
           end
-          true
         end
 
-        def validate_attribute
+        def validate_attribute?
           disallows_value_of(existing_value, @expected_message)
         end
 
         # TODO:  There is a chance that we could change the scoped field
         # to a value that's already taken.  An alternative implementation
         # could actually find all values for scope and create a unique
-        def validate_after_scope_change
-          if @scopes.blank?
+        def validate_after_scope_change?
+          if @options[:scopes].blank?
             true
           else
-            @scopes.all? do |scope|
+            @options[:scopes].all? do |scope|
               previous_value = @existing.send(scope)
 
               # Assume the scope is a foreign key if the field is nil
@@ -142,11 +145,12 @@ module Shoulda # :nodoc:
 
         def existing_value
           value = @existing.send(@attribute)
-          value.swapcase! if @case_insensitive && value.respond_to?(:swapcase!)
+          if @options[:case_insensitive] && value.respond_to?(:swapcase!)
+            value.swapcase!
+          end
           value
         end
       end
-
     end
   end
 end

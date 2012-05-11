@@ -18,6 +18,10 @@ module Shoulda # :nodoc:
       end
 
       class SetTheFlashMatcher # :nodoc:
+        def initialize
+          @options = {}
+        end
+
         attr_reader :failure_message, :negative_failure_message
 
         def to(value)
@@ -26,12 +30,12 @@ module Shoulda # :nodoc:
         end
 
         def now
-          @now = true
+          @options[:now] = true
           self
         end
 
         def [](key)
-          @key = key
+          @options[:key] = key
           self
         end
 
@@ -77,8 +81,8 @@ module Shoulda # :nodoc:
         end
 
         def flash_values
-          if @key
-            [flash.to_hash[@key]]
+          if @options.key?(:key)
+            [flash.to_hash[@options[:key]]]
           else
             flash.to_hash.values
           end
@@ -90,10 +94,14 @@ module Shoulda # :nodoc:
           else
             @flash = @controller.flash.dup
             @flash.instance_variable_set(:@used, @controller.flash.instance_variable_get(:@used).dup)
-            if ! @now
-              @flash.sweep
-            end
+            sweep_flash_if_necessary
             @flash
+          end
+        end
+
+        def sweep_flash_if_necessary
+          unless @options[:now]
+            @flash.sweep
           end
         end
 
@@ -113,18 +121,23 @@ module Shoulda # :nodoc:
         end
 
         def expected_flash_invocation
-          now = ""
-          key = ""
+          "flash#{pretty_now}#{pretty_key}"
+        end
 
-          if @now
-            now = ".now"
+        def pretty_now
+          if @options[:now]
+            ".now"
+          else
+            ""
           end
+        end
 
-          if @key
-            key = "[:#{@key}]"
+        def pretty_key
+          if @options[:key]
+            "[:#{@key}]"
+          else
+            ""
           end
-
-          "flash#{now}#{key}"
         end
       end
     end

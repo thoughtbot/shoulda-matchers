@@ -22,20 +22,20 @@ module Shoulda # :nodoc:
       class HaveDbColumnMatcher # :nodoc:
         def initialize(column)
           @column = column
+          @options = {}
         end
 
         def of_type(column_type)
-          @column_type = column_type
+          @options[:column_type] = column_type
           self
         end
 
         def with_options(opts = {})
-          @precision = opts[:precision]
-          @limit     = opts[:limit]
-          @default   = opts[:default]
-          @null      = opts[:null]
-          @scale     = opts[:scale]
-          @primary   = opts[:primary]
+          %w(precision limit default null scale primary).each do |attribute|
+            if opts.key?(attribute.to_sym)
+              @options[attribute.to_sym] = opts[attribute.to_sym]
+            end
+          end
           self
         end
 
@@ -61,13 +61,13 @@ module Shoulda # :nodoc:
 
         def description
           desc = "have db column named #{@column}"
-          desc << " of type #{@column_type}"    unless @column_type.nil?
-          desc << " of precision #{@precision}" unless @precision.nil?
-          desc << " of limit #{@limit}"         unless @limit.nil?
-          desc << " of default #{@default}"     unless @default.nil?
-          desc << " of null #{@null}"           unless @null.nil?
-          desc << " of primary #{@primary}"     unless @primary.nil?
-          desc << " of scale #{@scale}"         unless @scale.nil?
+          desc << " of type #{@options[:column_type]}"    if @options.key?(:column_type)
+          desc << " of precision #{@options[:precision]}" if @options.key?(:precision)
+          desc << " of limit #{@options[:limit]}"         if @options.key?(:limit)
+          desc << " of default #{@options[:default]}"     if @options.key?(:default)
+          desc << " of null #{@options[:null]}"           if @options.key?(:null)
+          desc << " of primary #{@options[:primary]}"     if @options.key?(:primary)
+          desc << " of scale #{@options[:scale]}"         if @options.key?(:scale)
           desc
         end
 
@@ -83,82 +83,89 @@ module Shoulda # :nodoc:
         end
 
         def correct_column_type?
-          return true if @column_type.nil?
-          if matched_column.type.to_s == @column_type.to_s
+          return true unless @options.key?(:column_type)
+
+          if matched_column.type.to_s == @options[:column_type].to_s
             true
           else
             @missing = "#{model_class} has a db column named #{@column} " <<
-                       "of type #{matched_column.type}, not #{@column_type}."
+                       "of type #{matched_column.type}, not #{@options[:column_type]}."
             false
           end
         end
 
         def correct_precision?
-          return true if @precision.nil?
-          if matched_column.precision.to_s == @precision.to_s
+          return true unless @options.key?(:precision)
+
+          if matched_column.precision.to_s == @options[:precision].to_s
             true
           else
             @missing = "#{model_class} has a db column named #{@column} " <<
                        "of precision #{matched_column.precision}, " <<
-                       "not #{@precision}."
+                       "not #{@options[:precision]}."
             false
           end
         end
 
         def correct_limit?
-          return true if @limit.nil?
-          if matched_column.limit.to_s == @limit.to_s
+          return true unless @options.key?(:limit)
+
+          if matched_column.limit.to_s == @options[:limit].to_s
             true
           else
             @missing = "#{model_class} has a db column named #{@column} " <<
                        "of limit #{matched_column.limit}, " <<
-                       "not #{@limit}."
+                       "not #{@options[:limit]}."
             false
           end
         end
 
         def correct_default?
-          return true if @default.nil?
-          if matched_column.default.to_s == @default.to_s
+          return true unless @options.key?(:default)
+
+          if matched_column.default.to_s == @options[:default].to_s
             true
           else
             @missing = "#{model_class} has a db column named #{@column} " <<
                        "of default #{matched_column.default}, " <<
-                       "not #{@default}."
+                       "not #{@options[:default]}."
             false
           end
         end
 
         def correct_null?
-          return true if @null.nil?
-          if matched_column.null.to_s == @null.to_s
+          return true unless @options.key?(:null)
+
+          if matched_column.null.to_s == @options[:null].to_s
             true
           else
             @missing = "#{model_class} has a db column named #{@column} " <<
                        "of null #{matched_column.null}, " <<
-                       "not #{@null}."
+                       "not #{@options[:null]}."
             false
           end
         end
 
         def correct_scale?
-          return true if @scale.nil?
-          if matched_column.scale.to_s == @scale.to_s
+          return true unless @options.key?(:scale)
+
+          if matched_column.scale.to_s == @options[:scale].to_s
             true
           else
             @missing = "#{model_class} has a db column named #{@column} " <<
-                       "of scale #{matched_column.scale}, not #{@scale}."
+                       "of scale #{matched_column.scale}, not #{@options[:scale]}."
             false
           end
         end
 
         def correct_primary?
-          return true if @primary.nil?
-          if matched_column.primary == @primary
+          return true unless @options.key?(:primary)
+
+          if matched_column.primary == @options[:primary]
             true
           else
             @missing = "#{model_class} has a db column named #{@column} "
-            if @primary
+            if @options[:primary]
               @missing << "that is not primary, but should be"
             else
               @missing << "that is primary, but should not be"

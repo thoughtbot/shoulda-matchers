@@ -20,7 +20,9 @@ module Shoulda # :nodoc:
       class ValidateAcceptanceOfMatcher < ValidationMatcher # :nodoc:
 
         def with_message(message)
-          @expected_message = message if message
+          if message
+            @expected_message = message
+          end
           self
         end
 
@@ -33,9 +35,7 @@ module Shoulda # :nodoc:
         def description
           "require #{@attribute} to be accepted"
         end
-
       end
-
     end
   end
 end

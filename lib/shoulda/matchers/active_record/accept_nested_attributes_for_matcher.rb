@@ -24,21 +24,21 @@ module Shoulda
       class AcceptNestedAttributesForMatcher
         def initialize(name)
           @name = name
-          self
+          @options = {}
         end
 
         def allow_destroy(allow_destroy)
-          @allow_destroy = allow_destroy
+          @options[:allow_destroy] = allow_destroy
           self
         end
 
         def limit(limit)
-          @limit = limit
+          @options[:limit] = limit
           self
         end
 
         def update_only(update_only)
-          @update_only = update_only
+          @options[:update_only] = update_only
           self
         end
 
@@ -60,9 +60,15 @@ module Shoulda
 
         def description
           description = "accepts_nested_attributes_for :#{@name}"
-          description += " allow_destroy => #{@allow_destroy}" if @allow_destroy
-          description += " limit => #{@limit}" if @limit
-          description += " update_only => #{@update_only}" if @update_only
+          if @options.key?(:allow_destroy)
+            description += " allow_destroy => #{@options[:allow_destroy]}"
+          end
+          if @options.key?(:limit)
+            description += " limit => #{@options[:limit]}"
+          end
+          if @options.key?(:update_only)
+            description += " update_only => #{@options[:update_only]}"
+          end
           description
         end
 
@@ -78,31 +84,30 @@ module Shoulda
         end
 
         def allow_destroy_correct?
-          if @allow_destroy.nil? || @allow_destroy == config[:allow_destroy]
-            true
-          else
-            @problem = (@allow_destroy ? "should" : "should not") +
-              " allow destroy"
-            false
-          end
+          failure_message = "#{should_or_should_not(@options[:allow_destroy])} allow destroy"
+          verify_option_is_correct(:allow_destroy, failure_message)
         end
 
         def limit_correct?
-          if @limit.nil? || @limit == config[:limit]
-            true
-          else
-            @problem = "limit should be #@limit, got #{config[:limit]}"
-            false
-          end
+          failure_message = "limit should be #{@options[:limit]}, got #{config[:limit]}"
+          verify_option_is_correct(:limit, failure_message)
         end
 
         def update_only_correct?
-          if @update_only.nil? || @update_only == config[:update_only]
-            true
+          failure_message = "#{should_or_should_not(@options[:update_only])} be update only"
+          verify_option_is_correct(:update_only, failure_message)
+        end
+
+        def verify_option_is_correct(option, failure_message)
+          if @options.key?(option)
+            if @options[option] == config[option]
+              true
+            else
+              @problem = failure_message
+              false
+            end
           else
-            @problem = (@update_only ? "should" : "should not") +
-              " be update only"
-            false
+            true
           end
         end
 
@@ -120,6 +125,14 @@ module Shoulda
 
         def expectation
           "#{model_class.name} to accept nested attributes for #{@name}"
+        end
+
+        def should_or_should_not(value)
+          if value
+            "should"
+          else
+            "should not"
+          end
         end
       end
     end

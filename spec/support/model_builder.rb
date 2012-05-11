@@ -31,8 +31,16 @@ module ModelBuilder
   def define_class(class_name, base = Object, &block)
     class_name = class_name.to_s.camelize
 
-    Class.new(base).tap do |constant_class|
-      Object.const_set(class_name, constant_class)
+    # FIXME: ActionMailer 3.2 calls `name.underscore` immediately upon
+    # subclassing. Class.new.name == nil. So, Class.new(ActionMailer::Base)
+    # errors out since it's trying to do `nil.underscore`. This is very ugly but
+    # allows us to test against ActionMailer 3.2.x.
+    eval <<-A_REAL_CLASS_FOR_ACTION_MAILER_3_2
+    class ::#{class_name} < #{base}
+    end
+    A_REAL_CLASS_FOR_ACTION_MAILER_3_2
+
+    Object.const_get(class_name).tap do |constant_class|
       constant_class.unloadable
 
       if block_given?

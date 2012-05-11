@@ -38,8 +38,6 @@ module Shoulda # :nodoc:
         def matches?(subject)
           super(subject)
 
-          @expected_message ||= :exclusion
-
           allows_lower_value &&
             disallows_minimum_value &&
             allows_higher_value &&
@@ -49,19 +47,23 @@ module Shoulda # :nodoc:
         private
 
         def allows_lower_value
-          @minimum == 0 || allows_value_of(@minimum - 1, @expected_message)
+          @minimum == 0 || allows_value_of(@minimum - 1, expected_message)
         end
 
         def allows_higher_value
-          allows_value_of(@maximum + 1, @expected_message)
+          allows_value_of(@maximum + 1, expected_message)
         end
 
         def disallows_minimum_value
-          disallows_value_of(@minimum, @expected_message)
+          disallows_value_of(@minimum, expected_message)
         end
 
         def disallows_maximum_value
-          disallows_value_of(@maximum, @expected_message)
+          disallows_value_of(@maximum, expected_message)
+        end
+
+        def expected_message
+          @expected_message || :exclusion
         end
       end
 

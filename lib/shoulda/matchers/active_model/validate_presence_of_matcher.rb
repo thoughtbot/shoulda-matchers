@@ -47,15 +47,18 @@ module Shoulda # :nodoc:
         end
 
         def collection?
-          if @subject.class.respond_to?(:reflect_on_association) &&
-              reflection = @subject.class.reflect_on_association(@attribute)
+          if reflection
             [:has_many, :has_and_belongs_to_many].include?(reflection.macro)
           else
             false
           end
         end
-      end
 
+        def reflection
+          @subject.class.respond_to?(:reflect_on_association) &&
+            @subject.class.reflect_on_association(@attribute)
+        end
+      end
     end
   end
 end

@@ -24,30 +24,35 @@ module Shoulda # :nodoc:
 
         def initialize(variable)
           @variable    = variable.to_s
-          @check_value = false
+          @options = {}
+          @options[:check_value] = false
         end
 
         def with_kind_of(expected_class)
-          @expected_class = expected_class
+          @options[:expected_class] = expected_class
           self
         end
 
         def with(expected_value = nil, &block)
-          @check_value       = true
-          @expected_value    = expected_value
-          @expectation_block = block
+          @options[:check_value] = true
+          @options[:expected_value] = expected_value
+          @options[:expectation_block] = block
           self
         end
 
         def matches?(controller)
           @controller = controller
-          @expected_value = @context.instance_eval(&@expectation_block) if @expectation_block
-          assigned_value? && kind_of_expected_class? && equal_to_expected_value?
+          normalize_expected_value!
+          assigned_value? &&
+            kind_of_expected_class? &&
+            equal_to_expected_value?
         end
 
         def description
           description = "assign @#{@variable}"
-          description << " with a kind of #{@expected_class}" if @expected_class
+          if @options.key?(:expected_class)
+            description << " with a kind of #{@options[:expected_class]}"
+          end
           description
         end
 
@@ -72,33 +77,45 @@ module Shoulda # :nodoc:
         end
 
         def kind_of_expected_class?
-          return true unless @expected_class
-          if assigned_value.kind_of?(@expected_class)
-            @negative_failure_message =
-              "Didn't expect action to assign a kind of #{@expected_class} " <<
-              "for #{@variable}, but got one anyway"
-            true
+          if @options.key?(:expected_class)
+            if assigned_value.kind_of?(@options[:expected_class])
+              @negative_failure_message =
+                "Didn't expect action to assign a kind of #{@options[:expected_class]} " <<
+                "for #{@variable}, but got one anyway"
+              true
+            else
+              @failure_message =
+                "Expected action to assign a kind of #{@options[:expected_class]} " <<
+                "for #{@variable}, but got #{assigned_value.inspect} " <<
+                "(#{assigned_value.class.name})"
+              false
+            end
           else
-            @failure_message =
-              "Expected action to assign a kind of #{@expected_class} " <<
-              "for #{@variable}, but got #{assigned_value.inspect} " <<
-              "(#{assigned_value.class.name})"
-            false
+            true
           end
         end
 
         def equal_to_expected_value?
-          return true unless @check_value
-          if @expected_value == assigned_value
-            @negative_failure_message =
-              "Didn't expect action to assign #{@expected_value.inspect} " <<
-              "for #{@variable}, but got it anyway"
-            true
+          if @options[:check_value]
+            if @options[:expected_value] == assigned_value
+              @negative_failure_message =
+                "Didn't expect action to assign #{@options[:expected_value].inspect} " <<
+                "for #{@variable}, but got it anyway"
+              true
+            else
+              @failure_message =
+                "Expected action to assign #{@options[:expected_value].inspect} " <<
+                "for #{@variable}, but got #{assigned_value.inspect}"
+              false
+            end
           else
-            @failure_message =
-              "Expected action to assign #{@expected_value.inspect} " <<
-              "for #{@variable}, but got #{assigned_value.inspect}"
-            false
+            true
+          end
+        end
+
+        def normalize_expected_value!
+          if @options[:expectation_block]
+            @options[:expected_value] = @context.instance_eval(&@options[:expectation_block])
           end
         end
 

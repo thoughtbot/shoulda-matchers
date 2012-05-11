@@ -9,8 +9,7 @@ module Shoulda # :nodoc:
       # * <tt>unique</tt> - whether or not the index has a unique
       #   constraint. Use <tt>true</tt> to explicitly test for a unique
       #   constraint.  Use <tt>false</tt> to explicitly test for a non-unique
-      #   constraint. Use <tt>nil</tt> if you don't care whether the index is
-      #   unique or not.  Default = <tt>nil</tt>
+      #   constraint.
       #
       # Examples:
       #
@@ -25,10 +24,11 @@ module Shoulda # :nodoc:
       class HaveDbIndexMatcher # :nodoc:
         def initialize(columns)
           @columns = normalize_columns_to_array(columns)
+          @options = {}
         end
 
         def unique(unique)
-          @unique = unique
+          @options[:unique] = unique
           self
         end
 
@@ -46,7 +46,11 @@ module Shoulda # :nodoc:
         end
 
         def description
-          "have a #{index_type} index on columns #{@columns.join(' and ')}"
+          if @options.key?(:unique)
+            "have a #{index_type} index on columns #{@columns.join(' and ')}"
+          else
+            "have an index on columns #{@columns.join(' and ')}"
+          end
         end
 
         protected
@@ -56,12 +60,13 @@ module Shoulda # :nodoc:
         end
 
         def correct_unique?
-          return true if @unique.nil?
-          if !!matched_index.unique == @unique
+          return true unless @options.key?(:unique)
+
+          if matched_index.unique == @options[:unique]
             true
           else
             @missing = "#{table_name} has an index named #{matched_index.name} " <<
-                       "of unique #{!!matched_index.unique}, not #{@unique}."
+                       "of unique #{matched_index.unique}, not #{@options[:unique]}."
             false
           end
         end
@@ -87,13 +92,10 @@ module Shoulda # :nodoc:
         end
 
         def index_type
-          case @unique
-          when nil
-            ''
-          when false
-            'non-unique'
-          else
+          if @options[:unique]
             'unique'
+          else
+            'non-unique'
           end
         end
 

@@ -8,6 +8,10 @@ HEAD
 
 * Fix `ensure_length_of` to use all possible I18n error messages.
 
+* `have_db_index.unique(nil)` used to function exactly the same as
+  `have_db_index` with no unique option. It now functions the same as
+  `have_db_index.unique(false)`.
+
 # v1.1.0
 
 * Added `only_integer` option to `validate_numericality_of`:
