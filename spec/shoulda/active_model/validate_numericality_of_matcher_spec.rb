@@ -49,7 +49,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
     end
   end
 
-  [:greater_than, :less_than, :greater_than_or_equal_to, :less_than_or_equal_to, :equal_to].each do |parameter|
+  all_possible_validate_numericality_of_methods.each do |parameter|
     context "a numeric attribute with a '#{parameter.to_s}' parameter" do
       before do
         define_model(:example, :attr => :integer) do
@@ -92,15 +92,15 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
   end
 
   context "description tests" do
-    [:greater_than, :greater_than_or_equal_to, :equal_to, :less_than, :less_than_or_equal_to].each do |parameter|
+    all_possible_validate_numericality_of_methods.each do |parameter|
       it "should return the correct description when the #{parameter} validation fails" do
         validate_numericality_of(:attr).send(parameter, 0).description.should == "allow numeric values #{parameter} 0 for attr"
       end
     end
 
-    [:greater_than, :greater_than_or_equal_to].product([:less_than_or_equal_to, :less_than]).each do |parameters|
-      it "should return the correct description when the #{parameters.join(", ")} validations fails" do
-        validate_numericality_of(:attr).send(parameters.first, 0).send(parameters.last, 10).description.should == "allow numeric values #{parameters.first} 0, #{parameters.last} 10 for attr"
+    all_possible_combinations_of_greater_than_or_less_than_methods.each do |parameter_with_greater, parameter_with_less|
+      it "should return the correct description when the #{parameter_with_greater}, #{parameter_with_less} validations fails" do
+        validate_numericality_of(:attr).send(parameter_with_greater, 0).send(parameter_with_less, 10).description.should == "allow numeric values #{parameter_with_greater} 0, #{parameter_with_less} 10 for attr"
       end
     end
   end
