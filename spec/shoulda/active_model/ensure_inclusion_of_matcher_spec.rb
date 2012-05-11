@@ -89,5 +89,35 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     it "has correct description" do
       ensure_inclusion_of(:attr).in_array([true, 'dog']).description.should == 'ensure inclusion of attr in [true, "dog"]'
     end
+
+    it "rejects allow_blank" do
+      @model.should_not ensure_inclusion_of(:attr).in_array(['one', 'two']).allow_blank(true)
+      @model.should ensure_inclusion_of(:attr).in_array(['one', 'two']).allow_blank(false)
+    end
+
+    it "rejects allow_nil" do
+      @model.should_not ensure_inclusion_of(:attr).in_array(['one', 'two']).allow_nil(true)
+      @model.should ensure_inclusion_of(:attr).in_array(['one', 'two']).allow_nil(false)
+    end
+  end
+
+  context "allowed blank and allowed nil" do
+    before do
+      @model = define_model(:example, :attr => :string) do
+          validates_inclusion_of :attr, :in => %w(one two), :allow_blank => true, :allow_nil => true
+      end.new
+    end
+
+    it "allows allow_blank" do
+      @model.should ensure_inclusion_of(:attr).in_array(['one', 'two']).allow_blank(true)
+      @model.should ensure_inclusion_of(:attr).in_array(['one', 'two']).allow_blank()
+      @model.should_not ensure_inclusion_of(:attr).in_array(['one', 'two']).allow_blank(false)
+    end
+
+    it "allows allow_nil" do
+      @model.should ensure_inclusion_of(:attr).in_array(['one', 'two']).allow_nil(true)
+      @model.should ensure_inclusion_of(:attr).in_array(['one', 'two']).allow_nil()
+      @model.should_not ensure_inclusion_of(:attr).in_array(['one', 'two']).allow_nil(false)
+    end
   end
 end
