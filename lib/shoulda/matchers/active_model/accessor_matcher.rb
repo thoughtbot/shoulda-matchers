@@ -1,6 +1,15 @@
-module Shoulda
+module Shoulda # :nodoc:
   module Matchers
-    module ActiveModel
+    module ActiveModel # :nodoc:
+
+      # Ensures that the attribute defined through an attr_*
+      # class method has the appropriate generated methods
+      #
+      # Example:
+      #   it { should have_accessor(:field) }
+      #   it { should have_reader(:field) }
+      #   it { should have_writer(:field) }
+      #
 
       def have_accessor(attribute)
         have_methods(:accessor, attribute)
@@ -22,7 +31,7 @@ module Shoulda
         end
       end
 
-      class AccessorMatcher
+      class AccessorMatcher # :nodoc:
         attr_reader :failure_message
 
         def initialize(macro, attribute)
