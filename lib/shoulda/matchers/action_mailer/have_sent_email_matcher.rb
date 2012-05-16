@@ -101,7 +101,7 @@ module Shoulda # :nodoc:
 
         def matches?(subject)
           normalize_blocks
-          ::ActionMailer::Base.deliveries.all? do |mail|
+          ::ActionMailer::Base.deliveries.any? do |mail|
             mail_matches?(mail)
           end
         end

@@ -272,6 +272,46 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
     end
   end
 
+  context "testing multiple email deliveries at once" do
+    let(:info1) do
+      {
+        :from => "do-not-reply@example.com",
+        :to => "one@me.com",
+        :subject => "subject",
+        :body => "body"
+      }
+    end
+
+    let(:info2) do
+      {
+        :from => "do-not-reply@example.com",
+        :to => "two@me.com",
+        :subject => "subject",
+        :body => "body"
+      }
+    end
+
+    before do
+      define_mailer(:mailer, [:the_email]) do
+        def the_email(params)
+          mail params
+        end
+      end
+      add_mail_to_deliveries(info1)
+      add_mail_to_deliveries(info2)
+    end
+
+    after { ::ActionMailer::Base.deliveries.clear }
+
+    it "should send an e-mail based on recipient 1" do
+      should have_sent_email.to("one@me.com")
+    end
+
+    it "should send an e-mail based on recipient 2" do
+      should have_sent_email.to("two@me.com")
+    end
+  end
+
   it "provides a detailed description of the e-mail expected to be sent" do
     matcher = have_sent_email
     matcher.description.should == 'send an email'
