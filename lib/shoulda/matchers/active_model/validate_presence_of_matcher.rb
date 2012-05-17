@@ -1,7 +1,6 @@
 module Shoulda # :nodoc:
   module Matchers
     module ActiveModel # :nodoc:
-
       # Ensures that the model is not valid if the given attribute is not
       # present.
       #
@@ -19,44 +18,50 @@ module Shoulda # :nodoc:
         ValidatePresenceOfMatcher.new(attr)
       end
 
-      class ValidatePresenceOfMatcher < ValidationMatcher # :nodoc:
-
+      class ValidatePresenceOfMatcher < CompositeMatcher # :nodoc:
         def with_message(message)
-          @expected_message = message if message
-          self
+          add_matcher WithMessageMatcher.new(@attribute, message)
         end
 
         def matches?(subject)
-          super(subject)
-          @expected_message ||= :blank
-          disallows_value_of(blank_value, @expected_message)
+          @subject = subject
+          blank_value = BlankValue.new(subject, @attribute).value
+          disallows_value_of(blank_value) && super
         end
 
         def description
-          "require #{@attribute} to be set"
+          my_description = "require #{@attribute} to be set"
+          sub_descriptions = sub_matcher_descriptions
+          (sub_description + mydescriptions).join(" ")
+        end
+      end
+
+      class WithMessageMatcher
+        include Helpers
+
+        def initialize(attribute, bad_value, message)
+          @attribute = attribute
+          @bad_value = bad_value
+          @expected_message = message
+        end
+
+        def matches?(subject)
+          @subject = subject
+          subject.send("#{@attribute}=", @bad_value)
+          subject.valid?
+          error_messages.any? do |error_message|
+            @expected_message.match(error_message).present?
+          end
+        end
+
+        def failure_message
+          "Expected #{@expected_message} got #{pretty_error_messages(@subject)}"
         end
 
         private
 
-        def blank_value
-          if collection?
-            []
-          else
-            nil
-          end
-        end
-
-        def collection?
-          if reflection
-            [:has_many, :has_and_belongs_to_many].include?(reflection.macro)
-          else
-            false
-          end
-        end
-
-        def reflection
-          @subject.class.respond_to?(:reflect_on_association) &&
-            @subject.class.reflect_on_association(@attribute)
+        def error_messages
+          @subject.errors[@attribute]
         end
       end
     end

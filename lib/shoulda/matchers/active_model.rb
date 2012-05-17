@@ -1,5 +1,7 @@
 require 'shoulda/matchers/active_model/helpers'
+require 'shoulda/matchers/active_model/blank_value'
 require 'shoulda/matchers/active_model/validation_matcher'
+require 'shoulda/matchers/active_model/composite_matcher'
 require 'shoulda/matchers/active_model/allow_value_matcher'
 require 'shoulda/matchers/active_model/ensure_length_of_matcher'
 require 'shoulda/matchers/active_model/ensure_inclusion_of_matcher'
