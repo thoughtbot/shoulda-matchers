@@ -1,6 +1,10 @@
 # Create Rails environment based on the version given from Appraisal
 TESTAPP_ROOT = File.join(File.dirname(__FILE__), '..', 'tmp', 'aruba', 'testapp')
-FileUtils.rm_rf(TESTAPP_ROOT) if File.exists?(TESTAPP_ROOT)
+if File.exists?(TESTAPP_ROOT)
+  FileUtils.rm_rf(TESTAPP_ROOT)
+else
+  FileUtils.mkdir_p(File.dirname(TESTAPP_ROOT))
+end
 `rails new #{TESTAPP_ROOT}`
 
 ENV['RAILS_ENV'] = 'test'

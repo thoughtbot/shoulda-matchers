@@ -3,8 +3,8 @@ module Shoulda # :nodoc:
     module ActiveModel # :nodoc:
       class CompositeMatcher < ValidationMatcher
         def initialize(attribute)
-          @sub_matchers = []
           super
+          @sub_matchers = []
         end
 
         def add_matcher(matcher)
@@ -19,6 +19,8 @@ module Shoulda # :nodoc:
         def description
           "No description"
         end
+
+        private
 
         def sub_matchers_match?(subject)
           if @sub_matchers.empty?
