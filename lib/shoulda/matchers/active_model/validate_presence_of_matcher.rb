@@ -20,48 +20,19 @@ module Shoulda # :nodoc:
 
       class ValidatePresenceOfMatcher < CompositeMatcher # :nodoc:
         def with_message(message)
-          add_matcher WithMessageMatcher.new(@attribute, message)
+          add_matcher WithMessageMatcher.new(@attribute, nil, message)
         end
 
         def matches?(subject)
           @subject = subject
           blank_value = BlankValue.new(subject, @attribute).value
-          disallows_value_of(blank_value) && super
+          disallows_value_of(blank_value, nil) && super
         end
 
         def description
           my_description = "require #{@attribute} to be set"
           sub_descriptions = sub_matcher_descriptions
           (sub_description + mydescriptions).join(" ")
-        end
-      end
-
-      class WithMessageMatcher
-        include Helpers
-
-        def initialize(attribute, bad_value, message)
-          @attribute = attribute
-          @bad_value = bad_value
-          @expected_message = message
-        end
-
-        def matches?(subject)
-          @subject = subject
-          subject.send("#{@attribute}=", @bad_value)
-          subject.valid?
-          error_messages.any? do |error_message|
-            @expected_message.match(error_message).present?
-          end
-        end
-
-        def failure_message
-          "Expected #{@expected_message} got #{pretty_error_messages(@subject)}"
-        end
-
-        private
-
-        def error_messages
-          @subject.errors[@attribute]
         end
       end
     end
