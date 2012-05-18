@@ -15,6 +15,19 @@ describe Shoulda::Matchers::ActiveModel::WithMessageMatcher do
       matcher.matches?(model).should be_true
     end
 
+    it 'matches when the error message is nil' do
+      attribute = :age
+      non_numeric_value = 'a string'
+      expected_message = nil
+
+      model = define_active_model_class(:example, :accessors => [attribute]) do
+        validates attribute, :numericality => { :message => expected_message }
+      end.new
+
+      matcher = WithMessageMatcher.new(attribute, non_numeric_value, expected_message)
+      matcher.matches?(model).should be_true
+    end
+
     it 'does not match when the error message does not match' do
       attribute = :age
       non_numeric_value = 'a string'
