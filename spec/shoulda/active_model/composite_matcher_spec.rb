@@ -37,4 +37,15 @@ describe Shoulda::Matchers::ActiveModel::CompositeMatcher do
       composite_matcher.matches?(subject).should be_false
     end
   end
+
+  context '#sub_matcher_descriptions' do
+    it 'is all of the sub matcher descriptions combined' do
+      one = stub('first matcher', :description => 'one')
+      two = stub('second matcher', :description => 'two')
+      composite_matcher = CompositeMatcher.new(:attribute)
+      composite_matcher.add_matcher(one)
+      composite_matcher.add_matcher(two)
+      composite_matcher.sub_matcher_descriptions.should == 'one, two'
+    end
+  end
 end

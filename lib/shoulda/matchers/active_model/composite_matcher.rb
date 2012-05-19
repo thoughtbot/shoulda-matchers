@@ -20,6 +20,10 @@ module Shoulda # :nodoc:
           "No description"
         end
 
+        def sub_matcher_descriptions
+          @sub_matchers.map(&:description).join(', ')
+        end
+
         private
 
         def sub_matchers_match?(subject)
@@ -28,10 +32,6 @@ module Shoulda # :nodoc:
           else
             @sub_matchers.all? { |matcher| matcher.matches?(subject) }
           end
-        end
-
-        def sub_matcher_descriptions
-          @sub_matchers.map(&:description)
         end
       end
     end

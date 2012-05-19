@@ -24,20 +24,25 @@ module Shoulda # :nodoc:
         end
 
         def with_message(message)
-          @composite.add_matcher WithMessageMatcher.new(@attribute, nil, message)
+          @composite.add_matcher WithMessageMatcher.new(@attribute, bad_value, message)
         end
 
         def matches?(subject)
           @subject = subject
           blank_value = BlankValue.new(subject, @attribute).value
-          @composite.disallows_value_of(blank_value, nil) &&
+          @composite.disallows_value_of(blank_value) &&
             @composite.matches?
         end
 
         def description
           my_description = "require #{@attribute} to be set"
-          sub_descriptions = @composite.sub_matcher_descriptions
           (@composite.sub_matcher_descriptions + my_description).join(" ")
+        end
+
+        private
+
+        def bad_value
+          nil
         end
       end
     end
