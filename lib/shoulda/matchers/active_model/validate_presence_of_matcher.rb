@@ -18,21 +18,32 @@ module Shoulda # :nodoc:
         ValidatePresenceOfMatcher.new(attr)
       end
 
-      class ValidatePresenceOfMatcher < CompositeMatcher # :nodoc:
+      class ValidatePresenceOfMatcher # :nodoc:
+        def initialize(attribute)
+          @attribute = attribute
+          @submatchers = CompositeMatcher.new
+        end
+
         def with_message(message)
-          add_matcher WithMessageMatcher.new(@attribute, nil, message)
+          @submatchers.add_matcher WithMessageMatcher.new(@attribute, nil, message)
         end
 
         def matches?(subject)
-          @subject = subject
           blank_value = BlankValue.new(subject, @attribute).value
-          disallows_value_of(blank_value, nil) && super
+          @submatchers.add_matcher DisallowValueMatcher.new(blank_value).for(@attribute)
+          @submatchers.matches?(subject)
         end
 
         def description
-          my_description = "require #{@attribute} to be set"
-          sub_descriptions = sub_matcher_descriptions
-          (sub_description + mydescriptions).join(" ")
+          @submatchers.descriptions
+        end
+
+        def failure_message
+          @submatchers.failure_message
+        end
+
+        def negative_failure_message
+          @submatchers.negative_failure_message
         end
       end
     end

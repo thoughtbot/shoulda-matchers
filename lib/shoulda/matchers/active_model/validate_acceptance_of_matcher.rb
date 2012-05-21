@@ -17,7 +17,7 @@ module Shoulda # :nodoc:
         ValidateAcceptanceOfMatcher.new(attr)
       end
 
-      class ValidateAcceptanceOfMatcher < CompositeMatcher # :nodoc:
+      class ValidateAcceptanceOfMatcher < ValidationMatcher # :nodoc:
 
         def with_message(message)
           if message

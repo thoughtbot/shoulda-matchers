@@ -34,7 +34,11 @@ module Shoulda # :nodoc:
         end
 
         def message_matches_or_nil?
-         @expected_message.nil? || message_matches?
+          if @expected_message.nil?
+            ActiveSupport::Deprecation.warn 'Using with_message with a nil parameter is being deprecated.  Please do not use with_message if you do not wish to check for a specific message.', caller
+            return true
+          end
+          message_matches?
         end
       end
     end

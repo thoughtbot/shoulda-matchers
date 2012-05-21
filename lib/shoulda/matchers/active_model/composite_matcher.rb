@@ -1,9 +1,8 @@
 module Shoulda # :nodoc:
   module Matchers
     module ActiveModel # :nodoc:
-      class CompositeMatcher < ValidationMatcher
-        def initialize(attribute)
-          super
+      class CompositeMatcher
+        def initialize
           @sub_matchers = []
         end
 
@@ -17,7 +16,15 @@ module Shoulda # :nodoc:
         end
 
         def description
-          "No description"
+          @sub_matchers.map(&:description).join(" ")
+        end
+
+        def failure_message
+          @sub_matchers.map(&:failure_message).join(" ")
+        end
+
+        def negative_failure_message
+          @sub_matchers.map(&:negative_failure_message).join(" ")
         end
 
         private
