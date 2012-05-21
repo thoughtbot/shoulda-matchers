@@ -12,9 +12,7 @@ module Shoulda # :nodoc:
 
         def matches?(subject)
           @subject = subject
-          subject.send("#{@attribute}=", @bad_value)
-          subject.valid?
-          message_matches_or_nil?
+          warn_if_message_is_nil? || message_matches?
         end
 
         def failure_message
@@ -28,17 +26,26 @@ module Shoulda # :nodoc:
         end
 
         def message_matches?
+          set_attribute
+          validate
           error_messages.any? do |error_message|
             @expected_message.match(error_message).present?
           end
         end
 
-        def message_matches_or_nil?
+        def warn_if_message_is_nil?
           if @expected_message.nil?
             ActiveSupport::Deprecation.warn 'Using with_message with a nil parameter is being deprecated.  Please do not use with_message if you do not wish to check for a specific message.', caller
-            return true
+            true
           end
-          message_matches?
+        end
+
+        def set_attribute
+          @subject.send("#{@attribute}=", @bad_value)
+        end
+
+        def validate
+          @subject.valid?
         end
       end
     end
