@@ -9,3 +9,5 @@ tags
 tmp
 .bundle
 *.rbc
+# Bundler binstubs
+bin/
