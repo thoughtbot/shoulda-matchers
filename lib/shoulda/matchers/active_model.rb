@@ -15,6 +15,8 @@ require 'shoulda/matchers/active_model/validate_confirmation_of_matcher'
 require 'shoulda/matchers/active_model/validate_numericality_of_matcher'
 require 'shoulda/matchers/active_model/allow_mass_assignment_of_matcher'
 require 'shoulda/matchers/active_model/with_message_matcher'
+require 'shoulda/matchers/active_model/formatted_error_message'
+require 'shoulda/matchers/active_model/formatted_error_message_list'
 
 
 module Shoulda

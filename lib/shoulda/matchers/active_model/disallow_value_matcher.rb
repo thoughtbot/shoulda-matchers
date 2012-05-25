@@ -3,10 +3,6 @@ module Shoulda # :nodoc:
   module Matchers
     module ActiveModel # :nodoc:
       class DisallowValueMatcher # :nodoc:
-        extend Forwardable
-        def_delegators :@allow_matcher, :failure_message,
-          :negative_failure_message, :description
-
         def initialize(*values)
           @values = values
         end
@@ -18,6 +14,18 @@ module Shoulda # :nodoc:
 
         def matches?(instance)
           ! @allow_matcher.matches?(instance)
+        end
+
+        def description
+          "not " + @allow_matcher.description
+        end
+
+        def failure_message
+          @allow_matcher.negative_failure_message
+        end
+
+        def negative_failure_message
+          @allow_matcher.failure_message
         end
       end
     end
