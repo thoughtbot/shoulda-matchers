@@ -4,15 +4,20 @@ module Shoulda # :nodoc:
     module ActiveModel # :nodoc:
       class DisallowValueMatcher # :nodoc:
         extend Forwardable
-        def_delegators :@allow_matcher,:for, :with_message, :failure_message,
+        def_delegators :@allow_matcher, :with_message, :failure_message,
           :negative_failure_message, :description
 
         def initialize(*values)
-          @allow_matcher = AllowValueMatcher.new(values)
+          @values = values
+        end
+
+        def for(attribute)
+          @allow_matcher = AllowValueMatcher.new(values).for(attribute)
+          self
         end
 
         def matches?(instance)
-          ! @allow_matcher.matches?
+          ! @allow_matcher.matches?(instance)
         end
       end
     end

@@ -11,11 +11,11 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher do
     end
 
     it "does not allow a good value" do
-      matcher_class.new("abcde").for(:attr).matches?(model).should be_true
+      matcher_class.new("abcde").for(:attr).matches?(model).should be_false
     end
 
     it "allows a bad value" do
-      matcher_class.new("xyz").for(:attr).matches?(model).should be_false
+      matcher_class.new("xyz").for(:attr).matches?(model).should be_true
     end
   end
 end
