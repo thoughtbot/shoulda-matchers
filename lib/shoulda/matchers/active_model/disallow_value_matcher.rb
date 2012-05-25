@@ -12,7 +12,7 @@ module Shoulda # :nodoc:
         end
 
         def for(attribute)
-          @allow_matcher = AllowValueMatcher.new(values).for(attribute)
+          @allow_matcher = AllowValueMatcher.new(@values).for(attribute)
           self
         end
 
