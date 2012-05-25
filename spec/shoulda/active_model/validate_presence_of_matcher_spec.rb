@@ -4,7 +4,7 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
   context "a required attribute" do
     before do
       define_model :example, :attr => :string do
-        validates_presence_of :attr
+        validates :attr, :presence => true
       end
       @model = Example.new
     end

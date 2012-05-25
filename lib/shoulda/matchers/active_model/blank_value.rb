@@ -17,6 +17,7 @@ module Shoulda # :nodoc:
         end
 
         private
+
         def collection?
           if reflection
             [:has_many, :has_and_belongs_to_many].include?(reflection.macro)
@@ -29,7 +30,6 @@ module Shoulda # :nodoc:
           @instance.class.respond_to?(:reflect_on_association) &&
             @instance.class.reflect_on_association(@attribute)
         end
-
       end
     end
   end

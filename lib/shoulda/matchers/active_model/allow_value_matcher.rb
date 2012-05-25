@@ -99,8 +99,8 @@ module Shoulda # :nodoc:
       end
 
       def expectation
-        includes_expected_message = expected_message ? "to include #{expected_message.inspect}" : ''
-        ["errors", includes_expected_message, "when #{@attribute} is set to #{@value.inspect}"].join(' ')
+        includes_expected_message = expected_message ? "to include #{expected_message.inspect}" : nil
+        ["errors", includes_expected_message, "when #{@attribute} is set to #{@value.inspect}"].compact.join(' ')
       end
 
       def error_description

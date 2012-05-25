@@ -11,8 +11,7 @@ module Shoulda # :nodoc:
       #
       # Examples:
       #   it { should validate_presence_of(:name) }
-      #   it { should validate_presence_of(:name).
-      #                 with_message(/is not optional/) }
+      #   it { should validate_presence_of(:name).with_message(/is not optional/) }
       #
       def validate_presence_of(attr)
         ValidatePresenceOfMatcher.new(attr)
@@ -21,29 +20,29 @@ module Shoulda # :nodoc:
       class ValidatePresenceOfMatcher # :nodoc:
         def initialize(attribute)
           @attribute = attribute
-          @submatchers = CompositeMatcher.new
+          @composite_matcher = CompositeMatcher.new
         end
 
         def with_message(message)
-          @submatchers.add_matcher WithMessageMatcher.new(@attribute, nil, message)
+          @composite_matcher.add_matcher WithMessageMatcher.new(@attribute, nil, message)
         end
 
         def matches?(subject)
           blank_value = BlankValue.new(subject, @attribute).value
-          @submatchers.add_matcher DisallowValueMatcher.new(blank_value).for(@attribute)
-          @submatchers.matches?(subject)
+          @composite_matcher.add_matcher DisallowValueMatcher.new(blank_value).for(@attribute)
+          @composite_matcher.matches?(subject)
         end
 
         def description
-          @submatchers.descriptions
+          @composite_matcher.description
         end
 
         def failure_message
-          @submatchers.failure_message
+          @composite_matcher.failure_message
         end
 
         def negative_failure_message
-          @submatchers.negative_failure_message
+          @composite_matcher.negative_failure_message
         end
       end
     end
