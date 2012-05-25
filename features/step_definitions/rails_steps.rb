@@ -16,7 +16,7 @@ end
 
 When 'I generate a new rails application' do
   steps %{
-    When I run `rails new #{APP_NAME}`
+    When I successfully run `rails new #{APP_NAME}`
     And I cd to "#{APP_NAME}"
     And I comment out the gem "turn" from the Gemfile
     And I comment out the gem "coffee-rails" from the Gemfile
