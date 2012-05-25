@@ -142,7 +142,7 @@ DEPENDENCIES
   appraisal (~> 0.4.0)
   aruba
   bourne (~> 1.1.2)
-  bundler (~> 1.1.0)
+  bundler (~> 1.1)
   cucumber (~> 1.1.9)
   jdbc-sqlite3
   jquery-rails
