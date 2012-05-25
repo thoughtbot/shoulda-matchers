@@ -16,7 +16,7 @@ module Shoulda # :nodoc:
         end
 
         def failure_message
-          "Expected #{@expected_message} got #{pretty_error_messages(@subject)}"
+          "Expected #{@expected_message}, got #{pretty_error_messages(@subject)}"
         end
 
         private

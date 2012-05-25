@@ -106,35 +106,38 @@ describe Shoulda::Matchers::ActiveModel::WithMessageMatcher do
 
   context '#failure_message' do
     it 'provides a failure message' do
-      attribute = :age
-      non_numeric_value = 'a string'
-      actual_message = 'for real'
+      attribute = :attr
+      bad_value = nil
+      actual_message = 'is not blank'
       expected_message = 'not matching'
 
       model = define_active_model_class(:example, :accessors => [attribute]) do
-        validates attribute, :numericality => { :message => actual_message }
+        validates attribute, :presence => { :message => actual_message }
       end.new
 
-      matcher = matcher_class.new(attribute, non_numeric_value, expected_message)
+      expected_failure_message = %{Expected #{expected_message}, got ["#{attribute} #{actual_message} (#{bad_value.inspect})"]}
+
+      matcher = matcher_class.new(attribute, bad_value, expected_message)
       matcher.matches?(model)
-      matcher.failure_message.should == "Expected #{expected_message} got #{actual_message}"
+      matcher.failure_message.should == expected_failure_message
     end
 
     it 'is correct when model has more than one error' do
       attribute = :age
       other_attribute = :name
-      non_numeric_value = 'a string'
+      bad_value = nil
       actual_message = 'for real'
       expected_message = 'not matching'
 
       model = define_active_model_class(:example, :accessors => [attribute, other_attribute]) do
-        validates attribute, :numericality => { :message => actual_message }
+        validates attribute, :presence => { :message => actual_message }
         validates other_attribute, :presence => { :message => 'other message' }
       end.new
 
-      matcher = matcher_class.new(attribute, non_numeric_value, expected_message)
+      expected_failure_message = %{Expected #{expected_message}, got ["age #{actual_message} (nil)", "name other message (nil)"]}
+      matcher = matcher_class.new(attribute, bad_value, expected_message)
       matcher.matches?(model)
-      matcher.failure_message.should == "Expected #{expected_message} got #{actual_message}, other message"
+      matcher.failure_message.should == expected_failure_message
     end
   end
 end
