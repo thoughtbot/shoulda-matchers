@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::WithMessageMatcher do
+  let(:matcher_class) { Shoulda::Matchers::ActiveModel::WithMessageMatcher }
+
   context 'when attribute is invalid' do
     it 'matches when the error message matches' do
       attribute = :age
@@ -11,7 +13,7 @@ describe Shoulda::Matchers::ActiveModel::WithMessageMatcher do
         validates attribute, :numericality => { :message => expected_message }
       end.new
 
-      matcher = WithMessageMatcher.new(attribute, non_numeric_value, expected_message)
+      matcher = matcher_class.new(attribute, non_numeric_value, expected_message)
       matcher.matches?(model).should be_true
     end
 
@@ -24,7 +26,7 @@ describe Shoulda::Matchers::ActiveModel::WithMessageMatcher do
         validates attribute, :numericality => { :message => expected_message }
       end.new
 
-      matcher = WithMessageMatcher.new(attribute, non_numeric_value, expected_message)
+      matcher = matcher_class.new(attribute, non_numeric_value, expected_message)
       matcher.matches?(model).should be_true
     end
 
@@ -38,7 +40,7 @@ describe Shoulda::Matchers::ActiveModel::WithMessageMatcher do
         validates attribute, :numericality => { :message => actual_message }
       end.new
 
-      matcher = WithMessageMatcher.new(attribute, non_numeric_value, expected_message)
+      matcher = matcher_class.new(attribute, non_numeric_value, expected_message)
       matcher.matches?(model).should be_false
     end
 
@@ -52,7 +54,7 @@ describe Shoulda::Matchers::ActiveModel::WithMessageMatcher do
         validates attribute, :numericality => { :message => actual_message }
       end.new
 
-      matcher = WithMessageMatcher.new(attribute, non_numeric_value, expected_message)
+      matcher = matcher_class.new(attribute, non_numeric_value, expected_message)
       matcher.matches?(model).should be_false
     end
   end
@@ -67,7 +69,7 @@ describe Shoulda::Matchers::ActiveModel::WithMessageMatcher do
         validates attribute, :numericality => { :message => message }
       end.new
 
-      matcher = WithMessageMatcher.new(attribute, good_value, message)
+      matcher = matcher_class.new(attribute, good_value, message)
       matcher.matches?(model).should be_false
     end
 
@@ -81,7 +83,7 @@ describe Shoulda::Matchers::ActiveModel::WithMessageMatcher do
         validates attribute, :numericality => { :message => actual_message }
       end.new
 
-      matcher = WithMessageMatcher.new(attribute, good_value, expected_message)
+      matcher = matcher_class.new(attribute, good_value, expected_message)
       matcher.matches?(model).should be_false
     end
   end
@@ -97,7 +99,7 @@ describe Shoulda::Matchers::ActiveModel::WithMessageMatcher do
         validates attribute, :numericality => { :message => message }
       end.new
 
-      matcher = WithMessageMatcher.new(attribute, non_numeric_value, regex_matching_message)
+      matcher = matcher_class.new(attribute, non_numeric_value, regex_matching_message)
       matcher.matches?(model).should be_true
     end
   end
@@ -113,7 +115,7 @@ describe Shoulda::Matchers::ActiveModel::WithMessageMatcher do
         validates attribute, :numericality => { :message => actual_message }
       end.new
 
-      matcher = WithMessageMatcher.new(attribute, non_numeric_value, expected_message)
+      matcher = matcher_class.new(attribute, non_numeric_value, expected_message)
       matcher.matches?(model)
       matcher.failure_message.should == "Expected #{expected_message} got #{actual_message}"
     end
@@ -130,7 +132,7 @@ describe Shoulda::Matchers::ActiveModel::WithMessageMatcher do
         validates other_attribute, :presence => { :message => 'other message' }
       end.new
 
-      matcher = WithMessageMatcher.new(attribute, non_numeric_value, expected_message)
+      matcher = matcher_class.new(attribute, non_numeric_value, expected_message)
       matcher.matches?(model)
       matcher.failure_message.should == "Expected #{expected_message} got #{actual_message}, other message"
     end
