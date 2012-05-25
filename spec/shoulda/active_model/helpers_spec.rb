@@ -48,82 +48,101 @@ def store_translations(options = {:without => []})
   I18n.backend.store_translations(:en, translations)
 end
 
-describe Shoulda::Matchers::ActiveModel::Helpers do
+describe Shoulda::Matchers::ActiveModel::Helpers, '#default_error_message' do
   include Shoulda::Matchers::ActiveModel
 
-  describe "default_error_message" do
-    before do
-      define_model :example, :attr => :string do
-        validates_presence_of :attr
-        validates_length_of :attr, :is => 40, :allow_blank => true
-      end
-      @model = Example.new
+  before do
+    define_model :example, :attr => :string do
+      validates_presence_of :attr
+      validates_length_of :attr, :is => 40, :allow_blank => true
+    end
+    @model = Example.new
+  end
+
+  after { I18n.backend.reload! }
+
+  context "if the translation for the model attribute’s error exists" do
+    it "provides the right error message for validate_presence_of" do
+      store_translations
+      @model.should validate_presence_of(:attr)
     end
 
-    after { I18n.backend.reload! }
+    it "provides the right error message for validates_length_of" do
+      store_translations
+      @model.should ensure_length_of(:attr).is_equal_to(40)
+    end
+  end
 
-    context "if the translation for the model attribute’s error exists" do
+  context "if no translation for the model attribute’s error exists" do
+    context "and the translation for the model’s error exists" do
       it "provides the right error message for validate_presence_of" do
-        store_translations
+        store_translations(:without => :model_attribute)
         @model.should validate_presence_of(:attr)
       end
 
       it "provides the right error message for validates_length_of" do
-        store_translations
+        store_translations(:without => :model_attribute)
         @model.should ensure_length_of(:attr).is_equal_to(40)
       end
     end
 
-    context "if no translation for the model attribute’s error exists" do
-      context "and the translation for the model’s error exists" do
+    context "and no translation for the model’s error exists" do
+      context "and the translation for the message exists" do
         it "provides the right error message for validate_presence_of" do
-          store_translations(:without => :model_attribute)
+          store_translations(:without => [:model_attribute, :model])
           @model.should validate_presence_of(:attr)
         end
 
         it "provides the right error message for validates_length_of" do
-          store_translations(:without => :model_attribute)
+          store_translations(:without => [:model_attribute, :model])
           @model.should ensure_length_of(:attr).is_equal_to(40)
         end
       end
 
-      context "and no translation for the model’s error exists" do
-        context "and the translation for the message exists" do
+      context "and no translation for the message exists" do
+        context "and the translation for the attribute exists" do
           it "provides the right error message for validate_presence_of" do
-            store_translations(:without => [:model_attribute, :model])
+            store_translations(:without => [:model_attribute, :model, :message])
             @model.should validate_presence_of(:attr)
           end
 
           it "provides the right error message for validates_length_of" do
-            store_translations(:without => [:model_attribute, :model])
+            store_translations(:without => [:model_attribute, :model, :message])
             @model.should ensure_length_of(:attr).is_equal_to(40)
           end
         end
 
-        context "and no translation for the message exists" do
-          context "and the translation for the attribute exists" do
-            it "provides the right error message for validate_presence_of" do
-              store_translations(:without => [:model_attribute, :model, :message])
-              @model.should validate_presence_of(:attr)
-            end
-
-            it "provides the right error message for validates_length_of" do
-              store_translations(:without => [:model_attribute, :model, :message])
-              @model.should ensure_length_of(:attr).is_equal_to(40)
-            end
+        context "and no translation for the attribute exists" do
+          it "provides the general error message for validate_presence_of" do
+            @model.should validate_presence_of(:attr)
           end
 
-          context "and no translation for the attribute exists" do
-            it "provides the general error message for validate_presence_of" do
-              @model.should validate_presence_of(:attr)
-            end
-
-            it "provides the general error message for validates_length_of" do
-              @model.should ensure_length_of(:attr).is_equal_to(40)
-            end
+          it "provides the general error message for validates_length_of" do
+            @model.should ensure_length_of(:attr).is_equal_to(40)
           end
         end
       end
     end
+  end
+end
+
+describe Shoulda::Matchers::ActiveModel::Helpers, '#pretty_error_messages' do
+  before do
+    define_model :example, :attr => :string do
+      attr_accessible :attr
+      validates_presence_of :attr
+    end
+  end
+
+  it 'has the correct wording' do
+    model = Example.new(:attr => nil)
+    model.valid?
+    helpers.pretty_error_messages(model).should == ["attr can't be blank (nil)"]
+  end
+
+  def helpers
+    Class.new do
+      include Shoulda::Matchers::ActiveModel::Helpers
+    end.new
   end
 end
