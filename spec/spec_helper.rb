@@ -15,6 +15,7 @@ require 'rspec'
 require 'bourne'
 require 'shoulda-matchers'
 require 'rspec/rails'
+require 'pry'
 
 PROJECT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..')).freeze
 

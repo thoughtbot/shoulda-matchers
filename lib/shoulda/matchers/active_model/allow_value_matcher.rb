@@ -45,9 +45,7 @@ module Shoulda # :nodoc:
       def matches?(instance)
         @instance = instance
         @values_to_match.none? do |value|
-          @value = value
-          @instance.send("#{@attribute}=", @value)
-          errors_match?
+          PositiveErrorDescription.new(instance, @attribute, value, @options[:expected_message]).matches?
         end
       end
 
@@ -75,15 +73,6 @@ module Shoulda # :nodoc:
             errors_for_attribute.compact.any?
           end
         end
-      end
-
-      def errors_for_attribute
-        if @instance.errors.respond_to?(:[])
-          errors = @instance.errors[@attribute]
-        else
-          errors = @instance.errors.on(@attribute)
-        end
-        Array.wrap(errors)
       end
 
       def errors_match_regexp?
