@@ -1,7 +1,7 @@
 module Shoulda # :nodoc:
   module Matchers
     module ActiveModel # :nodoc:
-      # Ensure that the attribute is numeric
+      # Ensure that the attribute is numeric.
       #
       # Options:
       # * <tt>with_message</tt> - value the test expects to find in
