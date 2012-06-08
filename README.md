@@ -67,8 +67,13 @@ Matchers to test common patterns:
 In Rails 3 and Bundler, add the following to your Gemfile:
 
     group :test do
-      gem "rspec-rails"
       gem "shoulda-matchers"
+    end
+
+    # rspec-rails needs to be in the development group so that Rails generators
+    # work.
+    group :development, :test do
+      gem "rspec-rails"
     end
 
 Shoulda will automatically include matchers into the appropriate example groups.
