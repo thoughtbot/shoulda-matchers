@@ -1,4 +1,4 @@
-HEAD
+# v1.2.0
 
 * `ensure_inclusion_of` now has an `in_array` parameter:
   `ensure_inclusion_of(:attr).in_array(['foo', 'bar'])`. It cannot be used with
@@ -13,6 +13,9 @@ HEAD
 * `have_db_index.unique(nil)` used to function exactly the same as
   `have_db_index` with no unique option. It now functions the same as
   `have_db_index.unique(false)`.
+
+* In 1.1.0, `have_sent_email` checked all emails to ensure they matched. It now
+  checks that only one email matches, which restores 1.0.0 behavior.
 
 # v1.1.0
 
