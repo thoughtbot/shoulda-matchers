@@ -1,11 +1,12 @@
 module Shoulda
   module Matchers
-    if RUBY_VERSION > "1.9"
+    if defined?(Test::Unit::AssertionFailedError)
+      AssertionError = Test::Unit::AssertionFailedError
+    elsif Gem.ruby_version >= Gem::Version.new("1.9")
       require 'minitest/unit'
       AssertionError = MiniTest::Assertion
     else
-      require 'test/unit/assertionfailederror'
-      AssertionError = Test::Unit::AssertionFailedError
+      raise "No unit test library available"
     end
   end
 end
