@@ -1,3 +1,8 @@
+# HEAD
+
+* Prefer Test::Unit to Minitest when loading integrations so that RubyMine is
+  happy (#88).
+
 # v1.2.0
 
 * `ensure_inclusion_of` now has an `in_array` parameter:
