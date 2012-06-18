@@ -239,7 +239,9 @@ module Shoulda # :nodoc:
         end
 
         def validate_correct?
-          !!@validate == !!reflection.options[:validate] || begin
+          if !@validate && !reflection.options[:validate] || @validate == reflection.options[:validate]
+            true
+          else
             @missing = "#{@name} should have #{@validate} as validate"
             false
           end
