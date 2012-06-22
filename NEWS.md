@@ -3,6 +3,10 @@
 * Prefer Test::Unit to Minitest when loading integrations so that RubyMine is
   happy (#88).
 
+* `validates_uniqueness_of` will now create a record if one does not exist.
+  Previously, users were required to create a record in the database before
+  using this matcher.
+
 # v1.2.0
 
 * `ensure_inclusion_of` now has an `in_array` parameter:
