@@ -95,7 +95,7 @@ module Shoulda # :nodoc:
             @options[:scopes].all? do |scope|
               setter = :"#{scope}="
               if @subject.respond_to?(setter)
-                @subject.send("#{scope}=", existing.send(scope))
+                @subject.send(setter, existing.send(scope))
                 true
               else
                 @failure_message = "#{class_name} doesn't seem to have a #{scope} attribute."
