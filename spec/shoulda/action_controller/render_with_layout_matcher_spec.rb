@@ -31,6 +31,14 @@ describe Shoulda::Matchers::ActionController::RenderWithLayoutMatcher do
     end
   end
 
+  context "a controller that renders a partial" do
+    let(:controller) { build_response { render :partial => 'partial' } }
+
+    it "should reject rendering with a layout" do
+      controller.should_not render_with_layout
+    end
+  end
+
   context "given a context with layouts" do
     let(:layout) { 'happy' }
     let(:controller) { build_response { render :layout => false } }

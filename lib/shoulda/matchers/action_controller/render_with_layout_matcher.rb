@@ -66,16 +66,7 @@ module Shoulda # :nodoc:
         end
 
         def rendered_layouts
-          if recorded_layouts.size > 0
-            recorded_layouts.keys.compact.map { |layout| layout.sub(%r{^layouts/}, '') }
-          else
-            layout = @controller.response.layout
-            if layout.nil?
-              []
-            else
-              [layout.split('/').last]
-            end
-          end
+          recorded_layouts.keys.compact.map { |layout| layout.sub(%r{^layouts/}, '') }
         end
 
         def recorded_layouts
