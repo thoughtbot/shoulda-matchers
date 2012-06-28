@@ -66,11 +66,12 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
     before do
       @model = define_model(:example, :attr   => :string,
                                       :scope1 => :integer,
-                                      :scope2 => :integer) do
-        attr_accessible :attr, :scope1, :scope2
+                                      :scope2 => :integer,
+                                      :other => :integer) do
+        attr_accessible :attr, :scope1, :scope2, :other
         validates_uniqueness_of :attr, :scope => [:scope1, :scope2]
       end.new
-      @existing = Example.create!(:attr => 'value', :scope1 => 1, :scope2 => 2)
+      @existing = Example.create!(:attr => 'value', :scope1 => 1, :scope2 => 2, :other => 3)
     end
 
     it "should pass when the correct scope is specified" do
@@ -81,8 +82,16 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
       @existing.should validate_uniqueness_of(:attr).scoped_to(:scope1, :scope2)
     end
 
-    it "should fail when a different scope is specified" do
+    it "should fail when too narrow of a scope is specified" do
+      @model.should_not validate_uniqueness_of(:attr).scoped_to(:scope1, :scope2, :other)
+    end
+
+    it "should fail when too broad of a scope is specified" do
       @model.should_not validate_uniqueness_of(:attr).scoped_to(:scope1)
+    end
+
+    it "should fail when a different scope is specified" do
+      @model.should_not validate_uniqueness_of(:attr).scoped_to(:other)
     end
 
     it "should fail when no scope is specified" do
