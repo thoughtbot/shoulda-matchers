@@ -133,6 +133,8 @@ module Shoulda # :nodoc:
               @subject.send("#{scope}=", next_value)
 
               if allows_value_of(existing_value, @expected_message)
+                @subject.send("#{scope}=", previous_value)
+
                 @negative_failure_message <<
                   " (with different value of #{scope})"
                 true
