@@ -56,11 +56,6 @@ module ModelBuilder
     define_model_class(class_name, &block)
   end
 
-  def define_mailer(name, paths, &block)
-    class_name = name.to_s.pluralize.classify
-    define_class(class_name, ActionMailer::Base, &block)
-  end
-
   def drop_created_tables
     connection = ActiveRecord::Base.connection
 
