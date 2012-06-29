@@ -18,6 +18,8 @@ module Shoulda # :nodoc:
       # * <tt>dependent</tt> - tests that the association makes use of the
       #   dependent option.
       # * <tt>:class_name</tt> - tests that the association makes use of the class_name option.
+      # * <tt>:autosave</tt> - tests that the association makes use of the
+      #   autosave option.
       #
       # Example:
       #   it { should have_many(:friends) }
@@ -36,6 +38,8 @@ module Shoulda # :nodoc:
       # * <tt>:dependent</tt> - tests that the association makes use of the
       #   dependent option.
       # * <tt>:class_name</tt> - tests that the association makes use of the class_name option.
+      # * <tt>:autosave</tt> - tests that the association makes use of the
+      #   autosave option.
       #
       # Example:
       #   it { should have_one(:god) } # unless hindu
@@ -80,6 +84,11 @@ module Shoulda # :nodoc:
           self
         end
 
+        def autosave(autosave)
+          @options[:autosave] = autosave
+          self
+        end
+
         def class_name(class_name)
           @options[:class_name] = class_name
           self
@@ -93,6 +102,7 @@ module Shoulda # :nodoc:
             through_association_valid? &&
             dependent_correct? &&
             class_name_correct? &&
+            autosave_correct? &&
             order_correct? &&
             conditions_correct? &&
             join_table_exists?
@@ -112,6 +122,7 @@ module Shoulda # :nodoc:
           description += " dependent => #{@options[:dependent]}"   if @options.key?(:dependent)
           description += " class_name => #{@options[:class_name]}" if @options.key?(:class_name)
           description += " order => #{@options[:order]}"           if @options.key?(:order)
+          description += " autosave => #{@options[:autosave]}"     if @options.key?(:autosave)
           description
         end
 
@@ -187,6 +198,19 @@ module Shoulda # :nodoc:
               true
             else
               @missing = "#{@name} should have #{@options[:class_name]} as class_name"
+              false
+            end
+          else
+            true
+          end
+        end
+
+        def autosave_correct?
+          if @options.key?(:autosave)
+            if @options[:autosave].to_s == reflection.options[:autosave].to_s
+              true
+            else
+              @missing = "#{@name} should have #{@options[:autosave]} as autosave"
               false
             end
           else
