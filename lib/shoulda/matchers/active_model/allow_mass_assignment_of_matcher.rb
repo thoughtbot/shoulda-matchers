@@ -36,34 +36,45 @@ module Shoulda # :nodoc:
           if attr_mass_assignable?
             if whitelisting?
               @negative_failure_message = "#{@attribute} was made accessible"
+              @negative_failure_message << " to #{@options[:role].inspect} role" if role_used?
             else
               if protected_attributes.empty?
                 @negative_failure_message = "no attributes were protected"
+                @negative_failure_message << " from #{@options[:role].inspect} role" if role_used?
               else
                 @negative_failure_message = "#{class_name} is protecting " <<
                   "#{protected_attributes.to_a.to_sentence}, " <<
-                  "but not #{@attribute}."
+                  "but not #{@attribute}"
+                @negative_failure_message << " from #{@options[:role].inspect} role" if role_used?
               end
             end
             true
           else
             if whitelisting?
               @failure_message = "Expected #{@attribute} to be accessible"
+              @failure_message << " to #{@options[:role].inspect} role" if role_used?
             else
               @failure_message = "Did not expect #{@attribute} to be protected"
+              @failure_message << " from #{@options[:role].inspect} role" if role_used?
             end
             false
           end
         end
 
         def description
-          "allow mass assignment of #{@attribute}"
+          description = "allow mass assignment of #{@attribute}"
+          description << " for #{@options[:role].inspect} role" if role_used?
+          description
         end
 
         private
 
         def role
           @options[:role] || :default
+        end
+
+        def role_used?
+          !active_model_less_than_3_1? && !@options[:role].blank? && @options[:role] != :default
         end
 
         def protected_attributes
