@@ -7,6 +7,8 @@
   Previously, users were required to create a record in the database before
   using this matcher.
 
+* `validate_format_of` will accept `allow_blank(bool)` and `allow_nil(false)`
+
 # v1.2.0
 
 * `ensure_inclusion_of` now has an `in_array` parameter:
