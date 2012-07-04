@@ -1,5 +1,7 @@
 # HEAD
 
+* `validate_format_of` will accept `allow_blank(bool)` and `allow_nil(bool)`
+
 * Prefer Test::Unit to Minitest when loading integrations so that RubyMine is
   happy (#88).
 
