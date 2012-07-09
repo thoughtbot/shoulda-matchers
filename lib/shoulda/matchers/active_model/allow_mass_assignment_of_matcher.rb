@@ -35,36 +35,33 @@ module Shoulda # :nodoc:
           @subject = subject
           if attr_mass_assignable?
             if whitelisting?
-              @negative_failure_message = "#{@attribute} was made accessible"
-              @negative_failure_message << " to #{@options[:role].inspect} role" if role_used?
+              @negative_failure_message = add_role_to_message(
+                "#{@attribute} was made accessible", "to")
             else
               if protected_attributes.empty?
                 @negative_failure_message = "no attributes were protected"
-                @negative_failure_message << " from #{@options[:role].inspect} role" if role_used?
               else
                 @negative_failure_message = "#{class_name} is protecting " <<
                   "#{protected_attributes.to_a.to_sentence}, " <<
                   "but not #{@attribute}"
-                @negative_failure_message << " from #{@options[:role].inspect} role" if role_used?
               end
+              add_role_to_message(@negative_failure_message)
             end
             true
           else
             if whitelisting?
-              @failure_message = "Expected #{@attribute} to be accessible"
-              @failure_message << " to #{@options[:role].inspect} role" if role_used?
+              @failure_message = add_role_to_message(
+                "Expected #{@attribute} to be accessible", "to")
             else
-              @failure_message = "Did not expect #{@attribute} to be protected"
-              @failure_message << " from #{@options[:role].inspect} role" if role_used?
+              @failure_message = add_role_to_message(
+                "Did not expect #{@attribute} to be protected")
             end
             false
           end
         end
 
         def description
-          description = "allow mass assignment of #{@attribute}"
-          description << " for #{@options[:role].inspect} role" if role_used?
-          description
+          add_role_to_message("allow mass assignment of #{@attribute}", "by")
         end
 
         private
@@ -75,6 +72,11 @@ module Shoulda # :nodoc:
 
         def role_used?
           !active_model_less_than_3_1? && !@options[:role].blank? && @options[:role] != :default
+        end
+
+        def add_role_to_message(message, adverb="from")
+          message << " #{adverb} #{@options[:role].inspect} role" if role_used?
+          message
         end
 
         def protected_attributes

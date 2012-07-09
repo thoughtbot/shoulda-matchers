@@ -97,12 +97,12 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
     context "messages" do
       it "should include the role in the description when used" do
         matcher = allow_mass_assignment_of(:attr).as(:admin)
-        matcher.description.should match(/for :admin role/)
+        matcher.description.should match(/by :admin role/)
       end
 
       it "should not include the role in the description when not used" do
         matcher = allow_mass_assignment_of(:attr)
-        matcher.description.should_not match(/for :default role/)
+        matcher.description.should_not match(/by :default role/)
       end
 
       context "with whitelisting" do
