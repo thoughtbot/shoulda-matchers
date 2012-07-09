@@ -77,6 +77,22 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
     end
   end
 
+  unless active_model_3_1?
+    context "#add_role_to_message" do
+      let(:model) do
+        define_model(:example, :attr => :string) do
+          attr_accessible :attr
+        end.new
+      end
+
+      it "should return the message with no modifications on Rails < 3.1" do
+        matcher = allow_mass_assignment_of(:attr)
+        message = "some attribute should be protected"
+        matcher.send(:add_role_to_message, message).should == message
+      end
+    end
+  end
+
   if active_model_3_1?
     context "an attribute included in the mass-assignment whitelist for admin role only" do
       let(:model) do
