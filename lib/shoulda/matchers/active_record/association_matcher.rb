@@ -105,6 +105,11 @@ module Shoulda # :nodoc:
           self
         end
 
+        def validate(validate = true)
+          @validate = validate
+          self
+        end
+
         def matches?(subject)
           @subject = subject
           association_exists? &&
