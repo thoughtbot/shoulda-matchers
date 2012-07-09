@@ -104,7 +104,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       define_model :child, :parent_id => :integer do
         belongs_to :parent, :autosave => true
       end
-      Child.new.should @matcher.autosave(:true)
+      Child.new.should @matcher.autosave(true)
     end
 
     it "should reject an association with a valid :autosave option" do
@@ -112,7 +112,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       define_model :child, :parent_id => :integer do
         belongs_to :parent, :autosave => false
       end
-      Child.new.should_not @matcher.autosave(:true)
+      Child.new.should_not @matcher.autosave(true)
     end
 
   end
@@ -262,7 +262,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       define_model :parent do
         has_many :children, :autosave => true
       end
-      Parent.new.should @matcher.autosave(:true)
+      Parent.new.should @matcher.autosave(true)
     end
 
     it "should reject an association with a valid :autosave option" do
@@ -270,7 +270,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       define_model :parent do
         has_many :children, :autosave => false
       end
-      Parent.new.should_not @matcher.autosave(:true)
+      Parent.new.should_not @matcher.autosave(true)
     end
 
     it "should accept an association with a nonstandard reverse foreign key, using :inverse_of" do
@@ -402,7 +402,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       define_model :person do
         has_one :detail, :autosave => true
       end
-      Person.new.should @matcher.autosave(:true)
+      Person.new.should @matcher.autosave(true)
     end
 
     it "should reject an association with a valid :autosave option" do
@@ -410,7 +410,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       define_model :person do
         has_one :detail, :autosave => false
       end
-      Person.new.should_not @matcher.autosave(:true)
+      Person.new.should_not @matcher.autosave(true)
     end
 
   end
@@ -501,7 +501,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       end
       define_model :people_relative, :person_id   => :integer,
                                      :relative_id => :integer
-      Person.new.should @matcher.autosave(:true)
+      Person.new.should @matcher.autosave(true)
     end
 
     it "should reject an association with a bad :autosave option" do
@@ -511,7 +511,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       end
       define_model :people_relative, :person_id   => :integer,
                                      :relative_id => :integer
-      Person.new.should_not @matcher.autosave(:true)
+      Person.new.should_not @matcher.autosave(true)
     end
   end
 end
