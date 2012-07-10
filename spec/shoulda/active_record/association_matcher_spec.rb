@@ -443,6 +443,21 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       Person.new.should_not @matcher.class_name('PersonDetail')
     end
 
+    it "should accept an association with a through" do
+      define_model :history
+
+      define_model :account do
+        has_one :detail
+      end
+
+      define_model :person do
+        has_one :account
+        has_one :detail, :through => :account
+      end
+
+      Person.new.should @matcher.through(:account)
+    end
+
     context 'should accept an association with a false :validate option' do
       before do
         define_model :detail, :person_id => :integer, :disabled => :boolean
