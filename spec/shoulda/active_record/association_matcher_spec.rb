@@ -444,7 +444,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
     end
 
     it "should accept an association with a through" do
-      define_model :history
+      define_model :detail
 
       define_model :account do
         has_one :detail
@@ -456,6 +456,16 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       end
 
       Person.new.should @matcher.through(:account)
+    end
+
+    it "should reject an association with a through" do
+      define_model :detail
+
+      define_model :person do
+        has_one :detail
+      end
+
+      Person.new.should_not @matcher.through(:account)
     end
 
     context 'should accept an association with a false :validate option' do

@@ -1,5 +1,5 @@
 PATH
-  remote: /Users/gabe/thoughtbot/open-source/shoulda-matchers
+  remote: /home/mike/thoughtbot/shoulda-matchers
   specs:
     shoulda-matchers (1.2.0)
       activesupport (>= 3.0.0)
@@ -46,7 +46,7 @@ GEM
     bourne (1.1.2)
       mocha (= 0.10.5)
     builder (2.1.2)
-    childprocess (0.3.2)
+    childprocess (0.3.3)
       ffi (~> 1.0.6)
     cucumber (1.1.9)
       builder (>= 2.1.2)
@@ -68,7 +68,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     metaclass (0.0.1)
-    mime-types (1.18)
+    mime-types (1.19)
     mocha (0.10.5)
       metaclass (~> 0.0.1)
     polyglot (0.3.3)
