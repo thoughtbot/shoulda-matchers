@@ -1,6 +1,7 @@
 module Shoulda
   module Matchers
-    if defined?(Test::Unit::AssertionFailedError)
+    if Gem.ruby_version >= Gem::Version.new('1.8') && Gem.ruby_version < Gem::Version.new('1.9')
+      require 'test/unit'
       AssertionError = Test::Unit::AssertionFailedError
     elsif Gem.ruby_version >= Gem::Version.new("1.9")
       require 'minitest/unit'
