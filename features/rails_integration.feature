@@ -86,3 +86,31 @@ Feature: integrate with Rails
     Then the output should contain "2 examples, 0 failures"
     And the output should contain "should require name to be set"
     And the output should contain "should assign @example"
+
+  Scenario: generate a Rails application that mixes Rspec and Test::Unit
+    When I configure the application to use rspec-rails in test and development
+    And I configure the application to use "shoulda-matchers" from this project in test and development
+    And I run the rspec generator
+    And I write to "spec/models/user_spec.rb" with:
+      """
+      require 'spec_helper'
+
+      describe User do
+        it { should validate_presence_of(:name) }
+      end
+      """
+    When I write to "test/functional/examples_controller_test.rb" with:
+      """
+      require 'test_helper'
+
+      class ExamplesControllerTest < ActionController::TestCase
+        test 'assigns to @example' do
+          get :show
+          assert assign_to(:example).matches?(@controller)
+        end
+      end
+      """
+    When I successfully run `bundle exec rake spec test:functionals SPEC_OPTS=-fs --trace`
+    Then the output should contain "1 example, 0 failures"
+    And the output should contain "1 tests, 1 assertions, 0 failures, 0 errors"
+    And the output should contain "should require name to be set"
