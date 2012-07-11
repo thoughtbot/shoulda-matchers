@@ -36,6 +36,15 @@ When /^I configure the application to use "([^\"]+)" from this project$/ do |nam
   steps %{And I run `bundle install --local`}
 end
 
+When /^I configure the application to use "([^\"]+)" from this project in test and development$/ do |name|
+  append_to_gemfile <<-GEMFILE
+  group :test, :development do
+    gem '#{name}', :path => '#{PROJECT_ROOT}'
+  end
+  GEMFILE
+  steps %{And I run `bundle install --local`}
+end
+
 When 'I run the rspec generator' do
   steps %{
     When I successfully run `rails generate rspec:install`
@@ -44,6 +53,15 @@ end
 
 When 'I configure the application to use rspec-rails' do
   append_to_gemfile "gem 'rspec-rails', '~> 2.8.1'"
+  steps %{And I run `bundle install --local`}
+end
+
+When 'I configure the application to use rspec-rails in test and development' do
+  append_to_gemfile <<-GEMFILE
+  group :test, :development do
+    gem 'rspec-rails', '~> 2.8.1'
+  end
+  GEMFILE
   steps %{And I run `bundle install --local`}
 end
 
