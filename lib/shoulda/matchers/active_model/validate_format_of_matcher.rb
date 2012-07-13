@@ -7,6 +7,8 @@ module Shoulda # :nodoc:
       #
       # Options:
       # * <tt>with_message</tt> - value the test expects to find in
+      #   <tt>allow_blank</tt> - allows a blank value
+      #   <tt>allow_nil</tt> - allows a nil value
       #   <tt>errors.on(:attribute)</tt>. <tt>Regexp</tt> or <tt>String</tt>.
       #   Defaults to the translation for <tt>:invalid</tt>.
       # * <tt>with(string to test against)</tt>
@@ -28,6 +30,17 @@ module Shoulda # :nodoc:
 
         def initialize(attribute)
           super
+          @options = {}
+        end
+
+        def allow_blank(allow_blank = true)
+          @options[:allow_blank] = allow_blank
+          self
+        end
+
+        def allow_nil(allow_nil = true)
+          @options[:allow_nil] = allow_nil
+          self
         end
 
         def with_message(message)
@@ -50,14 +63,35 @@ module Shoulda # :nodoc:
         def matches?(subject)
           super(subject)
           @expected_message ||= :invalid
-          return disallows_value_of(@value_to_fail, @expected_message) if @value_to_fail
-          allows_value_of(@value_to_pass, @expected_message) if @value_to_pass
+
+          if @value_to_fail
+            disallows_value_of(@value_to_fail, @expected_message) && allows_blank_value? && allows_nil_value?
+          else
+            allows_value_of(@value_to_pass, @expected_message) && allows_blank_value? && allows_nil_value?
+          end
         end
 
         def description
           "#{@attribute} have a valid format"
         end
 
+        private
+
+        def allows_blank_value?
+          if @options.key?(:allow_blank)
+            @options[:allow_blank] == allows_value_of('')
+          else
+            true
+          end
+        end
+
+        def allows_nil_value?
+          if @options.key?(:allow_nil)
+            @options[:allow_nil] == allows_value_of(nil)
+          else
+            true
+          end
+        end
       end
 
     end
