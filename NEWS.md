@@ -12,6 +12,8 @@
   and 'shoulda-matchers' gem from the same Gemfile group, namely [:test,
   :development].
 
+* `controller.should_not render_partial` now correctly matches `render partial: "partial"`.
+
 # v1.2.0
 
 * `ensure_inclusion_of` now has an `in_array` parameter:
