@@ -17,6 +17,14 @@ module Shoulda
           end
         end
 
+        def matched_error
+          if @expected_message
+            error_matching_expected || ""
+          else
+            first_error_message
+          end
+        end
+
         private
 
         def error_message_matches_string?
@@ -31,6 +39,16 @@ module Shoulda
               @expected_message =~ error
             end
           end
+        end
+
+        def error_matching_expected
+          errors_for_attribute.select do |error|
+            @expected_message.match(error)
+          end.first
+        end
+
+        def first_error_message
+          errors_for_attribute.first.to_s
         end
 
         def errors_for_attribute

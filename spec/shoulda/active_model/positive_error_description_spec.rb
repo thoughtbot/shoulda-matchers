@@ -21,7 +21,6 @@ describe Shoulda::Matchers::ActiveModel::PositiveErrorDescription, '#matched_err
   context 'with an error that matches the expected message regexp' do
     it 'returns the matched error' do
       define_model(:Example, :attr => :string) do
-      define_model(:Example, :attr => :string) do
         validates :attr, :presence => true
       end
       positive_error_description = described_class.new(Example.new, :attr, '', "can't be blank")
@@ -31,6 +30,7 @@ describe Shoulda::Matchers::ActiveModel::PositiveErrorDescription, '#matched_err
 
   context 'with an error that matches the expected message regexp' do
     it 'returns the matched error' do
+      define_model(:Example, :attr => :string) do
         validates :attr, :presence => true
       end
       positive_error_description = described_class.new(Example.new, :attr, '', /blank/)
@@ -52,7 +52,7 @@ describe Shoulda::Matchers::ActiveModel::PositiveErrorDescription, '#matched_err
     it 'returns the first matching error when there are errors' do
       define_model(:Example, :attr => :string) do
         validates :attr, :presence => true,
-          :format => { :with => 'abc' }
+          :format => { :with => /abc/ }
       end
       positive_error_description = described_class.new(Example.new, :attr, '', nil)
       positive_error_description.matched_error.should == "can't be blank"
@@ -74,7 +74,7 @@ describe Shoulda::Matchers::ActiveModel::PositiveErrorDescription, '#matches?' d
       validates :attr, :presence => true
     end
     positive_error_description = described_class.new(Example.new, :attr, '', nil)
-    positive_error_description.matches?.should be_false
+    positive_error_description.matches?.should be_true
   end
 
   it 'returns false when there is no matched error' do
