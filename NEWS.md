@@ -7,6 +7,11 @@
   Previously, users were required to create a record in the database before
   using this matcher.
 
+* Fix an edge case when where the matchers weren't loaded into Test::Unit when
+  mixing RSpec and Test::Unit tests and also loading both the 'rspec-rails' gem
+  and 'shoulda-matchers' gem from the same Gemfile group, namely [:test,
+  :development].
+
 # v1.2.0
 
 * `ensure_inclusion_of` now has an `in_array` parameter:
