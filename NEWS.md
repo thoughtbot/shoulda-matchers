@@ -7,7 +7,7 @@
   Previously, users were required to create a record in the database before
   using this matcher.
 
-* `validate_format_of` will accept `allow_blank(bool)` and `allow_nil(false)`
+* `validate_format_of` will accept `allow_blank(bool)` and `allow_nil(bool)`
 
 # v1.2.0
 
