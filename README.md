@@ -30,7 +30,7 @@ Matchers to test validations and mass assignments:
       it { should validate_presence_of(:body).with_message(/wtf/) }
       it { should validate_presence_of(:title) }
       it { should validate_numericality_of(:user_id) }
-      it { should validate_uniqueness_of(:title) }
+      it { should ensure_inclusion_of(:status).in_array(['draft', 'public']) }
     end
 
     describe User do
