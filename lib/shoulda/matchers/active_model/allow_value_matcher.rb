@@ -45,6 +45,7 @@ module Shoulda # :nodoc:
       def matches?(instance)
         @instance = instance
         @values_to_match.none? do |value|
+          @value = value
           PositiveErrorDescription.new(instance, @attribute, value, @options[:expected_message]).matches?
         end
       end

@@ -41,7 +41,7 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher do
     it 'is correct' do
       expected_failure_message = 'Expected errors when attr is set to "present", got no errors'
       matcher = matcher_class.new('present').for(:attr)
-      matcher.matches?(model)
+      matcher.matches?(model).should be_false
       matcher.failure_message.should == expected_failure_message
     end
   end
