@@ -5,7 +5,7 @@ module Shoulda # :nodoc:
       # Ensure that the attribute's value is in the range specified
       #
       # Options:
-      # * <tt>in_array</tt> - the range of allowed values for this attribute
+      # * <tt>in_array</tt> - the array of allowed values for this attribute
       # * <tt>in_range</tt> - the range of allowed values for this attribute
       # * <tt>with_low_message</tt> - value the test expects to find in
       #   <tt>errors.on(:attribute)</tt>. Regexp or string. Defaults to the
