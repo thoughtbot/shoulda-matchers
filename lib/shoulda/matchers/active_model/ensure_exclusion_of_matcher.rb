@@ -5,6 +5,7 @@ module Shoulda # :nodoc:
       # Ensure that the attribute's value is not in the range specified
       #
       # Options:
+      # * <tt>in_array</tt> - the array of not allowed values for this attribute
       # * <tt>in_range</tt> - the range of not allowed values for this attribute
       # * <tt>with_message</tt> - value the test expects to find in
       #   <tt>errors.on(:attribute)</tt>. Regexp or string. Defaults to the
@@ -18,6 +19,10 @@ module Shoulda # :nodoc:
       end
 
       class EnsureExclusionOfMatcher < ValidationMatcher # :nodoc:
+        def in_array(array)
+          @array = array
+          self
+        end
 
         def in_range(range)
           @range = range
@@ -32,19 +37,29 @@ module Shoulda # :nodoc:
         end
 
         def description
-          "ensure exclusion of #{@attribute} in #{@range.inspect}"
+          "ensure exclusion of #{@attribute} in #{inspect_message}"
         end
 
         def matches?(subject)
           super(subject)
 
-          allows_lower_value &&
-            disallows_minimum_value &&
-            allows_higher_value &&
-            disallows_maximum_value
+          if @range
+            allows_lower_value &&
+              disallows_minimum_value &&
+              allows_higher_value &&
+              disallows_maximum_value
+          elsif @array
+            disallows_all_values_in_array?
+          end
         end
 
         private
+
+        def disallows_all_values_in_array?
+          @array.all? do |value|
+            disallows_value_of(value, expected_message)
+          end
+        end
 
         def allows_lower_value
           @minimum == 0 || allows_value_of(@minimum - 1, expected_message)
@@ -65,8 +80,15 @@ module Shoulda # :nodoc:
         def expected_message
           @expected_message || :exclusion
         end
-      end
 
+        def inspect_message
+          if @range
+            @range.inspect
+          else
+            @array.inspect
+          end
+        end
+      end
     end
   end
 end
