@@ -120,7 +120,6 @@ module Shoulda # :nodoc:
         def matches?(subject)
           super(subject)
 
-          @expected_message ||= :not_a_number
           translate_messages!
 
           disallows_greater_than_value &&
