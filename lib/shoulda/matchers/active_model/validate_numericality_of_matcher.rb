@@ -128,7 +128,7 @@ module Shoulda # :nodoc:
             disallows_less_than_or_equal_to_value &&
             disallows_equal_to_value &&
             disallows_text_value &&
-            disallows_non_integers
+            disallows_non_integers?
         end
 
         def description

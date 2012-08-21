@@ -45,7 +45,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
     end
 
     it "should not allow numeric values for that attribute with another message" do
-      @model.should_not validate_numericality_of(:attr)
+      @model.should_not validate_numericality_of(:attr).with_message('prefabricated')
     end
   end
 
@@ -94,13 +94,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
   context "description tests" do
     all_possible_validate_numericality_of_methods.each do |parameter|
       it "should return the correct description when the #{parameter} validation fails" do
-        validate_numericality_of(:attr).send(parameter, 0).description.should == "allow numeric values #{parameter} 0 for attr"
+        validate_numericality_of(:attr).send(parameter, 0).description.should == "only allow numeric values #{parameter} 0 for attr"
       end
     end
 
     all_possible_combinations_of_greater_than_or_less_than_methods.each do |parameter_with_greater, parameter_with_less|
       it "should return the correct description when the #{parameter_with_greater}, #{parameter_with_less} validations fails" do
-        validate_numericality_of(:attr).send(parameter_with_greater, 0).send(parameter_with_less, 10).description.should == "allow numeric values #{parameter_with_greater} 0, #{parameter_with_less} 10 for attr"
+        validate_numericality_of(:attr).send(parameter_with_greater, 0).send(parameter_with_less, 10).description.should == "only allow numeric values #{parameter_with_greater} 0, #{parameter_with_less} 10 for attr"
       end
     end
   end
