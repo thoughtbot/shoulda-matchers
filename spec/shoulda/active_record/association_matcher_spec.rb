@@ -375,7 +375,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       define_model :person do
         has_one :detail, :foreign_key => :detailed_person_id
       end
-      Person.new.should @matcher.foreign_key(:detailed_person_id)
+      Person.new.should @matcher.with_foreign_key(:detailed_person_id)
     end
 
     it "should reject an association with a bad :as option" do
