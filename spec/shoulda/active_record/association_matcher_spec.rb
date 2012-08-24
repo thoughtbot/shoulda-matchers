@@ -370,6 +370,14 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       Person.new.should_not @matcher
     end
 
+    it "should accept an association with an existing custom foreign key" do
+      define_model :detail, :detailed_person_id => :integer
+      define_model :person do
+        has_one :detail, :foreign_key => :detailed_person_id
+      end
+      Person.new.should @matcher.foreign_key(:detailed_person_id)
+    end
+
     it "should reject an association with a bad :as option" do
       define_model :detail, :detailable_id   => :integer,
                             :detailable_type => :string
