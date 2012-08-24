@@ -100,6 +100,11 @@ module Shoulda # :nodoc:
           self
         end
 
+        def with_foreign_key(foreign_key)
+          @options[:foreign_key] = foreign_key
+          self
+        end
+
         def validate(validate = true)
           @validate = validate
           self
@@ -261,11 +266,15 @@ module Shoulda # :nodoc:
         end
 
         def class_has_foreign_key?(klass)
-          if klass.column_names.include?(foreign_key)
-            true
+          if @options.key?(:foreign_key)
+            reflection.options[:foreign_key] == @options[:foreign_key]
           else
-            @missing = "#{klass} does not have a #{foreign_key} foreign key."
-            false
+            if klass.column_names.include?(foreign_key)
+              true
+            else
+              @missing = "#{klass} does not have a #{foreign_key} foreign key."
+              false
+            end
           end
         end
 
