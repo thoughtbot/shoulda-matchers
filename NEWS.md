@@ -1,4 +1,4 @@
-# HEAD
+# v1.3.0
 
 * `validate_format_of` will accept `allow_blank(bool)` and `allow_nil(bool)`
 
