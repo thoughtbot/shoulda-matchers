@@ -40,7 +40,7 @@ Matchers to test validations and mass assignments:
       it { should_not allow_mass_assignment_of(:password) }
     end
     
-Matchers to test before, after and around hooks (Rails 3 only!):
+Matchers to test before, after and around hooks:
     
     describe Post do
       it { should callback(:count_comments).before(:save) }
