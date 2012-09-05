@@ -48,6 +48,12 @@ Matchers to test before, after and around hooks:
       it { should callback(:evaluate_if_should_validate).before(:validation) }
       it { should callback(:add_some_convenience_accessors).after(:find) }
     end
+    
+    describe User do
+      it { should_not callback(:make_email_validation_ready!).before(:validation).on(:update) }
+      it { should callback(:make_email_validation_ready!).before(:validation).on(:create) }
+      it { should callback(:update_user_count).before(:destroy) }
+    end
 
 ## ActionController Matchers
 
