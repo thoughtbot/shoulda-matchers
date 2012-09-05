@@ -49,7 +49,7 @@ module Shoulda # :nodoc:
             false
           else
             callbacks = subject.send(:"_#{@lifecycle}_callbacks").dup
-            callbacks.select!{|callback| callback.filter == @method && callback.kind == @hook && matches_conditions?(callback) }
+            callbacks = callbacks.select{|callback| callback.filter == @method && callback.kind == @hook && matches_conditions?(callback) }
             callbacks.size > 0
           end
         end
