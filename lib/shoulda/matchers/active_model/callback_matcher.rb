@@ -2,27 +2,25 @@ module Shoulda # :nodoc:
   module Matchers
     module ActiveModel # :nodoc:
 
-      # Ensures that the model is not valid if the given attribute is not
-      # present.
+      # Ensures that the given model has a callback defined for the given method
       #
       # Options:
-      # * <tt>with_message</tt> - value the test expects to find in
-      #   <tt>errors.on(:attribute)</tt>. <tt>Regexp</tt> or <tt>String</tt>.
-      #   Defaults to the translation for <tt>:blank</tt>.
+      # * <tt>before(:lifecycle)</tt>. <tt>Symbol</tt>. - define the callback as a callback before the fact. :lifecycle can be :save, :create, :update, :destroy, :validation
+      # * <tt>after(:lifecycle)</tt>. <tt>Symbol</tt>. - define the callback as a callback after the fact. :lifecycle can be :save, :create, :update, :destroy, :validation, :initialize, :find, :touch
+      # * <tt>around(:lifecycle)</tt>. <tt>Symbol</tt>. - define the callback as a callback around the fact. :lifecycle can be :save, :create, :update, :destroy
+      #   <tt>if(:condition)</tt>. <tt>Symbol</tt>. - add a positive condition to the callback to be matched against
+      #   <tt>unless(:condition)</tt>. <tt>Symbol</tt>. - add a negative condition to the callback to be matched against
       #
       # Examples:
-      #   it { should validate_presence_of(:name) }
-      #   it { should validate_presence_of(:name).
-      #                 with_message(/is not optional/) }
+      #   it { should callback(:method).after(:create) }
+      #   it { should callback(:method).before(:validation).unless(:should_it_not?) }
       #
       def callback(method)
         CallbackMatcher.new(method)
       end
 
       class CallbackMatcher # :nodoc:
-        
-        attr_reader :method, :hook, :lifecycle, :condition_type, :condition
-        
+                
         def initialize(method)
           @method = method
         end
@@ -46,17 +44,22 @@ module Shoulda # :nodoc:
         end
 
         def matches?(subject)
-          callbacks = subject.send(:"_#{@lifecycle}_callbacks").dup
-          callbacks.select!{|callback| callback.filter == @method && callback.kind == @hook && matches_conditions?(callback) }
-          callbacks.size > 0
+          unless @lifecycle
+            @failure_message = "callback #{@method} can not be tested against an undefined lifecycle, use .before, .after or .around"
+            false
+          else
+            callbacks = subject.send(:"_#{@lifecycle}_callbacks").dup
+            callbacks.select!{|callback| callback.filter == @method && callback.kind == @hook && matches_conditions?(callback) }
+            callbacks.size > 0
+          end
         end
         
         def failure_message
-          "expected #{@method} to be listed as a callback #{@hook} #{@lifecycle}#{condition_phrase}, but was not"
+          @failure_message || "expected #{@method} to be listed as a callback #{@hook} #{@lifecycle}#{condition_phrase}, but was not"
         end
         
         def negative_failure_message
-          "expected #{@method} not to be listed as a callback #{@hook} #{@lifecycle}#{condition_phrase}, but was"
+          @failure_message || "expected #{@method} not to be listed as a callback #{@hook} #{@lifecycle}#{condition_phrase}, but was"
         end
 
         def description

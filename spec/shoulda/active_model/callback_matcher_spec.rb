@@ -1,6 +1,22 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::CallbackMatcher do
+  context "invalid use" do
+    before do
+      @model = define_model(:example, :attr  => :string,
+                                      :other => :integer) do
+        attr_accessible :attr, :other
+        before_create :dance!, :if => :evaluates_to_false!
+        after_save  :shake!, :unless => :evaluates_to_true!
+      end.new
+    end
+    it "should return a specific failure message when used invalidly" do
+      matcher = callback(:dance!)
+      matcher.matches?(@model).should be_false
+      matcher.failure_message.should == "callback dance! can not be tested against an undefined lifecycle, use .before, .after or .around"
+      matcher.negative_failure_message.should == "callback dance! can not be tested against an undefined lifecycle, use .before, .after or .around"
+    end
+  end
   [:save, :create, :update, :destroy].each do |lifecycle|
     context "on #{lifecycle}" do
       before do
@@ -114,6 +130,7 @@ describe Shoulda::Matchers::ActiveModel::CallbackMatcher do
           define_method :evaluates_to_true! do
             true
           end
+          
         end.new
       end
       context "as a simple callback test" do
