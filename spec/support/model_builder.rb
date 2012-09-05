@@ -32,7 +32,10 @@ module ModelBuilder
   def define_active_model_class(class_name, options = {}, &block)
     define_class(class_name) do
       include ActiveModel::Validations
-
+      extend ActiveModel::Callbacks
+      define_model_callbacks :initialize, :find, :touch, :only => :after
+      define_model_callbacks :save, :create, :update, :destroy
+      
       options[:accessors].each do |column|
         attr_accessor column.to_sym
       end
