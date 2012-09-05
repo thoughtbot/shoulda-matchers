@@ -42,6 +42,16 @@ module Shoulda # :nodoc:
             self
           end
         end
+        
+        def on(optional_lifecycle)
+          unless @lifecycle == :validation
+            @failure_message = "The .on option is only valid for the validation lifecycle and cannot be used with #{@lifecycle}, use with .before(:validation) or .after(:validation)"
+          else
+            @optional_lifecycle = optional_lifecycle
+          end
+          
+          self
+        end
 
         def matches?(subject)
           unless @lifecycle
@@ -49,21 +59,26 @@ module Shoulda # :nodoc:
             false
           else
             callbacks = subject.send(:"_#{@lifecycle}_callbacks").dup
-            callbacks = callbacks.select{|callback| callback.filter == @method && callback.kind == @hook && matches_conditions?(callback) }
+            callbacks = callbacks.select do |callback| 
+              callback.filter == @method && 
+              callback.kind == @hook && 
+              matches_conditions?(callback) && 
+              matches_optional_lifecycle?(callback)
+            end
             callbacks.size > 0
           end
         end
         
         def failure_message
-          @failure_message || "expected #{@method} to be listed as a callback #{@hook} #{@lifecycle}#{condition_phrase}, but was not"
+          @failure_message || "expected #{@method} to be listed as a callback #{@hook} #{@lifecycle}#{optional_lifecycle_phrase}#{condition_phrase}, but was not"
         end
         
         def negative_failure_message
-          @failure_message || "expected #{@method} not to be listed as a callback #{@hook} #{@lifecycle}#{condition_phrase}, but was"
+          @failure_message || "expected #{@method} not to be listed as a callback #{@hook} #{@lifecycle}#{optional_lifecycle_phrase}#{condition_phrase}, but was"
         end
 
         def description
-          "callback #{@method} #{@hook} #{@lifecycle}#{condition_phrase}"
+          "callback #{@method} #{@hook} #{@lifecycle}#{optional_lifecycle_phrase}#{condition_phrase}"
         end
 
         private
@@ -72,8 +87,16 @@ module Shoulda # :nodoc:
             !@condition || callback.options[@condition_type].include?(@condition)
           end
           
+          def matches_optional_lifecycle?(callback)
+            !@optional_lifecycle || callback.options[:if].include?("self.validation_context == :#{@optional_lifecycle}")
+          end
+          
           def condition_phrase
             " #{@condition_type} #{@condition} evaluates to #{@condition_type == :if ? 'true' : 'false'}" if @condition
+          end
+          
+          def optional_lifecycle_phrase
+            " on #{@optional_lifecycle}" if @optional_lifecycle
           end
 
       end
