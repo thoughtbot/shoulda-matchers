@@ -88,4 +88,36 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
       end.should raise_error(ArgumentError, /at least one argument/)
     end
   end
+
+  if Rails::VERSION::STRING.to_f >= 3.2
+    context "an attribute with a strict format validation" do
+      let(:model) do
+        define_model :example, :attr => :string do
+          validates_format_of :attr, :with => /abc/, :strict => true
+        end.new
+      end
+
+      it "strictly rejects a bad value" do
+        model.should_not allow_value("xyz").for(:attr).strict
+      end
+
+      it "strictly allows a bad value with a different message" do
+        model.should allow_value("xyz").for(:attr).with_message(/abc/).strict
+      end
+
+      it "describes itself" do
+        allow_value("xyz").for(:attr).strict.description.
+          should == 'strictly allow attr to be set to "xyz"'
+      end
+
+      it "provides a useful negative failure message" do
+        matcher = allow_value("xyz").for(:attr).strict.with_message(/abc/)
+        matcher.matches?(model)
+        matcher.negative_failure_message.
+          should == 'Expected exception to include /abc/ ' +
+            'when attr is set to "xyz", got Attr is invalid'
+      end
+    end
+  end
+
 end

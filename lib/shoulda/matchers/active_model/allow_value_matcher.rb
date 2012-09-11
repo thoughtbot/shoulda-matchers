@@ -29,6 +29,7 @@ module Shoulda # :nodoc:
 
         def initialize(*values)
           @values_to_match = values
+          @strict = false
           @options = {}
         end
 
@@ -39,6 +40,11 @@ module Shoulda # :nodoc:
 
         def with_message(message)
           @options[:expected_message] = message
+          self
+        end
+
+        def strict
+          @strict = true
           self
         end
 
@@ -60,30 +66,72 @@ module Shoulda # :nodoc:
         end
 
         def description
-          "allow #{@attribute} to be set to #{allowed_values}"
+          base = "allow #{@attribute} to be set to #{allowed_values}"
+
+          if strict?
+            "strictly #{base}"
+          else
+            base
+          end
         end
 
         private
 
         def errors_match?
+          if strict?
+            exception_message_matches?
+          else
+            validation_messages_match?
+          end
+        end
+
+        def exception_message_matches?
+          @instance.valid?
+          false
+        rescue ::ActiveModel::StrictValidationFailed => exception
+          @strict_exception = exception
+          errors_for_attribute_match?
+        end
+
+        def validation_messages_match?
           if @instance.valid?
             false
           else
-            if expected_message
-              @matched_error = errors_match_regexp? || errors_match_string?
-            else
-              errors_for_attribute.compact.any?
-            end
+            errors_for_attribute_match?
+          end
+        end
+
+        def errors_for_attribute_match?
+          if expected_message
+            @matched_error = errors_match_regexp? || errors_match_string?
+          else
+            errors_for_attribute.compact.any?
           end
         end
 
         def errors_for_attribute
+          if strict?
+            [strict_exception_message]
+          else
+            validation_messages_for_attribute
+          end
+        end
+
+        def strict_exception_message
+          @strict_exception.message
+        end
+
+        def validation_messages_for_attribute
           if @instance.errors.respond_to?(:[])
             errors = @instance.errors[@attribute]
           else
             errors = @instance.errors.on(@attribute)
           end
           Array.wrap(errors)
+        end
+
+        def strict?
+          @strict
         end
 
         def errors_match_regexp?
@@ -100,10 +148,34 @@ module Shoulda # :nodoc:
 
         def expectation
           includes_expected_message = expected_message ? "to include #{expected_message.inspect}" : ''
-          ["errors", includes_expected_message, "when #{@attribute} is set to #{@value.inspect}"].join(' ')
+          [error_source, includes_expected_message, "when #{@attribute} is set to #{@value.inspect}"].join(' ')
+        end
+
+        def error_source
+          if strict?
+            'exception'
+          else
+            'errors'
+          end
         end
 
         def error_description
+          if strict?
+            exception_description
+          else
+            validation_error_description
+          end
+        end
+
+        def exception_description
+          if @strict_exception
+            strict_exception_message
+          else
+            'no exception'
+          end
+        end
+
+        def validation_error_description
           if @instance.errors.empty?
             "no errors"
           else
