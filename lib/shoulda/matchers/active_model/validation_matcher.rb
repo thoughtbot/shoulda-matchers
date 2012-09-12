@@ -6,6 +6,12 @@ module Shoulda # :nodoc:
 
         def initialize(attribute)
           @attribute = attribute
+          @strict = false
+        end
+
+        def strict
+          @strict = true
+          self
         end
 
         def negative_failure_message
@@ -24,6 +30,9 @@ module Shoulda # :nodoc:
             new(value).
             for(@attribute).
             with_message(message)
+          if strict?
+            allow = allow.strict
+          end
           if allow.matches?(@subject)
             @negative_failure_message = allow.failure_message
             true
@@ -38,6 +47,9 @@ module Shoulda # :nodoc:
             new(value).
             for(@attribute).
             with_message(message)
+          if strict?
+            disallow = disallow.strict
+          end
           if disallow.matches?(@subject)
             @failure_message = disallow.negative_failure_message
             false
@@ -45,6 +57,10 @@ module Shoulda # :nodoc:
             @negative_failure_message = disallow.failure_message
             true
           end
+        end
+
+        def strict?
+          @strict
         end
       end
     end

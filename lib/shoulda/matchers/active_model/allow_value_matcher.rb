@@ -194,11 +194,35 @@ module Shoulda # :nodoc:
         def expected_message
           if @options.key?(:expected_message)
             if Symbol === @options[:expected_message]
-              default_error_message(@options[:expected_message], :model_name => model_name, :attribute => @attribute)
+              default_expected_message
             else
               @options[:expected_message]
             end
           end
+        end
+
+        def default_expected_message
+          if strict?
+            default_full_message
+          else
+            default_attribute_message
+          end
+        end
+
+        def default_full_message
+          "#{human_attribute_name} #{default_attribute_message}"
+        end
+
+        def human_attribute_name
+          @instance.class.human_attribute_name(@attribute)
+        end
+
+        def default_attribute_message
+          default_error_message(
+            @options[:expected_message],
+            :model_name => model_name,
+            :attribute => @attribute
+          )
         end
 
         def model_name

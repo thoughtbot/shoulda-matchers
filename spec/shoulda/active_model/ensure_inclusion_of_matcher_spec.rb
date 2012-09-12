@@ -120,4 +120,22 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
       @model.should_not ensure_inclusion_of(:attr).in_array(['one', 'two']).allow_nil(false)
     end
   end
+
+  if Rails::VERSION::STRING.to_f >= 3.2
+    context "a strict attribute which must be included in a range" do
+      before do
+        @model = define_model(:example, :attr => :integer) do
+          validates_inclusion_of :attr, :in => 2..5, :strict => true
+        end.new
+      end
+
+      it "should accept ensuring the correct range" do
+        @model.should ensure_inclusion_of(:attr).in_range(2..5).strict
+      end
+
+      it "should not accept ensuring another range" do
+        @model.should_not ensure_inclusion_of(:attr).in_range(2..6).strict
+      end
+    end
+  end
 end
