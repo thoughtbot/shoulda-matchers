@@ -71,34 +71,30 @@ module Shoulda # :nodoc:
           if strict?
             "strictly #{base}"
           else
-            base
+            message_finder.allow_description(allowed_values)
           end
         end
 
         private
 
         def errors_match?
+          has_messages? && errors_for_attribute_match?
+        end
+
+        def has_messages?
           if strict?
-            exception_message_matches?
+            has_exception_message?
           else
-            validation_messages_match?
+            message_finder.has_messages?
           end
         end
 
-        def exception_message_matches?
+        def has_exception_message?
           @instance.valid?
           false
         rescue ::ActiveModel::StrictValidationFailed => exception
           @strict_exception = exception
-          errors_for_attribute_match?
-        end
-
-        def validation_messages_match?
-          if @instance.valid?
-            false
-          else
-            errors_for_attribute_match?
-          end
+          true
         end
 
         def errors_for_attribute_match?
@@ -113,21 +109,12 @@ module Shoulda # :nodoc:
           if strict?
             [strict_exception_message]
           else
-            validation_messages_for_attribute
+            message_finder.messages
           end
         end
 
         def strict_exception_message
           @strict_exception.message
-        end
-
-        def validation_messages_for_attribute
-          if @instance.errors.respond_to?(:[])
-            errors = @instance.errors[@attribute]
-          else
-            errors = @instance.errors.on(@attribute)
-          end
-          Array.wrap(errors)
         end
 
         def strict?
@@ -155,7 +142,7 @@ module Shoulda # :nodoc:
           if strict?
             'exception'
           else
-            'errors'
+            message_finder.source_description
           end
         end
 
@@ -163,7 +150,7 @@ module Shoulda # :nodoc:
           if strict?
             exception_description
           else
-            validation_error_description
+            message_finder.messages_description
           end
         end
 
@@ -172,14 +159,6 @@ module Shoulda # :nodoc:
             strict_exception_message
           else
             'no exception'
-          end
-        end
-
-        def validation_error_description
-          if @instance.errors.empty?
-            "no errors"
-          else
-            "errors: #{pretty_error_messages(@instance)}"
           end
         end
 
@@ -205,7 +184,7 @@ module Shoulda # :nodoc:
           if strict?
             default_full_message
           else
-            default_attribute_message
+            message_finder.expected_message_from(default_attribute_message)
           end
         end
 
@@ -227,6 +206,10 @@ module Shoulda # :nodoc:
 
         def model_name
           @instance.class.to_s.underscore
+        end
+
+        def message_finder
+          @message_finder ||= ValidationMessageFinder.new(@instance, @attribute)
         end
       end
     end
