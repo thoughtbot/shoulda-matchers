@@ -29,7 +29,7 @@ module Shoulda # :nodoc:
 
         def initialize(*values)
           @values_to_match = values
-          @strict = false
+          @message_finder_factory = ValidationMessageFinder
           @options = {}
         end
 
@@ -44,7 +44,7 @@ module Shoulda # :nodoc:
         end
 
         def strict
-          @strict = true
+          @message_finder_factory = ExceptionMessageFinder
           self
         end
 
@@ -66,13 +66,7 @@ module Shoulda # :nodoc:
         end
 
         def description
-          base = "allow #{@attribute} to be set to #{allowed_values}"
-
-          if strict?
-            "strictly #{base}"
-          else
-            message_finder.allow_description(allowed_values)
-          end
+          message_finder.allow_description(allowed_values)
         end
 
         private
@@ -82,19 +76,7 @@ module Shoulda # :nodoc:
         end
 
         def has_messages?
-          if strict?
-            has_exception_message?
-          else
-            message_finder.has_messages?
-          end
-        end
-
-        def has_exception_message?
-          @instance.valid?
-          false
-        rescue ::ActiveModel::StrictValidationFailed => exception
-          @strict_exception = exception
-          true
+          message_finder.has_messages?
         end
 
         def errors_for_attribute_match?
@@ -106,19 +88,7 @@ module Shoulda # :nodoc:
         end
 
         def errors_for_attribute
-          if strict?
-            [strict_exception_message]
-          else
-            message_finder.messages
-          end
-        end
-
-        def strict_exception_message
-          @strict_exception.message
-        end
-
-        def strict?
-          @strict
+          message_finder.messages
         end
 
         def errors_match_regexp?
@@ -139,27 +109,11 @@ module Shoulda # :nodoc:
         end
 
         def error_source
-          if strict?
-            'exception'
-          else
-            message_finder.source_description
-          end
+          message_finder.source_description
         end
 
         def error_description
-          if strict?
-            exception_description
-          else
-            message_finder.messages_description
-          end
-        end
-
-        def exception_description
-          if @strict_exception
-            strict_exception_message
-          else
-            'no exception'
-          end
+          message_finder.messages_description
         end
 
         def allowed_values
@@ -181,19 +135,7 @@ module Shoulda # :nodoc:
         end
 
         def default_expected_message
-          if strict?
-            default_full_message
-          else
-            message_finder.expected_message_from(default_attribute_message)
-          end
-        end
-
-        def default_full_message
-          "#{human_attribute_name} #{default_attribute_message}"
-        end
-
-        def human_attribute_name
-          @instance.class.human_attribute_name(@attribute)
+          message_finder.expected_message_from(default_attribute_message)
         end
 
         def default_attribute_message
@@ -209,7 +151,7 @@ module Shoulda # :nodoc:
         end
 
         def message_finder
-          @message_finder ||= ValidationMessageFinder.new(@instance, @attribute)
+          @message_finder ||= @message_finder_factory.new(@instance, @attribute)
         end
       end
     end
