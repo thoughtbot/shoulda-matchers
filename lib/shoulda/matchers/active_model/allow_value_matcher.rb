@@ -11,6 +11,9 @@ module Shoulda # :nodoc:
       # * <tt>with_message</tt> - value the test expects to find in
       #   <tt>errors.on(:attribute)</tt>. Regexp or string. If omitted,
       #   the test looks for any errors in <tt>errors.on(:attribute)</tt>.
+      # * <tt>strict</tt> - expects the model to raise an exception when the
+      #   validation fails rather than adding to the errors collection. Used for
+      #   testing `validates!` and the `:strict => true` validation options.
       #
       # Example:
       #   it { should_not allow_value('bad').for(:isbn) }

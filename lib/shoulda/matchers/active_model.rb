@@ -29,8 +29,19 @@ module Shoulda
     #     end
     #     it { should allow_value("(123) 456-7890").for(:phone_number) }
     #     it { should_not allow_mass_assignment_of(:password) }
+    #     it { should allow_value('Activated', 'Pending').for(:status).strict }
+    #     it { should_not allow_value('Amazing').for(:status).strict }
     #   end
     #
+    # These tests work with the following model:
+    #
+    # class User < ActiveRecord::Base
+    #   validates_presence_of :name
+    #   validates_presence_of :phone_number
+    #   validates_format_of :phone_number, :with => /\\(\\d{3}\\) \\d{3}\\-\\d{4}/
+    #   validates_inclusion_of :status, :in => %w(Activated Pending), :strict => true
+    #   attr_accessible :name, :phone_number
+    # end
     module ActiveModel
     end
   end
