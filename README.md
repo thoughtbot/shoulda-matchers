@@ -39,6 +39,21 @@ Matchers to test validations and mass assignments:
       it { should ensure_inclusion_of(:age).in_range(1..100) }
       it { should_not allow_mass_assignment_of(:password) }
     end
+    
+Matchers to test before, after and around hooks:
+    
+    describe Post do
+      it { should callback(:count_comments).before(:save) }
+      it { should callback(:post_to_twitter).after(:create) }
+      it { should callback(:evaluate_if_should_validate).before(:validation) }
+      it { should callback(:add_some_convenience_accessors).after(:find) }
+    end
+    
+    describe User do
+      it { should_not callback(:make_email_validation_ready!).before(:validation).on(:update) }
+      it { should callback(:make_email_validation_ready!).before(:validation).on(:create) }
+      it { should callback(:update_user_count).before(:destroy) }
+    end
 
 ## ActionController Matchers
 
