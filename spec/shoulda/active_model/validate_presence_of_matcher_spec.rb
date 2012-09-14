@@ -117,4 +117,19 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
     end
   end
 
+  if Rails::VERSION::STRING.to_f >= 3.2
+    context "a strictly required attribute" do
+      before do
+        define_model :example, :attr => :string do
+          validates_presence_of :attr, :strict => true
+        end
+        @model = Example.new
+      end
+
+      it "should require a value" do
+        @model.should validate_presence_of(:attr).strict
+      end
+    end
+  end
+
 end
