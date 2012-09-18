@@ -243,7 +243,7 @@ module Shoulda # :nodoc:
 
         def join_table_exists?
           if @macro != :has_and_belongs_to_many ||
-              ::ActiveRecord::Base.connection.tables.include?(join_table)
+              model_class.connection.tables.include?(join_table)
             true
           else
             @missing = "join table #{join_table} doesn't exist"
