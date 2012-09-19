@@ -122,4 +122,20 @@ describe Shoulda::Matchers::ActiveModel::EnsureLengthOfMatcher do
     end
   end
 
+  context "an attribute with a length validation within a range" do
+    before do
+      @model = define_model(:example, :attr => :string) do
+        validates_length_of :attr, :within => 5..10
+      end.new
+    end
+
+    it "should accept ensuring the correct minimum and maximum length" do
+      @model.should ensure_length_of(:attr).is_within(5..10)
+    end
+
+    it "should accept with an exclusive range" do
+      @model.should ensure_length_of(:attr).is_within(5...11)
+    end
+  end
+
 end

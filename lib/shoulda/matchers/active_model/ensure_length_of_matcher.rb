@@ -9,6 +9,7 @@ module Shoulda # :nodoc:
       # * <tt>is_at_least</tt> - minimum length of this attribute
       # * <tt>is_at_most</tt> - maximum length of this attribute
       # * <tt>is_equal_to</tt> - exact requred length of this attribute
+      # * <tt>is_within</tt> - attribute is within a given range
       # * <tt>with_short_message</tt> - value the test expects to find in
       #   <tt>errors.on(:attribute)</tt>. Regexp or string.  Defaults to the
       #   translation for :too_short.
@@ -24,6 +25,8 @@ module Shoulda # :nodoc:
       #   it { should ensure_length_of(:password).
       #                 is_at_least(6).
       #                 is_at_most(20) }
+      #   it { should ensure_length_of(:password).
+      #                 is_within(6..20) }
       #   it { should ensure_length_of(:name).
       #                 is_at_least(3).
       #                 with_short_message(/not long enough/) }
@@ -58,6 +61,11 @@ module Shoulda # :nodoc:
           @options[:minimum] = length
           @options[:maximum] = length
           @short_message ||= :wrong_length
+          self
+        end
+
+        def is_within(range)
+          is_at_least(range.min) && is_at_most(range.max)
           self
         end
 
