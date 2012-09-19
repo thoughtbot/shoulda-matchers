@@ -62,13 +62,16 @@ module Shoulda # :nodoc:
         def correct_unique?
           return true unless @options.key?(:unique)
 
-          if matched_index.unique == @options[:unique]
-            true
-          else
+          is_unique = matched_index.unique
+
+          is_unique = !is_unique unless @options[:unique]
+
+          unless is_unique
             @missing = "#{table_name} has an index named #{matched_index.name} " <<
-                       "of unique #{matched_index.unique}, not #{@options[:unique]}."
-            false
+            "of unique #{matched_index.unique}, not #{@options[:unique]}."
           end
+
+          is_unique
         end
 
         def matched_index
