@@ -85,4 +85,21 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher do
   it "should not context an index's uniqueness when it isn't important" do
     have_db_index(:user_id).description.should_not =~ /unique/
   end
+
+  it "allows an IndexDefinition to have a truthy value for unique" do
+    db_connection = create_table 'superheros' do |table|
+      table.integer :age
+    end
+    db_connection.add_index :superheros, :age
+    define_model_class 'Superhero'
+
+    @matcher = have_db_index(:age).unique(true)
+
+    index_definition = stub("ActiveRecord::ConnectionAdapters::IndexDefinition",
+                            :unique => 7,
+                            :name => :age)
+    @matcher.stubs(:matched_index => index_definition)
+
+    Superhero.new.should @matcher
+  end
 end

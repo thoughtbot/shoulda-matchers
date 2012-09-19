@@ -1,5 +1,5 @@
 PATH
-  remote: /Users/joshuaclayton/dev/gems/shoulda-matchers
+  remote: /home/mike/thoughtbot/shoulda-matchers
   specs:
     shoulda-matchers (1.3.0)
       activesupport (>= 3.0.0)
