@@ -51,7 +51,29 @@ describe Shoulda::Matchers::ActiveModel::EnsureExclusionOfMatcher do
     it "should accept ensuring the correct range and messages" do
       @model.should ensure_exclusion_of(:attr).in_range(2..5).with_message(/shoud be out of this range/)
     end
-
   end
 
+  context "an attribute which must be excluded in an array" do
+    before do
+      @model = define_model(:example, :attr => :string) do
+        validates_exclusion_of :attr, :in => %w(one two)
+      end.new
+    end
+
+    it "accepts with correct array" do
+      @model.should ensure_exclusion_of(:attr).in_array(%w(one two))
+    end
+
+    it "rejects when only part of array matches" do
+      @model.should_not ensure_exclusion_of(:attr).in_array(%w(one wrong_value))
+    end
+
+    it "rejects when array doesn't match at all" do
+      @model.should_not ensure_exclusion_of(:attr).in_array(%w(cat dog))
+    end
+
+    it "has correct description" do
+      ensure_exclusion_of(:attr).in_array([true, 'dog']).description.should == 'ensure exclusion of attr in [true, "dog"]'
+    end
+  end
 end
