@@ -122,7 +122,7 @@ module Shoulda # :nodoc:
               previous_value = existing.send(scope)
 
               # Assume the scope is a foreign key if the field is nil
-              previous_value ||= 0
+              previous_value ||= @subject.class.columns_hash[scope.to_s].type == :string ? '0' : 0
 
               next_value = if previous_value.respond_to?(:next)
                 previous_value.next
