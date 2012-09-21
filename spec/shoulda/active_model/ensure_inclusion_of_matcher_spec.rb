@@ -1,6 +1,16 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
+  context "with no validations" do
+    before do
+      @model = define_model(:example, :attr => :string) do
+      end.new
+    end
+
+    it "should reject an array which does not have a validator defined" do
+      @model.should_not ensure_inclusion_of(:attr).in_array(%w(Yes No))
+    end
+  end
 
   context "an attribute which must be included in a range" do
     before do
