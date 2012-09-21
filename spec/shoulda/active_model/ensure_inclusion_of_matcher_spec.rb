@@ -121,6 +121,19 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     end
   end
 
+  context "an attribute allowing some blank values but not others" do
+    before do
+      @model = define_model(:example, :attr => :string) do
+        validates_inclusion_of :attr, :in => ['one', 'two', '']
+      end.new
+    end
+
+    it "rejects allow_blank" do
+      @model.should_not ensure_inclusion_of(:attr).in_array(['one', 'two', '']).allow_blank(true)
+      @model.should ensure_inclusion_of(:attr).in_array(['one', 'two', '']).allow_blank(false)
+    end
+  end
+
   if Rails::VERSION::STRING.to_f >= 3.2
     context "a strict attribute which must be included in a range" do
       before do
