@@ -58,6 +58,7 @@ module Shoulda # :nodoc:
           @options[:minimum] = length
           @options[:maximum] = length
           @short_message ||= :wrong_length
+          @long_message ||= :wrong_length
           self
         end
 
