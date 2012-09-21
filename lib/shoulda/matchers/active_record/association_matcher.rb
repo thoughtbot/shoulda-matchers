@@ -261,7 +261,9 @@ module Shoulda # :nodoc:
         end
 
         def class_has_foreign_key?(klass)
-          if klass.column_names.include?(foreign_key)
+          if foreign_key.class == Array && (foreign_key - klass.column_names).empty?
+            true
+          elsif klass.column_names.include?(foreign_key)
             true
           else
             @missing = "#{klass} does not have a #{foreign_key} foreign key."
@@ -284,7 +286,11 @@ module Shoulda # :nodoc:
         def foreign_key
           if foreign_key_reflection
             if foreign_key_reflection.respond_to?(:foreign_key)
-              foreign_key_reflection.foreign_key.to_s
+              if foreign_key_reflection.foreign_key.class == Array
+                foreign_key_reflection.foreign_key.map(&:to_s)
+              else
+                foreign_key_reflection.foreign_key.to_s
+              end
             else
               foreign_key_reflection.primary_key_name.to_s
             end
