@@ -97,9 +97,7 @@ module Shoulda # :nodoc:
         def allows_blank_value?
           if @options.key?(:allow_blank)
             blank_values = ['', ' ', "\n", "\r", "\t", "\f"]
-            @options[:allow_blank] == blank_values.inject(true) do |memo, value|
-              memo &&= allows_value_of(value)
-            end
+            @options[:allow_blank] == blank_values.all? { |value| allows_value_of(value) }
           else
             true
           end
