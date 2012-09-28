@@ -83,7 +83,7 @@ module Shoulda # :nodoc:
               disallows_higher_value &&
               allows_maximum_value
           elsif @array
-            if allows_all_values_in_array? && allows_blank_value? && allows_nil_value? && disallows_outside_values?
+            if allows_all_values_in_array? && allows_blank_value? && allows_nil_value? && disallows_value_outside_of_array?
               true
             else
               @failure_message = "#{@array} doesn't match array in validation"
@@ -137,16 +137,22 @@ module Shoulda # :nodoc:
           allows_value_of(@maximum, @high_message)
         end
 
-        def disallows_outside_values?
-          disallows_value_of(value_outside_of_array(@array))
+        def disallows_value_outside_of_array?
+          if value_outside_of_array
+            disallows_value_of(value_outside_of_array)
+          else
+            raise CouldNotDetermineValueOutsideOfArray
+          end
         end
 
-        def value_outside_of_array(array)
-          not_in_array = array.last.next
-          while array.include?(not_in_array)
-            not_in_array.next!
+        def value_outside_of_array
+          found = @array.detect do |item|
+            !@array.include?(item.next)
           end
-          not_in_array
+
+          if found
+            found.next
+          end
         end
       end
     end
