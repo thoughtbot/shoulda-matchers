@@ -12,6 +12,14 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     end
   end
 
+  context "where we cannot determine a value outside the array" do
+    it "should raise a custom exception" do
+      @model = define_model(:example, :attr => :string).new
+
+      expect { @model.should ensure_inclusion_of(:attr).in_array([""]) }.to raise_error Shoulda::Matchers::ActiveModel::CouldNotDetermineValueOutsideOfArray
+    end
+  end
+
   context "an attribute which must be included in a range" do
     before do
       @model = define_model(:example, :attr => :integer) do
