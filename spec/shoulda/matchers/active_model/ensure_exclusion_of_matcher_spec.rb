@@ -26,7 +26,6 @@ describe Shoulda::Matchers::ActiveModel::EnsureExclusionOfMatcher do
     before do
       @model = define_model(:example, :attr => :string) do
         validates_exclusion_of :attr, :in => 2..4, :message => 'not good'
-
       end.new
     end
 

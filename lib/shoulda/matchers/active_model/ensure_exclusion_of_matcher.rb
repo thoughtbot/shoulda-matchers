@@ -44,16 +44,25 @@ module Shoulda # :nodoc:
           super(subject)
 
           if @range
-            allows_lower_value &&
-              disallows_minimum_value &&
-              allows_higher_value &&
-              disallows_maximum_value
+            exclusion_matcher.matches?
+            # allows_range?
           elsif @array
             disallows_all_values_in_array?
           end
         end
 
         private
+
+        def allows_range?
+          allows_lower_value &&
+            disallows_minimum_value &&
+            allows_higher_value &&
+            disallows_maximum_value
+        end
+
+        def exclusion_matcher
+          @exclusion_matcher ||= RangeExclusionMatcher.new(@range)
+        end
 
         def disallows_all_values_in_array?
           @array.all? do |value|
