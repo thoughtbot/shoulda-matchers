@@ -137,7 +137,7 @@ module Shoulda # :nodoc:
 
         def pretty_key
           if @options[:key]
-            "[:#{@key}]"
+            "[:#{@options[:key]}]"
           else
             ""
           end
