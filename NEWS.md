@@ -1,3 +1,23 @@
+# v1.4.0
+
+* Added `strict` option to validation matchers.
+
+* Verify that arguments to `set_the_flash` matcher are valid.
+
+* Fix issue in ValidateUniquenessMatcher that could cause an error on postgres.
+
+* You can now pass an array to `ensure_exclusion_of` using `in_array`.
+
+* Allow testing of :foreign_key option for has_one relationships using the association matcher.
+
+* Fix bug where `ensure_length_of` would pass if the given string was too long.
+
+* `allow_blank` will now allow values such as: ' ', '\n', and '\r'.
+
+* Test outside values for `ensure_inclusion_of` when given an array.
+
+* Fixed the output of the set_the_flash matcher.
+
 # v1.3.0
 
 * `validate_format_of` will accept `allow_blank(bool)` and `allow_nil(bool)`
