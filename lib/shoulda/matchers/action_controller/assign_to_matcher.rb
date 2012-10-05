@@ -2,19 +2,7 @@ module Shoulda # :nodoc:
   module Matchers
     module ActionController # :nodoc:
 
-      # Ensures that the controller assigned to the named instance variable.
-      #
-      # Options:
-      # * <tt>with_kind_of</tt> - The expected class of the instance variable
-      #   being checked.
-      # * <tt>with</tt> - The value that should be assigned.
-      #
-      # Example:
-      #
-      #   it { should assign_to(:user) }
-      #   it { should_not assign_to(:user) }
-      #   it { should assign_to(:user).with_kind_of(User) }
-      #   it { should assign_to(:user).with(@user) }
+      # DEPRECATED - This matcher will be removed in ShouldaMatchers 2.0, please remove all references to it.
       def assign_to(variable)
         AssignToMatcher.new(variable)
       end
@@ -23,6 +11,7 @@ module Shoulda # :nodoc:
         attr_reader :failure_message, :negative_failure_message
 
         def initialize(variable)
+          ActiveSupport::Deprecation.warn("'assign_to' will be removed in ShouldaMatchers 2.0.")
           @variable    = variable.to_s
           @options = {}
           @options[:check_value] = false

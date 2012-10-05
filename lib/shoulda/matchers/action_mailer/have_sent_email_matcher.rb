@@ -2,21 +2,7 @@ module Shoulda # :nodoc:
   module Matchers
     module ActionMailer # :nodoc:
 
-      # The right email is sent.
-      #
-      #   it { should have_sent_email.with_subject(/is spam$/) }
-      #   it { should have_sent_email.from('do-not-reply@example.com') }
-      #   it { should have_sent_email.with_body(/is spam\./) }
-      #   it { should have_sent_email.to('myself@me.com') }
-      #   it { should have_sent_email.with_part('text/html', /HTML spam/) }
-      #   it { should have_sent_email.with_subject(/spam/).
-      #                               from('do-not-reply@example.com').
-      #                               reply_to('reply-to-me@example.com').
-      #                               with_body(/spam/).
-      #                               to('myself@me.com') }
-      #
-      # Use values of instance variables
-      #   it {should have_sent_email.to {@user.email} }
+      # DEPRECATED - This matcher will be removed in ShouldaMatchers 2.0, please remove all references to it.
       def have_sent_email
         HaveSentEmailMatcher.new(self)
       end
@@ -24,6 +10,7 @@ module Shoulda # :nodoc:
       class HaveSentEmailMatcher # :nodoc:
 
         def initialize(context)
+          ActiveSupport::Deprecation.warn("'have_sent_email' will be removed in ShouldaMatchers 2.0.")
           @context = context
         end
 

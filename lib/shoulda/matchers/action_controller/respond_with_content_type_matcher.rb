@@ -2,27 +2,14 @@ module Shoulda # :nodoc:
   module Matchers
     module ActionController # :nodoc:
 
-      # Ensures a controller responded with expected 'response' content type.
-      #
-      # You can pass an explicit content type such as 'application/rss+xml'
-      # or its symbolic equivalent :rss
-      # or a regular expression such as /rss/
-      #
-      # Example:
-      #
-      #   it { should respond_with_content_type(:xml)  }
-      #   it { should respond_with_content_type(:csv)  }
-      #   it { should respond_with_content_type(:atom) }
-      #   it { should respond_with_content_type(:yaml) }
-      #   it { should respond_with_content_type(:text) }
-      #   it { should respond_with_content_type('application/rss+xml')  }
-      #   it { should respond_with_content_type(/json/) }
+      # DEPRECATED - This matcher will be removed in ShouldaMatchers 2.0, please remove all references to it.
       def respond_with_content_type(content_type)
         RespondWithContentTypeMatcher.new(content_type)
       end
 
       class RespondWithContentTypeMatcher # :nodoc:
         def initialize(content_type)
+          ActiveSupport::Deprecation.warn("'respond_with_content_type' will be removed in ShouldaMatchers 2.0.")
           @content_type = look_up_content_type(content_type)
         end
 
