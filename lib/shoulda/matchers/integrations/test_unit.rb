@@ -1,4 +1,15 @@
 # :enddoc:
+require 'test/unit/testcase'
+
+require 'shoulda/matchers/independent'
+module Test
+  module Unit
+    class TestCase
+      include Shoulda::Matchers::Independent
+      extend Shoulda::Matchers::Independent
+    end
+  end
+end
 
 if defined?(ActionController)
   require 'shoulda/matchers/action_controller'
