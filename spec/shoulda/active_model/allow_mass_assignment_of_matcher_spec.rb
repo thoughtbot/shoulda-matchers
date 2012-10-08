@@ -1,6 +1,24 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
+  describe "#description" do
+    context 'without a role' do
+      it 'includes the attribute name' do
+        matcher = Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher.new(:attr)
+        matcher.description.should eq("allow mass assignment of attr")
+      end
+    end
+
+    if active_model_3_1?
+      context 'with a role' do
+        it 'includes the attribute name and the role' do
+          matcher = Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher.new(:attr).as(:admin)
+          matcher.description.should eq("allow mass assignment of attr as admin")
+        end
+      end
+    end
+  end
+
   context "an attribute that is blacklisted from mass-assignment" do
     let(:model) do
       define_model(:example, :attr => :string) do

@@ -57,10 +57,20 @@ module Shoulda # :nodoc:
         end
 
         def description
-          "allow mass assignment of #{@attribute}"
+          [base_description, role_description].compact.join(" ")
         end
 
         private
+
+        def base_description
+          "allow mass assignment of #{@attribute}"
+        end
+
+        def role_description
+          if role != :default
+            "as #{role}"
+          end
+        end
 
         def role
           @options[:role] || :default
