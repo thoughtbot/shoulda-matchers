@@ -4,6 +4,10 @@ module Shoulda # :nodoc:
 
       # Ensure that a given method is delegated properly.
       #
+      # Dependencies:
+      # This matcher requires the `bourne` gem be added to your Gemfile. You will receive
+      # a warning if this is not the case.
+      #
       # Basic Syntax:
       #   it { should delegate_method(:deliver_mail).to(:mailman) }
       #
@@ -13,7 +17,7 @@ module Shoulda # :nodoc:
       #
       # Examples:
       #   it { should delegate_method(:deliver_mail).to(:mailman).as(:deliver_with_haste)
-      #   it { should delegate_method(:deliver_mail).to(:mailman).with_arguments("221B Baker St.", speed: :presently)
+      #   it { should delegate_method(:deliver_mail).to(:mailman).with_arguments("221B Baker St.", :hastily => true)
       #
       def delegate_method(delegating_method)
         require 'bourne'
@@ -71,15 +75,15 @@ module Shoulda # :nodoc:
         private
 
         def add_clarifications_to(message)
-          message.tap do |message|
-            if @delegated_arguments.present?
-              message.concat(" with arguments: #{@delegated_arguments}")
-            end
-
-            if @method_on_target.present?
-              message.concat(" as :#{@method_on_target}")
-            end
+          if @delegated_arguments.present?
+            message << " with arguments: #{@delegated_arguments}"
           end
+
+          if @method_on_target.present?
+            message << " as :#{@method_on_target}"
+          end
+
+          message
         end
 
         def delegating_method_name
@@ -103,7 +107,9 @@ module Shoulda # :nodoc:
         end
 
         def ensure_target_method_is_present!
-          raise TargetNotDefinedError unless @target_method.present?
+          if @target_method.blank?
+            raise TargetNotDefinedError
+          end
         end
       end
 
