@@ -1,7 +1,7 @@
 # :enddoc:
 require 'test/unit/testcase'
-
 require 'shoulda/matchers/independent'
+
 module Test
   module Unit
     class TestCase

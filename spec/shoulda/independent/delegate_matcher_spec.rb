@@ -32,35 +32,38 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
 
   context 'given a method that does not delegate' do
     before do
-      class PostOffice
+      define_class(:post_office) do
         def deliver_mail
           :delivered
         end
       end
     end
 
-    it 'fails with a useful message' do
-      begin
-        post_office = PostOffice.new
-        post_office.should delegate_method(:deliver_mail).to(:mailman)
-      rescue Exception => e
-        e.message.should == 'Expected PostOffice#deliver_mail to delegate to PostOffice#mailman'
-      end
+    it 'does not match' do
+      post_office = PostOffice.new
+      matcher = delegate_method(:deliver_mail).to(:mailman)
+      matcher.matches?(post_office).should be_false
+    end
+
+    it 'has a failure message that indicates which method should have been delegated' do
+      post_office = PostOffice.new
+      matcher = delegate_method(:deliver_mail).to(:mailman)
+      matcher.matches?(post_office)
+      matcher.failure_message.should == 'Expected PostOffice#deliver_mail to delegate to PostOffice#mailman'
     end
 
     it 'uses the proper syntax for class methods in errors' do
-      begin
-        PostOffice.should delegate_method(:deliver_mail).to(:mailman)
-      rescue => e
-        e.message.should == 'Expected PostOffice.deliver_mail to delegate to PostOffice.mailman'
-      end
+      post_office = PostOffice.new
+      matcher = delegate_method(:deliver_mail).to(:mailman)
+      matcher.matches?(PostOffice)
+      matcher.failure_message.should == 'Expected PostOffice.deliver_mail to delegate to PostOffice.mailman'
     end
   end
 
   context 'given a method that delegates properly' do
     before do
-      class Mailman; end
-      class PostOffice
+      define_class(:mailman)
+      define_class(:post_office) do
         def deliver_mail
           mailman.deliver_mail
         end
@@ -71,7 +74,7 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
       end
     end
 
-    it 'succeeds' do
+    it 'matches' do
       post_office = PostOffice.new
       post_office.should delegate_method(:deliver_mail).to(:mailman)
     end
@@ -79,10 +82,10 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
 
   context 'given a method that delegates properly with certain arguments' do
     before do
-      class Mailman; end
-      class PostOffice
+      define_class(:mailman)
+      define_class(:post_office) do
         def deliver_mail
-          mailman.deliver_mail("221B Baker St.", speed: :presently)
+          mailman.deliver_mail("221B Baker St.", hastily: true)
         end
 
         def mailman
@@ -92,32 +95,33 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
     end
 
     context 'when given the correct arguments' do
-      it 'succeeds' do
+      it 'matches' do
         post_office = PostOffice.new
-        post_office.should delegate_method(:deliver_mail)
-                           .to(:mailman)
-                           .with_arguments("221B Baker St.", speed: :presently)
+        matcher = delegate_method(:deliver_mail).to(:mailman).with_arguments("221B Baker St.", hastily: true)
+        post_office.should matcher
       end
     end
 
     context 'when not given the correct arguments' do
-      it 'fails with a useful message' do
-        begin
-          post_office = PostOffice.new
-          post_office.should delegate_method(:deliver_mail)
-                             .to(:mailman)
-                             .with_arguments("123 Nowhere Ln.")
-        rescue Exception => e
-          e.message.should == 'Expected PostOffice#deliver_mail to delegate to PostOffice#mailman with arguments: ["123 Nowhere Ln."]'
-        end
+      it 'does not match' do
+        post_office = PostOffice.new
+        matcher = delegate_method(:deliver_mail).to(:mailman).with_arguments("123 Nowhere Ln.")
+        matcher.matches?(post_office).should be_false
+      end
+
+      it 'has a failure message that indicates which arguments were expected' do
+        post_office = PostOffice.new
+        matcher = delegate_method(:deliver_mail).to(:mailman).with_arguments("123 Nowhere Ln.")
+        matcher.matches?(post_office)
+        matcher.failure_message.should == 'Expected PostOffice#deliver_mail to delegate to PostOffice#mailman with arguments: ["123 Nowhere Ln."]'
       end
     end
   end
 
   context 'given a method that delegates properly to a method of a different name' do
     before do
-      class Mailman; end
-      class PostOffice
+      define_class(:mailman)
+      define_class(:post_office) do
         def deliver_mail
           mailman.deliver_mail_and_avoid_dogs
         end
@@ -129,24 +133,25 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
     end
 
     context 'when given the correct method name' do
-      it 'succeeds' do
+      it 'matches' do
         post_office = PostOffice.new
-        post_office.should delegate_method(:deliver_mail)
-                           .to(:mailman)
-                           .as(:deliver_mail_and_avoid_dogs)
+        matcher = delegate_method(:deliver_mail).to(:mailman).as(:deliver_mail_and_avoid_dogs)
+        post_office.should matcher
       end
     end
 
     context 'when given an incorrect method name' do
-      it 'fails with a useful message' do
-        begin
-          post_office = PostOffice.new
-          post_office.should delegate_method(:deliver_mail)
-                             .to(:mailman)
-                             .as(:deliver_mail_without_regard_for_safety)
-        rescue Exception => e
-          e.message.should == "Expected PostOffice#deliver_mail to delegate to PostOffice#mailman as :deliver_mail_without_regard_for_safety"
-        end
+      it 'does not match' do
+        post_office = PostOffice.new
+        matcher = delegate_method(:deliver_mail).to(:mailman).as(:watch_tv)
+        matcher.matches?(post_office).should be_false
+      end
+
+      it 'has a failure message that indicates which method was expected' do
+        post_office = PostOffice.new
+        matcher = delegate_method(:deliver_mail).to(:mailman).as(:watch_tv)
+        matcher.matches?(post_office)
+        matcher.failure_message.should == 'Expected PostOffice#deliver_mail to delegate to PostOffice#mailman as :watch_tv'
       end
     end
   end
