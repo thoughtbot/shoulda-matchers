@@ -20,10 +20,12 @@ module Shoulda # :nodoc:
       #   it { should delegate_method(:deliver_mail).to(:mailman).with_arguments('221B Baker St.', :hastily => true)
       #
       def delegate_method(delegating_method)
-        require 'bourne'
-        DelegateMatcher.new(delegating_method)
-      rescue LoadError
-        raise "To use Shoulda's #delegate_method matcher, please add `bourne` to your Gemfile."
+        begin
+          require 'bourne'
+          DelegateMatcher.new(delegating_method)
+        rescue LoadError
+          raise "To use Shoulda's #delegate_method matcher, please add `bourne` to your Gemfile."
+        end
       end
 
       class DelegateMatcher
