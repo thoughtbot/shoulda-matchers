@@ -85,7 +85,7 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
       define_class(:mailman)
       define_class(:post_office) do
         def deliver_mail
-          mailman.deliver_mail("221B Baker St.", hastily: true)
+          mailman.deliver_mail('221B Baker St.', hastily: true)
         end
 
         def mailman
@@ -97,7 +97,7 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
     context 'when given the correct arguments' do
       it 'matches' do
         post_office = PostOffice.new
-        matcher = delegate_method(:deliver_mail).to(:mailman).with_arguments("221B Baker St.", hastily: true)
+        matcher = delegate_method(:deliver_mail).to(:mailman).with_arguments('221B Baker St.', hastily: true)
         post_office.should matcher
       end
     end
@@ -105,13 +105,13 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
     context 'when not given the correct arguments' do
       it 'does not match' do
         post_office = PostOffice.new
-        matcher = delegate_method(:deliver_mail).to(:mailman).with_arguments("123 Nowhere Ln.")
+        matcher = delegate_method(:deliver_mail).to(:mailman).with_arguments('123 Nowhere Ln.')
         matcher.matches?(post_office).should be_false
       end
 
       it 'has a failure message that indicates which arguments were expected' do
         post_office = PostOffice.new
-        matcher = delegate_method(:deliver_mail).to(:mailman).with_arguments("123 Nowhere Ln.")
+        matcher = delegate_method(:deliver_mail).to(:mailman).with_arguments('123 Nowhere Ln.')
         matcher.matches?(post_office)
         matcher.failure_message.should == 'Expected PostOffice#deliver_mail to delegate to PostOffice#mailman with arguments: ["123 Nowhere Ln."]'
       end
@@ -160,13 +160,13 @@ end
 describe Shoulda::Matchers::Independent::DelegateMatcher::TargetNotDefinedError do
   it 'has a useful message' do
     error = Shoulda::Matchers::Independent::DelegateMatcher::TargetNotDefinedError.new
-    error.message.should include "Delegation needs a target."
+    error.message.should include 'Delegation needs a target'
   end
 end
 
 describe Shoulda::Matchers::Independent::DelegateMatcher::InvalidDelegateMatcher do
   it 'has a useful message' do
     error = Shoulda::Matchers::Independent::DelegateMatcher::InvalidDelegateMatcher.new
-    error.message.should include "does not support #should_not"
+    error.message.should include 'does not support #should_not'
   end
 end
