@@ -5,8 +5,8 @@ module Shoulda # :nodoc:
       # Ensure that a given method is delegated properly.
       #
       # Dependencies:
-      # This matcher requires the `bourne` gem be added to your Gemfile. You will receive
-      # a warning if this is not the case.
+      #   This matcher requires the `bourne` gem be added to your Gemfile. You will receive
+      #   a warning if this is not the case.
       #
       # Basic Syntax:
       #   it { should delegate_method(:deliver_mail).to(:mailman) }
@@ -17,7 +17,7 @@ module Shoulda # :nodoc:
       #
       # Examples:
       #   it { should delegate_method(:deliver_mail).to(:mailman).as(:deliver_with_haste)
-      #   it { should delegate_method(:deliver_mail).to(:mailman).with_arguments("221B Baker St.", :hastily => true)
+      #   it { should delegate_method(:deliver_mail).to(:mailman).with_arguments('221B Baker St.', :hastily => true)
       #
       def delegate_method(delegating_method)
         require 'bourne'
@@ -96,9 +96,9 @@ module Shoulda # :nodoc:
 
         def method_name_with_class(method)
           if Class === @subject
-            @subject.name + "." + method.to_s
+            @subject.name + '.' + method.to_s
           else
-            @subject.class.name + "#" + method.to_s
+            @subject.class.name + '#' + method.to_s
           end
         end
 
@@ -115,13 +115,13 @@ module Shoulda # :nodoc:
 
       class DelegateMatcher::TargetNotDefinedError < StandardError
         def message
-          "Delegation needs a target. Use the #to method to define one, e.g. `post_office.should delegate(:deliver_mail).to(:mailman)`"
+          'Delegation needs a target. Use the #to method to define one, e.g. `post_office.should delegate(:deliver_mail).to(:mailman)`'
         end
       end
 
       class DelegateMatcher::InvalidDelegateMatcher < StandardError
         def message
-          "#delegate_to does not support #should_not syntax."
+          '#delegate_to does not support #should_not syntax.'
         end
       end
     end
