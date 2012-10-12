@@ -48,15 +48,21 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
     it 'has a failure message that indicates which method should have been delegated' do
       post_office = PostOffice.new
       matcher = delegate_method(:deliver_mail).to(:mailman)
+
       matcher.matches?(post_office)
-      matcher.failure_message.should == 'Expected PostOffice#deliver_mail to delegate to PostOffice#mailman'
+
+      message = 'Expected PostOffice#deliver_mail to delegate to PostOffice#mailman'
+      matcher.failure_message.should == message
     end
 
     it 'uses the proper syntax for class methods in errors' do
       post_office = PostOffice.new
       matcher = delegate_method(:deliver_mail).to(:mailman)
+
       matcher.matches?(PostOffice)
-      matcher.failure_message.should == 'Expected PostOffice.deliver_mail to delegate to PostOffice.mailman'
+
+      message = 'Expected PostOffice.deliver_mail to delegate to PostOffice.mailman'
+      matcher.failure_message.should == message
     end
   end
 
@@ -112,8 +118,11 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
       it 'has a failure message that indicates which arguments were expected' do
         post_office = PostOffice.new
         matcher = delegate_method(:deliver_mail).to(:mailman).with_arguments('123 Nowhere Ln.')
+
         matcher.matches?(post_office)
-        matcher.failure_message.should == 'Expected PostOffice#deliver_mail to delegate to PostOffice#mailman with arguments: ["123 Nowhere Ln."]'
+
+        message = 'Expected PostOffice#deliver_mail to delegate to PostOffice#mailman with arguments: ["123 Nowhere Ln."]'
+        matcher.failure_message.should == message
       end
     end
   end
@@ -150,8 +159,11 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
       it 'has a failure message that indicates which method was expected' do
         post_office = PostOffice.new
         matcher = delegate_method(:deliver_mail).to(:mailman).as(:watch_tv)
+
         matcher.matches?(post_office)
-        matcher.failure_message.should == 'Expected PostOffice#deliver_mail to delegate to PostOffice#mailman as :watch_tv'
+
+        message = 'Expected PostOffice#deliver_mail to delegate to PostOffice#mailman as :watch_tv'
+        matcher.failure_message.should == message
       end
     end
   end
