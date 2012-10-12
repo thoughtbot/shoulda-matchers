@@ -91,7 +91,7 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
       define_class(:mailman)
       define_class(:post_office) do
         def deliver_mail
-          mailman.deliver_mail('221B Baker St.', hastily: true)
+          mailman.deliver_mail('221B Baker St.', :hastily => true)
         end
 
         def mailman
@@ -103,7 +103,7 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
     context 'when given the correct arguments' do
       it 'matches' do
         post_office = PostOffice.new
-        matcher = delegate_method(:deliver_mail).to(:mailman).with_arguments('221B Baker St.', hastily: true)
+        matcher = delegate_method(:deliver_mail).to(:mailman).with_arguments('221B Baker St.', :hastily => true)
         post_office.should matcher
       end
     end
