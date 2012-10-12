@@ -56,7 +56,6 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
     end
 
     it 'uses the proper syntax for class methods in errors' do
-      post_office = PostOffice.new
       matcher = delegate_method(:deliver_mail).to(:mailman)
 
       matcher.matches?(PostOffice)
