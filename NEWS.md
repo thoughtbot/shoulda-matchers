@@ -1,3 +1,8 @@
+# v1.4.1
+* Fixes an issue when used with Test::Unit on the allow value matcher.
+
+* Fixes an issue with using ensure_inclusion_of(:attr) given an array of true or false values.
+
 # v1.4.0
 
 * Added `strict` option to validation matchers.
