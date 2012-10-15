@@ -12,11 +12,20 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     end
   end
 
+  context "with true/false values" do
+    it "can verify outside values to ensure the negative case" do
+      model = define_model(:example, :attr => :string).new
+
+      model.should_not ensure_inclusion_of(:attr).in_array([true, false])
+    end
+  end
+
   context "where we cannot determine a value outside the array" do
     it "should raise a custom exception" do
-      @model = define_model(:example, :attr => :string).new
+      model = define_model(:example, :attr => :string).new
 
-      expect { @model.should ensure_inclusion_of(:attr).in_array([""]) }.to raise_error Shoulda::Matchers::ActiveModel::CouldNotDetermineValueOutsideOfArray
+      arbitrary_string = Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher::ARBITRARY_OUTSIDE_STRING
+      expect { model.should ensure_inclusion_of(:attr).in_array([arbitrary_string]) }.to raise_error Shoulda::Matchers::ActiveModel::CouldNotDetermineValueOutsideOfArray
     end
   end
 
