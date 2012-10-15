@@ -18,10 +18,10 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency('activesupport', '>= 3.0.0')
+  s.add_dependency('bourne',        '~> 1.1.2')
 
   s.add_development_dependency('appraisal',   '~> 0.4.0')
   s.add_development_dependency('aruba')
-  s.add_development_dependency('bourne',      '~> 1.1.2')
   s.add_development_dependency('bundler',     '~> 1.1')
   s.add_development_dependency('cucumber',    '~> 1.1.9')
   s.add_development_dependency('rails',       '~> 3.0')

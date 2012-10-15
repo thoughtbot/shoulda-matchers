@@ -1,12 +1,10 @@
+require 'bourne'
+
 module Shoulda # :nodoc:
   module Matchers
     module Independent # :nodoc:
 
       # Ensure that a given method is delegated properly.
-      #
-      # Dependencies:
-      #   This matcher requires the `bourne` gem be added to your Gemfile. You will receive
-      #   a warning if this is not the case.
       #
       # Basic Syntax:
       #   it { should delegate_method(:deliver_mail).to(:mailman) }
@@ -20,12 +18,7 @@ module Shoulda # :nodoc:
       #   it { should delegate_method(:deliver_mail).to(:mailman).with_arguments('221B Baker St.', :hastily => true)
       #
       def delegate_method(delegating_method)
-        begin
-          require 'bourne'
-          DelegateMatcher.new(delegating_method)
-        rescue LoadError
-          raise "To use Shoulda's #delegate_method matcher, please add `bourne` to your Gemfile."
-        end
+        DelegateMatcher.new(delegating_method)
       end
 
       class DelegateMatcher
