@@ -22,6 +22,8 @@ module Shoulda # :nodoc:
       end
 
       class EnsureInclusionOfMatcher < ValidationMatcher # :nodoc:
+        ARBITRARY_OUTSIDE_STRING = "shouldamatchersteststring"
+
         def initialize(attribute)
           super(attribute)
           @options = {}
@@ -138,20 +140,14 @@ module Shoulda # :nodoc:
         end
 
         def disallows_value_outside_of_array?
-          if value_outside_of_array
-            disallows_value_of(value_outside_of_array)
-          else
-            raise CouldNotDetermineValueOutsideOfArray
-          end
+          disallows_value_of(value_outside_of_array)
         end
 
         def value_outside_of_array
-          found = @array.detect do |item|
-            !@array.include?(item.next)
-          end
-
-          if found
-            found.next
+          if @array.include?(ARBITRARY_OUTSIDE_STRING)
+            raise CouldNotDetermineValueOutsideOfArray
+          else
+            ARBITRARY_OUTSIDE_STRING
           end
         end
       end

@@ -79,6 +79,14 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
       matcher = allow_value("foo").for(:baz)
       matcher.description.should eq('allow baz to be set to "foo"')
     end
+
+    it "allows you to call description before calling matches?" do
+      model = define_model(:example, :attr => :string).new
+      matcher = Shoulda::Matchers::ActiveModel::AllowValueMatcher.new("foo").for(:attr)
+      matcher.description
+
+      expect { matcher.matches?(model) }.not_to raise_error
+    end
   end
 
   context "an AllowValueMatcher with no values" do

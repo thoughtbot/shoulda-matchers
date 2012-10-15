@@ -154,7 +154,7 @@ module Shoulda # :nodoc:
         end
 
         def message_finder
-          @message_finder ||= @message_finder_factory.new(@instance, @attribute)
+          @message_finder_factory.new(@instance, @attribute)
         end
       end
     end
