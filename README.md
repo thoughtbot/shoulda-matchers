@@ -57,6 +57,14 @@ Matchers to test common patterns:
       end
     end
 
+## Independent Matchers
+
+Matchers to test non-Rails-related code:
+
+    describe Human do
+      it { should delegate_method(:work).to(:robot) }
+    end
+
 ## Installation
 
 In Rails 3 and Bundler, add the following to your Gemfile:
