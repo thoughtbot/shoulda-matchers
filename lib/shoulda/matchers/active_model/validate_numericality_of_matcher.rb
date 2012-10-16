@@ -17,55 +17,68 @@ module Shoulda # :nodoc:
         ValidateNumericalityOfMatcher.new(attr)
       end
 
-      class ValidateNumericalityOfMatcher < ValidationMatcher # :nodoc:
+      class ValidateNumericalityOfMatcher
         def initialize(attribute)
-          super(attribute)
+          @attribute = attribute
           @options = {}
+          @submatchers = []
+
+          add_disallow_value_matcher
         end
 
         def only_integer
-          @options[:only_integer] = true
+          only_integer_matcher = OnlyIntegerMatcher.new(@attribute)
+          add_submatcher(only_integer_matcher)
+
           self
         end
 
         def with_message(message)
-          if message
-            @expected_message = message
-          end
+          @expected_message = message
           self
         end
 
         def matches?(subject)
-          super(subject)
-          disallows_non_integers? && disallows_text?
+          @subject = subject
+          set_expected_message_on_submatchers
+          submatchers_match?
         end
 
         def description
-          "only allow #{allowed_type} values for #{@attribute}"
+          "only allow #{allowed_types} values for #{@attribute}"
+        end
+
+        def failure_message
+          @disallow_value_matcher.failure_message
         end
 
         private
 
-        def allowed_type
-          if @options[:only_integer]
-            "integer"
-          else
-            "numeric"
-          end
+        def add_disallow_value_matcher
+          @disallow_value_matcher = DisallowValueMatcher.new('abcd').for(@attribute)
+          add_submatcher(@disallow_value_matcher)
         end
 
-        def disallows_non_integers?
-          if @options[:only_integer]
-            message = @expected_message || :not_an_integer
-            disallows_value_of(0.1, message)
-          else
-            true
-          end
+        def add_submatcher(submatcher)
+          @submatchers << submatcher
         end
 
-        def disallows_text?
+        def set_expected_message_on_submatchers
           message = @expected_message || :not_a_number
-          disallows_value_of('abcd', message)
+          @submatchers.each { |matcher| matcher.with_message(message) }
+        end
+
+        def submatchers_match?
+          @submatchers.all? { |matcher| matcher.matches?(@subject) }
+        end
+
+        def allowed_types
+          allowed = ["numeric"] + submatcher_allowed_types
+          allowed.join(", ")
+        end
+
+        def submatcher_allowed_types
+          @submatchers.map(&:allowed_types).reject { |type| type.empty? }
         end
       end
     end
