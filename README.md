@@ -60,7 +60,7 @@ Matchers to test common patterns:
 
 ## Independent Matchers
 
-Matchers to test non-Rails-related code:
+Matchers to test non-Rails-dependent code:
 
     describe Human do
       it { should delegate_method(:work).to(:robot) }
