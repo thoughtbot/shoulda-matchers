@@ -71,7 +71,7 @@ module Shoulda # :nodoc:
 
         def add_clarifications_to(message)
           if @delegated_arguments.present?
-            message << " with arguments: #{@delegated_arguments}"
+            message << " with arguments: #{@delegated_arguments.inspect}"
           end
 
           if @method_on_target.present?
