@@ -27,6 +27,7 @@ Matchers to test validations and mass assignments:
 
     describe Post do
       it { should validate_uniqueness_of(:title) }
+      it { should validate_uniqueness_of(:title).scoped_to(:user_id, :category_id) }
       it { should validate_presence_of(:body).with_message(/wtf/) }
       it { should validate_presence_of(:title) }
       it { should validate_numericality_of(:user_id) }
