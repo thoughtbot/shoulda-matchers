@@ -1,5 +1,10 @@
 # :enddoc:
 
+require 'shoulda/matchers/independent'
+module RSpec::Matchers
+  include Shoulda::Matchers::Independent
+end
+
 if defined?(::ActiveRecord)
   require 'shoulda/matchers/active_record'
   require 'shoulda/matchers/active_model'
