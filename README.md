@@ -27,6 +27,7 @@ Matchers to test validations and mass assignments:
 
     describe Post do
       it { should validate_uniqueness_of(:title) }
+      it { should validate_uniqueness_of(:title).scoped_to(:user_id, :category_id) }
       it { should validate_presence_of(:body).with_message(/wtf/) }
       it { should validate_presence_of(:title) }
       it { should validate_numericality_of(:user_id) }
@@ -55,6 +56,14 @@ Matchers to test common patterns:
         it { should render_template(:show) }
         it { should_not set_the_flash }
       end
+    end
+
+## Independent Matchers
+
+Matchers to test non-Rails-dependent code:
+
+    describe Human do
+      it { should delegate_method(:work).to(:robot) }
     end
 
 ## Installation
