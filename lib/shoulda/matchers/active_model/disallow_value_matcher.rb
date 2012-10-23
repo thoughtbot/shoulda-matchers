@@ -3,7 +3,7 @@ module Shoulda # :nodoc:
     module ActiveModel # :nodoc:
       class DisallowValueMatcher # :nodoc:
         def initialize(value)
-          @allow_matcher = Shoulda::Matchers::ActiveModel::AllowValueMatcher.new(value)
+          @allow_matcher = AllowValueMatcher.new(value)
         end
 
         def matches?(subject)

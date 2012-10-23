@@ -25,10 +25,19 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
       matcher.matches?(@model).should be_true
     end
 
-    it "should not enforce integer values for that attribute" do
-      matcher = new_matcher(:attr)
-      matcher.only_integer
-      matcher.matches?(@model).should be_false
+    context "when asked to enforce integer values for that attribute" do
+      it "should not match" do
+        matcher = new_matcher(:attr)
+        matcher.only_integer
+        matcher.matches?(@model).should be_false
+      end
+
+      it "should fail with the ActiveRecord :not_an_integer message" do
+        matcher = new_matcher(:attr)
+        matcher.only_integer
+        matcher.matches?(@model)
+        matcher.failure_message.should include 'Expected errors to include "must be an integer"'
+      end
     end
   end
 

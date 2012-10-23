@@ -42,7 +42,7 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher do
     end
 
     it "delegates its failure message to its allow matcher's negative failure message" do
-      allow_matcher = stub_everything(negative_failure_message: "allow matcher failure")
+      allow_matcher = stub_everything(:negative_failure_message => "allow matcher failure")
       Shoulda::Matchers::ActiveModel::AllowValueMatcher.stubs(:new).returns(allow_matcher)
 
       matcher = new_matcher("abcde")

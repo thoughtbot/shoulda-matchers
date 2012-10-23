@@ -18,6 +18,8 @@ module Shoulda # :nodoc:
       end
 
       class ValidateNumericalityOfMatcher
+        NON_NUMERIC_VALUE = 'abcd'
+
         def initialize(attribute)
           @attribute = attribute
           @options = {}
@@ -29,18 +31,16 @@ module Shoulda # :nodoc:
         def only_integer
           only_integer_matcher = OnlyIntegerMatcher.new(@attribute)
           add_submatcher(only_integer_matcher)
-
           self
         end
 
         def with_message(message)
-          @expected_message = message
+          @submatchers.each { |matcher| matcher.with_message(message) }
           self
         end
 
         def matches?(subject)
           @subject = subject
-          set_expected_message_on_submatchers
           submatchers_match?
         end
 
@@ -49,27 +49,33 @@ module Shoulda # :nodoc:
         end
 
         def failure_message
-          @disallow_value_matcher.failure_message
+          submatcher_failure_messages.last
         end
 
         private
 
         def add_disallow_value_matcher
-          @disallow_value_matcher = DisallowValueMatcher.new('abcd').for(@attribute)
-          add_submatcher(@disallow_value_matcher)
+          disallow_value_matcher = DisallowValueMatcher.new(NON_NUMERIC_VALUE).
+            for(@attribute).
+            with_message(:not_a_number)
+
+          add_submatcher(disallow_value_matcher)
         end
 
         def add_submatcher(submatcher)
           @submatchers << submatcher
         end
 
-        def set_expected_message_on_submatchers
-          message = @expected_message || :not_a_number
-          @submatchers.each { |matcher| matcher.with_message(message) }
+        def submatchers_match?
+          failing_submatchers.empty?
         end
 
-        def submatchers_match?
-          @submatchers.all? { |matcher| matcher.matches?(@subject) }
+        def submatcher_failure_messages
+          failing_submatchers.map(&:failure_message)
+        end
+
+        def failing_submatchers
+          @failing_submatchers ||= @submatchers.select { |matcher| !matcher.matches?(@subject) }
         end
 
         def allowed_types
@@ -78,7 +84,7 @@ module Shoulda # :nodoc:
         end
 
         def submatcher_allowed_types
-          @submatchers.map(&:allowed_types).reject { |type| type.empty? }
+          @submatchers.map(&:allowed_types).reject(&:empty?)
         end
       end
     end
