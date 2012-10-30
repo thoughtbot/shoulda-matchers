@@ -3,6 +3,9 @@ module Shoulda
     if Gem.ruby_version >= Gem::Version.new('1.8') && Gem.ruby_version < Gem::Version.new('1.9')
       require 'test/unit'
       AssertionError = Test::Unit::AssertionFailedError
+    elsif defined?(Test::Unit::AssertionFailedError)
+      # It looks like we already have what we need ;)
+      AssertionError = Test::Unit::AssertionFailedError
     elsif Gem.ruby_version >= Gem::Version.new("1.9")
       require 'minitest/unit'
       AssertionError = MiniTest::Assertion
