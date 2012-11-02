@@ -1,5 +1,7 @@
 # HEAD
 
+* Add `allow_nil` option to the `validate_uniqueness_of` matcher
+
 # v 2.0.0
 * Remove the following matchers:
   * `assign_to`
