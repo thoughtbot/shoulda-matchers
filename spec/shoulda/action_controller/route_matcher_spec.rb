@@ -51,6 +51,10 @@ describe Shoulda::Matchers::ActionController::RouteMatcher do
       controller.should_not route(:get, '/bad_route').to(:var => 'value')
     end
 
+    it "should reject an undefined route without using to" do
+      controller.should_not route(:get, '/bad_route')
+    end
+
     it "should reject a route for another controller" do
       other = define_controller('Other').new
       other.should_not route(:get, '/examples/1').

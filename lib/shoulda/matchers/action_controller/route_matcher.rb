@@ -22,6 +22,8 @@ module Shoulda # :nodoc:
       #                 to(:action => :destroy, :id => 1) }
       #   it { should route(:get, "/users/1/posts/1").
       #                 to(:action => :show, :id => 1, :user_id => 1) }
+      #
+      #   it { should_not route(:get, "/bad_route") }
       def route(method, path)
         RouteMatcher.new(method, path, self)
       end
@@ -31,6 +33,7 @@ module Shoulda # :nodoc:
           @method  = method
           @path    = path
           @context = context
+          @params  = {}
         end
 
         attr_reader :failure_message, :negative_failure_message
