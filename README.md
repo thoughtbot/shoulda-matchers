@@ -12,73 +12,83 @@ about using shoulda with Test::Unit.
 
 Matchers to test associations:
 
-    describe Post do
-      it { should belong_to(:user) }
-      it { should have_many(:tags).through(:taggings) }
-    end
+```ruby
+describe Post do
+  it { should belong_to(:user) }
+  it { should have_many(:tags).through(:taggings) }
+end
 
-    describe User do
-      it { should have_many(:posts) }
-    end
+describe User do
+  it { should have_many(:posts) }
+end
+```
 
 ## ActiveModel Matchers
 
 Matchers to test validations and mass assignments:
 
-    describe Post do
-      it { should validate_uniqueness_of(:title) }
-      it { should validate_uniqueness_of(:title).scoped_to(:user_id, :category_id) }
-      it { should validate_presence_of(:body).with_message(/wtf/) }
-      it { should validate_presence_of(:title) }
-      it { should validate_numericality_of(:user_id) }
-      it { should ensure_inclusion_of(:status).in_array(['draft', 'public']) }
-    end
+```ruby
+describe Post do
+  it { should validate_uniqueness_of(:title) }
+  it { should validate_uniqueness_of(:title).scoped_to(:user_id, :category_id) }
+  it { should validate_presence_of(:body).with_message(/wtf/) }
+  it { should validate_presence_of(:title) }
+  it { should validate_numericality_of(:user_id) }
+  it { should ensure_inclusion_of(:status).in_array(['draft', 'public']) }
+end
 
-    describe User do
-      it { should_not allow_value("blah").for(:email) }
-      it { should allow_value("a@b.com").for(:email) }
-      it { should ensure_inclusion_of(:age).in_range(1..100) }
-      it { should_not allow_mass_assignment_of(:password) }
-    end
+describe User do
+  it { should_not allow_value("blah").for(:email) }
+  it { should allow_value("a@b.com").for(:email) }
+  it { should ensure_inclusion_of(:age).in_range(1..100) }
+  it { should_not allow_mass_assignment_of(:password) }
+end
+```
 
 ## ActionController Matchers
 
 Matchers to test common patterns:
 
-    describe PostsController, "#show" do
-      context "for a fictional user" do
-        before do
-          get :show, :id => 1
-        end
-
-        it { should assign_to(:user) }
-        it { should respond_with(:success) }
-        it { should render_template(:show) }
-        it { should_not set_the_flash }
-      end
+```ruby
+describe PostsController, "#show" do
+  context "for a fictional user" do
+    before do
+      get :show, :id => 1
     end
+
+    it { should assign_to(:user) }
+    it { should respond_with(:success) }
+    it { should render_template(:show) }
+    it { should_not set_the_flash }
+  end
+end
+```
 
 ## Independent Matchers
 
 Matchers to test non-Rails-dependent code:
 
-    describe Human do
-      it { should delegate_method(:work).to(:robot) }
-    end
+```ruby
+describe Human do
+  it { should delegate_method(:work).to(:robot) }
+end
+```
 
 ## Installation
 
 In Rails 3 and Bundler, add the following to your Gemfile:
 
-    group :test do
-      gem "shoulda-matchers"
-    end
+```ruby
+group :test do
+  gem "shoulda-matchers"
+end
 
-    # rspec-rails needs to be in the development group so that Rails generators
-    # work.
-    group :development, :test do
-      gem "rspec-rails"
-    end
+# rspec-rails needs to be in the development group so that Rails generators
+# work.
+group :development, :test do
+  gem "rspec-rails"
+end
+```
 
 Shoulda will automatically include matchers into the appropriate example groups.
 
