@@ -28,9 +28,25 @@ module Shoulda # :nodoc:
 
       class ValidateFormatOfMatcher < ValidationMatcher # :nodoc:
 
+        CHARSET = (0..591).map{ |c| c.chr("UTF-8") }
+
         def initialize(attribute)
           super
           @options = {}
+        end
+
+        def allowing(value)
+          raise "You may not call both #allowing and #denying" if @value_should
+          @value_should = :pass
+          @value = value
+          self
+        end
+
+        def denying(value)
+          raise "You may not call both #allowing and #denying" if @value_should
+          @value_should = :fail
+          @value = value
+          self
         end
 
         def allow_blank(allow_blank = true)
@@ -43,31 +59,33 @@ module Shoulda # :nodoc:
           self
         end
 
+        def placing(*values)
+          @characters = values.map{ |v| v.kind_of?(Regexp) ? CHARSET.grep(v) : v }.flatten.uniq
+          self
+        end
+
+        def at(*position)
+          @at = position.map{ |pos| pos.kind_of?(Range) ? pos.to_a : pos }.flatten.uniq
+          self
+        end
+
         def with_message(message)
           @expected_message = message if message
           self
         end
 
-        def with(value)
-          raise "You may not call both with and not_with" if @value_to_fail
-          @value_to_pass = value
-          self
-        end
-
-        def not_with(value)
-          raise "You may not call both with and not_with" if @value_to_pass
-          @value_to_fail = value
-          self
-        end
-
         def matches?(subject)
           super(subject)
-          @expected_message ||= :invalid
 
-          if @value_to_fail
-            disallows_value_of(@value_to_fail, @expected_message) && allows_blank_value? && allows_nil_value?
+          raise "Matcher needs a example value, use #allowing or #denying methods to fix it." unless @value_should || @options.any?
+
+          case @value_should
+          when :fail
+            match_calling?(:disallows_value_of)
+          when :pass
+            match_calling?(:allows_value_of)
           else
-            allows_value_of(@value_to_pass, @expected_message) && allows_blank_value? && allows_nil_value?
+            allows_blank_value? && allows_nil_value?
           end
         end
 
@@ -76,6 +94,19 @@ module Shoulda # :nodoc:
         end
 
         private
+
+        def words
+          return [@value] unless @characters
+
+          list = []
+          word = @value.dup
+          @characters.each do |character|
+            @at ||= [rand(@value.size)]
+            @at.each { |i| word[i] = character }
+            list << word
+          end
+          list
+        end
 
         def allows_blank_value?
           if @options.key?(:allow_blank)
@@ -92,8 +123,13 @@ module Shoulda # :nodoc:
             true
           end
         end
-      end
 
+        def match_calling?(method)
+          @expected_message ||= :invalid
+          words.each { |w| return unless send(method, w, @expected_message) }
+          true
+        end
+      end
     end
   end
 end
