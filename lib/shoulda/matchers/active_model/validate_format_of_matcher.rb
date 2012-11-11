@@ -12,14 +12,14 @@ module Shoulda # :nodoc:
       #   <tt>errors.on(:attribute)</tt>. <tt>Regexp</tt> or <tt>String</tt>.
       #   Defaults to the translation for <tt>:invalid</tt>.
       # * <tt>with(string to test against)</tt>
-      # * <tt>not_with(string to test against)</tt>
+      # * <tt>without(string to test against)</tt>
       #
       # Examples:
       #   it { should validate_format_of(:name).
       #                 with('12345').
       #                 with_message(/is not optional/) }
       #   it { should validate_format_of(:name).
-      #                 not_with('12D45').
+      #                 without('12D45').
       #                 with_message(/is not optional/) }
       #
       def validate_format_of(attr)
@@ -49,15 +49,21 @@ module Shoulda # :nodoc:
         end
 
         def with(value)
-          raise "You may not call both with and not_with" if @value_to_fail
+          raise "You may not call both with and without" if @value_to_fail
           @value_to_pass = value
           self
         end
 
-        def not_with(value)
-          raise "You may not call both with and not_with" if @value_to_pass
+        def without(value)
+          raise "You may not call both with and without" if @value_to_pass
           @value_to_fail = value
           self
+        end
+
+        # Deprecated
+        # See: ValidateFormatOfMatcher#without
+        def not_with(value)
+          without(value)
         end
 
         def matches?(subject)
