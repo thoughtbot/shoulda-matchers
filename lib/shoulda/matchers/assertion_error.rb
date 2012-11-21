@@ -4,7 +4,7 @@ module Shoulda
       require 'test/unit'
       AssertionError = Test::Unit::AssertionFailedError
     elsif defined?(Test::Unit::AssertionFailedError)
-      # It looks like we already have what we need ;)
+      # Test::Unit has been loaded already, so we use it
       AssertionError = Test::Unit::AssertionFailedError
     elsif Gem.ruby_version >= Gem::Version.new("1.9")
       require 'minitest/unit'
