@@ -1,3 +1,6 @@
+# v1.4.2
+* Added a new delegate_method matcher.
+
 # v1.4.1
 * Fixes an issue when used with Test::Unit on the allow value matcher.
 
