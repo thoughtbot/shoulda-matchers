@@ -31,34 +31,44 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
 
   context "an attribute which must be included in a range" do
     before do
-      @model = define_model(:example, :attr => :integer) do
-        validates_inclusion_of :attr, :in => 2..5
+      @model = define_model(:example, :fattr => :integer, :sattr => :integer) do
+        validates_inclusion_of :fattr, :in => 2..5
+        validates_inclusion_of :sattr, :in => 2...5
       end.new
     end
 
     it "should accept ensuring the correct range" do
-      @model.should ensure_inclusion_of(:attr).in_range(2..5)
+      @model.should ensure_inclusion_of(:fattr).in_range(2..5)
+      @model.should ensure_inclusion_of(:fattr).in_range(2...6)
+      @model.should ensure_inclusion_of(:sattr).in_range(2...5)
+      @model.should ensure_inclusion_of(:sattr).in_range(2..4)
     end
 
     it "should reject ensuring a lower minimum value" do
-      @model.should_not ensure_inclusion_of(:attr).in_range(1..5)
+      @model.should_not ensure_inclusion_of(:fattr).in_range(1..5)
+      @model.should_not ensure_inclusion_of(:sattr).in_range(1...5)
     end
 
     it "should reject ensuring a higher minimum value" do
-      @model.should_not ensure_inclusion_of(:attr).in_range(3..5)
+      @model.should_not ensure_inclusion_of(:fattr).in_range(3..5)
+      @model.should_not ensure_inclusion_of(:sattr).in_range(3...5)
     end
 
     it "should reject ensuring a lower maximum value" do
-      @model.should_not ensure_inclusion_of(:attr).in_range(2..4)
+      @model.should_not ensure_inclusion_of(:fattr).in_range(2..4)
+      @model.should_not ensure_inclusion_of(:sattr).in_range(2...4)
     end
 
     it "should reject ensuring a higher maximum value" do
-      @model.should_not ensure_inclusion_of(:attr).in_range(2..6)
+      @model.should_not ensure_inclusion_of(:fattr).in_range(2..6)
+      @model.should_not ensure_inclusion_of(:sattr).in_range(2...6)
     end
 
     it "should not override the default message with a blank" do
-      @model.should ensure_inclusion_of(:attr).in_range(2..5).with_message(nil)
+      @model.should ensure_inclusion_of(:fattr).in_range(2..5).with_message(nil)
+      @model.should ensure_inclusion_of(:sattr).in_range(2...5).with_message(nil)
     end
+
   end
 
   context "an attribute with a custom ranged value validation" do
