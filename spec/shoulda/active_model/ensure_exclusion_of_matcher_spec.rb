@@ -4,21 +4,27 @@ describe Shoulda::Matchers::ActiveModel::EnsureExclusionOfMatcher do
 
   context "an attribute which must be excluded of a range" do
     before do
-      @model = define_model(:example, :attr => :integer) do
-        validates_exclusion_of :attr, :in => 2..5
+      @model = define_model(:example, :fattr => :integer, :sattr => :integer) do
+        validates_exclusion_of :fattr, :in => 2..5
+        validates_exclusion_of :sattr, :in => 2...5
       end.new
     end
 
     it "should accept ensuring the correct range" do
-      @model.should ensure_exclusion_of(:attr).in_range(2..5)
+      @model.should ensure_exclusion_of(:fattr).in_range(2..5)
+      @model.should ensure_exclusion_of(:fattr).in_range(2...6)
+      @model.should ensure_exclusion_of(:sattr).in_range(2...5)
+      @model.should ensure_exclusion_of(:sattr).in_range(2..4)
     end
 
     it "should reject ensuring excluded value" do
-      @model.should_not ensure_exclusion_of(:attr).in_range(2..6)
+      @model.should_not ensure_exclusion_of(:fattr).in_range(2..6)
+      @model.should_not ensure_exclusion_of(:sattr).in_range(2...6)
     end
 
     it "should not override the default message with a blank" do
-      @model.should ensure_exclusion_of(:attr).in_range(2..5).with_message(nil)
+      @model.should ensure_exclusion_of(:fattr).in_range(2..5).with_message(nil)
+      @model.should ensure_exclusion_of(:sattr).in_range(2...5).with_message(nil)
     end
   end
 
