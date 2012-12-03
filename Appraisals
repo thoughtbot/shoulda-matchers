@@ -9,7 +9,7 @@ appraise '3.1' do
 end
 
 appraise '3.2' do
-  gem 'rails', '3.2.8'
+  gem 'rails', '~> 3.2.8'
   gem 'jquery-rails'
   gem 'sass-rails'
 end
