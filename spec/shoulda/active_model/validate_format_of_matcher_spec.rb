@@ -15,7 +15,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateFormatOfMatcher do
 
     it "is not valid with blank" do
       @model.should_not validate_format_of(:attr).with(' ')
-      @model.should validate_format_of(:attr).not_with(' ')
+      @model.should validate_format_of(:attr).without(' ')
     end
 
     it "is not valid with nil" do
@@ -24,21 +24,21 @@ describe Shoulda::Matchers::ActiveModel::ValidateFormatOfMatcher do
 
     it "is not valid with alpha in zip" do
       @model.should_not validate_format_of(:attr).with('1234a')
-      @model.should validate_format_of(:attr).not_with('1234a')
+      @model.should validate_format_of(:attr).without('1234a')
     end
 
     it "is not valid with too few digits" do
       @model.should_not validate_format_of(:attr).with('1234')
-      @model.should validate_format_of(:attr).not_with('1234')
+      @model.should validate_format_of(:attr).without('1234')
     end
 
     it "is not valid with too many digits" do
       @model.should_not validate_format_of(:attr).with('123456')
-      @model.should validate_format_of(:attr).not_with('123456')
+      @model.should validate_format_of(:attr).without('123456')
     end
 
-    it "raises error if you try to call both with and not_with" do
-      expect { validate_format_of(:attr).not_with('123456').with('12345') }.
+    it "raises error if you try to call both with and without" do
+      expect { validate_format_of(:attr).without('123456').with('12345') }.
         to raise_error(RuntimeError)
     end
   end
