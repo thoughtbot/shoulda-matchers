@@ -56,10 +56,7 @@ module ControllerBuilder
     class << self
       include ActionController::TestCase::Behavior
     end
-
   end
-
-
 
   def create_view(path, contents)
     full_path = File.join(TMP_VIEW_PATH, path)
