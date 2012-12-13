@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Shoulda::Matchers::ActionController do
   describe ".permit" do
     it "is true when the sent parameter is allowed" do
-      controller_class = prepare_app_for_strong_parameters do
+      controller_class = controller_for_resource_with_strong_parameters do
         params.require(:user).permit(:name)
       end
 
@@ -11,34 +11,42 @@ describe Shoulda::Matchers::ActionController do
     end
 
     it "is false when the sent parameter is not allowed" do
-      controller_class = prepare_app_for_strong_parameters do
+      controller_class = controller_for_resource_with_strong_parameters do
         params.require(:user).permit(:name)
       end
 
       controller_class.should_not permit(:admin).for(:create)
+    end
+
+    it "allows multiple attributes" do
+      controller_class = controller_for_resource_with_strong_parameters do
+        params.require(:user).permit(:name, :age)
+      end
+
+      controller_class.should permit(:name, :age).for(:create)
     end
   end
 end
 
 describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
   before do
-    prepare_app_for_strong_parameters do
+    controller_for_resource_with_strong_parameters do
       params.require(:user).permit(:name, :age)
     end
   end
 
   describe "#matches?" do
-    it "returns true for a subset of the allowable attributes" do
+    it "is true for a subset of the allowable attributes" do
       matcher = Shoulda::Matchers::ActionController::StrongParametersMatcher.new(:name, self).for(:create)
       expect(matcher.matches?).to be_true
     end
 
-    it "returns true for all the allowable attributes" do
+    it "is true for all the allowable attributes" do
       matcher = Shoulda::Matchers::ActionController::StrongParametersMatcher.new(:name, :age, self).for(:create)
       expect(matcher.matches?).to be_true
     end
 
-    it "returns false when any attributes are not allowed" do
+    it "is false when any attributes are not allowed" do
       matcher = Shoulda::Matchers::ActionController::StrongParametersMatcher.new(:name, :admin, self).for(:create)
       expect(matcher.matches?).to be_false
     end
@@ -51,6 +59,18 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
     it "requires a verb for non-restful action" do
       matcher = Shoulda::Matchers::ActionController::StrongParametersMatcher.new(:name, self).for(:authorize)
       expect{ matcher.matches? }.to raise_error(Shoulda::Matchers::ActionController::StrongParametersMatcher::VerbNotDefinedError)
+    end
+  end
+
+  describe "#does_not_match?" do
+    it "it is true if any of the given attributes are allowed" do
+      matcher = Shoulda::Matchers::ActionController::StrongParametersMatcher.new(:name, :admin, self).for(:create)
+      expect(matcher.does_not_match?).to be_true
+    end
+
+    it "it is false if all of the given attribtues are allowed" do
+      matcher = Shoulda::Matchers::ActionController::StrongParametersMatcher.new(:name, :age, self).for(:create)
+      expect(matcher.does_not_match?).to be_false
     end
   end
 
@@ -107,8 +127,7 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
 
 end
 
-
-def prepare_app_for_strong_parameters(&block)
+def controller_for_resource_with_strong_parameters(&block)
   define_model "User"
   controller_class = define_controller "Users" do
     def create

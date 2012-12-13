@@ -4,8 +4,8 @@ require 'strong_parameters'
 module Shoulda
   module Matchers
     module ActionController
-      def permit(attributes)
-        StrongParametersMatcher.new(attributes, self)
+      def permit(*attributes)
+        StrongParametersMatcher.new(*attributes, self)
       end
 
       class StrongParametersMatcher
@@ -14,7 +14,7 @@ module Shoulda
           @context = context
         end
 
-        def for(action, options={})
+        def for(action, options = {})
           @action = action
           @verb = options[:verb] || verb_for_action
 
@@ -30,12 +30,19 @@ module Shoulda
           begin
             model_attrs.should have_received(:permit).with { |*params|
               @unexpectedly_not_permitted_attributes = @attributes - params
+              @unexpectedly_permitted_attributes = @attributes & params
             }
 
             @unexpectedly_not_permitted_attributes.empty?
           rescue RSpec::Expectations::ExpectationNotMetError, Mocha::ExpectationError
             false
           end
+        end
+
+        def does_not_match?(controller = nil)
+          matches?(controller)
+          p [unexpectedly_permitted_attributes, unexpectedly_not_permitted_attributes]
+          unexpectedly_permitted_attributes.present? || unexpectedly_not_permitted_attributes.present?
         end
 
         def failure_message
@@ -47,7 +54,7 @@ module Shoulda
         end
 
         private
-        attr_reader :unexpectedly_not_permitted_attributes
+        attr_reader :unexpectedly_not_permitted_attributes, :unexpectedly_permitted_attributes
         attr_reader :verb, :action, :attributes
 
         def stubbed_model_attributes
@@ -58,10 +65,6 @@ module Shoulda
           ::ActionController::Parameters.any_instance.stubs(:[]).returns(model_attrs)
 
           model_attrs
-        end
-
-        def unexpectedly_permitted_attributes
-          attributes - unexpectedly_not_permitted_attributes
         end
 
         def ensure_action_and_verb_present!
