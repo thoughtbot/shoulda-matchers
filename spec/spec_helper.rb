@@ -7,7 +7,6 @@ ENV['RAILS_ENV'] = 'test'
 ENV['BUNDLE_GEMFILE'] ||= TESTAPP_ROOT + '/Gemfile'
 
 require "#{TESTAPP_ROOT}/config/environment"
-require 'rspec'
 require 'bourne'
 require 'shoulda-matchers'
 require 'rspec/rails'
