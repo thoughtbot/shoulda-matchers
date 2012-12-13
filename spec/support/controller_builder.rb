@@ -42,19 +42,24 @@ module ControllerBuilder
     create_view("examples/#{action}.html.erb", 'action')
     create_view("examples/#{partial}.html.erb", 'partial')
 
-    @controller = controller_class.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-
-    class << self
-      include ActionController::TestCase::Behavior
-    end
-    @routes = Rails.application.routes
-
+    setup_rails_controller_test(controller_class)
     get action
 
     @controller
   end
+
+  def setup_rails_controller_test(controller_class)
+    @controller = controller_class.new
+    @request = ::ActionController::TestRequest.new
+    @response = ::ActionController::TestResponse.new
+
+    class << self
+      include ActionController::TestCase::Behavior
+    end
+
+  end
+
+
 
   def create_view(path, contents)
     full_path = File.join(TMP_VIEW_PATH, path)
