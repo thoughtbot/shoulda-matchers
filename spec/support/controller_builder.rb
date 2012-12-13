@@ -42,24 +42,50 @@ module ControllerBuilder
     create_view("examples/#{action}.html.erb", 'action')
     create_view("examples/#{partial}.html.erb", 'partial')
 
+    setup_rails_controller_test(controller_class)
+    get action
+
+    @controller
+  end
+
+  def setup_rails_controller_test(controller_class)
     @controller = controller_class.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+    @request = ::ActionController::TestRequest.new
+    @response = ::ActionController::TestResponse.new
 
     class << self
       include ActionController::TestCase::Behavior
     end
-    @routes = Rails.application.routes
-
-    get action
-
-    @controller
   end
 
   def create_view(path, contents)
     full_path = File.join(TMP_VIEW_PATH, path)
     FileUtils.mkdir_p(File.dirname(full_path))
     File.open(full_path, 'w') { |file| file.write(contents) }
+  end
+
+  def controller_for_resource_with_strong_parameters(&block)
+    define_model "User"
+    controller_class = define_controller "Users" do
+      def new
+        @user = User.new
+        render :nothing => true
+      end
+
+      def create
+        @user = User.create(user_params)
+        render :nothing => true
+      end
+
+      private
+      define_method :user_params, &block
+    end
+
+    setup_rails_controller_test(controller_class)
+
+    define_routes { resources :users }
+
+    controller_class
   end
 
   private
