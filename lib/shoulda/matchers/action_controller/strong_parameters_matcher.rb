@@ -12,50 +12,54 @@ module Shoulda
         def initialize(*attributes, context)
           @attributes = attributes
           @context = context
+          @permitted_params = []
         end
 
         def for(action, options = {})
           @action = action
           @verb = options[:verb] || verb_for_action
-
           self
         end
 
         def matches?(controller = nil)
+          simulate_controller_action || parameters_difference.empty?
+        end
+
+        def does_not_match?(controller = nil)
+          simulate_controller_action || parameters_difference.present?
+        end
+
+        def failure_message
+          "Expected controller to permit #{parameters_difference.to_sentence}, but it did not."
+        end
+
+        def negative_failure_message
+          "Expected controller not to permit #{parameters_difference.to_sentence}, but it did."
+        end
+
+        private
+        attr_reader :verb, :action, :attributes, :context
+        attr_accessor :permitted_params
+
+        def simulate_controller_action
           ensure_action_and_verb_present!
           model_attrs = stubbed_model_attributes
 
-          @context.send(verb, action)
+          context.send(verb, action)
 
           begin
             model_attrs.should have_received(:permit).with { |*params|
-              @unexpectedly_not_permitted_attributes = @attributes - params
-              @unexpectedly_permitted_attributes = @attributes & params
+              self.permitted_params = params
             }
-
-            @unexpectedly_not_permitted_attributes.empty?
+           nil
           rescue RSpec::Expectations::ExpectationNotMetError, Mocha::ExpectationError
             false
           end
         end
 
-        def does_not_match?(controller = nil)
-          matches?(controller)
-          p [unexpectedly_permitted_attributes, unexpectedly_not_permitted_attributes]
-          unexpectedly_permitted_attributes.present? || unexpectedly_not_permitted_attributes.present?
+        def parameters_difference
+          attributes - permitted_params
         end
-
-        def failure_message
-          "Expected controller to permit #{unexpectedly_not_permitted_attributes.to_sentence}"
-        end
-
-        def negative_failure_message
-          "Expected controller not to permit #{unexpectedly_permitted_attributes.to_sentence}"
-        end
-
-        private
-        attr_reader :unexpectedly_not_permitted_attributes, :unexpectedly_permitted_attributes
-        attr_reader :verb, :action, :attributes
 
         def stubbed_model_attributes
           extend Mocha::API

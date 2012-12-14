@@ -79,16 +79,16 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
       matcher = Shoulda::Matchers::ActionController::StrongParametersMatcher.new(:name, :age, :city, :country, self).for(:create)
       matcher.matches?
 
-      expect(matcher.failure_message).to eq("Expected controller to permit city and country")
+      expect(matcher.failure_message).to eq("Expected controller to permit city and country, but it did not.")
     end
   end
 
   describe "#negative_failure_message" do
     it "includes all attributes that should not have been allowed but were" do
       matcher = Shoulda::Matchers::ActionController::StrongParametersMatcher.new(:name, :age, :city, :country, self).for(:create)
-      matcher.matches?
+      matcher.does_not_match?.should be_true
 
-      expect(matcher.negative_failure_message).to eq("Expected controller not to permit name and age")
+      expect(matcher.negative_failure_message).to eq("Expected controller not to permit city and country, but it did.")
     end
   end
 
