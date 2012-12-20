@@ -1,130 +1,155 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActionController::SetTheFlashMatcher do
-  it "should fail with unmatchable to" do
-    expect{
+  it 'fails with unmatchable #to' do
+    expect {
       set_the_flash.to(1).should
-    }.to raise_error("cannot match against 1")
+    }.to raise_error('cannot match against 1')
   end
 
-  context "a controller that sets a flash message" do
-    let(:controller) { build_response { flash[:notice] = 'value' } }
-
-    it "should accept setting any flash message" do
-      controller.should set_the_flash
+  context 'a controller that sets a flash message' do
+    it 'accepts setting any flash message' do
+      controller_with_flash(:notice => 'hi').should set_the_flash
     end
 
-    it "should accept setting the exact flash message" do
-      controller.should set_the_flash.to('value')
+    it 'accepts setting the exact flash message' do
+      controller_with_flash(:notice => 'hi').should set_the_flash.to('hi')
     end
 
-    it "should accept setting a matched flash message" do
-      controller.should set_the_flash.to(/value/)
+    it 'accepts setting a matched flash message' do
+      controller_with_flash(:notice => 'hello').should set_the_flash.to(/he/)
     end
 
-    it "should reject setting a different flash message" do
-      controller.should_not set_the_flash.to('other')
+    it 'rejects setting a different flash message' do
+      controller_with_flash(:notice => 'hi').should_not
+        set_the_flash.to('other')
     end
 
-    it "should reject setting a different pattern" do
-      controller.should_not set_the_flash.to(/other/)
-    end
-  end
-
-  context "a controller that sets a flash.now message" do
-    let(:controller) { build_response { flash.now[:notice] = 'value' } }
-
-    it "should reject setting any flash message" do
-      controller.should_not set_the_flash
-    end
-
-    it "should accept setting any flash.now message" do
-      controller.should set_the_flash.now
-    end
-
-    it "should accept setting the exact flash.now message" do
-      controller.should set_the_flash.to('value').now
-    end
-
-    it "should accept setting a matched flash.now message" do
-      controller.should set_the_flash.to(/value/).now
-    end
-
-    it "should reject setting a different flash.now message" do
-      controller.should_not set_the_flash.to('other').now
-    end
-
-    it "should reject setting a different flash.now pattern" do
-      controller.should_not set_the_flash.to(/other/).now
+    it 'rejects setting a different pattern' do
+      controller_with_flash(:notice => 'hi').should_not
+        set_the_flash.to(/other/)
     end
   end
 
-  context "a controller that sets a flash message of notice and alert" do
-    let(:controller) do
-      build_response do
-        flash[:notice] = 'value'
-        flash[:alert]  = 'other'
-      end
+  context 'a controller that sets a flash.now message' do
+    it 'rejects setting any flash message' do
+      controller_with_flash_now.should_not set_the_flash
     end
 
-    it "should accept flash message of notice" do
+    it 'accepts setting any flash.now message' do
+      controller_with_flash_now.should set_the_flash.now
+    end
+
+    it 'accepts setting the exact flash.now message' do
+      controller_with_flash_now(:notice => 'hi').should
+        set_the_flash.now.to('hi')
+    end
+
+    it 'accepts setting a matched flash.now message' do
+      controller_with_flash_now(:notice => 'flasher').should
+        set_the_flash.now.to(/lash/)
+    end
+
+    it 'rejects setting a different flash.now message' do
+      controller_with_flash_now(:notice => 'hi').should_not
+        set_the_flash.now.to('other')
+    end
+
+    it 'rejects setting a different flash.now pattern' do
+      controller_with_flash_now(:notice => 'hi').should_not
+        set_the_flash.now.to(/other/)
+    end
+  end
+
+  context 'a controller that sets flash messages for multiple keys' do
+    it 'accepts flash message for either key' do
+      controller = controller_with_flash(:notice => 'one', :alert => 'two')
+
       controller.should set_the_flash[:notice]
+      controller.should set_the_flash[:alert]
     end
 
-    it "should accept flash message of alert" do
-      controller.should set_the_flash[:notice]
+    it 'rejects a flash message that is not one of the set keys' do
+      controller_with_flash(:notice => 'one', :alert => 'two').should_not
+        set_the_flash[:warning]
     end
 
-    it "should reject flash message of warning" do
-      controller.should_not set_the_flash[:warning]
+    it 'accepts exact flash message of notice' do
+      controller_with_flash(:notice => 'one', :alert => 'two').should
+        set_the_flash[:notice].to('one')
     end
 
-    it "should accept exact flash message of notice" do
-      controller.should set_the_flash[:notice].to('value')
+    it 'accepts setting a matched flash message of notice' do
+      controller_with_flash(:notice => 'one', :alert => 'two').should
+        set_the_flash[:notice].to(/on/)
     end
 
-    it "should accept setting a matched flash message of notice" do
-      controller.should set_the_flash[:notice].to(/value/)
+    it 'rejects setting a different flash message of notice' do
+      controller_with_flash(:notice => 'one', :alert => 'two').should_not
+        set_the_flash[:notice].to('other')
     end
 
-    it "should reject setting a different flash message of notice" do
-      controller.should_not set_the_flash[:notice].to('other')
-    end
-
-    it "should reject setting a different pattern" do
-      controller.should_not set_the_flash[:notice].to(/other/)
+    it 'rejects setting a different pattern' do
+      controller_with_flash(:notice => 'one', :alert => 'two').should_not
+        set_the_flash[:notice].to(/other/)
     end
   end
 
-  context "a controller that sets multiple flash messages" do
-    let(:controller) do
-      build_response do
+  context 'a controller that sets flash and flash.now' do
+    it 'accepts setting any flash.now message' do
+      controller = build_response do
         flash.now[:notice] = 'value'
         flash[:success] = 'great job'
       end
-    end
 
-    it "should accept setting any flash.now message" do
       controller.should set_the_flash.now
       controller.should set_the_flash
     end
 
-    it "should accept setting a matched flash.now message" do
-      controller.should set_the_flash.to(/value/).now
+    it 'accepts setting a matched flash.now message' do
+      controller = build_response do
+        flash.now[:notice] = 'value'
+        flash[:success] = 'great job'
+      end
+
+      controller.should set_the_flash.now.to(/value/)
       controller.should set_the_flash.to(/great/)
     end
 
-    it "should reject setting a different flash.now message" do
-      controller.should_not set_the_flash.to('other').now
+    it 'rejects setting a different flash.now message' do
+      controller = build_response do
+        flash.now[:notice] = 'value'
+        flash[:success] = 'great job'
+      end
+
+      controller.should_not set_the_flash.now.to('other')
       controller.should_not set_the_flash.to('other')
     end
   end
 
-  context "a controller that doesn't set a flash message" do
-    let(:controller) { build_response }
+  context 'a controller that does not set a flash message' do
+    it 'rejects setting any flash message' do
+      controller_with_no_flashes.should_not set_the_flash
+    end
+  end
 
-    it "should reject setting any flash message" do
-      controller.should_not set_the_flash
+  def controller_with_no_flashes
+    build_response
+  end
+
+  def controller_with_flash(flash_hash)
+    build_response do
+      flash_hash.each do |key, value|
+        flash[key] = value
+      end
+    end
+  end
+
+  def controller_with_flash_now(flash_hash = { :notice => 'hi' })
+    build_response do
+      flash_hash.each do |key, value|
+        flash.now[key] = value
+      end
     end
   end
 end

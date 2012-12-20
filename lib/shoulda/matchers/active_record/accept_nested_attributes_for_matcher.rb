@@ -78,7 +78,7 @@ module Shoulda
           if config
             true
           else
-            @problem = "is not declared"
+            @problem = 'is not declared'
             false
           end
         end
@@ -129,9 +129,9 @@ module Shoulda
 
         def should_or_should_not(value)
           if value
-            "should"
+            'should'
           else
-            "should not"
+            'should not'
           end
         end
       end

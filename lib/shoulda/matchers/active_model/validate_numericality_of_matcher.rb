@@ -79,8 +79,8 @@ module Shoulda # :nodoc:
         end
 
         def allowed_types
-          allowed = ["numeric"] + submatcher_allowed_types
-          allowed.join(", ")
+          allowed = ['numeric'] + submatcher_allowed_types
+          allowed.join(', ')
         end
 
         def submatcher_allowed_types

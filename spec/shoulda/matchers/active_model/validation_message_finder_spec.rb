@@ -51,7 +51,6 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
 
   context '#messages_description' do
     it 'describes errors for the given attribute' do
-      value = 'xyz'
       finder = build_finder(
         :attribute => :attr,
         :format => /abc/,

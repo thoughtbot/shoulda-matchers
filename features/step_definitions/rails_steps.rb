@@ -25,8 +25,8 @@ When 'I generate a new rails application' do
     And I set the "BUNDLE_GEMFILE" environment variable to "Gemfile"
     And I successfully run `bundle install --local`
   }
-  if RUBY_VERSION >= "1.9.3"
-    append_to_gemfile %(gem "rake", "~> 0.9.3.beta.1")
+  if RUBY_VERSION >= '1.9.3'
+    append_to_gemfile %(gem 'rake', '~> 0.9.3.beta.1')
     step %(I successfully run `bundle update rake`)
   end
 end
@@ -52,7 +52,7 @@ When 'I run the rspec generator' do
 end
 
 When 'I configure the application to use rspec-rails' do
-  append_to_gemfile "gem 'rspec-rails', '~> 2.8.1'"
+  append_to_gemfile %q(gem 'rspec-rails', '~> 2.8.1')
   steps %{And I run `bundle install --local`}
 end
 
@@ -66,7 +66,7 @@ When 'I configure the application to use rspec-rails in test and development' do
 end
 
 When 'I configure the application to use shoulda-context' do
-  append_to_gemfile "gem 'shoulda-context', '~> 1.0.0'"
+  append_to_gemfile %q(gem 'shoulda-context', '~> 1.0.0')
   steps %{And I run `bundle install --local`}
 end
 
@@ -106,7 +106,7 @@ end
 module FileHelpers
   def append_to(path, contents)
     in_current_dir do
-      File.open(path, "a") do |file|
+      File.open(path, 'a') do |file|
         file.puts
         file.puts contents
       end
@@ -119,9 +119,9 @@ module FileHelpers
 
   def comment_out_gem_in_gemfile(gemname)
     in_current_dir do
-      gemfile = File.read("Gemfile")
+      gemfile = File.read('Gemfile')
       gemfile.sub!(/^(\s*)(gem\s*['"]#{gemname})/, "\\1# \\2")
-      File.open("Gemfile", 'w'){ |file| file.write(gemfile) }
+      File.open('Gemfile', 'w'){ |file| file.write(gemfile) }
     end
   end
 end

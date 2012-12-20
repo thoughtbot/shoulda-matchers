@@ -1,112 +1,73 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
-  it "should state in its description that it allows only numeric values" do
-    matcher = Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher.new(:attr)
-    matcher.description.should == "only allow numeric values for attr"
-  end
-
-  context "given a numeric attribute" do
-    before do
-      define_model :example, :attr => :string do
-        validates_numericality_of :attr
-      end
-      @model = Example.new
-    end
-
-    it "should only allow numeric values for that attribute" do
-      matcher = new_matcher(:attr)
-      matcher.matches?(@model).should be_true
-    end
-
-    it "should not override the default message with a blank" do
-      matcher = new_matcher(:attr)
-      matcher.with_message(nil)
-      matcher.matches?(@model).should be_true
-    end
-
-    context "when asked to enforce integer values for that attribute" do
-      it "should not match" do
-        matcher = new_matcher(:attr)
-        matcher.only_integer
-        matcher.matches?(@model).should be_false
-      end
-
-      it "should fail with the ActiveRecord :not_an_integer message" do
-        matcher = new_matcher(:attr)
-        matcher.only_integer
-        matcher.matches?(@model)
-        matcher.failure_message.should include 'Expected errors to include "must be an integer"'
-      end
+  context '#description' do
+    it 'states that it allows only numeric values' do
+      matcher.description.should == 'only allow numeric values for attr'
     end
   end
 
-  context "given a numeric attribute which must be integer" do
-    before do
-      define_model :example, :attr => :string do
-        validates_numericality_of :attr, { :only_integer => true }
-      end
-      @model = Example.new
+  context 'with a model with a numericality validation' do
+    it 'accepts' do
+      validating_numericality.should matcher
     end
 
-    it "allows integer values for that attribute" do
-      matcher = new_matcher(:attr)
-      matcher.only_integer
-      matcher.matches?(@model).should be_true
-    end
-
-    it "does not allow non-integer values for that attribute" do
-      matcher = new_matcher(:attr)
-      matcher.only_integer
-      matcher.matches?(@model).should be_true
-    end
-
-    it "should state in its description that it allows only integer values" do
-      matcher = new_matcher(:attr)
-      matcher.only_integer
-      matcher.description.should == "only allow numeric, integer values for attr"
+    it 'does not override the default message with a blank' do
+      validating_numericality.should matcher.with_message(nil)
     end
   end
 
-  context "given a numeric attribute with a custom validation message" do
-    before do
-      define_model :example, :attr => :string do
-        validates_numericality_of :attr, :message => 'custom'
-      end
-      @model = Example.new
+  context 'with a model without a numericality validation' do
+    it 'rejects' do
+      define_model(:example, :attr => :string).new.should_not matcher
     end
 
-    it "should only allow numeric values for that attribute with that message" do
-      matcher = new_matcher(:attr)
-      matcher.with_message(/custom/)
-      matcher.matches?(@model).should be_true
-    end
+    it 'rejects with the ActiveRecord :not_an_integer message' do
+      the_matcher = matcher.only_integer
 
-    it "should not allow numeric values for that attribute with another message" do
-      matcher = new_matcher(:attr)
-      matcher.with_message(/wrong/)
-      matcher.matches?(@model).should be_false
+      the_matcher.matches?(define_model(:example, :attr => :string).new)
+
+      the_matcher.failure_message.should include 'Expected errors to include "must be an integer"'
     end
   end
 
-  context "given a non-numeric attribute" do
-    before do
-      @model = define_model(:example, :attr => :string).new
+  context 'with the only_integer option' do
+    it 'allows integer values for that attribute' do
+      validating_numericality(:only_integer => true).should matcher.only_integer
     end
 
-    it "should not only allow numeric values for that attribute" do
-      matcher = new_matcher(:attr)
-      matcher.matches?(@model).should be_false
+    it 'rejects when the model does not enforce integer values' do
+      validating_numericality.should_not matcher.only_integer
     end
 
-    it "should fail with the ActiveRecord :not_a_number message" do
-      matcher = new_matcher(:attr)
-      matcher.matches?(@model)
-      matcher.failure_message.should include 'Expected errors to include "is not a number"'
+    it 'rejects with the ActiveRecord :not_an_integer message' do
+      the_matcher = matcher.only_integer
+
+      the_matcher.matches?(validating_numericality)
+
+      the_matcher.failure_message.should include 'Expected errors to include "must be an integer"'
     end
   end
 
-  def new_matcher(attr)
-    Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher.new(attr)
+  context 'with a custom validation message' do
+    it 'accepts when the messages match' do
+      validating_numericality(:message => 'custom').should
+        matcher.with_message(/custom/)
+    end
+
+    it 'rejects when the messages do not match' do
+      validating_numericality(:message => 'custom').should_not
+        matcher.with_message(/wrong/)
+    end
+  end
+
+  def validating_numericality(options = {})
+    define_model :example, :attr => :string do
+      validates_numericality_of :attr, options
+    end.new
+  end
+
+  def matcher
+    validate_numericality_of(:attr)
   end
 end

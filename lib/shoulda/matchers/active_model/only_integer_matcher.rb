@@ -21,7 +21,7 @@ module Shoulda # :nodoc:
         end
 
         def allowed_types
-          "integer"
+          'integer'
         end
 
         def failure_message

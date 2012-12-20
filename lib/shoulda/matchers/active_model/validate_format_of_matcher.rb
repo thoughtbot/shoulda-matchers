@@ -1,7 +1,6 @@
 module Shoulda # :nodoc:
   module Matchers
     module ActiveModel # :nodoc:
-
       # Ensures that the model is not valid if the given attribute is not
       # formatted correctly.
       #
@@ -27,7 +26,6 @@ module Shoulda # :nodoc:
       end
 
       class ValidateFormatOfMatcher < ValidationMatcher # :nodoc:
-
         def initialize(attribute)
           super
           @options = {}
@@ -44,20 +42,28 @@ module Shoulda # :nodoc:
         end
 
         def with_message(message)
-          @expected_message = message if message
+          if message
+            @expected_message = message
+          end
           self
         end
 
         def with(value)
-          raise "You may not call both with and not_with" if @value_to_fail
-          @value_to_pass = value
-          self
+          if @value_to_fail
+            raise 'You may not call both with and not_with'
+          else
+            @value_to_pass = value
+            self
+          end
         end
 
         def not_with(value)
-          raise "You may not call both with and not_with" if @value_to_pass
-          @value_to_fail = value
-          self
+          if @value_to_pass
+            raise 'You may not call both with and not_with'
+          else
+            @value_to_fail = value
+            self
+          end
         end
 
         def matches?(subject)

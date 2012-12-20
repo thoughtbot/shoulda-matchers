@@ -82,12 +82,11 @@ module Shoulda # :nodoc:
           if @value
             expectation << " to #{@value.inspect}"
           end
-          expectation
         end
 
         def result
           if session.empty?
-            "no session variables were set"
+            'no session variables were set'
           else
             "the session was #{session.inspect}"
           end

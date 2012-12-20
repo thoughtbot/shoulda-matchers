@@ -8,9 +8,9 @@ module Shoulda # :nodoc:
       # Example:
       #
       #   it { should set_the_flash }
-      #   it { should set_the_flash.to("Thank you for placing this order.") }
+      #   it { should set_the_flash.to('Thank you for placing this order.') }
       #   it { should set_the_flash.to(/created/i) }
-      #   it { should set_the_flash[:alert].to("Password doesn't match") }
+      #   it { should set_the_flash[:alert].to('Password does not match') }
       #   it { should set_the_flash.to(/logged in/i).now }
       #   it { should_not set_the_flash }
       def set_the_flash
@@ -96,7 +96,8 @@ module Shoulda # :nodoc:
             @flash
           else
             @flash = @controller.flash.dup
-            @flash.instance_variable_set(:@used, @controller.flash.instance_variable_get(:@used).dup)
+            used = @controller.flash.instance_variable_get(:@used).dup
+            @flash.instance_variable_set(:@used, used)
             sweep_flash_if_necessary
             @flash
           end
@@ -117,7 +118,7 @@ module Shoulda # :nodoc:
 
         def flash_description
           if flash.blank?
-            "no flash was set"
+            'no flash was set'
           else
             "was #{flash.inspect}"
           end
@@ -129,9 +130,9 @@ module Shoulda # :nodoc:
 
         def pretty_now
           if @options[:now]
-            ".now"
+            '.now'
           else
-            ""
+            ''
           end
         end
 
@@ -139,7 +140,7 @@ module Shoulda # :nodoc:
           if @options[:key]
             "[:#{@options[:key]}]"
           else
-            ""
+            ''
           end
         end
       end

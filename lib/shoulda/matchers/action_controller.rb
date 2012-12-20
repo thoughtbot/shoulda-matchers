@@ -16,7 +16,7 @@ module Shoulda
     #
     # This code segment:
     #
-    #   describe UsersController, "on GET to show with a valid id" do
+    #   describe UsersController, 'on GET to show with a valid id' do
     #     before(:each) do
     #       get :show, :id => User.first.to_param
     #     end
@@ -26,7 +26,7 @@ module Shoulda
     #     it { should render_template(:show) }
     #     it { should not_set_the_flash) }
     #
-    #     it "should do something else really cool" do
+    #     it 'does something else really cool' do
     #       assigns[:user].id.should == 1
     #     end
     #   end

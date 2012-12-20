@@ -1,154 +1,175 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
-  context "a unique attribute" do
-    before do
-      @model = define_model(:example, :attr  => :string,
-                                      :other => :integer) do
+  context 'a model without a a uniqueness validation' do
+    it 'rejects' do
+      model = define_model(:example, :attr => :string) { attr_accessible :attr } .new
+      Example.create!(:attr => 'value')
+      model.should_not matcher
+    end
+  end
+
+  context 'a model with a uniqueness validation' do
+    context 'with an existing record' do
+      it 'requires a unique value for that attribute' do
+        create_existing
+        validating_uniqueness_with_other.should matcher
+      end
+
+      it 'accepts when the subject is an existing record' do
+        create_existing.should matcher
+      end
+
+      it 'rejects when a scope is specified' do
+        create_existing
+        validating_uniqueness_with_other.should_not matcher.scoped_to(:other)
+      end
+
+      def create_existing
+        define_model_with_other
+        Example.create!(:attr => 'value', :other => 1)
+      end
+    end
+
+    context 'without an existing record' do
+      it 'does not require a created instance' do
+        define_model_with_other
+        Example.count.should == 0
+        validating_uniqueness_with_other.should matcher
+      end
+    end
+
+    def define_model_with_other(options = {})
+      @model ||= define_model(:example, :attr => :string, :other => :integer) do
         attr_accessible :attr, :other
-        validates_uniqueness_of :attr
-      end.new
-    end
-
-    context "with an existing value" do
-      before do
-        @existing = Example.create!(:attr => 'value', :other => 1)
-      end
-
-      it "should require a unique value for that attribute" do
-        @model.should validate_uniqueness_of(:attr)
-      end
-
-      it "should pass when the subject is an existing record" do
-        @existing.should validate_uniqueness_of(:attr)
-      end
-
-      it "should fail when a scope is specified" do
-        @model.should_not validate_uniqueness_of(:attr).scoped_to(:other)
+        validates_uniqueness_of :attr, options
       end
     end
 
-    context "without an existing value" do
-      before do
-        Example.find(:first).should be_nil
-        @matcher = validate_uniqueness_of(:attr)
-      end
-
-      it "does not not require a created instance" do
-        @model.should @matcher
-      end
+    def validating_uniqueness_with_other(options = {})
+      define_model_with_other.new
     end
   end
 
-  context "a unique attribute with a custom error and an existing value" do
-    before do
-      @model = define_model(:example, :attr => :string) do
+  context 'a model with a uniqueness validation, a custom error, and an existing record' do
+    it 'rejects when the actual message does not match the default message' do
+      validating_uniqueness_with_existing_record(:message => 'Bad value').
+        should_not matcher
+    end
+
+    it 'rejects when the messages do not match' do
+      validating_uniqueness_with_existing_record(:message => 'Bad value').
+        should_not matcher.with_message(/abc/)
+    end
+
+    it 'accepts when the messages match' do
+      validating_uniqueness_with_existing_record(:message => 'Bad value').
+        should matcher.with_message(/Bad/)
+    end
+
+    def validating_uniqueness_with_existing_record(options = {})
+      model = define_model(:example, :attr => :string) do
         attr_accessible :attr
-        validates_uniqueness_of :attr, :message => 'Bad value'
+        validates_uniqueness_of :attr, options
       end.new
       Example.create!(:attr => 'value')
-    end
-
-    it "should fail when checking the default message" do
-      @model.should_not validate_uniqueness_of(:attr)
-    end
-
-    it "should fail when checking a message that doesn't match" do
-      @model.should_not validate_uniqueness_of(:attr).with_message(/abc/i)
-    end
-
-    it "should pass when checking a message that matches" do
-      @model.should validate_uniqueness_of(:attr).with_message(/bad/i)
+      model
     end
   end
 
-  context "a scoped unique attribute with an existing value" do
-    before do
-      @model = define_model(:example, :attr   => :string,
-                                      :scope1 => :integer,
-                                      :scope2 => :integer,
-                                      :other => :integer) do
+  context 'a model with a scoped uniqueness validation with an existing value' do
+    it 'accepts when the correct scope is specified' do
+      validating_scoped_uniqueness([:scope1, :scope2]).should
+        matcher.scoped_to(:scope1, :scope2)
+    end
+
+    it 'accepts when the subject is an existing record' do
+      define_scoped_model([:scope1, :scope2])
+      create_existing_record.should matcher.scoped_to(:scope1, :scope2)
+    end
+
+    it 'rejects when too narrow of a scope is specified' do
+      validating_scoped_uniqueness([:scope1, :scope2]).should_not
+        matcher.scoped_to(:scope1, :scope2, :other)
+    end
+
+    it 'rejects when too broad of a scope is specified' do
+      validating_scoped_uniqueness([:scope1, :scope2]).should_not
+        matcher.scoped_to(:scope1)
+    end
+
+    it 'rejects when a different scope is specified' do
+      validating_scoped_uniqueness([:scope1]).should_not
+        matcher.scoped_to(:other)
+    end
+
+    it 'rejects when no scope is specified' do
+      validating_scoped_uniqueness([:scope1]).should_not matcher
+    end
+
+    it 'rejects when a non-existent attribute is specified as a scope' do
+      validating_scoped_uniqueness([:scope1]).should_not
+        matcher.scoped_to(:fake)
+    end
+
+    def create_existing_record
+      @existing ||= Example.create!(:attr => 'value', :scope1 => 1, :scope2 => 2, :other => 3)
+    end
+
+    def define_scoped_model(scope)
+      define_model(:example, :attr => :string, :scope1 => :integer,
+        :scope2 => :integer, :other => :integer) do
         attr_accessible :attr, :scope1, :scope2, :other
-        validates_uniqueness_of :attr, :scope => [:scope1, :scope2]
-      end.new
-      @existing = Example.create!(:attr => 'value', :scope1 => 1, :scope2 => 2, :other => 3)
+        validates_uniqueness_of :attr, :scope => scope
+      end
     end
 
-    it "should pass when the correct scope is specified" do
-      @model.should validate_uniqueness_of(:attr).scoped_to(:scope1, :scope2)
-    end
-
-    it "should pass when the subject is an existing record" do
-      @existing.should validate_uniqueness_of(:attr).scoped_to(:scope1, :scope2)
-    end
-
-    it "should fail when too narrow of a scope is specified" do
-      @model.should_not validate_uniqueness_of(:attr).scoped_to(:scope1, :scope2, :other)
-    end
-
-    it "should fail when too broad of a scope is specified" do
-      @model.should_not validate_uniqueness_of(:attr).scoped_to(:scope1)
-    end
-
-    it "should fail when a different scope is specified" do
-      @model.should_not validate_uniqueness_of(:attr).scoped_to(:other)
-    end
-
-    it "should fail when no scope is specified" do
-      @model.should_not validate_uniqueness_of(:attr)
-    end
-
-    it "should fail when a non-existent attribute is specified as a scope" do
-      @model.should_not validate_uniqueness_of(:attr).scoped_to(:fake)
+    def validating_scoped_uniqueness(scope)
+      model = define_scoped_model(scope).new
+      create_existing_record
+      model
     end
   end
 
-  context "a non-unique attribute with an existing value" do
-    before do
-      @model = define_model(:example, :attr => :string) do
-        attr_accessible :attr
-      end.new
-      Example.create!(:attr => 'value')
+  context 'a model with a case-sensitive uniqueness validation on a string attribute and an existing record' do
+    it 'accepts a case-sensitive value for that attribute' do
+      case_sensitive_validation_with_existing_value(:string).should
+        matcher
     end
 
-    it "should not require a unique value for that attribute" do
-      @model.should_not validate_uniqueness_of(:attr)
+    it 'rejects a case-insensitive value for that attribute' do
+      case_sensitive_validation_with_existing_value(:string).should_not
+        matcher.case_insensitive
     end
   end
 
-  context "a case sensitive unique attribute with an existing value" do
-    before do
-      @model = define_model(:example, :attr  => :string) do
-        attr_accessible :attr
-        validates_uniqueness_of :attr, :case_sensitive => true
-      end.new
-      Example.create!(:attr => 'value')
+  context 'a model with a case-sensitive uniqueness validation on an integer attribute with an existing value' do
+    it 'accepts a case-insensitive value for that attribute' do
+      case_sensitive_validation_with_existing_value(:integer).should
+        matcher.case_insensitive
     end
 
-    it "should not require a unique, case-insensitive value for that attribute" do
-      @model.should_not validate_uniqueness_of(:attr).case_insensitive
-    end
-
-    it "should require a unique, case-sensitive value for that attribute" do
-      @model.should validate_uniqueness_of(:attr)
+    it 'accepts a case-sensitive value for that attribute' do
+      case_sensitive_validation_with_existing_value(:integer).should matcher
     end
   end
 
-  context "a case sensitive unique integer attribute with an existing value" do
-    before do
-      @model = define_model(:example, :attr  => :integer) do
-        attr_accessible :attr
-        validates_uniqueness_of :attr, :case_sensitive => true
-      end.new
+  def case_sensitive_validation_with_existing_value(attr_type)
+    model = define_model(:example, :attr => attr_type) do
+      attr_accessible :attr
+      validates_uniqueness_of :attr, :case_sensitive => true
+    end.new
+    if attr_type == :string
       Example.create!(:attr => 'value')
+    elsif attr_type == :integer
+      Example.create!(:attr => 1)
+    else
+      raise 'Must be :string or :integer'
     end
+    model
+  end
 
-    it "should require a unique, case-insensitive value for that attribute" do
-      @model.should validate_uniqueness_of(:attr).case_insensitive
-    end
-
-    it "should require a unique, case-sensitive value for that attribute" do
-      @model.should validate_uniqueness_of(:attr)
-    end
+  def matcher
+    validate_uniqueness_of(:attr)
   end
 end

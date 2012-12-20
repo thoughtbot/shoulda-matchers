@@ -22,7 +22,7 @@ module Shoulda # :nodoc:
       end
 
       class EnsureInclusionOfMatcher < ValidationMatcher # :nodoc:
-        ARBITRARY_OUTSIDE_STRING = "shouldamatchersteststring"
+        ARBITRARY_OUTSIDE_STRING = 'shouldamatchersteststring'
 
         def initialize(attribute)
           super(attribute)

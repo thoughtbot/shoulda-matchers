@@ -1,20 +1,22 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActionController::FilterParamMatcher do
-  context "given parameter filters" do
-    before do
-      Rails.application.config.filter_parameters = [:secret]
-    end
+  it 'accepts filtering a filtered parameter' do
+    filter(:secret)
 
-    it "should accept filtering that parameter" do
-      nil.should filter_param(:secret)
-    end
+    nil.should filter_param(:secret)
+  end
 
-    it "should reject filtering another parameter" do
-      matcher = filter_param(:other)
-      matcher.matches?(nil).should be_false
-      matcher.failure_message.should include("Expected other to be filtered")
-      matcher.failure_message.should =~ /secret/
-    end
+  it 'rejects filtering an unfiltered parameter' do
+    filter(:secret)
+    matcher = filter_param(:other)
+
+    matcher.matches?(nil).should be_false
+
+    matcher.failure_message.should =~ /Expected other to be filtered.*secret/
+  end
+
+  def filter(param)
+    Rails.application.config.filter_parameters = [param]
   end
 end

@@ -42,9 +42,9 @@ module Shoulda # :nodoc:
         end
 
         def description
-          description = "render with "
+          description = 'render with '
           if @expected_layout.nil?
-            description << "a layout"
+            description << 'a layout'
           else
             description << "the #{@expected_layout.inspect} layout"
           end
@@ -83,9 +83,9 @@ module Shoulda # :nodoc:
 
         def result
           if rendered_with_layout?
-            "rendered with " + rendered_layouts.map(&:inspect).join(", ")
+            'rendered with ' + rendered_layouts.map(&:inspect).join(', ')
           else
-            "rendered without a layout"
+            'rendered without a layout'
           end
         end
       end
