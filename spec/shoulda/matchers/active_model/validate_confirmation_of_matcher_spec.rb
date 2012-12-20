@@ -1,48 +1,41 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher do
-
-  context "an attribute which needs confirmation" do
-    before do
-      define_model(:example, :attr => :string) do
-        validates_confirmation_of :attr
-      end
-      @model = Example.new
+  context "a model with a confirmation validation" do
+    it "accepts" do
+      validating_confirmation.should matcher
     end
 
-    it "should require confirmation of that attribute" do
-      @model.should validate_confirmation_of(:attr)
-    end
-
-    it "should not override the default message with a blank" do
-      @model.should validate_confirmation_of(:attr).with_message(nil)
+    it "does not override the default message with a blank" do
+      validating_confirmation.should matcher.with_message(nil)
     end
   end
 
-  context "an attribute which must be confirmed with a custom message" do
-    before do
-      define_model :example, :attr => :string do
-        validates_confirmation_of :attr, :message => 'custom'
-      end
-      @model = Example.new
-    end
-
-    it "should require confirmation of that attribute with that message" do
-      @model.should validate_confirmation_of(:attr).with_message(/custom/)
-    end
-
-    it "should not require confirmation of that attribute with another message" do
-      @model.should_not validate_confirmation_of(:attr)
+  context "a model without a confirmation validation" do
+    it "rejects" do
+      define_model(:example, :attr => :string).new.should_not matcher
     end
   end
 
-  context "an attribute which doesn't need confirmation" do
-    before do
-      @model = define_model(:example, :attr => :string).new
+  context "a confirmation validation with a custom message" do
+    it "accepts when the message matches" do
+      validating_confirmation(:message => "custom").should
+        matcher.with_message(/custom/)
     end
 
-    it "should not require confirmation of that attribute" do
-      @model.should_not validate_confirmation_of(:attr)
+    it "rejects when the messages do not match" do
+      validating_confirmation(:message => "custom").should_not
+        matcher.with_message(/wrong/)
     end
+  end
+
+  def matcher
+    validate_confirmation_of(:attr)
+  end
+
+  def validating_confirmation(options = {})
+    define_model(:example, :attr => :string) do
+      validates_confirmation_of :attr, options
+    end.new
   end
 end

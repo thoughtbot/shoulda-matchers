@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Shoulda::Matchers::ActiveRecord::SerializeMatcher do
   context "an attribute that should be serialized" do

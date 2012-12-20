@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
   context "a required attribute" do

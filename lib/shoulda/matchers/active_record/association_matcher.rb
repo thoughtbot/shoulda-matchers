@@ -260,7 +260,7 @@ module Shoulda # :nodoc:
           if !@validate && !reflection.options[:validate] || @validate == reflection.options[:validate]
             true
           else
-            @missing = "#{@name} should have #{@validate} as validate"
+            @missing = "#{@name} should have :validate => #{@validate}"
             false
           end
         end
@@ -326,14 +326,14 @@ module Shoulda # :nodoc:
 
         def macro_description
           case @macro.to_s
-          when 'belongs_to'
-            'belong to'
-          when 'has_many'
-            'have many'
-          when 'has_one'
-            'have one'
-          when 'has_and_belongs_to_many'
-            'have and belong to many'
+          when "belongs_to"
+            "belong to"
+          when "has_many"
+            "have many"
+          when "has_one"
+            "have one"
+          when "has_and_belongs_to_many"
+            "have and belong to many"
           end
         end
       end

@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
   context "a unique attribute" do

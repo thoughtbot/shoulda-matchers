@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
   it "should state in its description that it allows only numeric values" do

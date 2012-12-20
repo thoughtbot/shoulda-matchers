@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Shoulda::Matchers::ActiveRecord::HaveReadonlyAttributeMatcher do
   context "an attribute that cannot be set after being saved" do

@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Shoulda::Matchers::ActiveRecord::HaveDbColumnMatcher do
   context "have_db_column" do

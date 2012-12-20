@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
   context "an attribute with a format validation" do

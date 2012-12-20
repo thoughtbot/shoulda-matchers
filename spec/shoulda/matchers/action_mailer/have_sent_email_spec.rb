@@ -1,7 +1,7 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
-  subject { Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher.new(self) }
+  subject { described_class.new(self) }
 
   def add_mail_to_deliveries(params = nil)
     ::ActionMailer::Base.deliveries << Mailer.the_email(params)

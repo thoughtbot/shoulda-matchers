@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Shoulda::Matchers::Independent::DelegateMatcher do
   it 'supports chaining on #to' do
