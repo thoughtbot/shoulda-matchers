@@ -64,6 +64,10 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       Child.new.should_not belong_to(:parent).conditions(:adopter => true)
     end
 
+    it 'accepts an association without a :class_name option' do
+      belonging_to_parent.should belong_to(:parent).class_name('Parent')
+    end
+
     it 'accepts an association with a valid :class_name option' do
       define_model :tree_parent
       define_model :child, :parent_id => :integer do
@@ -234,6 +238,10 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       Parent.new.should_not have_many(:children).conditions(:adopted => true)
     end
 
+    it 'accepts an association without a :class_name option' do
+      having_many_children.should have_many(:children).class_name('Child')
+    end
+
     it 'accepts an association with a valid :class_name option' do
       define_model :node, :parent_id => :integer
       define_model :parent do
@@ -374,6 +382,10 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       Person.new.should_not have_one(:detail).conditions(:disabled => true)
     end
 
+    it 'accepts an association without a :class_name option' do
+      having_one_detail.should have_one(:detail).class_name('Detail')
+    end
+
     it 'accepts an association with a valid :class_name option' do
       define_model :person_detail, :person_id => :integer
       define_model :person do
@@ -488,6 +500,11 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
         :relative_id => :integer
 
       Person.new.should_not have_and_belong_to_many(:relatives).conditions(:adopted => true)
+    end
+
+    it 'accepts an association without a :class_name option' do
+      having_and_belonging_to_many_relatives.
+        should have_and_belong_to_many(:relatives).class_name('Relative')
     end
 
     it 'accepts an association with a valid :class_name option' do
