@@ -4,7 +4,7 @@ module Shoulda # :nodoc:
       # Ensure that the belongs_to relationship exists.
       #
       # Options:
-      # * <tt>:class_name</tt> - tests that the association makes use of the class_name option.
+      # * <tt>:class_name</tt> - tests that the association resolves to class_name.
       # * <tt>:validate</tt> - tests that the association makes use of the validate
       # option.
       #
@@ -23,7 +23,7 @@ module Shoulda # :nodoc:
       # * <tt>through</tt> - association name for <tt>has_many :through</tt>
       # * <tt>dependent</tt> - tests that the association makes use of the
       #   dependent option.
-      # * <tt>:class_name</tt> - tests that the association makes use of the class_name option.
+      # * <tt>:class_name</tt> - tests that the association resoves to class_name.
       # * <tt>:validate</tt> - tests that the association makes use of the validate
       # option.
       #
@@ -43,7 +43,7 @@ module Shoulda # :nodoc:
       # Options:
       # * <tt>:dependent</tt> - tests that the association makes use of the
       #   dependent option.
-      # * <tt>:class_name</tt> - tests that the association makes use of the class_name option.
+      # * <tt>:class_name</tt> - tests that the association resolves to class_name.
       # * <tt>:validate</tt> - tests that the association makes use of the validate
       # option.
       #
@@ -58,6 +58,7 @@ module Shoulda # :nodoc:
       # the join table is in place.
       #
       # Options:
+      # * <tt>:class_name</tt> - tests that the association resolves to class_name.
       # * <tt>:validate</tt> - tests that the association makes use of the validate
       # option.
       #
@@ -209,10 +210,10 @@ module Shoulda # :nodoc:
 
         def class_name_correct?
           if @options.key?(:class_name)
-            if @options[:class_name].to_s == reflection.options[:class_name].to_s
+            if @options[:class_name].to_s == reflection.klass.to_s
               true
             else
-              @missing = "#{@name} should have #{@options[:class_name]} as class_name"
+              @missing = "#{@name} should resolve to #{@options[:class_name]} for class_name"
               false
             end
           else
