@@ -1,79 +1,88 @@
 require "spec_helper"
 
 describe Shoulda::Matchers::ActiveModel::ValidateFormatOfMatcher do
-  context "a postal code" do
-    before do
-      define_model :example, :attr => :string do
-        validates_format_of :attr, :with => /^\d{5}$/
-      end
-      @model = Example.new
+  context "a model with a format validation" do
+    it "accepts when format matches " do
+      validating_format(:with => /^\d{5}$/).should matcher.with("12345")
     end
 
-    it "is valid" do
-      @model.should validate_format_of(:attr).with('12345')
+    it "rejects blank with should_not" do
+      validating_format(:with => /^\d{5}$/).should_not matcher.with(" ")
     end
 
-    it "is not valid with blank" do
-      @model.should_not validate_format_of(:attr).with(' ')
-      @model.should validate_format_of(:attr).not_with(' ')
+    it "rejects blank with not_with" do
+      validating_format(:with => /^\d{5}$/).should matcher.not_with(" ")
     end
 
-    it "is not valid with nil" do
-      @model.should_not validate_format_of(:attr).with(nil)
+    it "rejects nil" do
+      validating_format(:with => /^\d{5}$/).should_not matcher.with(nil)
     end
 
-    it "is not valid with alpha in zip" do
-      @model.should_not validate_format_of(:attr).with('1234a')
-      @model.should validate_format_of(:attr).not_with('1234a')
+    it "rejects a non-matching format with should_not" do
+      validating_format(:with => /^\d{5}$/).should_not matcher.with("1234a")
     end
 
-    it "is not valid with too few digits" do
-      @model.should_not validate_format_of(:attr).with('1234')
-      @model.should validate_format_of(:attr).not_with('1234')
+    it "rejects a non-matching format with not_with" do
+      validating_format(:with => /^\d{5}$/).should matcher.not_with("1234a")
     end
 
-    it "is not valid with too many digits" do
-      @model.should_not validate_format_of(:attr).with('123456')
-      @model.should validate_format_of(:attr).not_with('123456')
-    end
-
-    it "raises error if you try to call both with and not_with" do
-      expect { validate_format_of(:attr).not_with('123456').with('12345') }.
-        to raise_error(RuntimeError)
+    it "raises an error if you try to call both with and not_with" do
+      expect {
+        validate_format_of(:attr).not_with("123456").with("12345")
+      }.to raise_error(RuntimeError)
     end
   end
 
-  context "when allow_blank and allow_nil are set" do
-    before do
-      define_model :example, :attr => :string do
-        validates_format_of :attr, :with => /^\d{5}$/, :allow_blank => true, :allow_nil => true
-      end
-      @model = Example.new
+  context "a model without a format validation" do
+    it "rejects" do
+      define_model(:example, :attr => :string).new.should_not
+        matcher.with("hello")
     end
+  end
 
+  context "when allow_blank or allow_nil are set" do
     it "is valid when attr is nil" do
-      @model.should validate_format_of(:attr).with(nil)
+      validating_format(:with => /abc/, :allow_nil => true).should
+        matcher.with(nil)
     end
 
     it "is valid when attr is blank" do
-      @model.should validate_format_of(:attr).with(' ')
-    end
-
-    describe "#allow_blank" do
-      it "allows allow_blank" do
-        @model.should validate_format_of(:attr).allow_blank
-        @model.should validate_format_of(:attr).allow_blank(true)
-        @model.should_not validate_format_of(:attr).allow_blank(false)
-      end
-    end
-
-    describe "#allow_nil" do
-      it "allows allow_nil" do
-        @model.should validate_format_of(:attr).allow_nil
-        @model.should validate_format_of(:attr).allow_nil(true)
-        @model.should_not validate_format_of(:attr).allow_nil(false)
-      end
+      validating_format(:with => /abc/, :allow_blank => true).should
+        matcher.with(" ")
     end
   end
 
+  context "#allow_blank" do
+    it "accepts when allow_blank matches" do
+      validating_format(:with => /abc/, :allow_blank => true).should
+        matcher.allow_blank
+    end
+
+    it "rejects when allow_blank does not match" do
+      validating_format(:with => /abc/, :allow_blank => false).should_not
+        matcher.allow_blank
+    end
+  end
+
+  context "#allow_nil" do
+    it "accepts when allow_nil matches" do
+      validating_format(:with => /abc/, :allow_nil => true).should
+      matcher.allow_nil
+    end
+
+    it "rejects when allow_nil does not match" do
+      validating_format(:with => /abc/, :allow_nil => false).should_not
+        matcher.allow_nil
+    end
+  end
+
+  def matcher
+    validate_format_of(:attr)
+  end
+
+  def validating_format(options = {})
+    define_model :example, :attr => :string do
+      validates_format_of :attr, options
+    end.new
+  end
 end

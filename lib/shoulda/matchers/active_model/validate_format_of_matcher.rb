@@ -27,7 +27,6 @@ module Shoulda # :nodoc:
       end
 
       class ValidateFormatOfMatcher < ValidationMatcher # :nodoc:
-
         def initialize(attribute)
           super
           @options = {}
