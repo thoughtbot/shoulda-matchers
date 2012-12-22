@@ -1,84 +1,49 @@
 require "spec_helper"
 
 describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
-  context "a required attribute" do
-    before do
-      define_model :example, :attr => :string do
-        validates_presence_of :attr
-      end
-      @model = Example.new
+  context "a model with a presence validation" do
+    it "accepts" do
+      validating_presence.should matcher
     end
 
-    it "should require a value" do
-      @model.should validate_presence_of(:attr)
-    end
-
-    it "should not override the default message with a blank" do
-      @model.should validate_presence_of(:attr).with_message(nil)
+    it "does not override the default message with a blank" do
+      validating_presence.should matcher.with_message(nil)
     end
   end
 
-  context "a required attribute on a class using ActiveModel::Validations" do
-    before do
-      define_active_model_class("Example", :accessors => [:attr]) do
-        validates_presence_of :attr
-      end
-      @model = Example.new
-    end
-
-    it "should require a value" do
-      @model.should validate_presence_of(:attr)
-    end
-
-    it "should not override the default message with a blank" do
-      @model.should validate_presence_of(:attr).with_message(nil)
+  context "a model without a presence validation" do
+    it "rejects" do
+      define_model(:example, :attr => :string).new.should_not matcher
     end
   end
 
-  context "an optional attribute" do
-    before do
-      @model = define_model(:example, :attr => :string).new
+  context "an ActiveModel class with a presence validation" do
+    it "accepts" do
+      active_model_validating_presence.should matcher
     end
 
-    it "should not require a value" do
-      @model.should_not validate_presence_of(:attr)
-    end
-  end
-
-  context "an optional attribute on a class using ActiveModel::Validations" do
-    before do
-      @model = define_active_model_class("Example", :accessors => [:attr]).new
-    end
-
-    it "should not require a value" do
-      @model.should_not validate_presence_of(:attr)
+    it "does not override the default message with a blank" do
+      active_model_validating_presence.should matcher.with_message(nil)
     end
   end
 
-  context "a required has_many association" do
-    before do
-      define_model :child
-      @model = define_model :parent do
-        has_many :children
-        validates_presence_of :children
-      end.new
-    end
-
-    it "should require the attribute to be set" do
-      @model.should validate_presence_of(:children)
+  context "an ActiveModel class without a presence validation" do
+    it "rejects" do
+      define_active_model_class("Example", :accessors => [:attr]).new.should_not
+        matcher
     end
   end
 
-  context "an optional has_many association" do
-    before do
-      define_model :child
-      @model = define_model :parent do
-        has_many :children
-      end.new
+  context "a has_many association with a presence validation" do
+    it "requires the attribute to be set" do
+      has_many_children(:presence => true).should validate_presence_of(:children)
     end
+  end
 
-    it "should not require the attribute to be set" do
-      @model.should_not validate_presence_of(:children)
+  context "a has_many association without a presence validation" do
+    it "does not require the attribute to be set" do
+      has_many_children(:presence => false).should_not
+        validate_presence_of(:children)
     end
   end
 
@@ -95,7 +60,7 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
       end
     end
 
-    it "should require the attribute to be set" do
+    it "accepts" do
       @model.should validate_presence_of(:children)
     end
   end
@@ -112,24 +77,51 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
       end
     end
 
-    it "should not require the attribute to be set" do
+    it "rejects" do
       @model.should_not validate_presence_of(:children)
     end
   end
 
-  if Rails::VERSION::STRING.to_f >= 3.2
+  if active_model_3_2?
     context "a strictly required attribute" do
-      before do
-        define_model :example, :attr => :string do
-          validates_presence_of :attr, :strict => true
-        end
-        @model = Example.new
+      it "accepts when the :strict options match" do
+        validating_presence(:strict => true).should matcher.strict
       end
 
-      it "should require a value" do
-        @model.should validate_presence_of(:attr).strict
+      it "rejects when the :strict options do not match" do
+        validating_presence(:strict => false).should_not matcher.strict
       end
+    end
+
+    it "does not override the default message with a blank" do
+      validating_presence(:strict => true).should
+        matcher.strict.with_message(nil)
     end
   end
 
+  def matcher
+    validate_presence_of(:attr)
+  end
+
+  def validating_presence(options = {})
+    define_model :example, :attr => :string do
+      validates_presence_of :attr, options
+    end.new
+  end
+
+  def active_model_validating_presence
+    define_active_model_class("Example", :accessors => [:attr]) do
+      validates_presence_of :attr
+    end.new
+  end
+
+  def has_many_children(options = {})
+    define_model :child
+    define_model :parent do
+      has_many :children
+      if options[:presence]
+        validates_presence_of :children
+      end
+    end.new
+  end
 end
