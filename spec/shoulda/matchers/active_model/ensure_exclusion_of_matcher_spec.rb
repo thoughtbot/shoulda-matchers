@@ -12,7 +12,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureExclusionOfMatcher do
         ensure_exclusion_of(:attr).in_range(2..6)
     end
 
-    it "should not override the default message with a blank" do
+    it "does not override the default message with a blank" do
       validating_exclusion(:in => 2..5).should
         ensure_exclusion_of(:attr).in_range(2..5).with_message(nil)
     end

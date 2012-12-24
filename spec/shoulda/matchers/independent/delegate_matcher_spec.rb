@@ -111,7 +111,7 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
 
         matcher.matches?(post_office)
 
-        message = "Expected PostOffice#deliver_mail to delegate to PostOffice#mailman with arguments: ["123 Nowhere Ln."]"
+        message = 'Expected PostOffice#deliver_mail to delegate to PostOffice#mailman with arguments: ["123 Nowhere Ln."]'
         matcher.failure_message.should == message
       end
     end
