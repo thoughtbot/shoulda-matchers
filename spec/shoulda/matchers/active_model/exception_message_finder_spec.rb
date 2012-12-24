@@ -8,7 +8,7 @@ describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
 
         description = finder.allow_description("allowed values")
 
-        description.should == "doesn't raise when attr is set to allowed values"
+        description.should == "does not raise when attr is set to allowed values"
       end
     end
 

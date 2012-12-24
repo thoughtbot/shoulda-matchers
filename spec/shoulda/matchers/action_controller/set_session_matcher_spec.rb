@@ -11,7 +11,7 @@ describe Shoulda::Matchers::ActionController::SetSessionMatcher do
     end
 
     it "rejects assigning another value to that variable" do
-      controller_with_session(:var => "hi").should_not set_session(:var).to('other')
+      controller_with_session(:var => "hi").should_not set_session(:var).to("other")
     end
 
     it "rejects assigning to another variable" do

@@ -127,7 +127,7 @@ describe Shoulda::Matchers::ActionController::SetTheFlashMatcher do
     end
   end
 
-  context "a controller that doesn't set a flash message" do
+  context "a controller that does not set a flash message" do
     it "rejects setting any flash message" do
       controller_with_no_flashes.should_not set_the_flash
     end

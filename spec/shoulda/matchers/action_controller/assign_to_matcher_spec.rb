@@ -4,7 +4,7 @@ describe Shoulda::Matchers::ActionController::AssignToMatcher do
   it "includes the actual class in the failure message" do
     define_class(:WrongClass) do
       def to_s
-        'wrong class'
+        "wrong class"
       end
     end
 
@@ -29,11 +29,11 @@ describe Shoulda::Matchers::ActionController::AssignToMatcher do
     end
 
     it "accepts assigning the correct value to that variable" do
-      controller.should assign_to(:var).with('value')
+      controller.should assign_to(:var).with("value")
     end
 
     it "rejects assigning another value to that variable" do
-      controller.should_not assign_to(:var).with('other')
+      controller.should_not assign_to(:var).with("other")
     end
 
     it "rejects assigning to another variable" do
@@ -41,17 +41,17 @@ describe Shoulda::Matchers::ActionController::AssignToMatcher do
     end
 
     it "accepts assigning to the same value in the test context" do
-      expected = 'value'
+      expected = "value"
       controller.should assign_to(:var).in_context(self).with { expected }
     end
 
     it "rejects assigning to the another value in the test context" do
-      expected = 'other'
+      expected = "other"
       controller.should_not assign_to(:var).in_context(self).with { expected }
     end
 
     def controller
-      build_response { @var = 'value' }
+      build_response { @var = "value" }
     end
   end
 

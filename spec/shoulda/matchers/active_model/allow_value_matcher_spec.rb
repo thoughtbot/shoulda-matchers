@@ -115,7 +115,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
 
       it "describes itself" do
         allow_value("xyz").for(:attr).strict.description.
-          should == %{doesn't raise when attr is set to "xyz"}
+          should == %{does not raise when attr is set to "xyz"}
       end
 
       it "provides a useful negative failure message" do

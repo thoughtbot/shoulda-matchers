@@ -55,7 +55,7 @@ describe Shoulda::Matchers::ActionController::RenderTemplateMatcher do
     end
   end
 
-  context "a controller that doesn't render partials" do
+  context "a controller that does not render partials" do
     it "accepts not rendering a partial" do
       controller = build_response(:action => "show") { render }
 
@@ -73,7 +73,7 @@ describe Shoulda::Matchers::ActionController::RenderTemplateMatcher do
     end
   end
 
-  context "a  controller that doesn't render a template" do
+  context "a  controller that does not render a template" do
     it "rejects rendering a template" do
       controller = build_response { render :nothing => true }
 

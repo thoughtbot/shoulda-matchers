@@ -89,7 +89,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
         ensure_inclusion_of(:attr).in_array(%w(one wrong_value))
     end
 
-    it "rejects when array doesn't match at all" do
+    it "rejects when array does not match at all" do
       validating_inclusion(:in => %w(one two)).should_not
         ensure_inclusion_of(:attr).in_array(%w(cat dog))
     end

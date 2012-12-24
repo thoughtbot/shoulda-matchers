@@ -49,7 +49,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureExclusionOfMatcher do
         ensure_exclusion_of(:attr).in_array(%w(one wrong_value))
     end
 
-    it "rejects when array doesn't match at all" do
+    it "rejects when array does not match at all" do
       validating_exclusion(:in => %w(one two)).should_not
         ensure_exclusion_of(:attr).in_array(%w(cat dog))
     end
