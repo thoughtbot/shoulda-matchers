@@ -3,16 +3,19 @@ require 'spec_helper'
 describe Shoulda::Matchers::Independent::DelegateMatcher do
   it 'supports chaining on #to' do
     matcher = delegate_method(:method)
+
     matcher.to(:another_method).should == matcher
   end
 
   it 'supports chaining on #with_arguments' do
     matcher = delegate_method(:method)
+
     matcher.with_arguments(1, 2, 3).should == matcher
   end
 
   it 'supports chaining on #as' do
     matcher = delegate_method(:method)
+
     matcher.as(:some_other_method).should == matcher
   end
 
@@ -38,6 +41,7 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
     it 'rejects' do
       post_office = PostOffice.new
       matcher = delegate_method(:deliver_mail).to(:mailman)
+
       matcher.matches?(post_office).should be_false
     end
 

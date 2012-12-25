@@ -37,12 +37,6 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher do
     end
   end
 
-  def validating_format(options)
-    define_model :example, :attr => :string do
-      validates_format_of :attr, options
-    end.new
-  end
-
   def matcher(value)
     described_class.new(value)
   end

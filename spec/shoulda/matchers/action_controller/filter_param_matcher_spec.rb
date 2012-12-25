@@ -13,8 +13,7 @@ describe Shoulda::Matchers::ActionController::FilterParamMatcher do
 
     matcher.matches?(nil).should be_false
 
-    matcher.failure_message.should include('Expected other to be filtered')
-    matcher.failure_message.should =~ /secret/
+    matcher.failure_message.should =~ /Expected other to be filtered.*secret/
   end
 
   def filter(param)

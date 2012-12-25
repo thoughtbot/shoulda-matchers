@@ -27,27 +27,23 @@ describe Shoulda::Matchers::ActionController::RenderTemplateMatcher do
 
   context 'a controller that renders a partial' do
     it 'accepts rendering that partial' do
-      matcher = render_template(:partial => '_customer')
-
-      controller_with_customer_partial.should matcher
+      controller_with_customer_partial.should
+        render_template(:partial => '_customer')
     end
 
     it 'rejects rendering a different template' do
-      rejecting_matcher = render_template(:partial => '_client')
-
-      controller_with_customer_partial.should_not rejecting_matcher
+      controller_with_customer_partial.should_not
+        render_template(:partial => '_client')
     end
 
     it 'accepts rendering that template in the given context' do
-      matcher = render_template(:partial => '_customer').in_context(self)
-
-      controller_with_customer_partial.should matcher
+      controller_with_customer_partial.should
+        render_template(:partial => '_customer').in_context(self)
     end
 
     it 'rejects rendering a different template in the given context' do
-      rejecting_matcher = render_template(:partial => '_client').in_context(self)
-
-      controller_with_customer_partial.should_not rejecting_matcher
+      controller_with_customer_partial.should_not
+        render_template(:partial => '_client').in_context(self)
     end
 
     def controller_with_customer_partial
@@ -73,11 +69,10 @@ describe Shoulda::Matchers::ActionController::RenderTemplateMatcher do
     end
   end
 
-  context 'a  controller that does not render a template' do
+  context 'a controller that does not render a template' do
     it 'rejects rendering a template' do
-      controller = build_response { render :nothing => true }
-
-      controller.should_not render_template(:show)
+      build_response { render :nothing => true }.should_not
+        render_template(:show)
     end
   end
 end

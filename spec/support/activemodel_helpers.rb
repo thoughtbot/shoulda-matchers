@@ -6,6 +6,12 @@ module ActiveModelHelpers
       define_method(:custom_validation, &block)
     end.new
   end
+
+  def validating_format(options)
+    define_model :example, :attr => :string do
+      validates_format_of :attr, options
+    end.new
+  end
 end
 
 RSpec.configure do |c|

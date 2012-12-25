@@ -79,10 +79,4 @@ describe Shoulda::Matchers::ActiveModel::ValidateFormatOfMatcher do
   def matcher
     validate_format_of(:attr)
   end
-
-  def validating_format(options = {})
-    define_model :example, :attr => :string do
-      validates_format_of :attr, options
-    end.new
-  end
 end

@@ -172,6 +172,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       matcher = have_many(:children).through(:conceptions)
 
       matcher.matches?(having_many_children).should be_false
+
       matcher.failure_message.should =~ /does not have any relationship to conceptions/
     end
 

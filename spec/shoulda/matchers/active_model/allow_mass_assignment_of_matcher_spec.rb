@@ -4,92 +4,90 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
   context '#description' do
     context 'without a role' do
       it 'includes the attribute name' do
-        matcher = described_class.new(:attr)
-        matcher.description.should eq('allow mass assignment of attr')
+        described_class.new(:attr).description.should ==
+          'allow mass assignment of attr'
       end
     end
 
     if active_model_3_1?
       context 'with a role' do
         it 'includes the attribute name and the role' do
-          matcher = described_class.new(:attr).as(:admin)
-          matcher.description.should eq('allow mass assignment of attr as admin')
+          described_class.new(:attr).as(:admin).description.should ==
+            'allow mass assignment of attr as admin'
         end
       end
     end
   end
 
   context 'an attribute that is blacklisted from mass-assignment' do
-    let(:model) do
-      define_model(:example, :attr => :string) do
-        attr_protected :attr
-      end.new
-    end
-
     it 'rejects being mass-assignable' do
-      model.should_not allow_mass_assignment_of(:attr)
+      model = define_model(:example, :blacklisted => :string) do
+        attr_protected :blacklisted
+      end.new
+
+      model.should_not allow_mass_assignment_of(:blacklisted)
     end
   end
 
   context 'an attribute that is not whitelisted for mass-assignment' do
-    let(:model) do
-      define_model(:example, :attr => :string, :other => :string) do
-        attr_accessible :other
-      end.new
-    end
-
     it 'rejects being mass-assignable' do
-      model.should_not allow_mass_assignment_of(:attr)
+      model = define_model(:example, :not_whitelisted => :string,
+        :whitelisted => :string) do
+        attr_accessible :whitelisted
+      end.new
+
+      model.should_not allow_mass_assignment_of(:not_whitelisted)
     end
   end
 
   context 'an attribute that is whitelisted for mass-assignment' do
-    let(:model) do
-      define_model(:example, :attr => :string) do
-        attr_accessible :attr
-      end.new
-    end
-
     it 'accepts being mass-assignable' do
-      model.should allow_mass_assignment_of(:attr)
+      define_model(:example, :whitelisted => :string) do
+        attr_accessible :whitelisted
+      end.new.should allow_mass_assignment_of(:whitelisted)
     end
   end
 
   context 'an attribute not included in the mass-assignment blacklist' do
-    let(:model) do
-      define_model(:example, :attr => :string, :other => :string) do
-        attr_protected :other
-      end.new
-    end
-
     it 'accepts being mass-assignable' do
-      model.should allow_mass_assignment_of(:attr)
+      model = define_model(:example, :not_blacklisted => :string,
+        :blacklisted => :string) do
+        attr_protected :blacklisted
+      end.new
+
+      model.should allow_mass_assignment_of(:not_blacklisted)
     end
   end
 
   unless active_model_3_2?
     context 'an attribute on a class with no protected attributes' do
-      let(:model) { define_model(:example, :attr => :string).new }
-
       it 'accepts being mass-assignable' do
-        model.should allow_mass_assignment_of(:attr)
+        no_protected_attributes.should allow_mass_assignment_of(:attr)
       end
 
       it 'assigns a negative failure message' do
         matcher = allow_mass_assignment_of(:attr)
 
-        matcher.matches?(model).should == true
+        matcher.matches?(no_protected_attributes).should be_true
 
         matcher.negative_failure_message.should_not be_nil
       end
+    end
+
+    def no_protected_attributes
+      define_model(:example, :attr => :string).new
     end
   end
 
   context 'an attribute on a class with all protected attributes' do
     it 'rejects being mass-assignable' do
+      all_protected_attributes.should_not allow_mass_assignment_of(:attr)
+    end
+
+    def all_protected_attributes
       define_model(:example, :attr => :string) do
-        attr_accessible
-      end.new.should_not allow_mass_assignment_of(:attr)
+        attr_accessible nil
+      end.new
     end
   end
 

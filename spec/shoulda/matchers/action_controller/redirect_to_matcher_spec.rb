@@ -7,21 +7,22 @@ describe Shoulda::Matchers::ActionController::RedirectToMatcher do
     end
 
     it 'rejects redirecting to a different url' do
-      controller_redirecting_to('/some/url').should_not redirect_to('/some/other/url')
+      controller_redirecting_to('/some/url').should_not
+        redirect_to('/some/other/url')
     end
 
     it 'accepts redirecting to that url in a block' do
-      matcher = redirect_to('somewhere') { '/some/url' }
-      controller_redirecting_to('/some/url').should matcher
+      controller_redirecting_to('/some/url').should
+        redirect_to('somewhere') { '/some/url' }
     end
 
     it 'rejects redirecting to a different url in a block' do
-      matcher = redirect_to('somewhere else') { '/some/other/url' }
-      controller_redirecting_to('/some/url').should_not matcher
+      controller_redirecting_to('/some/url').should_not
+        redirect_to('somewhere else') { '/some/other/url' }
     end
 
     def controller_redirecting_to(url)
-      build_response { redirect_to '/some/url' }
+      build_response { redirect_to url }
     end
   end
 

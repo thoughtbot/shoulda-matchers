@@ -26,7 +26,9 @@ describe Shoulda::Matchers::ActiveRecord::HaveReadonlyAttributeMatcher do
     it 'assigns a failure message' do
       model = define_model(:example, :attr => :string).new
       matcher = have_readonly_attribute(:attr)
+
       matcher.matches?(model)
+
       matcher.failure_message.should_not be_nil
     end
   end

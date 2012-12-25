@@ -12,19 +12,25 @@ describe Shoulda::Matchers::ActiveRecord::SerializeMatcher do
 
     it 'assigns a helpful failure message' do
       matcher = serialize(:attr)
+
       matcher.matches?(unserialized_model)
+
       matcher.failure_message.should =~ /to serialize the attribute called :attr/
     end
 
     it 'assigns a helpful failure message when using #as' do
       matcher = serialize(:attr).as(Hash)
+
       matcher.matches?(unserialized_model)
+
       matcher.failure_message.should =~ /with a type of Hash/
     end
 
     it 'assigns a helpful failure message when using #as_instance_of' do
       matcher = serialize(:attr).as_instance_of(Hash)
+
       matcher.matches?(unserialized_model)
+
       matcher.failure_message.should =~ /with an instance of Hash/
     end
 

@@ -1,6 +1,29 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
+  context "#description" do
+    it 'describes itself with multiple values' do
+      matcher = allow_value('foo', 'bar').for(:baz)
+
+      matcher.description.should == 'allow baz to be set to any of ["foo", "bar"]'
+    end
+
+    it 'describes itself with a single value' do
+      matcher = allow_value('foo').for(:baz)
+
+      matcher.description.should == 'allow baz to be set to "foo"'
+    end
+
+    if active_model_3_2?
+      it 'describes itself with a strict validation' do
+        strict_matcher = allow_value('xyz').for(:attr).strict
+
+        strict_matcher.description.should ==
+          %q(doesn't raise when attr is set to "xyz")
+      end
+    end
+  end
+
   context 'an attribute with a validation' do
     it 'allows a good value' do
       validating_format(:with => /abc/).should allow_value('abcde').for(:attr)
@@ -59,25 +82,13 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
     end
   end
 
-  context 'with multiple values' do
-    it 'describes itself' do
-      matcher = allow_value('foo', 'bar').for(:baz)
-      matcher.description.should == 'allow baz to be set to any of ["foo", "bar"]'
-    end
-  end
-
   context 'with a single value' do
-    it 'describes itself' do
-      matcher = allow_value('foo').for(:baz)
-      matcher.description.should == 'allow baz to be set to "foo"'
-    end
-
     it 'allows you to call description before calling matches?' do
       model = define_model(:example, :attr => :string).new
       matcher = described_class.new('foo').for(:attr)
       matcher.description
 
-      expect { matcher.matches?(model) }.not_to raise_error
+      expect { matcher.matches?(model) }.not_to raise_error(NoMethodError)
     end
   end
 
@@ -90,12 +101,6 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
 
   if active_model_3_2?
     context 'an attribute with a strict format validation' do
-      let(:model) do
-        define_model :example, :attr => :string do
-          validates_format_of :attr, :with => /abc/, :strict => true
-        end.new
-      end
-
       it 'strictly rejects a bad value' do
         validating_format(:with => /abc/, :strict => true).should_not
           allow_value('xyz').for(:attr).strict
@@ -106,23 +111,14 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
           allow_value('xyz').for(:attr).with_message(/abc/).strict
       end
 
-      it 'describes itself' do
-        allow_value('xyz').for(:attr).strict.description.
-          should == %q(doesn't raise when attr is set to "xyz")
-      end
-
       it 'provides a useful negative failure message' do
         matcher = allow_value('xyz').for(:attr).strict.with_message(/abc/)
+
         matcher.matches?(validating_format(:with => /abc/, :strict => true))
+
         matcher.negative_failure_message.should == 'Expected exception to include /abc/ ' +
           'when attr is set to "xyz", got Attr is invalid'
       end
     end
-  end
-
-  def validating_format(options)
-    define_model :example, :attr => :string do
-      validates_format_of :attr, options
-    end.new
   end
 end
