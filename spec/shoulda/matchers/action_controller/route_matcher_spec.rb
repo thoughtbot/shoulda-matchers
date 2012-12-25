@@ -15,49 +15,51 @@ describe Shoulda::Matchers::ActionController::RouteMatcher do
   end
 
   context "given a controller with a defined route" do
-    let!(:controller) { define_controller("Examples").new }
-
-    before do
-      define_routes do
-        match "examples/:id", :to => "examples#example"
-      end
-    end
 
     it "accepts routing the correct path to the correct parameters" do
-      controller.should route(:get, "/examples/1").
+      route_examples_to_examples.should route(:get, "/examples/1").
         to(:action => "example", :id => "1")
     end
 
     it "accepts a symbol controller" do
+      route_examples_to_examples
       Object.new.should route(:get, "/examples/1").
-        to(:controller => :examples,
-           :action     => "example",
-           :id         => "1")
+        to(:controller => :examples, :action => "example", :id => "1")
     end
 
     it "accepts a symbol action" do
-      controller.should route(:get, "/examples/1").
+      route_examples_to_examples.should route(:get, "/examples/1").
         to(:action => :example, :id => "1")
     end
 
     it "accepts a non-string parameter" do
-      controller.should route(:get, "/examples/1").
+      route_examples_to_examples.should route(:get, "/examples/1").
         to(:action => "example", :id => 1)
     end
 
     it "rejects an undefined route" do
-      controller.should_not route(:get, "/bad_route").to(:var => "value")
+      route_examples_to_examples.should_not
+        route(:get, "/bad_route").to(:var => "value")
     end
 
     it "rejects a route for another controller" do
+      route_examples_to_examples
       other = define_controller("Other").new
       other.should_not route(:get, "/examples/1").
         to(:action => "example", :id => "1")
     end
 
     it "rejects a route for different parameters" do
-      controller.should_not route(:get, "/examples/1").
+      route_examples_to_examples.should_not route(:get, "/examples/1").
         to(:action => "other", :id => "1")
+    end
+
+    def route_examples_to_examples
+      define_routes do
+        get "examples/:id", :to => "examples#example"
+      end
+
+      define_controller("Examples").new
     end
   end
 end

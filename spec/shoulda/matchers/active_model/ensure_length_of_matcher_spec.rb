@@ -52,12 +52,6 @@ describe Shoulda::Matchers::ActiveModel::EnsureLengthOfMatcher do
   end
 
   context "an attribute with a required exact length" do
-    before do
-      @model = define_model(:example, :attr => :string) do
-        validates_length_of :attr, :is => 4
-      end.new
-    end
-
     it "accepts ensuring the correct length" do
       validating_length(:is => 4).should ensure_length_of(:attr).is_equal_to(4)
     end
