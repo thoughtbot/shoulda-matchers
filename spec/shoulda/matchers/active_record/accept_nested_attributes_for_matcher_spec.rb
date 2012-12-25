@@ -1,32 +1,32 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveRecord::AcceptNestedAttributesForMatcher do
-  it "accepts an existing declaration" do
+  it 'accepts an existing declaration' do
     accepting_children.should accept_nested_attributes_for(:children)
   end
 
-  it "rejects a missing declaration" do
+  it 'rejects a missing declaration' do
     matcher = children_matcher
 
     matcher.matches?(rejecting_children).should be_false
 
-    matcher.failure_message.should == "Expected Parent to accept nested attributes for children (is not declared)"
+    matcher.failure_message.should == 'Expected Parent to accept nested attributes for children (is not declared)'
   end
 
-  context "allow_destroy" do
-    it "accepts a valid truthy value" do
+  context 'allow_destroy' do
+    it 'accepts a valid truthy value' do
       matching = accepting_children(:allow_destroy => true)
 
       matching.should children_matcher.allow_destroy(true)
     end
 
-    it "accepts a valid falsey value" do
+    it 'accepts a valid falsey value' do
       matching = accepting_children(:allow_destroy => false)
 
       matching.should children_matcher.allow_destroy(false)
     end
 
-    it "rejects an invalid truthy value" do
+    it 'rejects an invalid truthy value' do
       matcher = children_matcher
       matching = accepting_children(:allow_destroy => true)
 
@@ -34,7 +34,7 @@ describe Shoulda::Matchers::ActiveRecord::AcceptNestedAttributesForMatcher do
       matcher.failure_message.should =~ /should not allow destroy/
     end
 
-    it "rejects an invalid falsey value" do
+    it 'rejects an invalid falsey value' do
       matcher = children_matcher
       matching = accepting_children(:allow_destroy => false)
 
@@ -43,12 +43,12 @@ describe Shoulda::Matchers::ActiveRecord::AcceptNestedAttributesForMatcher do
     end
   end
 
-  context "limit" do
-    it "accepts a correct value" do
+  context 'limit' do
+    it 'accepts a correct value' do
       accepting_children(:limit => 3).should children_matcher.limit(3)
     end
 
-    it "rejects a false value" do
+    it 'rejects a false value' do
       matcher = children_matcher
       rejecting = accepting_children(:limit => 3)
 
@@ -57,18 +57,18 @@ describe Shoulda::Matchers::ActiveRecord::AcceptNestedAttributesForMatcher do
     end
   end
 
-  context "update_only" do
-    it "accepts a valid truthy value" do
+  context 'update_only' do
+    it 'accepts a valid truthy value' do
       accepting_children(:update_only => true).should
         children_matcher.update_only(true)
     end
 
-    it "accepts a valid falsey value" do
+    it 'accepts a valid falsey value' do
       accepting_children(:update_only => false).should
         children_matcher.update_only(false)
     end
 
-    it "rejects an invalid truthy value" do
+    it 'rejects an invalid truthy value' do
       matcher = children_matcher.update_only(false)
       rejecting = accepting_children(:update_only => true)
 
@@ -76,7 +76,7 @@ describe Shoulda::Matchers::ActiveRecord::AcceptNestedAttributesForMatcher do
       matcher.failure_message.should =~ /should not be update only/
     end
 
-    it "rejects an invalid falsey value" do
+    it 'rejects an invalid falsey value' do
       matcher = children_matcher.update_only(true)
       rejecting = accepting_children(:update_only => false)
 

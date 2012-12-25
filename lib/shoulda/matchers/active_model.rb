@@ -30,7 +30,7 @@ module Shoulda
     #     %w(abcd 1234).each do |value|
     #       it { should_not allow_value(value).for(:phone_number) }
     #     end
-    #     it { should allow_value("(123) 456-7890").for(:phone_number) }
+    #     it { should allow_value('(123) 456-7890').for(:phone_number) }
     #     it { should_not allow_mass_assignment_of(:password) }
     #     it { should allow_value('Activated', 'Pending').for(:status).strict }
     #     it { should_not allow_value('Amazing').for(:status).strict }

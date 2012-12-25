@@ -153,7 +153,7 @@ module Shoulda # :nodoc:
             true
           else
             @missing = "#{model_class} has a db column named #{@column} " <<
-                       "of scale #{matched_column.scale}, not #{@options[:scale]}."
+              "of scale #{matched_column.scale}, not #{@options[:scale]}."
             false
           end
         end
@@ -166,9 +166,9 @@ module Shoulda # :nodoc:
           else
             @missing = "#{model_class} has a db column named #{@column} "
             if @options[:primary]
-              @missing << "that is not primary, but should be"
+              @missing << 'that is not primary, but should be'
             else
-              @missing << "that is primary, but should not be"
+              @missing << 'that is primary, but should not be'
             end
             false
           end

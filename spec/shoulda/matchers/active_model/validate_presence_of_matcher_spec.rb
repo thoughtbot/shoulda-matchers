@@ -1,99 +1,99 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
-  context "a model with a presence validation" do
-    it "accepts" do
+  context 'a model with a presence validation' do
+    it 'accepts' do
       validating_presence.should matcher
     end
 
-    it "does not override the default message with a blank" do
+    it 'does not override the default message with a blank' do
       validating_presence.should matcher.with_message(nil)
     end
   end
 
-  context "a model without a presence validation" do
-    it "rejects" do
+  context 'a model without a presence validation' do
+    it 'rejects' do
       define_model(:example, :attr => :string).new.should_not matcher
     end
   end
 
-  context "an ActiveModel class with a presence validation" do
-    it "accepts" do
+  context 'an ActiveModel class with a presence validation' do
+    it 'accepts' do
       active_model_validating_presence.should matcher
     end
 
-    it "does not override the default message with a blank" do
+    it 'does not override the default message with a blank' do
       active_model_validating_presence.should matcher.with_message(nil)
     end
   end
 
-  context "an ActiveModel class without a presence validation" do
-    it "rejects" do
-      define_active_model_class("Example", :accessors => [:attr]).new.should_not
+  context 'an ActiveModel class without a presence validation' do
+    it 'rejects' do
+      define_active_model_class('Example', :accessors => [:attr]).new.should_not
         matcher
     end
   end
 
-  context "a has_many association with a presence validation" do
-    it "requires the attribute to be set" do
+  context 'a has_many association with a presence validation' do
+    it 'requires the attribute to be set' do
       has_many_children(:presence => true).should validate_presence_of(:children)
     end
   end
 
-  context "a has_many association without a presence validation" do
-    it "does not require the attribute to be set" do
+  context 'a has_many association without a presence validation' do
+    it 'does not require the attribute to be set' do
       has_many_children(:presence => false).should_not
         validate_presence_of(:children)
     end
   end
 
-  context "a required has_and_belongs_to_many association" do
+  context 'a required has_and_belongs_to_many association' do
     before do
       define_model :child
       @model = define_model :parent do
         has_and_belongs_to_many :children
         validates_presence_of :children
       end.new
-      create_table "children_parents", :id => false do |t|
+      create_table 'children_parents', :id => false do |t|
         t.integer :child_id
         t.integer :parent_id
       end
     end
 
-    it "accepts" do
+    it 'accepts' do
       @model.should validate_presence_of(:children)
     end
   end
 
-  context "an optional has_and_belongs_to_many association" do
+  context 'an optional has_and_belongs_to_many association' do
     before do
       define_model :child
       @model = define_model :parent do
         has_and_belongs_to_many :children
       end.new
-      create_table "children_parents", :id => false do |t|
+      create_table 'children_parents', :id => false do |t|
         t.integer :child_id
         t.integer :parent_id
       end
     end
 
-    it "rejects" do
+    it 'rejects' do
       @model.should_not validate_presence_of(:children)
     end
   end
 
   if active_model_3_2?
-    context "a strictly required attribute" do
-      it "accepts when the :strict options match" do
+    context 'a strictly required attribute' do
+      it 'accepts when the :strict options match' do
         validating_presence(:strict => true).should matcher.strict
       end
 
-      it "rejects when the :strict options do not match" do
+      it 'rejects when the :strict options do not match' do
         validating_presence(:strict => false).should_not matcher.strict
       end
     end
 
-    it "does not override the default message with a blank" do
+    it 'does not override the default message with a blank' do
       validating_presence(:strict => true).should
         matcher.strict.with_message(nil)
     end
@@ -110,7 +110,7 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
   end
 
   def active_model_validating_presence
-    define_active_model_class("Example", :accessors => [:attr]) do
+    define_active_model_class('Example', :accessors => [:attr]) do
       validates_presence_of :attr
     end.new
   end

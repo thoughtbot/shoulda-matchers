@@ -1,14 +1,14 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveRecord::HaveReadonlyAttributeMatcher do
-  context "a read-only attribute" do
-    it "accepts" do
+  context 'a read-only attribute' do
+    it 'accepts' do
       with_readonly_attr.should have_readonly_attribute(:attr)
     end
   end
 
-  context "an attribute that is not part of the read-only set" do
-    it "rejects being read-only" do
+  context 'an attribute that is not part of the read-only set' do
+    it 'rejects being read-only' do
       model = define_model :example, :attr => :string, :other => :string do
         attr_readonly :attr
       end.new
@@ -17,13 +17,13 @@ describe Shoulda::Matchers::ActiveRecord::HaveReadonlyAttributeMatcher do
     end
   end
 
-  context "an attribute on a class with no readonly attributes" do
-    it "rejects being read-only" do
+  context 'an attribute on a class with no readonly attributes' do
+    it 'rejects being read-only' do
       define_model(:example, :attr => :string).new.should_not
         have_readonly_attribute(:attr)
     end
 
-    it "assigns a failure message" do
+    it 'assigns a failure message' do
       model = define_model(:example, :attr => :string).new
       matcher = have_readonly_attribute(:attr)
       matcher.matches?(model)

@@ -1,76 +1,76 @@
 # encoding: UTF-8
-require "spec_helper"
+require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::Helpers do
   include Shoulda::Matchers::ActiveModel
   after { I18n.backend.reload! }
 
-  describe "default_error_message" do
-    context "if the translation for the model attribute’s error exists" do
-      it "provides the right error message for validate_presence_of" do
+  describe 'default_error_message' do
+    context 'if the translation for the model attribute’s error exists' do
+      it 'provides the right error message for validate_presence_of' do
         store_translations
 
         assert_presence_validation_has_correct_message
       end
 
-      it "provides the right error message for validates_length_of" do
+      it 'provides the right error message for validates_length_of' do
         store_translations
 
         assert_length_validation_has_correct_message
       end
     end
 
-    context "if no translation for the model attribute’s error exists" do
-      context "and the translation for the model’s error exists" do
-        it "provides the right error message for validate_presence_of" do
+    context 'if no translation for the model attribute’s error exists' do
+      context 'and the translation for the model’s error exists' do
+        it 'provides the right error message for validate_presence_of' do
           store_translations(:without => :model_attribute)
 
           assert_presence_validation_has_correct_message
         end
 
-        it "provides the right error message for validates_length_of" do
+        it 'provides the right error message for validates_length_of' do
           store_translations(:without => :model_attribute)
 
           assert_length_validation_has_correct_message
         end
       end
 
-      context "and no translation for the model’s error exists" do
-        context "and the translation for the message exists" do
-          it "provides the right error message for validate_presence_of" do
+      context 'and no translation for the model’s error exists' do
+        context 'and the translation for the message exists' do
+          it 'provides the right error message for validate_presence_of' do
             store_translations(:without => [:model_attribute, :model])
 
             assert_presence_validation_has_correct_message
           end
 
-          it "provides the right error message for validates_length_of" do
+          it 'provides the right error message for validates_length_of' do
             store_translations(:without => [:model_attribute, :model])
 
             assert_length_validation_has_correct_message
           end
         end
 
-        context "and no translation for the message exists" do
-          context "and the translation for the attribute exists" do
-            it "provides the right error message for validate_presence_of" do
+        context 'and no translation for the message exists' do
+          context 'and the translation for the attribute exists' do
+            it 'provides the right error message for validate_presence_of' do
               store_translations(:without => [:model_attribute, :model, :message])
 
               assert_presence_validation_has_correct_message
             end
 
-            it "provides the right error message for validates_length_of" do
+            it 'provides the right error message for validates_length_of' do
               store_translations(:without => [:model_attribute, :model, :message])
 
               assert_length_validation_has_correct_message
             end
           end
 
-          context "and no translation for the attribute exists" do
-            it "provides the general error message for validate_presence_of" do
+          context 'and no translation for the attribute exists' do
+            it 'provides the general error message for validate_presence_of' do
               assert_presence_validation_has_correct_message
             end
 
-            it "provides the general error message for validates_length_of" do
+            it 'provides the general error message for validates_length_of' do
               assert_length_validation_has_correct_message
             end
           end
@@ -121,18 +121,18 @@ describe Shoulda::Matchers::ActiveModel::Helpers do
     end
 
     unless options[:without].include?(:model)
-      translations[:activerecord][:errors][:models][:example][:blank] = "Give it one more try!"
-      translations[:activerecord][:errors][:models][:example][:wrong_length] = "Give it one more try!"
+      translations[:activerecord][:errors][:models][:example][:blank] = 'Give it one more try!'
+      translations[:activerecord][:errors][:models][:example][:wrong_length] = 'Give it one more try!'
     end
 
     unless options[:without].include?(:message)
-      translations[:activerecord][:errors][:messages][:blank] = "Oh no!"
-      translations[:activerecord][:errors][:messages][:wrong_length] = "Oh no!"
+      translations[:activerecord][:errors][:messages][:blank] = 'Oh no!'
+      translations[:activerecord][:errors][:messages][:wrong_length] = 'Oh no!'
     end
 
     unless options[:without].include?(:attribute)
-      translations[:errors][:attributes][:attr][:blank] = "Seriously?"
-      translations[:errors][:attributes][:attr][:wrong_length] = "Seriously?"
+      translations[:errors][:attributes][:attr][:blank] = 'Seriously?'
+      translations[:errors][:attributes][:attr][:wrong_length] = 'Seriously?'
     end
 
     I18n.backend.store_translations(:en, translations)

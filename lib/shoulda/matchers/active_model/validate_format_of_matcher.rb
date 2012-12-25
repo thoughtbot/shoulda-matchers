@@ -48,13 +48,13 @@ module Shoulda # :nodoc:
         end
 
         def with(value)
-          raise "You may not call both with and not_with" if @value_to_fail
+          raise 'You may not call both with and not_with' if @value_to_fail
           @value_to_pass = value
           self
         end
 
         def not_with(value)
-          raise "You may not call both with and not_with" if @value_to_pass
+          raise 'You may not call both with and not_with' if @value_to_pass
           @value_to_fail = value
           self
         end

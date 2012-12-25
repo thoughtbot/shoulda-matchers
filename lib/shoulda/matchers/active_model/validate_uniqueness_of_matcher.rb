@@ -1,7 +1,6 @@
 module Shoulda # :nodoc:
   module Matchers
     module ActiveModel # :nodoc:
-
       # Ensures that the model is invalid if the given attribute is not unique.
       #
       # Internally, this uses values from existing records to test validations,
@@ -57,20 +56,20 @@ module Shoulda # :nodoc:
           self
         end
 
-        def description
-          result = "require "
-          result << "case sensitive " unless @options[:case_insensitive]
-          result << "unique value for #{@attribute}"
-          result << " scoped to #{@options[:scopes].join(', ')}" if @options[:scopes].present?
-          result
-        end
-
         def matches?(subject)
           @subject = subject.class.new
           @expected_message ||= :taken
           set_scoped_attributes &&
             validate_attribute? &&
             validate_after_scope_change?
+        end
+
+        def description
+          result = 'require '
+          result << 'case sensitive ' unless @options[:case_insensitive]
+          result << "unique value for #{@attribute}"
+          result << " scoped to #{@options[:scopes].join(', ')}" if @options[:scopes].present?
+          result
         end
 
         private
@@ -85,7 +84,7 @@ module Shoulda # :nodoc:
 
         def create_instance_in_database
           @subject.class.new.tap do |instance|
-            instance.send("#{@attribute}=", "arbitrary_string")
+            instance.send("#{@attribute}=", 'arbitrary_string')
             instance.save(:validate => false)
           end
         end

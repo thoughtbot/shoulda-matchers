@@ -20,7 +20,7 @@ Dir[File.join(PROJECT_ROOT, 'spec', 'support', '**', '*.rb')].each { |file| requ
 
 # Run the migrations
 ActiveRecord::Migration.verbose = false
-ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate")
+ActiveRecord::Migrator.migrate(Rails.root.join('db/migrate'))
 
 RSpec.configure do |config|
   config.mock_with :mocha

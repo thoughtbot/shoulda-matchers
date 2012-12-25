@@ -1,26 +1,26 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
-  it "states in its description that it allows only numeric values" do
-    matcher.description.should == "only allow numeric values for attr"
+  it 'states in its description that it allows only numeric values' do
+    matcher.description.should == 'only allow numeric values for attr'
   end
 
-  context "with a model with a numericality validation" do
-    it "accepts" do
+  context 'with a model with a numericality validation' do
+    it 'accepts' do
       validating_numericality.should matcher
     end
 
-    it "does not override the default message with a blank" do
+    it 'does not override the default message with a blank' do
       validating_numericality.should matcher.with_message(nil)
     end
   end
 
-  context "with a model without a numericality validation" do
-    it "rejects" do
+  context 'with a model without a numericality validation' do
+    it 'rejects' do
       define_model(:example, :attr => :string).new.should_not matcher
     end
 
-    it "rejects with the ActiveRecord :not_an_integer message" do
+    it 'rejects with the ActiveRecord :not_an_integer message' do
       the_matcher = matcher.only_integer
 
       the_matcher.matches?(define_model(:example, :attr => :string).new)
@@ -29,16 +29,16 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
     end
   end
 
-  context "with the only_integer option" do
-    it "allows integer values for that attribute" do
+  context 'with the only_integer option' do
+    it 'allows integer values for that attribute' do
       validating_numericality(:only_integer => true).should matcher.only_integer
     end
 
-    it "rejects when the model does not enforce integer values" do
+    it 'rejects when the model does not enforce integer values' do
       validating_numericality.should_not matcher.only_integer
     end
 
-    it "rejects with the ActiveRecord :not_an_integer message" do
+    it 'rejects with the ActiveRecord :not_an_integer message' do
       the_matcher = matcher.only_integer
 
       the_matcher.matches?(validating_numericality)
@@ -47,14 +47,14 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
     end
   end
 
-  context "with a custom validation message" do
-    it "accepts when the messages match" do
-      validating_numericality(:message => "custom").should
+  context 'with a custom validation message' do
+    it 'accepts when the messages match' do
+      validating_numericality(:message => 'custom').should
         matcher.with_message(/custom/)
     end
 
-    it "rejects when the messages do not match" do
-      validating_numericality(:message => "custom").should_not
+    it 'rejects when the messages do not match' do
+      validating_numericality(:message => 'custom').should_not
         matcher.with_message(/wrong/)
     end
   end

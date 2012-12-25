@@ -25,7 +25,7 @@ module Shoulda # :nodoc:
 
         def as(role)
           if active_model_less_than_3_1?
-            raise "You can specify role only in Rails 3.1 or greater"
+            raise 'You can specify role only in Rails 3.1 or greater'
           end
           @options[:role] = role
           self
@@ -38,7 +38,7 @@ module Shoulda # :nodoc:
               @negative_failure_message = "#{@attribute} was made accessible"
             else
               if protected_attributes.empty?
-                @negative_failure_message = "no attributes were protected"
+                @negative_failure_message = 'no attributes were protected'
               else
                 @negative_failure_message = "#{class_name} is protecting " <<
                   "#{protected_attributes.to_a.to_sentence}, " <<
@@ -57,7 +57,7 @@ module Shoulda # :nodoc:
         end
 
         def description
-          [base_description, role_description].compact.join(" ")
+          [base_description, role_description].compact.join(' ')
         end
 
         private

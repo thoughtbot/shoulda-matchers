@@ -1,38 +1,38 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
   if active_model_3_2?
-    context "#allow_description" do
-      it "describes its attribute" do
+    context '#allow_description' do
+      it 'describes its attribute' do
         finder = build_finder(:attribute => :attr)
 
-        description = finder.allow_description("allowed values")
+        description = finder.allow_description('allowed values')
 
-        description.should == "doesn't raise when attr is set to allowed values"
+        description.should == %q(doesn't raise when attr is set to allowed values)
       end
     end
 
-    context "#expected_message_from" do
-      it "returns the message with the attribute name prefixed" do
+    context '#expected_message_from' do
+      it 'returns the message with the attribute name prefixed' do
         finder = build_finder(:attribute => :attr)
 
-        message = finder.expected_message_from("some message")
+        message = finder.expected_message_from('some message')
 
-        message.should == "Attr some message"
+        message.should == 'Attr some message'
       end
     end
 
-    context "#has_messages?" do
-      it "has messages when some validations fail" do
-        finder = build_finder(:format => /abc/, :value => "xyz")
+    context '#has_messages?' do
+      it 'has messages when some validations fail' do
+        finder = build_finder(:format => /abc/, :value => 'xyz')
 
         result = finder.has_messages?
 
         result.should be_true
       end
 
-      it "has no messages when all validations pass" do
-        finder = build_finder(:format => /abc/, :value => "abc")
+      it 'has no messages when all validations pass' do
+        finder = build_finder(:format => /abc/, :value => 'abc')
 
         result = finder.has_messages?
 
@@ -40,49 +40,49 @@ describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
       end
     end
 
-    context "#messages" do
-      it "returns errors for the given attribute" do
+    context '#messages' do
+      it 'returns errors for the given attribute' do
         finder = build_finder(
           :attribute => :attr,
           :format => /abc/,
-          :value => "xyz"
+          :value => 'xyz'
         )
 
         messages = finder.messages
 
-        messages.should == ["Attr is invalid"]
+        messages.should == ['Attr is invalid']
       end
     end
 
-    context "#messages_description" do
-      it "describes errors for the given attribute" do
+    context '#messages_description' do
+      it 'describes errors for the given attribute' do
         finder = build_finder(
           :attribute => :attr,
           :format => /abc/,
-          :value => "xyz"
+          :value => 'xyz'
         )
 
         description = finder.messages_description
 
-        description.should == "Attr is invalid"
+        description.should == 'Attr is invalid'
       end
 
-      it "describes errors when there are none" do
-        finder = build_finder(:format => /abc/, :value => "abc")
+      it 'describes errors when there are none' do
+        finder = build_finder(:format => /abc/, :value => 'abc')
 
         description = finder.messages_description
 
-        description.should == "no exception"
+        description.should == 'no exception'
       end
     end
 
-    context "#source_description" do
-      it "describes the source of its messages" do
+    context '#source_description' do
+      it 'describes the source of its messages' do
         finder = build_finder
 
         description = finder.source_description
 
-        description.should == "exception"
+        description.should == 'exception'
       end
     end
   end
@@ -92,7 +92,7 @@ describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
     instance = build_instance_validating(
       arguments[:attribute],
       arguments[:format] || /abc/,
-      arguments[:value] || "abc"
+      arguments[:value] || 'abc'
     )
     Shoulda::Matchers::ActiveModel::ExceptionMessageFinder.new(
       instance,

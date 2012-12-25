@@ -1,19 +1,19 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe Shoulda::Matchers::ActionController::FilterParamMatcher do
-  it "accepts filtering a filtered parameter" do
+  it 'accepts filtering a filtered parameter' do
     filter(:secret)
 
     nil.should filter_param(:secret)
   end
 
-  it "rejects filtering an unfiltered parameter" do
+  it 'rejects filtering an unfiltered parameter' do
     filter(:secret)
     matcher = filter_param(:other)
 
     matcher.matches?(nil).should be_false
 
-    matcher.failure_message.should include("Expected other to be filtered")
+    matcher.failure_message.should include('Expected other to be filtered')
     matcher.failure_message.should =~ /secret/
   end
 
