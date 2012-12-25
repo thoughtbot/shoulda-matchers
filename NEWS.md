@@ -1,3 +1,8 @@
+# HEAD
+
+* Use RSpec's native `configure.include` syntax for including matchers into
+  RSpec (#204)
+
 # v1.4.2
 * Added a new delegate_method matcher.
 
