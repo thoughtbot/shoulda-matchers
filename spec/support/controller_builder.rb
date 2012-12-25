@@ -1,6 +1,6 @@
 module ControllerBuilder
-  TMP_VIEW_PATH =
-    File.expand_path(File.join(TESTAPP_ROOT, 'tmp', 'views')).freeze
+  TMP_VIEW_PATH = File.expand_path(File.join(TESTAPP_ROOT, 'tmp',
+    'views')).freeze
 
   def self.included(example_group)
     example_group.class_eval do
@@ -36,10 +36,10 @@ module ControllerBuilder
     controller_class.view_paths = [TMP_VIEW_PATH]
 
     define_routes do
-      match 'examples', :to => "examples##{action}"
+      get "examples", :to => "examples##{action}"
     end
 
-    create_view("examples/#{action}.html.erb", "abc")
+    create_view("examples/#{action}.html.erb", "action")
     create_view("examples/#{partial}.html.erb", "partial")
 
     @controller = controller_class.new
