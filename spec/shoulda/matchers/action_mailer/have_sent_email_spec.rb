@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
   subject { described_class.new(self) }
+  after { ::ActionMailer::Base.deliveries.clear }
 
   def add_mail_to_deliveries(params = nil)
     ::ActionMailer::Base.deliveries << Mailer.the_email(params)
@@ -29,41 +30,39 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
       add_mail_to_deliveries(info)
     end
 
-    after { ::ActionMailer::Base.deliveries.clear }
-
-    it 'should send an e-mail based on subject' do
+    it 'sends an e-mail based on subject' do
       should have_sent_email.with_subject{ info[:subject] }
     end
 
-    it 'should send an e-mail based on recipient' do
+    it 'sends an e-mail based on recipient' do
       should have_sent_email.to(nil) { info[:to] }
     end
 
-    it 'should send an e-mail based on sender' do
+    it 'sends an e-mail based on sender' do
       should have_sent_email.from{ info[:from] }
     end
 
-    it 'should send an e-email based on reply_to' do
+    it 'sends an e-email based on reply_to' do
       should have_sent_email.reply_to { info[:reply_to] }
     end
 
-    it 'should send an e-mail based on cc' do
+    it 'sends an e-mail based on cc' do
       should have_sent_email.cc{ info[:cc][0] }
     end
 
-    it 'should send an e-mail based on cc list' do
+    it 'sends an e-mail based on cc list' do
       should have_sent_email.with_cc{ info[:cc] }
     end
 
-    it 'should send an e-mail based on bcc' do
+    it 'sends an e-mail based on bcc' do
       should have_sent_email.bcc{ info[:bcc][0] }
     end
 
-    it 'should send an e-mail based on bcc list' do
+    it 'sends an e-mail based on bcc list' do
       should have_sent_email.with_bcc{ info[:bcc] }
     end
 
-    it 'should send an e-mail based on body' do
+    it 'sends an e-mail based on body' do
       should have_sent_email.with_body{ info[:body] }
     end
   end
@@ -93,9 +92,7 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
       add_mail_to_deliveries(info)
     end
 
-    after { ::ActionMailer::Base.deliveries.clear }
-
-    it 'should send emails with text and html parts' do
+    it 'sends emails with text and html parts' do
       should have_sent_email.with_part('text/plain') { info[:text] }.with_part('text/html') { info[:html] }
     end
 
@@ -118,8 +115,6 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
       end
       add_mail_to_deliveries
     end
-
-    after { ::ActionMailer::Base.deliveries.clear }
 
     it 'accepts sent-email when it is not multipart' do
       should_not have_sent_email.multipart
@@ -155,8 +150,6 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
       end
       add_mail_to_deliveries
     end
-
-    after { ::ActionMailer::Base.deliveries.clear }
 
     it 'accepts sent e-mail based on the subject' do
       should have_sent_email.with_subject(/is spam$/)
@@ -301,13 +294,11 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
       add_mail_to_deliveries(info2)
     end
 
-    after { ::ActionMailer::Base.deliveries.clear }
-
-    it 'should send an e-mail based on recipient 1' do
+    it 'sends an e-mail based on recipient 1' do
       should have_sent_email.to('one@me.com')
     end
 
-    it 'should send an e-mail based on recipient 2' do
+    it 'sends an e-mail based on recipient 2' do
       should have_sent_email.to('two@me.com')
     end
   end
