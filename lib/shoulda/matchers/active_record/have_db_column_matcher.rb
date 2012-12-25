@@ -149,11 +149,11 @@ module Shoulda # :nodoc:
         def correct_scale?
           return true unless @options.key?(:scale)
 
-          if matched_column.scale.to_s == @options[:scale].to_s
+          if actual_scale.to_s == @options[:scale].to_s
             true
           else
-            @missing = "#{model_class} has a db column named #{@column} " <<
-                       "of scale #{matched_column.scale}, not #{@options[:scale]}."
+            @missing = "#{model_class} has a db column named #{@column} "
+            @missing << "of scale #{actual_scale}, not #{@options[:scale]}."
             false
           end
         end
@@ -166,9 +166,9 @@ module Shoulda # :nodoc:
           else
             @missing = "#{model_class} has a db column named #{@column} "
             if @options[:primary]
-              @missing << "that is not primary, but should be"
+              @missing << 'that is not primary, but should be'
             else
-              @missing << "that is primary, but should not be"
+              @missing << 'that is primary, but should not be'
             end
             false
           end
@@ -180,6 +180,10 @@ module Shoulda # :nodoc:
 
         def model_class
           @subject.class
+        end
+
+        def actual_scale
+          matched_column.scale
         end
 
         def expectation

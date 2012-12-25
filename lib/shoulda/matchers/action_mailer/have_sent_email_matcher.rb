@@ -115,7 +115,7 @@ module Shoulda # :nodoc:
         end
 
         def description
-          description  = "send an email"
+          description  = 'send an email'
           description << " with a subject of #{@email_subject.inspect}" if @email_subject
           description << " containing #{@body.inspect}" if @body
           if @parts
@@ -136,7 +136,7 @@ module Shoulda # :nodoc:
         private
 
         def expectation
-          expectation = "sent email"
+          expectation = 'sent email'
           expectation << " with subject #{@email_subject.inspect}" if @subject_failed
           expectation << " with body #{@body.inspect}" if @body_failed
           @parts.each do |_, body, content_type|

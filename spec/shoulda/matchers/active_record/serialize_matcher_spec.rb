@@ -1,81 +1,87 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveRecord::SerializeMatcher do
-  context "an attribute that should be serialized" do
-    let(:model) do
-      define_model(:example, :attr => :string) do
-        serialize :attr
-      end.new
-    end
-
-    it "should be serialized" do
-      model.should serialize(:attr)
-    end
+  it 'accepts when the attribute is serialized' do
+    with_serialized_attr.should serialize(:attr)
   end
 
-  context "an attribute that should be serialized with a type of Hash" do
-    let(:model) do
-      define_model(:example, :attr => :string) do
-        serialize :attr, Hash
-      end.new
+  context 'when attribute is not serialized' do
+    it 'rejects' do
+      unserialized_model.should_not serialize(:attr)
     end
 
-    it "should be serialized" do
-      model.should serialize(:attr).as(Hash)
-    end
-
-    it "should not match when using as_instance_of" do
-      model.should_not serialize(:attr).as_instance_of(Hash)
-    end
-  end
-
-  context "an attribute that should be serialized with a type of Array" do
-    let(:model) do
-      define_model(:example, :attr => :string, :attr2 => :string) do
-        serialize :attr, Array
-        serialize :attr2, Array
-      end.new
-    end
-
-    it "should be serialized" do
-      model.should serialize(:attr).as(Array)
-    end
-  end
-
-  context "an attribute that should be serialized but isn't" do
-    let(:model) { define_model(:example, :attr => :string).new }
-
-    it "should assign a failure message" do
+    it 'assigns a helpful failure message' do
       matcher = serialize(:attr)
-      matcher.matches?(model).should == false
-      matcher.failure_message.should_not be_nil
+
+      matcher.matches?(unserialized_model)
+
+      matcher.failure_message.should =~ /to serialize the attribute called :attr/
     end
 
-    it "should assign a failure message with 'as'" do
+    it 'assigns a helpful failure message when using #as' do
       matcher = serialize(:attr).as(Hash)
-      matcher.matches?(model).should == false
-      matcher.failure_message.should_not be_nil
+
+      matcher.matches?(unserialized_model)
+
+      matcher.failure_message.should =~ /with a type of Hash/
     end
 
-    context "a serializer that is an instance of a class" do
-      before do
-        define_class(:ExampleSerializer) do
-          def load(*); end
-          def dump(*); end
-        end
-        define_model :example, :attr => :string do
-          serialize :attr, ExampleSerializer.new
-        end
-        @model = Example.new
-      end
+    it 'assigns a helpful failure message when using #as_instance_of' do
+      matcher = serialize(:attr).as_instance_of(Hash)
 
-      it "should match when using as_instance_of" do
-        @model.should serialize(:attr).as_instance_of(ExampleSerializer)
-      end
+      matcher.matches?(unserialized_model)
 
-      it "should not match when using as" do
-        @model.should_not serialize(:attr).as(ExampleSerializer)
+      matcher.failure_message.should =~ /with an instance of Hash/
+    end
+
+    def unserialized_model
+      @model ||= define_model(:example, :attr => :string).new
+    end
+  end
+
+  context 'an attribute that is serialized as a specific type' do
+    it 'accepts when the types match' do
+      with_serialized_attr(Hash).should serialize(:attr).as(Hash)
+    end
+
+    it 'rejects when the types do not match' do
+      with_serialized_attr(Hash).should_not serialize(:attr).as(String)
+    end
+
+    it 'rejects when using as_instance_of' do
+      with_serialized_attr(Hash).should_not
+        serialize(:attr).as_instance_of(Hash)
+    end
+  end
+
+  context 'a serializer that is an instance of a class' do
+    it 'accepts when using #as_instance_of' do
+      define_serializer(:ExampleSerializer)
+      with_serialized_attr(ExampleSerializer.new).should
+        serialize(:attr).as_instance_of(ExampleSerializer)
+    end
+
+    it 'rejects when using #as' do
+      define_serializer(:ExampleSerializer)
+      with_serialized_attr(ExampleSerializer.new).should_not
+        serialize(:attr).as(ExampleSerializer)
+    end
+  end
+
+  def with_serialized_attr(type = nil)
+    define_model(:example, :attr => :string) do
+      if type
+        serialize :attr, type
+      else
+        serialize :attr
       end
+    end.new
+  end
+
+  def define_serializer(name)
+    define_class(name) do
+      def load(*); end
+      def dump(*); end
     end
   end
 end

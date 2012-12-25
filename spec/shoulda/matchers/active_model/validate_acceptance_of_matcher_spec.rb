@@ -1,43 +1,41 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateAcceptanceOfMatcher do
-
-  context "an attribute which must be accepted" do
-    before do
-      @model = define_model(:example, :attr => :string) do
-        validates_acceptance_of :attr
-      end.new
+  context 'a model with an acceptance validation' do
+    it 'accepts when the attributes match' do
+      validating_acceptance.should matcher
     end
 
-    it "should require that attribute to be accepted" do
-      @model.should validate_acceptance_of(:attr)
-    end
-
-    it "should not overwrite the default message with nil" do
-      @model.should validate_acceptance_of(:attr).with_message(nil)
+    it 'does not overwrite the default message with nil' do
+      validating_acceptance.should matcher.with_message(nil)
     end
   end
 
-  context "an attribute that does not need to be accepted" do
-    before do
-      @model = define_model(:example, :attr => :string).new
-    end
-
-    it "should not require that attribute to be accepted" do
-      @model.should_not validate_acceptance_of(:attr)
+  context 'a model without an acceptance validation' do
+    it 'rejects' do
+      define_model(:example, :attr => :string).new.should_not matcher
     end
   end
 
-  context "an attribute which must be accepted with a custom message" do
-    before do
-      @model = define_model(:example, :attr => :string) do
-        validates_acceptance_of :attr, :message => 'custom'
-      end.new
+  context 'an attribute which must be accepted with a custom message' do
+    it 'accepts when the message matches' do
+      validating_acceptance(:message => 'custom').should
+        matcher.with_message(/custom/)
     end
 
-    it "should require that attribute to be accepted with that message" do
-      @model.should validate_acceptance_of(:attr).with_message(/custom/)
+    it 'rejects when the message does not match' do
+      validating_acceptance(:message => 'custom').should_not
+        matcher.with_message(/wrong/)
     end
   end
 
+  def matcher
+    validate_acceptance_of(:attr)
+  end
+
+  def validating_acceptance(options = {})
+    define_model(:example, :attr => :string) do
+      validates_acceptance_of :attr, options
+    end.new
+  end
 end

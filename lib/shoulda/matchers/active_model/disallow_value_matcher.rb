@@ -25,7 +25,7 @@ module Shoulda # :nodoc:
         end
 
         def allowed_types
-          ""
+          ''
         end
       end
     end

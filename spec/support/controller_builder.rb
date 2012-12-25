@@ -36,11 +36,11 @@ module ControllerBuilder
     controller_class.view_paths = [TMP_VIEW_PATH]
 
     define_routes do
-      get "examples", :to => "examples##{action}"
+      get 'examples', :to => "examples##{action}"
     end
 
-    create_view("examples/#{action}.html.erb", "action")
-    create_view("examples/#{partial}.html.erb", "partial")
+    create_view("examples/#{action}.html.erb", 'action')
+    create_view("examples/#{partial}.html.erb", 'partial')
 
     @controller = controller_class.new
     @request    = ActionController::TestRequest.new

@@ -1,7 +1,6 @@
 module Shoulda # :nodoc:
   module Matchers
     module ActionController # :nodoc:
-
       # Ensures a controller rendered the given template.
       #
       # Example:

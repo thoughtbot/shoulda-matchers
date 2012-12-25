@@ -1,83 +1,31 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActionController::RespondWithMatcher do
-  context "a controller responding with success" do
-    let(:controller) { build_response { render :text => "text", :status => 200 } }
+  statuses = { :success => 200, :redirect => 301, :missing => 404, :error => 500,
+    :not_implemented => 501 }
 
-    it "should accept responding with 200" do
-      controller.should respond_with(200)
-    end
+  statuses.each do |human_name, numeric_code|
+    context "a controller responding with #{human_name}" do
+      it 'accepts responding with a numeric response code' do
+        controller_with_status(numeric_code).should respond_with(numeric_code)
+      end
 
-    it "should accept responding with :success" do
-      controller.should respond_with(:success)
-    end
+      it 'accepts responding with a symbol response code' do
+        controller_with_status(numeric_code).should respond_with(human_name)
+      end
 
-    it "should reject responding with another status" do
-      controller.should_not respond_with(:error)
-    end
-  end
+      it 'rejects responding with another status' do
+        another_status = statuses.except(human_name).keys.first
 
-  context "a controller responding with redirect" do
-    let(:controller) { build_response { render :text => "text", :status => 301 } }
-
-    it "should accept responding with 301" do
-      controller.should respond_with(301)
-    end
-
-    it "should accept responding with :redirect" do
-      controller.should respond_with(:redirect)
-    end
-
-    it "should reject responding with another status" do
-      controller.should_not respond_with(:error)
+        controller_with_status(numeric_code).should_not
+          respond_with(another_status)
+      end
     end
   end
 
-  context "a controller responding with missing" do
-    let(:controller) { build_response { render :text => "text", :status => 404 } }
-
-    it "should accept responding with 404" do
-      controller.should respond_with(404)
-    end
-
-    it "should accept responding with :missing" do
-      controller.should respond_with(:missing)
-    end
-
-    it "should reject responding with another status" do
-      controller.should_not respond_with(:success)
-    end
-  end
-
-  context "a controller responding with error" do
-    let(:controller) { build_response { render :text => "text", :status => 500 } }
-
-    it "should accept responding with 500" do
-      controller.should respond_with(500)
-    end
-
-    it "should accept responding with :error" do
-      controller.should respond_with(:error)
-    end
-
-    it "should reject responding with another status" do
-      controller.should_not respond_with(:success)
-    end
-  end
-
-  context "a controller responding with not implemented" do
-    let(:controller) { build_response { render :text => "text", :status => 501 } }
-
-    it "should accept responding with 501" do
-      controller.should respond_with(501)
-    end
-
-    it "should accept responding with :not_implemented" do
-      controller.should respond_with(:not_implemented)
-    end
-
-    it "should reject responding with another status" do
-      controller.should_not respond_with(:success)
+  def controller_with_status(status)
+    build_response do
+      render :text => 'text', :status => status
     end
   end
 end

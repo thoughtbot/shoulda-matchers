@@ -1,7 +1,6 @@
 module Shoulda # :nodoc:
   module Matchers
     module ActionController # :nodoc:
-
       # Ensures a controller redirected to the given url.
       #
       # Example:

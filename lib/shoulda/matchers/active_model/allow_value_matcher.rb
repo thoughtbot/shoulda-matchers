@@ -17,11 +17,11 @@ module Shoulda # :nodoc:
       #
       # Example:
       #   it { should_not allow_value('bad').for(:isbn) }
-      #   it { should allow_value("isbn 1 2345 6789 0").for(:isbn) }
+      #   it { should allow_value('isbn 1 2345 6789 0').for(:isbn) }
       #
       def allow_value(*values)
         if values.empty?
-          raise ArgumentError, "need at least one argument"
+          raise ArgumentError, 'need at least one argument'
         else
           AllowValueMatcher.new(*values)
         end

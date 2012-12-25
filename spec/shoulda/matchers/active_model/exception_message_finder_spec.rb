@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
-  if Rails::VERSION::STRING.to_f >= 3.2
+  if active_model_3_2?
     context '#allow_description' do
       it 'describes its attribute' do
         finder = build_finder(:attribute => :attr)
 
         description = finder.allow_description('allowed values')
 
-        description.should == "doesn't raise when attr is set to allowed values"
+        description.should == %q(doesn't raise when attr is set to allowed values)
       end
     end
 

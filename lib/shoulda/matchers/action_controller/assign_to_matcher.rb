@@ -1,7 +1,6 @@
 module Shoulda # :nodoc:
   module Matchers
     module ActionController # :nodoc:
-
       # Ensures that the controller assigned to the named instance variable.
       #
       # Options:

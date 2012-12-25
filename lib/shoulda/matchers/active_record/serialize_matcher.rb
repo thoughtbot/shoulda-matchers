@@ -1,7 +1,6 @@
 module Shoulda # :nodoc:
   module Matchers
     module ActiveRecord # :nodoc:
-
       # Ensure that the field becomes serialized.
       #
       # Options:
@@ -10,6 +9,7 @@ module Shoulda # :nodoc:
       # Example:
       #   it { should serialize(:details) }
       #   it { should serialize(:details).as(Hash) }
+      #   it { should serialize(:details).as_instance_of(ExampleSerializer) }
       #
       def serialize(name)
         SerializeMatcher.new(name)
