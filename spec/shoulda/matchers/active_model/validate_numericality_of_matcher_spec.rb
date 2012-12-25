@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
-  it 'states in its description that it allows only numeric values' do
-    matcher.description.should == 'only allow numeric values for attr'
+  context '#description' do
+    it 'states that it allows only numeric values' do
+      matcher.description.should == 'only allow numeric values for attr'
+    end
   end
 
   context 'with a model with a numericality validation' do
