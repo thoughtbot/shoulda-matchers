@@ -78,7 +78,7 @@ module Shoulda # :nodoc:
         end
 
         def description
-          "#{@attribute} have a valid format"
+          "have a valid format for #{@attribute}"
         end
 
         private
