@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>shoulda-matchers by thoughtbot</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>shoulda-matchers</h1>
+          <h2>Collection of testing matchers extracted from Shoulda</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/thoughtbot/shoulda-matchers/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/thoughtbot/shoulda-matchers/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/thoughtbot/shoulda-matchers" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h1>shoulda-matchers</h1>
+
+<p><a href="http://travis-ci.org/thoughtbot/shoulda-matchers"><img src="https://secure.travis-ci.org/thoughtbot/shoulda-matchers.png?branch=master" alt="Build Status"></a></p>
+
+<p><a href="http://rubydoc.info/github/thoughtbot/shoulda-matchers/master/frames">Official Documentation</a></p>
+
+<p>Test::Unit- and RSpec-compatible one-liners that test common Rails functionality.
+These tests would otherwise be much longer, more complex, and error-prone.</p>
+
+<p>Refer to the <a href="https://github.com/thoughtbot/shoulda-context">shoulda-context</a> gem if you want to know more
+about using shoulda with Test::Unit.</p>
+
+<h2>ActiveRecord Matchers</h2>
+
+<p>Matchers to test associations:</p>
+
+<div class="highlight"><pre><span class="n">describe</span> <span class="no">Post</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:tags</span><span class="p">)</span><span class="o">.</span><span class="n">through</span><span class="p">(</span><span class="ss">:taggings</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:posts</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+</pre></div>
+
+<h2>ActiveModel Matchers</h2>
+
+<p>Matchers to test validations and mass assignments:</p>
+
+<div class="highlight"><pre><span class="n">describe</span> <span class="no">Post</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_uniqueness_of</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_uniqueness_of</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span><span class="o">.</span><span class="n">scoped_to</span><span class="p">(</span><span class="ss">:user_id</span><span class="p">,</span> <span class="ss">:category_id</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_presence_of</span><span class="p">(</span><span class="ss">:body</span><span class="p">)</span><span class="o">.</span><span class="n">with_message</span><span class="p">(</span><span class="sr">/wtf/</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_presence_of</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:user_id</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">ensure_inclusion_of</span><span class="p">(</span><span class="ss">:status</span><span class="p">)</span><span class="o">.</span><span class="n">in_array</span><span class="p">(</span><span class="o">[</span><span class="s1">'draft'</span><span class="p">,</span> <span class="s1">'public'</span><span class="o">]</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">allow_value</span><span class="p">(</span><span class="s2">"blah"</span><span class="p">)</span><span class="o">.</span><span class="n">for</span><span class="p">(</span><span class="ss">:email</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">allow_value</span><span class="p">(</span><span class="s2">"a@b.com"</span><span class="p">)</span><span class="o">.</span><span class="n">for</span><span class="p">(</span><span class="ss">:email</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">ensure_inclusion_of</span><span class="p">(</span><span class="ss">:age</span><span class="p">)</span><span class="o">.</span><span class="n">in_range</span><span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">100</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">allow_mass_assignment_of</span><span class="p">(</span><span class="ss">:password</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+</pre></div>
+
+<h2>ActionController Matchers</h2>
+
+<p>Matchers to test common patterns:</p>
+
+<div class="highlight"><pre><span class="n">describe</span> <span class="no">PostsController</span><span class="p">,</span> <span class="s2">"#show"</span> <span class="k">do</span>
+  <span class="n">context</span> <span class="s2">"for a fictional user"</span> <span class="k">do</span>
+    <span class="n">before</span> <span class="k">do</span>
+      <span class="n">get</span> <span class="ss">:show</span><span class="p">,</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="mi">1</span>
+    <span class="k">end</span>
+
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">assign_to</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">respond_with</span><span class="p">(</span><span class="ss">:success</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">render_template</span><span class="p">(</span><span class="ss">:show</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">set_the_flash</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<h2>Independent Matchers</h2>
+
+<p>Matchers to test non-Rails-dependent code:</p>
+
+<div class="highlight"><pre><span class="n">describe</span> <span class="no">Human</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">delegate_method</span><span class="p">(</span><span class="ss">:work</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="ss">:robot</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+</pre></div>
+
+<h2>Installation</h2>
+
+<p>In Rails 3 and Bundler, add the following to your Gemfile:</p>
+
+<div class="highlight"><pre><span class="n">group</span> <span class="ss">:test</span> <span class="k">do</span>
+  <span class="n">gem</span> <span class="s2">"shoulda-matchers"</span>
+<span class="k">end</span>
+
+<span class="c1"># rspec-rails needs to be in the development group so that Rails generators</span>
+<span class="c1"># work.</span>
+<span class="n">group</span> <span class="ss">:development</span><span class="p">,</span> <span class="ss">:test</span> <span class="k">do</span>
+  <span class="n">gem</span> <span class="s2">"rspec-rails"</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Shoulda will automatically include matchers into the appropriate example groups.</p>
+
+<h2>Credits</h2>
+
+<p>Shoulda is maintained and funded by <a href="http://thoughtbot.com/community">thoughtbot</a>.
+Thank you to all the <a href="https://github.com/thoughtbot/shoulda-matchers/contributors">contributors</a>.</p>
+
+<h2>License</h2>
+
+<p>Shoulda is Copyright © 2006-2012 thoughtbot, inc.
+It is free software, and may be redistributed under the terms specified in the MIT-LICENSE file.</p>
+        </section>
+
+        <footer>
+          shoulda-matchers is maintained by <a href="https://github.com/thoughtbot">thoughtbot</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
