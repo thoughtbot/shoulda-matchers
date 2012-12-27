@@ -49,32 +49,15 @@ module Shoulda # :nodoc:
         end
 
         def with(value)
-          if @value_to_fail
-            raise 'You may not call both with and not_with'
-          else
-            @value_to_pass = value
-            self
-          end
-        end
-
-        def not_with(value)
-          if @value_to_pass
-            raise 'You may not call both with and not_with'
-          else
-            @value_to_fail = value
-            self
-          end
+          @value_to_pass = value
+          self
         end
 
         def matches?(subject)
           super(subject)
           @expected_message ||= :invalid
 
-          if @value_to_fail
-            disallows_value_of(@value_to_fail, @expected_message) && allows_blank_value? && allows_nil_value?
-          else
-            allows_value_of(@value_to_pass, @expected_message) && allows_blank_value? && allows_nil_value?
-          end
+          allows_value_of(@value_to_pass, @expected_message) && allows_blank_value? && allows_nil_value?
         end
 
         def description
