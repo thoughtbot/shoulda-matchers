@@ -11,14 +11,10 @@ module Shoulda # :nodoc:
       #   <tt>errors.on(:attribute)</tt>. <tt>Regexp</tt> or <tt>String</tt>.
       #   Defaults to the translation for <tt>:invalid</tt>.
       # * <tt>with(string to test against)</tt>
-      # * <tt>not_with(string to test against)</tt>
       #
-      # Examples:
+      # Example:
       #   it { should validate_format_of(:name).
       #                 with('12345').
-      #                 with_message(/is not optional/) }
-      #   it { should validate_format_of(:name).
-      #                 not_with('12D45').
       #                 with_message(/is not optional/) }
       #
       def validate_format_of(attr)
