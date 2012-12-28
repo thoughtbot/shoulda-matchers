@@ -1,7 +1,6 @@
 module Shoulda # :nodoc:
   module Matchers
     module ActionController # :nodoc:
-
       # Ensures that filter_parameter_logging is set for the specified key.
       #
       # Example:
@@ -17,7 +16,6 @@ module Shoulda # :nodoc:
         end
 
         def matches?(controller)
-          @controller = controller
           filters_key?
         end
 
