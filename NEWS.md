@@ -1,15 +1,17 @@
 # HEAD
-
 * Use RSpec's native `configure.include` syntax for including matchers into
   RSpec (#204)
 
+* Do not force minitest loading when test-unit is available (this was fixed
+  before 1.3.0 then reverted in 1.3.0) (#181)
+
 # v1.4.2
-* Added a new delegate_method matcher.
+* Added a new `delegate_method` matcher.
 
 # v1.4.1
 * Fixes an issue when used with Test::Unit on the allow value matcher.
 
-* Fixes an issue with using ensure_inclusion_of(:attr) given an array of true or false values.
+* Fixes an issue with using `ensure_inclusion_of(:attr)` given an array of true or false values.
 
 # v1.4.0
 
@@ -21,7 +23,7 @@
 
 * You can now pass an array to `ensure_exclusion_of` using `in_array`.
 
-* Allow testing of :foreign_key option for has_one relationships using the association matcher.
+* Allow testing of `:foreign_key` option for `has_one` relationships using the association matcher.
 
 * Fix bug where `ensure_length_of` would pass if the given string was too long.
 
@@ -29,7 +31,7 @@
 
 * Test outside values for `ensure_inclusion_of` when given an array.
 
-* Fixed the output of the set_the_flash matcher.
+* Fixed the output of the `set_the_flash` matcher.
 
 # v1.3.0
 
