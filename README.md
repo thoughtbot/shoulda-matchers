@@ -101,5 +101,5 @@ Thank you to all the [contributors](https://github.com/thoughtbot/shoulda-matche
 
 ## License
 
-Shoulda is Copyright © 2006-2012 thoughtbot, inc.
+Shoulda is Copyright © 2006-2013 thoughtbot, inc.
 It is free software, and may be redistributed under the terms specified in the MIT-LICENSE file.
