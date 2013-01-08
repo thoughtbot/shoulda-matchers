@@ -22,8 +22,6 @@ module Shoulda # :nodoc:
           @options = {}
         end
 
-        attr_reader :failure_message_for_should, :failure_message_for_should_not
-
         def to(value)
           if !value.is_a?(String) && !value.is_a?(Regexp)
             raise "cannot match against #{value.inspect}"
