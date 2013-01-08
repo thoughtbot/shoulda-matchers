@@ -48,7 +48,7 @@ module Shoulda # :nodoc:
           "only allow #{allowed_types} values for #{@attribute}"
         end
 
-        def failure_message
+        def failure_message_for_should
           submatcher_failure_messages.last
         end
 
@@ -71,7 +71,7 @@ module Shoulda # :nodoc:
         end
 
         def submatcher_failure_messages
-          failing_submatchers.map(&:failure_message)
+          failing_submatchers.map(&:failure_message_for_should)
         end
 
         def failing_submatchers

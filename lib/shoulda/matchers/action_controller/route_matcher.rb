@@ -33,7 +33,7 @@ module Shoulda # :nodoc:
           @context = context
         end
 
-        attr_reader :failure_message, :negative_failure_message
+        attr_reader :failure_message_for_should, :failure_message_for_should_not
 
         def to(params)
           @params = stringify_params(params)
@@ -80,13 +80,13 @@ module Shoulda # :nodoc:
                           { :method => @method, :path => @path },
                           @params)
 
-            @negative_failure_message = "Didn't expect to #{description}"
+            @failure_message_for_should_not = "Didn't expect to #{description}"
             true
           rescue ::ActionController::RoutingError => error
-            @failure_message = error.message
+            @failure_message_for_should = error.message
             false
           rescue Shoulda::Matchers::AssertionError => error
-            @failure_message = error.message
+            @failure_message_for_should = error.message
             false
           end
         end

@@ -38,7 +38,7 @@ describe Shoulda::Matchers::ActiveModel::OnlyIntegerMatcher do
 
       matcher.matches?(define_model(:example, :attr => :string).new)
 
-      matcher.failure_message.should include 'Expected errors to include "must be an integer"'
+      matcher.failure_message_for_should.should include 'Expected errors to include "must be an integer"'
     end
   end
 

@@ -70,7 +70,7 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
 
         matcher.matches?(no_protected_attributes).should be_true
 
-        matcher.negative_failure_message.should_not be_nil
+        matcher.failure_message_for_should_not.should_not be_nil
       end
     end
 

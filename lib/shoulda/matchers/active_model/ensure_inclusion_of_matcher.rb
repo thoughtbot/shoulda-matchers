@@ -88,7 +88,7 @@ module Shoulda # :nodoc:
             if allows_all_values_in_array? && allows_blank_value? && allows_nil_value? && disallows_value_outside_of_array?
               true
             else
-              @failure_message = "#{@array} doesn't match array in validation"
+              @failure_message_for_should = "#{@array} doesn't match array in validation"
               false
             end
           end

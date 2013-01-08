@@ -10,7 +10,7 @@ describe Shoulda::Matchers::ActiveRecord::AcceptNestedAttributesForMatcher do
 
     matcher.matches?(rejecting_children).should be_false
 
-    matcher.failure_message.should == 'Expected Parent to accept nested attributes for children (is not declared)'
+    matcher.failure_message_for_should.should == 'Expected Parent to accept nested attributes for children (is not declared)'
   end
 
   context 'allow_destroy' do
@@ -31,7 +31,7 @@ describe Shoulda::Matchers::ActiveRecord::AcceptNestedAttributesForMatcher do
       matching = accepting_children(:allow_destroy => true)
 
       matcher.allow_destroy(false).matches?(matching).should be_false
-      matcher.failure_message.should =~ /should not allow destroy/
+      matcher.failure_message_for_should.should =~ /should not allow destroy/
     end
 
     it 'rejects an invalid falsey value' do
@@ -39,7 +39,7 @@ describe Shoulda::Matchers::ActiveRecord::AcceptNestedAttributesForMatcher do
       matching = accepting_children(:allow_destroy => false)
 
       matcher.allow_destroy(true).matches?(matching).should be_false
-      matcher.failure_message.should =~ /should allow destroy/
+      matcher.failure_message_for_should.should =~ /should allow destroy/
     end
   end
 
@@ -53,7 +53,7 @@ describe Shoulda::Matchers::ActiveRecord::AcceptNestedAttributesForMatcher do
       rejecting = accepting_children(:limit => 3)
 
       matcher.limit(2).matches?(rejecting).should be_false
-      matcher.failure_message.should =~ /limit should be 2, got 3/
+      matcher.failure_message_for_should.should =~ /limit should be 2, got 3/
     end
   end
 
@@ -73,7 +73,7 @@ describe Shoulda::Matchers::ActiveRecord::AcceptNestedAttributesForMatcher do
       rejecting = accepting_children(:update_only => true)
 
       matcher.matches?(rejecting).should be_false
-      matcher.failure_message.should =~ /should not be update only/
+      matcher.failure_message_for_should.should =~ /should not be update only/
     end
 
     it 'rejects an invalid falsey value' do
@@ -81,7 +81,7 @@ describe Shoulda::Matchers::ActiveRecord::AcceptNestedAttributesForMatcher do
       rejecting = accepting_children(:update_only => false)
 
       matcher.matches?(rejecting).should be_false
-      matcher.failure_message.should =~ /should be update only/
+      matcher.failure_message_for_should.should =~ /should be update only/
     end
   end
 

@@ -30,11 +30,11 @@ module Shoulda # :nodoc:
           correct_status_code? || correct_status_code_range?
         end
 
-        def failure_message
+        def failure_message_for_should
           "Expected #{expectation}"
         end
 
-        def negative_failure_message
+        def failure_message_for_should_not
           "Did not expect #{expectation}"
         end
 

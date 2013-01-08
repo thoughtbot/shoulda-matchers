@@ -37,11 +37,11 @@ module Shoulda # :nodoc:
           index_exists? && correct_unique?
         end
 
-        def failure_message
+        def failure_message_for_should
           "Expected #{expectation} (#{@missing})"
         end
 
-        def negative_failure_message
+        def failure_message_for_should_not
           "Did not expect #{expectation}"
         end
 

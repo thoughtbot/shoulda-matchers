@@ -52,7 +52,7 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
       matcher.matches?(post_office)
 
       message = 'Expected PostOffice#deliver_mail to delegate to PostOffice#mailman'
-      matcher.failure_message.should == message
+      matcher.failure_message_for_should.should == message
     end
 
     it 'uses the proper syntax for class methods in errors' do
@@ -61,7 +61,7 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
       matcher.matches?(PostOffice)
 
       message = 'Expected PostOffice.deliver_mail to delegate to PostOffice.mailman'
-      matcher.failure_message.should == message
+      matcher.failure_message_for_should.should == message
     end
   end
 
@@ -116,7 +116,7 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
         matcher.matches?(post_office)
 
         message = 'Expected PostOffice#deliver_mail to delegate to PostOffice#mailman with arguments: ["123 Nowhere Ln."]'
-        matcher.failure_message.should == message
+        matcher.failure_message_for_should.should == message
       end
     end
   end
@@ -156,7 +156,7 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
         matcher.matches?(post_office)
 
         message = 'Expected PostOffice#deliver_mail to delegate to PostOffice#mailman as :watch_tv'
-        matcher.failure_message.should == message
+        matcher.failure_message_for_should.should == message
       end
     end
   end

@@ -27,7 +27,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
       the_matcher.matches?(define_model(:example, :attr => :string).new)
 
-      the_matcher.failure_message.should include 'Expected errors to include "must be an integer"'
+      the_matcher.failure_message_for_should.should include 'Expected errors to include "must be an integer"'
     end
   end
 
@@ -45,7 +45,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
       the_matcher.matches?(validating_numericality)
 
-      the_matcher.failure_message.should include 'Expected errors to include "must be an integer"'
+      the_matcher.failure_message_for_should.should include 'Expected errors to include "must be an integer"'
     end
   end
 

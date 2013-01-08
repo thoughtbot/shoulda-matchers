@@ -173,7 +173,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
       matcher.matches?(having_many_children).should be_false
 
-      matcher.failure_message.should =~ /does not have any relationship to conceptions/
+      matcher.failure_message_for_should.should =~ /does not have any relationship to conceptions/
     end
 
     it 'rejects an association that has the wrong :through option' do
@@ -190,7 +190,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
       matcher = have_many(:children).through(:relationships)
       matcher.matches?(Parent.new).should be_false
-      matcher.failure_message.should =~ /through relationships, but got it through conceptions/
+      matcher.failure_message_for_should.should =~ /through relationships, but got it through conceptions/
     end
 
     it 'accepts an association with a valid :dependent option' do
