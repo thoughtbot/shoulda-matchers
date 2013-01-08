@@ -22,7 +22,7 @@ module Shoulda # :nodoc:
           @options = {}
         end
 
-        attr_reader :failure_message, :negative_failure_message
+        attr_reader :failure_message_for_should, :failure_message_for_should_not
 
         def to(value)
           if !value.is_a?(String) && !value.is_a?(Regexp)
@@ -53,11 +53,11 @@ module Shoulda # :nodoc:
           description
         end
 
-        def failure_message
+        def failure_message_for_should
           "Expected #{expectation}"
         end
 
-        def negative_failure_message
+        def failure_message_for_should_not
           "Did not expect #{expectation}"
         end
 

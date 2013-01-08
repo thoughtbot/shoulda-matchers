@@ -2,7 +2,7 @@ module Shoulda # :nodoc:
   module Matchers
     module ActiveModel # :nodoc:
       class ValidationMatcher # :nodoc:
-        attr_reader :failure_message
+        attr_reader :failure_message_for_should
 
         def initialize(attribute)
           @attribute = attribute
@@ -14,8 +14,8 @@ module Shoulda # :nodoc:
           self
         end
 
-        def negative_failure_message
-          @negative_failure_message || @failure_message
+        def failure_message_for_should_not
+          @failure_message_for_should_not || @failure_message_for_should
         end
 
         def matches?(subject)
@@ -29,10 +29,10 @@ module Shoulda # :nodoc:
           allow = allow_value_matcher(value, message)
 
           if allow.matches?(@subject)
-            @negative_failure_message = allow.failure_message
+            @failure_message_for_should_not = allow.failure_message_for_should
             true
           else
-            @failure_message = allow.negative_failure_message
+            @failure_message_for_should = allow.failure_message_for_should_not
             false
           end
         end
@@ -41,10 +41,10 @@ module Shoulda # :nodoc:
           disallow = allow_value_matcher(value, message)
 
           if disallow.matches?(@subject)
-            @failure_message = disallow.negative_failure_message
+            @failure_message_for_should = disallow.failure_message_for_should_not
             false
           else
-            @negative_failure_message = disallow.failure_message
+            @failure_message_for_should_not = disallow.failure_message_for_should
             true
           end
         end

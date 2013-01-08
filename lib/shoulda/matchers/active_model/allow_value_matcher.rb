@@ -60,11 +60,11 @@ module Shoulda # :nodoc:
           end
         end
 
-        def failure_message
+        def failure_message_for_should
           "Did not expect #{expectation}, got error: #{@matched_error}"
         end
 
-        def negative_failure_message
+        def failure_message_for_should_not
           "Expected #{expectation}, got #{error_description}"
         end
 

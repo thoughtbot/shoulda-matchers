@@ -29,7 +29,7 @@ describe Shoulda::Matchers::ActiveRecord::HaveReadonlyAttributeMatcher do
 
       matcher.matches?(model)
 
-      matcher.failure_message.should_not be_nil
+      matcher.failure_message_for_should.should_not be_nil
     end
   end
 

@@ -16,7 +16,7 @@ module Shoulda # :nodoc:
       end
 
       class AllowMassAssignmentOfMatcher # :nodoc:
-        attr_reader :failure_message, :negative_failure_message
+        attr_reader :failure_message_for_should, :failure_message_for_should_not
 
         def initialize(attribute)
           @attribute = attribute.to_s
@@ -35,12 +35,12 @@ module Shoulda # :nodoc:
           @subject = subject
           if attr_mass_assignable?
             if whitelisting?
-              @negative_failure_message = "#{@attribute} was made accessible"
+              @failure_message_for_should_not = "#{@attribute} was made accessible"
             else
               if protected_attributes.empty?
-                @negative_failure_message = 'no attributes were protected'
+                @failure_message_for_should_not = 'no attributes were protected'
               else
-                @negative_failure_message = "#{class_name} is protecting " <<
+                @failure_message_for_should_not = "#{class_name} is protecting " <<
                   "#{protected_attributes.to_a.to_sentence}, " <<
                   "but not #{@attribute}."
               end
@@ -48,9 +48,9 @@ module Shoulda # :nodoc:
             true
           else
             if whitelisting?
-              @failure_message = "Expected #{@attribute} to be accessible"
+              @failure_message_for_should = "Expected #{@attribute} to be accessible"
             else
-              @failure_message = "Did not expect #{@attribute} to be protected"
+              @failure_message_for_should = "Did not expect #{@attribute} to be protected"
             end
             false
           end
