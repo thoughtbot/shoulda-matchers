@@ -96,7 +96,7 @@ module Shoulda # :nodoc:
                 @subject.send(setter, existing.send(scope))
                 true
               else
-                @failure_message = "#{class_name} doesn't seem to have a #{scope} attribute."
+                @failure_message_for_should = "#{class_name} doesn't seem to have a #{scope} attribute."
                 false
               end
             end
@@ -133,11 +133,11 @@ module Shoulda # :nodoc:
               if allows_value_of(existing_value, @expected_message)
                 @subject.send("#{scope}=", previous_value)
 
-                @negative_failure_message <<
+                @failure_message_for_should_not <<
                   " (with different value of #{scope})"
                 true
               else
-                @failure_message << " (with different value of #{scope})"
+                @failure_message_for_should << " (with different value of #{scope})"
                 false
               end
             end

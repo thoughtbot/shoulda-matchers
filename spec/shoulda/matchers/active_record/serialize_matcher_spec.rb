@@ -15,7 +15,7 @@ describe Shoulda::Matchers::ActiveRecord::SerializeMatcher do
 
       matcher.matches?(unserialized_model)
 
-      matcher.failure_message.should =~ /to serialize the attribute called :attr/
+      matcher.failure_message_for_should.should =~ /to serialize the attribute called :attr/
     end
 
     it 'assigns a helpful failure message when using #as' do
@@ -23,7 +23,7 @@ describe Shoulda::Matchers::ActiveRecord::SerializeMatcher do
 
       matcher.matches?(unserialized_model)
 
-      matcher.failure_message.should =~ /with a type of Hash/
+      matcher.failure_message_for_should.should =~ /with a type of Hash/
     end
 
     it 'assigns a helpful failure message when using #as_instance_of' do
@@ -31,7 +31,7 @@ describe Shoulda::Matchers::ActiveRecord::SerializeMatcher do
 
       matcher.matches?(unserialized_model)
 
-      matcher.failure_message.should =~ /with an instance of Hash/
+      matcher.failure_message_for_should.should =~ /with an instance of Hash/
     end
 
     def unserialized_model

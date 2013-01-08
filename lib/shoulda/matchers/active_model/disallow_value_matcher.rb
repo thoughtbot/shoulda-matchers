@@ -20,8 +20,8 @@ module Shoulda # :nodoc:
           self
         end
 
-        def failure_message
-          @allow_matcher.negative_failure_message
+        def failure_message_for_should
+          @allow_matcher.failure_message_for_should_not
         end
 
         def allowed_types

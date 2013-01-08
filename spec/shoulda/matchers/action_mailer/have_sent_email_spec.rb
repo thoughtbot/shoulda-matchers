@@ -120,7 +120,7 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
       should_not have_sent_email.multipart
       matcher = have_sent_email.multipart(true)
       matcher.matches?(Mailer.the_email(nil))
-      matcher.failure_message.should =~ /Expected sent email being multipart/
+      matcher.failure_message_for_should.should =~ /Expected sent email being multipart/
     end
 
     it 'matches the body with a regexp' do
@@ -155,98 +155,98 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
       should have_sent_email.with_subject(/is spam$/)
       matcher = have_sent_email.with_subject(/totally safe/)
       matcher.matches?(nil)
-      matcher.failure_message.should =~ /Expected sent email with subject/
+      matcher.failure_message_for_should.should =~ /Expected sent email with subject/
     end
 
     it 'accepts sent e-mail based on a string sender' do
       should have_sent_email.from('do-not-reply@example.com')
       matcher = have_sent_email.from('you@example.com')
       matcher.matches?(nil)
-      matcher.failure_message.should =~ /Expected sent email from/
+      matcher.failure_message_for_should.should =~ /Expected sent email from/
     end
 
     it 'accepts sent e-mail based on a regexp sender' do
       should have_sent_email.from(/@example\.com/)
       matcher = have_sent_email.from(/you@/)
       matcher.matches?(nil)
-      matcher.failure_message.should =~ /Expected sent email from/
+      matcher.failure_message_for_should.should =~ /Expected sent email from/
     end
 
     it 'accepts sent e-mail based on the body' do
       should have_sent_email.with_body(/is spam\./)
       matcher = have_sent_email.with_body(/totally safe/)
       matcher.matches?(nil)
-      matcher.failure_message.should =~ /Expected sent email with body/
+      matcher.failure_message_for_should.should =~ /Expected sent email with body/
     end
 
     it 'accepts sent e-mail based on a text/plain part' do
       should have_sent_email.with_part('text/plain', /is spam\./)
       matcher = have_sent_email.with_part('text/plain', /HTML is spam/)
       matcher.matches?(nil)
-      matcher.failure_message.should =~ /Expected sent email with a text\/plain part containing/
+      matcher.failure_message_for_should.should =~ /Expected sent email with a text\/plain part containing/
     end
 
     it 'accepts sent e-mail based on a text/html part' do
       should have_sent_email.with_part('text/html', /HTML is spam/)
       matcher = have_sent_email.with_part('text/html', /HTML is not spam\./)
       matcher.matches?(nil)
-      matcher.failure_message.should =~ /Expected sent email with a text\/html part containing/
+      matcher.failure_message_for_should.should =~ /Expected sent email with a text\/html part containing/
     end
 
     it 'accept sent e-mail based on the recipient' do
       should have_sent_email.to('myself@me.com')
       matcher = have_sent_email.to('you@example.com')
       matcher.matches?(nil)
-      matcher.failure_message.should =~ /Expected sent email to/
+      matcher.failure_message_for_should.should =~ /Expected sent email to/
     end
 
     it 'accepts sent e-mail based on cc string' do
       should have_sent_email.cc('joe@bob.com')
       matcher = have_sent_email.cc('you@example.com')
       matcher.matches?(nil)
-      matcher.failure_message.should =~ /Expected sent email cc/
+      matcher.failure_message_for_should.should =~ /Expected sent email cc/
     end
 
     it 'accepts sent-email based on cc regex' do
       should have_sent_email.cc(/@bob\.com/)
       matcher = have_sent_email.cc(/us@/)
       matcher.matches?(nil)
-      matcher.failure_message.should =~ /Expected sent email cc/
+      matcher.failure_message_for_should.should =~ /Expected sent email cc/
     end
 
     it 'accepts sent e-mail based on cc list' do
       should have_sent_email.with_cc(['you@you.com', 'joe@bob.com'])
       matcher = have_sent_email.with_cc(['you@example.com'])
       matcher.matches?(nil)
-      matcher.failure_message.should =~ /Expected sent email with cc/
+      matcher.failure_message_for_should.should =~ /Expected sent email with cc/
     end
 
     it 'accepts sent e-mail based on bcc string' do
       should have_sent_email.bcc('goodbye@hello.com')
       matcher = have_sent_email.bcc('test@hello.com')
       matcher.matches?(nil)
-      matcher.failure_message.should =~ /Expected sent email bcc/
+      matcher.failure_message_for_should.should =~ /Expected sent email bcc/
     end
 
     it 'accepts sent e-mail based on bcc regex' do
       should have_sent_email.bcc(/@example\.com/)
       matcher = have_sent_email.bcc(/you@/)
       matcher.matches?(nil)
-      matcher.failure_message.should =~ /Expected sent email bcc/
+      matcher.failure_message_for_should.should =~ /Expected sent email bcc/
     end
 
     it 'accepts sent e-mail based on bcc list' do
       should have_sent_email.with_bcc(['sam@bob.com', 'test@example.com'])
       matcher = have_sent_email.with_bcc(['you@you.com', 'joe@bob.com'])
       matcher.matches?(nil)
-      matcher.failure_message.should =~ /Expected sent email with bcc/
+      matcher.failure_message_for_should.should =~ /Expected sent email with bcc/
     end
 
     it 'accepts sent-email when it is multipart' do
       should have_sent_email.multipart
       matcher = have_sent_email.multipart(false)
       matcher.matches?(nil)
-      matcher.failure_message.should =~ /Expected sent email not being multipart/
+      matcher.failure_message_for_should.should =~ /Expected sent email not being multipart/
     end
 
     it 'lists all the deliveries within failure message' do
@@ -254,7 +254,7 @@ describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
 
       matcher = have_sent_email.to('you@example.com')
       matcher.matches?(nil)
-      matcher.failure_message.should =~ /Deliveries:\n"This is spam" to \["myself@me\.com"\]\n"This is spam" to \["myself@me\.com"\]/
+      matcher.failure_message_for_should.should =~ /Deliveries:\n"This is spam" to \["myself@me\.com"\]\n"This is spam" to \["myself@me\.com"\]/
     end
 
     it 'allows chaining' do

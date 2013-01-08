@@ -24,8 +24,8 @@ module Shoulda # :nodoc:
           'integer'
         end
 
-        def failure_message
-          @disallow_value_matcher.failure_message
+        def failure_message_for_should
+          @disallow_value_matcher.failure_message_for_should
         end
       end
     end

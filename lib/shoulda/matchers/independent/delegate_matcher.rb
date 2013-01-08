@@ -70,7 +70,7 @@ module Shoulda # :nodoc:
           self
         end
 
-        def failure_message
+        def failure_message_for_should
           base = "Expected #{delegating_method_name} to delegate to #{target_method_name}"
           add_clarifications_to(base)
         end

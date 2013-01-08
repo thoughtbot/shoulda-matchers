@@ -32,11 +32,11 @@ module Shoulda # :nodoc:
           assigned_correct_value? || cleared_value?
         end
 
-        def failure_message
+        def failure_message_for_should
           "Expected #{expectation}, but #{result}"
         end
 
-        def negative_failure_message
+        def failure_message_for_should_not
           "Didn't expect #{expectation}, but #{result}"
         end
 

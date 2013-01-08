@@ -1,5 +1,5 @@
 PATH
-  remote: /vagrant
+  remote: /Users/draper/Dropbox/Development/shoulda-matchers
   specs:
     shoulda-matchers (1.4.2)
       activesupport (>= 3.0.0)

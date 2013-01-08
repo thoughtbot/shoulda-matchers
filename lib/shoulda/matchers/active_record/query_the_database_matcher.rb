@@ -67,7 +67,7 @@ module Shoulda # :nodoc:
           end
         end
 
-        def failure_message
+        def failure_message_for_should
           if @options.key?(:expected_query_count)
             "Expected ##{@options[:method_name]} to cause #{@options[:expected_query_count]} database queries but it actually caused #{@queries.length} queries:" + friendly_queries
           else
@@ -75,7 +75,7 @@ module Shoulda # :nodoc:
           end
         end
 
-        def negative_failure_message
+        def failure_message_for_should_not
           if @options[:expected_query_count]
             "Expected ##{@options[:method_name]} to not cause #{@options[:expected_query_count]} database queries but it actually caused #{@queries.length} queries:" + friendly_queries
           else

@@ -6,7 +6,7 @@ PATH
       bourne (~> 1.2.0)
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     actionmailer (3.2.9)
       actionpack (= 3.2.9)
