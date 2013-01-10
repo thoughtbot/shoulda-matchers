@@ -1,5 +1,6 @@
 # HEAD
 
+* Support datetime columns in `validate_uniqueness_of.scoped_to`
 * Add `allow_nil` option to the `validate_uniqueness_of` matcher
 
 # v 2.0.0
