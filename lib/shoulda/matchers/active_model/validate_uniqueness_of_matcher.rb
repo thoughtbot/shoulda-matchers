@@ -123,10 +123,12 @@ module Shoulda # :nodoc:
               previous_value ||= correct_type_for_column(@subject.class.columns_hash[scope.to_s])
 
               next_value = if previous_value.respond_to?(:next)
-                previous_value.next
-              else
-                previous_value.to_s.next
-              end
+                             previous_value.next
+                           elsif previous_value.respond_to?(:to_datetime)
+                             previous_value.to_datetime.next
+                           else
+                             previous_value.to_s.next
+                           end
 
               @subject.send("#{scope}=", next_value)
 
@@ -147,6 +149,8 @@ module Shoulda # :nodoc:
         def correct_type_for_column(column)
           if column.type == :string
             '0'
+          elsif column.type == :datetime
+            DateTime.now
           else
             0
           end

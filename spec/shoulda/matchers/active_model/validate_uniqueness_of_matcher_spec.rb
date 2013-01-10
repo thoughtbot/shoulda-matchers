@@ -88,6 +88,31 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
       create_existing_record.should matcher.scoped_to(:scope1, :scope2)
     end
 
+    it "accepts when the scoped attribute is a date" do
+      validating_scoped_uniqueness([:scope1], :date, :scope1 => Date.today).
+        should matcher.scoped_to(:scope1)
+    end
+
+    it "rejects when too narrow of a scope is specified with a date" do
+      validating_scoped_uniqueness([:scope1, :scope2], :date, :scope1 => Date.today, :scope2 => Date.today).
+        should_not matcher.scoped_to(:scope1, :scope2, :other)
+    end
+
+    it "accepts when the scoped attribute is a datetime" do
+      validating_scoped_uniqueness([:scope1], :datetime, :scope1 => DateTime.now).
+        should matcher.scoped_to(:scope1)
+    end
+
+    it "accepts when the scoped attribute is a datetime with a nil value" do
+      validating_scoped_uniqueness([:scope1], :datetime, :scope1 => nil).
+        should matcher.scoped_to(:scope1)
+    end
+
+    it "rejects when too narrow of a scope is specified with a datetime" do
+      validating_scoped_uniqueness([:scope1, :scope2], :datetime, :scope1 => DateTime.now, :scope2 => DateTime.now).
+        should_not matcher.scoped_to(:scope1, :scope2, :other)
+    end
+
     it 'rejects when too narrow of a scope is specified' do
       validating_scoped_uniqueness([:scope1, :scope2]).
         should_not matcher.scoped_to(:scope1, :scope2, :other)
@@ -112,21 +137,23 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
         should_not matcher.scoped_to(:fake)
     end
 
-    def create_existing_record
-      @existing ||= Example.create!(:attr => 'value', :scope1 => 1, :scope2 => 2, :other => 3)
+    def create_existing_record(attributes = {})
+      default_attributes = {:attr => 'value', :scope1 => 1, :scope2 => 2, :other => 3}
+      @existing ||= Example.create!(default_attributes.merge(attributes))
     end
 
-    def define_scoped_model(scope)
-      define_model(:example, :attr => :string, :scope1 => :integer,
-        :scope2 => :integer, :other => :integer) do
+    def define_scoped_model(scope, scope_attr_type = :integer)
+      define_model(:example, :attr => :string, :scope1 => scope_attr_type,
+        :scope2 => scope_attr_type, :other => :integer) do
         attr_accessible :attr, :scope1, :scope2, :other
         validates_uniqueness_of :attr, :scope => scope
       end
     end
 
-    def validating_scoped_uniqueness(scope)
-      model = define_scoped_model(scope).new
-      create_existing_record
+    def validating_scoped_uniqueness(*args)
+      attributes = args.extract_options!
+      model = define_scoped_model(*args).new
+      create_existing_record(attributes)
       model
     end
   end
