@@ -77,8 +77,12 @@ module Shoulda
         end
 
         def ensure_action_and_verb_present!
-          raise ActionNotDefinedError unless action.present?
-          raise VerbNotDefinedError unless verb.present?
+          if action.blank?
+            raise ActionNotDefinedError
+          end
+          if verb.blank?
+            raise VerbNotDefinedError
+          end
         end
 
         def arbitrary_attributes
