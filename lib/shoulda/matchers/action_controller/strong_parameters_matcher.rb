@@ -27,11 +27,11 @@ module Shoulda
         end
 
         def matches?(controller = nil)
-          simulate_controller_action || parameters_difference.empty?
+          simulate_controller_action && parameters_difference.empty?
         end
 
         def does_not_match?(controller = nil)
-          simulate_controller_action || parameters_difference.present?
+          simulate_controller_action && parameters_difference.present?
         end
 
         def failure_message
@@ -56,7 +56,7 @@ module Shoulda
             model_attrs.should have_received(:permit).with { |*params|
               self.permitted_params = params
             }
-           nil
+            true
           rescue RSpec::Expectations::ExpectationNotMetError, Mocha::ExpectationError
             false
           end
