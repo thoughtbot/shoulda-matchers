@@ -21,6 +21,11 @@ module Shoulda
           self
         end
 
+        def in_context(context)
+          @context = context
+          self
+        end
+
         def matches?(controller = nil)
           simulate_controller_action || parameters_difference.empty?
         end
