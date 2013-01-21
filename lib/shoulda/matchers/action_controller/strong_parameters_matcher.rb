@@ -1,5 +1,8 @@
 require 'bourne'
-require 'strong_parameters'
+begin
+  require 'strong_parameters'
+rescue LoadError
+end
 
 module Shoulda
   module Matchers
