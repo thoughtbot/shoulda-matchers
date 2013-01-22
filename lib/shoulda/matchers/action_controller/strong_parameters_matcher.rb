@@ -91,11 +91,11 @@ module Shoulda
         end
 
         def arbitrary_attributes
-          {any_key: 'any_value'}
+          {:any_key => 'any_value'}
         end
 
         def verb_for_action
-          verb_lookup = { create: :post, update: :put }
+          verb_lookup = { :create => :post, :update => :put }
           verb_lookup[action]
         end
       end
@@ -109,7 +109,7 @@ module Shoulda
       class StrongParametersMatcher::VerbNotDefinedError < StandardError
         def message
           'You must specify an HTTP verb when using a non-RESTful action.' +
-          ' e.g. for(:authorize, verb: :post)'
+          ' e.g. for(:authorize, :verb => :post)'
         end
       end
 

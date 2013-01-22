@@ -52,7 +52,7 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
     end
 
     it "is false when permit is not called" do
-      matcher = Shoulda::Matchers::ActionController::StrongParametersMatcher.new(:name, self).for(:new, verb: :get)
+      matcher = Shoulda::Matchers::ActionController::StrongParametersMatcher.new(:name, self).for(:new, :verb => :get)
       matcher.matches?.should be_false
     end
 
@@ -100,7 +100,7 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
   describe "#for" do
     context "when given :create" do
       it "posts to the controller" do
-        context = stub('context', post: nil)
+        context = stub('context', :post => nil)
         matcher = Shoulda::Matchers::ActionController::StrongParametersMatcher.new(:name, context).for(:create)
 
         matcher.matches?
@@ -110,7 +110,7 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
 
     context "when given :update" do
       it "puts to the controller" do
-        context = stub('context', put: nil)
+        context = stub('context', :put => nil)
         matcher = Shoulda::Matchers::ActionController::StrongParametersMatcher.new(:name, context).for(:update)
 
         matcher.matches?
@@ -120,8 +120,8 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
 
     context "when given a custom action and verb" do
       it "puts to the controller" do
-        context = stub('context', delete: nil)
-        matcher = Shoulda::Matchers::ActionController::StrongParametersMatcher.new(:name, context).for(:hide, verb: :delete)
+        context = stub('context', :delete => nil)
+        matcher = Shoulda::Matchers::ActionController::StrongParametersMatcher.new(:name, context).for(:hide, :verb => :delete)
 
         matcher.matches?
         context.should have_received(:delete).with(:hide)
@@ -131,7 +131,7 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
 
   describe "#in_context" do
     it 'sets the object the controller action is sent to' do
-      context = stub('context', post: nil)
+      context = stub('context', :post => nil)
       matcher = Shoulda::Matchers::ActionController::StrongParametersMatcher.new(:name, nil).for(:create).in_context(context)
 
       matcher.matches?
@@ -147,12 +147,12 @@ def controller_for_resource_with_strong_parameters(&block)
   controller_class = define_controller "Users" do
     def new
       @user = User.new
-      render nothing: true
+      render :nothing => true
     end
 
     def create
       @user = User.create(user_params)
-      render nothing: true
+      render :nothing => true
     end
 
     private
