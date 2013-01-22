@@ -8,13 +8,14 @@ module Shoulda
   module Matchers
     module ActionController
       def permit(*attributes)
-        StrongParametersMatcher.new(*attributes, self)
+        attributes_and_context = attributes + [self]
+        StrongParametersMatcher.new(*attributes_and_context)
       end
 
       class StrongParametersMatcher
-        def initialize(*attributes, context)
-          @attributes = attributes
-          @context = context
+        def initialize(*attributes_and_context)
+          @attributes = attributes_and_context[0...-1]
+          @context = attributes_and_context.last
           @permitted_params = []
         end
 
