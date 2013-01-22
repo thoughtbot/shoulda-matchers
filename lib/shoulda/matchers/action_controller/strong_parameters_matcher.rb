@@ -55,14 +55,16 @@ module Shoulda
 
           context.send(verb, action)
 
-          begin
-            model_attrs.should have_received(:permit).with { |*params|
-              self.permitted_params = params
-            }
-            true
-          rescue RSpec::Expectations::ExpectationNotMetError, Mocha::ExpectationError
-            false
-          end
+          verify_permit_call(model_attrs)
+        end
+
+        def verify_permit_call(model_attrs)
+          model_attrs.should have_received(:permit).with { |*params|
+            self.permitted_params = params
+          }
+          true
+        rescue RSpec::Expectations::ExpectationNotMetError, Mocha::ExpectationError
+          false
         end
 
         def parameters_difference
