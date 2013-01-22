@@ -139,5 +139,4 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
       context.should have_received(:post).with(:create)
     end
   end
-
 end

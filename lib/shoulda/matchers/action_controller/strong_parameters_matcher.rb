@@ -113,7 +113,6 @@ module Shoulda
           ' e.g. for(:authorize, :verb => :post)'
         end
       end
-
     end
   end
 end
