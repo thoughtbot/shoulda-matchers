@@ -51,6 +51,8 @@ Matchers to test common patterns:
 
 ```ruby
 describe PostsController, "#show" do
+  it { should permit(:title, :body).for(:create) }
+
   context "for a fictional user" do
     before do
       get :show, :id => 1
