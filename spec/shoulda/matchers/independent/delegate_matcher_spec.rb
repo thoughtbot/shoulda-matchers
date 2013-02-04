@@ -1,6 +1,33 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::Independent::DelegateMatcher do
+  context '#description' do
+    context 'by default' do
+      it 'states that it should delegate method to the right object' do
+        matcher = delegate_method(:method_name).to(:target)
+
+        matcher.description.should == 'delegate method #method_name to :target'
+      end
+    end
+
+    context 'with #as chain' do
+      it 'states that it should delegate method to the right object and method' do
+        matcher = delegate_method(:method_name).to(:target).as(:alternate)
+
+        matcher.description.should == 'delegate method #method_name to :target as #alternate'
+      end
+    end
+
+    context 'with #with_argument chain' do
+      it 'states that it should delegate method to the right object with right argument' do
+        matcher = delegate_method(:method_name).to(:target).with_arguments(:foo, :bar => [1, 2])
+
+        matcher.description.should ==
+          'delegate method #method_name to :target with arguments: [:foo, {:bar=>[1, 2]}]'
+      end
+    end
+  end
+
   it 'supports chaining on #to' do
     matcher = delegate_method(:method)
 
@@ -155,7 +182,7 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
 
         matcher.matches?(post_office)
 
-        message = 'Expected PostOffice#deliver_mail to delegate to PostOffice#mailman as :watch_tv'
+        message = 'Expected PostOffice#deliver_mail to delegate to PostOffice#mailman as #watch_tv'
         matcher.failure_message.should == message
       end
     end

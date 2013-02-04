@@ -10,12 +10,15 @@ module Shoulda # :nodoc:
       #   it { should delegate_method(:deliver_mail).to(:mailman) }
       #
       # Options:
-      # * <tt>:as</tt> - tests that the object being delegated to is called with a certain method (defaults to same name as delegating method)
-      # * <tt>:with_arguments</tt> - tests that the method on the object being delegated to is called with certain arguments
+      # * <tt>:as</tt> - tests that the object being delegated to is called with a certain method
+      #   (defaults to same name as delegating method)
+      # * <tt>:with_arguments</tt> - tests that the method on the object being delegated to is
+      #   called with certain arguments
       #
       # Examples:
       #   it { should delegate_method(:deliver_mail).to(:mailman).as(:deliver_with_haste)
-      #   it { should delegate_method(:deliver_mail).to(:mailman).with_arguments('221B Baker St.', :hastily => true)
+      #   it { should delegate_method(:deliver_mail).to(:mailman).
+      #     with_arguments('221B Baker St.', :hastily => true) }
       #
       def delegate_method(delegating_method)
         DelegateMatcher.new(delegating_method)
@@ -41,6 +44,10 @@ module Shoulda # :nodoc:
           rescue NoMethodError, RSpec::Expectations::ExpectationNotMetError, Mocha::ExpectationError
             false
           end
+        end
+
+        def description
+          add_clarifications_to("delegate method ##{@delegating_method} to :#{@target_method}")
         end
 
         def does_not_match?(subject)
@@ -75,7 +82,7 @@ module Shoulda # :nodoc:
           end
 
           if @method_on_target.present?
-            message << " as :#{@method_on_target}"
+            message << " as ##{@method_on_target}"
           end
 
           message
