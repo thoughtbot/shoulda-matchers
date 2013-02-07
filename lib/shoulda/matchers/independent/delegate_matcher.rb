@@ -40,8 +40,9 @@ module Shoulda # :nodoc:
             subject.stubs(@target_method).returns(stubbed_object)
             subject.send(@delegating_method)
 
-            stubbed_object.should have_received(method_on_target).with(*@delegated_arguments)
-          rescue NoMethodError, RSpec::Expectations::ExpectationNotMetError, Mocha::ExpectationError
+            matcher = Mocha::API::HaveReceived.new(method_on_target).with(*@delegated_arguments)
+            matcher.matches?(stubbed_object)
+          rescue NoMethodError, Mocha::ExpectationError
             false
           end
         end
