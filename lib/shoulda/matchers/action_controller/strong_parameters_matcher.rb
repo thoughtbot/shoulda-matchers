@@ -60,11 +60,12 @@ module Shoulda
         end
 
         def verify_permit_call(model_attrs)
-          model_attrs.should have_received(:permit).with { |*params|
+          matcher = Mocha::API::HaveReceived.new(:permit).with do |*params|
             self.permitted_params = params
-          }
-          true
-        rescue RSpec::Expectations::ExpectationNotMetError, Mocha::ExpectationError
+          end
+
+          matcher.matches?(model_attrs)
+        rescue Mocha::ExpectationError
           false
         end
 
