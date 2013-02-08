@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.email       = "support@thoughtbot.com"
   s.homepage    = "http://thoughtbot.com/community/"
   s.summary     = "Making tests easy on the fingers and eyes"
+  s.license     = "MIT"
   s.description = "Making tests easy on the fingers and eyes"
 
   s.files         = `git ls-files`.split("\n")
