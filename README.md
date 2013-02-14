@@ -2,7 +2,7 @@
 
 [Official Documentation](http://rubydoc.info/github/thoughtbot/shoulda-matchers/master/frames)
 
-Test::Unit- and RSpec-compatible one-liners that test common Rails functionality.
+Test::Unit and RSpec-compatible one-liners that test common Rails functionality.
 These tests would otherwise be much longer, more complex, and error-prone.
 
 Refer to the [shoulda-context](https://github.com/thoughtbot/shoulda-context) gem if you want to know more
@@ -73,6 +73,28 @@ Matchers to test non-Rails-dependent code:
 ```ruby
 describe Human do
   it { should delegate_method(:work).to(:robot) }
+end
+```
+
+## Test::Unit Syntax
+
+```ruby
+class MyTest < ActiveSupport::TestCase
+  subject { Post.new } # dictates which class to perform matchers on
+
+  should validate_uniqueness_of(:title)
+  should validate_uniqueness_of(:title).scoped_to(:user_id, :category_id)
+end
+```
+
+Or if your name the test classes aptly, `subject` will be set implicitly.
+ 
+```ruby
+class PostTest < ActiveSupport::TestCase
+  # `subject` value is set implicitly based on name of test, gets set to `Post.new`
+
+  should validate_uniqueness_of(:title)
+  should validate_uniqueness_of(:title).scoped_to(:user_id, :category_id)
 end
 ```
 
