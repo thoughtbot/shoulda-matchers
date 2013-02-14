@@ -142,15 +142,12 @@ module Shoulda # :nodoc:
         end
 
         def default_attribute_message
-          if @instance.errors.respond_to?(:generate_message)
-            @instance.errors.generate_message(@attribute, @options[:expected_message])
-          else
-            default_error_message(
-              @options[:expected_message],
-              :model_name => model_name,
-              :attribute => @attribute
-            )
-          end
+          default_error_message(
+            @options[:expected_message],
+            :model_name => model_name,
+            :instance => @instance,
+            :attribute => @attribute
+          )
         end
 
         def model_name
