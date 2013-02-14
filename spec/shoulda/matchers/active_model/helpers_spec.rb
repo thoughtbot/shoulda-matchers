@@ -79,7 +79,7 @@ describe Shoulda::Matchers::ActiveModel::Helpers do
     end
 
     if active_model_3_0?
-      context 'if ActiveModel::Errors.generate_message behavior has changed' do
+      context 'if ActiveModel::Errors#generate_message behavior has changed' do
         subject { define_model(:divergent_example, :attr => :string) { validates_presence_of :attr }.new }
 
         let(:message) { 'Oh snap. Behavior has diverged.' }
