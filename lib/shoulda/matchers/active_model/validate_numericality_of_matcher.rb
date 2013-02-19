@@ -32,8 +32,32 @@ module Shoulda # :nodoc:
         end
 
         def only_integer
-          only_integer_matcher = OnlyIntegerMatcher.new(@attribute)
-          add_submatcher(only_integer_matcher)
+          add_submatcher(OnlyIntegerMatcher.new(@attribute))
+          self
+        end
+
+        def is_greater_than(value)
+          add_submatcher(ComparisonMatcher.new(value, :>).for(@attribute))
+          self
+        end
+
+        def is_greater_than_or_equal_to(value)
+          add_submatcher(ComparisonMatcher.new(value, :>=).for(@attribute))
+          self
+        end
+
+        def is_equal_to(value)
+          add_submatcher(ComparisonMatcher.new(value, :==).for(@attribute))
+          self
+        end
+
+        def is_less_than(value)
+          add_submatcher(ComparisonMatcher.new(value, :<).for(@attribute))
+          self
+        end
+
+        def is_less_than_or_equal_to(value)
+          add_submatcher(ComparisonMatcher.new(value, :<=).for(@attribute))
           self
         end
 
@@ -98,7 +122,7 @@ module Shoulda # :nodoc:
         end
 
         def failing_submatchers
-          @failing_submatchers ||= @submatchers.select { |matcher| !matcher.matches?(@subject) }
+          @failing_submatchers ||= @submatchers.select { |matcher| !matcher.matches?(@subject.dup) }
         end
 
         def allowed_types
