@@ -283,6 +283,7 @@ module Shoulda # :nodoc:
         end
 
         def join_table
+          return reflection.join_table if reflection.respond_to? :join_table
           reflection.options[:join_table].to_s
         end
 
