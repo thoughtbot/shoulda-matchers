@@ -209,19 +209,23 @@ module Shoulda # :nodoc:
         end
 
         def regexp_or_string_match_in_array(an_array, a_regexp_or_string)
-          case a_regexp_or_string
-          when Regexp
-            an_array.any? { |string| string =~ a_regexp_or_string }
-          when String
-            an_array.include?(a_regexp_or_string)
+          if an_array
+            case a_regexp_or_string
+            when Regexp
+              an_array.any? { |string| string =~ a_regexp_or_string }
+            when String
+              an_array.include?(a_regexp_or_string)
+            end
           end
         end
 
         def match_array_in_array(target_array, match_array)
-          target_array.sort!
-          match_array.sort!
+          if target_array && match_array
+            target_array.sort!
+            match_array.sort!
 
-          target_array.each_cons(match_array.size).include?(match_array)
+            target_array.each_cons(match_array.size).include?(match_array)
+          end
         end
 
         def body_match(mail, a_regexp_or_string)
