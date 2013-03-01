@@ -12,7 +12,7 @@ module Shoulda # :nodoc:
 
         def initialize(value, operator)
           @value = value
-          @options = { operator: operator }
+          @options = { :operator => operator }
         end
 
         def for(attribute)
