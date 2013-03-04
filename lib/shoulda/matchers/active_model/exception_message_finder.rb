@@ -3,9 +3,10 @@ module Shoulda
     module ActiveModel
       # Finds message information from exceptions thrown by #valid?
       class ExceptionMessageFinder
-        def initialize(instance, attribute)
+        def initialize(instance, attribute, context=nil)
           @instance = instance
           @attribute = attribute
+          @context = context
         end
 
         def allow_description(allowed_values)
@@ -39,7 +40,7 @@ module Shoulda
         private
 
         def validate_and_rescue
-          @instance.valid?
+          @instance.valid?(@context)
           []
         rescue ::ActiveModel::StrictValidationFailed => exception
           [exception.message]

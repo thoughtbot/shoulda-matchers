@@ -9,6 +9,11 @@ module Shoulda # :nodoc:
           @strict = false
         end
 
+        def on(context)
+          @context = context
+          self
+        end
+
         def strict
           @strict = true
           self

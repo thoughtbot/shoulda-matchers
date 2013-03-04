@@ -1,5 +1,7 @@
 # HEAD
 
+* Support validation contexts for testing validations `on: :create` and when using custom contexts like `model.valid?(:my_context)`.
+
 * Fix a bug in validations with autosaved models.
 
 * Fix maximum value detection for the `ensure_inclusion_of` and
