@@ -1,5 +1,8 @@
 # HEAD
 
+* Support validation contexts for testing validations `on: :create` and when
+  using custom contexts like `model.valid?(:my_context)`.
+
 # v 1.5.6
 * Revert previous change in `AllowValueMatcher` that added a check for a
 properly-set attribute.
