@@ -15,10 +15,14 @@ Cucumber::Rake::Task.new do |t|
   t.cucumber_opts = ['--format', (ENV['CUCUMBER_FORMAT'] || 'progress')]
 end
 
-desc 'Test the plugin under all supported Rails versions.'
-task :all => ["appraisal:cleanup", "appraisal:install"] do
-  exec('rake appraisal spec cucumber')
+task :default do |t|
+  if ENV['BUNDLE_GEMFILE'] =~ /gemfiles/
+    exec 'rake spec cucumber'
+  else
+    Rake::Task['appraise'].execute
+  end
 end
 
-desc 'Default: run specs and cucumber features'
-task :default => [:all]
+task :appraise => ['appraisal:install'] do |t|
+  exec 'rake appraisal'
+end
