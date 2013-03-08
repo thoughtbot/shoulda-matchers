@@ -145,6 +145,7 @@ module Shoulda # :nodoc:
           default_error_message(
             @options[:expected_message],
             :model_name => model_name,
+            :instance => @instance,
             :attribute => @attribute
           )
         end
