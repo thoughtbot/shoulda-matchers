@@ -14,19 +14,6 @@ if defined?(ActionController)
   end
 end
 
-if defined?(ActionMailer)
-  require 'shoulda/matchers/action_mailer'
-
-  module Test
-    module Unit
-      class TestCase
-        include Shoulda::Matchers::ActionMailer
-        extend Shoulda::Matchers::ActionMailer
-      end
-    end
-  end
-end
-
 if defined?(ActiveRecord)
   require 'shoulda/matchers/active_record'
   require 'shoulda/matchers/active_model'

@@ -17,9 +17,4 @@ RSpec.configure do |config|
     require 'shoulda/matchers/action_controller'
     config.include Shoulda::Matchers::ActionController
   end
-
-  if defined?(::ActionMailer)
-    require 'shoulda/matchers/action_mailer'
-    config.include Shoulda::Matchers::ActionMailer
-  end
 end
