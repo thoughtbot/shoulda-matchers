@@ -40,8 +40,8 @@ describe Shoulda::Matchers::ActiveModel::EnsureExclusionOfMatcher do
 
   context 'an attribute which must be excluded from an array' do
     it 'accepts with correct array' do
-      validating_exclusion(:in => %w(one two)).should
-        ensure_exclusion_of(:attr).in_array(%w(one two))
+      validating_exclusion(:in => %w(one two)).
+        should ensure_exclusion_of(:attr).in_array(%w(one two))
     end
 
     it 'rejects when only part of array matches' do
@@ -57,6 +57,12 @@ describe Shoulda::Matchers::ActiveModel::EnsureExclusionOfMatcher do
     it 'has correct description' do
       ensure_exclusion_of(:attr).in_array([true, 'dog']).description.
         should == 'ensure exclusion of attr in [true, "dog"]'
+    end
+
+    def validating_exclusion(options)
+      define_model(:example, :attr => :string) do
+        validates_exclusion_of :attr, options
+      end.new
     end
   end
 
