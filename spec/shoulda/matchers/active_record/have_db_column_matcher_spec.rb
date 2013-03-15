@@ -16,8 +16,8 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbColumnMatcher do
     end
 
     it 'rejects a nonexistent database column' do
-      define_model(:superhero).should_not
-        have_db_column(:nickname).of_type(:string)
+      define_model(:superhero).new.
+        should_not have_db_column(:nickname).of_type(:string)
     end
 
     it 'rejects a column of wrong type' do
@@ -76,12 +76,12 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbColumnMatcher do
 
   context 'with scale option' do
     it 'accepts a column of correct scale' do
-      with_table(:salary, :decimal, :scale => 2).should
-        have_db_column(:salary).with_options(:scale => 2)
+      with_table(:salary, :decimal, :precision => 10, :scale => 2).
+        should have_db_column(:salary).with_options(:scale => 2)
     end
 
     it 'rejects a column of wrong scale' do
-      with_table(:salary, :decimal, :scale => 4).
+      with_table(:salary, :decimal, :precision => 10, :scale => 4).
         should_not have_db_column(:salary).with_options(:scale => 2)
     end
   end
