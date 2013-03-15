@@ -1,5 +1,6 @@
 # HEAD
 
+* Ruby 2.0.0 is now officially supported.
 * Fixes the issue where using %{attribute} or %{model} in I18n translations
 raised exceptions
 * Support datetime columns in `validate_uniqueness_of.scoped_to`
