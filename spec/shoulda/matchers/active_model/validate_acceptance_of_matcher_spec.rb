@@ -19,13 +19,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateAcceptanceOfMatcher do
 
   context 'an attribute which must be accepted with a custom message' do
     it 'accepts when the message matches' do
-      validating_acceptance(:message => 'custom').should
-        matcher.with_message(/custom/)
+      validating_acceptance(:message => 'custom').
+        should matcher.with_message(/custom/)
     end
 
     it 'rejects when the message does not match' do
-      validating_acceptance(:message => 'custom').should_not
-        matcher.with_message(/wrong/)
+      validating_acceptance(:message => 'custom').
+        should_not matcher.with_message(/wrong/)
     end
   end
 

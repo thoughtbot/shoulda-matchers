@@ -47,13 +47,13 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
   end
 
   it 'raises an error if no delegation target is defined' do
-    expect { Object.new.should delegate_method(:name) }.to raise_exception
-      described_class::TargetNotDefinedError
+    expect { Object.new.should delegate_method(:name) }.
+      to raise_exception described_class::TargetNotDefinedError
   end
 
   it 'raises an error if called with #should_not' do
-    expect { Object.new.should_not delegate_method(:name).to(:anyone) }.to
-      raise_exception described_class::InvalidDelegateMatcher
+    expect { Object.new.should_not delegate_method(:name).to(:anyone) }.
+      to raise_exception described_class::InvalidDelegateMatcher
   end
 
   context 'given a method that does not delegate' do
@@ -164,8 +164,8 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
 
     context 'when given the correct method name' do
       it 'accepts' do
-        PostOffice.new.should
-          delegate_method(:deliver_mail).to(:mailman).as(:deliver_mail_and_avoid_dogs)
+        PostOffice.new.
+          should delegate_method(:deliver_mail).to(:mailman).as(:deliver_mail_and_avoid_dogs)
       end
     end
 

@@ -19,13 +19,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher do
 
   context 'a confirmation validation with a custom message' do
     it 'accepts when the message matches' do
-      validating_confirmation(:message => 'custom').should
-        matcher.with_message(/custom/)
+      validating_confirmation(:message => 'custom').
+        should matcher.with_message(/custom/)
     end
 
     it 'rejects when the messages do not match' do
-      validating_confirmation(:message => 'custom').should_not
-        matcher.with_message(/wrong/)
+      validating_confirmation(:message => 'custom').
+        should_not matcher.with_message(/wrong/)
     end
   end
 
