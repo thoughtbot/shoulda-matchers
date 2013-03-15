@@ -1,4 +1,5 @@
 require 'bourne'
+require 'active_support/deprecation'
 
 module Shoulda # :nodoc:
   module Matchers
@@ -26,6 +27,7 @@ module Shoulda # :nodoc:
 
       class DelegateMatcher
         def initialize(delegating_method)
+          ActiveSupport::Deprecation.warn 'The delegate_method matcher is deprecated and will be removed in 2.0'
           @delegating_method = delegating_method
         end
 

@@ -1,3 +1,5 @@
+require 'active_support/deprecation'
+
 module Shoulda # :nodoc:
   module Matchers
     module ActionController # :nodoc:
@@ -23,6 +25,7 @@ module Shoulda # :nodoc:
 
       class RespondWithContentTypeMatcher # :nodoc:
         def initialize(content_type)
+          ActiveSupport::Deprecation.warn 'The respond_with_content_type matcher is deprecated and will be removed in 2.0'
           @content_type = look_up_content_type(content_type)
         end
 

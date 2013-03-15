@@ -1,3 +1,5 @@
+require 'active_support/deprecation'
+
 module Shoulda # :nodoc:
   module Matchers
     module ActiveRecord # :nodoc:
@@ -20,6 +22,7 @@ module Shoulda # :nodoc:
 
       class QueryTheDatabaseMatcher # :nodoc:
         def initialize(times)
+          ActiveSupport::Deprecation.warn 'The query_the_database matcher is deprecated and will be removed in 2.0'
           @queries = []
           @options = {}
 

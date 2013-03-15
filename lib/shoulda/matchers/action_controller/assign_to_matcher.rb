@@ -1,3 +1,5 @@
+require 'active_support/deprecation'
+
 module Shoulda # :nodoc:
   module Matchers
     module ActionController # :nodoc:
@@ -22,6 +24,7 @@ module Shoulda # :nodoc:
         attr_reader :failure_message_for_should, :failure_message_for_should_not
 
         def initialize(variable)
+          ActiveSupport::Deprecation.warn 'The assign_to matcher is deprecated and will be removed in 2.0'
           @variable    = variable.to_s
           @options = {}
           @options[:check_value] = false
