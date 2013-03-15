@@ -1,4 +1,15 @@
 # HEAD
+
+# v 1.5.0
+* Deprecate the following matchers:
+  * assign_to
+  * respond_with_content_type
+  * query_the_database
+  * validate_format_of
+  * have_sent_email
+  * strong_parameters_matcher
+  * delegate_method
+
 * Use RSpec's native `configure.include` syntax for including matchers into
   RSpec (#204)
 
