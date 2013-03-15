@@ -368,8 +368,12 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
     end
 
     it 'accepts an association with a valid :class_name option' do
-      having_one_detail(:class_name => 'PersonDetail').should
-        have_one(:detail).class_name('PersonDetail')
+      define_model :person_detail, :person_id => :integer
+      define_model :person do
+        has_one :detail, :class_name => 'PersonDetail'
+      end
+
+      Person.new.should have_one(:detail).class_name('PersonDetail')
     end
 
     it 'rejects an association with a bad :class_name option' do
