@@ -59,13 +59,13 @@ describe Shoulda::Matchers::ActiveRecord::AcceptNestedAttributesForMatcher do
 
   context 'update_only' do
     it 'accepts a valid truthy value' do
-      accepting_children(:update_only => true).should
-        children_matcher.update_only(true)
+      accepting_children(:update_only => true).
+        should children_matcher.update_only(true)
     end
 
     it 'accepts a valid falsey value' do
-      accepting_children(:update_only => false).should
-        children_matcher.update_only(false)
+      accepting_children(:update_only => false).
+        should children_matcher.update_only(false)
     end
 
     it 'rejects an invalid truthy value' do

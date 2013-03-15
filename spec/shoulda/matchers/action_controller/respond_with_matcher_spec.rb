@@ -17,8 +17,8 @@ describe Shoulda::Matchers::ActionController::RespondWithMatcher do
       it 'rejects responding with another status' do
         another_status = statuses.except(human_name).keys.first
 
-        controller_with_status(numeric_code).should_not
-          respond_with(another_status)
+        controller_with_status(numeric_code).
+          should_not respond_with(another_status)
       end
     end
   end
