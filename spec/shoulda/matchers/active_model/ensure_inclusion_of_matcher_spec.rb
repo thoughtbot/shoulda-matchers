@@ -80,8 +80,8 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
 
   context 'an attribute which must be included in an array' do
     it 'accepts with correct array' do
-      validating_inclusion(:in => %w(one two)).should
-        ensure_inclusion_of(:attr).in_array(%w(one two))
+      validating_inclusion(:in => %w(one two)).
+        should ensure_inclusion_of(:attr).in_array(%w(one two))
     end
 
     it 'rejects when only part of array matches' do
@@ -105,8 +105,8 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     end
 
     it 'accepts allow_blank(false)' do
-      validating_inclusion(:in => %w(one two)).should
-        ensure_inclusion_of(:attr).in_array(%w(one two)).allow_blank(false)
+      validating_inclusion(:in => %w(one two)).
+        should ensure_inclusion_of(:attr).in_array(%w(one two)).allow_blank(false)
     end
 
     it 'rejects allow_nil' do
@@ -115,15 +115,21 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     end
 
     it 'accepts allow_nil(false)' do
-      validating_inclusion(:in => %w(one two)).should
-        ensure_inclusion_of(:attr).in_array(%w(one two)).allow_nil(false)
+      validating_inclusion(:in => %w(one two)).
+        should ensure_inclusion_of(:attr).in_array(%w(one two)).allow_nil(false)
+    end
+
+    def validating_inclusion(options)
+      define_model(:example, :attr => :string) do
+        validates_inclusion_of :attr, options
+      end.new
     end
   end
 
   context 'with allowed blank and allowed nil' do
     it 'accepts allow_blank' do
-      validating_inclusion(:in => %w(one two), :allow_blank => true).should
-        ensure_inclusion_of(:attr).in_array(%w(one two)).allow_blank
+      validating_inclusion(:in => %w(one two), :allow_blank => true).
+        should ensure_inclusion_of(:attr).in_array(%w(one two)).allow_blank
     end
 
     it 'rejects allow_blank(false)' do
@@ -132,13 +138,19 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     end
 
     it 'accepts allow_nil' do
-      validating_inclusion(:in => %w(one two), :allow_nil => true).should
-        ensure_inclusion_of(:attr).in_array(%w(one two)).allow_nil
+      validating_inclusion(:in => %w(one two), :allow_nil => true).
+        should ensure_inclusion_of(:attr).in_array(%w(one two)).allow_nil
     end
 
     it 'rejects allow_nil' do
       validating_inclusion(:in => %w(one two), :allow_nil => true).
         should_not ensure_inclusion_of(:attr).in_array(%w(one two)).allow_nil(false)
+    end
+
+    def validating_inclusion(options)
+      define_model(:example, :attr => :string) do
+        validates_inclusion_of :attr, options
+      end.new
     end
   end
 
@@ -146,6 +158,12 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     it 'rejects allow_blank' do
       validating_inclusion(:in => ['one', 'two', '']).
         should_not ensure_inclusion_of(:attr).in_array(['one', 'two', '']).allow_blank(true)
+    end
+
+    def validating_inclusion(options)
+      define_model(:example, :attr => :string) do
+        validates_inclusion_of :attr, options
+      end.new
     end
   end
 
