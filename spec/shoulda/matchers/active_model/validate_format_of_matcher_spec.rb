@@ -33,13 +33,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateFormatOfMatcher do
     end
   end
 
-  context 'a model without a format validation' do
-    it 'rejects' do
-      define_model(:example, :attr => :string).new.should_not
-        matcher.with('hello')
-    end
-  end
-
   context 'when allow_blank or allow_nil are set' do
     it 'is valid when attr is nil' do
       validating_format(:with => /abc/, :allow_nil => true).
