@@ -66,16 +66,6 @@ describe PostsController, "#show" do
 end
 ```
 
-## Independent Matchers
-
-Matchers to test non-Rails-dependent code:
-
-```ruby
-describe Human do
-  it { should delegate_method(:work).to(:robot) }
-end
-```
-
 ## Installation
 
 In Rails 3 and Bundler, add the following to your Gemfile:
