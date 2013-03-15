@@ -29,15 +29,15 @@ describe Shoulda::Matchers::ActionController::SetSessionMatcher do
     it 'accepts assigning to the same value in the test context' do
       expected = 'value'
 
-      controller_with_session(:var => expected).should
-        set_session(:var).in_context(self).to { expected }
+      controller_with_session(:var => expected).
+        should set_session(:var).in_context(self).to { expected }
     end
 
     it 'rejects assigning to the another value in the test context' do
       expected = 'other'
 
-      controller_with_session(:var => 'unexpected').should_not
-        set_session(:var).in_context(self).to { expected }
+      controller_with_session(:var => 'unexpected').
+        should_not set_session(:var).in_context(self).to { expected }
     end
 
     def controller_with_session(session_hash)

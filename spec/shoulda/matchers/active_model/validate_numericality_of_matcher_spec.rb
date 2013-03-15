@@ -51,13 +51,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
   context 'with a custom validation message' do
     it 'accepts when the messages match' do
-      validating_numericality(:message => 'custom').should
-        matcher.with_message(/custom/)
+      validating_numericality(:message => 'custom').
+        should matcher.with_message(/custom/)
     end
 
     it 'rejects when the messages do not match' do
-      validating_numericality(:message => 'custom').should_not
-        matcher.with_message(/wrong/)
+      validating_numericality(:message => 'custom').
+        should_not matcher.with_message(/wrong/)
     end
   end
 

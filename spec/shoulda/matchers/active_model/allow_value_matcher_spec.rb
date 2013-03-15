@@ -34,25 +34,25 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
     end
 
     it 'allows several good values' do
-      validating_format(:with => /abc/).should
-        allow_value('abcde', 'deabc').for(:attr)
+      validating_format(:with => /abc/).
+        should allow_value('abcde', 'deabc').for(:attr)
     end
 
     it 'rejects several bad values' do
-      validating_format(:with => /abc/).should_not
-        allow_value('xyz', 'zyx', nil, []).for(:attr)
+      validating_format(:with => /abc/).
+        should_not allow_value('xyz', 'zyx', nil, []).for(:attr)
     end
   end
 
   context 'an attribute with a validation and a custom message' do
     it 'allows a good value' do
-      validating_format(:with => /abc/, :message => 'bad value').should
-        allow_value('abcde').for(:attr).with_message(/bad/)
+      validating_format(:with => /abc/, :message => 'bad value').
+        should allow_value('abcde').for(:attr).with_message(/bad/)
     end
 
     it 'rejects a bad value' do
-      validating_format(:with => /abc/, :message => 'bad value').should_not
-        allow_value('xyz').for(:attr).with_message(/bad/)
+      validating_format(:with => /abc/, :message => 'bad value').
+        should_not allow_value('xyz').for(:attr).with_message(/bad/)
     end
   end
 
@@ -94,21 +94,21 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
 
   context 'with no values' do
     it 'raises an error' do
-      expect { allow_value.for(:baz) }.to
-        raise_error(ArgumentError, /at least one argument/)
+      expect { allow_value.for(:baz) }.
+        to raise_error(ArgumentError, /at least one argument/)
     end
   end
 
   if active_model_3_2?
     context 'an attribute with a strict format validation' do
       it 'strictly rejects a bad value' do
-        validating_format(:with => /abc/, :strict => true).should_not
-          allow_value('xyz').for(:attr).strict
+        validating_format(:with => /abc/, :strict => true).
+          should_not allow_value('xyz').for(:attr).strict
       end
 
       it 'strictly allows a bad value with a different message' do
-        validating_format(:with => /abc/, :strict => true).should
-          allow_value('xyz').for(:attr).with_message(/abc/).strict
+        validating_format(:with => /abc/, :strict => true).
+          should allow_value('xyz').for(:attr).with_message(/abc/).strict
       end
 
       it 'provides a useful negative failure message' do

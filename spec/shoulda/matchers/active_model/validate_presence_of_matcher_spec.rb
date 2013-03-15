@@ -29,8 +29,8 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
 
   context 'an ActiveModel class without a presence validation' do
     it 'rejects' do
-      define_active_model_class('Example', :accessors => [:attr]).new.should_not
-        matcher
+      define_active_model_class('Example', :accessors => [:attr]).new.
+        should_not matcher
     end
   end
 
@@ -42,8 +42,8 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
 
   context 'a has_many association without a presence validation' do
     it 'does not require the attribute to be set' do
-      has_many_children(:presence => false).should_not
-        validate_presence_of(:children)
+      has_many_children(:presence => false).
+        should_not validate_presence_of(:children)
     end
   end
 
@@ -94,8 +94,8 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
     end
 
     it 'does not override the default message with a blank' do
-      validating_presence(:strict => true).should
-        matcher.strict.with_message(nil)
+      validating_presence(:strict => true).
+        should matcher.strict.with_message(nil)
     end
   end
 

@@ -13,13 +13,13 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher do
 
   context 'have_db_index with unique option' do
     it 'accepts an index of correct unique' do
-      with_index_on(:ssn, :unique => true).should
-        have_db_index(:ssn).unique(true)
+      with_index_on(:ssn, :unique => true).
+        should have_db_index(:ssn).unique(true)
     end
 
     it 'rejects an index of wrong unique' do
-      with_index_on(:ssn, :unique => false).should_not
-        have_db_index(:ssn).unique(true)
+      with_index_on(:ssn, :unique => false).
+        should_not have_db_index(:ssn).unique(true)
     end
   end
 
@@ -30,8 +30,8 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher do
         table.string  :geocodable_type
       end
       db_connection.add_index :geocodings, [:geocodable_type, :geocodable_id]
-      define_model_class('Geocoding').new.should
-        have_db_index([:geocodable_type, :geocodable_id])
+      define_model_class('Geocoding').new.
+        should have_db_index([:geocodable_type, :geocodable_id])
     end
 
     it 'rejects a nonexistent index' do
@@ -39,8 +39,8 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher do
         table.integer :geocodable_id
         table.string  :geocodable_type
       end
-      define_model_class('Geocoding').new.should_not
-        have_db_index([:geocodable_type, :geocodable_id])
+      define_model_class('Geocoding').new.
+        should_not have_db_index([:geocodable_type, :geocodable_id])
     end
   end
 

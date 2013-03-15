@@ -79,8 +79,8 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
 
   context 'a model with a scoped uniqueness validation with an existing value' do
     it 'accepts when the correct scope is specified' do
-      validating_scoped_uniqueness([:scope1, :scope2]).should
-        matcher.scoped_to(:scope1, :scope2)
+      validating_scoped_uniqueness([:scope1, :scope2]).
+        should matcher.scoped_to(:scope1, :scope2)
     end
 
     it 'accepts when the subject is an existing record' do
@@ -89,18 +89,18 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
     end
 
     it 'rejects when too narrow of a scope is specified' do
-      validating_scoped_uniqueness([:scope1, :scope2]).should_not
-        matcher.scoped_to(:scope1, :scope2, :other)
+      validating_scoped_uniqueness([:scope1, :scope2]).
+        should_not matcher.scoped_to(:scope1, :scope2, :other)
     end
 
     it 'rejects when too broad of a scope is specified' do
-      validating_scoped_uniqueness([:scope1, :scope2]).should_not
-        matcher.scoped_to(:scope1)
+      validating_scoped_uniqueness([:scope1, :scope2]).
+        should_not matcher.scoped_to(:scope1)
     end
 
     it 'rejects when a different scope is specified' do
-      validating_scoped_uniqueness([:scope1]).should_not
-        matcher.scoped_to(:other)
+      validating_scoped_uniqueness([:scope1]).
+        should_not matcher.scoped_to(:other)
     end
 
     it 'rejects when no scope is specified' do
@@ -108,8 +108,8 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
     end
 
     it 'rejects when a non-existent attribute is specified as a scope' do
-      validating_scoped_uniqueness([:scope1]).should_not
-        matcher.scoped_to(:fake)
+      validating_scoped_uniqueness([:scope1]).
+        should_not matcher.scoped_to(:fake)
     end
 
     def create_existing_record
@@ -133,20 +133,20 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
 
   context 'a model with a case-sensitive uniqueness validation on a string attribute and an existing record' do
     it 'accepts a case-sensitive value for that attribute' do
-      case_sensitive_validation_with_existing_value(:string).should
-        matcher
+      case_sensitive_validation_with_existing_value(:string).
+        should matcher
     end
 
     it 'rejects a case-insensitive value for that attribute' do
-      case_sensitive_validation_with_existing_value(:string).should_not
-        matcher.case_insensitive
+      case_sensitive_validation_with_existing_value(:string).
+        should_not matcher.case_insensitive
     end
   end
 
   context 'a model with a case-sensitive uniqueness validation on an integer attribute with an existing value' do
     it 'accepts a case-insensitive value for that attribute' do
-      case_sensitive_validation_with_existing_value(:integer).should
-        matcher.case_insensitive
+      case_sensitive_validation_with_existing_value(:integer).
+        should matcher.case_insensitive
     end
 
     it 'accepts a case-sensitive value for that attribute' do
