@@ -6,7 +6,7 @@ PATH
       bourne (~> 1.2.0)
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     abstract (1.0.0)
     actionmailer (3.0.17)
@@ -131,7 +131,7 @@ DEPENDENCIES
   jdbc-sqlite3
   jruby-openssl
   rails (~> 3.0.17)
-  rake (>= 0.9.2)
+  rake (>= 10.0.3)
   rspec-rails (~> 2.8.1)
   shoulda-context (~> 1.0.0)
   shoulda-matchers!
