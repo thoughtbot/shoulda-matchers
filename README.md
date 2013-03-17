@@ -1,4 +1,4 @@
-# shoulda-matchers [![Build Status](https://secure.travis-ci.org/thoughtbot/shoulda-matchers.png?branch=master)](http://travis-ci.org/thoughtbot/shoulda-matchers)
+# shoulda-matchers [![Gem Version](https://badge.fury.io/rb/shoulda-matchers.png)](http://badge.fury.io/rb/shoulda-matchers) [![Build Status](https://secure.travis-ci.org/thoughtbot/shoulda-matchers.png?branch=master)](http://travis-ci.org/thoughtbot/shoulda-matchers)
 
 [Official Documentation](http://rubydoc.info/github/thoughtbot/shoulda-matchers/master/frames)
 
