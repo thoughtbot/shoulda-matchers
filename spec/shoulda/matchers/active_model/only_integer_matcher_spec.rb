@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Shoulda::Matchers::ActiveModel::OnlyIntegerMatcher do
   context 'given an attribute that only allows integer values' do
     it 'matches' do
-      only_integer.should new_matcher
+      validating_only_integer.should new_matcher
     end
 
     it 'allows integer types' do
@@ -18,11 +18,11 @@ describe Shoulda::Matchers::ActiveModel::OnlyIntegerMatcher do
 
   context 'given an attribute that only allows integer values with a custom validation message' do
     it 'only accepts integer values for that attribute with that message' do
-      only_integer(:message => 'custom').should new_matcher.with_message(/custom/)
+      validating_only_integer(:message => 'custom').should new_matcher.with_message(/custom/)
     end
 
     it 'rejects integer values for that attribute with another message' do
-      only_integer(:message => 'custom').should_not new_matcher.with_message(/wrong/)
+      validating_only_integer(:message => 'custom').should_not new_matcher.with_message(/wrong/)
     end
   end
 
@@ -44,7 +44,7 @@ describe Shoulda::Matchers::ActiveModel::OnlyIntegerMatcher do
     described_class.new(:attr)
   end
 
-  def only_integer(options = {})
+  def validating_only_integer(options = {})
     define_model :example, :attr => :string do
       validates_numericality_of :attr, { :only_integer => true }.merge(options)
     end.new

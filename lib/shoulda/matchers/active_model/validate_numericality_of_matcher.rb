@@ -8,10 +8,14 @@ module Shoulda # :nodoc:
       #   <tt>errors.on(:attribute)</tt>. Regexp or string.  Defaults to the
       #   translation for <tt>:not_a_number</tt>.
       # * <tt>only_integer</tt> - allows only integer values
+      # * <tt>odd</tt> - Specifies the value must be an odd number.
+      # * <tt>even</tt> - Specifies the value must be an even number.
       #
       # Examples:
       #   it { should validate_numericality_of(:price) }
       #   it { should validate_numericality_of(:age).only_integer }
+      #   it { should validate_numericality_of(:frequency).odd }
+      #   it { should validate_numericality_of(:frequency).even }
       #
       def validate_numericality_of(attr)
         ValidateNumericalityOfMatcher.new(attr)
@@ -22,7 +26,6 @@ module Shoulda # :nodoc:
 
         def initialize(attribute)
           @attribute = attribute
-          @options = {}
           @submatchers = []
 
           add_disallow_value_matcher
@@ -31,6 +34,18 @@ module Shoulda # :nodoc:
         def only_integer
           only_integer_matcher = OnlyIntegerMatcher.new(@attribute)
           add_submatcher(only_integer_matcher)
+          self
+        end
+
+        def odd
+          odd_number_matcher = OddEvenNumberMatcher.new(@attribute, :odd => true)
+          add_submatcher(odd_number_matcher)
+          self
+        end
+
+        def even
+          even_number_matcher = OddEvenNumberMatcher.new(@attribute, :even => true)
+          add_submatcher(even_number_matcher)
           self
         end
 
