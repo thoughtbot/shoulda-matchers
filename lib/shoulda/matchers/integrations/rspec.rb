@@ -1,5 +1,5 @@
 # :enddoc:
-require 'rspec/rails'
+require 'rspec'
 
 RSpec.configure do |config|
   require 'shoulda/matchers/independent'
