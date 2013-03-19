@@ -1,7 +1,7 @@
 PATH
-  remote: /Users/croaky/dev/shoulda-matchers
+  remote: /Users/draper/Dropbox/Development/shoulda-matchers
   specs:
-    shoulda-matchers (1.5.0)
+    shoulda-matchers (1.5.1)
       activesupport (>= 3.0.0)
       bourne (~> 1.3)
 

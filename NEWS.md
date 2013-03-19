@@ -1,5 +1,9 @@
 # HEAD
 
+# v 1.5.1
+* Bump version depedency of Bourne to allow for Mocha upgrade.
+* Should fix incompatiblity with MiniTest.
+
 # v 1.5.0
 * Deprecate the following matchers:
   * assign_to
