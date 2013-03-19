@@ -24,7 +24,7 @@ module Shoulda # :nodoc:
         end
 
         def description
-          "require #{@base_attribute} to match #{@attribute}"
+          "require #{@confirmation} to match #{@attribute}"
         end
 
         def matches?(subject)
