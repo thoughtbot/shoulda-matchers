@@ -62,7 +62,7 @@ Feature: integrate with Rails
     And the output should contain "ExamplesController should assign @example"
 
   Scenario: generate a rails application and use matchers in Rspec
-    When I configure the application to use rspec-rails
+    When I configure the application to use rspec and rspec-rails
     And I configure the application to use "shoulda-matchers" from this project
     And I run the rspec generator
     And I write to "spec/models/user_spec.rb" with:
@@ -88,7 +88,7 @@ Feature: integrate with Rails
     And the output should contain "should assign @example"
 
   Scenario: generate a Rails application that mixes Rspec and Test::Unit
-    When I configure the application to use rspec-rails in test and development
+    When I configure the application to use rspec and rspec-rails in test and development
     And I configure the application to use "shoulda-matchers" from this project in test and development
     And I run the rspec generator
     And I write to "spec/models/user_spec.rb" with:
