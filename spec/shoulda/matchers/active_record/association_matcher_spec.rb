@@ -178,10 +178,12 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
     it 'rejects an association that has the wrong :through option' do
       define_model :child
+
       define_model :conception, :child_id => :integer,
         :parent_id => :integer do
         belongs_to :child
-        end
+      end
+
       define_model :parent do
         has_many :conceptions
         has_many :relationships
@@ -264,6 +266,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       define_model :child, :ancestor_id => :integer do
         belongs_to :ancestor, :inverse_of => :children, :class_name => :Parent
       end
+
       define_model :parent do
         has_many :children, :inverse_of => :ancestor
       end
@@ -275,6 +278,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       define_model :child, :mother_id => :integer do
         belongs_to :mother, :inverse_of => :children, :class_name => :Parent
       end
+
       define_model :parent do
         has_many :children, :inverse_of => :ancestor
       end
