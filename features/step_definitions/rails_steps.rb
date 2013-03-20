@@ -52,16 +52,14 @@ When 'I run the rspec generator' do
   }
 end
 
-When 'I configure the application to use rspec and rspec-rails' do
-  append_to_gemfile %q(gem 'rspec', '~> 2.13')
+When 'I configure the application to use rspec-rails' do
   append_to_gemfile %q(gem 'rspec-rails', '~> 2.13')
   steps %{And I run `bundle install --local`}
 end
 
-When 'I configure the application to use rspec and rspec-rails in test and development' do
+When 'I configure the application to use rspec-rails in test and development' do
   append_to_gemfile <<-GEMFILE
   group :test, :development do
-    gem 'rspec', '~> 2.13'
     gem 'rspec-rails', '~> 2.13'
   end
   GEMFILE
