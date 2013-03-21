@@ -87,7 +87,7 @@ end
 
 # `rspec-rails` needs to be in the development group so that Rails generators work.
 group :development, :test do
-  gem "rspec-rails"
+  gem "rspec-rails", "~> 2.12"
 end
 ```
 
