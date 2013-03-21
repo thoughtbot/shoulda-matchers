@@ -1,5 +1,8 @@
 # HEAD
 
+# v 1.5.2
+* Alleviate the need to add `rspec` gem to your app
+
 # v 1.5.1
 * Bump version depedency of Bourne to allow for Mocha upgrade.
 * Should fix incompatiblity with MiniTest.

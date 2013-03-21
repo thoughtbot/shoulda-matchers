@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    shoulda-matchers (1.5.2)
+    shoulda-matchers (1.5.3)
       activesupport (>= 3.0.0)
       bourne (~> 1.3)
 
