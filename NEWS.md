@@ -1,6 +1,9 @@
 # HEAD
 
-# v 1.5.2
+# v 1.5.4
+* Properly-released version of 1.5.3
+
+# v 1.5.3 - yanked due to mis-release
 * Alleviate the need to add `rspec` gem to your app
 
 # v 1.5.1
