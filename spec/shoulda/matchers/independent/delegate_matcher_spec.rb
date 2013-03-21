@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::Independent::DelegateMatcher do
+  before do
+    ActiveSupport::Deprecation.expects(:warn).with { |value| /delegate_method matcher/ =~ value }
+  end
+
   context '#description' do
     context 'by default' do
       it 'states that it should delegate method to the right object' do

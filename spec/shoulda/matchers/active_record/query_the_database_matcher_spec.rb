@@ -8,6 +8,8 @@ describe Shoulda::Matchers::ActiveRecord::QueryTheDatabaseMatcher do
     @child = define_model :kitten, :litter_id => :integer do
       belongs_to :litter
     end
+
+    ActiveSupport::Deprecation.expects(:warn).with { |value| /query_the_database matcher/ =~ value }
   end
 
   it 'accepts the correct number of queries when there is a single query' do

@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActionController::RespondWithContentTypeMatcher do
+  before do
+    ActiveSupport::Deprecation.expects(:warn).with { |value| /respond_with_content_type matcher/ =~ value }
+  end
+
   it 'generates the correct description' do
     expected = 'respond with content type of application/xml'
 

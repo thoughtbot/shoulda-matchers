@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateFormatOfMatcher do
+  before do
+    ActiveSupport::Deprecation.expects(:warn).with { |value| /validate_format_of matcher/ =~ value }
+  end
+
   context 'a model with a format validation' do
     it 'accepts when format matches ' do
       validating_format(:with => /^\d{5}$/).should matcher.with('12345')
