@@ -65,13 +65,16 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
     end
 
     it 'accepts an association with a valid :class_name option' do
-      belonging_to_parent(:class_name => 'TreeParent').
-        should belong_to(:parent).class_name('TreeParent')
+      define_model :tree_parent
+      define_model :child, :parent_id => :integer do
+        belongs_to :parent, :class_name => 'TreeParent'
+      end
+
+      Child.new.should belong_to(:parent).class_name('TreeParent')
     end
 
     it 'rejects an association with a bad :class_name option' do
-      belonging_to_parent(:class_name => 'TreeParent').
-        should_not belong_to(:parent).class_name('TreeChild')
+      belonging_to_parent.should_not belong_to(:parent).class_name('TreeChild')
     end
 
     context 'validate' do
@@ -439,7 +442,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
     end
 
     it 'rejects a nonexistent association' do
-      define_model :relatives
+      define_model :relative
       define_model :person
       define_model :people_relative, :id => false, :person_id => :integer,
         :relative_id => :integer
@@ -448,7 +451,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
     end
 
     it 'rejects an association with a nonexistent join table' do
-      define_model :relatives
+      define_model :relative
       define_model :person do
         has_and_belongs_to_many :relatives
       end
@@ -457,7 +460,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
     end
 
     it 'rejects an association of the wrong type' do
-      define_model :relatives, :person_id => :integer
+      define_model :relative, :person_id => :integer
       define_model :person do
         has_many :relatives
       end
@@ -466,7 +469,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
     end
 
     it 'accepts an association with a valid :conditions option' do
-      define_model :relatives, :adopted => :boolean
+      define_model :relative, :adopted => :boolean
       define_model :person do
         has_and_belongs_to_many :relatives, :conditions => { :adopted => true }
       end
@@ -477,7 +480,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
     end
 
     it 'rejects an association with a bad :conditions option' do
-      define_model :relatives, :adopted => :boolean
+      define_model :relative, :adopted => :boolean
       define_model :person do
         has_and_belongs_to_many :relatives
       end
@@ -488,15 +491,15 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
     end
 
     it 'accepts an association with a valid :class_name option' do
-      define_model :person_relatives, :adopted => :boolean
+      define_model :person_relative, :adopted => :boolean
       define_model :person do
-        has_and_belongs_to_many :relatives, :class_name => 'PersonRelatives'
+        has_and_belongs_to_many :relatives, :class_name => 'PersonRelative'
       end
 
       define_model :people_person_relative, :person_id => :integer,
         :person_relative_id => :integer
 
-      Person.new.should have_and_belong_to_many(:relatives).class_name('PersonRelatives')
+      Person.new.should have_and_belong_to_many(:relatives).class_name('PersonRelative')
     end
 
     it 'rejects an association with a bad :class_name option' do
@@ -527,7 +530,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
     end
 
     def having_and_belonging_to_many_relatives(options = {})
-      define_model :relatives
+      define_model :relative
       define_model :people_relative, :id => false, :person_id => :integer,
         :relative_id => :integer
       define_model :person do
