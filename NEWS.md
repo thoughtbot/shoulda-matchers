@@ -1,4 +1,6 @@
 # HEAD
+* Assert `class_name` value on real class name for `AssociationMatcher`
+* Correct the variable used for `validate_confirmation_of` matcher description
 
 # v 1.5.4
 * Properly-released version of 1.5.3
