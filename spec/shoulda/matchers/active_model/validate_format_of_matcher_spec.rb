@@ -10,26 +10,12 @@ describe Shoulda::Matchers::ActiveModel::ValidateFormatOfMatcher do
       validating_format(:with => /^\d{5}$/).should_not matcher.with(' ')
     end
 
-    it 'rejects blank with not_with' do
-      validating_format(:with => /^\d{5}$/).should matcher.not_with(' ')
-    end
-
     it 'rejects nil' do
       validating_format(:with => /^\d{5}$/).should_not matcher.with(nil)
     end
 
     it 'rejects a non-matching format with should_not' do
       validating_format(:with => /^\d{5}$/).should_not matcher.with('1234a')
-    end
-
-    it 'rejects a non-matching format with not_with' do
-      validating_format(:with => /^\d{5}$/).should matcher.not_with('1234a')
-    end
-
-    it 'raises an error if you try to call both with and not_with' do
-      expect {
-        validate_format_of(:attr).not_with('123456').with('12345')
-      }.to raise_error(RuntimeError)
     end
   end
 
