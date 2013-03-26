@@ -1,5 +1,7 @@
 # HEAD
 
+* Fix a bug in validations with autosaved models.
+
 * Fix maximum value detection for the `ensure_inclusion_of` and
 `ensure_exclusion_of` matchers.
 
