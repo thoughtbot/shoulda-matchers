@@ -53,10 +53,10 @@ module Shoulda # :nodoc:
 
         def matches?(instance)
           @instance = instance
-          @values_to_match.none? do |value|
-            @value = value
-            @instance.send("#{@attribute}=", @value)
-            errors_match?
+
+          @values_to_match.all? do |current_value|
+            set_attribute_on_instance(current_value)
+            matches_attribute_value?(current_value) && errors_do_not_match?
           end
         end
 
@@ -74,12 +74,23 @@ module Shoulda # :nodoc:
 
         private
 
-        def errors_match?
-          has_messages? && errors_for_attribute_match?
+        attr_accessor :value
+
+        def set_attribute_on_instance(current_value)
+          self.value = current_value
+          @instance.send("#{@attribute}=", current_value)
         end
 
-        def has_messages?
-          message_finder.has_messages?
+        def matches_attribute_value?(current_value)
+          @instance.send(@attribute.to_sym) == current_value
+        end
+
+        def errors_do_not_match?
+          has_no_messages? || !errors_for_attribute_match?
+        end
+
+        def has_no_messages?
+          !message_finder.has_messages?
         end
 
         def errors_for_attribute_match?
@@ -108,7 +119,7 @@ module Shoulda # :nodoc:
 
         def expectation
           includes_expected_message = expected_message ? "to include #{expected_message.inspect}" : ''
-          [error_source, includes_expected_message, "when #{@attribute} is set to #{@value.inspect}"].join(' ')
+          [error_source, includes_expected_message, "when #{@attribute} is set to #{value.inspect}"].join(' ')
         end
 
         def error_source
