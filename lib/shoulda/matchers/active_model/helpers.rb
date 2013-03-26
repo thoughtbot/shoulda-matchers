@@ -5,7 +5,10 @@ module Shoulda # :nodoc:
         def pretty_error_messages(obj) # :nodoc:
           obj.errors.map do |attribute, model|
             msg = "#{attribute} #{model}"
-            msg << " (#{obj.send(attribute).inspect})" unless attribute.to_sym == :base
+            if attribute.to_sym != :base && obj.respond_to?(attribute)
+              msg << " (#{obj.send(attribute).inspect})"
+            end
+            msg
           end
         end
 
