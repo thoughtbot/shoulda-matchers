@@ -72,11 +72,11 @@ describe Shoulda::Matchers::ActiveModel::OddEvenNumberMatcher do
   end
 
   def new_odd_matcher
-    described_class.new(:attr, odd: true)
+    described_class.new(:attr, :odd => true)
   end
 
   def new_even_matcher
-    described_class.new(:attr, even: true)
+    described_class.new(:attr, :even => true)
   end
 
   def odd_number(options = {})
