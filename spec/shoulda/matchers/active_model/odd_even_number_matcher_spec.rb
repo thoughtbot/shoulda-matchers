@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Shoulda::Matchers::ActiveModel::OddEvenNumberMatcher do
   context 'given an attribute that only allows odd number values' do
     it 'matches' do
-      odd_number.should new_odd_matcher
+      validating_odd_number.should new_odd_matcher
     end
 
     it 'returns itself when given a message' do
@@ -14,7 +14,7 @@ describe Shoulda::Matchers::ActiveModel::OddEvenNumberMatcher do
 
   context 'given an attribute that only allows even number values' do
     it 'matches' do
-      even_number.should new_even_matcher
+      validating_even_number.should new_even_matcher
     end
 
     it 'returns itself when given a message' do
@@ -25,21 +25,21 @@ describe Shoulda::Matchers::ActiveModel::OddEvenNumberMatcher do
 
   context 'given an attribute that only allows odd number values with a custom validation message' do
     it 'only accepts odd number values for that attribute with that message' do
-      odd_number(:message => 'custom').should new_odd_matcher.with_message(/custom/)
+      validating_odd_number(:message => 'custom').should new_odd_matcher.with_message(/custom/)
     end
 
     it 'rejects odd number values for that attribute with another message' do
-      odd_number(:message => 'custom').should_not new_odd_matcher.with_message(/wrong/)
+      validating_odd_number(:message => 'custom').should_not new_odd_matcher.with_message(/wrong/)
     end
   end
 
   context 'given an attribute that only allows even number values with a custom validation message' do
     it 'only accepts even number values for that attribute with that message' do
-      even_number(:message => 'custom').should new_even_matcher.with_message(/custom/)
+      validating_even_number(:message => 'custom').should new_even_matcher.with_message(/custom/)
     end
 
     it 'rejects even number values for that attribute with another message' do
-      even_number(:message => 'custom').should_not new_even_matcher.with_message(/wrong/)
+      validating_even_number(:message => 'custom').should_not new_even_matcher.with_message(/wrong/)
     end
   end
 
@@ -72,20 +72,20 @@ describe Shoulda::Matchers::ActiveModel::OddEvenNumberMatcher do
   end
 
   def new_odd_matcher
-    described_class.new(:attr, odd: true)
+    described_class.new(:attr, :odd => true)
   end
 
   def new_even_matcher
-    described_class.new(:attr, even: true)
+    described_class.new(:attr, :even => true)
   end
 
-  def odd_number(options = {})
+  def validating_odd_number(options = {})
     define_model :example, :attr => :string do
       validates_numericality_of :attr, { :odd => true }.merge(options)
     end.new
   end
 
-   def even_number(options = {})
+   def validating_even_number(options = {})
     define_model :example, :attr => :string do
       validates_numericality_of :attr, { :even => true }.merge(options)
     end.new

@@ -8,8 +8,8 @@ module Shoulda # :nodoc:
       #   <tt>errors.on(:attribute)</tt>. Regexp or string.  Defaults to the
       #   translation for <tt>:not_a_number</tt>.
       # * <tt>only_integer</tt> - allows only integer values
-      # * <tt>:odd</tt> - Specifies the value must be an odd number.
-      # * <tt>:even</tt> - Specifies the value must be an even number.
+      # * <tt>odd</tt> - Specifies the value must be an odd number.
+      # * <tt>even</tt> - Specifies the value must be an even number.
       #
       # Examples:
       #   it { should validate_numericality_of(:price) }
@@ -38,13 +38,13 @@ module Shoulda # :nodoc:
         end
 
         def odd
-          odd_number_matcher = OddEvenNumberMatcher.new(@attribute, odd: true)
+          odd_number_matcher = OddEvenNumberMatcher.new(@attribute, :odd => true)
           add_submatcher(odd_number_matcher)
           self
         end
 
         def even
-          even_number_matcher = OddEvenNumberMatcher.new(@attribute, even: true)
+          even_number_matcher = OddEvenNumberMatcher.new(@attribute, :even => true)
           add_submatcher(even_number_matcher)
           self
         end

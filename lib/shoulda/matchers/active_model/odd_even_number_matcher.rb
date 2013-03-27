@@ -22,15 +22,11 @@ module Shoulda # :nodoc:
         end
 
         def matches?(subject)
-          if @disallow_value_matcher
-            @disallow_value_matcher.matches?(subject)
-          else
-            false
-          end
+          @disallow_value_matcher.matches?(subject)
         end
 
         def with_message(message)
-          @disallow_value_matcher.with_message(message) if @disallow_value_matcher
+          @disallow_value_matcher.with_message(message)
           self
         end
 
@@ -39,7 +35,7 @@ module Shoulda # :nodoc:
         end
 
         def failure_message_for_should
-          @disallow_value_matcher.failure_message_for_should if @disallow_value_matcher
+          @disallow_value_matcher.failure_message_for_should
         end
       end
     end
