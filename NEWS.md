@@ -1,4 +1,5 @@
 # HEAD
+* Use DisallowValueMatcher for `disallows_value_of` method
 * Assert `class_name` value on real class name for `AssociationMatcher`
 * Correct the variable used for `validate_confirmation_of` matcher description
 
