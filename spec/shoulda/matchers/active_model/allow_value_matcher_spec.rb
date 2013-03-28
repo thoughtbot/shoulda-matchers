@@ -80,6 +80,10 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
     it "rejects several bad values (#{bad_values.map(&:inspect).join(', ')})" do
       model.should_not allow_value(*bad_values).for(:attr)
     end
+
+    it "rejects a mix of both good and bad values" do
+      model.should_not allow_value('12345', *bad_values).for(:attr)
+    end
   end
 
   context 'with a single value' do
