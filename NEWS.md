@@ -1,4 +1,9 @@
 # HEAD
+* `AllowValueMatcher` checks that the right value is used for attempts at
+setting the attribute with it
+  * Please note that previously-passing tests might now fail. It is likely that
+  it's not a bug, but please make sure that the code you're testing is written
+  properly before submitting an issue.
 * Use DisallowValueMatcher for `disallows_value_of` method
 * Assert `class_name` value on real class name for `AssociationMatcher`
 * Correct the variable used for `validate_confirmation_of` matcher description

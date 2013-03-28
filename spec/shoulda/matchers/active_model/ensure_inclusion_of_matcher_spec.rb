@@ -79,6 +79,13 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
   end
 
   context 'an attribute which must be included in an array' do
+    context 'given an attribute that does not accept strings' do
+      it 'allows an attribute to be set as an integer' do
+        validating_inclusion(:in => [0,1,2], :column_type => :integer).
+          should ensure_inclusion_of(:attr).in_array([0,1,2])
+      end
+    end
+
     it 'accepts with correct array' do
       validating_inclusion(:in => %w(one two)).
         should ensure_inclusion_of(:attr).in_array(%w(one two))
@@ -165,7 +172,9 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
 end
 
 def validating_inclusion(options)
-  define_model(:example, :attr => :string) do
+  options[:column_type] ||= :string
+
+  define_model(:example, :attr => options[:column_type]) do
     validates_inclusion_of :attr, options
   end.new
 end
