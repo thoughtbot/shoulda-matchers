@@ -38,19 +38,32 @@ module Shoulda # :nodoc:
         end
 
         def disallows_value_of(value, message = nil)
-          disallow = allow_value_matcher(value, message)
+          disallow = disallow_value_matcher(value, message)
 
           if disallow.matches?(@subject)
-            @failure_message_for_should = disallow.failure_message_for_should_not
-            false
-          else
             @failure_message_for_should_not = disallow.failure_message_for_should
             true
+          else
+            @failure_message_for_should = disallow.failure_message_for_should_not
+            false
           end
         end
 
         def allow_value_matcher(value, message)
           matcher = AllowValueMatcher.
+            new(value).
+            for(@attribute).
+            with_message(message)
+
+          if strict?
+            matcher.strict
+          else
+            matcher
+          end
+        end
+
+        def disallow_value_matcher(value, message)
+          matcher = DisallowValueMatcher.
             new(value).
             for(@attribute).
             with_message(message)
