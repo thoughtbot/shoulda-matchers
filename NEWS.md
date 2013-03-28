@@ -1,4 +1,6 @@
 # HEAD
+
+# v 1.5.5
 * `AllowValueMatcher` checks that the right value is used for attempts at
 setting the attribute with it
   * Please note that previously-passing tests might now fail. It is likely that
