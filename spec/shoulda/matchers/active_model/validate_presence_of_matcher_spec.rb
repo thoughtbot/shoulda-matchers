@@ -82,6 +82,22 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
     end
   end
 
+  context "an i18n translation containing %{attribute} and %{model}" do
+    before do
+      stub_translation(
+        "activerecord.errors.messages.blank",
+        "Please enter a %{attribute} for your %{model}")
+    end
+
+    after { I18n.backend.reload! }
+
+    it "does not raise an exception" do
+      expect {
+        validating_presence.should validate_presence_of(:attr)
+      }.to_not raise_exception
+    end
+  end
+
   if active_model_3_2?
     context 'a strictly required attribute' do
       it 'accepts when the :strict options match' do

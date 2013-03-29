@@ -26,7 +26,7 @@ module Shoulda # :nodoc:
           instance = options.delete(:instance)
 
           if instance && instance.errors.respond_to?(:generate_message)
-            instance.errors.generate_message(attribute.to_sym, key, {})
+            instance.errors.generate_message(attribute.to_sym, key, options)
           else
             default_translation = [ :"activerecord.errors.models.#{model_name}.#{key}",
                                     :"activerecord.errors.messages.#{key}",

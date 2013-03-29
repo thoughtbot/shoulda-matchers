@@ -1,5 +1,7 @@
 # HEAD
 
+* Fixes the issue where using %{attribute} or %{model} in I18n translations
+raised exceptions
 * Support datetime columns in `validate_uniqueness_of.scoped_to`
 * Add `allow_nil` option to the `validate_uniqueness_of` matcher
 
