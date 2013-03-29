@@ -56,9 +56,10 @@ module Shoulda # :nodoc:
         def matches?(instance)
           self.instance = instance
 
-          values_to_match.all? do |current_value|
-            set_attribute_on_instance(current_value)
-            matches_attribute_value?(current_value) && errors_do_not_match?
+          values_to_match.none? do |value|
+            self.value = value
+            instance.send("#{attribute}=", value)
+            errors_match?
           end
         end
 
@@ -79,21 +80,12 @@ module Shoulda # :nodoc:
         attr_accessor :values_to_match, :message_finder_factory,
           :instance, :attribute, :value, :matched_error
 
-        def set_attribute_on_instance(current_value)
-          self.value = current_value
-          instance.send("#{attribute}=", current_value)
+        def errors_match?
+          has_messages? && errors_for_attribute_match?
         end
 
-        def matches_attribute_value?(current_value)
-          instance.send(attribute.to_sym) == current_value
-        end
-
-        def errors_do_not_match?
-          has_no_messages? || !errors_for_attribute_match?
-        end
-
-        def has_no_messages?
-          !message_finder.has_messages?
+        def has_messages?
+          message_finder.has_messages?
         end
 
         def errors_for_attribute_match?
