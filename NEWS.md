@@ -1,5 +1,6 @@
 # HEAD
 
+# v 1.5.6
 * Revert previous change in `AllowValueMatcher` that added a check for a
 properly-set attribute.
 
