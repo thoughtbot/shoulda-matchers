@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActionMailer::HaveSentEmailMatcher do
+  before do
+    ActiveSupport::Deprecation.expects(:warn).at_least_once.with { |value| /have_sent_email matcher/ =~ value }
+  end
+
   subject { described_class.new(self) }
   after { ::ActionMailer::Base.deliveries.clear }
 

@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActionController do
+  before do
+    ActiveSupport::Deprecation.expects(:warn).with { |value| /strong_parameters matcher/ =~ value }
+  end
+
   describe ".permit" do
     it "is true when the sent parameter is allowed" do
       controller_class = controller_for_resource_with_strong_parameters do
@@ -33,6 +37,8 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
     controller_for_resource_with_strong_parameters do
       params.require(:user).permit(:name, :age)
     end
+
+    ActiveSupport::Deprecation.expects(:warn).with { |value| /strong_parameters matcher/ =~ value }
   end
 
   describe "#matches?" do

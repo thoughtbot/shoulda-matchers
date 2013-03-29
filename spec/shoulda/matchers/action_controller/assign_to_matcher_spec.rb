@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActionController::AssignToMatcher do
+  before do
+    ActiveSupport::Deprecation.expects(:warn).with { |value| /assign_to matcher/ =~ value }
+  end
+
   it 'includes the actual class in the failure message' do
     define_class(:WrongClass) do
       def to_s
