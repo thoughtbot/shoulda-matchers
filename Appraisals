@@ -1,15 +1,11 @@
-appraise '3.0' do
-  gem 'rails', '~> 3.0.17'
+if RUBY_VERSION >= '2.0'
+  name, version = 'ruby.2.support', '>= 3.2.13'
+else
+  name, version = 'rails.3.support', '~> 3.0'
 end
 
-appraise '3.1' do
-  gem 'rails', '~> 3.1.8'
+appraise name do
   gem 'jquery-rails'
-  gem 'sass-rails'
-end
-
-appraise '3.2' do
-  gem 'rails', '~> 3.2.8'
-  gem 'jquery-rails'
+  gem 'rails', version
   gem 'sass-rails'
 end
