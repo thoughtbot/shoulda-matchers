@@ -1,5 +1,8 @@
 # HEAD
 
+* Revert previous change in `AllowValueMatcher` that added a check for a
+properly-set attribute.
+
 # v 1.5.5
 * `AllowValueMatcher` checks that the right value is used for attempts at
 setting the attribute with it
