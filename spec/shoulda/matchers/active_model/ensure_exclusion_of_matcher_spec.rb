@@ -18,6 +18,18 @@ describe Shoulda::Matchers::ActiveModel::EnsureExclusionOfMatcher do
     end
   end
 
+  context 'an attribute which must be excluded from a range with excluded end' do
+    it 'accepts ensuring the correct range' do
+      validating_exclusion(:in => 2...5).
+        should ensure_exclusion_of(:attr).in_range(2...5)
+    end
+
+    it 'rejects ensuring excluded value' do
+      validating_exclusion(:in => 2...5).
+        should_not ensure_exclusion_of(:attr).in_range(2...4)
+    end
+  end
+
   context 'an attribute with a custom validation message' do
     it 'accepts ensuring the correct range' do
       validating_exclusion(:in => 2..4, :message => 'not good').
@@ -35,6 +47,15 @@ describe Shoulda::Matchers::ActiveModel::EnsureExclusionOfMatcher do
 
       model.should ensure_exclusion_of(:attr).in_range(2..5).
         with_message(/should be out of this range/)
+
+      model = custom_validation do
+        if attr >= 2 && attr <= 4
+          errors.add(:attr, 'should be out of this range')
+        end
+      end
+
+      model.should ensure_exclusion_of(:attr).in_range(2...5).
+        with_message(/should be out of this range/)        
     end
   end
 
