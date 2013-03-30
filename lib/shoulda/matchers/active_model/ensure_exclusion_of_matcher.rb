@@ -27,7 +27,9 @@ module Shoulda # :nodoc:
         def in_range(range)
           @range = range
           @minimum = range.first
-          @maximum = range.last
+          # FIXME: must be replaces by `@maximum = range.max` when 
+          #        support of Ruby 1.8.7 will be dropped.
+          @maximum = range.exclude_end? ? range.last - 1 : range.last
           self
         end
 
