@@ -37,7 +37,7 @@ module Shoulda # :nodoc:
         def in_range(range)
           @range = range
           @minimum = range.first
-          @maximum = range.last
+          @maximum = range.max
           self
         end
 

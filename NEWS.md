@@ -1,5 +1,7 @@
 # HEAD
 
+* Fixes maximum value detection for the `ensure_inclusion` and `ensure_exclusion`
+matchers.
 * Add `:odd` and `:even` options to the `validate_numericality_of` matcher.
 * Add `:touch` option to the association matcher.
 * Ruby 2.0.0 is now officially supported.
