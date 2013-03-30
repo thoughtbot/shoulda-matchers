@@ -56,6 +56,18 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     end
   end
 
+  context 'an attribute which must be included in a range with excluded end' do
+    it 'accepts ensuring the correct range' do
+      validating_inclusion(:in => 2...5).
+        should ensure_inclusion_of(:attr).in_range(2...5)
+    end
+
+    it 'rejects ensuring a lower maximum value' do
+      validating_inclusion(:in => 2...5).
+        should_not ensure_inclusion_of(:attr).in_range(2...4)
+    end
+  end
+
   context 'an attribute with a custom ranged value validation' do
     it 'accepts ensuring the correct range' do
       validating_inclusion(:in => 2..4, :message => 'not good').
@@ -74,6 +86,17 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
       end
 
       model.should ensure_inclusion_of(:attr).in_range(2..5).
+        with_low_message(/low/).with_high_message(/high/)
+
+      model = custom_validation do
+        if attr < 2
+          errors.add(:attr, 'too low')
+        elsif attr > 4
+          errors.add(:attr, 'too high')
+        end
+      end
+
+      model.should ensure_inclusion_of(:attr).in_range(2...5).
         with_low_message(/low/).with_high_message(/high/)
     end
   end
