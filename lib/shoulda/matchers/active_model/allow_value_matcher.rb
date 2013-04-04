@@ -43,6 +43,11 @@ module Shoulda # :nodoc:
           self
         end
 
+        def on(context)
+          @context = context
+          self
+        end
+
         def with_message(message)
           self.options[:expected_message] = message
           self
@@ -78,7 +83,7 @@ module Shoulda # :nodoc:
         private
 
         attr_accessor :values_to_match, :message_finder_factory,
-          :instance, :attribute, :value, :matched_error
+          :instance, :attribute, :context, :value, :matched_error
 
         def errors_match?
           has_messages? && errors_for_attribute_match?
@@ -161,7 +166,7 @@ module Shoulda # :nodoc:
         end
 
         def message_finder
-          message_finder_factory.new(instance, attribute)
+          message_finder_factory.new(instance, attribute, context)
         end
       end
     end

@@ -6,9 +6,10 @@ module Shoulda
       class ValidationMessageFinder
         include Helpers
 
-        def initialize(instance, attribute)
+        def initialize(instance, attribute, context=nil)
           @instance = instance
           @attribute = attribute
+          @context = context
         end
 
         def allow_description(allowed_values)
@@ -58,7 +59,7 @@ module Shoulda
         end
 
         def validate_instance
-          @instance.valid?
+          @instance.valid?(@context)
           @instance
         end
       end

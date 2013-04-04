@@ -56,6 +56,24 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
     end
   end
 
+  context "an attribute with a context-dependent validation" do
+    context "without the validation context" do
+      it "allows a bad value" do
+        validating_format(:with => /abc/, :on => :customisable).should allow_value("xyz").for(:attr)
+      end
+    end
+
+    context "with the validation context" do
+      it "allows a good value" do
+        validating_format(:with => /abc/, :on => :customisable).should allow_value("abcde").for(:attr).on(:customisable)
+      end
+
+      it "rejects a bad value" do
+        validating_format(:with => /abc/, :on => :customisable).should_not allow_value("xyz").for(:attr).on(:customisable)
+      end
+    end
+  end
+
   context 'an attribute with several validations' do
     let(:model) do
       define_model :example, :attr => :string do
