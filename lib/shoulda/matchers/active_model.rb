@@ -9,7 +9,6 @@ require 'shoulda/matchers/active_model/ensure_length_of_matcher'
 require 'shoulda/matchers/active_model/ensure_inclusion_of_matcher'
 require 'shoulda/matchers/active_model/ensure_exclusion_of_matcher'
 require 'shoulda/matchers/active_model/validate_presence_of_matcher'
-require 'shoulda/matchers/active_model/validate_format_of_matcher'
 require 'shoulda/matchers/active_model/validate_uniqueness_of_matcher'
 require 'shoulda/matchers/active_model/validate_acceptance_of_matcher'
 require 'shoulda/matchers/active_model/validate_confirmation_of_matcher'
@@ -41,7 +40,6 @@ module Shoulda
     # class User < ActiveRecord::Base
     #   validates_presence_of :name
     #   validates_presence_of :phone_number
-    #   validates_format_of :phone_number, :with => /\\(\\d{3}\\) \\d{3}\\-\\d{4}/
     #   validates_inclusion_of :status, :in => %w(Activated Pending), :strict => true
     #   attr_accessible :name, :phone_number
     # end

@@ -64,30 +64,6 @@ module ControllerBuilder
     File.open(full_path, 'w') { |file| file.write(contents) }
   end
 
-  def controller_for_resource_with_strong_parameters(&block)
-    define_model "User"
-    controller_class = define_controller "Users" do
-      def new
-        @user = User.new
-        render :nothing => true
-      end
-
-      def create
-        @user = User.create(user_params)
-        render :nothing => true
-      end
-
-      private
-      define_method :user_params, &block
-    end
-
-    setup_rails_controller_test(controller_class)
-
-    define_routes { resources :users }
-
-    controller_class
-  end
-
   private
 
   def delete_temporary_views

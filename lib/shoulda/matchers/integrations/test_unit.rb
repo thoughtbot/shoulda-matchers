@@ -1,15 +1,5 @@
 # :enddoc:
 require 'test/unit/testcase'
-require 'shoulda/matchers/independent'
-
-module Test
-  module Unit
-    class TestCase
-      include Shoulda::Matchers::Independent
-      extend Shoulda::Matchers::Independent
-    end
-  end
-end
 
 if defined?(ActionController)
   require 'shoulda/matchers/action_controller'
@@ -20,19 +10,6 @@ if defined?(ActionController)
 
     def subject
       @controller
-    end
-  end
-end
-
-if defined?(ActionMailer)
-  require 'shoulda/matchers/action_mailer'
-
-  module Test
-    module Unit
-      class TestCase
-        include Shoulda::Matchers::ActionMailer
-        extend Shoulda::Matchers::ActionMailer
-      end
     end
   end
 end

@@ -58,21 +58,10 @@ describe PostsController, "#show" do
       get :show, :id => 1
     end
 
-    it { should assign_to(:user) }
     it { should respond_with(:success) }
     it { should render_template(:show) }
     it { should_not set_the_flash }
   end
-end
-```
-
-## Independent Matchers
-
-Matchers to test non-Rails-dependent code:
-
-```ruby
-describe Human do
-  it { should delegate_method(:work).to(:robot) }
 end
 ```
 

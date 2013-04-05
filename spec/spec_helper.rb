@@ -25,6 +25,4 @@ RSpec.configure do |config|
   config.mock_with :mocha
   config.include Shoulda::Matchers::ActionController,
                  :example_group => { :file_path => /action_controller/ }
-  config.include Shoulda::Matchers::ActionMailer,
-                 :example_group => { :file_path => /action_mailer/ }
 end

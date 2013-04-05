@@ -3,7 +3,6 @@ require 'shoulda/matchers/active_record/have_db_column_matcher'
 require 'shoulda/matchers/active_record/have_db_index_matcher'
 require 'shoulda/matchers/active_record/have_readonly_attribute_matcher'
 require 'shoulda/matchers/active_record/serialize_matcher'
-require 'shoulda/matchers/active_record/query_the_database_matcher'
 require 'shoulda/matchers/active_record/accept_nested_attributes_for_matcher'
 
 module Shoulda

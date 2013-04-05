@@ -1,5 +1,17 @@
 # HEAD
 
+# v 2.0.0
+* Remove the following matchers:
+  * `assign_to`
+  * `respond_with_content_type`
+  * `query_the_database`
+  * `validate_format_of`
+  * `have_sent_email`
+  * `permit` (strong parameters matcher)
+  * `delegate_method`
+* For more information about 2.0 changes, see:
+http://robots.thoughtbot.com/post/47031676783/shoulda-matchers-2-0
+
 # v 1.5.6
 * Revert previous change in `AllowValueMatcher` that added a check for a
 properly-set attribute.
