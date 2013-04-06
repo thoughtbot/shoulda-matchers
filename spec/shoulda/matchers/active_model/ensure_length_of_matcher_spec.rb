@@ -112,15 +112,11 @@ describe Shoulda::Matchers::ActiveModel::EnsureLengthOfMatcher do
         stub_translation(
           "activerecord.errors.messages.too_long",
           "The %{attribute} of your %{model} is too long (maximum is %{count} characters)")
-   
-        @model = define_model(:example, :attr => :string) do
-          validates_length_of :attr, :maximum => 4
-        end.new
       end
    
       it "does not raise an exception" do
         expect {
-          @model.should ensure_length_of(:attr).is_at_most(4)
+          validating_length(:maximum => 4).should ensure_length_of(:attr).is_at_most(4)
         }.to_not raise_exception(I18n::MissingInterpolationArgument)
       end
     end
@@ -130,15 +126,11 @@ describe Shoulda::Matchers::ActiveModel::EnsureLengthOfMatcher do
         stub_translation(
           "activerecord.errors.messages.too_short",
           "The %{attribute} of your %{model} is too short (minimum is %{count} characters)")
-   
-        @model = define_model(:example, :attr => :string) do
-          validates_length_of :attr, :minimum => 4
-        end.new
       end
    
       it "does not raise an exception" do
         expect {
-          @model.should ensure_length_of(:attr).is_at_least(4)
+          validating_length(:minimum => 4).should ensure_length_of(:attr).is_at_least(4)
         }.to_not raise_exception(I18n::MissingInterpolationArgument)
       end
     end
@@ -148,15 +140,11 @@ describe Shoulda::Matchers::ActiveModel::EnsureLengthOfMatcher do
         stub_translation(
           "activerecord.errors.messages.wrong_length",
           "The %{attribute} of your %{model} is the wrong length (should be %{count} characters)")
-   
-        @model = define_model(:example, :attr => :string) do
-          validates_length_of :attr, :is => 4
-        end.new
       end
    
       it "does not raise an exception" do
         expect {
-          @model.should ensure_length_of(:attr).is_equal_to(4)
+          validating_length(:is => 4).should ensure_length_of(:attr).is_equal_to(4)
         }.to_not raise_exception(I18n::MissingInterpolationArgument)
       end
     end

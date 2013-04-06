@@ -87,16 +87,14 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
       stub_translation(
         "activerecord.errors.messages.blank",
         "Please enter a %{attribute} for your %{model}")
- 
-      @model = define_model :example, :attr => :string do
-        validates_presence_of :attr
-      end.new
     end
  
     after { I18n.backend.reload! }
  
     it "does not raise an exception" do
-      expect { @model.should validate_presence_of(:attr) }.to_not raise_exception
+      expect { 
+        validating_presence.should validate_presence_of(:attr) 
+      }.to_not raise_exception
     end
   end
   
