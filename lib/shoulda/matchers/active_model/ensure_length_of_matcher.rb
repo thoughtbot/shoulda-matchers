@@ -104,6 +104,7 @@ module Shoulda # :nodoc:
           if Symbol === @short_message
             @short_message = default_error_message(@short_message,
                                                    :model_name => @subject.class.to_s.underscore,
+                                                   :instance => @subject,
                                                    :attribute => @attribute,
                                                    :count => @options[:minimum])
           end
@@ -111,6 +112,7 @@ module Shoulda # :nodoc:
           if Symbol === @long_message
             @long_message = default_error_message(@long_message,
                                                   :model_name => @subject.class.to_s.underscore,
+                                                  :instance => @subject,
                                                   :attribute => @attribute,
                                                   :count => @options[:maximum])
           end
