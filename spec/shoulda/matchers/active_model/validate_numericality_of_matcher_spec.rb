@@ -29,6 +29,22 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
       the_matcher.failure_message_for_should.should include 'Expected errors to include "must be an integer"'
     end
+
+    it 'rejects with the ActiveRecord :odd message' do
+      the_matcher = matcher.odd
+
+      the_matcher.matches?(define_model(:example, :attr => :string).new)
+
+      the_matcher.failure_message_for_should.should include 'Expected errors to include "must be odd"'
+    end
+
+    it 'rejects with the ActiveRecord :even message' do
+      the_matcher = matcher.even
+
+      the_matcher.matches?(define_model(:example, :attr => :string).new)
+
+      the_matcher.failure_message_for_should.should include 'Expected errors to include "must be even"'
+    end
   end
 
   context 'with the only_integer option' do
@@ -46,6 +62,42 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
       the_matcher.matches?(validating_numericality)
 
       the_matcher.failure_message_for_should.should include 'Expected errors to include "must be an integer"'
+    end
+  end
+
+  context 'with the odd option' do
+    it 'allows odd number values for that attribute' do
+      validating_numericality(:odd => true).should matcher.odd
+    end
+
+    it 'rejects when the model does not enforce odd number values' do
+      validating_numericality.should_not matcher.odd
+    end
+
+    it 'rejects with the ActiveRecord :odd message' do
+      the_matcher = matcher.odd
+
+      the_matcher.matches?(validating_numericality)
+
+      the_matcher.failure_message_for_should.should include 'Expected errors to include "must be odd"'
+    end
+  end
+
+  context 'with the even option' do
+    it 'allows even number values for that attribute' do
+      validating_numericality(:even => true).should matcher.even
+    end
+
+    it 'rejects when the model does not enforce even number values' do
+      validating_numericality.should_not matcher.even
+    end
+
+    it 'rejects with the ActiveRecord :even message' do
+      the_matcher = matcher.even
+
+      the_matcher.matches?(validating_numericality)
+
+      the_matcher.failure_message_for_should.should include 'Expected errors to include "must be even"'
     end
   end
 
