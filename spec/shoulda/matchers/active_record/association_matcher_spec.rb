@@ -81,9 +81,9 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       belonging_to_parent.should_not belong_to(:parent).class_name('TreeChild')
     end
 
-    context 'validate' do
+    context 'an association with a :validate option' do
       [false, true].each do |validate_value|
-        context 'when the model has :validate => #{validate_value}' do
+        context "when the model has :validate => #{validate_value}" do
           it 'accepts a matching validate option' do
             belonging_to_parent(:validate => validate_value).
               should belong_to(:parent).validate(validate_value)
@@ -103,6 +103,11 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
                 should_not belong_to(:parent).validate
             end
           end
+
+          it 'will not break matcher when validate option is unspecified' do
+            belonging_to_parent(:validate => validate_value).
+              should belong_to(:parent)
+          end
         end
       end
     end
@@ -118,6 +123,51 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
       it 'rejects validate()' do
         belonging_to_parent.should_not belong_to(:parent).validate
+      end
+    end
+
+    context 'an association with a :touch option' do
+      [false, true].each do |touch_value|
+        context "when the model has :touch => #{touch_value}" do
+          it 'accepts a matching touch option' do
+            belonging_to_parent(:touch => touch_value).should
+              belong_to(:parent).touch(touch_value)
+          end
+
+          it 'rejects a non-matching touch option' do
+            belonging_to_parent(:touch => touch_value).should_not
+              belong_to(:parent).touch(!touch_value)
+          end
+
+          it 'defaults to touch(true)' do
+            if touch_value
+              belonging_to_parent(:touch => touch_value).should
+                belong_to(:parent).touch
+            else
+              belonging_to_parent(:touch => touch_value).should_not
+                belong_to(:parent).touch
+            end
+          end
+
+          it 'will not break matcher when touch option is unspecified' do
+            belonging_to_parent(:touch => touch_value).should
+              belong_to(:parent)
+          end
+        end
+      end
+    end
+
+    context 'an association without a :touch option' do
+      it 'accepts touch(false)' do
+        belonging_to_parent.should belong_to(:parent).touch(false)
+      end
+
+      it 'rejects touch(true)' do
+        belonging_to_parent.should_not belong_to(:parent).touch(true)
+      end
+
+      it 'rejects touch()' do
+        belonging_to_parent.should_not belong_to(:parent).touch
       end
     end
 
