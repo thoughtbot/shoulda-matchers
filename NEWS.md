@@ -1,5 +1,6 @@
 # HEAD
 
+* Add `:touch` option to the association matcher.
 * Ruby 2.0.0 is now officially supported.
 * Fixes the issue where using %{attribute} or %{model} in I18n translations
 raised exceptions
