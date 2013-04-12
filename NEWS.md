@@ -1,5 +1,8 @@
 # HEAD
 
+* Add missing `failure_message_for_should_not` implementations to
+`validate_numericality_of` and its submatchers
+
 * Support validation contexts for testing validations `on: :create` and when using custom contexts like `model.valid?(:my_context)`.
 
 * Fix a bug in validations with autosaved models.

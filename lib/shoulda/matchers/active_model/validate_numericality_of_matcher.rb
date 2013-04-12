@@ -64,7 +64,11 @@ module Shoulda # :nodoc:
         end
 
         def failure_message_for_should
-          submatcher_failure_messages.last
+          submatcher_failure_messages_for_should.last
+        end
+
+        def failure_message_for_should_not
+          submatcher_failure_messages_for_should_not.last
         end
 
         private
@@ -85,8 +89,12 @@ module Shoulda # :nodoc:
           failing_submatchers.empty?
         end
 
-        def submatcher_failure_messages
+        def submatcher_failure_messages_for_should
           failing_submatchers.map(&:failure_message_for_should)
+        end
+
+        def submatcher_failure_messages_for_should_not
+          failing_submatchers.map(&:failure_message_for_should_not)
         end
 
         def failing_submatchers
