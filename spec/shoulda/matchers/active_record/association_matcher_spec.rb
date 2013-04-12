@@ -105,8 +105,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
           end
 
           it 'will not break matcher when validate option is unspecified' do
-            belonging_to_parent(:validate => validate_value).
-              should belong_to(:parent)
+            belonging_to_parent(:validate => validate_value).should belong_to(:parent)
           end
         end
       end
@@ -130,28 +129,27 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       [false, true].each do |touch_value|
         context "when the model has :touch => #{touch_value}" do
           it 'accepts a matching touch option' do
-            belonging_to_parent(:touch => touch_value).should
-              belong_to(:parent).touch(touch_value)
+            belonging_to_parent(:touch => touch_value).
+              should belong_to(:parent).touch(touch_value)
           end
 
           it 'rejects a non-matching touch option' do
-            belonging_to_parent(:touch => touch_value).should_not
-              belong_to(:parent).touch(!touch_value)
+            belonging_to_parent(:touch => touch_value).
+              should_not belong_to(:parent).touch(!touch_value)
           end
 
           it 'defaults to touch(true)' do
             if touch_value
-              belonging_to_parent(:touch => touch_value).should
-                belong_to(:parent).touch
+              belonging_to_parent(:touch => touch_value).
+                should belong_to(:parent).touch
             else
-              belonging_to_parent(:touch => touch_value).should_not
-                belong_to(:parent).touch
+              belonging_to_parent(:touch => touch_value).
+                should_not belong_to(:parent).touch
             end
           end
 
           it 'will not break matcher when touch option is unspecified' do
-            belonging_to_parent(:touch => touch_value).should
-              belong_to(:parent)
+            belonging_to_parent(:touch => touch_value).should belong_to(:parent)
           end
         end
       end

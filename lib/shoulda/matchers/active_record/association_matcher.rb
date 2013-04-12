@@ -266,7 +266,7 @@ module Shoulda # :nodoc:
         end
 
         def validate_correct?
-          if !@options.key?(:validate) || @options[:validate] == (reflection.options[:validate] == true ? true : false)
+          if !@options.key?(:validate) || @options[:validate] == !!reflection.options[:validate]
             true
           else
             @missing = "#{@name} should have :validate => #{@options[:validate]}"
@@ -275,7 +275,7 @@ module Shoulda # :nodoc:
         end
 
         def touch_correct?
-          if !@options.key?(:touch) || @options[:touch] == (reflection.options[:touch] == true ? true : false)
+          if !@options.key?(:touch) || @options[:touch] == !!reflection.options[:touch]
             true
           else
             @missing = "#{@name} should have :touch => #{@options[:touch]}"
