@@ -27,6 +27,10 @@ module Shoulda # :nodoc:
         def failure_message_for_should
           @disallow_value_matcher.failure_message_for_should
         end
+
+        def failure_message_for_should_not
+          @disallow_value_matcher.failure_message_for_should_not
+        end
       end
     end
   end
