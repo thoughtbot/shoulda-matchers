@@ -4,6 +4,7 @@
 raised exceptions
 * Support datetime columns in `validate_uniqueness_of.scoped_to`
 * Add `allow_nil` option to the `validate_uniqueness_of` matcher
+* Not more raise a error on `set_the_flash` when receives a not string or regex
 
 # v 2.0.0
 * Remove the following matchers:

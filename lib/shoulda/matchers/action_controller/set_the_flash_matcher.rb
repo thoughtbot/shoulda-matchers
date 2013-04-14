@@ -23,9 +23,6 @@ module Shoulda # :nodoc:
         end
 
         def to(value)
-          if !value.is_a?(String) && !value.is_a?(Regexp)
-            raise "cannot match against #{value.inspect}"
-          end
           @value = value
           self
         end

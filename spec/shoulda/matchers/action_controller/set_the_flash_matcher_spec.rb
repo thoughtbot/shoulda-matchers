@@ -1,9 +1,6 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActionController::SetTheFlashMatcher do
-  it 'fails with unmatchable #to' do
-    expect { set_the_flash.to(1) }.to raise_error('cannot match against 1')
-  end
 
   context 'a controller that sets a flash message' do
     it 'accepts setting any flash message' do
@@ -130,6 +127,17 @@ describe Shoulda::Matchers::ActionController::SetTheFlashMatcher do
       controller_with_no_flashes.should_not set_the_flash
     end
   end
+
+  context "not string values" do
+    it 'not fails with a boolean' do
+      expect { set_the_flash.to(true) }.to_not raise_error
+    end
+
+    it 'be possible match to a boolean' do
+      controller_with_flash(:notice => true).should set_the_flash.to(true)
+    end
+  end
+
 
   def controller_with_no_flashes
     build_response
