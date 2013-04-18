@@ -1,120 +1,58 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ComparisonMatcher do
-  context 'validating numericality greater than' do
-    subject { validating_numericality(:greater_than => 4) }
-    describe "with a value greater than limit" do
-      before { subject.attr = 6 }
-      it 'should pass' do
-        should validate_numericality_of(:attr).is_greater_than(4)
-      end
-    end
-    describe "with a value equal to limit" do
-      before { subject.attr = 4 }
-      it 'should not pass' do
-        should_not validate_numericality_of(:attr).is_greater_than(4)
-      end
-    end
-    describe "with a value less than limit" do
-      before { subject.attr = 2 }
-      it 'should not pass' do
-        should_not validate_numericality_of(:attr).is_greater_than(4)
-      end
+  subject { comparison_instance }
+  context 'with a model with a greater than validation' do
+    it 'match accordingly' do
+      subject.attr = 3
+      subject.should matcher(:greater_than, 2)
+      subject.attr = 2
+      subject.should_not matcher(:greater_than, 2)
+      subject.attr = 1
+      subject.should_not matcher(:greater_than, 2)
     end
   end
 
-  context 'validating numericality greater than or equal to ' do
-    subject { validating_numericality(:greater_than_equal_to => 4) }
-    describe "with a value greater than limit" do
-      before { subject.attr = 6 }
-      it 'should pass' do
-        should validate_numericality_of(:attr).is_greater_than_or_equal_to(4)
-      end
-    end
-    describe "with a value equal to limit" do
-      before { subject.attr = 4 }
-      it 'should pass' do
-        should validate_numericality_of(:attr).is_greater_than_or_equal_to(4)
-      end
-    end
-    describe "with a value less than limit" do
-      before { subject.attr = 2 }
-      it 'should not pass' do
-        should_not validate_numericality_of(:attr).is_greater_than_or_equal_to(4)
-      end
+  context 'with a model with a greater than or equal to validation' do
+    it 'match accordingly' do
+      subject.attr = 3
+      subject.should matcher(:greater_than_or_equal_to, 2)
+      subject.attr = 2
+      subject.should matcher(:greater_than_or_equal_to, 2)
+      subject.attr = 1
+      subject.should_not matcher(:greater_than_or_equal_to, 2)
     end
   end
 
-  context 'validating numericality equal to ' do
-    subject { validating_numericality(:equal_to => 4) }
-    describe "with a value greater than limit" do
-      before { subject.attr = 6 }
-      it 'should not pass' do
-        should_not validate_numericality_of(:attr).is_equal_to(4)
-      end
-    end
-    describe "with a value equal to limit" do
-      before { subject.attr = 4 }
-      it 'should pass' do
-        should validate_numericality_of(:attr).is_equal_to(4)
-      end
-    end
-    describe "with a value less than limit" do
-      before { subject.attr = 2 }
-      it 'should not pass' do
-        should_not validate_numericality_of(:attr).is_equal_to(4)
-      end
+  context 'with a model with a less than validation' do
+    it 'match accordingly' do
+      subject.attr = 3
+      subject.should_not matcher(:less_than, 2)
+      subject.attr = 2
+      subject.should_not matcher(:less_than, 2)
+      subject.attr = 1
+      subject.should matcher(:less_than, 2)
     end
   end
 
-  context 'validating numericality less than ' do
-    subject { validating_numericality(:less_than => 4) }
-    describe "with a value greater than limit" do
-      before { subject.attr = 6 }
-      it 'should not pass' do
-        should_not validate_numericality_of(:attr).is_less_than(4)
-      end
-    end
-    describe "with a value equal to limit" do
-      before { subject.attr = 4 }
-      it 'should not pass' do
-        should_not validate_numericality_of(:attr).is_less_than(4)
-      end
-    end
-    describe "with a value less than limit" do
-      before { subject.attr = 2 }
-      it 'should pass' do
-        should validate_numericality_of(:attr).is_less_than(4)
-      end
-    end
-  end
-  context 'validating numericality less than or equal to  ' do
-    subject { validating_numericality(:less_than_or_equal_to => 4) }
-    describe "with a value greater than limit" do
-      before { subject.attr = 6 }
-      it 'should not pass' do
-        should_not validate_numericality_of(:attr).is_less_than_or_equal_to(4)
-      end
-    end
-    describe "with a value equal to limit" do
-      before { subject.attr = 4 }
-      it 'should not pass' do
-        should validate_numericality_of(:attr).is_less_than_or_equal_to(4)
-      end
-    end
-    describe "with a value less than limit" do
-      before { subject.attr = 2 }
-      it 'should pass' do
-        should validate_numericality_of(:attr).is_less_than_or_equal_to(4)
-      end
+  context 'with a model with a less than or equal to validation' do
+    it 'match accordingly' do
+      subject.attr = 3
+      subject.should_not matcher(:less_than_or_equal_to, 2)
+      subject.attr = 2
+      subject.should matcher(:less_than_or_equal_to, 2)
+      subject.attr = 1
+      subject.should matcher(:less_than_or_equal_to, 2)
     end
   end
 
-
-
-  def validating_numericality(options = {})
-    define_model(:example, :attr => :integer) do
+  def comparison_instance(options = {})
+    define_model :example, :attr => :string do
       validates_numericality_of :attr, options
     end.new
+  end
+
+  def matcher(match, val)
+    validate_numericality_of(:attr).send("is_#{match}", val)
   end
 end

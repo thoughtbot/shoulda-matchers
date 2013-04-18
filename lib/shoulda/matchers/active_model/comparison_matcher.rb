@@ -22,7 +22,8 @@ module Shoulda # :nodoc:
 
         def matches?(subject)
           @subject = subject
-          @subject.send(@attribute).send(@options[:operator], @value)
+          val = @subject.send(@attribute)
+          val.send(@options[:operator], @value) unless val.nil?
         end
 
         def failure_message
