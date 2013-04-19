@@ -1,5 +1,5 @@
 PATH
-  remote: /Users/melissaxie/thoughtbot/shoulda-matchers
+  remote: ../
   specs:
     shoulda-matchers (2.0.0)
       activesupport (>= 3.0.0)
