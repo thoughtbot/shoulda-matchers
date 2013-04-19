@@ -1,11 +1,8 @@
 script: "bundle exec rake spec cucumber"
 
 rvm:
-  - 1.8.7
   - 1.9.2
   - 1.9.3
-  - rbx-18mode
-  - jruby
 
 gemfile:
   - gemfiles/3.0.gemfile
@@ -14,15 +11,10 @@ gemfile:
 
 matrix:
   allow_failures:
-    - rvm: 1.8.7
-    - rvm: rbx-18mode
-    - rvm: jruby
-  exclude:
-    - rvm: rbx-18mode
-      gemfile: gemfiles/3.0.gemfile
-    - rvm: rbx-18mode
-      gemfile: gemfiles/3.1.gemfile
-    - rvm: jruby
-      gemfile: gemfiles/3.0.gemfile
-    - rvm: jruby
-      gemfile: gemfiles/3.1.gemfile
+    - rvm: rbx-19mode
+    - rvm: jruby-19mode
+  include:
+    - rvm: rbx-19mode
+      gemfile: gemfiles/3.2.gemfile
+    - rvm: jruby-19mode
+      gemfile: gemfiles/3.2.gemfile
