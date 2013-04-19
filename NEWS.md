@@ -39,8 +39,8 @@ setting the attribute with it
 * Alleviate the need to add `rspec` gem to your app
 
 # v 1.5.1
-* Bump version depedency of Bourne to allow for Mocha upgrade.
-* Should fix incompatiblity with MiniTest.
+* Bump version dependency of Bourne to allow for Mocha upgrade.
+* Should fix incompatibility with MiniTest.
 
 # v 1.5.0
 * Deprecate the following matchers:
@@ -55,7 +55,7 @@ setting the attribute with it
 * Use RSpec's native `configure.include` syntax for including matchers into
   RSpec (#204)
 
-* Do not force minitest loading when test-unit is available (this was fixed
+* Do not force MiniTest loading when test-unit is available (this was fixed
   before 1.3.0 then reverted in 1.3.0) (#181)
 
 # v1.4.2
@@ -90,7 +90,7 @@ setting the attribute with it
 
 * `validate_format_of` will accept `allow_blank(bool)` and `allow_nil(bool)`
 
-* Prefer Test::Unit to Minitest when loading integrations so that RubyMine is
+* Prefer Test::Unit to MiniTest when loading integrations so that RubyMine is
   happy (#88).
 
 * `validates_uniqueness_of` will now create a record if one does not exist.
