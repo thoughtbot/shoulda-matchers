@@ -38,6 +38,14 @@ describe Shoulda::Matchers::ActiveModel::OnlyIntegerMatcher do
 
       matcher.failure_message_for_should.should include 'Expected errors to include "must be an integer"'
     end
+
+    it 'fails with the ActiveRecord :not_an_integer message' do
+      matcher = new_matcher
+
+      matcher.matches?(define_model(:example, :attr => :string).new)
+
+      matcher.failure_message_for_should_not.should include 'Did not expect errors to include "must be an integer"'
+    end
   end
 
   def new_matcher

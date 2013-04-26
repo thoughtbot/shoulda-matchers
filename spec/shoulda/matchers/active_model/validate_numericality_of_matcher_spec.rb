@@ -22,6 +22,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
       define_model(:example, :attr => :string).new.should_not matcher
     end
 
+    it 'rejects with the ActiveRecord :not_a_number message' do
+      the_matcher = matcher
+      the_matcher.matches?(define_model(:example, :attr => :string).new)
+
+      the_matcher.failure_message_for_should_not.should include 'Did not expect errors to include "is not a number"'
+    end
+
     it 'rejects with the ActiveRecord :not_an_integer message' do
       the_matcher = matcher.only_integer
 
