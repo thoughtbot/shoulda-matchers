@@ -1,14 +1,20 @@
 # HEAD
 
-* Fixes maximum value detection for the `ensure_inclusion` and `ensure_exclusion`
-matchers.
+* Fix maximum value detection for the `ensure_inclusion_of` and
+`ensure_exclusion_of` matchers.
+
 * Add `:odd` and `:even` options to the `validate_numericality_of` matcher.
-* Add `:touch` option to the association matcher.
+
+* Add `:touch` option to AssociationMatcher.
+
 * Ruby 2.0.0 is now officially supported.
-* Fixes the issue where using %{attribute} or %{model} in I18n translations
-raised exceptions
-* Support datetime columns in `validate_uniqueness_of.scoped_to`
-* Add `allow_nil` option to the `validate_uniqueness_of` matcher
+
+* Fix the issue where using `%{attribute}` or `%{model}` in I18n translations
+raised exceptions.
+
+* Support datetime columns in `validate_uniqueness_of.scoped_to`.
+
+* Add `allow_nil` option to the `validate_uniqueness_of` matcher.
 
 # v 2.0.0
 * Remove the following matchers:
@@ -19,60 +25,65 @@ raised exceptions
   * `have_sent_email`
   * `permit` (strong parameters matcher)
   * `delegate_method`
+
 * For more information about 2.0 changes, see:
-http://robots.thoughtbot.com/post/47031676783/shoulda-matchers-2-0
+http://robots.thoughtbot.com/post/47031676783/shoulda-matchers-2-0.
 
 # v 1.5.6
-* Revert previous change in `AllowValueMatcher` that added a check for a
+* Revert previous change in AllowValueMatcher that added a check for a
 properly-set attribute.
 
 # v 1.5.5
-* `AllowValueMatcher` checks that the right value is used for attempts at
-setting the attribute with it
+* AllowValueMatcher checks that the right value is used for attempts at
+setting the attribute with it.
   * Please note that previously-passing tests might now fail. It is likely that
   it's not a bug, but please make sure that the code you're testing is written
   properly before submitting an issue.
-* Use DisallowValueMatcher for `disallows_value_of` method
-* Assert `class_name` value on real class name for `AssociationMatcher`
-* Correct the variable used for `validate_confirmation_of` matcher description
+
+* Use DisallowValueMatcher for `disallows_value_of` method.
+
+* Assert `class_name` value on real class name for AssociationMatcher.
+
+* Correct the variable used for `validate_confirmation_of` matcher description.
 
 # v 1.5.4
-* Properly-released version of 1.5.3
+* Properly-released version of 1.5.3.
 
 # v 1.5.3 - yanked due to mis-release
-* Alleviate the need to add `rspec` gem to your app
+* Alleviate the need to add `rspec` gem to your app.
 
 # v 1.5.1
 * Bump version dependency of Bourne to allow for Mocha upgrade.
+
 * Should fix incompatibility with MiniTest.
 
 # v 1.5.0
 * Deprecate the following matchers:
-  * assign_to
-  * respond_with_content_type
-  * query_the_database
-  * validate_format_of
-  * have_sent_email
-  * strong_parameters_matcher
-  * delegate_method
+  * `assign_to`
+  * `respond_with_content_type`
+  * `query_the_database`
+  * `validate_format_of`
+  * `have_sent_email`
+  * `permit` (strong parameters matcher)
+  * `delegate_method`
 
 * Use RSpec's native `configure.include` syntax for including matchers into
-  RSpec (#204)
+  RSpec (#204).
 
 * Do not force MiniTest loading when test-unit is available (this was fixed
-  before 1.3.0 then reverted in 1.3.0) (#181)
+  before 1.3.0 then reverted in 1.3.0).
 
 # v1.4.2
-* Added a new `delegate_method` matcher.
+* Add a new `delegate_method` matcher.
 
 # v1.4.1
-* Fixes an issue when used with Test::Unit on the allow value matcher.
+* Fix an issue when used with Test::Unit on the allow value matcher.
 
-* Fixes an issue with using `ensure_inclusion_of(:attr)` given an array of true or false values.
+* Fix an issue with using `ensure_inclusion_of(:attr)` given an array of true or false values.
 
 # v1.4.0
 
-* Added `strict` option to validation matchers.
+* Add `strict` option to validation matchers.
 
 * Verify that arguments to `set_the_flash` matcher are valid.
 
@@ -88,11 +99,11 @@ setting the attribute with it
 
 * Test outside values for `ensure_inclusion_of` when given an array.
 
-* Fixed the output of the `set_the_flash` matcher.
+* Fix the output of the `set_the_flash` matcher.
 
 # v1.3.0
 
-* `validate_format_of` will accept `allow_blank(bool)` and `allow_nil(bool)`
+* `validate_format_of` will accept `allow_blank(bool)` and `allow_nil(bool)`.
 
 * Prefer Test::Unit to MiniTest when loading integrations so that RubyMine is
   happy (#88).
@@ -129,10 +140,10 @@ setting the attribute with it
 
 # v1.1.0
 
-* Added `only_integer` option to `validate_numericality_of`:
+* Add `only_integer` option to `validate_numericality_of`:
   `should validate_numericality_of(:attribute).only_integer`
 
-* Added a `query_the_database` matcher:
+* Add a `query_the_database` matcher:
 
     `it { should query_the_database(4.times).when_calling(:complicated_method) }`
     `it { should query_the_database(4.times).or_less.when_calling(:complicated_method) }`
@@ -147,10 +158,10 @@ setting the attribute with it
 * The `have_sent_email` matcher can check `reply_to`:
   ` it { should have_sent_email.reply_to([user, other]) }`
 
-* Added `validates_confirmation_of` matcher:
+* Add `validates_confirmation_of` matcher:
   `it { should validate_confirmation_of(:password) }`
 
-* Added `serialize` matcher:
+* Add `serialize` matcher:
   `it { should serialize(:details).as(Hash).as_instance_of(Hash) }`
 
 * shoulda-matchers checks for all possible I18n keys, instead of just
