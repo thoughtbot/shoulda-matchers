@@ -1,6 +1,9 @@
 # HEAD
 
 * Fix `have_and_belong_to_many` matcher issue for Rails 4.
+* Add a rescue_from matcher for Rails controllers which checks that the correct
+  ActiveSupport call has been made and that the handlers exist without actually
+  throwing an exception.
 
 # v 2.1.0
 

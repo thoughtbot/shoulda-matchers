@@ -6,6 +6,7 @@ require 'shoulda/matchers/action_controller/set_session_matcher'
 require 'shoulda/matchers/action_controller/route_matcher'
 require 'shoulda/matchers/action_controller/redirect_to_matcher'
 require 'shoulda/matchers/action_controller/render_template_matcher'
+require 'shoulda/matchers/action_controller/rescue_from_matcher'
 
 module Shoulda
   module Matchers
