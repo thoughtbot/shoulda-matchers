@@ -7,6 +7,8 @@ module Shoulda # :nodoc:
       # * <tt>:class_name</tt> - tests that the association resolves to class_name.
       # * <tt>:validate</tt> - tests that the association makes use of the validate
       # option.
+      # * <tt>:touch</tt> - tests that the association makes use of the touch
+      # option.      
       #
       # Example:
       #   it { should belong_to(:parent) }
@@ -107,7 +109,12 @@ module Shoulda # :nodoc:
         end
 
         def validate(validate = true)
-          @validate = validate
+          @options[:validate] = validate
+          self
+        end
+
+        def touch(touch = true)
+          @options[:touch] = touch
           self
         end
 
@@ -122,7 +129,8 @@ module Shoulda # :nodoc:
             order_correct? &&
             conditions_correct? &&
             join_table_exists? &&
-            validate_correct?
+            validate_correct? &&
+            touch_correct?
         end
 
         def failure_message_for_should
@@ -258,10 +266,19 @@ module Shoulda # :nodoc:
         end
 
         def validate_correct?
-          if !@validate && !reflection.options[:validate] || @validate == reflection.options[:validate]
+          if !@options.key?(:validate) || @options[:validate] == !!reflection.options[:validate]
             true
           else
-            @missing = "#{@name} should have :validate => #{@validate}"
+            @missing = "#{@name} should have :validate => #{@options[:validate]}"
+            false
+          end
+        end
+
+        def touch_correct?
+          if !@options.key?(:touch) || @options[:touch] == !!reflection.options[:touch]
+            true
+          else
+            @missing = "#{@name} should have :touch => #{@options[:touch]}"
             false
           end
         end
