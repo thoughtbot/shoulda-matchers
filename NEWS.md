@@ -1,5 +1,9 @@
 # HEAD
 
+* Add a rescue_from matcher for Rails controllers which checks that the correct
+  ActiveSupport call has been made and that the handlers exist without actually
+  throwing an exception.
+
 * Changed the scope of AssociationMatcher methods from protected to private.
 
 * Extracted `#order`, `#through`, and `#dependent` from AssociationMatcher as
