@@ -55,6 +55,14 @@ describe Shoulda::Matchers::ActiveModel::OddEvenNumberMatcher do
 
       matcher.failure_message_for_should.should include 'Expected errors to include "must be odd"'
     end
+
+    it 'fails with the ActiveRecord :odd message' do
+      matcher = new_odd_matcher
+
+      matcher.matches?(define_model(:example, :attr => :string).new)
+
+      matcher.failure_message_for_should_not.should include 'Did not expect errors to include "must be odd"'
+    end
   end
 
   context 'when the model does not have an even validation' do
@@ -68,6 +76,14 @@ describe Shoulda::Matchers::ActiveModel::OddEvenNumberMatcher do
       matcher.matches?(define_model(:example, :attr => :string).new)
 
       matcher.failure_message_for_should.should include 'Expected errors to include "must be even"'
+    end
+
+    it 'fails with the ActiveRecord :even message' do
+      matcher = new_even_matcher
+
+      matcher.matches?(define_model(:example, :attr => :string).new)
+
+      matcher.failure_message_for_should_not.should include 'Did not expect errors to include "must be even"'
     end
   end
 
