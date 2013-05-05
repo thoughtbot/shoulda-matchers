@@ -1,5 +1,7 @@
 # HEAD
 
+# v 2.1.0
+
 * Add missing `failure_message_for_should_not` implementations to
 `validate_numericality_of` and its submatchers
 
