@@ -10,7 +10,13 @@ module Shoulda # :nodoc:
         end
       end
 
-      private
+      def self.flashes_ivar
+        if rails_major_version >= 4
+          :@flashes
+        else
+          :@used
+        end
+      end
 
       def self.rails_major_version
         Rails::VERSION::MAJOR
