@@ -12,5 +12,6 @@ gem "therubyrhino", :platform=>:jruby
 gem "rails", "~> 3.2.13"
 gem "jquery-rails"
 gem "sass-rails"
+gem "strong_parameters"
 
 gemspec :path=>"../"
