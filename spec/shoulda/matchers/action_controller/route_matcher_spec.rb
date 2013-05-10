@@ -6,7 +6,7 @@ describe Shoulda::Matchers::ActionController::RouteMatcher do
       controller = define_controller('Examples').new
 
       define_routes do
-        match 'examples/*id', :to => 'examples#example'
+        get 'examples/*id', :to => 'examples#example'
       end
 
       controller.should route(:get, '/examples/foo/bar').
