@@ -27,6 +27,8 @@ raised exceptions.
 
 * Add `allow_nil` option to the `validate_uniqueness_of` matcher.
 
+* Fix issue with `have_and_belong_to_many` assertion in rails 4
+
 # v 2.0.0
 * Remove the following matchers:
   * `assign_to`
