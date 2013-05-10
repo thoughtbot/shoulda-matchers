@@ -94,11 +94,15 @@ module Shoulda # :nodoc:
             @flash
           else
             @flash = @controller.flash.dup
-            used = @controller.flash.instance_variable_get(:@used).dup
-            @flash.instance_variable_set(:@used, used)
+            used = @controller.flash.instance_variable_get(flashes_ivar).dup
+            @flash.instance_variable_set(flashes_ivar, used)
             sweep_flash_if_necessary
             @flash
           end
+        end
+
+        def flashes_ivar
+          Shoulda::Matchers::RailsShim.flashes_ivar
         end
 
         def sweep_flash_if_necessary
