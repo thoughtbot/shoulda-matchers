@@ -1,7 +1,6 @@
 module Shoulda # :nodoc:
   module Matchers
     class RailsShim # :nodoc:
-
       def self.layouts_ivar
         if rails_major_version >= 4
           '@_layouts'
@@ -15,6 +14,14 @@ module Shoulda # :nodoc:
           :@flashes
         else
           :@used
+        end
+      end
+
+      def self.clean_scope(klass)
+        if rails_major_version == 4
+          klass.all
+        else
+          klass.scoped
         end
       end
 

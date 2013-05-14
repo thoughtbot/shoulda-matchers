@@ -251,7 +251,7 @@ module Shoulda # :nodoc:
 
         def conditions_correct?
           if options.key?(:conditions)
-            if option_verifier.correct_for_string?(:conditions, options[:conditions])
+            if option_verifier.correct_for_relation_clause?(:conditions, options[:conditions])
               true
             else
               @missing = "#{name} should have the following conditions: #{options[:conditions]}"
@@ -292,7 +292,7 @@ module Shoulda # :nodoc:
 
         def class_has_foreign_key?(klass)
           if options.key?(:foreign_key)
-            option_verifier.correct_for?(:foreign_key, options[:foreign_key])
+            option_verifier.correct_for_string?(:foreign_key, options[:foreign_key])
           else
             if klass.column_names.include?(foreign_key)
               true

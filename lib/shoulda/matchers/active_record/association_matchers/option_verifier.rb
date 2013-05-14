@@ -7,6 +7,8 @@ module Shoulda # :nodoc:
 
           attr_reader :reflector
 
+          RELATION_OPTIONS = [:conditions, :order]
+
           def initialize(reflector)
             @reflector = reflector
           end
@@ -23,12 +25,20 @@ module Shoulda # :nodoc:
             correct_for?(:hash, name, expected_value)
           end
 
+          def correct_for_relation_clause?(name, expected_value)
+            correct_for?(:relation_clause, name, expected_value)
+          end
+
           def actual_value_for(name)
-            method_name = "actual_value_for_#{name}"
-            if respond_to?(method_name, true)
-              __send__(method_name)
+            if RELATION_OPTIONS.include?(name)
+              actual_value_for_relation_clause(name)
             else
-              reflection.options[name]
+              method_name = "actual_value_for_#{name}"
+              if respond_to?(method_name, true)
+                __send__(method_name)
+              else
+                reflection.options[name]
+              end
             end
           end
 
@@ -49,15 +59,28 @@ module Shoulda # :nodoc:
 
           def type_cast(type, value)
             case type
-              when :string  then value.to_s
-              when :boolean then !!value
-              when :hash    then Hash(value).stringify_keys
-              else               value
+              when :string, :relation_clause then value.to_s
+              when :boolean                  then !!value
+              when :hash                     then Hash(value).stringify_keys
+              else                                value
             end
           end
 
           def expected_value_for(name, value)
-            value
+            if RELATION_OPTIONS.include?(name)
+              expected_value_for_relation_clause(name, value)
+            else
+              value
+            end
+          end
+
+          def expected_value_for_relation_clause(name, value)
+            relation = reflector.build_relation_with_clause(name, value)
+            reflector.extract_relation_clause_from(relation, name)
+          end
+
+          def actual_value_for_relation_clause(name)
+            reflector.extract_relation_clause_from(reflector.association_relation, name)
           end
 
           def actual_value_for_class_name
