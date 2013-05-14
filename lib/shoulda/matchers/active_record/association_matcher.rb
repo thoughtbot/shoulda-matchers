@@ -252,6 +252,10 @@ module Shoulda # :nodoc:
           end
         end
 
+        def association_order
+          Shoulda::Matchers::RailsShim.association_order(reflection)
+        end
+
         def conditions_correct?
           if options.key?(:conditions)
             if options[:conditions].to_s == reflection.options[:conditions].to_s
@@ -263,6 +267,10 @@ module Shoulda # :nodoc:
           else
             true
           end
+        end
+
+        def association_conditions
+          Shoulda::Matchers::RailsShim.association_conditions(reflection)
         end
 
         def join_table_exists?

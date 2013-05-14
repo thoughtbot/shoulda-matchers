@@ -18,6 +18,26 @@ module Shoulda # :nodoc:
         end
       end
 
+      def self.association_conditions(reflection)
+        if rails_major_version >= 4
+          reflection.scope &&
+            reflection.scope.options &&
+            reflection.scope.options[:where]
+        else
+          reflection.options[:conditions]
+        end
+      end
+
+      def self.association_order(reflection)
+        if rails_major_version >= 4
+          reflection.scope &&
+            reflection.scope.options &&
+            reflection.scope.options[:order]
+        else
+          reflection.options[:order]
+        end
+      end
+
       private
 
       def self.rails_major_version
