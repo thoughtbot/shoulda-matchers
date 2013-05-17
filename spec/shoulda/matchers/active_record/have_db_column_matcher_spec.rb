@@ -88,7 +88,7 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbColumnMatcher do
 
   context 'with primary option' do
     it 'accepts a column that is primary' do
-      with_table(:id, :integer, :primary => true).
+      with_table(:custom_id, :integer, :primary => true).
         should have_db_column(:id).with_options(:primary => true)
     end
 
