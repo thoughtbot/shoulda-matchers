@@ -156,15 +156,13 @@ module Shoulda # :nodoc:
           @existing_record = create_record_in_database
         end
 
-        # TODO:  There is a chance that we could change the scoped field
-        # to a value that's already taken.  An alternative implementation
-        # could actually find all values for scope and create a unique
         def validate_after_scope_change?
           if @options[:scopes].blank?
             true
           else
+            all_records = @subject.class.all
             @options[:scopes].all? do |scope|
-              previous_value = existing_record.send(scope)
+              previous_value = all_records.map(&scope).max
 
               # Assume the scope is a foreign key if the field is nil
               previous_value ||= correct_type_for_column(@subject.class.columns_hash[scope.to_s])

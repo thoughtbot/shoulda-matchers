@@ -118,6 +118,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
           should matcher.scoped_to(:scope1)
       end
 
+      context 'with an existing record that conflicts with scope.next' do
+        it 'accepts' do
+          validating_scoped_uniqueness_with_conflicting_next(:scope1, :date, :scope1 => Date.today).
+            should matcher.scoped_to(:scope1)
+        end
+      end
+
       context 'when too narrow of a scope is specified' do
         it 'rejects' do
           validating_scoped_uniqueness([:scope1, :scope2], :date, :scope1 => Date.today, :scope2 => Date.today).
@@ -130,6 +137,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
       it 'accepts' do
         validating_scoped_uniqueness([:scope1], :datetime, :scope1 => DateTime.now).
           should matcher.scoped_to(:scope1)
+      end
+
+      context 'with an existing record that conflicts with scope.next' do
+        it 'accepts' do
+          validating_scoped_uniqueness_with_conflicting_next(:scope1, :datetime, :scope1 => DateTime.now).
+            should matcher.scoped_to(:scope1)
+        end
       end
 
       context 'with a nil value' do
@@ -145,11 +159,22 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
             should_not matcher.scoped_to(:scope1, :scope2, :other)
         end
       end
+
+      context 'with an existing record that conflicts with scope.next' do
+        it 'accepts' do
+          validating_scoped_uniqueness_with_conflicting_next(:scope1, :scope1 => 1).
+            should matcher.scoped_to(:scope1)
+        end
+      end
     end
 
     def create_existing_record(attributes = {})
+      @existing ||= create_record(attributes)
+    end
+
+    def create_record(attributes = {})
       default_attributes = {:attr => 'value', :scope1 => 1, :scope2 => 2, :other => 3}
-      @existing ||= Example.create!(default_attributes.merge(attributes))
+      Example.create!(default_attributes.merge(attributes))
     end
 
     def define_scoped_model(scope, scope_attr_type = :integer)
@@ -164,6 +189,16 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
       attributes = args.extract_options!
       model = define_scoped_model(*args).new
       create_existing_record(attributes)
+      model
+    end
+
+    def validating_scoped_uniqueness_with_conflicting_next(*args)
+      attributes = args.extract_options!
+      model = define_scoped_model(*args).new
+      2.times do
+        attributes[:scope1] = attributes[:scope1].next
+        create_record(attributes)
+      end
       model
     end
   end
