@@ -2,6 +2,9 @@
 
 * Fix `have_and_belong_to_many` matcher issue for Rails 4.
 
+* Fix `validate_uniqueness_of.scoped_to` issue when the scoped field is already
+  taken (#207).
+
 # v 2.1.0
 
 * Add missing `failure_message_for_should_not` implementations to
