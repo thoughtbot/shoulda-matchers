@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::Matchers::ActionController::RouteMatcher do
+describe Shoulda::Matchers::ActionController::RouteMatcher, type: :controller do
   context 'given a controller with a defined glob url' do
     it 'accepts glob route' do
       controller = define_controller('Examples').new
