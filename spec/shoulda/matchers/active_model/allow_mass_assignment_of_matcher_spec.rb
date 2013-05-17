@@ -59,7 +59,7 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
     end
   end
 
-  unless active_model_3_2?
+  unless active_model_3_2? || active_model_4_0?
     context 'an attribute on a class with no protected attributes' do
       it 'accepts being mass-assignable' do
         no_protected_attributes.should allow_mass_assignment_of(:attr)

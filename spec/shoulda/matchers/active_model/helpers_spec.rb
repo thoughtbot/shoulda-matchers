@@ -78,13 +78,11 @@ describe Shoulda::Matchers::ActiveModel::Helpers do
       end
     end
 
-    if active_model_3_0?
-      context 'if ActiveModel::Errors#generate_message behavior has changed' do
-        it 'provides the right error message for validate_presence_of' do
-          stub_active_model_message_generation(:type => :blank,
-                                               :message => 'Behavior has diverged.')
-          assert_presence_validation_has_correct_message
-        end
+    context 'if ActiveModel::Errors#generate_message behavior has changed' do
+      it 'provides the right error message for validate_presence_of' do
+        stub_active_model_message_generation(:type => :blank,
+                                              :message => 'Behavior has diverged.')
+        assert_presence_validation_has_correct_message
       end
     end
   end
