@@ -8,7 +8,7 @@ module Shoulda # :nodoc:
       #                 less_than(20)...(and so on) }
 
 
-      class ComparisonMatcher
+      class ComparisonMatcher < ValidationMatcher
 
         def initialize(value, operator)
           @value = value
@@ -22,8 +22,7 @@ module Shoulda # :nodoc:
 
         def matches?(subject)
           @subject = subject
-          val = @subject.send(@attribute)
-          val.send(@options[:operator], @value) unless val.nil?
+          disallows_value_of(value_to_compare)
         end
 
         def failure_message
@@ -32,6 +31,16 @@ module Shoulda # :nodoc:
 
 
         private
+
+        def value_to_compare
+          case @options[:operator]
+            when :> then [@value, @value - 1].sample
+            when :>= then @value - 1
+            when :== then @value
+            when :< then [@value, @value + 1].sample
+            when :<= then @value + 1
+          end
+        end
 
         def expectation
           case @options[:operator]
