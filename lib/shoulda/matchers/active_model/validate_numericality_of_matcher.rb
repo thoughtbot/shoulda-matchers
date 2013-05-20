@@ -8,10 +8,14 @@ module Shoulda # :nodoc:
       #   <tt>errors.on(:attribute)</tt>. Regexp or string.  Defaults to the
       #   translation for <tt>:not_a_number</tt>.
       # * <tt>only_integer</tt> - allows only integer values
+      # * <tt>odd</tt> - Specifies the value must be an odd number.
+      # * <tt>even</tt> - Specifies the value must be an even number.
       #
       # Examples:
       #   it { should validate_numericality_of(:price) }
       #   it { should validate_numericality_of(:age).only_integer }
+      #   it { should validate_numericality_of(:frequency).odd }
+      #   it { should validate_numericality_of(:frequency).even }
       #
       def validate_numericality_of(attr)
         ValidateNumericalityOfMatcher.new(attr)
@@ -22,7 +26,6 @@ module Shoulda # :nodoc:
 
         def initialize(attribute)
           @attribute = attribute
-          @options = {}
           @submatchers = []
 
           add_disallow_value_matcher
@@ -58,6 +61,18 @@ module Shoulda # :nodoc:
           self
         end
 
+        def odd
+          odd_number_matcher = OddEvenNumberMatcher.new(@attribute, :odd => true)
+          add_submatcher(odd_number_matcher)
+          self
+        end
+
+        def even
+          even_number_matcher = OddEvenNumberMatcher.new(@attribute, :even => true)
+          add_submatcher(even_number_matcher)
+          self
+        end
+
         def with_message(message)
           @submatchers.each { |matcher| matcher.with_message(message) }
           self
@@ -72,8 +87,12 @@ module Shoulda # :nodoc:
           "only allow #{allowed_types} values for #{@attribute}"
         end
 
-        def failure_message
-          submatcher_failure_messages.last
+        def failure_message_for_should
+          submatcher_failure_messages_for_should.last
+        end
+
+        def failure_message_for_should_not
+          submatcher_failure_messages_for_should_not.last
         end
 
         private
@@ -94,8 +113,12 @@ module Shoulda # :nodoc:
           failing_submatchers.empty?
         end
 
-        def submatcher_failure_messages
-          failing_submatchers.map(&:failure_message)
+        def submatcher_failure_messages_for_should
+          failing_submatchers.map(&:failure_message_for_should)
+        end
+
+        def submatcher_failure_messages_for_should_not
+          failing_submatchers.map(&:failure_message_for_should_not)
         end
 
         def failing_submatchers

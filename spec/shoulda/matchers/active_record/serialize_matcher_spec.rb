@@ -15,7 +15,7 @@ describe Shoulda::Matchers::ActiveRecord::SerializeMatcher do
 
       matcher.matches?(unserialized_model)
 
-      matcher.failure_message.should =~ /to serialize the attribute called :attr/
+      matcher.failure_message_for_should.should =~ /to serialize the attribute called :attr/
     end
 
     it 'assigns a helpful failure message when using #as' do
@@ -23,7 +23,7 @@ describe Shoulda::Matchers::ActiveRecord::SerializeMatcher do
 
       matcher.matches?(unserialized_model)
 
-      matcher.failure_message.should =~ /with a type of Hash/
+      matcher.failure_message_for_should.should =~ /with a type of Hash/
     end
 
     it 'assigns a helpful failure message when using #as_instance_of' do
@@ -31,7 +31,7 @@ describe Shoulda::Matchers::ActiveRecord::SerializeMatcher do
 
       matcher.matches?(unserialized_model)
 
-      matcher.failure_message.should =~ /with an instance of Hash/
+      matcher.failure_message_for_should.should =~ /with an instance of Hash/
     end
 
     def unserialized_model
@@ -49,22 +49,21 @@ describe Shoulda::Matchers::ActiveRecord::SerializeMatcher do
     end
 
     it 'rejects when using as_instance_of' do
-      with_serialized_attr(Hash).should_not
-        serialize(:attr).as_instance_of(Hash)
+      with_serialized_attr(Hash).should_not serialize(:attr).as_instance_of(Hash)
     end
   end
 
   context 'a serializer that is an instance of a class' do
     it 'accepts when using #as_instance_of' do
       define_serializer(:ExampleSerializer)
-      with_serialized_attr(ExampleSerializer.new).should
-        serialize(:attr).as_instance_of(ExampleSerializer)
+      with_serialized_attr(ExampleSerializer.new).
+        should serialize(:attr).as_instance_of(ExampleSerializer)
     end
 
     it 'rejects when using #as' do
       define_serializer(:ExampleSerializer)
-      with_serialized_attr(ExampleSerializer.new).should_not
-        serialize(:attr).as(ExampleSerializer)
+      with_serialized_attr(ExampleSerializer.new).
+        should_not serialize(:attr).as(ExampleSerializer)
     end
   end
 

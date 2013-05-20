@@ -2,15 +2,14 @@ module Shoulda # :nodoc:
   module Matchers
     module ActiveModel # :nodoc:
       # Ensures that the model is invalid if the given attribute is not unique.
+      # It uses the first existing record or creates a new one if no record
+      # exists in the database. It simply uses `:validate => false` to get
+      # around validations, so it will probably fail if there are `NOT NULL`
+      # constraints. In that case, you must create a record before calling
+      # `validate_uniqueness_of`.
       #
-      # Internally, this uses values from existing records to test validations,
-      # so this will always fail if you have not saved at least one record for
-      # the model being tested, like so:
-      #
-      #   describe User do
-      #     before(:each) { User.create!(:email => 'address@example.com') }
-      #     it { should validate_uniqueness_of(:email) }
-      #   end
+      # Example:
+      #   it { should validate_uniqueness_of(:email) }
       #
       # Options:
       #
@@ -56,12 +55,26 @@ module Shoulda # :nodoc:
           self
         end
 
+        def allow_nil
+          @options[:allow_nil] = true
+          self
+        end
+
+        def description
+          result = "require "
+          result << "case sensitive " unless @options[:case_insensitive]
+          result << "unique value for #{@attribute}"
+          result << " scoped to #{@options[:scopes].join(', ')}" if @options[:scopes].present?
+          result
+        end
+
         def matches?(subject)
           @subject = subject.class.new
           @expected_message ||= :taken
           set_scoped_attributes &&
-            validate_attribute? &&
-            validate_after_scope_change?
+            validate_everything_except_duplicate_nils? &&
+            validate_after_scope_change? &&
+            allows_nil?
         end
 
         def description
@@ -74,17 +87,42 @@ module Shoulda # :nodoc:
 
         private
 
-        def existing
-          @existing ||= first_instance
+        def allows_nil?
+          if @options[:allow_nil]
+            ensure_nil_record_in_database
+            allows_value_of(nil, @expected_message)
+          else
+            true
+          end
+        end
+
+        def existing_record
+          @existing_record ||= first_instance
         end
 
         def first_instance
-          @subject.class.first || create_instance_in_database
+          @subject.class.first || create_record_in_database
         end
 
-        def create_instance_in_database
+        def ensure_nil_record_in_database
+          unless existing_record_is_nil?
+            create_record_in_database(nil_value: true)
+          end
+        end
+
+        def existing_record_is_nil?
+          @existing_record.present? && existing_value.nil?
+        end
+
+        def create_record_in_database(options = {})
+          if options[:nil_value]
+            value = nil
+          else
+            value = "arbitrary_string"
+          end
+
           @subject.class.new.tap do |instance|
-            instance.send("#{@attribute}=", 'arbitrary_string')
+            instance.send("#{@attribute}=", value)
             instance.save(:validate => false)
           end
         end
@@ -94,10 +132,10 @@ module Shoulda # :nodoc:
             @options[:scopes].all? do |scope|
               setter = :"#{scope}="
               if @subject.respond_to?(setter)
-                @subject.send(setter, existing.send(scope))
+                @subject.send(setter, existing_record.send(scope))
                 true
               else
-                @failure_message = "#{class_name} doesn't seem to have a #{scope} attribute."
+                @failure_message_for_should = "#{class_name} doesn't seem to have a #{scope} attribute."
                 false
               end
             end
@@ -106,8 +144,16 @@ module Shoulda # :nodoc:
           end
         end
 
-        def validate_attribute?
+        def validate_everything_except_duplicate_nils?
+          if @options[:allow_nil] && existing_value.nil?
+            create_record_without_nil
+          end
+
           disallows_value_of(existing_value, @expected_message)
+        end
+
+        def create_record_without_nil
+          @existing_record = create_record_in_database
         end
 
         # TODO:  There is a chance that we could change the scoped field
@@ -118,27 +164,30 @@ module Shoulda # :nodoc:
             true
           else
             @options[:scopes].all? do |scope|
-              previous_value = existing.send(scope)
+              previous_value = existing_record.send(scope)
 
               # Assume the scope is a foreign key if the field is nil
               previous_value ||= correct_type_for_column(@subject.class.columns_hash[scope.to_s])
 
-              next_value = if previous_value.respond_to?(:next)
-                previous_value.next
-              else
-                previous_value.to_s.next
-              end
+              next_value =
+                if previous_value.respond_to?(:next)
+                  previous_value.next
+                elsif previous_value.respond_to?(:to_datetime)
+                  previous_value.to_datetime.next
+                else
+                  previous_value.to_s.next
+                end
 
               @subject.send("#{scope}=", next_value)
 
               if allows_value_of(existing_value, @expected_message)
                 @subject.send("#{scope}=", previous_value)
 
-                @negative_failure_message <<
+                @failure_message_for_should_not <<
                   " (with different value of #{scope})"
                 true
               else
-                @failure_message << " (with different value of #{scope})"
+                @failure_message_for_should << " (with different value of #{scope})"
                 false
               end
             end
@@ -148,6 +197,8 @@ module Shoulda # :nodoc:
         def correct_type_for_column(column)
           if column.type == :string
             '0'
+          elsif column.type == :datetime
+            DateTime.now
           else
             0
           end
@@ -158,7 +209,7 @@ module Shoulda # :nodoc:
         end
 
         def existing_value
-          value = existing.send(@attribute)
+          value = existing_record.send(@attribute)
           if @options[:case_insensitive] && value.respond_to?(:swapcase!)
             value.swapcase!
           end

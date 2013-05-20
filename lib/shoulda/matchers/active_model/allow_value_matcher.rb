@@ -30,41 +30,49 @@ module Shoulda # :nodoc:
       class AllowValueMatcher # :nodoc:
         include Helpers
 
+        attr_accessor :options
+
         def initialize(*values)
-          @values_to_match = values
-          @message_finder_factory = ValidationMessageFinder
-          @options = {}
+          self.values_to_match = values
+          self.message_finder_factory = ValidationMessageFinder
+          self.options = {}
         end
 
         def for(attribute)
-          @attribute = attribute
+          self.attribute = attribute
+          self
+        end
+
+        def on(context)
+          @context = context
           self
         end
 
         def with_message(message)
-          @options[:expected_message] = message
+          self.options[:expected_message] = message
           self
         end
 
         def strict
-          @message_finder_factory = ExceptionMessageFinder
+          self.message_finder_factory = ExceptionMessageFinder
           self
         end
 
         def matches?(instance)
-          @instance = instance
-          @values_to_match.none? do |value|
-            @value = value
-            @instance.send("#{@attribute}=", @value)
+          self.instance = instance
+
+          values_to_match.none? do |value|
+            self.value = value
+            instance.send("#{attribute}=", value)
             errors_match?
           end
         end
 
-        def failure_message
-          "Did not expect #{expectation}, got error: #{@matched_error}"
+        def failure_message_for_should
+          "Did not expect #{expectation}, got error: #{matched_error}"
         end
 
-        def negative_failure_message
+        def failure_message_for_should_not
           "Expected #{expectation}, got #{error_description}"
         end
 
@@ -73,6 +81,9 @@ module Shoulda # :nodoc:
         end
 
         private
+
+        attr_accessor :values_to_match, :message_finder_factory,
+          :instance, :attribute, :context, :value, :matched_error
 
         def errors_match?
           has_messages? && errors_for_attribute_match?
@@ -84,7 +95,7 @@ module Shoulda # :nodoc:
 
         def errors_for_attribute_match?
           if expected_message
-            @matched_error = errors_match_regexp? || errors_match_string?
+            self.matched_error = errors_match_regexp? || errors_match_string?
           else
             errors_for_attribute.compact.any?
           end
@@ -108,7 +119,7 @@ module Shoulda # :nodoc:
 
         def expectation
           includes_expected_message = expected_message ? "to include #{expected_message.inspect}" : ''
-          [error_source, includes_expected_message, "when #{@attribute} is set to #{@value.inspect}"].join(' ')
+          [error_source, includes_expected_message, "when #{attribute} is set to #{value.inspect}"].join(' ')
         end
 
         def error_source
@@ -120,19 +131,19 @@ module Shoulda # :nodoc:
         end
 
         def allowed_values
-          if @values_to_match.length > 1
-            "any of [#{@values_to_match.map(&:inspect).join(', ')}]"
+          if values_to_match.length > 1
+            "any of [#{values_to_match.map(&:inspect).join(', ')}]"
           else
-            @values_to_match.first.inspect
+            values_to_match.first.inspect
           end
         end
 
         def expected_message
-          if @options.key?(:expected_message)
-            if Symbol === @options[:expected_message]
+          if options.key?(:expected_message)
+            if Symbol === options[:expected_message]
               default_expected_message
             else
-              @options[:expected_message]
+              options[:expected_message]
             end
           end
         end
@@ -143,18 +154,19 @@ module Shoulda # :nodoc:
 
         def default_attribute_message
           default_error_message(
-            @options[:expected_message],
+            options[:expected_message],
             :model_name => model_name,
-            :attribute => @attribute
+            :instance => instance,
+            :attribute => attribute
           )
         end
 
         def model_name
-          @instance.class.to_s.underscore
+          instance.class.to_s.underscore
         end
 
         def message_finder
-          @message_finder_factory.new(@instance, @attribute)
+          message_finder_factory.new(instance, attribute, context)
         end
       end
     end

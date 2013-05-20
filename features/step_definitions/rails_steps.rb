@@ -25,8 +25,9 @@ When 'I generate a new rails application' do
     And I set the "BUNDLE_GEMFILE" environment variable to "Gemfile"
     And I successfully run `bundle install --local`
   }
+
   if RUBY_VERSION >= '1.9.3'
-    append_to_gemfile %(gem 'rake', '~> 0.9.3.beta.1')
+    append_to_gemfile %(gem 'rake', '~> 0.9')
     step %(I successfully run `bundle update rake`)
   end
 end
@@ -52,21 +53,21 @@ When 'I run the rspec generator' do
 end
 
 When 'I configure the application to use rspec-rails' do
-  append_to_gemfile %q(gem 'rspec-rails', '~> 2.8.1')
+  append_to_gemfile %q(gem 'rspec-rails', '~> 2.13')
   steps %{And I run `bundle install --local`}
 end
 
 When 'I configure the application to use rspec-rails in test and development' do
   append_to_gemfile <<-GEMFILE
   group :test, :development do
-    gem 'rspec-rails', '~> 2.8.1'
+    gem 'rspec-rails', '~> 2.13'
   end
   GEMFILE
   steps %{And I run `bundle install --local`}
 end
 
 When 'I configure the application to use shoulda-context' do
-  append_to_gemfile %q(gem 'shoulda-context', '~> 1.0.0')
+  append_to_gemfile %q(gem 'shoulda-context', '~> 1.0')
   steps %{And I run `bundle install --local`}
 end
 

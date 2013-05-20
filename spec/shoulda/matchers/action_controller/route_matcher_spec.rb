@@ -38,8 +38,8 @@ describe Shoulda::Matchers::ActionController::RouteMatcher do
     end
 
     it 'rejects an undefined route' do
-      route_examples_to_examples.should_not
-        route(:get, '/bad_route').to(:var => 'value')
+      route_examples_to_examples.
+        should_not route(:get, '/bad_route').to(:var => 'value')
     end
 
     it 'rejects a route for another controller' do

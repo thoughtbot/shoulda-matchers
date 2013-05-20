@@ -1,6 +1,12 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher do
+  context '#description' do
+    it 'states that the confirmation must match its base attribute' do
+      matcher.description.should == 'require attr_confirmation to match attr'
+    end
+  end
+
   context 'a model with a confirmation validation' do
     it 'accepts' do
       validating_confirmation.should matcher
@@ -19,13 +25,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher do
 
   context 'a confirmation validation with a custom message' do
     it 'accepts when the message matches' do
-      validating_confirmation(:message => 'custom').should
-        matcher.with_message(/custom/)
+      validating_confirmation(:message => 'custom').
+        should matcher.with_message(/custom/)
     end
 
     it 'rejects when the messages do not match' do
-      validating_confirmation(:message => 'custom').should_not
-        matcher.with_message(/wrong/)
+      validating_confirmation(:message => 'custom').
+        should_not matcher.with_message(/wrong/)
     end
   end
 

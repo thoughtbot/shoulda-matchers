@@ -1,4 +1,4 @@
-# shoulda-matchers [![Build Status](https://secure.travis-ci.org/thoughtbot/shoulda-matchers.png?branch=master)](http://travis-ci.org/thoughtbot/shoulda-matchers)
+# shoulda-matchers [![Gem Version](https://badge.fury.io/rb/shoulda-matchers.png)](http://badge.fury.io/rb/shoulda-matchers) [![Build Status](https://secure.travis-ci.org/thoughtbot/shoulda-matchers.png?branch=master)](http://travis-ci.org/thoughtbot/shoulda-matchers)
 
 [Official Documentation](http://rubydoc.info/github/thoughtbot/shoulda-matchers/master/frames)
 
@@ -58,21 +58,10 @@ describe PostsController, "#show" do
       get :show, :id => 1
     end
 
-    it { should assign_to(:user) }
     it { should respond_with(:success) }
     it { should render_template(:show) }
     it { should_not set_the_flash }
   end
-end
-```
-
-## Independent Matchers
-
-Matchers to test non-Rails-dependent code:
-
-```ruby
-describe Human do
-  it { should delegate_method(:work).to(:robot) }
 end
 ```
 
@@ -85,10 +74,9 @@ group :test do
   gem "shoulda-matchers"
 end
 
-# rspec-rails needs to be in the development group so that Rails generators
-# work.
+# `rspec-rails` needs to be in the development group so that Rails generators work.
 group :development, :test do
-  gem "rspec-rails"
+  gem "rspec-rails", "~> 2.12"
 end
 ```
 
@@ -101,5 +89,5 @@ Thank you to all the [contributors](https://github.com/thoughtbot/shoulda-matche
 
 ## License
 
-Shoulda is Copyright © 2006-2012 thoughtbot, inc.
+Shoulda is Copyright © 2006-2013 thoughtbot, inc.
 It is free software, and may be redistributed under the terms specified in the MIT-LICENSE file.

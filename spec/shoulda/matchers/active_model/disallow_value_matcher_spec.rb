@@ -17,23 +17,23 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher do
 
   context 'an attribute with a format validation and a custom message' do
     it 'does not match if the value and message are both correct' do
-      validating_format(:with => /abc/, :message => 'good message').should_not
-        matcher('abcde').for(:attr).with_message('good message')
+      validating_format(:with => /abc/, :message => 'good message').
+        should_not matcher('abcde').for(:attr).with_message('good message')
     end
 
     it "delegates its failure message to its allow matcher's negative failure message" do
-      allow_matcher = stub_everything(:negative_failure_message => 'allow matcher failure')
+      allow_matcher = stub_everything(:failure_message_for_should_not => 'allow matcher failure')
       Shoulda::Matchers::ActiveModel::AllowValueMatcher.stubs(:new).returns(allow_matcher)
 
       matcher = matcher('abcde').for(:attr).with_message('good message')
       matcher.matches?(validating_format(:with => /abc/, :message => 'good message'))
 
-      matcher.failure_message.should == 'allow matcher failure'
+      matcher.failure_message_for_should.should == 'allow matcher failure'
     end
 
     it 'matches if the message is correct but the value is not' do
-      validating_format(:with => /abc/, :message => 'good message').should
-        matcher('xyz').for(:attr).with_message('good message')
+      validating_format(:with => /abc/, :message => 'good message').
+        should matcher('xyz').for(:attr).with_message('good message')
     end
   end
 

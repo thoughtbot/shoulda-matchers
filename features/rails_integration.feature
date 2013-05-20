@@ -51,15 +51,14 @@ Feature: integrate with Rails
         end
 
         should respond_with(:success)
-        should assign_to(:example)
       end
       """
     When I set the "TESTOPTS" environment variable to "-v"
     When I successfully run `bundle exec rake test --trace`
     Then the output should contain "1 tests, 1 assertions, 0 failures, 0 errors"
-    And the output should contain "2 tests, 2 assertions, 0 failures, 0 errors"
+    And the output should contain "1 tests, 1 assertions, 0 failures, 0 errors"
     And the output should contain "User should require name to be set"
-    And the output should contain "ExamplesController should assign @example"
+    And the output should contain "should respond with 200"
 
   Scenario: generate a rails application and use matchers in Rspec
     When I configure the application to use rspec-rails
@@ -79,13 +78,13 @@ Feature: integrate with Rails
 
       describe ExamplesController, "show" do
         before { get :show }
-        it { should assign_to(:example) }
+        it { should respond_with(:success) }
       end
       """
     When I successfully run `bundle exec rake spec SPEC_OPTS=-fs --trace`
     Then the output should contain "2 examples, 0 failures"
     And the output should contain "should require name to be set"
-    And the output should contain "should assign @example"
+    And the output should contain "should respond with 200"
 
   Scenario: generate a Rails application that mixes Rspec and Test::Unit
     When I configure the application to use rspec-rails in test and development
@@ -104,13 +103,12 @@ Feature: integrate with Rails
       require 'test_helper'
 
       class ExamplesControllerTest < ActionController::TestCase
-        test 'assigns to @example' do
+        test 'responds successfully' do
           get :show
-          assert assign_to(:example).matches?(@controller)
+          assert respond_with(:success)
         end
       end
       """
     When I successfully run `bundle exec rake spec test:functionals SPEC_OPTS=-fs --trace`
     Then the output should contain "1 example, 0 failures"
     And the output should contain "1 tests, 1 assertions, 0 failures, 0 errors"
-    And the output should contain "should require name to be set"

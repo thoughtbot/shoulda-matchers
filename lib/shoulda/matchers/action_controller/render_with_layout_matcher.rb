@@ -33,11 +33,11 @@ module Shoulda # :nodoc:
           rendered_with_layout? && rendered_with_expected_layout?
         end
 
-        def failure_message
+        def failure_message_for_should
           "Expected #{expectation}, but #{result}"
         end
 
-        def negative_failure_message
+        def failure_message_for_should_not
           "Did not expect #{expectation}, but #{result}"
         end
 

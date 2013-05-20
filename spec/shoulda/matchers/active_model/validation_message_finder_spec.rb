@@ -70,6 +70,19 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
 
       description.should == 'no errors'
     end
+
+    it 'should not fetch attribute values for errors that were copied from an autosaved belongs_to association' do
+      instance = define_model(:example) do
+        validate do |record|
+          record.errors.add('association.association_attribute', 'is invalid')
+        end
+      end.new
+      finder = Shoulda::Matchers::ActiveModel::ValidationMessageFinder.new(instance, :attribute)
+
+      expected_messages = ['association.association_attribute is invalid']
+      finder.messages_description.should == "errors: #{expected_messages}"
+    end
+
   end
 
   context '#source_description' do

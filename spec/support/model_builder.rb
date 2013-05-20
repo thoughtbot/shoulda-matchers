@@ -7,6 +7,7 @@ module ModelBuilder
 
       after do
         drop_created_tables
+        ActiveSupport::Dependencies.clear
       end
     end
   end

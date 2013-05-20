@@ -4,8 +4,10 @@ module Shoulda # :nodoc:
       # Ensure that the belongs_to relationship exists.
       #
       # Options:
-      # * <tt>:class_name</tt> - tests that the association makes use of the class_name option.
+      # * <tt>:class_name</tt> - tests that the association resolves to class_name.
       # * <tt>:validate</tt> - tests that the association makes use of the validate
+      # option.
+      # * <tt>:touch</tt> - tests that the association makes use of the touch
       # option.
       #
       # Example:
@@ -23,7 +25,7 @@ module Shoulda # :nodoc:
       # * <tt>through</tt> - association name for <tt>has_many :through</tt>
       # * <tt>dependent</tt> - tests that the association makes use of the
       #   dependent option.
-      # * <tt>:class_name</tt> - tests that the association makes use of the class_name option.
+      # * <tt>:class_name</tt> - tests that the association resoves to class_name.
       # * <tt>:validate</tt> - tests that the association makes use of the validate
       # option.
       #
@@ -43,7 +45,7 @@ module Shoulda # :nodoc:
       # Options:
       # * <tt>:dependent</tt> - tests that the association makes use of the
       #   dependent option.
-      # * <tt>:class_name</tt> - tests that the association makes use of the class_name option.
+      # * <tt>:class_name</tt> - tests that the association resolves to class_name.
       # * <tt>:validate</tt> - tests that the association makes use of the validate
       # option.
       #
@@ -58,6 +60,7 @@ module Shoulda # :nodoc:
       # the join table is in place.
       #
       # Options:
+      # * <tt>:class_name</tt> - tests that the association resolves to class_name.
       # * <tt>:validate</tt> - tests that the association makes use of the validate
       # option.
       #
@@ -106,7 +109,12 @@ module Shoulda # :nodoc:
         end
 
         def validate(validate = true)
-          @validate = validate
+          @options[:validate] = validate
+          self
+        end
+
+        def touch(touch = true)
+          @options[:touch] = touch
           self
         end
 
@@ -121,14 +129,15 @@ module Shoulda # :nodoc:
             order_correct? &&
             conditions_correct? &&
             join_table_exists? &&
-            validate_correct?
+            validate_correct? &&
+            touch_correct?
         end
 
-        def failure_message
+        def failure_message_for_should
           "Expected #{expectation} (#{@missing})"
         end
 
-        def negative_failure_message
+        def failure_message_for_should_not
           "Did not expect #{expectation}"
         end
 
@@ -209,10 +218,10 @@ module Shoulda # :nodoc:
 
         def class_name_correct?
           if @options.key?(:class_name)
-            if @options[:class_name].to_s == reflection.options[:class_name].to_s
+            if @options[:class_name].to_s == reflection.klass.to_s
               true
             else
-              @missing = "#{@name} should have #{@options[:class_name]} as class_name"
+              @missing = "#{@name} should resolve to #{@options[:class_name]} for class_name"
               false
             end
           else
@@ -257,12 +266,29 @@ module Shoulda # :nodoc:
         end
 
         def validate_correct?
-          if !@validate && !reflection.options[:validate] || @validate == reflection.options[:validate]
+          if option_correct?(:validate)
             true
           else
-            @missing = "#{@name} should have :validate => #{@validate}"
+            @missing = "#{@name} should have :validate => #{@options[:validate]}"
             false
           end
+        end
+
+        def touch_correct?
+          if option_correct?(:touch)
+            true
+          else
+            @missing = "#{@name} should have :touch => #{@options[:touch]}"
+            false
+          end
+        end
+
+        def option_correct?(key)
+          !@options.key?(key) || reflection_set_properly_for?(key)
+        end
+
+        def reflection_set_properly_for?(key)
+          @options[key] == !!reflection.options[key]
         end
 
         def class_has_foreign_key?(klass)
@@ -283,7 +309,11 @@ module Shoulda # :nodoc:
         end
 
         def join_table
-          reflection.options[:join_table].to_s
+          if reflection.respond_to? :join_table
+            reflection.join_table.to_s
+          else
+            reflection.options[:join_table].to_s
+          end
         end
 
         def associated_class

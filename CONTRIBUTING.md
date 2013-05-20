@@ -11,7 +11,10 @@ a test!
 
 4. Make the test pass.
 
-5. Push to your fork and submit a pull request.
+5. Update NEWS.md with a brief description of your changes under the HEAD
+   heading.
+
+6. Push to your fork and submit a pull request.
 
 
 At this point you're waiting on us. We like to at least comment on, if not
