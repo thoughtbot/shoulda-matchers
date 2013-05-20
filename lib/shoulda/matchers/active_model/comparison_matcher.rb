@@ -25,10 +25,9 @@ module Shoulda # :nodoc:
           disallows_value_of(value_to_compare)
         end
 
-        def failure_message
-          "Expected #{@subject.send(@attribute)} to be #{expectation} #{@value}"
+        def allowed_types
+          'integer'
         end
-
 
         private
 
