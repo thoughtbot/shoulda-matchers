@@ -1,29 +1,35 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ComparisonMatcher do
-  context 'with a model with a greater than validation' do
-    subject{ comparison_instance(:greater_than => 2) }
-    it { should matcher.is_greater_than(2) }
+  context 'is_greater_than' do
+    it { instance_with_validations(:greater_than => 2).should matcher.is_greater_than(2) }
+    it { instance_without_validations.should_not matcher.is_greater_than(2) }
   end
 
-  context 'with a model with a greater than or equal to validation' do
-    subject { comparison_instance(:greater_than_or_equal_to => 2) }
-    it { should matcher.is_greater_than_or_equal_to(2) }
+  context 'greater_than_or_equal_to' do
+    it { instance_with_validations(:greater_than_or_equal_to => 2).should matcher.is_greater_than_or_equal_to(2) }
+    it { instance_without_validations.should_not matcher.is_greater_than_or_equal_to(2) }
   end
 
-  context 'with a model with a less than validation' do
-    subject { comparison_instance(:less_than => 2) }
-    it { should matcher.is_less_than(2) }
+  context 'less_than' do
+    it { instance_with_validations(:less_than => 2).should matcher.is_less_than(2) }
+    it { instance_without_validations.should_not matcher.is_less_than(2) }
   end
 
-  context 'with a model with a less than or equal to validation' do
-    subject { comparison_instance(:less_than_or_equal_to => 2) }
-    it { should matcher.is_less_than_or_equal_to(2) }
+  context 'less_than_or_equal_to' do
+    it { instance_with_validations(:less_than_or_equal_to => 2).should matcher.is_less_than_or_equal_to(2) }
+    it { instance_without_validations.should_not matcher.is_less_than_or_equal_to(2) }
   end
 
-  def comparison_instance(options = {})
+  def instance_with_validations(options = {})
     define_model :example, :attr => :string do
       validates_numericality_of :attr, options
+      attr_accessible :attr
+    end.new
+  end
+
+  def instance_without_validations
+    define_model :example, :attr => :string do
       attr_accessible :attr
     end.new
   end
