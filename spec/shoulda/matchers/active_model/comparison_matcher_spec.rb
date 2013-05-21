@@ -29,6 +29,6 @@ describe Shoulda::Matchers::ActiveModel::ComparisonMatcher do
   end
 
   def matcher
-    validate_numericality_of(:attr)#.send("is_#{match}", val)
+    validate_numericality_of(:attr)
   end
 end

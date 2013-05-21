@@ -1,18 +1,14 @@
 module Shoulda # :nodoc:
   module Matchers
     module ActiveModel # :nodoc:
-
       # Examples:
       #   it { should validate_numericality_of(:attr).
       #                 is_greater_than(6).
       #                 less_than(20)...(and so on) }
-
-
       class ComparisonMatcher < ValidationMatcher
-
         def initialize(value, operator)
           @value = value
-          @options = { :operator => operator }
+          @operator = operator
         end
 
         def for(attribute)
@@ -32,7 +28,7 @@ module Shoulda # :nodoc:
         private
 
         def value_to_compare
-          case @options[:operator]
+          case @operator
             when :> then [@value, @value - 1].sample
             when :>= then @value - 1
             when :== then @value
@@ -42,7 +38,7 @@ module Shoulda # :nodoc:
         end
 
         def expectation
-          case @options[:operator]
+          case @operator
             when :> then "greater than"
             when :>= then "greater than or equal to"
             when :== then "equal to"
