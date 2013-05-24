@@ -34,10 +34,10 @@ module Shoulda # :nodoc:
           allow = allow_value_matcher(value, message)
 
           if allow.matches?(@subject)
-            @failure_message_for_should_not = allow.failure_message_for_should
+            @failure_message_for_should_not = allow.failure_message_for_should_not
             true
           else
-            @failure_message_for_should = allow.failure_message_for_should_not
+            @failure_message_for_should = allow.failure_message_for_should
             false
           end
         end
@@ -46,10 +46,10 @@ module Shoulda # :nodoc:
           disallow = disallow_value_matcher(value, message)
 
           if disallow.matches?(@subject)
-            @failure_message_for_should_not = disallow.failure_message_for_should
+            @failure_message_for_should_not = disallow.failure_message_for_should_not
             true
           else
-            @failure_message_for_should = disallow.failure_message_for_should_not
+            @failure_message_for_should = disallow.failure_message_for_should
             false
           end
         end
