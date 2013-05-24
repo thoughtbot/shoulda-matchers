@@ -29,8 +29,13 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
 
   context 'an ActiveModel class without a presence validation' do
     it 'rejects' do
-      define_active_model_class('Example', :accessors => [:attr]).new.
-        should_not matcher
+      active_model.should_not matcher
+    end
+
+    it 'provides the correct failure message' do
+      message = %{Expected errors to include "can't be blank" when attr is set to nil, got no errors}
+
+      expect { active_model.should matcher }.to fail_with_message(message)
     end
   end
 
@@ -125,10 +130,12 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
     end.new
   end
 
+  def active_model(&block)
+    define_active_model_class('Example', :accessors => [:attr], &block).new
+  end
+
   def active_model_validating_presence
-    define_active_model_class('Example', :accessors => [:attr]) do
-      validates_presence_of :attr
-    end.new
+    active_model { validates_presence_of :attr }
   end
 
   def has_many_children(options = {})
