@@ -5,6 +5,9 @@
 * Fix `validate_uniqueness_of.scoped_to` issue when the scoped field is already
   taken (#207).
 
+* Add comparison submatchers to `validate_numericality_of` to correspond to the
+  comparison options you can give to `validates_numericality_of` (#244).
+
 # v 2.1.0
 
 * Add missing `failure_message_for_should_not` implementations to
