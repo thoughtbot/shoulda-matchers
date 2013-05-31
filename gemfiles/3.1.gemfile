@@ -12,5 +12,6 @@ gem "therubyrhino", :platform=>:jruby
 gem "rails", "~> 3.1.8"
 gem "jquery-rails"
 gem "sass-rails"
+gem "bcrypt-ruby"
 
 gemspec :path=>"../"

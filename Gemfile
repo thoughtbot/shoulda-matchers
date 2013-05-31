@@ -5,6 +5,7 @@ gemspec
 # For test Rails application
 gem 'shoulda-context', '~> 1.0.0'
 gem 'sqlite3', :platform => :ruby
+gem 'bcrypt-ruby'
 
 # Can't wrap in platform :jruby do...end block because appraisal doesn't support
 # it
