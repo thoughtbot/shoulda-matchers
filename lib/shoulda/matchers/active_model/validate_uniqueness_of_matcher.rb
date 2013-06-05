@@ -106,7 +106,7 @@ module Shoulda # :nodoc:
 
         def ensure_nil_record_in_database
           unless existing_record_is_nil?
-            create_record_in_database(nil_value: true)
+            create_record_in_database(:nil_value => true)
           end
         end
 
