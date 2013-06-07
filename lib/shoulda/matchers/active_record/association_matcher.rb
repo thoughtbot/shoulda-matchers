@@ -76,21 +76,44 @@ module Shoulda # :nodoc:
           @macro = macro
           @name = name
           @options = {}
+          @submatchers = []
+          @missing = ''
         end
 
         def through(through)
-          @options[:through] = through
+          through_matcher = AssociationMatchers::ThroughMatcher.new(through, @name)
+          add_submatcher(through_matcher)
           self
         end
 
         def dependent(dependent)
-          @options[:dependent] = dependent
+          dependent_matcher = AssociationMatchers::DependentMatcher.new(dependent, @name)
+          add_submatcher(dependent_matcher)
           self
         end
 
         def order(order)
-          @options[:order] = order
+          order_matcher = AssociationMatchers::OrderMatcher.new(order, @name)
+          add_submatcher(order_matcher)
           self
+        end
+
+        def add_submatcher(matcher)
+          @submatchers << matcher
+        end
+
+        def submatchers_match?
+          failing_submatchers.empty?
+        end
+
+        def submatcher_failure_messages
+          failing_submatchers.map(&:failure_message_for_should)
+        end
+
+        def failing_submatchers
+          @failing_submatchers ||= @submatchers.select do |matcher|
+            !matcher.matches?(@subject)
+          end
         end
 
         def conditions(conditions)
@@ -123,18 +146,20 @@ module Shoulda # :nodoc:
           association_exists? &&
             macro_correct? &&
             foreign_key_exists? &&
-            through_association_valid? &&
-            dependent_correct? &&
             class_name_correct? &&
-            order_correct? &&
             conditions_correct? &&
             join_table_exists? &&
             validate_correct? &&
-            touch_correct?
+            touch_correct? &&
+            submatchers_match?
         end
 
         def failure_message_for_should
-          "Expected #{expectation} (#{@missing})"
+          "Expected #{expectation} (#{missing})"
+        end
+
+        def missing
+          [[@missing] + failing_submatchers.map(&:missing_option)].compact.join
         end
 
         def failure_message_for_should_not
@@ -143,11 +168,8 @@ module Shoulda # :nodoc:
 
         def description
           description = "#{macro_description} #{@name}"
-          description += " through #{@options[:through]}"          if @options.key?(:through)
-          description += " dependent => #{@options[:dependent]}"   if @options.key?(:dependent)
           description += " class_name => #{@options[:class_name]}" if @options.key?(:class_name)
-          description += " order => #{@options[:order]}"           if @options.key?(:order)
-          description
+          [description, @submatchers.map(&:description)].flatten.join(' ')
         end
 
         protected
@@ -184,57 +206,12 @@ module Shoulda # :nodoc:
             !class_has_foreign_key?(associated_class)
         end
 
-        def through_association_valid?
-          @options[:through].nil? || (through_association_exists? && through_association_correct?)
-        end
-
-        def through_association_exists?
-          if through_reflection.nil?
-            @missing = "#{model_class.name} does not have any relationship to #{@options[:through]}"
-            false
-          else
-            true
-          end
-        end
-
-        def through_association_correct?
-          if @options[:through] == reflection.options[:through]
-            true
-          else
-            @missing = "Expected #{model_class.name} to have #{@name} through #{@options[:through]}, " +
-              "but got it through #{reflection.options[:through]}"
-            false
-          end
-        end
-
-        def dependent_correct?
-          if @options[:dependent].nil? || @options[:dependent].to_s == reflection.options[:dependent].to_s
-            true
-          else
-            @missing = "#{@name} should have #{@options[:dependent]} dependency"
-            false
-          end
-        end
-
         def class_name_correct?
           if @options.key?(:class_name)
             if @options[:class_name].to_s == reflection.klass.to_s
               true
             else
               @missing = "#{@name} should resolve to #{@options[:class_name]} for class_name"
-              false
-            end
-          else
-            true
-          end
-        end
-
-        def order_correct?
-          if @options.key?(:order)
-            if @options[:order].to_s == reflection.options[:order].to_s
-              true
-            else
-              @missing = "#{@name} should be ordered by #{@options[:order]}"
               false
             end
           else
@@ -344,10 +321,6 @@ module Shoulda # :nodoc:
           else
             reflection
           end
-        end
-
-        def through_reflection
-          @through_reflection ||= model_class.reflect_on_association(@options[:through])
         end
 
         def expectation

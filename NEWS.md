@@ -1,5 +1,8 @@
 # HEAD
 
+* Extracted `#order`, `#through`, and `#dependent` from AssociationMatcher as
+their own submatchers.
+
 # v 2.2.0
 
 * Fix `have_and_belong_to_many` matcher issue for Rails 4.
