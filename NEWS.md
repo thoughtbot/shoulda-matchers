@@ -1,5 +1,7 @@
 # HEAD
 
+# v 2.2.0
+
 * Fix `have_and_belong_to_many` matcher issue for Rails 4.
 
 * Fix `validate_uniqueness_of.scoped_to` issue when the scoped field is already
