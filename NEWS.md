@@ -1,5 +1,7 @@
 # HEAD
 
+* Changed the scope of AssociationMatcher methods from protected to private.
+
 * Extracted `#order`, `#through`, and `#dependent` from AssociationMatcher as
 their own submatchers.
 

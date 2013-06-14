@@ -98,24 +98,6 @@ module Shoulda # :nodoc:
           self
         end
 
-        def add_submatcher(matcher)
-          @submatchers << matcher
-        end
-
-        def submatchers_match?
-          failing_submatchers.empty?
-        end
-
-        def submatcher_failure_messages
-          failing_submatchers.map(&:failure_message_for_should)
-        end
-
-        def failing_submatchers
-          @failing_submatchers ||= @submatchers.select do |matcher|
-            !matcher.matches?(@subject)
-          end
-        end
-
         def conditions(conditions)
           @options[:conditions] = conditions
           self
@@ -141,6 +123,20 @@ module Shoulda # :nodoc:
           self
         end
 
+        def description
+          description = "#{macro_description} #{@name}"
+          description += " class_name => #{@options[:class_name]}" if @options.key?(:class_name)
+          [description, @submatchers.map(&:description)].flatten.join(' ')
+        end
+
+        def failure_message_for_should
+          "Expected #{expectation} (#{missing})"
+        end
+
+        def failure_message_for_should_not
+          "Did not expect #{expectation}"
+        end
+
         def matches?(subject)
           @subject = subject
           association_exists? &&
@@ -154,25 +150,38 @@ module Shoulda # :nodoc:
             submatchers_match?
         end
 
-        def failure_message_for_should
-          "Expected #{expectation} (#{missing})"
+        private
+
+        def add_submatcher(matcher)
+          @submatchers << matcher
+        end
+
+        def macro_description
+          case @macro.to_s
+          when 'belongs_to'
+            'belong to'
+          when 'has_many'
+            'have many'
+          when 'has_one'
+            'have one'
+          when 'has_and_belongs_to_many'
+            'have and belong to many'
+          end
+        end
+
+        def expectation
+          "#{model_class.name} to have a #{@macro} association called #{@name}"
         end
 
         def missing
-          [[@missing] + failing_submatchers.map(&:missing_option)].compact.join
+          [@missing, failing_submatchers.map(&:missing_option)].flatten.join
         end
 
-        def failure_message_for_should_not
-          "Did not expect #{expectation}"
+        def failing_submatchers
+          @failing_submatchers ||= @submatchers.select do |matcher|
+            !matcher.matches?(@subject)
+          end
         end
-
-        def description
-          description = "#{macro_description} #{@name}"
-          description += " class_name => #{@options[:class_name]}" if @options.key?(:class_name)
-          [description, @submatchers.map(&:description)].flatten.join(' ')
-        end
-
-        protected
 
         def association_exists?
           if reflection.nil?
@@ -181,6 +190,10 @@ module Shoulda # :nodoc:
           else
             true
           end
+        end
+
+        def reflection
+          @reflection ||= model_class.reflect_on_association(@name)
         end
 
         def macro_correct?
@@ -200,10 +213,22 @@ module Shoulda # :nodoc:
           @macro == :belongs_to && !class_has_foreign_key?(model_class)
         end
 
+        def model_class
+          @subject.class
+        end
+
         def has_foreign_key_missing?
           [:has_many, :has_one].include?(@macro) &&
             !through? &&
             !class_has_foreign_key?(associated_class)
+        end
+
+        def through?
+          reflection.options[:through]
+        end
+
+        def associated_class
+          reflection.klass
         end
 
         def class_name_correct?
@@ -281,20 +306,12 @@ module Shoulda # :nodoc:
           end
         end
 
-        def model_class
-          @subject.class
-        end
-
         def join_table
           if reflection.respond_to? :join_table
             reflection.join_table.to_s
           else
             reflection.options[:join_table].to_s
           end
-        end
-
-        def associated_class
-          reflection.klass
         end
 
         def foreign_key
@@ -307,14 +324,6 @@ module Shoulda # :nodoc:
           end
         end
 
-        def through?
-          reflection.options[:through]
-        end
-
-        def reflection
-          @reflection ||= model_class.reflect_on_association(@name)
-        end
-
         def foreign_key_reflection
           if [:has_one, :has_many].include?(@macro) && reflection.options.include?(:inverse_of)
             associated_class.reflect_on_association(reflection.options[:inverse_of])
@@ -323,21 +332,8 @@ module Shoulda # :nodoc:
           end
         end
 
-        def expectation
-          "#{model_class.name} to have a #{@macro} association called #{@name}"
-        end
-
-        def macro_description
-          case @macro.to_s
-          when 'belongs_to'
-            'belong to'
-          when 'has_many'
-            'have many'
-          when 'has_one'
-            'have one'
-          when 'has_and_belongs_to_many'
-            'have and belong to many'
-          end
+        def submatchers_match?
+          failing_submatchers.empty?
         end
       end
     end
