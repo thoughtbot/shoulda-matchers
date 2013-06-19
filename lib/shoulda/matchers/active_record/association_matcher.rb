@@ -98,6 +98,12 @@ module Shoulda # :nodoc:
           self
         end
 
+        def counter_cache(counter_cache = true)
+          counter_cache_matcher = AssociationMatchers::CounterCacheMatcher.new(counter_cache, name)
+          add_submatcher(counter_cache_matcher)
+          self
+        end
+
         def conditions(conditions)
           @options[:conditions] = conditions
           self

@@ -1,5 +1,7 @@
 # HEAD
 
+* Add a `counter_cache` submatcher for `belongs_to` associations
+
 * Add a rescue_from matcher for Rails controllers which checks that the correct
   ActiveSupport call has been made and that the handlers exist without actually
   throwing an exception.
