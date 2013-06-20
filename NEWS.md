@@ -12,6 +12,9 @@ their own submatchers.
 # v 2.2.0
 
 * Fix `have_and_belong_to_many` matcher issue for Rails 4.
+* Add a rescue_from matcher for Rails controllers which checks that the correct
+  ActiveSupport call has been made and that the handlers exist without actually
+  throwing an exception.
 
 * Fix `validate_uniqueness_of.scoped_to` issue when the scoped field is already
   taken (#207).
