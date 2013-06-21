@@ -1,5 +1,5 @@
 PATH
-  remote: /Users/derek/src/shoulda-matchers
+  remote: ../
   specs:
     shoulda-matchers (2.2.0)
       activesupport (>= 3.0.0)

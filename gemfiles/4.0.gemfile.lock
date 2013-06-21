@@ -1,5 +1,5 @@
 PATH
-  remote: /Users/elliot/code/work/ours/shoulda-matchers
+  remote: ../
   specs:
     shoulda-matchers (2.1.0)
       activesupport (>= 3.0.0)
