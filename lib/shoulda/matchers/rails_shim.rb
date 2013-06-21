@@ -18,6 +18,10 @@ module Shoulda # :nodoc:
         end
       end
 
+      def self.discard_ivar
+        :@discard
+      end
+
       def self.association_conditions(reflection)
         if rails_major_version >= 4
           reflection.scope &&
