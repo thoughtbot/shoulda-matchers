@@ -15,6 +15,24 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher do
     end
   end
 
+  context "an attribute with a context-dependent validation" do
+    context "without the validation context" do
+      it "does not match" do
+        validating_format(:with => /abc/, :on => :customisable).should_not matcher("xyz").for(:attr)
+      end
+    end
+
+    context "with the validation context" do
+      it "disallows a bad value" do
+        validating_format(:with => /abc/, :on => :customisable).should matcher("xyz").for(:attr).on(:customisable)
+      end
+
+      it "does not match a good value" do
+        validating_format(:with => /abc/, :on => :customisable).should_not matcher("abcde").for(:attr).on(:customisable)
+      end
+    end
+  end
+
   context 'an attribute with a format validation and a custom message' do
     it 'does not match if the value and message are both correct' do
       validating_format(:with => /abc/, :message => 'good message').

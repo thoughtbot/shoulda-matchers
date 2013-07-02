@@ -15,6 +15,11 @@ module Shoulda # :nodoc:
           self
         end
 
+        def on(context)
+          @allow_matcher.on(context)
+          self
+        end
+
         def with_message(message)
           @allow_matcher.with_message(message)
           self
