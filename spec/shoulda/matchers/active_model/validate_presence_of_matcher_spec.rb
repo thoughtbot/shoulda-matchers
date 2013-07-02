@@ -120,6 +120,20 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
     end
   end
 
+  context "an attribute with a context-dependent validation" do
+    context "without the validation context" do
+      it "does not match" do
+        validating_presence(:on => :customisable).should_not matcher
+      end
+    end
+
+    context "with the validation context" do
+      it "matches" do
+        validating_presence(:on => :customisable).should matcher.on(:customisable)
+      end
+    end
+  end
+
   def matcher
     validate_presence_of(:attr)
   end

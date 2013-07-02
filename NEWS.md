@@ -1,5 +1,7 @@
 # HEAD
 
+* Fix context support for validation matchers and disallowed values.
+
 * Add a `counter_cache` submatcher for `belongs_to` associations
 
 * Add a rescue_from matcher for Rails controllers which checks that the correct
