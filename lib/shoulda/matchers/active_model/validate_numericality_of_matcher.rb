@@ -122,7 +122,7 @@ module Shoulda # :nodoc:
         end
 
         def failing_submatchers
-          @failing_submatchers ||= @submatchers.select { |matcher| !matcher.matches?(@subject.dup) }
+          @failing_submatchers ||= @submatchers.select { |matcher| !matcher.matches?(@subject) }
         end
 
         def allowed_types
