@@ -121,6 +121,19 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
     end
   end
 
+  context 'when the subject is stubbed' do
+    it 'retains stubs on submatchers' do
+      subject = define_model :example, :attr => :string do
+        validates_numericality_of :attr, :odd => true
+        before_validation :set_attr!
+        def set_attr!; self.attr = 5 end
+      end.new
+
+      subject.stubs(:set_attr!)
+      subject.should matcher.odd
+    end
+  end
+
   def validating_numericality(options = {})
     define_model :example, :attr => :string do
       validates_numericality_of :attr, options
