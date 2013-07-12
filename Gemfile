@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gemspec
 
 # For test Rails application
-gem 'shoulda-context', '~> 1.0.0'
+gem 'shoulda-context', '~> 1.1.2'
 gem 'sqlite3', :platform => :ruby
 
 # Can't wrap in platform :jruby do...end block because appraisal doesn't support
