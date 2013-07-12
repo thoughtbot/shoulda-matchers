@@ -16,9 +16,9 @@ module Shoulda # :nodoc:
           end
 
           def matches?(subject)
-            subject = ModelReflector.new(subject, name)
+            self.subject = ModelReflector.new(subject, name)
 
-            if subject.option_set_properly?(counter_cache, :counter_cache)
+            if option_verifier.correct_for_string?(:counter_cache, counter_cache)
               true
             else
               self.missing_option = "#{name} should have #{description}"
@@ -27,7 +27,12 @@ module Shoulda # :nodoc:
           end
 
           private
-          attr_accessor :counter_cache, :name
+
+          def option_verifier
+            @option_verifier ||= OptionVerifier.new(subject)
+          end
+
+          attr_accessor :subject, :counter_cache, :name
         end
       end
     end

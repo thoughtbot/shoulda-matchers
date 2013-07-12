@@ -20,15 +20,28 @@ module Shoulda # :nodoc:
             subject.class
           end
 
-          def option_string(key)
-            reflection.options[key].to_s
+          def associated_class
+            reflection.klass
           end
 
-          def option_set_properly?(option, option_key)
-            option.to_s == option_string(option_key)
+          def through?
+            reflection.options[:through]
+          end
+
+          def join_table
+            if reflection.respond_to? :join_table
+              reflection.join_table.to_s
+            else
+              reflection.options[:join_table].to_s
+            end
+          end
+
+          def where_conditions
+            RailsShim.association_conditions(reflection)
           end
 
           private
+
           attr_reader :subject, :name
         end
       end

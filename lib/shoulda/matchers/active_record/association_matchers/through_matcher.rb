@@ -38,17 +38,22 @@ module Shoulda # :nodoc:
           end
 
           def through_association_correct?
-            if subject.option_set_properly?(through, :through)
+            if option_verifier.correct_for_string?(:through, through)
               true
             else
               self.missing_option =
                 "Expected #{name} to have #{name} through #{through}, " +
-                "but got it through #{subject.option_string(:through)}"
+                "but got it through #{option_verifier.actual_value_for(:through)}"
               false
             end
           end
 
           private
+
+          def option_verifier
+            @option_verifier ||= OptionVerifier.new(subject)
+          end
+
           attr_accessor :through, :name, :subject
         end
       end
