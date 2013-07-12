@@ -1,7 +1,7 @@
 PATH
   remote: ../
   specs:
-    shoulda-matchers (2.1.0)
+    shoulda-matchers (2.2.0)
       activesupport (>= 3.0.0)
 
 GEM
