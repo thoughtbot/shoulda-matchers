@@ -80,7 +80,7 @@ When 'I configure a wildcard route' do
     When I write to "config/routes.rb" with:
     """
     Rails.application.routes.draw do
-      match ':controller(/:action(/:id(.:format)))'
+      get ':controller(/:action(/:id(.:format)))'
     end
     """
   }
@@ -108,6 +108,29 @@ When /^I install gems$/ do
   steps %{When I run `bundle install --local`}
 end
 
+Then /^the output should indicate that (\d+) tests? (?:was|were) run/ do |number|
+  # Rails 4 has slightly different output than Rails 3 due to
+  # Test::Unit::TestCase -> MiniTest
+  if rails_4?
+    steps %{Then the output should contain "#{number} tests, #{number} assertions, 0 failures, 0 errors, 0 skips"}
+  else
+    steps %{Then the output should contain "#{number} tests, #{number} assertions, 0 failures, 0 errors"}
+  end
+end
+
+Then /^the output should indicate that (\d+) unit and (\d+) functional tests? were run/ do |n1, n2|
+  n1 = n1.to_i
+  n2 = n2.to_i
+  total = n1.to_i + n2.to_i
+  # Rails 3 runs separate test suites in separate processes, but Rails 4 does
+  # not, so that's why we have to check for different things here
+  if rails_4?
+    steps %{Then the output should contain "#{total} tests, #{total} assertions, 0 failures, 0 errors, 0 skips"}
+  else
+    steps %{Then the output should match /#{n1} tests, #{n1} assertions, 0 failures, 0 errors.+#{n2} tests, #{n2} assertions, 0 failures, 0 errors/}
+  end
+end
+
 module FileHelpers
   def append_to(path, contents)
     in_current_dir do
@@ -128,6 +151,11 @@ module FileHelpers
       gemfile.sub!(/^(\s*)(gem\s*['"]#{gemname})/, "\\1# \\2")
       File.open('Gemfile', 'w'){ |file| file.write(gemfile) }
     end
+  end
+
+  def rails_4?
+    match = ORIGINAL_BUNDLE_VARS['BUNDLE_GEMFILE'].match(/(\d)\.\d\.gemfile$/)
+    match.captures[0] == '4'
   end
 end
 
