@@ -59,6 +59,11 @@ module Shoulda # :nodoc:
           @options[:allow_nil] = true
           self
         end
+        
+        def use_string(use)
+          @use_string = use
+          self
+        end
 
         def description
           result = "require "
@@ -118,7 +123,7 @@ module Shoulda # :nodoc:
           if options[:nil_value]
             value = nil
           else
-            value = "arbitrary_string"
+            value = "arbitrary_string" unless @use_string
           end
 
           @subject.class.new.tap do |instance|
