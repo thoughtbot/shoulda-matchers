@@ -60,8 +60,8 @@ module Shoulda # :nodoc:
           self
         end
         
-        def use_string(use)
-          @use_string = use
+        def with_given_value(value)
+          @give_value = value
           self
         end
 
@@ -123,7 +123,7 @@ module Shoulda # :nodoc:
           if options[:nil_value]
             value = nil
           else
-            value = "arbitrary_string" unless @use_string
+            value = @give_value || "arbitrary_string"
           end
 
           @subject.class.new.tap do |instance|
