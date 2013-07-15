@@ -59,6 +59,11 @@ module Shoulda # :nodoc:
           @options[:allow_nil] = true
           self
         end
+        
+        def with_given_value(value)
+          @give_value = value
+          self
+        end
 
         def description
           result = "require "
@@ -118,7 +123,7 @@ module Shoulda # :nodoc:
           if options[:nil_value]
             value = nil
           else
-            value = "arbitrary_string"
+            value = @give_value || "arbitrary_string"
           end
 
           @subject.class.new.tap do |instance|
