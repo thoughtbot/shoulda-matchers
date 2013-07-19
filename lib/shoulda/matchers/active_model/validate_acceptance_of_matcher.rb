@@ -2,7 +2,7 @@ module Shoulda # :nodoc:
   module Matchers
     module ActiveModel # :nodoc:
 
-      # Ensures that the model cannot be saved the given attribute is not
+      # Ensures that the model cannot be saved if the given attribute is not
       # accepted.
       #
       # Options:
