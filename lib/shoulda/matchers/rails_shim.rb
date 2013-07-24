@@ -45,6 +45,14 @@ module Shoulda # :nodoc:
         end
       end
 
+      def self.validates_confirmation_of_error_attribute(matcher)
+        if rails_major_version == 4
+          matcher.confirmation_attribute
+        else
+          matcher.attribute
+        end
+      end
+
       def self.rails_major_version
         Rails::VERSION::MAJOR
       end

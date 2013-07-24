@@ -13,9 +13,11 @@ module Shoulda # :nodoc:
       class ValidateConfirmationOfMatcher < ValidationMatcher # :nodoc:
         include Helpers
 
+        attr_reader :attribute, :confirmation_attribute
+
         def initialize(attribute)
           @attribute = attribute
-          @confirmation = "#{attribute}_confirmation"
+          @confirmation_attribute = "#{attribute}_confirmation"
         end
 
         def with_message(message)
@@ -24,7 +26,7 @@ module Shoulda # :nodoc:
         end
 
         def description
-          "require #{@confirmation} to match #{@attribute}"
+          "require #{@confirmation_attribute} to match #{@attribute}"
         end
 
         def matches?(subject)
@@ -40,24 +42,34 @@ module Shoulda # :nodoc:
 
         def disallows_different_value
           set_confirmation('some value')
-          disallows_value_of('different value', @message)
+          matcher_with_message(:disallows_value_of, 'different value')
         end
 
         def allows_same_value
           set_confirmation('same value')
-          allows_value_of('same value', @message)
+          matcher_with_message(:allows_value_of, 'same value')
         end
 
         def allows_missing_confirmation
           set_confirmation(nil)
-          allows_value_of('any value', @message)
+          matcher_with_message(:allows_value_of, 'any value')
         end
 
         def set_confirmation(val)
-          setter = :"#{@confirmation}="
+          setter = :"#{@confirmation_attribute}="
           if @subject.respond_to?(setter)
             @subject.send(setter, val)
           end
+        end
+
+        def matcher_with_message(allows_or_disallows_value_of, value)
+          __send__(allows_or_disallows_value_of, value) do |matcher|
+            matcher.with_message(@message, against: error_attribute)
+          end
+        end
+
+        def error_attribute
+          RailsShim.validates_confirmation_of_error_attribute(self)
         end
       end
     end
