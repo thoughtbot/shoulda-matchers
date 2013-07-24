@@ -30,8 +30,9 @@ module Shoulda # :nodoc:
 
         private
 
-        def allows_value_of(value, message = nil)
+        def allows_value_of(value, message = nil, &block)
           allow = allow_value_matcher(value, message)
+          yield allow if block_given?
 
           if allow.matches?(@subject)
             @failure_message_for_should_not = allow.failure_message_for_should_not
@@ -42,8 +43,9 @@ module Shoulda # :nodoc:
           end
         end
 
-        def disallows_value_of(value, message = nil)
+        def disallows_value_of(value, message = nil, &block)
           disallow = disallow_value_matcher(value, message)
+          yield disallow if block_given?
 
           if disallow.matches?(@subject)
             @failure_message_for_should_not = disallow.failure_message_for_should_not

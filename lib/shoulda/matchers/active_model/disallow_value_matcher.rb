@@ -20,8 +20,8 @@ module Shoulda # :nodoc:
           self
         end
 
-        def with_message(message)
-          @allow_matcher.with_message(message)
+        def with_message(message, options={})
+          @allow_matcher.with_message(message, options)
           self
         end
 

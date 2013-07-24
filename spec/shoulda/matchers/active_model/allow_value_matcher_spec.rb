@@ -56,6 +56,30 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
     end
   end
 
+  context 'an attribute where the message occurs on another attribute' do
+    it 'allows a good value' do
+      record_with_custom_validation.should \
+        allow_value('good value').for(:attr).with_message(/some message/, :against => :attr2)
+    end
+
+    it 'rejects a bad value' do
+      record_with_custom_validation.should_not \
+        allow_value('bad value').for(:attr).with_message(/some message/, :against => :attr2)
+    end
+
+    def record_with_custom_validation
+      define_model :example, :attr => :string, :attr2 => :string do
+        validate :custom_validation
+
+        def custom_validation
+          if self[:attr] != 'good value'
+            self.errors[:attr2] << 'some message'
+          end
+        end
+      end.new
+    end
+  end
+
   context "an attribute with a context-dependent validation" do
     context "without the validation context" do
       it "allows a bad value" do

@@ -55,6 +55,30 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher do
     end
   end
 
+  context 'an attribute where the message occurs on another attribute' do
+    it 'matches if the message is correct but the value is not' do
+      record_with_custom_validation.should \
+        matcher('bad value').for(:attr).with_message(/some message/, :against => :attr2)
+    end
+
+    it 'does not match if the value and message are both correct' do
+      record_with_custom_validation.should_not \
+        matcher('good value').for(:attr).with_message(/some message/, :against => :attr2)
+    end
+
+    def record_with_custom_validation
+      define_model :example, :attr => :string, :attr2 => :string do
+        validate :custom_validation
+
+        def custom_validation
+          if self[:attr] != 'good value'
+            self.errors[:attr2] << 'some message'
+          end
+        end
+      end.new
+    end
+  end
+
   def matcher(value)
     described_class.new(value)
   end
