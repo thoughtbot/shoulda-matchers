@@ -20,9 +20,9 @@ appraise '3.2' do
 end
 
 appraise '4.0' do
-  gem 'rails', '4.0.0.rc1'
+  gem 'rails', '4.0.0'
   gem 'jquery-rails'
-  gem 'sass-rails', '~> 4.0.0.rc1'
+  gem 'sass-rails', '~> 4.0.0'
 
   # Test suite makes heavy use of attr_accessible
   gem 'protected_attributes'
