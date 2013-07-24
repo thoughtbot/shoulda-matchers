@@ -37,7 +37,7 @@ module Shoulda # :nodoc:
           end
 
           def association_relation
-            if reflection.scope
+            if reflection.respond_to?(:scope) && reflection.scope
               relation_from_scope(reflection.scope)
             else
               options = reflection.options
