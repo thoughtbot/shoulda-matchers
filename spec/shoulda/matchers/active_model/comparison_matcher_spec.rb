@@ -21,6 +21,11 @@ describe Shoulda::Matchers::ActiveModel::ComparisonMatcher do
     it { instance_without_validations.should_not matcher.is_less_than_or_equal_to(2) }
   end
 
+  context 'is_equal_to' do
+    it { instance_with_validations(:equal_to => 0).should matcher.is_equal_to(0) }
+    it { instance_without_validations.should_not matcher.is_equal_to(0) }
+  end
+
   def instance_with_validations(options = {})
     define_model :example, :attr => :string do
       validates_numericality_of :attr, options

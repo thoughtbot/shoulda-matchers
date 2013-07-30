@@ -31,7 +31,7 @@ module Shoulda # :nodoc:
           case @operator
             when :> then [@value, @value - 1].sample
             when :>= then @value - 1
-            when :== then @value
+            when :== then @value + 1
             when :< then [@value, @value + 1].sample
             when :<= then @value + 1
           end
