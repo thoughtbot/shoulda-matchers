@@ -77,14 +77,6 @@ module Shoulda # :nodoc:
             allows_nil?
         end
 
-        def description
-          result = 'require '
-          result << 'case sensitive ' unless @options[:case_insensitive]
-          result << "unique value for #{@attribute}"
-          result << " scoped to #{@options[:scopes].join(', ')}" if @options[:scopes].present?
-          result
-        end
-
         private
 
         def allows_nil?
