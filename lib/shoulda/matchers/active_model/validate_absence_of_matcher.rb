@@ -7,16 +7,16 @@ module Shoulda # :nodoc:
       #
       # Options:
       # * <tt>with_message</tt> - value the test expects to find in
-      # * <tt>of_type</tt> - db column type (:integer or :string)
-      # * <tt>errors.on(:attribute)</tt>. <tt>Regexp</tt> or <tt>String</tt>.
+      #   <tt>errors.on(:attribute)</tt>. <tt>Regexp</tt> or <tt>String</tt>.
       #   Defaults to the translation for <tt>:present</tt>.
+      # * <tt>of_type</tt> - db column type (:integer or :string)
       #
       # Examples:
       #   it { should validate_absence_of(:name) }
-      #   it { should validate_absence_of(:user_id).
-      #                 of_type(:integer) }
       #   it { should validate_absence_of(:name).
       #                 with_message(/must be left blank/) }
+      #   it { should validate_absence_of(:user_id).
+      #                 of_type(:integer) }
       #
       def validate_absence_of(attr)
         ValidateAbsenceOfMatcher.new(attr)
