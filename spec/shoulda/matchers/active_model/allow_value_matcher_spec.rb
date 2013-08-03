@@ -110,7 +110,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
       matcher = described_class.new('foo').for(:attr)
       matcher.description
 
-      expect { matcher.matches?(model) }.not_to raise_error(NoMethodError)
+      expect { matcher.matches?(model) }.not_to raise_error
     end
   end
 

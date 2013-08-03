@@ -118,7 +118,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureLengthOfMatcher do
       it "does not raise an exception" do
         expect {
           validating_length(:maximum => 4).should ensure_length_of(:attr).is_at_most(4)
-        }.to_not raise_exception(I18n::MissingInterpolationArgument)
+        }.to_not raise_exception
       end
     end
 
@@ -132,7 +132,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureLengthOfMatcher do
       it "does not raise an exception" do
         expect {
           validating_length(:minimum => 4).should ensure_length_of(:attr).is_at_least(4)
-        }.to_not raise_exception(I18n::MissingInterpolationArgument)
+        }.to_not raise_exception
       end
     end
 
@@ -146,7 +146,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureLengthOfMatcher do
       it "does not raise an exception" do
         expect {
           validating_length(:is => 4).should ensure_length_of(:attr).is_equal_to(4)
-        }.to_not raise_exception(I18n::MissingInterpolationArgument)
+        }.to_not raise_exception
       end
     end
   end
