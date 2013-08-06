@@ -1,5 +1,7 @@
 # HEAD
 
+* Add support for PostgreSQL UUID columns to `validates_uniqueness_of` (#334).
+
 * Fix `validates_numericality_of` so that `is_equal_to` submatcher works
   correctly (#326).
 

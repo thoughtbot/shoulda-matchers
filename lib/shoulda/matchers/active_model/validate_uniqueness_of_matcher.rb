@@ -197,6 +197,8 @@ module Shoulda # :nodoc:
             '0'
           elsif column.type == :datetime
             DateTime.now
+          elsif column.type == :uuid
+            SecureRandom.uuid
           else
             0
           end
