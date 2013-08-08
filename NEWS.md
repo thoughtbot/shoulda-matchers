@@ -1,5 +1,7 @@
 # HEAD
 
+* Fix `is_equal_to` submatcher bug for `validates_numericality_of`
+
 * Fix context support for validation matchers and disallowed values.
 
 * Add a `counter_cache` submatcher for `belongs_to` associations
