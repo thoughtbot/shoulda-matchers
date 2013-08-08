@@ -25,12 +25,12 @@ module Shoulda # :nodoc:
       class ValidateAbsenceOfMatcher < ValidationMatcher # :nodoc:
 
         def with_message(message)
-          @expected_message = message if message
+          @expected_message = message
           self
         end
 
         def of_type(type)
-          @type = type if type
+          @type = type
         end
 
         def matches?(subject)
