@@ -7,6 +7,7 @@ if RUBY_VERSION < '2.0'
     gem 'rails', '~> 3.1.8'
     gem 'jquery-rails'
     gem 'sass-rails'
+    gem 'bcrypt-ruby'
   end
 end
 
@@ -14,4 +15,5 @@ appraise '3.2' do
   gem 'rails', '~> 3.2.13'
   gem 'jquery-rails'
   gem 'sass-rails'
+  gem 'bcrypt-ruby'
 end

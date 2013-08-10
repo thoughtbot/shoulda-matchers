@@ -4,6 +4,7 @@ source "https://rubygems.org"
 
 gem "shoulda-context", "~> 1.0.0"
 gem "sqlite3", :platform=>:ruby
+gem "bcrypt-ruby"
 gem "activerecord-jdbc-adapter", :platform=>:jruby
 gem "activerecord-jdbcsqlite3-adapter", :platform=>:jruby
 gem "jdbc-sqlite3", :platform=>:jruby
