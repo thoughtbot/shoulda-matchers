@@ -131,6 +131,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
             should_not matcher.scoped_to(:scope1, :scope2, :other)
         end
       end
+
+      context 'when too broad of a scope is specified' do
+        it 'rejects' do
+          validating_scoped_uniqueness([:scope1, :scope2], :date, :scope1 => Date.today, :scope2 => Date.today).
+            should_not matcher.scoped_to(:scope1)
+        end
+      end
     end
 
     context 'when the scoped attribute is a datetime' do
@@ -157,6 +164,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
         it 'rejects' do
           validating_scoped_uniqueness([:scope1, :scope2], :datetime, :scope1 => DateTime.now, :scope2 => DateTime.now).
             should_not matcher.scoped_to(:scope1, :scope2, :other)
+        end
+      end
+
+      context 'when too broad of a scope is specified' do
+        it 'rejects' do
+          validating_scoped_uniqueness([:scope1, :scope2], :datetime, :scope1 => DateTime.now, :scope2 => DateTime.now).
+            should_not matcher.scoped_to(:scope1)
         end
       end
     end
