@@ -159,13 +159,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
             should_not matcher.scoped_to(:scope1, :scope2, :other)
         end
       end
-
-      context 'with an existing record that conflicts with scope.next' do
-        it 'accepts' do
-          validating_scoped_uniqueness_with_conflicting_next(:scope1, :scope1 => 1).
-            should matcher.scoped_to(:scope1)
-        end
-      end
     end
 
     context 'when the scoped attribute is a uuid' do
