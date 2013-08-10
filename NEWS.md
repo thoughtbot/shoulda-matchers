@@ -3,18 +3,18 @@
 * Fix `validates_numericality_of` so that `is_equal_to` submatcher works
   correctly (#326).
 
-* Fix context support for validation matchers and disallowed values.
+* Fix context support for validation matchers and disallowed values (#313).
 
-* Add a `counter_cache` submatcher for `belongs_to` associations
+* Add a `counter_cache` submatcher for `belongs_to` associations (#311).
 
-* Add a rescue_from matcher for Rails controllers which checks that the correct
-  ActiveSupport call has been made and that the handlers exist without actually
-  throwing an exception.
+* Add a `rescue_from` matcher for Rails controllers which checks that the
+  correct ActiveSupport call has been made and that the handlers exist without
+  actually throwing an exception (#287).
 
 * Changed the scope of AssociationMatcher methods from protected to private.
 
 * Extracted `#order`, `#through`, and `#dependent` from AssociationMatcher as
-their own submatchers.
+  their own submatchers.
 
 # v 2.2.0
 
@@ -31,7 +31,8 @@ their own submatchers.
 * Add missing `failure_message_for_should_not` implementations to
 `validate_numericality_of` and its submatchers
 
-* Support validation contexts for testing validations `on: :create` and when using custom contexts like `model.valid?(:my_context)`.
+* Support validation contexts for testing validations `on: :create` and when
+  using custom contexts like `model.valid?(:my_context)`.
 
 * Fix a bug in validations with autosaved models.
 
