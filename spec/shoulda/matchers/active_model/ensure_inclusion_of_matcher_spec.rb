@@ -8,6 +8,16 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     end
   end
 
+  context 'with an integer column' do
+    it 'can verify a zero in the array' do
+      model = define_model(:example, :attr => :integer) do
+        validates_inclusion_of :attr, :in => [0, 1, 2]
+      end.new
+
+      model.should ensure_inclusion_of(:attr).in_array([0,1,2])
+    end
+  end
+
   context 'with true/false values' do
     it 'can verify outside values to ensure the negative case' do
       define_model(:example, :attr => :string).new.
