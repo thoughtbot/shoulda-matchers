@@ -1,5 +1,8 @@
 # HEAD
 
+* Fix a bug in `ensure_inclusion_of` that would cause issues with using
+  `in_array` with an integer value.
+
 * Add support for PostgreSQL UUID columns to `validates_uniqueness_of` (#334).
 
 * Fix `validates_numericality_of` so that `is_equal_to` submatcher works
