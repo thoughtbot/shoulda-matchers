@@ -28,11 +28,11 @@ module Shoulda # :nodoc:
 
           private
 
+          attr_accessor :subject, :counter_cache, :name
+
           def option_verifier
             @option_verifier ||= OptionVerifier.new(subject)
           end
-
-          attr_accessor :subject, :counter_cache, :name
         end
       end
     end
