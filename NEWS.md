@@ -1,5 +1,7 @@
 # HEAD
 
+# v 2.3.0
+
 * Fix a bug in `ensure_inclusion_of` that would cause issues with using
   `in_array` with an integer value.
 
