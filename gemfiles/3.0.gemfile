@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "shoulda-context", "~> 1.0.0"
+gem "shoulda-context", "~> 1.1.2"
 gem "sqlite3", :platform=>:ruby
 gem "activerecord-jdbc-adapter", :platform=>:jruby
 gem "activerecord-jdbcsqlite3-adapter", :platform=>:jruby
