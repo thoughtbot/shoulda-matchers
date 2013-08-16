@@ -1,3 +1,5 @@
+require 'forwardable'
+
 module Shoulda # :nodoc:
   module Matchers
     module ActiveRecord # :nodoc:
@@ -72,6 +74,9 @@ module Shoulda # :nodoc:
       end
 
       class AssociationMatcher # :nodoc:
+        delegate :reflection, :model_class, :associated_class, :through?,
+          :join_table, to: :reflector
+
         def initialize(macro, name)
           @macro = macro
           @name = name
@@ -160,6 +165,14 @@ module Shoulda # :nodoc:
 
         attr_reader :submatchers, :missing, :subject, :macro, :name, :options
 
+        def reflector
+          @reflector ||= AssociationMatchers::ModelReflector.new(subject, name)
+        end
+
+        def option_verifier
+          @option_verifier ||= AssociationMatchers::OptionVerifier.new(reflector)
+        end
+
         def add_submatcher(matcher)
           @submatchers << matcher
         end
@@ -200,10 +213,6 @@ module Shoulda # :nodoc:
           end
         end
 
-        def reflection
-          @reflection ||= model_class.reflect_on_association(name)
-        end
-
         def macro_correct?
           if reflection.macro == macro
             true
@@ -221,27 +230,15 @@ module Shoulda # :nodoc:
           macro == :belongs_to && !class_has_foreign_key?(model_class)
         end
 
-        def model_class
-          subject.class
-        end
-
         def has_foreign_key_missing?
           [:has_many, :has_one].include?(macro) &&
             !through? &&
             !class_has_foreign_key?(associated_class)
         end
 
-        def through?
-          reflection.options[:through]
-        end
-
-        def associated_class
-          reflection.klass
-        end
-
         def class_name_correct?
           if options.key?(:class_name)
-            if options[:class_name].to_s == reflection.klass.to_s
+            if option_verifier.correct_for_string?(:class_name, options[:class_name])
               true
             else
               @missing = "#{name} should resolve to #{options[:class_name]} for class_name"
@@ -254,7 +251,7 @@ module Shoulda # :nodoc:
 
         def conditions_correct?
           if options.key?(:conditions)
-            if options[:conditions].to_s == reflection.options[:conditions].to_s
+            if option_verifier.correct_for_string?(:conditions, options[:conditions])
               true
             else
               @missing = "#{name} should have the following conditions: #{options[:conditions]}"
@@ -276,7 +273,7 @@ module Shoulda # :nodoc:
         end
 
         def validate_correct?
-          if option_correct?(:validate)
+          if option_verifier.correct_for_boolean?(:validate, options[:validate])
             true
           else
             @missing = "#{name} should have :validate => #{options[:validate]}"
@@ -285,7 +282,7 @@ module Shoulda # :nodoc:
         end
 
         def touch_correct?
-          if option_correct?(:touch)
+          if option_verifier.correct_for_boolean?(:touch, options[:touch])
             true
           else
             @missing = "#{name} should have :touch => #{options[:touch]}"
@@ -293,17 +290,9 @@ module Shoulda # :nodoc:
           end
         end
 
-        def option_correct?(key)
-          !options.key?(key) || reflection_set_properly_for?(key)
-        end
-
-        def reflection_set_properly_for?(key)
-          options[key] == !!reflection.options[key]
-        end
-
         def class_has_foreign_key?(klass)
           if options.key?(:foreign_key)
-            reflection.options[:foreign_key] == options[:foreign_key]
+            option_verifier.correct_for?(:foreign_key, options[:foreign_key])
           else
             if klass.column_names.include?(foreign_key)
               true
@@ -311,14 +300,6 @@ module Shoulda # :nodoc:
               @missing = "#{klass} does not have a #{foreign_key} foreign key."
               false
             end
-          end
-        end
-
-        def join_table
-          if reflection.respond_to? :join_table
-            reflection.join_table.to_s
-          else
-            reflection.options[:join_table].to_s
           end
         end
 

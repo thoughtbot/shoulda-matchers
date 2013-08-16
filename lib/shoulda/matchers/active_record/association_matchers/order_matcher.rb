@@ -16,9 +16,9 @@ module Shoulda # :nodoc:
           end
 
           def matches?(subject)
-            subject = ModelReflector.new(subject, name)
+            self.subject = ModelReflector.new(subject, name)
 
-            if subject.option_set_properly?(order, :order)
+            if option_verifier.correct_for_string?(:order, order)
               true
             else
               self.missing_option = "#{name} should be ordered by #{order}"
@@ -27,7 +27,12 @@ module Shoulda # :nodoc:
           end
 
           private
-          attr_accessor :order, :name
+
+          attr_accessor :subject, :order, :name
+
+          def option_verifier
+            @option_verifier ||= OptionVerifier.new(subject)
+          end
         end
       end
     end
