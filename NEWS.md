@@ -1,5 +1,11 @@
 # HEAD
 
+* shoulda-matchers is now fully compatible with Rails 4.
+
+* When not using RSpec, shoulda-matchers is now auto-included into
+  ActiveSupport::TestCase instead of Test::Unit::TestCase (in Rails 4
+  the former no longer inherits from the latter).
+
 # v 2.3.0
 
 * Fix a bug in `ensure_inclusion_of` that would cause issues with using
