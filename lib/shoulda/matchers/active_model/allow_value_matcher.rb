@@ -30,6 +30,7 @@ module Shoulda # :nodoc:
       class AllowValueMatcher # :nodoc:
         include Helpers
 
+        attr_accessor :attribute_with_message
         attr_accessor :options
 
         def initialize(*values)
@@ -39,7 +40,8 @@ module Shoulda # :nodoc:
         end
 
         def for(attribute)
-          self.attribute = attribute
+          self.attribute_to_set = attribute
+          self.attribute_to_check_message_against = attribute
           self
         end
 
@@ -48,8 +50,11 @@ module Shoulda # :nodoc:
           self
         end
 
-        def with_message(message)
+        def with_message(message, options={})
           self.options[:expected_message] = message
+          if options.key?(:against)
+            self.attribute_to_check_message_against = options[:against]
+          end
           self
         end
 
@@ -63,7 +68,7 @@ module Shoulda # :nodoc:
 
           values_to_match.none? do |value|
             self.value = value
-            instance.send("#{attribute}=", value)
+            instance.send("#{attribute_to_set}=", value)
             errors_match?
           end
         end
@@ -83,7 +88,8 @@ module Shoulda # :nodoc:
         private
 
         attr_accessor :values_to_match, :message_finder_factory,
-          :instance, :attribute, :context, :value, :matched_error
+          :instance, :attribute_to_set, :attribute_to_check_message_against,
+          :context, :value, :matched_error
 
         def errors_match?
           has_messages? && errors_for_attribute_match?
@@ -119,7 +125,7 @@ module Shoulda # :nodoc:
 
         def expectation
           includes_expected_message = expected_message ? "to include #{expected_message.inspect}" : ''
-          [error_source, includes_expected_message, "when #{attribute} is set to #{value.inspect}"].join(' ')
+          [error_source, includes_expected_message, "when #{attribute_to_set} is set to #{value.inspect}"].join(' ')
         end
 
         def error_source
@@ -157,7 +163,7 @@ module Shoulda # :nodoc:
             options[:expected_message],
             :model_name => model_name,
             :instance => instance,
-            :attribute => attribute
+            :attribute => attribute_to_set
           )
         end
 
@@ -166,7 +172,7 @@ module Shoulda # :nodoc:
         end
 
         def message_finder
-          message_finder_factory.new(instance, attribute, context)
+          message_finder_factory.new(instance, attribute_to_check_message_against, context)
         end
       end
     end

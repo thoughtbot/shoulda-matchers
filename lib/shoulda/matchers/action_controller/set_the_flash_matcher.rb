@@ -90,20 +90,34 @@ module Shoulda # :nodoc:
         end
 
         def flash
-          if @flash
-            @flash
-          else
-            @flash = @controller.flash.dup
-            used = @controller.flash.instance_variable_get(:@used).dup
-            @flash.instance_variable_set(:@used, used)
-            sweep_flash_if_necessary
-            @flash
+          @flash ||= copy_of_flash_from_controller
+        end
+
+        def copy_of_flash_from_controller
+          @controller.flash.dup.tap do |flash|
+            copy_flashes(@controller.flash, flash)
+            copy_discard_if_necessary(@controller.flash, flash)
+            sweep_flash_if_necessary(flash)
           end
         end
 
-        def sweep_flash_if_necessary
+        def copy_flashes(original_flash, new_flash)
+          flashes_ivar = Shoulda::Matchers::RailsShim.flashes_ivar
+          flashes = original_flash.instance_variable_get(flashes_ivar).dup
+          new_flash.instance_variable_set(flashes_ivar, flashes)
+        end
+
+        def copy_discard_if_necessary(original_flash, new_flash)
+          discard_ivar = :@discard
+          if original_flash.instance_variable_defined?(discard_ivar)
+            discard = original_flash.instance_variable_get(discard_ivar).dup
+            new_flash.instance_variable_set(discard_ivar, discard)
+          end
+        end
+
+        def sweep_flash_if_necessary(flash)
           unless @options[:now]
-            @flash.sweep
+            flash.sweep
           end
         end
 

@@ -16,9 +16,9 @@ module Shoulda # :nodoc:
           end
 
           def matches?(subject)
-            subject = ModelReflector.new(subject, name)
+            self.subject = ModelReflector.new(subject, name)
 
-            if dependent.nil? || subject.option_set_properly?(dependent, :dependent)
+            if option_verifier.correct_for_string?(:dependent, dependent)
               true
             else
               self.missing_option = "#{name} should have #{dependent} dependency"
@@ -27,7 +27,12 @@ module Shoulda # :nodoc:
           end
 
           private
-          attr_accessor :dependent, :name
+
+          def option_verifier
+            @option_verifier ||= OptionVerifier.new(subject)
+          end
+
+          attr_accessor :subject, :dependent, :name
         end
       end
     end
