@@ -42,29 +42,29 @@ module Shoulda # :nodoc:
 
         def disallows_different_value
           set_confirmation('some value')
-          matcher_with_message(:disallows_value_of, 'different value')
+          disallows_value_of('different value') do |matcher|
+            matcher.with_message(@message, against: error_attribute)
+          end
         end
 
         def allows_same_value
           set_confirmation('same value')
-          matcher_with_message(:allows_value_of, 'same value')
+          allows_value_of('same value') do |matcher|
+            matcher.with_message(@message, against: error_attribute)
+          end
         end
 
         def allows_missing_confirmation
           set_confirmation(nil)
-          matcher_with_message(:allows_value_of, 'any value')
+          allows_value_of('any value') do |matcher|
+            matcher.with_message(@message, against: error_attribute)
+          end
         end
 
         def set_confirmation(val)
           setter = :"#{@confirmation_attribute}="
           if @subject.respond_to?(setter)
             @subject.send(setter, val)
-          end
-        end
-
-        def matcher_with_message(allows_or_disallows_value_of, value)
-          __send__(allows_or_disallows_value_of, value) do |matcher|
-            matcher.with_message(@message, against: error_attribute)
           end
         end
 
