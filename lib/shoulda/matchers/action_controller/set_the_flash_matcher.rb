@@ -90,32 +90,34 @@ module Shoulda # :nodoc:
         end
 
         def flash
-          if @flash
-            @flash
-          else
-            @flash = @controller.flash.dup
-            flashes = @controller.flash.instance_variable_get(flashes_ivar).dup
-            @flash.instance_variable_set(flashes_ivar, flashes)
-            if @controller.flash.instance_variable_defined?(discard_ivar)
-              discard = @controller.flash.instance_variable_get(discard_ivar).dup
-              @flash.instance_variable_set(discard_ivar, discard)
-            end
-            sweep_flash_if_necessary
-            @flash
+          @flash ||= copy_of_flash_from_controller
+        end
+
+        def copy_of_flash_from_controller
+          @controller.flash.dup.tap do |flash|
+            copy_flashes(@controller.flash, flash)
+            copy_discard_if_necessary(@controller.flash, flash)
+            sweep_flash_if_necessary(flash)
           end
         end
 
-        def flashes_ivar
-          Shoulda::Matchers::RailsShim.flashes_ivar
+        def copy_flashes(original_flash, new_flash)
+          flashes_ivar = Shoulda::Matchers::RailsShim.flashes_ivar
+          flashes = original_flash.instance_variable_get(flashes_ivar).dup
+          new_flash.instance_variable_set(flashes_ivar, flashes)
         end
 
-        def discard_ivar
-          Shoulda::Matchers::RailsShim.discard_ivar
+        def copy_discard_if_necessary(original_flash, new_flash)
+          discard_ivar = :@discard
+          if original_flash.instance_variable_defined?(discard_ivar)
+            discard = original_flash.instance_variable_get(discard_ivar).dup
+            new_flash.instance_variable_set(discard_ivar, discard)
+          end
         end
 
-        def sweep_flash_if_necessary
+        def sweep_flash_if_necessary(flash)
           unless @options[:now]
-            @flash.sweep
+            flash.sweep
           end
         end
 

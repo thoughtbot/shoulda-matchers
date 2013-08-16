@@ -17,10 +17,6 @@ module Shoulda # :nodoc:
         end
       end
 
-      def self.discard_ivar
-        :@discard
-      end
-
       def self.association_where_conditions(reflector)
         if rails_major_version >= 4
           reflector.where_conditions_from_scope
