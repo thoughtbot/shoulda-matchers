@@ -10,6 +10,7 @@ gem "jdbc-sqlite3", :platform=>:jruby
 gem "jruby-openssl", :platform=>:jruby
 gem "therubyrhino", :platform=>:jruby
 gem "rails", "4.0.0"
+gem "bcrypt-ruby", "~> 3.0.0"
 gem "jquery-rails"
 gem "sass-rails", "~> 4.0.0"
 gem "protected_attributes"

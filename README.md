@@ -42,6 +42,7 @@ describe User do
   it { should allow_value("a@b.com").for(:email) }
   it { should ensure_inclusion_of(:age).in_range(1..100) }
   it { should_not allow_mass_assignment_of(:password) }
+  it { should have_secure_password }
 end
 ```
 
