@@ -40,7 +40,8 @@ module ControllerBuilder
     end
 
     create_view("examples/#{action}.html.erb", 'action')
-    create_view("examples/#{partial}.html.erb", 'partial')
+    local_name = partial[1..-1]
+    create_view("examples/#{partial}.html.erb", "partial <%= defined?(#{local_name}) && defined?(#{local_name}_counter) ? '' : '' %>")
 
     setup_rails_controller_test(controller_class)
     get action

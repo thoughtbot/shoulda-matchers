@@ -12,12 +12,12 @@ module Shoulda # :nodoc:
           end
 
           def description
-            "through #{through}"
+            "through #{@through}"
           end
 
           def matches?(subject)
-            self.subject = ModelReflector.new(subject, name)
-            through.nil? || association_set_properly?
+            @subject = ModelReflector.new(subject, @name)
+            @through.nil? || association_set_properly?
           end
 
           def association_set_properly?
@@ -28,21 +28,21 @@ module Shoulda # :nodoc:
             if through_reflection.present?
               true
             else
-              self.missing_option = "#{name} does not have any relationship to #{through}"
+              self.missing_option = "#{@name} does not have any relationship to #{@through}"
               false
             end
           end
 
           def through_reflection
-            @through_reflection ||= subject.reflect_on_association(through)
+            @through_reflection ||= @subject.reflect_on_association(@through)
           end
 
           def through_association_correct?
-            if option_verifier.correct_for_string?(:through, through)
+            if option_verifier.correct_for_string?(:through, @through)
               true
             else
               self.missing_option =
-                "Expected #{name} to have #{name} through #{through}, " +
+                "Expected #{@name} to have #{@name} through #{@through}, " +
                 "but got it through #{option_verifier.actual_value_for(:through)}"
               false
             end
@@ -50,10 +50,8 @@ module Shoulda # :nodoc:
 
           private
 
-          attr_accessor :through, :name, :subject
-
           def option_verifier
-            @option_verifier ||= OptionVerifier.new(subject)
+            @option_verifier ||= OptionVerifier.new(@subject)
           end
         end
       end

@@ -86,25 +86,25 @@ module Shoulda # :nodoc:
         end
 
         def through(through)
-          through_matcher = AssociationMatchers::ThroughMatcher.new(through, name)
+          through_matcher = AssociationMatchers::ThroughMatcher.new(through, @name)
           add_submatcher(through_matcher)
           self
         end
 
         def dependent(dependent)
-          dependent_matcher = AssociationMatchers::DependentMatcher.new(dependent, name)
+          dependent_matcher = AssociationMatchers::DependentMatcher.new(dependent, @name)
           add_submatcher(dependent_matcher)
           self
         end
 
         def order(order)
-          order_matcher = AssociationMatchers::OrderMatcher.new(order, name)
+          order_matcher = AssociationMatchers::OrderMatcher.new(order, @name)
           add_submatcher(order_matcher)
           self
         end
 
         def counter_cache(counter_cache = true)
-          counter_cache_matcher = AssociationMatchers::CounterCacheMatcher.new(counter_cache, name)
+          counter_cache_matcher = AssociationMatchers::CounterCacheMatcher.new(counter_cache, @name)
           add_submatcher(counter_cache_matcher)
           self
         end
@@ -135,9 +135,9 @@ module Shoulda # :nodoc:
         end
 
         def description
-          description = "#{macro_description} #{name}"
-          description += " class_name => #{options[:class_name]}" if options.key?(:class_name)
-          [description, submatchers.map(&:description)].flatten.join(' ')
+          description = "#{macro_description} #{@name}"
+          description += " class_name => #{@options[:class_name]}" if @options.key?(:class_name)
+          [description, @submatchers.map(&:description)].flatten.join(' ')
         end
 
         def failure_message_for_should
@@ -163,10 +163,8 @@ module Shoulda # :nodoc:
 
         private
 
-        attr_reader :submatchers, :missing, :subject, :macro, :name, :options
-
         def reflector
-          @reflector ||= AssociationMatchers::ModelReflector.new(subject, name)
+          @reflector ||= AssociationMatchers::ModelReflector.new(@subject, @name)
         end
 
         def option_verifier
@@ -178,7 +176,7 @@ module Shoulda # :nodoc:
         end
 
         def macro_description
-          case macro.to_s
+          case @macro.to_s
           when 'belongs_to'
             'belong to'
           when 'has_many'
@@ -191,22 +189,22 @@ module Shoulda # :nodoc:
         end
 
         def expectation
-          "#{model_class.name} to have a #{macro} association called #{name}"
+          "#{model_class.name} to have a #{@macro} association called #{@name}"
         end
 
         def missing_options
-          [missing, failing_submatchers.map(&:missing_option)].flatten.join
+          [@missing, failing_submatchers.map(&:missing_option)].flatten.join
         end
 
         def failing_submatchers
-          @failing_submatchers ||= submatchers.select do |matcher|
-            !matcher.matches?(subject)
+          @failing_submatchers ||= @submatchers.select do |matcher|
+            !matcher.matches?(@subject)
           end
         end
 
         def association_exists?
           if reflection.nil?
-            @missing = "no association called #{name}"
+            @missing = "no association called #{@name}"
             false
           else
             true
@@ -214,7 +212,7 @@ module Shoulda # :nodoc:
         end
 
         def macro_correct?
-          if reflection.macro == macro
+          if reflection.macro == @macro
             true
           else
             @missing = "actual association type was #{reflection.macro}"
@@ -227,21 +225,21 @@ module Shoulda # :nodoc:
         end
 
         def belongs_foreign_key_missing?
-          macro == :belongs_to && !class_has_foreign_key?(model_class)
+          @macro == :belongs_to && !class_has_foreign_key?(model_class)
         end
 
         def has_foreign_key_missing?
-          [:has_many, :has_one].include?(macro) &&
+          [:has_many, :has_one].include?(@macro) &&
             !through? &&
             !class_has_foreign_key?(associated_class)
         end
 
         def class_name_correct?
-          if options.key?(:class_name)
-            if option_verifier.correct_for_string?(:class_name, options[:class_name])
+          if @options.key?(:class_name)
+            if option_verifier.correct_for_string?(:class_name, @options[:class_name])
               true
             else
-              @missing = "#{name} should resolve to #{options[:class_name]} for class_name"
+              @missing = "#{@name} should resolve to #{@options[:class_name]} for class_name"
               false
             end
           else
@@ -250,11 +248,11 @@ module Shoulda # :nodoc:
         end
 
         def conditions_correct?
-          if options.key?(:conditions)
-            if option_verifier.correct_for_relation_clause?(:conditions, options[:conditions])
+          if @options.key?(:conditions)
+            if option_verifier.correct_for_relation_clause?(:conditions, @options[:conditions])
               true
             else
-              @missing = "#{name} should have the following conditions: #{options[:conditions]}"
+              @missing = "#{@name} should have the following conditions: #{@options[:conditions]}"
               false
             end
           else
@@ -263,7 +261,7 @@ module Shoulda # :nodoc:
         end
 
         def join_table_exists?
-          if macro != :has_and_belongs_to_many ||
+          if @macro != :has_and_belongs_to_many ||
               model_class.connection.tables.include?(join_table)
             true
           else
@@ -273,26 +271,26 @@ module Shoulda # :nodoc:
         end
 
         def validate_correct?
-          if option_verifier.correct_for_boolean?(:validate, options[:validate])
+          if option_verifier.correct_for_boolean?(:validate, @options[:validate])
             true
           else
-            @missing = "#{name} should have :validate => #{options[:validate]}"
+            @missing = "#{@name} should have :validate => #{@options[:validate]}"
             false
           end
         end
 
         def touch_correct?
-          if option_verifier.correct_for_boolean?(:touch, options[:touch])
+          if option_verifier.correct_for_boolean?(:touch, @options[:touch])
             true
           else
-            @missing = "#{name} should have :touch => #{options[:touch]}"
+            @missing = "#{@name} should have :touch => #{@options[:touch]}"
             false
           end
         end
 
         def class_has_foreign_key?(klass)
-          if options.key?(:foreign_key)
-            option_verifier.correct_for_string?(:foreign_key, options[:foreign_key])
+          if @options.key?(:foreign_key)
+            option_verifier.correct_for_string?(:foreign_key, @options[:foreign_key])
           else
             if klass.column_names.include?(foreign_key)
               true
@@ -314,7 +312,7 @@ module Shoulda # :nodoc:
         end
 
         def foreign_key_reflection
-          if [:has_one, :has_many].include?(macro) && reflection.options.include?(:inverse_of)
+          if [:has_one, :has_many].include?(@macro) && reflection.options.include?(:inverse_of)
             associated_class.reflect_on_association(reflection.options[:inverse_of])
           else
             reflection

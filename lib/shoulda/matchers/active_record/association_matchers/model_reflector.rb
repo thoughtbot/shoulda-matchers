@@ -9,7 +9,7 @@ module Shoulda # :nodoc:
           end
 
           def reflection
-            @reflection ||= reflect_on_association(name)
+            @reflection ||= reflect_on_association(@name)
           end
 
           def reflect_on_association(name)
@@ -17,7 +17,7 @@ module Shoulda # :nodoc:
           end
 
           def model_class
-            subject.class
+            @subject.class
           end
 
           def associated_class
@@ -85,13 +85,11 @@ module Shoulda # :nodoc:
           def relation_from_scope(scope)
             # Source: AR::Associations::AssociationScope#eval_scope
             if scope.is_a?(::Proc)
-              associated_class.all.instance_exec(subject, &scope)
+              associated_class.all.instance_exec(@subject, &scope)
             else
               scope
             end
           end
-
-          attr_reader :subject, :name
         end
       end
     end

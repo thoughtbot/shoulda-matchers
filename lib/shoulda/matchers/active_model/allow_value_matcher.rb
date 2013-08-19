@@ -34,14 +34,14 @@ module Shoulda # :nodoc:
         attr_accessor :options
 
         def initialize(*values)
-          self.values_to_match = values
-          self.message_finder_factory = ValidationMessageFinder
+          @values_to_match = values
+          @message_finder_factory = ValidationMessageFinder
           self.options = {}
         end
 
         def for(attribute)
-          self.attribute_to_set = attribute
-          self.attribute_to_check_message_against = attribute
+          @attribute_to_set = attribute
+          @attribute_to_check_message_against = attribute
           self
         end
 
@@ -53,27 +53,28 @@ module Shoulda # :nodoc:
         def with_message(message, options={})
           self.options[:expected_message] = message
           if options.key?(:against)
-            self.attribute_to_check_message_against = options[:against]
+            @attribute_to_check_message_against = options[:against]
           end
           self
         end
 
         def strict
-          self.message_finder_factory = ExceptionMessageFinder
+          @message_finder_factory = ExceptionMessageFinder
           self
         end
 
         def matches?(instance)
-          self.instance = instance
+          @instance = instance
 
-          values_to_match.none? do |value|
-            self.value = value
-            instance.send("#{attribute_to_set}=", value)
+          @values_to_match.none? do |value|
+            @value = value
+            instance.send("#{@attribute_to_set}=", value)
             errors_match?
           end
         end
 
         def failure_message_for_should
+          matched_error = defined?(@matched_error) ? @matched_error : nil
           "Did not expect #{expectation}, got error: #{matched_error}"
         end
 
@@ -87,10 +88,6 @@ module Shoulda # :nodoc:
 
         private
 
-        attr_accessor :values_to_match, :message_finder_factory,
-          :instance, :attribute_to_set, :attribute_to_check_message_against,
-          :context, :value, :matched_error
-
         def errors_match?
           has_messages? && errors_for_attribute_match?
         end
@@ -101,7 +98,7 @@ module Shoulda # :nodoc:
 
         def errors_for_attribute_match?
           if expected_message
-            self.matched_error = errors_match_regexp? || errors_match_string?
+            @matched_error = errors_match_regexp? || errors_match_string?
           else
             errors_for_attribute.compact.any?
           end
@@ -125,7 +122,7 @@ module Shoulda # :nodoc:
 
         def expectation
           includes_expected_message = expected_message ? "to include #{expected_message.inspect}" : ''
-          [error_source, includes_expected_message, "when #{attribute_to_set} is set to #{value.inspect}"].join(' ')
+          [error_source, includes_expected_message, "when #{@attribute_to_set} is set to #{@value.inspect}"].join(' ')
         end
 
         def error_source
@@ -137,10 +134,10 @@ module Shoulda # :nodoc:
         end
 
         def allowed_values
-          if values_to_match.length > 1
-            "any of [#{values_to_match.map(&:inspect).join(', ')}]"
+          if @values_to_match.length > 1
+            "any of [#{@values_to_match.map(&:inspect).join(', ')}]"
           else
-            values_to_match.first.inspect
+            @values_to_match.first.inspect
           end
         end
 
@@ -162,17 +159,19 @@ module Shoulda # :nodoc:
           default_error_message(
             options[:expected_message],
             :model_name => model_name,
-            :instance => instance,
-            :attribute => attribute_to_set
+            :instance => @instance,
+            :attribute => @attribute_to_set
           )
         end
 
         def model_name
-          instance.class.to_s.underscore
+          @instance.class.to_s.underscore
         end
 
         def message_finder
-          message_finder_factory.new(instance, attribute_to_check_message_against, context)
+          context = defined?(@context) ? @context : nil
+          instance = defined?(@instance) ? @instance : nil
+          @message_finder_factory.new(instance, @attribute_to_check_message_against, context)
         end
       end
     end

@@ -12,26 +12,24 @@ module Shoulda # :nodoc:
           end
 
           def description
-            "order => #{order}"
+            "order => #{@order}"
           end
 
           def matches?(subject)
-            self.subject = ModelReflector.new(subject, name)
+            @subject = ModelReflector.new(subject, @name)
 
-            if option_verifier.correct_for_relation_clause?(:order, order)
+            if option_verifier.correct_for_relation_clause?(:order, @order)
               true
             else
-              self.missing_option = "#{name} should be ordered by #{order}"
+              self.missing_option = "#{@name} should be ordered by #{@order}"
               false
             end
           end
 
           private
 
-          attr_accessor :subject, :order, :name
-
           def option_verifier
-            @option_verifier ||= OptionVerifier.new(subject)
+            @option_verifier ||= OptionVerifier.new(@subject)
           end
         end
       end

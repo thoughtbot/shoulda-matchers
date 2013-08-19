@@ -44,8 +44,6 @@ module Shoulda # :nodoc:
 
           private
 
-          attr_reader :reflector
-
           def correct_for?(*args)
             expected_value, name, type = args.reverse
             if expected_value.nil?

@@ -101,16 +101,16 @@ module Shoulda # :nodoc:
         private
 
         def translate_messages!
-          if Symbol === @short_message
-            @short_message = default_error_message(@short_message,
+          if Symbol === short_message
+            @short_message = default_error_message(short_message,
                                                    :model_name => @subject.class.to_s.underscore,
                                                    :instance => @subject,
                                                    :attribute => @attribute,
                                                    :count => @options[:minimum])
           end
 
-          if Symbol === @long_message
-            @long_message = default_error_message(@long_message,
+          if Symbol === long_message
+            @long_message = default_error_message(long_message,
                                                   :model_name => @subject.class.to_s.underscore,
                                                   :instance => @subject,
                                                   :attribute => @attribute,
@@ -129,7 +129,7 @@ module Shoulda # :nodoc:
         def disallows_lower_length?
           if @options.key?(:minimum)
             @options[:minimum] == 0 ||
-              disallows_length_of?(@options[:minimum] - 1, @short_message)
+              disallows_length_of?(@options[:minimum] - 1, short_message)
           else
             true
           end
@@ -137,7 +137,7 @@ module Shoulda # :nodoc:
 
         def disallows_higher_length?
           if @options.key?(:maximum)
-            disallows_length_of?(@options[:maximum] + 1, @long_message)
+            disallows_length_of?(@options[:maximum] + 1, long_message)
           else
             true
           end
@@ -145,7 +145,7 @@ module Shoulda # :nodoc:
 
         def allows_minimum_length?
           if @options.key?(:minimum)
-            allows_length_of?(@options[:minimum], @short_message)
+            allows_length_of?(@options[:minimum], short_message)
           else
             true
           end
@@ -153,7 +153,7 @@ module Shoulda # :nodoc:
 
         def allows_maximum_length?
           if @options.key?(:maximum)
-            allows_length_of?(@options[:maximum], @long_message)
+            allows_length_of?(@options[:maximum], long_message)
           else
             true
           end
@@ -169,6 +169,14 @@ module Shoulda # :nodoc:
 
         def string_of_length(length)
           'x' * length
+        end
+
+        def short_message
+          defined?(@short_message) ? @short_message : nil
+        end
+
+        def long_message
+          defined?(@long_message) ? @long_message : nil
         end
       end
     end

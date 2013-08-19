@@ -85,7 +85,7 @@ describe Shoulda::Matchers::ActiveModel::OddEvenNumberMatcher do
     end.new
   end
 
-   def validating_even_number(options = {})
+  def validating_even_number(options = {})
     define_model :example, :attr => :string do
       validates_numericality_of :attr, { :even => true }.merge(options)
     end.new
