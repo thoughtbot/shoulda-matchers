@@ -7,7 +7,7 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
 
       description = finder.allow_description('allowed values')
 
-      description.should == 'allow attr to be set to allowed values'
+      description.should eq 'allow attr to be set to allowed values'
     end
   end
 
@@ -17,7 +17,7 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
 
       message = finder.expected_message_from('some message')
 
-      message.should == 'some message'
+      message.should eq 'some message'
     end
   end
 
@@ -45,7 +45,7 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
 
       messages = finder.messages
 
-      messages.should == ['is invalid']
+      messages.should eq ['is invalid']
     end
   end
 
@@ -60,7 +60,7 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
       description = finder.messages_description
 
       expected_messages = ['attr is invalid ("xyz")']
-      description.should == "errors: #{expected_messages}"
+      description.should eq "errors: #{expected_messages}"
     end
 
     it 'describes errors when there are none' do
@@ -68,7 +68,7 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
 
       description = finder.messages_description
 
-      description.should == 'no errors'
+      description.should eq 'no errors'
     end
 
     it 'should not fetch attribute values for errors that were copied from an autosaved belongs_to association' do
@@ -80,7 +80,7 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
       finder = Shoulda::Matchers::ActiveModel::ValidationMessageFinder.new(instance, :attribute)
 
       expected_messages = ['association.association_attribute is invalid']
-      finder.messages_description.should == "errors: #{expected_messages}"
+      finder.messages_description.should eq "errors: #{expected_messages}"
     end
 
   end
@@ -91,7 +91,7 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
 
       description = finder.source_description
 
-      description.should == 'errors'
+      description.should eq 'errors'
     end
   end
 

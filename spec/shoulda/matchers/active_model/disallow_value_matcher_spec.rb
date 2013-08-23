@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher do
   it 'does not allow any types' do
-    matcher('abcde').allowed_types.should == ''
+    matcher('abcde').allowed_types.should eq ''
   end
 
   context 'an attribute with a format validation' do
@@ -46,7 +46,7 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher do
       matcher = matcher('abcde').for(:attr).with_message('good message')
       matcher.matches?(validating_format(:with => /abc/, :message => 'good message'))
 
-      matcher.failure_message_for_should.should == 'allow matcher failure'
+      matcher.failure_message_for_should.should eq 'allow matcher failure'
     end
 
     it 'matches if the message is correct but the value is not' do

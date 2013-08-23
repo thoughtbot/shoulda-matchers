@@ -8,7 +8,7 @@ describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
 
         description = finder.allow_description('allowed values')
 
-        description.should == %q(doesn't raise when attr is set to allowed values)
+        description.should eq %q(doesn't raise when attr is set to allowed values)
       end
     end
 
@@ -18,7 +18,7 @@ describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
 
         message = finder.expected_message_from('some message')
 
-        message.should == 'Attr some message'
+        message.should eq 'Attr some message'
       end
     end
 
@@ -50,7 +50,7 @@ describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
 
         messages = finder.messages
 
-        messages.should == ['Attr is invalid']
+        messages.should eq ['Attr is invalid']
       end
     end
 
@@ -64,7 +64,7 @@ describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
 
         description = finder.messages_description
 
-        description.should == 'Attr is invalid'
+        description.should eq 'Attr is invalid'
       end
 
       it 'describes errors when there are none' do
@@ -72,7 +72,7 @@ describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
 
         description = finder.messages_description
 
-        description.should == 'no exception'
+        description.should eq 'no exception'
       end
     end
 
@@ -82,7 +82,7 @@ describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
 
         description = finder.source_description
 
-        description.should == 'exception'
+        description.should eq 'exception'
       end
     end
   end
@@ -109,4 +109,3 @@ describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
     model_class.new(attribute => value)
   end
 end
-
