@@ -275,43 +275,47 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
   end
 
   context "when the validation allows nil" do
-    before do
-      @model = define_model(:example, :attr  => :integer) do
-        attr_accessible :attr
-        validates_uniqueness_of :attr, :allow_nil => true
-      end.new
-    end
-
     context "when there is an existing entry with a nil" do
       it "should allow_nil" do
+        model = define_model_with_allow_nil
         Example.create!(:attr => nil)
-        @model.should validate_uniqueness_of(:attr).allow_nil
+        model.should matcher.allow_nil
       end
     end
 
     it "should create a nil and verify that it is allowed" do
-      @model.should validate_uniqueness_of(:attr).allow_nil
+      model = define_model_with_allow_nil
+      model.should matcher.allow_nil
       Example.all.any?{ |instance| instance.attr.nil? }
+    end
+
+    def define_model_with_allow_nil
+      define_model(:example, :attr  => :integer) do
+        attr_accessible :attr
+        validates_uniqueness_of :attr, :allow_nil => true
+      end.new
     end
   end
 
   context "when the validation does not allow a nil" do
-    before do
-      @model = define_model(:example, :attr  => :integer) do
-        attr_accessible :attr
-        validates_uniqueness_of :attr
-      end.new
-    end
-
     context "when there is an existing entry with a nil" do
       it "should not allow_nil" do
+        model = define_model_without_allow_nil
         Example.create!(:attr => nil)
-        @model.should_not validate_uniqueness_of(:attr).allow_nil
+        model.should_not matcher.allow_nil
       end
     end
 
     it "should not allow_nil" do
-      @model.should_not validate_uniqueness_of(:attr).allow_nil
+      model = define_model_without_allow_nil
+      model.should_not matcher.allow_nil
+    end
+
+    def define_model_without_allow_nil
+      define_model(:example, :attr  => :integer) do
+        attr_accessible :attr
+        validates_uniqueness_of :attr
+      end.new
     end
   end
 
