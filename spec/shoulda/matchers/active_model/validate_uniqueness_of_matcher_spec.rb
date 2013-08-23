@@ -34,7 +34,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
     context 'without an existing record' do
       it 'does not require a created instance' do
         define_model_with_other
-        Example.count.should == 0
+        Example.count.should eq 0
         validating_uniqueness_with_other.should matcher
       end
     end

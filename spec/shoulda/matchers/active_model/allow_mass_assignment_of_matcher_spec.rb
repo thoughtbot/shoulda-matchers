@@ -4,16 +4,16 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
   context '#description' do
     context 'without a role' do
       it 'includes the attribute name' do
-        described_class.new(:attr).description.should ==
-          'allow mass assignment of attr'
+        described_class.new(:attr).description.
+          should eq 'allow mass assignment of attr'
       end
     end
 
     if active_model_3_1?
       context 'with a role' do
         it 'includes the attribute name and the role' do
-          described_class.new(:attr).as(:admin).description.should ==
-            'allow mass assignment of attr as admin'
+          described_class.new(:attr).as(:admin).description.
+            should eq 'allow mass assignment of attr as admin'
         end
       end
     end

@@ -5,21 +5,21 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
     it 'describes itself with multiple values' do
       matcher = allow_value('foo', 'bar').for(:baz)
 
-      matcher.description.should == 'allow baz to be set to any of ["foo", "bar"]'
+      matcher.description.should eq 'allow baz to be set to any of ["foo", "bar"]'
     end
 
     it 'describes itself with a single value' do
       matcher = allow_value('foo').for(:baz)
 
-      matcher.description.should == 'allow baz to be set to "foo"'
+      matcher.description.should eq 'allow baz to be set to "foo"'
     end
 
     if active_model_3_2?
       it 'describes itself with a strict validation' do
         strict_matcher = allow_value('xyz').for(:attr).strict
 
-        strict_matcher.description.should ==
-          %q(doesn't raise when attr is set to "xyz")
+        strict_matcher.description.
+          should eq %q(doesn't raise when attr is set to "xyz")
       end
     end
   end
@@ -162,7 +162,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
 
         matcher.matches?(validating_format(:with => /abc/, :strict => true))
 
-        matcher.failure_message_for_should_not.should == 'Expected exception to include /abc/ ' +
+        matcher.failure_message_for_should_not.should eq 'Expected exception to include /abc/ ' +
           'when attr is set to "xyz", got Attr is invalid'
       end
     end

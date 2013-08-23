@@ -10,7 +10,8 @@ describe Shoulda::Matchers::ActiveRecord::AcceptNestedAttributesForMatcher do
 
     matcher.matches?(rejecting_children).should be_false
 
-    matcher.failure_message_for_should.should == 'Expected Parent to accept nested attributes for children (is not declared)'
+    matcher.failure_message_for_should.
+      should eq 'Expected Parent to accept nested attributes for children (is not declared)'
   end
 
   context 'allow_destroy' do
