@@ -274,6 +274,47 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
     end
   end
 
+  context "when the validation allows nil" do
+    before do
+      @model = define_model(:example, :attr  => :integer) do
+        attr_accessible :attr
+        validates_uniqueness_of :attr, :allow_nil => true
+      end.new
+    end
+
+    context "when there is an existing entry with a nil" do
+      it "should allow_nil" do
+        Example.create!(:attr => nil)
+        @model.should validate_uniqueness_of(:attr).allow_nil
+      end
+    end
+
+    it "should create a nil and verify that it is allowed" do
+      @model.should validate_uniqueness_of(:attr).allow_nil
+      Example.all.any?{ |instance| instance.attr.nil? }
+    end
+  end
+
+  context "when the validation does not allow a nil" do
+    before do
+      @model = define_model(:example, :attr  => :integer) do
+        attr_accessible :attr
+        validates_uniqueness_of :attr
+      end.new
+    end
+
+    context "when there is an existing entry with a nil" do
+      it "should not allow_nil" do
+        Example.create!(:attr => nil)
+        @model.should_not validate_uniqueness_of(:attr).allow_nil
+      end
+    end
+
+    it "should not allow_nil" do
+      @model.should_not validate_uniqueness_of(:attr).allow_nil
+    end
+  end
+
   def case_sensitive_validation_with_existing_value(attr_type)
     model = define_model(:example, :attr => attr_type) do
       attr_accessible :attr
