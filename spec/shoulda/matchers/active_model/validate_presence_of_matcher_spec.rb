@@ -134,6 +134,24 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
     end
   end
 
+  context 'an active_resource model' do
+    let(:active_resource_model) do
+      define_model :activeresource, :attr => :string do
+        validates_presence_of :attr
+        def valid? # no context parameter in ActiveResource::Base#valid?
+          errors.add(:attr, "can't be blank") if attributes[:attr].blank?
+        end
+      end.new
+    end
+    context "with the validation context" do
+      it 'does not raise an exception' do
+        expect {
+          active_resource_model.should validate_presence_of(:attr).with_message(nil)
+        }.to_not raise_exception
+      end
+    end
+  end
+
   def matcher
     validate_presence_of(:attr)
   end
