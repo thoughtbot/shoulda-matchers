@@ -1,5 +1,7 @@
 # HEAD
 
+* Fix a regression with context-dependent validations in ActiveResource
+
 * shoulda-matchers is now fully compatible with Rails 4.
 
 * When not using RSpec, shoulda-matchers is now auto-included into
