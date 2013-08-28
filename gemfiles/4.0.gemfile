@@ -13,6 +13,7 @@ gem "rails", "4.0.0"
 gem "bcrypt-ruby", "~> 3.0.0"
 gem "jquery-rails"
 gem "sass-rails", "~> 4.0.0"
+gem "activeresource", :require=>"active_resource"
 gem "protected_attributes"
 
 gemspec :path=>"../"

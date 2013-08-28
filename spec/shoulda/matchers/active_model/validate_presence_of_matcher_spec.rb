@@ -134,6 +134,16 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
     end
   end
 
+  context 'an active_resource model' do
+    context 'with the validation context' do
+      it 'does not raise an exception' do
+        expect {
+          active_resource_model.should validate_presence_of(:attr)
+        }.to_not raise_exception
+      end
+    end
+  end
+
   def matcher
     validate_presence_of(:attr)
   end
@@ -159,6 +169,12 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
       if options[:presence]
         validates_presence_of :children
       end
+    end.new
+  end
+
+  def active_resource_model
+    define_active_resource_class :foo, :attr => :string do
+      validates_presence_of :attr
     end.new
   end
 end
