@@ -1,10 +1,6 @@
 module ActiveResourceBuilder
   def self.included(example_group)
     example_group.class_eval do
-      before do
-        @created_tables ||= []
-      end
-
       after do
         ActiveSupport::Dependencies.clear
       end
