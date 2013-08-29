@@ -23,6 +23,7 @@ appraise '4.0' do
   gem 'rails', '4.0.0'
   gem 'jquery-rails'
   gem 'sass-rails', '~> 4.0.0'
+  gem 'activeresource', :require => 'active_resource'
 
   # Test suite makes heavy use of attr_accessible
   gem 'protected_attributes'
