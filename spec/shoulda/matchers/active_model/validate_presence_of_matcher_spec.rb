@@ -173,11 +173,8 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
   end
 
   def active_resource_model
-    define_model :activeresource, :attr => :string do
+    define_active_resource_class :foo, :attr => :string do
       validates_presence_of :attr
-      def valid? # no context parameter in ActiveResource::Base#valid?
-        errors.add(:attr, "can't be blank") if attributes[:attr].blank?
-      end
     end.new
   end
 end
