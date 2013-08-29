@@ -138,7 +138,7 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
     context "with the validation context" do
       it 'does not raise an exception' do
         expect {
-          active_resource_model.should validate_presence_of(:attr).with_message(nil)
+          active_resource_model.should validate_presence_of(:attr)
         }.to_not raise_exception
       end
     end
