@@ -135,7 +135,7 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
   end
 
   context 'an active_resource model' do
-    context "with the validation context" do
+    context 'with the validation context' do
       it 'does not raise an exception' do
         expect {
           active_resource_model.should validate_presence_of(:attr)
