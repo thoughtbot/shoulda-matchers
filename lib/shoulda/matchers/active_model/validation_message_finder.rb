@@ -59,11 +59,7 @@ module Shoulda
         end
 
         def validate_instance
-          if @instance.method(:valid?).arity.zero?
-            @instance.valid?
-          else
-            @instance.valid?(@context)
-          end
+          @instance.valid?(*@context)
           @instance
         end
       end
