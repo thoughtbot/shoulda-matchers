@@ -10,7 +10,7 @@ module Shoulda # :nodoc:
         when_occures = pair[0]
         action       = pair[1]
 
-        define_method "have_#{when_occures}_#{action}_callback_on" do |*method_name|
+        define_method "have_#{when_occures}_#{action}_callback_on" do |method_name|
           Callbacks.new(when_occures, action, method_name)
         end
       end
@@ -18,21 +18,19 @@ module Shoulda # :nodoc:
       class Callbacks
         attr_reader :failure_message_for_should, :failure_message_for_should_not
 
-        def initialize(occures, action, method_names)
+        def initialize(occures, action, method_name)
           @occures = occures.to_sym
           @action  = action.to_sym
-          @method_names = method_names.collect(&:to_sym)
+          @method_name = method_name.to_sym
         end
 
         def matches?(subject)
           @subject = subject
-          @method_names.each do |method_name|
-            if callbacks.include?(method_name)
-              @failure_message_for_should_not = "Didn't expect #{@subject.model_name} model to have #{callback_name} callback on method :#{method_name}"
-            else
-              @failure_message_for_should     = "Expected #{@subject.model_name} model to have #{callback_name} callback on method :#{method_name}"
-              return false
-            end
+          if callbacks.include?(@method_name)
+            @failure_message_for_should_not = "Didn't expect #{@subject.model_name} model to have #{callback_name} callback on method :#{@method_name}"
+          else
+            @failure_message_for_should     = "Expected #{@subject.model_name} model to have #{callback_name} callback on method :#{@method_name}"
+            return false
           end
           true
         end
@@ -42,7 +40,7 @@ module Shoulda # :nodoc:
         end
 
         def action_callbacks
-          begin 
+          begin
             @subject.send("_#{@action}_callbacks")
           rescue NoMethodError
             raise "Subject must be Rails model class"
