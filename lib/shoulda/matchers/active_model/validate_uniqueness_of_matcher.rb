@@ -50,6 +50,11 @@ module Shoulda # :nodoc:
           self
         end
 
+        def with_defaults(defaults)
+          @options[:defaults] = defaults
+          self
+        end
+
         def case_insensitive
           @options[:case_insensitive] = true
           self
@@ -69,7 +74,7 @@ module Shoulda # :nodoc:
         end
 
         def matches?(subject)
-          @subject = subject.class.new
+          @subject = subject.class.new(@options[:defaults]||{})
           @expected_message ||= :taken
           set_scoped_attributes &&
             validate_everything_except_duplicate_nils? &&
@@ -113,8 +118,9 @@ module Shoulda # :nodoc:
             value = "arbitrary_string"
           end
 
-          @subject.class.new.tap do |instance|
+          @subject.class.new(@options[:defaults]||{}).tap do |instance|
             instance.send("#{@attribute}=", value)
+
             instance.save(:validate => false)
           end
         end

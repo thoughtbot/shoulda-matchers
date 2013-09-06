@@ -337,4 +337,20 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
   def matcher
     validate_uniqueness_of(:attr)
   end
+
+  context 'a model with a unique validation and defaults' do
+    it 'instantiates subjects with the specified default parameters' do
+      @model ||= define_model(:example, :attr => :string, :other => :string) do
+        attr_accessible :attr, :other
+        validates_uniqueness_of :attr, {}
+      end
+
+      defaults = { 
+        :other => 'defaults test'
+      }
+      
+      @model.new.should matcher.with_defaults(defaults)
+      (Example.all.any? {|example| example.other =='defaults test'}).should be_true
+    end
+  end
 end

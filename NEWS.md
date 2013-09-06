@@ -6,6 +6,8 @@
   ActiveSupport::TestCase instead of Test::Unit::TestCase (in Rails 4
   the former no longer inherits from the latter).
 
+* added support for a whith_defaults call on validate_uniqueness of matcher that allows user to specify default test subject attributes
+
 # v 2.3.0
 
 * Fix a bug in `ensure_inclusion_of` that would cause issues with using
