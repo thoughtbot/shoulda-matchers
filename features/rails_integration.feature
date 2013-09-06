@@ -55,8 +55,7 @@ Feature: integrate with Rails
       """
     When I set the "TESTOPTS" environment variable to "-v"
     When I successfully run `bundle exec rake test --trace`
-    Then the output should contain "1 tests, 1 assertions, 0 failures, 0 errors"
-    And the output should contain "1 tests, 1 assertions, 0 failures, 0 errors"
+    Then the output should indicate that 1 unit and 1 functional test were run
     And the output should contain "User should require name to be set"
     And the output should contain "should respond with 200"
 
@@ -111,4 +110,4 @@ Feature: integrate with Rails
       """
     When I successfully run `bundle exec rake spec test:functionals SPEC_OPTS=-fs --trace`
     Then the output should contain "1 example, 0 failures"
-    And the output should contain "1 tests, 1 assertions, 0 failures, 0 errors"
+    Then the output should indicate that 1 test was run

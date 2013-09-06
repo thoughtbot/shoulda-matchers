@@ -71,7 +71,7 @@ module Shoulda # :nodoc:
 
         def recorded_layouts
           if @context
-            @context.instance_variable_get('@layouts')
+            @context.instance_variable_get(Shoulda::Matchers::RailsShim.layouts_ivar)
           else
             {}
           end

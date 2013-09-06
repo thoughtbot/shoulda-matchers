@@ -7,12 +7,12 @@ describe Shoulda::Matchers::ActiveModel::OnlyIntegerMatcher do
     end
 
     it 'allows integer types' do
-      new_matcher.allowed_types.should == 'integer'
+      new_matcher.allowed_types.should eq 'integer'
     end
 
     it 'returns itself when given a message' do
       matcher = new_matcher
-      matcher.with_message('some message').should == matcher
+      matcher.with_message('some message').should eq matcher
     end
   end
 

@@ -77,7 +77,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureExclusionOfMatcher do
 
     it 'has correct description' do
       ensure_exclusion_of(:attr).in_array([true, 'dog']).description.
-        should == 'ensure exclusion of attr in [true, "dog"]'
+        should eq 'ensure exclusion of attr in [true, "dog"]'
     end
 
     def validating_exclusion(options)

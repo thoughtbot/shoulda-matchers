@@ -23,6 +23,7 @@ module Shoulda # :nodoc:
 
       class EnsureInclusionOfMatcher < ValidationMatcher # :nodoc:
         ARBITRARY_OUTSIDE_STRING = 'shouldamatchersteststring'
+        ARBITRARY_OUTSIDE_FIXNUM = 123456789
 
         def initialize(attribute)
           super(attribute)
@@ -144,8 +145,21 @@ module Shoulda # :nodoc:
         end
 
         def value_outside_of_array
-          if @array.include?(ARBITRARY_OUTSIDE_STRING)
+          if @array.include?(outside_value)
             raise CouldNotDetermineValueOutsideOfArray
+          else
+            outside_value
+          end
+        end
+
+        def outside_value
+          @outside_value ||= find_outside_value
+        end
+
+        def find_outside_value
+          case @subject.send(@attribute.to_s)
+          when Fixnum
+            ARBITRARY_OUTSIDE_FIXNUM
           else
             ARBITRARY_OUTSIDE_STRING
           end

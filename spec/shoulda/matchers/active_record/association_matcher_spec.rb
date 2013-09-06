@@ -67,8 +67,8 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
     it 'accepts an association with a valid :conditions option' do
       define_model :parent, :adopter => :boolean
-      define_model :child, :parent_id => :integer do
-        belongs_to :parent, :conditions => { :adopter => true }
+      define_model(:child, :parent_id => :integer).tap do |model|
+        define_association_with_conditions(model, :belongs_to, :parent, :adopter => true)
       end
 
       Child.new.should belong_to(:parent).conditions(:adopter => true)
@@ -297,8 +297,8 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
     it 'accepts an association with a valid :conditions option' do
       define_model :child, :parent_id => :integer, :adopted => :boolean
-      define_model :parent do
-        has_many :children, :conditions => { :adopted => true }
+      define_model(:parent).tap do |model|
+        define_association_with_conditions(model, :has_many, :children, :adopted => true)
       end
 
       Parent.new.should have_many(:children).conditions(:adopted => true)
@@ -374,8 +374,13 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
     def having_many_children(options = {})
       define_model :child, :parent_id => :integer
-      define_model :parent do
-        has_many :children, options
+      define_model(:parent).tap do |model|
+        if options.key?(:order)
+          order = options.delete(:order)
+          define_association_with_order(model, :has_many, :children, order, options)
+        else
+          model.has_many :children, options
+        end
       end.new
     end
   end
@@ -449,8 +454,8 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
     it 'accepts an association with a valid :conditions option' do
       define_model :detail, :person_id => :integer, :disabled => :boolean
-      define_model :person do
-        has_one :detail, :conditions => { :disabled => true}
+      define_model(:person).tap do |model|
+        define_association_with_conditions(model, :has_one, :detail, :disabled => true)
       end
 
       Person.new.should have_one(:detail).conditions(:disabled => true)
@@ -524,8 +529,13 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
     def having_one_detail(options = {})
       define_model :detail, :person_id => :integer
-      define_model :person do
-        has_one :detail, options
+      define_model(:person).tap do |model|
+        if options.key?(:order)
+          order = options.delete(:order)
+          define_association_with_order(model, :has_one, :detail, order, options)
+        else
+          model.has_one :detail, options
+        end
       end.new
     end
   end
@@ -565,8 +575,8 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
     it 'accepts an association with a valid :conditions option' do
       define_model :relative, :adopted => :boolean
-      define_model :person do
-        has_and_belongs_to_many :relatives, :conditions => { :adopted => true }
+      define_model(:person).tap do |model|
+        define_association_with_conditions(model, :has_and_belongs_to_many, :relatives, :adopted => true)
       end
       define_model :people_relative, :id => false, :person_id => :integer,
         :relative_id => :integer
@@ -637,5 +647,29 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
         has_and_belongs_to_many :relatives
       end.new
     end
+  end
+
+  def define_association_with_conditions(model, macro, name, conditions, other_options={})
+    args = []
+    options = {}
+    if Shoulda::Matchers::RailsShim.rails_major_version == 4
+      args << lambda { where(conditions) }
+    else
+      options[:conditions] = conditions
+    end
+    args << options
+    model.__send__(macro, name, *args)
+  end
+
+  def define_association_with_order(model, macro, name, order, other_options={})
+    args = []
+    options = {}
+    if Shoulda::Matchers::RailsShim.rails_major_version == 4
+      args << lambda { order(order) }
+    else
+      options[:order] = order
+    end
+    args << options
+    model.__send__(macro, name, *args)
   end
 end

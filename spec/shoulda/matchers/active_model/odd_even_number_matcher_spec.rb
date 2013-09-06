@@ -8,7 +8,7 @@ describe Shoulda::Matchers::ActiveModel::OddEvenNumberMatcher do
 
     it 'returns itself when given a message' do
       matcher = new_odd_matcher
-      matcher.with_message('some message').should == matcher
+      matcher.with_message('some message').should eq matcher
     end
   end
 
@@ -19,7 +19,7 @@ describe Shoulda::Matchers::ActiveModel::OddEvenNumberMatcher do
 
     it 'returns itself when given a message' do
       matcher = new_even_matcher
-      matcher.with_message('some message').should == matcher
+      matcher.with_message('some message').should eq matcher
     end
   end
 
@@ -85,7 +85,7 @@ describe Shoulda::Matchers::ActiveModel::OddEvenNumberMatcher do
     end.new
   end
 
-   def validating_even_number(options = {})
+  def validating_even_number(options = {})
     define_model :example, :attr => :string do
       validates_numericality_of :attr, { :even => true }.merge(options)
     end.new

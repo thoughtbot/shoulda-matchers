@@ -1,5 +1,16 @@
 # HEAD
 
+* shoulda-matchers is now fully compatible with Rails 4.
+
+* When not using RSpec, shoulda-matchers is now auto-included into
+  ActiveSupport::TestCase instead of Test::Unit::TestCase (in Rails 4
+  the former no longer inherits from the latter).
+
+# v 2.3.0
+
+* Fix a bug in `ensure_inclusion_of` that would cause issues with using
+  `in_array` with an integer value.
+
 * Add support for PostgreSQL UUID columns to `validates_uniqueness_of` (#334).
 
 * Fix `validates_numericality_of` so that `is_equal_to` submatcher works

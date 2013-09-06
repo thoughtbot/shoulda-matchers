@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher do
   context '#description' do
     it 'states that the confirmation must match its base attribute' do
-      matcher.description.should == 'require attr_confirmation to match attr'
+      matcher.description.should eq 'require attr_confirmation to match attr'
     end
   end
 
