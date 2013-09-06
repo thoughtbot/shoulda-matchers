@@ -25,7 +25,7 @@ end
 
 ## ActiveModel Matchers
 
-Matchers to test validations and mass assignments:
+Matchers to test validations, callbacks and mass assignments:
 
 ```ruby
 describe Post do
@@ -42,6 +42,14 @@ describe User do
   it { should allow_value("a@b.com").for(:email) }
   it { should ensure_inclusion_of(:age).in_range(1..100) }
   it { should_not allow_mass_assignment_of(:password) }
+end
+
+describe Event do
+  it { should have_after_create_callback_on(:send_invitation_emails) }
+  it { should have_before_destroy_callback_on(:delete_calendar_entries) }
+  it { should have_around_update_callback_on(:sign_other_events) }
+  it { should have_after_validation_callback_on(:mark_event_upcomming) }
+  # ... you can use any of possible ActiveRecord::Base::CALLBACKS
 end
 ```
 
