@@ -1,5 +1,3 @@
-require 'active_support/core_ext/array/wrap'
-
 module Shoulda
   module Matchers
     module ActiveModel
@@ -39,7 +37,7 @@ module Shoulda
         end
 
         def messages
-          Array.wrap(messages_for_attribute)
+          Array(messages_for_attribute)
         end
 
         private
