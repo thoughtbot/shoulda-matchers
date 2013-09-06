@@ -37,7 +37,7 @@ module Shoulda
         end
 
         def messages
-          Array.wrap(messages_for_attribute)
+          Array(messages_for_attribute)
         end
 
         private

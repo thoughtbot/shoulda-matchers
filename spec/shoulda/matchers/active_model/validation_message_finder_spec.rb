@@ -47,6 +47,14 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
 
       messages.should eq ['is invalid']
     end
+
+    it 'returns an empty array if there are no errors for the given attribute' do
+      finder = build_finder
+
+      messages = finder.messages
+
+      messages.should == []
+    end
   end
 
   context '#messages_description' do
