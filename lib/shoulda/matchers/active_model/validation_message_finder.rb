@@ -59,7 +59,7 @@ module Shoulda
         end
 
         def validate_instance
-          @instance.valid?(@context)
+          @instance.valid?(*@context)
           @instance
         end
       end
