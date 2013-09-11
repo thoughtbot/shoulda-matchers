@@ -47,7 +47,7 @@ module Shoulda # :nodoc:
 
         def description
           description = "set the #{expected_flash_invocation}"
-          description << " to #{@value.inspect}" unless @value.nil?
+          description << " to #{value.inspect}" unless value.nil?
           description
         end
 
@@ -66,16 +66,16 @@ module Shoulda # :nodoc:
         end
 
         def string_value_matches?
-          if @value.is_a?(String)
-            flash_values.any? {|value| value == @value }
+          if value.is_a?(String)
+            flash_values.any? {|v| v == value }
           else
             true
           end
         end
 
         def regexp_value_matches?
-          if @value.is_a?(Regexp)
-            flash_values.any? {|value| value =~ @value }
+          if value.is_a?(Regexp)
+            flash_values.any? {|v| v =~ value }
           else
             true
           end
@@ -123,7 +123,7 @@ module Shoulda # :nodoc:
 
         def expectation
           expectation = "the #{expected_flash_invocation} to be set"
-          expectation << " to #{@value.inspect}" unless @value.nil?
+          expectation << " to #{value.inspect}" unless value.nil?
           expectation << ", but #{flash_description}"
           expectation
         end
@@ -154,6 +154,10 @@ module Shoulda # :nodoc:
           else
             ''
           end
+        end
+
+        def value
+          defined?(@value) ? @value : nil
         end
       end
     end

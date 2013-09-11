@@ -43,7 +43,7 @@ module Shoulda # :nodoc:
         def matches?(subject)
           super(subject)
 
-          if @range
+          if range
             allows_lower_value &&
               disallows_minimum_value &&
               allows_higher_value &&
@@ -78,15 +78,19 @@ module Shoulda # :nodoc:
         end
 
         def expected_message
-          @expected_message || :exclusion
+          defined?(@expected_message) ? @expected_message : :exclusion
         end
 
         def inspect_message
-          if @range
-            @range.inspect
+          if range
+            range.inspect
           else
             @array.inspect
           end
+        end
+
+        def range
+          defined?(@range) ? @range : nil
         end
       end
     end

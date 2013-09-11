@@ -26,7 +26,7 @@ module Shoulda # :nodoc:
 
         def matches?(controller)
           @controller = controller
-          if @value_block
+          if defined?(@value_block) && @value_block
             @value = @context.instance_eval(&@value_block)
           end
           assigned_correct_value? || cleared_value?
@@ -42,7 +42,7 @@ module Shoulda # :nodoc:
 
         def description
           description = "set session variable #{@key.inspect}"
-          if @value
+          if defined?(@value)
             description << " to #{@value.inspect}"
           end
           description
@@ -65,7 +65,7 @@ module Shoulda # :nodoc:
 
         def assigned_correct_value?
           if assigned_value?
-            if @value.nil?
+            if !defined?(@value)
               true
             else
               assigned_value == @value
@@ -79,7 +79,7 @@ module Shoulda # :nodoc:
 
         def expectation
           expectation = "session variable #{@key} to be set"
-          if @value
+          if defined?(@value)
             expectation << " to #{@value.inspect}"
           end
         end

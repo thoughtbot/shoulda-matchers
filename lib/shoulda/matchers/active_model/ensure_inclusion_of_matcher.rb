@@ -77,7 +77,7 @@ module Shoulda # :nodoc:
         def matches?(subject)
           super(subject)
 
-          if @range
+          if range
             @low_message  ||= :inclusion
             @high_message ||= :inclusion
 
@@ -115,17 +115,17 @@ module Shoulda # :nodoc:
         end
 
         def inspect_message
-          @range.nil? ? @array.inspect : @range.inspect
+          range.nil? ? @array.inspect : range.inspect
         end
 
         def allows_all_values_in_array?
           @array.all? do |value|
-            allows_value_of(value, @low_message)
+            allows_value_of(value, low_message)
           end
         end
 
         def disallows_lower_value
-          @minimum == 0 || disallows_value_of(@minimum - 1, @low_message)
+          @minimum == 0 || disallows_value_of(@minimum - 1, low_message)
         end
 
         def disallows_higher_value
@@ -133,7 +133,7 @@ module Shoulda # :nodoc:
         end
 
         def allows_minimum_value
-          allows_value_of(@minimum, @low_message)
+          allows_value_of(@minimum, low_message)
         end
 
         def allows_maximum_value
@@ -163,6 +163,14 @@ module Shoulda # :nodoc:
           else
             ARBITRARY_OUTSIDE_STRING
           end
+        end
+
+        def low_message
+          defined?(@low_message) ? @low_message : nil
+        end
+
+        def range
+          defined?(@range) ? @range : nil
         end
       end
     end

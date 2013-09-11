@@ -53,7 +53,7 @@ module Shoulda # :nodoc:
         end
 
         def url
-          if @url_block
+          if defined?(@url_block) && @url_block
             @context.instance_eval(&@url_block)
           else
             @url

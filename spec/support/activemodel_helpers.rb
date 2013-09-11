@@ -3,6 +3,7 @@ module ActiveModelHelpers
     define_model(:example, :attr => :integer) do
       validate :custom_validation
 
+      remove_method(:custom_validation) if method_defined?(:custom_validation)
       define_method(:custom_validation, &block)
     end.new
   end

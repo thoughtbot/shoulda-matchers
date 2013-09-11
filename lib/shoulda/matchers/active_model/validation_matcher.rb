@@ -60,7 +60,7 @@ module Shoulda # :nodoc:
           matcher = AllowValueMatcher.
             new(value).
             for(@attribute).
-            on(@context).
+            on(context).
             with_message(message)
 
           if strict?
@@ -74,7 +74,7 @@ module Shoulda # :nodoc:
           matcher = DisallowValueMatcher.
             new(value).
             for(@attribute).
-            on(@context).
+            on(context).
             with_message(message)
 
           if strict?
@@ -85,7 +85,11 @@ module Shoulda # :nodoc:
         end
 
         def strict?
-          @strict
+          defined?(@strict) && @strict
+        end
+
+        def context
+          defined?(@context) ? @context : nil
         end
       end
     end
