@@ -21,6 +21,12 @@ module Shoulda # :nodoc:
           end
         end
 
+        def on(context)
+          @context = context
+          @disallow_value_matcher = @disallow_value_matcher.on(@context)
+          self
+        end
+
         def matches?(subject)
           @disallow_value_matcher.matches?(subject)
         end

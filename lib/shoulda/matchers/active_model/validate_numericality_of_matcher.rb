@@ -31,44 +31,50 @@ module Shoulda # :nodoc:
           add_disallow_value_matcher
         end
 
+        def on(context)
+          @context = context
+          @submatchers.each { |submatcher| submatcher.on(@context) }
+          self
+        end
+
         def only_integer
-          add_submatcher(OnlyIntegerMatcher.new(@attribute))
+          add_submatcher(OnlyIntegerMatcher.new(@attribute).on(@context))
           self
         end
 
         def is_greater_than(value)
-          add_submatcher(ComparisonMatcher.new(value, :>).for(@attribute))
+          add_submatcher(ComparisonMatcher.new(value, :>).for(@attribute).on(@context))
           self
         end
 
         def is_greater_than_or_equal_to(value)
-          add_submatcher(ComparisonMatcher.new(value, :>=).for(@attribute))
+          add_submatcher(ComparisonMatcher.new(value, :>=).for(@attribute).on(@context))
           self
         end
 
         def is_equal_to(value)
-          add_submatcher(ComparisonMatcher.new(value, :==).for(@attribute))
+          add_submatcher(ComparisonMatcher.new(value, :==).for(@attribute).on(@context))
           self
         end
 
         def is_less_than(value)
-          add_submatcher(ComparisonMatcher.new(value, :<).for(@attribute))
+          add_submatcher(ComparisonMatcher.new(value, :<).for(@attribute).on(@context))
           self
         end
 
         def is_less_than_or_equal_to(value)
-          add_submatcher(ComparisonMatcher.new(value, :<=).for(@attribute))
+          add_submatcher(ComparisonMatcher.new(value, :<=).for(@attribute).on(@context))
           self
         end
 
         def odd
-          odd_number_matcher = OddEvenNumberMatcher.new(@attribute, :odd => true)
+          odd_number_matcher = OddEvenNumberMatcher.new(@attribute, :odd => true).on(@context)
           add_submatcher(odd_number_matcher)
           self
         end
 
         def even
-          even_number_matcher = OddEvenNumberMatcher.new(@attribute, :even => true)
+          even_number_matcher = OddEvenNumberMatcher.new(@attribute, :even => true).on(@context)
           add_submatcher(even_number_matcher)
           self
         end
@@ -100,6 +106,7 @@ module Shoulda # :nodoc:
         def add_disallow_value_matcher
           disallow_value_matcher = DisallowValueMatcher.new(NON_NUMERIC_VALUE).
             for(@attribute).
+            on(@context).
             with_message(:not_a_number)
 
           add_submatcher(disallow_value_matcher)
