@@ -134,6 +134,20 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
     end
   end
 
+  context 'with a context-dependent validation' do
+    context 'with the validation context' do
+      it 'matches' do
+        validating_numericality(:on => :customisable).should matcher.on(:customisable)
+      end
+    end
+
+    context 'without the validation context' do
+      it 'does not match' do
+        validating_numericality(:on => :customisable).should_not matcher
+      end
+    end
+  end
+
   def validating_numericality(options = {})
     define_model :example, :attr => :string do
       validates_numericality_of :attr, options

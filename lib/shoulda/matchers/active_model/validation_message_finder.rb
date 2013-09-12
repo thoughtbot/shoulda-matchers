@@ -67,4 +67,3 @@ module Shoulda
     end
   end
 end
-

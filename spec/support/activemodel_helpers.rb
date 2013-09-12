@@ -12,6 +12,25 @@ module ActiveModelHelpers
       validates_format_of :attr, options
     end.new
   end
+
+  module NumericalityHelpers
+    def instance_with_validations(options = {})
+      define_model :example, :attr => :string do
+        validates_numericality_of :attr, options
+        attr_accessible :attr
+      end.new
+    end
+
+    def instance_without_validations
+      define_model :example, :attr => :string do
+        attr_accessible :attr
+      end.new
+    end
+
+    def matcher
+      validate_numericality_of(:attr)
+    end
+  end
 end
 
 RSpec.configure do |c|

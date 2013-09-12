@@ -1,5 +1,7 @@
 # HEAD
 
+* Fix `validates_numericality_of` matcher not supporting context-dependent validation.
+
 * Fix a regression with context-dependent validations in ActiveResource
 
 * shoulda-matchers is now fully compatible with Rails 4.
