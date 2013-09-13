@@ -1,7 +1,7 @@
 module Shoulda # :nodoc:
   module Matchers
     module ActiveModel # :nodoc:
-      class ContextMatcher < ValidationMatcher
+      class ContextMatcher
         def initialize(context)
           @context = context
         end
