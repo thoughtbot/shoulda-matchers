@@ -9,6 +9,7 @@ module Shoulda # :nodoc:
         def initialize(value, operator)
           @value = value
           @operator = operator
+          @message = nil
         end
 
         def for(attribute)
@@ -18,11 +19,15 @@ module Shoulda # :nodoc:
 
         def matches?(subject)
           @subject = subject
-          disallows_value_of(value_to_compare)
+          disallows_value_of(value_to_compare, @message)
         end
 
         def allowed_types
           'integer'
+        end
+
+        def with_message(message)
+          @message = message
         end
 
         private

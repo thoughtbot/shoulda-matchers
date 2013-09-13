@@ -26,6 +26,13 @@ describe Shoulda::Matchers::ActiveModel::ComparisonMatcher do
     it { instance_without_validations.should_not matcher.is_equal_to(0) }
   end
 
+  context 'with_message' do
+    it 'verifies the message for the validation' do
+      instance = instance_with_validations(:equal_to => 0, :message => 'Must be zero')
+      instance.should matcher.is_equal_to(0).with_message('Must be zero')
+    end
+  end
+
   def instance_with_validations(options = {})
     define_model :example, :attr => :string do
       validates_numericality_of :attr, options
