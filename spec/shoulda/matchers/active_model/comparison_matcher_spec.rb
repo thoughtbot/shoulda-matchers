@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ComparisonMatcher do
+  it_behaves_like 'a numerical submatcher' do
+    subject {  Shoulda::Matchers::ActiveModel::ComparisonMatcher.new(0, :>) }
+  end
+
   context 'is_greater_than' do
     it { instance_with_validations(greater_than: 2).should matcher.is_greater_than(2) }
     it { instance_without_validations.should_not matcher.is_greater_than(2) }

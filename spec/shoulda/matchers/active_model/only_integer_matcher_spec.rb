@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::OnlyIntegerMatcher do
+  it_behaves_like 'a numerical submatcher' do
+    subject { Shoulda::Matchers::ActiveModel::OnlyIntegerMatcher.new(:attr) }
+  end
+
   context 'given an attribute that only allows integer values' do
     it 'matches' do
       validating_only_integer.should new_matcher
