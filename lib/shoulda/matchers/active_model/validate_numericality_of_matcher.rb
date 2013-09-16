@@ -32,32 +32,38 @@ module Shoulda # :nodoc:
         end
 
         def only_integer
-          add_submatcher(OnlyIntegerMatcher.new(@attribute))
+          integer_matcher = OnlyIntegerMatcher.new(@attribute)
+          add_submatcher(integer_matcher)
           self
         end
 
         def is_greater_than(value)
-          add_submatcher(ComparisonMatcher.new(value, :>).for(@attribute))
+          greater_than_matcher = ComparisonMatcher.new(value, :>).for(@attribute)
+          add_submatcher(greater_than_matcher)
           self
         end
 
         def is_greater_than_or_equal_to(value)
-          add_submatcher(ComparisonMatcher.new(value, :>=).for(@attribute))
+          greater_than_or_equal_to_matcher = ComparisonMatcher.new(value, :>=).for(@attribute)
+          add_submatcher(greater_than_or_equal_to_matcher)
           self
         end
 
         def is_equal_to(value)
-          add_submatcher(ComparisonMatcher.new(value, :==).for(@attribute))
+          equal_to_matcher = ComparisonMatcher.new(value, :==).for(@attribute)
+          add_submatcher(equal_to_matcher)
           self
         end
 
         def is_less_than(value)
-          add_submatcher(ComparisonMatcher.new(value, :<).for(@attribute))
+          less_than_matcher = ComparisonMatcher.new(value, :<).for(@attribute)
+          add_submatcher(less_than_matcher)
           self
         end
 
         def is_less_than_or_equal_to(value)
-          add_submatcher(ComparisonMatcher.new(value, :<=).for(@attribute))
+          comparison_matcher = ComparisonMatcher.new(value, :<=).for(@attribute)
+          add_submatcher(comparison_matcher)
           self
         end
 
@@ -70,6 +76,12 @@ module Shoulda # :nodoc:
         def even
           even_number_matcher = OddEvenNumberMatcher.new(@attribute, :even => true)
           add_submatcher(even_number_matcher)
+          self
+        end
+
+        def on(context)
+          context_matcher = ContextMatcher.new(context).for(@attribute)
+          add_submatcher(context_matcher)
           self
         end
 
