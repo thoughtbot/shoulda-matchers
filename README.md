@@ -16,6 +16,7 @@ Matchers to test associations:
 describe Post do
   it { should belong_to(:user) }
   it { should have_many(:tags).through(:taggings) }
+  it { should accept_nested_attributes_for(:comments) }
 end
 
 describe User do
