@@ -1,4 +1,4 @@
-if defined?(ActionController)
+if defined?(ActionController) && defined?(ActionController::TestCase)
   require 'shoulda/matchers/action_controller'
 
   ActionController::TestCase.class_eval do
@@ -11,7 +11,7 @@ if defined?(ActionController)
   end
 end
 
-if defined?(ActiveRecord)
+if defined?(ActiveRecord) && defined?(ActiveSupport::TestCase)
   require 'shoulda/matchers/active_record'
 
   ActiveSupport::TestCase.class_eval do
@@ -20,7 +20,7 @@ if defined?(ActiveRecord)
   end
 end
 
-if defined?(ActiveModel)
+if defined?(ActiveModel) && defined?(ActiveSupport::TestCase)
   require 'shoulda/matchers/active_model'
 
   ActiveSupport::TestCase.class_eval do
