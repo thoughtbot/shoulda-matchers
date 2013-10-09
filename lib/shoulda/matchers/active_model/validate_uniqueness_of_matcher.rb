@@ -216,10 +216,13 @@ module Shoulda
           @original_subject = subject
           @subject = subject.class.new
           @expected_message ||= :taken
+
           set_scoped_attributes &&
             validate_everything_except_duplicate_nils? &&
             validate_after_scope_change? &&
             allows_nil?
+        ensure
+          Uniqueness::TestModels.remove_all
         end
 
         private
@@ -262,6 +265,7 @@ module Shoulda
             instance.__send__("#{@attribute}=", value)
             ensure_secure_password_set(instance)
             instance.save(validate: false)
+            @created_record = instance
           end
         end
 
@@ -305,6 +309,12 @@ module Shoulda
           @existing_record = create_record_in_database
         end
 
+        def model_class?(model_name)
+          model_name.constantize.ancestors.include?(::ActiveRecord::Base)
+        rescue NameError
+          false
+        end
+
         def validate_after_scope_change?
           if @options[:scopes].blank?
             true
@@ -322,6 +332,8 @@ module Shoulda
                     key == previous_value
                   end
                   available_values.keys.last
+                elsif scope.to_s =~ /_type$/ && model_class?(previous_value)
+                  Uniqueness::TestModels.create(previous_value).to_s
                 elsif previous_value.respond_to?(:next)
                   previous_value.next
                 elsif previous_value.respond_to?(:to_datetime)

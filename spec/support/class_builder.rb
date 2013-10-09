@@ -14,6 +14,30 @@ module ClassBuilder
     [qualified_namespace, name_without_namespace]
   end
 
+  def define_module(module_name, &block)
+    module_name = module_name.to_s.camelize
+
+    namespace, name_without_namespace =
+      ClassBuilder.parse_constant_name(module_name)
+
+    if namespace.const_defined?(name_without_namespace, false)
+      namespace.__send__(:remove_const, name_without_namespace)
+    end
+
+    eval <<-RUBY
+      module #{namespace}::#{name_without_namespace}
+      end
+    RUBY
+
+    namespace.const_get(name_without_namespace).tap do |constant|
+      constant.unloadable
+
+      if block
+        constant.module_eval(&block)
+      end
+    end
+  end
+
   def define_class(class_name, parent_class = Object, &block)
     class_name = class_name.to_s.camelize
 

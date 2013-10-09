@@ -418,6 +418,56 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
     end
   end
 
+  context "when testing that a polymorphic *_type column is one of the validation scopes" do
+    it "sets that column to a meaningful value that works with other validations on the same column" do
+      user_model = define_model :user
+      favorite_columns = {
+        favoriteable_id: { type: :integer, options: { null: false } },
+        favoriteable_type: { type: :string, options: { null: false } }
+      }
+      favorite_model = define_model :favorite, favorite_columns do
+        attr_accessible :favoriteable
+        belongs_to :favoriteable, polymorphic: true
+        validates :favoriteable, presence: true
+        validates :favoriteable_id, uniqueness: { scope: :favoriteable_type }
+      end
+
+      user = user_model.create!
+      favorite_model.create!(favoriteable: user)
+      new_favorite = favorite_model.new
+
+      expect(new_favorite).
+        to validate_uniqueness_of(:favoriteable_id).
+        scoped_to(:favoriteable_type)
+    end
+
+    context "if the model the *_type column refers to is namespaced, and shares the last part of its name with an existing model" do
+      it "still works" do
+        define_class 'User'
+        define_module 'Models'
+        user_model = define_model 'Models::User'
+        favorite_columns = {
+          favoriteable_id: { type: :integer, options: { null: false } },
+          favoriteable_type: { type: :string, options: { null: false } }
+        }
+        favorite_model = define_model 'Models::Favorite', favorite_columns do
+          attr_accessible :favoriteable
+          belongs_to :favoriteable, polymorphic: true
+          validates :favoriteable, presence: true
+          validates :favoriteable_id, uniqueness: { scope: :favoriteable_type }
+        end
+
+        user = user_model.create!
+        favorite_model.create!(favoriteable: user)
+        new_favorite = favorite_model.new
+
+        expect(new_favorite).
+          to validate_uniqueness_of(:favoriteable_id).
+          scoped_to(:favoriteable_type)
+      end
+    end
+  end
+
   def case_sensitive_validation_with_existing_value(attr_type)
     model = define_model(:example, attr: attr_type) do
       attr_accessible :attr
