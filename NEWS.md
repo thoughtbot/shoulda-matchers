@@ -1,6 +1,10 @@
 # HEAD
 
+* Fix Rails/Test::Unit integration to ensure that the test case classes we are
+  re-opening actually exist.
+
 # v 2.4.0
+
 * Fix a bug with the `validate_numericality_of` matcher that would not allow the
   `with_message` option on certain submatchers.
 
