@@ -1,5 +1,8 @@
 # HEAD
 
+* Fix `ensure_length_of` so that it uses the right message to validate when
+  `is_equal_to` is specified in conjunction with a custom message.
+
 * Fix Rails/Test::Unit integration to ensure that the test case classes we are
   re-opening actually exist.
 
