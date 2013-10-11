@@ -98,6 +98,13 @@ describe Shoulda::Matchers::ActiveModel::EnsureLengthOfMatcher do
     end
   end
 
+  context 'an attribute with a custom equal validation' do
+    it 'accepts ensuring the correct exact length' do
+      validating_length(:is => 4, :message => 'foobar').
+        should ensure_length_of(:attr).is_equal_to(4).with_message(/foo/)
+    end
+  end
+
   context 'an attribute without a length validation' do
     it 'rejects ensuring a minimum length' do
       define_model(:example, :attr => :string).new.

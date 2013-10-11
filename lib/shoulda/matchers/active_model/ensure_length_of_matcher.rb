@@ -68,10 +68,17 @@ module Shoulda # :nodoc:
           end
           self
         end
-        alias_method :with_message, :with_short_message
 
         def with_long_message(message)
           if message
+            @long_message = message
+          end
+          self
+        end
+
+        def with_message(message)
+          if message
+            @short_message = message
             @long_message = message
           end
           self
