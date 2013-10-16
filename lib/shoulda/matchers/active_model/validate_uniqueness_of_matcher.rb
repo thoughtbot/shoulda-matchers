@@ -161,7 +161,9 @@ module Shoulda # :nodoc:
 
               next_value =
                 if scope.to_s =~ /_type$/ && klass = previous_value.constantize rescue nil && klass.ancestors.include?(::ActiveRecord::Base)
-                  Object.const_set(previous_value.next, klass.dup).to_s
+                  new_klass_name = previous_value
+                  new_klass_name.next! while Object.const_defined?(new_klass_name)
+                  Object.const_set(new_klass_name, klass.dup).to_s
                 elsif previous_value.respond_to?(:next)
                   previous_value.next
                 elsif previous_value.respond_to?(:to_datetime)
