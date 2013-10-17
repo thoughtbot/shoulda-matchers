@@ -140,7 +140,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
 
   def active_resource_model
     define_active_resource_class :foo, :attr => :string do
-      validates_absence_of :attr
+      validates :attr, absence: true
     end.new
   end
 end
