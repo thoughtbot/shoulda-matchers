@@ -13,3 +13,4 @@ gem 'activerecord-jdbcsqlite3-adapter', :platform => :jruby
 gem 'jdbc-sqlite3',                     :platform => :jruby
 gem 'jruby-openssl',                    :platform => :jruby
 gem 'therubyrhino',                     :platform => :jruby
+gem 'protected_attributes'
