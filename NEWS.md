@@ -1,5 +1,8 @@
 # HEAD
 
+* Fix association matchers on Rails 3 so they work when used in conjunction with
+  a submatcher such as #order and an association that has :include on it.
+
 * Fix `ensure_length_of` so that it uses the right message to validate when
   `is_equal_to` is specified in conjunction with a custom message.
 
