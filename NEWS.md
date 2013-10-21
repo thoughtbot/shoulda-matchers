@@ -12,6 +12,9 @@
 
 * The `ensure_inclusion_of` matcher now works with a decimal column.
 
+* Fix association matchers on Rails 3 so they work when used in conjunction with
+  a submatcher such as #order and an association that has :include on it.
+
 # v 2.4.0
 
 * Fix a bug with the `validate_numericality_of` matcher that would not allow the
