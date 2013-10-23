@@ -1,7 +1,22 @@
 # Create Rails environment based on the version given from Appraisal
 TESTAPP_ROOT = File.join(File.dirname(__FILE__), '..', 'tmp', 'aruba', 'testapp')
 FileUtils.rm_rf(TESTAPP_ROOT) if File.exists?(TESTAPP_ROOT)
-`rails new #{TESTAPP_ROOT}`
+`rails new #{TESTAPP_ROOT} --skip-bundle`
+Dir.chdir(TESTAPP_ROOT) do
+  retry_count = 0
+  loop do
+    command = 'bundle install'
+    output = `#{command} 2>&1`
+    if $? == 0
+      break
+    else
+      retry_count += 1
+      if retry_count == 3
+        raise "Command '#{command}' failed:\n#{output}"
+      end
+    end
+  end
+end
 
 ENV['RAILS_ENV'] = 'test'
 ENV['BUNDLE_GEMFILE'] ||= TESTAPP_ROOT + '/Gemfile'
