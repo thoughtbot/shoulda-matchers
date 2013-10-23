@@ -1,7 +1,6 @@
 script: "bundle exec rake spec cucumber"
 
-install:
-  "bundle install"
+install: "travis_retry bundle install"
 
 rvm:
   - 1.9.2

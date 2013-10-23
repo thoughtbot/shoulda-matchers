@@ -1,10 +1,34 @@
 # Create Rails environment based on the version given from Appraisal
 TESTAPP_ROOT = File.join(File.dirname(__FILE__), '..', 'tmp', 'aruba', 'testapp')
-FileUtils.rm_rf(TESTAPP_ROOT) if File.exists?(TESTAPP_ROOT)
-`rails new #{TESTAPP_ROOT}`
 
-ENV['RAILS_ENV'] = 'test'
+FileUtils.rm_rf(TESTAPP_ROOT) if File.exists?(TESTAPP_ROOT)
+
+`rails new #{TESTAPP_ROOT} --skip-bundle`
+
+ENV['RUBYOPT'] = ""
+
+Dir.chdir(TESTAPP_ROOT) do
+  retry_count = 0
+  loop do
+    puts "Current directory: #{Dir.pwd}"
+    %w(RUBYOPT BUNDLE_PATH BUNDLE_BIN_PATH BUNDLE_GEMFILE).each do |key|
+      puts "#{key}: #{ENV[key].inspect}"
+    end
+    command = 'bundle install'
+    output = Bundler.with_clean_env { `#{command} 2>&1` }
+    if $? == 0
+      break
+    else
+      retry_count += 1
+      if retry_count == 3
+        raise "Command '#{command}' failed:\n#{output}"
+      end
+    end
+  end
+end
+
 ENV['BUNDLE_GEMFILE'] ||= TESTAPP_ROOT + '/Gemfile'
+ENV['RAILS_ENV'] = 'test'
 
 require "#{TESTAPP_ROOT}/config/environment"
 require 'bourne'
