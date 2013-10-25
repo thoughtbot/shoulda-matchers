@@ -9,6 +9,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
     delegate_reflection = person_model.reflect_on_association(:country)
     reflection = described_class.new(delegate_reflection)
     reflection.stubs(foo: 'bar')
+
     expect(reflection.foo).to eq 'bar'
   end
 
@@ -20,7 +21,8 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
       end
       delegate_reflection = person_model.reflect_on_association(:country)
       reflection = described_class.new(delegate_reflection)
-      expect(reflection.klass).to be Country
+
+      expect(reflection.associated_class).to be Country
     end
   end
 
@@ -36,6 +38,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
       end
       delegate_reflection = country_model.reflect_on_association(:cities)
       reflection = described_class.new(delegate_reflection)
+
       expect(reflection).to be_through
     end
 
@@ -46,6 +49,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
       end
       delegate_reflection = country_model.reflect_on_association(:people)
       reflection = described_class.new(delegate_reflection)
+
       expect(reflection).not_to be_through
     end
   end
@@ -59,6 +63,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
         end
         delegate_reflection = country_model.reflect_on_association(:people)
         reflection = described_class.new(delegate_reflection)
+
         expect(reflection.join_table).to eq 'foos'
       end
     end
@@ -71,6 +76,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
         end
         delegate_reflection = country_model.reflect_on_association(:people)
         reflection = described_class.new(delegate_reflection)
+
         expect(reflection.join_table).to eq 'countries_people'
       end
     end
@@ -87,6 +93,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
             end
             delegate_reflection = person_model.reflect_on_association(:country)
             reflection = described_class.new(delegate_reflection)
+
             actual_sql = reflection.association_relation.to_sql
             expected_sql = Country.where(mood: 'nice').to_sql
             expect(actual_sql).to eq expected_sql
@@ -101,6 +108,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
             end
             delegate_reflection = person_model.reflect_on_association(:country)
             reflection = described_class.new(delegate_reflection)
+
             actual_sql = reflection.association_relation.to_sql
             expected_sql = Country.all.to_sql
             expect(actual_sql).to eq expected_sql
@@ -119,6 +127,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
             end
             delegate_reflection = person_model.reflect_on_association(:country)
             reflection = described_class.new(delegate_reflection)
+
             actual_sql = reflection.association_relation.to_sql
             expected_sql = Country.where(mood: 'nice').to_sql
             expect(actual_sql).to eq expected_sql
@@ -133,6 +142,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
             end
             delegate_reflection = country_model.reflect_on_association(:people)
             reflection = described_class.new(delegate_reflection)
+
             actual_sql = reflection.association_relation.to_sql
             expected_sql = Person.order('age').to_sql
             expect(actual_sql).to eq expected_sql
@@ -150,6 +160,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
             end
             delegate_reflection = person_model.reflect_on_association(:country)
             reflection = described_class.new(delegate_reflection)
+
             actual_includes = reflection.association_relation.includes_values
             expected_includes = Country.includes(:cities).includes_values
             expect(actual_includes).to eq expected_includes
@@ -164,6 +175,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
             define_model(:person, country_id: :integer, age: :integer)
             delegate_reflection = country_model.reflect_on_association(:people)
             reflection = described_class.new(delegate_reflection)
+
             actual_sql = reflection.association_relation.to_sql
             expected_sql = Person.group('age').to_sql
             expect(actual_sql).to eq expected_sql
@@ -178,6 +190,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
             define_model(:person, country_id: :integer)
             delegate_reflection = country_model.reflect_on_association(:people)
             reflection = described_class.new(delegate_reflection)
+
             actual_sql = reflection.association_relation.to_sql
             expected_sql = Person.having('country_id > 1').to_sql
             expect(actual_sql).to eq expected_sql
@@ -192,6 +205,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
             define_model(:person, country_id: :integer)
             delegate_reflection = country_model.reflect_on_association(:people)
             reflection = described_class.new(delegate_reflection)
+
             actual_sql = reflection.association_relation.to_sql
             expected_sql = Person.limit(10).to_sql
             expect(actual_sql).to eq expected_sql
@@ -206,6 +220,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
             define_model(:person, country_id: :integer)
             delegate_reflection = country_model.reflect_on_association(:people)
             reflection = described_class.new(delegate_reflection)
+
             actual_sql = reflection.association_relation.to_sql
             expected_sql = Person.offset(5).to_sql
             expect(actual_sql).to eq expected_sql
@@ -220,6 +235,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
             define_model(:person, country_id: :integer, age: :integer)
             delegate_reflection = country_model.reflect_on_association(:people)
             reflection = described_class.new(delegate_reflection)
+
             actual_sql = reflection.association_relation.to_sql
             expected_sql = Person.select('age').to_sql
             expect(actual_sql).to eq expected_sql

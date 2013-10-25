@@ -44,11 +44,13 @@ module Shoulda
 
           def convert_scope_to_relation(scope)
             relation = associated_class.all
+
             if scope
               # Source: AR::Associations::AssociationScope#eval_scope
-              relation = relation.instance_exec(subject, &scope)
+              relation.instance_exec(subject, &scope)
+            else
+              relation
             end
-            relation
           end
 
           def convert_options_to_relation(options)
