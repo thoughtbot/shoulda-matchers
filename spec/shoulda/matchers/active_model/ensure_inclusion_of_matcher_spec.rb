@@ -18,6 +18,16 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     end
   end
 
+  context 'with an decimal column' do
+    it 'can verify decimal values' do
+      model = define_model(:example, :attr => :decimal) do
+        validates_inclusion_of :attr, :in => [0.0, 0.1]
+      end.new
+
+      model.should ensure_inclusion_of(:attr).in_array([0.0, 0.1])
+    end
+  end
+
   context 'with true/false values' do
     it 'can verify outside values to ensure the negative case' do
       define_model(:example, :attr => :string).new.

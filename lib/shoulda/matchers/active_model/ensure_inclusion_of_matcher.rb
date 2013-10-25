@@ -24,6 +24,7 @@ module Shoulda # :nodoc:
       class EnsureInclusionOfMatcher < ValidationMatcher # :nodoc:
         ARBITRARY_OUTSIDE_STRING = 'shouldamatchersteststring'
         ARBITRARY_OUTSIDE_FIXNUM = 123456789
+        ARBITRARY_OUTSIDE_DECIMAL = 0.123456789
 
         def initialize(attribute)
           super(attribute)
@@ -160,6 +161,8 @@ module Shoulda # :nodoc:
           case @subject.send(@attribute.to_s)
           when Fixnum
             ARBITRARY_OUTSIDE_FIXNUM
+          when BigDecimal
+            ARBITRARY_OUTSIDE_DECIMAL 
           else
             ARBITRARY_OUTSIDE_STRING
           end
