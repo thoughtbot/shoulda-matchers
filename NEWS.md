@@ -10,6 +10,8 @@
   string instead of only a hash (e.g. `route(...).to('posts#index')` instead of
   `route(...).to(controller: 'posts', action: 'index')`).
 
+* The `ensure_inclusion_of` now works with a decimal column.
+
 # v 2.4.0
 
 * Fix a bug with the `validate_numericality_of` matcher that would not allow the
