@@ -37,8 +37,7 @@ module Shoulda # :nodoc:
           name = klass.to_s
           name.next! while self.const_defined?(name)
           self.const_set(name, klass.dup)
-
-          "Shoulda::Matchers::ActiveModel::TestModels::#{name}"
+          self.const_get(name)
         end
 
         def self.teardown
@@ -180,7 +179,7 @@ module Shoulda # :nodoc:
 
               next_value =
                 if scope.to_s =~ /_type$/ && klass = previous_value.constantize rescue nil && klass.ancestors.include?(::ActiveRecord::Base)
-                  TestModels.new(klass)
+                  TestModels.new(klass).to_s
                 elsif previous_value.respond_to?(:next)
                   previous_value.next
                 elsif previous_value.respond_to?(:to_datetime)
