@@ -42,7 +42,7 @@ module Shoulda # :nodoc:
         end
 
         def self.teardown
-          self.constants.select { |c| self.send(:remove_const, c) }
+          self.constants.each { |c| self.send(:remove_const, c) }
         end
       end
 
