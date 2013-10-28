@@ -32,6 +32,20 @@ module Shoulda # :nodoc:
         ValidateUniquenessOfMatcher.new(attr)
       end
 
+      module TestModels
+        def self.new(klass)
+          name = klass.to_s
+          name.next! while self.const_defined?(name)
+          self.const_set(name, klass.dup)
+
+          "Shoulda::Matchers::ActiveModel::TestModels::#{name}"
+        end
+
+        def self.teardown
+          self.constants.select { |c| self.send(:remove_const, c) }
+        end
+      end
+
       class ValidateUniquenessOfMatcher < ValidationMatcher # :nodoc:
         include Helpers
 
@@ -71,10 +85,15 @@ module Shoulda # :nodoc:
         def matches?(subject)
           @subject = subject.class.new
           @expected_message ||= :taken
-          set_scoped_attributes &&
-            validate_everything_except_duplicate_nils? &&
-            validate_after_scope_change? &&
-            allows_nil?
+
+          begin
+            set_scoped_attributes &&
+              validate_everything_except_duplicate_nils? &&
+              validate_after_scope_change? &&
+              allows_nil?
+          ensure
+            TestModels.teardown
+          end
         end
 
         private
@@ -161,9 +180,7 @@ module Shoulda # :nodoc:
 
               next_value =
                 if scope.to_s =~ /_type$/ && klass = previous_value.constantize rescue nil && klass.ancestors.include?(::ActiveRecord::Base)
-                  new_klass_name = previous_value
-                  new_klass_name.next! while Object.const_defined?(new_klass_name)
-                  Object.const_set(new_klass_name, klass.dup).to_s
+                  TestModels.new(klass)
                 elsif previous_value.respond_to?(:next)
                   previous_value.next
                 elsif previous_value.respond_to?(:to_datetime)
