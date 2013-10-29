@@ -7,8 +7,8 @@ module Shoulda
         class ModelReflection < SimpleDelegator
           def initialize(reflection)
             super(reflection)
-            self.reflection = reflection
-            self.subject = reflection.active_record
+            @reflection = reflection
+            @subject = reflection.active_record
           end
 
           def associated_class
@@ -40,7 +40,7 @@ module Shoulda
 
           private
 
-          attr_accessor :reflection, :subject
+          attr_reader :reflection, :subject
 
           def convert_scope_to_relation(scope)
             relation = associated_class.all
