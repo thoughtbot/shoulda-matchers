@@ -121,6 +121,32 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
     end
   end
 
+  context "with a context-dependent validation" do
+    context "without the validation context" do
+      specify { validating_numericality(:on => :customisable).should_not matcher }
+      specify { validating_numericality(:only_integer => true, :on => :customisable).should_not matcher.only_integer }
+      specify { validating_numericality(:greater_than => 10, :on => :customisable).should_not matcher.is_greater_than(10) }
+      specify { validating_numericality(:greater_than_or_equal_to => 10, :on => :customisable).should_not matcher.is_greater_than_or_equal_to(10) }
+      specify { validating_numericality(:equal_to => 10, :on => :customisable).should_not matcher.is_equal_to(10) }
+      specify { validating_numericality(:less_than => 10, :on => :customisable).should_not matcher.is_less_than(10) }
+      specify { validating_numericality(:less_than_or_equal_to => 10, :on => :customisable).should_not matcher.is_less_than_or_equal_to(10) }
+      specify { validating_numericality(:odd => true, :on => :customisable).should_not matcher.odd }
+      specify { validating_numericality(:even => true, :on => :customisable).should_not matcher.even }
+    end
+
+    context "with the validation context" do
+      specify { validating_numericality(:on => :customisable).should matcher.on(:customisable) }
+      specify { validating_numericality(:only_integer => true, :on => :customisable).should matcher.on(:customisable).only_integer }
+      specify { validating_numericality(:greater_than => 10, :on => :customisable).should matcher.on(:customisable).is_greater_than(10) }
+      specify { validating_numericality(:greater_than_or_equal_to => 10, :on => :customisable).should matcher.on(:customisable).is_greater_than_or_equal_to(10) }
+      specify { validating_numericality(:equal_to => 10, :on => :customisable).should matcher.on(:customisable).is_equal_to(10) }
+      specify { validating_numericality(:less_than => 10, :on => :customisable).should matcher.on(:customisable).is_less_than(10) }
+      specify { validating_numericality(:less_than_or_equal_to => 10, :on => :customisable).should matcher.on(:customisable).is_less_than_or_equal_to(10) }
+      specify { validating_numericality(:odd => true, :on => :customisable).should matcher.on(:customisable).odd }
+      specify { validating_numericality(:even => true, :on => :customisable).should matcher.on(:customisable).even }
+    end
+  end
+
   context 'when the subject is stubbed' do
     it 'retains stubs on submatchers' do
       subject = define_model :example, :attr => :string do
