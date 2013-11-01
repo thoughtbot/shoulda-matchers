@@ -6,8 +6,8 @@ module Shoulda # :nodoc:
 
         def initialize(attribute)
           @attribute = attribute
-          @disallow_value_matcher = DisallowValueMatcher.new(NON_INTEGER_VALUE).
-            for(attribute).
+          @disallow_value_matcher =
+            DisallowValueMatcher.new(attribute, NON_INTEGER_VALUE).
             with_message(:not_an_integer)
         end
 

@@ -19,11 +19,11 @@ module Shoulda # :nodoc:
       #   it { should_not allow_value('bad').for(:isbn) }
       #   it { should allow_value('isbn 1 2345 6789 0').for(:isbn) }
       #
-      def allow_value(*values)
+      def allow_value_for(attribute, *values)
         if values.empty?
           raise ArgumentError, 'need at least one argument'
         else
-          AllowValueMatcher.new(*values)
+          AllowValueMatcher.new(attribute, *values)
         end
       end
 
@@ -33,16 +33,12 @@ module Shoulda # :nodoc:
         attr_accessor :attribute_with_message
         attr_accessor :options
 
-        def initialize(*values)
+        def initialize(attribute, *values)
+          self.attribute_to_set = attribute
+          self.attribute_to_check_message_against = attribute
           self.values_to_match = values
           self.message_finder_factory = ValidationMessageFinder
           self.options = {}
-        end
-
-        def for(attribute)
-          self.attribute_to_set = attribute
-          self.attribute_to_check_message_against = attribute
-          self
         end
 
         def on(context)

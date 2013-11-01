@@ -2,17 +2,12 @@ module Shoulda # :nodoc:
   module Matchers
     module ActiveModel # :nodoc:
       class DisallowValueMatcher # :nodoc:
-        def initialize(value)
-          @allow_matcher = AllowValueMatcher.new(value)
+        def initialize(attribute, value)
+          @allow_matcher = AllowValueMatcher.new(attribute, value)
         end
 
         def matches?(subject)
           !@allow_matcher.matches?(subject)
-        end
-
-        def for(attribute)
-          @allow_matcher.for(attribute)
-          self
         end
 
         def on(context)

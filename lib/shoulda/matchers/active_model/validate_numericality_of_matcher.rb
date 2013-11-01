@@ -37,27 +37,27 @@ module Shoulda # :nodoc:
         end
 
         def is_greater_than(value)
-          add_submatcher(ComparisonMatcher.new(value, :>).for(@attribute))
+          add_submatcher(ComparisonMatcher.new(@attribute, value, :>))
           self
         end
 
         def is_greater_than_or_equal_to(value)
-          add_submatcher(ComparisonMatcher.new(value, :>=).for(@attribute))
+          add_submatcher(ComparisonMatcher.new(@attribute, value, :>=))
           self
         end
 
         def is_equal_to(value)
-          add_submatcher(ComparisonMatcher.new(value, :==).for(@attribute))
+          add_submatcher(ComparisonMatcher.new(@attribute, value, :==))
           self
         end
 
         def is_less_than(value)
-          add_submatcher(ComparisonMatcher.new(value, :<).for(@attribute))
+          add_submatcher(ComparisonMatcher.new(@attribute, value, :<))
           self
         end
 
         def is_less_than_or_equal_to(value)
-          add_submatcher(ComparisonMatcher.new(value, :<=).for(@attribute))
+          add_submatcher(ComparisonMatcher.new(@attribute, value, :<=))
           self
         end
 
@@ -98,8 +98,8 @@ module Shoulda # :nodoc:
         private
 
         def add_disallow_value_matcher
-          disallow_value_matcher = DisallowValueMatcher.new(NON_NUMERIC_VALUE).
-            for(@attribute).
+          disallow_value_matcher =
+            DisallowValueMatcher.new(@attribute, NON_NUMERIC_VALUE).
             with_message(:not_a_number)
 
           add_submatcher(disallow_value_matcher)

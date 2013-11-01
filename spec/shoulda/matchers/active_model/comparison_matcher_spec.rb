@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ComparisonMatcher do
   it_behaves_like 'a numerical submatcher' do
-    subject {  Shoulda::Matchers::ActiveModel::ComparisonMatcher.new(0, :>) }
+    subject {  Shoulda::Matchers::ActiveModel::ComparisonMatcher.new(:attr, 0, :>) }
   end
 
   context 'is_greater_than' do
