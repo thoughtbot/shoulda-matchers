@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Shoulda::Matchers::ActiveModel::OddEvenNumberMatcher do
+describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OddEvenNumberMatcher do
   it_behaves_like 'a numerical submatcher' do
-    subject {  Shoulda::Matchers::ActiveModel::OddEvenNumberMatcher.new(:attr) }
+    subject { described_class.new(:attr) }
   end
 
   context 'given an attribute that only allows odd number values' do

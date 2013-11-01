@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Shoulda::Matchers::ActiveModel::OnlyIntegerMatcher do
+describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OnlyIntegerMatcher do
   it_behaves_like 'a numerical submatcher' do
-    subject { Shoulda::Matchers::ActiveModel::OnlyIntegerMatcher.new(:attr) }
+    subject { described_class.new(:attr) }
   end
 
   context 'given an attribute that only allows integer values' do
