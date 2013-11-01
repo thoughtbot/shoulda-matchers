@@ -17,6 +17,7 @@ module Shoulda # :nodoc:
 
           def reflect_on_association(name)
             reflection = model_class.reflect_on_association(name)
+
             if reflection
               ModelReflection.new(reflection)
             end
