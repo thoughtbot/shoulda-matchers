@@ -54,6 +54,11 @@ describe Shoulda::Matchers::ActionController::RouteMatcher, type: :controller do
         to(:action => 'other', :id => '1')
     end
 
+    it "accepts a string as first parameter" do
+      route_examples_to_examples.should route(:get, '/examples/1').
+        to("examples#example", id: '1')
+    end
+
     def route_examples_to_examples
       define_routes do
         get 'examples/:id', :to => 'examples#example'
