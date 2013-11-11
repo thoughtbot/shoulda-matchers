@@ -48,8 +48,12 @@ module ModelBuilder
     class_name = name.to_s.pluralize.classify
     table_name = class_name.tableize
     table_block = lambda do |table|
-      columns.each do |name, type|
-        table.column name, type
+      columns.each do |name, specification|
+        if specification.is_a?(Hash)
+          table.column name, specification[:type], specification[:options]
+        else
+          table.column name, specification
+        end
       end
     end
 

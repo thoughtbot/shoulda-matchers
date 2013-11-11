@@ -110,7 +110,7 @@ module Shoulda # :nodoc:
           if options[:nil_value]
             value = nil
           else
-            value = "arbitrary_string"
+            value = 'a'
           end
 
           @subject.class.new.tap do |instance|

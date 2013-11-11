@@ -10,6 +10,16 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
   end
 
   context 'a model with a uniqueness validation' do
+    context 'where the subject has a character limit' do
+      it 'tests with values within the character limit' do
+        model = define_model(:example, :attr => { :type => :string, :options => { :limit => 1 } }) do
+         attr_accessible :attr
+         validates_uniqueness_of :attr
+        end.new
+        model.should matcher
+      end
+    end
+
     context 'with an existing record' do
       it 'requires a unique value for that attribute' do
         create_existing
