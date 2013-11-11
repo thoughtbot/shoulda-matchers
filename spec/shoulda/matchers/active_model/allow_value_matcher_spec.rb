@@ -42,6 +42,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
       validating_format(:with => /abc/).
         should_not allow_value('xyz', 'zyx', nil, []).for(:attr)
     end
+
   end
 
   context 'an attribute with a validation and a custom message' do
@@ -123,9 +124,18 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
       model.should_not allow_value(*bad_values).for(:attr)
     end
 
-    it "rejects a mix of both good and bad values" do
-      model.should_not allow_value('12345', *bad_values).for(:attr)
+    it "reject(positive match) mixed good and bad values" do
+      expect {
+        model.should allow_value('12345', *bad_values).for(:attr)
+      }.to raise_error /got error/
     end
+
+    it "reject(negative match) mixed good and bad values" do
+      expect {
+        model.should_not allow_value('12345', *bad_values).for(:attr)
+      }.to raise_error /got no error/
+    end
+
   end
 
   context 'with a single value' do

@@ -73,6 +73,15 @@ module Shoulda # :nodoc:
           end
         end
 
+        def does_not_match?(instance)
+          self.instance = instance
+          values_to_match.all? do |value|
+            self.value = value
+            instance.send("#{attribute_to_set}=", value)
+            errors_match?
+          end
+        end
+
         def failure_message_for_should
           "Did not expect #{expectation}, got error: #{matched_error}"
         end
