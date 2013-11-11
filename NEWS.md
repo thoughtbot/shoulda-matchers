@@ -15,6 +15,9 @@
 * Fix association matchers on Rails 3 so they work when used in conjunction with
   a submatcher such as #order and an association that has :include on it.
 
+* Fix a bug where `validate_uniqueness_of` would fail if the attribute under
+  test had a limit of fewer than 16 characters.
+
 # v 2.4.0
 
 * Fix a bug with the `validate_numericality_of` matcher that would not allow the
