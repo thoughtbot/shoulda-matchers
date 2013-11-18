@@ -32,43 +32,43 @@ module Shoulda # :nodoc:
         end
 
         def only_integer
-          add_submatcher(OnlyIntegerMatcher.new(@attribute))
+          add_submatcher(NumericalityMatchers::OnlyIntegerMatcher.new(@attribute))
           self
         end
 
         def is_greater_than(value)
-          add_submatcher(ComparisonMatcher.new(value, :>).for(@attribute))
+          add_submatcher(NumericalityMatchers::ComparisonMatcher.new(value, :>).for(@attribute))
           self
         end
 
         def is_greater_than_or_equal_to(value)
-          add_submatcher(ComparisonMatcher.new(value, :>=).for(@attribute))
+          add_submatcher(NumericalityMatchers::ComparisonMatcher.new(value, :>=).for(@attribute))
           self
         end
 
         def is_equal_to(value)
-          add_submatcher(ComparisonMatcher.new(value, :==).for(@attribute))
+          add_submatcher(NumericalityMatchers::ComparisonMatcher.new(value, :==).for(@attribute))
           self
         end
 
         def is_less_than(value)
-          add_submatcher(ComparisonMatcher.new(value, :<).for(@attribute))
+          add_submatcher(NumericalityMatchers::ComparisonMatcher.new(value, :<).for(@attribute))
           self
         end
 
         def is_less_than_or_equal_to(value)
-          add_submatcher(ComparisonMatcher.new(value, :<=).for(@attribute))
+          add_submatcher(NumericalityMatchers::ComparisonMatcher.new(value, :<=).for(@attribute))
           self
         end
 
         def odd
-          odd_number_matcher = OddEvenNumberMatcher.new(@attribute, :odd => true)
+          odd_number_matcher = NumericalityMatchers::OddEvenNumberMatcher.new(@attribute, :odd => true)
           add_submatcher(odd_number_matcher)
           self
         end
 
         def even
-          even_number_matcher = OddEvenNumberMatcher.new(@attribute, :even => true)
+          even_number_matcher = NumericalityMatchers::OddEvenNumberMatcher.new(@attribute, :even => true)
           add_submatcher(even_number_matcher)
           self
         end

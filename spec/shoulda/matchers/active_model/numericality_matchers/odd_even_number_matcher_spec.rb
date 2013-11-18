@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher::OddEvenNumberMatcher do
+describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OddEvenNumberMatcher do
   it_behaves_like 'a numerical submatcher' do
     subject { described_class.new(:attr) }
   end

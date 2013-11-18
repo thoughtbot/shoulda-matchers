@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher::ComparisonMatcher do
+describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher do
   it_behaves_like 'a numerical submatcher' do
     subject { described_class.new(0, :>) }
   end

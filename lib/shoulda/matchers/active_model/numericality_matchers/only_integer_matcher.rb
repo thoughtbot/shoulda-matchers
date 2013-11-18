@@ -1,25 +1,15 @@
 module Shoulda # :nodoc:
   module Matchers
     module ActiveModel # :nodoc:
-      class ValidateNumericalityOfMatcher
-        class OddEvenNumberMatcher # :nodoc:
-          NON_EVEN_NUMBER_VALUE = 1
-          NON_ODD_NUMBER_VALUE  = 2
+      module NumericalityMatchers
+        class OnlyIntegerMatcher # :nodoc:
+          NON_INTEGER_VALUE = 0.1
 
-          def initialize(attribute, options = {})
+          def initialize(attribute)
             @attribute = attribute
-            options[:odd]   ||= true
-            options[:even]  ||= false
-
-            if options[:odd] && !options[:even]
-              @disallow_value_matcher = DisallowValueMatcher.new(NON_ODD_NUMBER_VALUE).
-                for(@attribute).
-                with_message(:odd)
-            else
-              @disallow_value_matcher = DisallowValueMatcher.new(NON_EVEN_NUMBER_VALUE).
-                for(@attribute).
-                with_message(:even)
-            end
+            @disallow_value_matcher = DisallowValueMatcher.new(NON_INTEGER_VALUE).
+              for(attribute).
+              with_message(:not_an_integer)
           end
 
           def matches?(subject)
