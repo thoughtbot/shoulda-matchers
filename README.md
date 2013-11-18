@@ -6,11 +6,60 @@ shoulda-matchers provides Test::Unit- and RSpec-compatible one-liners that test
 common Rails functionality. These tests would otherwise be much longer, more
 complex, and error-prone.
 
-## ActiveRecord Matchers
+## Installation
+
+Simply add the following to your Gemfile:
+
+```ruby
+group :test do
+  gem 'shoulda-matchers'
+end
+
+# `rspec-rails` needs to be in the development group so that Rails generators work.
+group :development, :test do
+  gem 'rspec-rails', '~> 2.12'
+end
+```
+
+All of the matchers will get automatically included into your test framework so
+you can use them right away.
+
+## Usage
+
+The matchers that shoulda-matchers provides can be divided into three 
+categories:
+
+* [ActiveRecord Matchers](#activerecord-matchers)
+  * [belong_to](#belong_to)
+  * [have_many](#have_many)
+  * [have_one](#have_one)
+  * [have_and_belong_to_many](#have_and_belong_to_many)
+* [ActiveModel Matchers](#activemodel-matchers)
+  * [allow_mass_assignment_of](#allow_mass_assignment_of)
+  * [allow_value / disallow_value](#allow_value / disallow_value)
+  * [ensure_inclusion_of](#ensure_inclusion_of)
+  * [ensure_exclusion_of](#ensure_exclusion_of)
+  * [ensure_length_of](#ensure_length_of)
+  * [have_secure_password](#have_secure_password)
+  * [validate_acceptance_of](#validate_acceptance_of)
+  * [validate_confirmation_of](#validate_confirmation_of)
+  * [validate_numericality_of](#validate_numericality_of)
+  * [validate_uniqueness_of](#validate_uniqueness_of)
+* [ActionController Matchers](#actioncontroller-matchers)
+  * [filter_param](#filter_param)
+  * [redirect_to](#redirect_to)
+  * [render_template](#render_template)
+  * [render_with_layout](#render_with_layout)
+  * [rescue_from](#rescue_from)
+  * [respond_with](#respond_with)
+  * [set_session](#set_session)
+  * [set_the_flash](#set_the_flash)
+
+### ActiveRecord Matchers
 
 These matchers give you a way to test associations in your models.
 
-### belong_to
+#### belong_to
 
 The `belong_to` matcher tests your `belongs_to` associations.
 
@@ -48,7 +97,7 @@ class PersonTest < ActiveSupport::TestCase
 end
 ```
 
-### have_many
+#### have_many
 
 The `have_many` matcher tests your `has_many` and `has_many :through` associations.
 
@@ -95,7 +144,7 @@ class PersonTest < ActiveSupport::TestCase
 end
 ```
 
-### have_one
+#### have_one
 
 The `have_one` matcher tests your `has_one` and `has_one :through` associations.
 
@@ -136,7 +185,7 @@ class PersonTest < ActiveSupport::TestCase
 end
 ```
 
-### have_and_belong_to_many
+#### have_and_belong_to_many
 
 Finally, the `have_and_belong_to_many` matcher tests your
 `has_and_belongs_to_many` associations.
@@ -169,11 +218,11 @@ class PersonTest < ActiveSupport::TestCase
 end
 ```
 
-## ActiveModel Matchers
+### ActiveModel Matchers
 
 These matchers give you a way to test validations and security rules.
 
-### allow_mass_assignment_of
+#### allow_mass_assignment_of
 
 The `allow_mass_assignment_of` matcher tests usage of Rails 3's
 `attr_accessible` and `attr_protected` macros, asserting that attributes can or
@@ -210,7 +259,7 @@ class UserTest < ActiveSupport::TestCase
 end
 ```
 
-### allow_value / disallow_value
+#### allow_value / disallow_value
 
 The `allow_value` matcher tests usage of the `validates_format_of` validation.
 It asserts that an attribute can be set to one or more values, succeeding if
@@ -295,7 +344,7 @@ describe User do
 end
 ```
 
-### ensure_inclusion_of
+#### ensure_inclusion_of
 
 The `ensure_inclusion_of` matcher tests usage of the `validates_inclusion_of`
 validation, asserting that an attribute can take a set of values and cannot
@@ -339,7 +388,7 @@ class IssueTest < ActiveSupport::TestCase
 end
 ```
 
-### ensure_exclusion_of
+#### ensure_exclusion_of
 
 The `ensure_exclusion_of` matcher tests usage of the `validates_exclusion_of`
 validation, asserting that an attribute cannot take a set of values.
@@ -382,7 +431,7 @@ class GameTest < ActiveSupport::TestCase
 end
 ```
 
-### ensure_length_of
+#### ensure_length_of
 
 The `ensure_length_of` matcher tests usage of the `validates_length_of` matcher.
 
@@ -445,7 +494,7 @@ class UserTest < ActiveSupport::TestCase
 end
 ```
 
-### have_secure_password
+#### have_secure_password
 
 The `have_secure_password` matcher tests usage of the `has_secure_password`
 macro.
@@ -466,7 +515,7 @@ class UserTest < ActiveSupport::TestCase
 end
 ```
 
-### validate_acceptance_of
+#### validate_acceptance_of
 
 The `validate_acceptance_of` matcher tests usage of the
 `validates_acceptance_of` validation.
@@ -500,7 +549,7 @@ class RegistrationTest < ActiveSupport::TestCase
 end
 ```
 
-### validate_confirmation_of
+#### validate_confirmation_of
 
 The `validate_confirmation_of` matcher tests usage of the
 `validates_confirmation_of` validation.
@@ -530,7 +579,7 @@ class UserTest < ActiveSupport::TestCase
 end
 ```
 
-### validate_numericality_of
+#### validate_numericality_of
 
 The `validate_numericality_of` matcher tests usage of the
 `validates_numericality_of` validation.
@@ -586,7 +635,7 @@ class PersonTest < ActiveSupport::TestCase
 end
 ```
 
-### validate_presence_of
+#### validate_presence_of
 
 The `validate_presence_of` matcher tests usage of the `validates_presence_of`
 matcher.
@@ -610,7 +659,7 @@ class RobotTest < ActiveSupport::TestCase
 end
 ```
 
-### validate_uniqueness_of
+#### validate_uniqueness_of
 
 The `validate_uniqueness_of` matcher tests usage of the
 `validates_uniqueness_of` validation.
@@ -680,11 +729,11 @@ describe Post do
 end
 ```
 
-## ActionController Matchers
+### ActionController Matchers
 
 These matchers let you make assertions about various controller-level behavior.
 
-### filter_param
+#### filter_param
 
 The `filter_param` matcher tests parameter filtering configuration.
 
@@ -704,7 +753,7 @@ class ApplicationControllerTest < ActionController::TestCase
 end
 ```
 
-### redirect_to
+#### redirect_to
 
 The `redirect_to` matcher tests that an action redirects to a certain location.
 In a test suite using RSpec, it is very similar to rspec-rails's `redirect_to`
@@ -737,7 +786,7 @@ class PostsControllerTest < ActionController::TestCase
 end
 ```
 
-### render_template
+#### render_template
 
 The `render_template` matcher tests that an action renders a template.
 In RSpec, it is very similar to rspec-rails's `render_template` matcher.
@@ -768,7 +817,7 @@ class PostsControllerTest < ActionController::TestCase
 end
 ```
 
-### render_with_layout
+#### render_with_layout
 
 The `render_with_layout` matcher tests that an action is rendered with a certain
 layout.
@@ -799,7 +848,7 @@ class PostsControllerTest < ActionController::TestCase
 end
 ```
 
-### rescue_from
+#### rescue_from
 
 The `rescue_from` matcher tests usage of the `rescue_from` macro.
 
@@ -829,7 +878,7 @@ class ApplicationControllerTest < ActionController::TestCase
 end
 ```
 
-### respond_with
+#### respond_with
 
 The `respond_with` matcher tests that an action responds with a certain status
 code.
@@ -892,7 +941,7 @@ class PostsControllerTest < ActionController::TestCase
 end
 ```
 
-### route
+#### route
 
 The `route` matcher tests that a route resolves to a controller, action, and
 params; and that the controller, action, and params generates the same route. For
@@ -922,7 +971,7 @@ class RoutesTest < ActionController::IntegrationTest
 end
 ```
 
-### set_session
+#### set_session
 
 The `set_session` matcher asserts that a key in the `session` hash has been set
 to a certain value.
@@ -955,7 +1004,7 @@ class PostsControllerTest < ActionController::TestCase
 end
 ```
 
-### set_the_flash
+#### set_the_flash
 
 The `set_the_flash` matcher asserts that a key in the `flash` hash is set to a
 certain value.
@@ -1026,23 +1075,6 @@ class PostsControllerTest < ActionController::TestCase
   end
 end
 ```
-
-## Installation
-
-In Rails 3 and Bundler, add the following to your Gemfile:
-
-```ruby
-group :test do
-  gem "shoulda-matchers"
-end
-
-# `rspec-rails` needs to be in the development group so that Rails generators work.
-group :development, :test do
-  gem "rspec-rails", "~> 2.12"
-end
-```
-
-Shoulda will automatically include matchers into the appropriate example groups.
 
 ## Credits
 
