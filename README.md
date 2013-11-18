@@ -44,6 +44,7 @@ categories:
   * [validate_acceptance_of](#validate_acceptance_of)
   * [validate_confirmation_of](#validate_confirmation_of)
   * [validate_numericality_of](#validate_numericality_of)
+  * [validate_presence_of](#validate_presence_of)
   * [validate_uniqueness_of](#validate_uniqueness_of)
 * [ActionController Matchers](#actioncontroller-matchers)
   * [filter_param](#filter_param)
