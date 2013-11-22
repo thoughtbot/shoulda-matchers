@@ -21,8 +21,7 @@ your test framework so you can use them right away.
 
 ## Usage
 
-The matchers provided by shoulda-matchers can be divided into the part of Rails
-they apply to:
+Different matchers apply to different parts of Rails:
 
 * [ActiveModel](#activemodel)
 * [ActiveRecord](#activerecord)
