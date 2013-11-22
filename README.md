@@ -23,13 +23,13 @@ your test framework so you can use them right away.
 
 Different matchers apply to different parts of Rails:
 
-* [ActiveModel](#activemodel)
-* [ActiveRecord](#activerecord)
-* [ActionController](#actioncontroller)
+* [ActiveModel](#activemodel-matchers)
+* [ActiveRecord](#activerecord-matchers)
+* [ActionController](#actioncontroller-matchers)
 
 ### ActiveModel Matchers
 
-*Jump to: [allow_mass_assignment_of](#allow_mass_assignment_of), [allow_value / disallow_value](#allow_value / disallow_value), [ensure_inclusion_of](#ensure_inclusion_of), [ensure_exclusion_of](#ensure_exclusion_of), [ensure_length_of](#ensure_length_of), [have_secure_password](#have_secure_password), [validate_acceptance_of](#validate_acceptance_of), [validate_confirmation_of](#validate_confirmation_of), [validate_numericality_of](#validate_numericality_of), [validate_presence_of](#validate_presence_of), [validate_uniqueness_of](#validate_uniqueness_of)*
+*Jump to: [allow_mass_assignment_of](#allow_mass_assignment_of), [allow_value / disallow_value](#allow_value--disallow_value), [ensure_inclusion_of](#ensure_inclusion_of), [ensure_exclusion_of](#ensure_exclusion_of), [ensure_length_of](#ensure_length_of), [have_secure_password](#have_secure_password), [validate_acceptance_of](#validate_acceptance_of), [validate_confirmation_of](#validate_confirmation_of), [validate_numericality_of](#validate_numericality_of), [validate_presence_of](#validate_presence_of), [validate_uniqueness_of](#validate_uniqueness_of)*
 
 #### allow_mass_assignment_of
 
