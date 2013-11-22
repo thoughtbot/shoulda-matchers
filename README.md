@@ -21,16 +21,6 @@ you can use them right away.
 
 ## Usage
 
-* [ActiveRecord](#activerecord-matchers)
-  * [accept_nested_attributes_for](#accept_nested_attributes_for)
-  * [belong_to](#belong_to)
-  * [have_many](#have_many)
-  * [have_one](#have_one)
-  * [have_and_belong_to_many](#have_and_belong_to_many)
-  * [have_db_column](#have_db_column)
-  * [have_db_index](#have_db_index)
-  * [have_readonly_attribute](#have_readonly_attribute)
-  * [serialize](#serialize)
 * [ActiveModel](#activemodel-matchers)
   * [allow_mass_assignment_of](#allow_mass_assignment_of)
   * [allow_value / disallow_value](#allow_value / disallow_value)
@@ -43,6 +33,16 @@ you can use them right away.
   * [validate_numericality_of](#validate_numericality_of)
   * [validate_presence_of](#validate_presence_of)
   * [validate_uniqueness_of](#validate_uniqueness_of)
+* [ActiveRecord](#activerecord-matchers)
+  * [accept_nested_attributes_for](#accept_nested_attributes_for)
+  * [belong_to](#belong_to)
+  * [have_many](#have_many)
+  * [have_one](#have_one)
+  * [have_and_belong_to_many](#have_and_belong_to_many)
+  * [have_db_column](#have_db_column)
+  * [have_db_index](#have_db_index)
+  * [have_readonly_attribute](#have_readonly_attribute)
+  * [serialize](#serialize)
 * [ActionController](#actioncontroller-matchers)
   * [filter_param](#filter_param)
   * [redirect_to](#redirect_to)
@@ -53,6 +53,515 @@ you can use them right away.
   * [set_session](#set_session)
   * [set_the_flash](#set_the_flash)
 
+### ActiveModel Matchers
+
+#### allow_mass_assignment_of
+
+The `allow_mass_assignment_of` matcher tests usage of Rails 3's
+`attr_accessible` and `attr_protected` macros, asserting that attributes can or
+cannot be mass-assigned on a record.
+
+```ruby
+class Post < ActiveRecord::Base
+  attr_accessible :title
+  attr_accessible :published_status, as: :admin
+end
+
+class User < ActiveRecord::Base
+  attr_protected :encrypted_password
+end
+
+# RSpec
+describe Post do
+  it { should allow_mass_assignment_of(:title) }
+  it { should allow_mass_assignment_of(:published_status).as(:admin) }
+end
+
+describe User do
+  it { should_not allow_mass_assignment_of(:encrypted_password) }
+end
+
+# Test::Unit
+class PostTest < ActiveSupport::TestCase
+  should allow_mass_assignment_of(:title)
+  should allow_mass_assignment_of(:published_status).as(:admin)
+end
+
+class UserTest < ActiveSupport::TestCase
+  should_not allow_mass_assignment_of(:encrypted_password)
+end
+```
+
+#### allow_value / disallow_value
+
+The `allow_value` matcher tests usage of the `validates_format_of` validation.
+It asserts that an attribute can be set to one or more values, succeeding if
+none of the values cause the record to be invalid.
+
+```ruby
+class UserProfile < ActiveRecord::Base
+  validates_format_of :website_url, with: URI.regexp
+
+  validates_format_of :birthday_as_string,
+    with: /^(\d+)-(\d+)-(\d+)$/,
+    on: :create
+
+  validates_format_of :state,
+    with: /^(open|closed)$/,
+    message: 'State must be open or closed'
+end
+
+# RSpec
+describe UserProfile do
+  it do
+    should allow_value('http://foo.com', 'http://bar.com/baz').
+      for(:website_url)
+  end
+
+  it do
+    should_not allow_value('asdfjkl').for(:website_url)
+  end
+
+  it do
+    should allow_value(:birthday_as_string).on(:create)
+  end
+
+  it do
+    should allow_value('open', 'closed').
+      for(:state).
+      with_message('State must be open or closed')
+  end
+end
+
+# Test::Unit
+class UserProfileTest < ActiveSupport::TestCase
+  should allow_value('http://foo.com', 'http://bar.com/baz').
+    for(:website_url)
+
+  should_not allow_value('asdfjkl').for(:website_url)
+
+  should allow_value(:birthday_as_string).on(:create)
+
+  should allow_value('open', 'closed').
+    for(:state).
+    with_message('State must be open or closed')
+end
+```
+
+**IMPORTANT NOTE!** Using `should_not` with `allow_value` completely negates the
+assertion. This means that if multiple values are given to `allow_value`, the
+matcher succeeds once it sees the *first* value that will cause the record to be
+invalid:
+
+```ruby
+describe User do
+  # 'b' and 'c' will not be tested
+  it { should_not allow_value('a', 'b', 'c').for(:website_url) }
+end
+```
+
+The `disallow_value` matcher is the exact opposite of `allow_value`. That is,
+`should_not allow_value` can also be written `should disallow_value`, and
+`should allow_value` can also be written `should_not disallow_value`. Because
+of this, it carries the same caveat when multiple values are provided:
+
+```ruby
+describe User do
+  # 'b' and 'c' will not be tested
+  it do
+    should disallow_value('a', 'b', 'c').for(:website_url)
+  end
+
+  it do
+    should_not disallow_value('http://foo.com', 'http://bar.com').
+      for(:website_url)
+  end
+end
+```
+
+#### ensure_inclusion_of
+
+The `ensure_inclusion_of` matcher tests usage of the `validates_inclusion_of`
+validation, asserting that an attribute can take a set of values and cannot
+take values outside of this set.
+
+```ruby
+class Issue < ActiveRecord::Base
+  validates_inclusion_of :state, in: %w(open resolved unresolved)
+  validates_inclusion_of :priority, in: 1..5
+  validates_inclusion_of :severity,
+    in: %w(low medium high),
+    message: 'Severity must be low, medium, or high'
+end
+
+# RSpec
+describe Issue do
+  it do
+    should ensure_inclusion_of(:state).in_array(%w(open resolved unresolved))
+  end
+
+  it do
+    should ensure_inclusion_of(:state).in_range(1..5)
+  end
+
+  it do
+    should ensure_inclusion_of(:severity).
+      in_array(%w(low medium high)).
+      with_message('Severity must be low, medium, or high')
+  end
+end
+
+# Test::Unit
+class IssueTest < ActiveSupport::TestCase
+  should ensure_inclusion_of(:state).in_array(%w(open resolved unresolved))
+  should ensure_inclusion_of(:state).in_range(1..5)
+  should ensure_inclusion_of(:severity).
+    in_array(%w(low medium high)).
+    with_message('Severity must be low, medium, or high')
+end
+```
+
+#### ensure_exclusion_of
+
+The `ensure_exclusion_of` matcher tests usage of the `validates_exclusion_of`
+validation, asserting that an attribute cannot take a set of values.
+
+```ruby
+class Game < ActiveRecord::Base
+  validates_exclusion_of :supported_os, in: ['Mac', 'Linux']
+
+  validates_exclusion_of :floors_with_enemies, in: 5..8
+
+  validates_exclusion_of :weapon,
+    in: ['pistol', 'paintball gun', 'stick'],
+    message: 'You chose a puny weapon'
+end
+
+# RSpec
+describe Game do
+  it do
+    should ensure_exclusion_of(:supported_os).in_array(['Mac', 'Linux'])
+  end
+
+  it { should ensure_exclusion_of(:floors_with_enemies).in_range(5..8) }
+
+  it do
+    should ensure_exclusion_of(:weapon).
+      in_array(['pistol', 'paintball gun', 'stick']).
+      with_message('You chose a puny weapon')
+  end
+end
+
+# Test::Unit
+class GameTest < ActiveSupport::TestCase
+  should ensure_exclusion_of(:supported_os).in_array(['Mac', 'Linux'])
+
+  should ensure_exclusion_of(:floors_with_enemies).in_range(5..8)
+
+  should ensure_exclusion_of(:weapon).
+    in_array(['pistol', 'paintball gun', 'stick']).
+    with_message('You chose a puny weapon')
+end
+```
+
+#### ensure_length_of
+
+The `ensure_length_of` matcher tests usage of the `validates_length_of` matcher.
+
+```ruby
+class User < ActiveRecord::Base
+  validates_length_of :bio, minimum: 15
+  validates_length_of :favorite_superhero, is: 6
+  validates_length_of :status_update, maximum: 140
+  validates_length_of :password, in: 5..30
+
+  validates_length_of :api_token,
+    in: 10..20,
+    message: 'API token must be in between 5 and 30 characters'
+
+  validates_length_of :secret_key, in: 15..100,
+    too_short: 'Password must be more than 15 characters',
+    too_long: 'Password cannot be more than 100 characters'
+end
+
+# RSpec
+describe User do
+  it { should ensure_length_of(:bio).is_at_least(15) }
+  it { should ensure_length_of(:favorite_superhero).is_equal_to(6) }
+  it { should ensure_length_of(:status_update).is_at_most(140) }
+  it { should ensure_length_of(:password).is_at_least(5).is_at_most(30) }
+
+  it do
+    should ensure_length_of(:api_token).
+      is_at_least(5).
+      is_at_most(30).
+      message('Password must be in between 5 and 30 characters')
+  end
+
+  it do
+    should ensure_length_of(:secret_key).
+      is_at_least(5).
+      is_at_most(30).
+      with_short_message('Password must be more than 5 characters').
+      with_long_message('Password cannot be more than 30 characters')
+  end
+end
+
+# Test::Unit
+class UserTest < ActiveSupport::TestCase
+  should ensure_length_of(:bio).is_at_least(15)
+  should ensure_length_of(:favorite_superhero).is_equal_to(6)
+  should ensure_length_of(:status_update).is_at_most(140)
+  should ensure_length_of(:password).is_at_least(5).is_at_most(30)
+
+  should ensure_length_of(:api_token).
+    is_at_least(5).
+    is_at_most(30).
+    message('Password must be in between 5 and 30 characters')
+
+  should ensure_length_of(:secret_key).
+    is_at_least(5).
+    is_at_most(30).
+    with_short_message('Password must be more than 5 characters').
+    with_long_message('Password cannot be more than 30 characters')
+end
+```
+
+#### have_secure_password
+
+The `have_secure_password` matcher tests usage of the `has_secure_password`
+macro.
+
+```ruby
+class User < ActiveRecord::Base
+  has_secure_password
+end
+
+# RSpec
+describe User do
+  it { should have_secure_password }
+end
+
+# Test::Unit
+class UserTest < ActiveSupport::TestCase
+  should have_secure_password
+end
+```
+
+#### validate_acceptance_of
+
+The `validate_acceptance_of` matcher tests usage of the
+`validates_acceptance_of` validation.
+
+```ruby
+class Registration
+  include ActiveModel::Model
+
+  validates_acceptance_of :eula
+  validates_acceptance_of :terms_of_service,
+    message: 'You must accept the terms of service'
+end
+
+# RSpec
+describe Registration do
+  it { should validate_acceptance_of(:eula) }
+
+  it do
+    should validate_acceptance_of(:terms_of_service).
+      with_message('You must accept the terms of service')
+  end
+end
+
+# Test::Unit
+class RegistrationTest < ActiveSupport::TestCase
+  should validate_acceptance_of(:eula)
+
+  should validate_acceptance_of(:terms_of_service).
+    with_message('You must accept the terms of service')
+end
+```
+
+#### validate_confirmation_of
+
+The `validate_confirmation_of` matcher tests usage of the
+`validates_confirmation_of` validation.
+
+```ruby
+class User < ActiveRecord::Base
+  validates_confirmation_of :email
+  validates_confirmation_of :password, message: 'Please re-enter your password'
+end
+
+# RSpec
+describe User do
+  it do
+    should validate_confirmation_of(:email)
+  end
+
+  it do
+    should validate_confirmation_of(:password).
+      with_message('Please re-enter your password')
+  end
+end
+
+# Test::Unit
+class UserTest < ActiveSupport::TestCase
+  should validate_confirmation_of(:email)
+
+  should validate_confirmation_of(:password).
+    with_message('Please re-enter your password')
+end
+```
+
+#### validate_numericality_of
+
+The `validate_numericality_of` matcher tests usage of the
+`validates_numericality_of` validation.
+
+```ruby
+class Person < ActiveRecord::Base
+  validates_numericality_of :gpa
+  validates_numericality_of :age, only_integer: true
+  validates_numericality_of :legal_age, greater_than: 21
+  validates_numericality_of :height, greater_than_or_equal_to: 55
+  validates_numericality_of :weight, equal_to: 150
+  validates_numericality_of :number_of_cars, less_than: 2
+  validates_numericality_of :birth_year, less_than_or_equal_to: 1987
+  validates_numericality_of :birth_day, odd: true
+  validates_numericality_of :birth_month, even: true
+
+  validates_numericality_of :number_of_dependents,
+    message: 'Number of dependents must be a number'
+end
+
+# RSpec
+describe Person do
+  it { should validate_numericality_of(:gpa) }
+  it { should validate_numericality_of(:age).only_integer }
+  it { should validate_numericality_of(:legal_age).is_greater_than(21) }
+  it { should validate_numericality_of(:height).is_greater_than_or_equal_to(55) }
+  it { should validate_numericality_of(:weight).is_equal_to(150) }
+  it { should validate_numericality_of(:number_of_cars).is_less_than(2) }
+  it { should validate_numericality_of(:birth_year).is_less_than_or_equal_to(1987) }
+  it { should validate_numericality_of(:birth_day).odd }
+  it { should validate_numericality_of(:birth_month).even }
+
+  it do
+    should validate_numericality_of(:number_of_dependents).
+      with_message('Number of dependents must be a number' }
+  end
+end
+
+# Test::Unit
+class PersonTest < ActiveSupport::TestCase
+  should validate_numericality_of(:gpa)
+  should validate_numericality_of(:age).only_integer
+  should validate_numericality_of(:legal_age).is_greater_than(21)
+  should validate_numericality_of(:height).is_greater_than_or_equal_to(55)
+  should validate_numericality_of(:weight).is_equal_to(150)
+  should validate_numericality_of(:number_of_cars).is_less_than(2)
+  should validate_numericality_of(:birth_year).is_less_than_or_equal_to(1987)
+  should validate_numericality_of(:birth_day).odd
+  should validate_numericality_of(:birth_month).even
+
+  should validate_numericality_of(:number_of_dependents).
+    with_message('Number of dependents must be a number')
+end
+```
+
+#### validate_presence_of
+
+The `validate_presence_of` matcher tests usage of the `validates_presence_of`
+matcher.
+
+```ruby
+class Robot < ActiveRecord::Base
+  validates_presence_of :arms
+  validates_presence_of :legs, message: 'Robot has no legs'
+end
+
+# RSpec
+describe Robot do
+  it { should validate_presence_of(:arms) }
+  it { should validate_presence_of(:legs).with_message('Robot has no legs') }
+end
+
+# Test::Unit
+class RobotTest < ActiveSupport::TestCase
+  should validate_presence_of(:arms)
+  should validate_presence_of(:legs).with_message('Robot has no legs')
+end
+```
+
+#### validate_uniqueness_of
+
+The `validate_uniqueness_of` matcher tests usage of the
+`validates_uniqueness_of` validation.
+
+```ruby
+class Post < ActiveRecord::Base
+  validates_uniqueness_of :permalink
+  validates_uniqueness_of :slug, scope: :user_id
+  validates_uniqueness_of :key, case_insensitive: true
+  validates_uniqueness_of :author_id, allow_nil: true
+
+  validates_uniqueness_of :title, message: 'Please choose another title'
+end
+
+# RSpec
+describe Post do
+  it { should validate_uniqueness_of(:permalink) }
+  it { should validate_uniqueness_of(:slug).scoped_to(:journal_id) }
+  it { should validate_uniqueness_of(:key).case_insensitive }
+  it { should validate_uniqueness_of(:author_id).allow_nil }
+
+  it do
+    should validate_uniqueness_of(:title).
+      with_message('Please choose another title')
+  end
+end
+
+# Test::Unit
+class PostTest < ActiveSupport::TestCase
+  should validate_uniqueness_of(:permalink)
+  should validate_uniqueness_of(:slug).scoped_to(:journal_id)
+  should validate_uniqueness_of(:key).case_insensitive
+  should validate_uniqueness_of(:author_id).allow_nil
+
+  should validate_uniqueness_of(:title).
+    with_message('Please choose another title')
+end
+```
+
+**IMPORTANT NOTE!** This matcher works differently from other validation
+matchers. Since the very concept of uniqueness depends on checking against a
+pre-existing record in the database, this matcher will first use the model
+you're testing to query for such a record, and if it can't find an existing one,
+it will create one itself. Sometimes this step fails, especially if you have
+other validations on the attribute you're testing (or, if you have
+database-level restrictions on any attributes). In this case, the solution is to
+create a record before you use `validate_uniqueness_of`.
+
+For example, if you have this model:
+
+```ruby
+class Post < ActiveRecord::Base
+  validates_presence_of :permalink
+  validates_uniqueness_of :permalink
+end
+```
+
+then you will need to test it like this:
+
+```ruby
+describe Post do
+  it do
+    Post.create!(title: 'This is the title')
+    should validate_uniqueness_of(:permalink)
+  end
+end
+```
+
 ### ActiveRecord Matchers
 
 #### accept_nested_attributes_for
@@ -61,11 +570,11 @@ The `accept_nested_attributes_for` matcher tests usage of the
 `accepts_nested_attributes_for` macro.
 
 ```ruby
-class Car
+class Car < ActiveRecord::Base
   accept_nested_attributes_for :doors
-  accept_nested_attributes_for :mirrors
-  accept_nested_attributes_for :windows
-  accept_nested_attributes_for :engine
+  accept_nested_attributes_for :mirrors, allow_destroy: true
+  accept_nested_attributes_for :windows, limit: 3
+  accept_nested_attributes_for :engine, update_only: true
 end
 
 # RSpec
@@ -76,7 +585,7 @@ describe Car do
   it { should accept_nested_attributes_for(:engine).update_only }
 end
 
-# Test::Unit (with Shoulda)
+# Test::Unit (using Shoulda)
 class CarTest < ActiveSupport::TestCase
   should accept_nested_attributes_for(:doors)
   should accept_nested_attributes_for(:mirrors).allow_destroy
@@ -111,7 +620,7 @@ describe Person do
   it { should belong_to(:world).dependent(:destroy) }
 end
 
-# Test::Unit (using Shoulda)
+# Test::Unit
 class PersonTest < ActiveSupport::TestCase
   should belong_to(:organization)
   should belong_to(:family).conditions(everyone_is_perfect: false)
@@ -308,7 +817,7 @@ end
 
 #### have_readonly_attribute
 
-The `have_readonly_attribute` matcher tests usage of `attr_readonly`.
+The `have_readonly_attribute` matcher tests usage of the `attr_readonly` macro.
 
 ```ruby
 class User < ActiveRecord::Base
@@ -355,514 +864,6 @@ describe Product do
 end
 ```
 
-### ActiveModel Matchers
-
-#### allow_mass_assignment_of
-
-The `allow_mass_assignment_of` matcher tests usage of Rails 3's
-`attr_accessible` and `attr_protected` macros, asserting that attributes can or
-cannot be mass-assigned on a record.
-
-```ruby
-class Post < ActiveRecord::Base
-  attr_accessible :title
-  attr_accessible :published_status, as: :admin
-end
-
-class User < ActiveRecord::Base
-  attr_protected :encrypted_password
-end
-
-# RSpec
-describe Post do
-  it { should allow_mass_assignment_of(:title) }
-  it { should allow_mass_assignment_of(:published_status).as(:admin) }
-end
-
-describe User do
-  it { should_not allow_mass_assignment_of(:encrypted_password) }
-end
-
-# Test::Unit
-class PostTest < ActiveSupport::TestCase
-  should allow_mass_assignment_of(:title)
-  should allow_mass_assignment_of(:published_status).as(:admin)
-end
-
-class UserTest < ActiveSupport::TestCase
-  should_not allow_mass_assignment_of(:encrypted_password)
-end
-```
-
-#### allow_value / disallow_value
-
-The `allow_value` matcher tests usage of the `validates_format_of` validation.
-It asserts that an attribute can be set to one or more values, succeeding if
-none of the values cause the record to be invalid.
-
-```ruby
-class UserProfile < ActiveRecord::Base
-  validates_format_of :website_url, with: URI.regexp
-
-  validates_format_of :birthday_as_string,
-    with: /^(\d+)-(\d+)-(\d+)$/,
-    on: :create
-
-  validates_format_of :state,
-    with: /^(open|closed)$/,
-    message: 'State must be open or closed'
-end
-
-# RSpec
-describe UserProfile do
-  it do
-    should allow_value('http://foo.com', 'http://bar.com/baz').
-      for(:website_url)
-  end
-
-  it do
-    should_not allow_value('asdfjkl').for(:website_url)
-  end
-
-  it do
-    should allow_value(:birthday_as_string).on(:create)
-  end
-
-  it do
-    should allow_value('open', 'closed').
-      for(:state).
-      with_message('State must be open or closed')
-  end
-end
-
-# Test::Unit
-class UserProfileTest < ActiveSupport::TestCase
-  should allow_value('http://foo.com', 'http://bar.com/baz').
-    for(:website_url)
-
-  should_not allow_value('asdfjkl').for(:website_url)
-
-  should allow_value(:birthday_as_string).on(:create)
-
-  should allow_value('open', 'closed').
-    for(:state).
-    with_message('State must be open or closed')
-end
-```
-
-**IMPORTANT NOTE!** Using `should_not` with `allow_value` completely negates the
-assertion. This means that if multiple values are given to `allow_value`, the
-matcher succeeds once it sees the *first* value that will cause the record to be
-invalid:
-
-```ruby
-describe User do
-  # 'b' and 'c' will not be tested
-  it { should_not allow_value('a', 'b', 'c').for(:website_url) }
-end
-```
-
-The `disallow_value` matcher is the exact opposite of `allow_value`. That is,
-`should_not allow_value` can also be written `should disallow_value`, and
-`should allow_value` can also be written `should_not disallow_value`. Because
-of this, it carries the same caveat when multiple values are provided:
-
-```ruby
-describe User do
-  # 'b' and 'c' will not be tested
-  it { should disallow_value('a', 'b', 'c').for(:website_url) }
-
-  it do
-    should_not disallow_value('http://foo.com', 'http://bar.com').
-      for(:website_url)
-  end
-end
-```
-
-#### ensure_inclusion_of
-
-The `ensure_inclusion_of` matcher tests usage of the `validates_inclusion_of`
-validation, asserting that an attribute can take a set of values and cannot
-take values outside of this set.
-
-```ruby
-class Issue < ActiveRecord::Base
-  validates_inclusion_of :state, in: %w(open resolved unresolved)
-
-  validates_inclusion_of :priority, in: 1..5
-
-  validates_inclusion_of :severity,
-    in: %w(low medium high),
-    message: 'Severity must be low, medium, or high'
-end
-
-# RSpec
-describe Issue do
-  it do
-    should ensure_inclusion_of(:state).in_array(%w(open resolved unresolved))
-  end
-
-  it { should ensure_inclusion_of(:state).in_range(1..5) }
-
-  it do
-    should ensure_inclusion_of(:severity).
-      in_array(%w(low medium high)).
-      with_message('Severity must be low, medium, or high')
-  end
-end
-
-# Test::Unit
-class IssueTest < ActiveSupport::TestCase
-  should ensure_inclusion_of(:state).in_array(%w(open resolved unresolved))
-
-  should ensure_inclusion_of(:state).in_range(1..5)
-
-  should ensure_inclusion_of(:severity).
-    in_array(%w(low medium high)).
-    with_message('Severity must be low, medium, or high')
-end
-```
-
-#### ensure_exclusion_of
-
-The `ensure_exclusion_of` matcher tests usage of the `validates_exclusion_of`
-validation, asserting that an attribute cannot take a set of values.
-
-```ruby
-class Game < ActiveRecord::Base
-  validates_exclusion_of :supported_os, in: ['Mac', 'Linux']
-
-  validates_exclusion_of :floors_with_enemies, in: 5..8
-
-  validates_exclusion_of :weapon,
-    in: ['pistol', 'paintball gun', 'stick'],
-    message: 'You chose a puny weapon'
-end
-
-# RSpec
-describe Game do
-  it do
-    should ensure_exclusion_of(:supported_os).in_array(['Mac', 'Linux'])
-  end
-
-  it { should ensure_exclusion_of(:floors_with_enemies).in_range(5..8) }
-
-  it do
-    should ensure_exclusion_of(:weapon).
-      in_array(['pistol', 'paintball gun', 'stick']).
-      with_message('You chose a puny weapon')
-  end
-end
-
-# Test::Unit
-class GameTest < ActiveSupport::TestCase
-  should ensure_exclusion_of(:supported_os).in_array(['Mac', 'Linux'])
-
-  should ensure_exclusion_of(:floors_with_enemies).in_range(5..8)
-
-  should ensure_exclusion_of(:weapon).
-    in_array(['pistol', 'paintball gun', 'stick']).
-    with_message('You chose a puny weapon')
-end
-```
-
-#### ensure_length_of
-
-The `ensure_length_of` matcher tests usage of the `validates_length_of` matcher.
-
-```ruby
-class User < ActiveRecord::Base
-  validates_length_of :bio, minimum: 15
-  validates_length_of :favorite_superhero, is: 6
-  validates_length_of :status_update, maximum: 140
-  validates_length_of :password, in: 5..30
-
-  validates_length_of :api_token,
-    in: 10..20,
-    message: 'API token must be in between 5 and 30 characters'
-
-  validates_length_of :secret_key, in: 15..100,
-    too_short: 'Password must be more than 15 characters',
-    too_long: 'Password cannot be more than 100 characters'
-end
-
-# RSpec
-describe User do
-  it { should ensure_length_of(:bio).is_at_least(15) }
-  it { should ensure_length_of(:favorite_superhero).is_equal_to(6) }
-  it { should ensure_length_of(:status_update).is_at_most(140) }
-  it { should ensure_length_of(:password).is_at_least(5).is_at_most(30) }
-
-  it do
-    should ensure_length_of(:api_token).
-      is_at_least(5).
-      is_at_most(30).
-      message('Password must be in between 5 and 30 characters')
-  end
-
-  it do
-    should ensure_length_of(:secret_key).
-      is_at_least(5).
-      is_at_most(30).
-      with_short_message('Password must be more than 5 characters').
-      with_long_message('Password cannot be more than 30 characters')
-  end
-end
-
-# Test::Unit
-class UserTest < ActiveSupport::TestCase
-  should ensure_length_of(:bio).is_at_least(15)
-  should ensure_length_of(:favorite_superhero).is_equal_to(6)
-  should ensure_length_of(:status_update).is_at_most(140)
-  should ensure_length_of(:password).is_at_least(5).is_at_most(30)
-
-  should ensure_length_of(:api_token).
-    is_at_least(5).
-    is_at_most(30).
-    message('Password must be in between 5 and 30 characters')
-
-  should ensure_length_of(:secret_key).
-    is_at_least(5).
-    is_at_most(30).
-    with_short_message('Password must be more than 5 characters').
-    with_long_message('Password cannot be more than 30 characters')
-end
-```
-
-#### have_secure_password
-
-The `have_secure_password` matcher tests usage of the `has_secure_password`
-macro.
-
-```ruby
-class User < ActiveRecord::Base
-  has_secure_password
-end
-
-# RSpec
-describe User do
-  it { should have_secure_password }
-end
-
-# Test::Unit
-class UserTest < ActiveSupport::TestCase
-  should have_secure_password
-end
-```
-
-#### validate_acceptance_of
-
-The `validate_acceptance_of` matcher tests usage of the
-`validates_acceptance_of` validation.
-
-```ruby
-class Registration
-  include ActiveModel::Model
-
-  validates_acceptance_of :eula
-
-  validates_acceptance_of :terms_of_service,
-    message: 'You must accept the terms of service'
-end
-
-# RSpec
-describe Registration do
-  it { should validate_acceptance_of(:eula) }
-
-  it do
-    should validate_acceptance_of(:terms_of_service).
-      with_message('You must accept the terms of service')
-  end
-end
-
-# Test::Unit
-class RegistrationTest < ActiveSupport::TestCase
-  should validate_acceptance_of(:eula)
-
-  should validate_acceptance_of(:terms_of_service).
-    with_message('You must accept the terms of service')
-end
-```
-
-#### validate_confirmation_of
-
-The `validate_confirmation_of` matcher tests usage of the
-`validates_confirmation_of` validation.
-
-```ruby
-class User < ActiveRecord::Base
-  validates_confirmation_of :email
-  validates_confirmation_of :password, message: 'Please re-enter your password'
-end
-
-# RSpec
-describe User do
-  it { should validate_confirmation_of(:email) }
-
-  it do
-    should validate_confirmation_of(:password).
-      with_message('Please re-enter your password')
-  end
-end
-
-# Test::Unit
-class UserTest < ActiveSupport::TestCase
-  should validate_confirmation_of(:email)
-
-  should validate_confirmation_of(:password).
-    with_message('Please re-enter your password')
-end
-```
-
-#### validate_numericality_of
-
-The `validate_numericality_of` matcher tests usage of the
-`validates_numericality_of` validation.
-
-```ruby
-class Person < ActiveRecord::Base
-  validates_numericality_of :gpa
-  validates_numericality_of :age, only_integer: true
-  validates_numericality_of :legal_age, greater_than: 21
-  validates_numericality_of :height, greater_than_or_equal_to: 55
-  validates_numericality_of :weight, equal_to: 150
-  validates_numericality_of :number_of_cars, less_than: 2
-  validates_numericality_of :birth_year, less_than_or_equal_to: 1987
-  validates_numericality_of :birth_day, odd: true
-  validates_numericality_of :birth_month, even: true
-
-  validates_numericality_of :number_of_dependents,
-    message: 'Number of dependents must be a number'
-end
-
-# RSpec
-describe Person do
-  it { should validate_numericality_of(:gpa) }
-  it { should validate_numericality_of(:age).only_integer }
-  it { should validate_numericality_of(:legal_age).is_greater_than(21) }
-  it { should validate_numericality_of(:height).is_greater_than_or_equal_to(55) }
-  it { should validate_numericality_of(:weight).is_equal_to(150) }
-  it { should validate_numericality_of(:number_of_cars).is_less_than(2) }
-  it { should validate_numericality_of(:birth_year).is_less_than_or_equal_to(1987) }
-  it { should validate_numericality_of(:birth_day).odd }
-  it { should validate_numericality_of(:birth_month).even }
-
-  it do
-    should validate_numericality_of(:number_of_dependents).
-      with_message('Number of dependents must be a number' }
-  end
-end
-
-# Test::Unit
-class PersonTest < ActiveSupport::TestCase
-  should validate_numericality_of(:gpa)
-  should validate_numericality_of(:age).only_integer
-  should validate_numericality_of(:legal_age).is_greater_than(21)
-  should validate_numericality_of(:height).is_greater_than_or_equal_to(55)
-  should validate_numericality_of(:weight).is_equal_to(150)
-  should validate_numericality_of(:number_of_cars).is_less_than(2)
-  should validate_numericality_of(:birth_year).is_less_than_or_equal_to(1987)
-  should validate_numericality_of(:birth_day).odd
-  should validate_numericality_of(:birth_month).even
-
-  should validate_numericality_of(:number_of_dependents).
-    with_message('Number of dependents must be a number')
-end
-```
-
-#### validate_presence_of
-
-The `validate_presence_of` matcher tests usage of the `validates_presence_of`
-matcher.
-
-```ruby
-class Robot < ActiveRecord::Base
-  validates_presence_of :arms
-  validates_presence_of :legs, message: 'Robot has no legs'
-end
-
-# RSpec
-describe Robot do
-  it { should validate_presence_of(:arms) }
-  it { should validate_presence_of(:legs).with_message('Robot has no legs') }
-end
-
-# Test::Unit
-class RobotTest < ActiveSupport::TestCase
-  should validate_presence_of(:arms)
-  should validate_presence_of(:legs).with_message('Robot has no legs')
-end
-```
-
-#### validate_uniqueness_of
-
-The `validate_uniqueness_of` matcher tests usage of the
-`validates_uniqueness_of` validation.
-
-```ruby
-class Post < ActiveRecord::Base
-  validates_uniqueness_of :permalink
-  validates_uniqueness_of :title, message: 'Please choose another title'
-  validates_uniqueness_of :slug, scope: :user_id
-  validates_uniqueness_of :key, case_insensitive: true
-  validates_uniqueness_of :author_id, allow_nil: true
-end
-
-# RSpec
-describe Post do
-  it { should validate_uniqueness_of(:permalink) }
-
-  it do
-    should validate_uniqueness_of(:title).
-      with_message('Please choose another title')
-  end
-
-  it { should validate_uniqueness_of(:slug).scoped_to(:journal_id) }
-  it { should validate_uniqueness_of(:key).case_insensitive }
-  it { should validate_uniqueness_of(:author_id).allow_nil }
-end
-
-# Test::Unit
-class PostTest < ActiveSupport::TestCase
-  should validate_uniqueness_of(:permalink)
-
-  should validate_uniqueness_of(:title).
-    with_message('Please choose another title')
-
-  should validate_uniqueness_of(:slug).scoped_to(:journal_id)
-  should validate_uniqueness_of(:key).case_insensitive
-  should validate_uniqueness_of(:author_id).allow_nil
-end
-```
-
-**IMPORTANT NOTE!** This matcher works differently from other validation
-matchers. Since the very concept of uniqueness depends on checking against a
-pre-existing record in the database, this matcher will first use the model
-you're testing to query for such a record, and if it can't find an existing one,
-it will create one itself. Sometimes this step fails, especially if you have
-other attributes that have validations on them (or database-level restrictions).
-In this case, the solution is to create a record before you use
-`validate_uniqueness_of`.
-
-For example, if you have this model:
-
-```ruby
-class Post < ActiveRecord::Base
-  validates_presence_of :title
-  validates_uniqueness_of :permalink
-end
-```
-
-Then you will need to test it like this:
-
-```ruby
-describe Post do
-  it do
-    Post.create!(title: 'This is the title')
-    should validate_uniqueness_of(:permalink)
-  end
-end
-```
 
 ### ActionController Matchers
 
