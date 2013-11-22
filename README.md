@@ -752,14 +752,22 @@ end
 describe Phone do
   it { should have_db_column(:supported_ios_version) }
   it { should have_db_column(:model).with_options(null: false) }
-  it { should have_db_column(:camera_aperture).of_type(:decimal).with_options(precision: 1) }
+
+  it do
+    should have_db_column(:camera_aperture).
+      of_type(:decimal).
+      with_options(precision: 1)
+  end
 end
 
 # Test::Unit
 class PhoneTest < ActiveSupport::TestCase
   should have_db_column(:supported_ios_version)
   should have_db_column(:model).with_options(null: false)
-  should have_db_column(:camera_aperture).of_type(:decimal).with_options(precision: 1)
+
+  should have_db_column(:camera_aperture).
+    of_type(:decimal).
+    with_options(precision: 1)
 end
 ```
 
