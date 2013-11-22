@@ -30,17 +30,7 @@ they apply to:
 
 ### ActiveModel Matchers
 
-*Jump to: [allow_mass_assignment_of](#allow_mass_assignment_of), [allow_value /
-disallow_value](#allow_value / disallow_value),
-[ensure_inclusion_of](#ensure_inclusion_of),
-[ensure_exclusion_of](#ensure_exclusion_of),
-[ensure_length_of](#ensure_length_of),
-[have_secure_password](#have_secure_password),
-[validate_acceptance_of](#validate_acceptance_of),
-[validate_confirmation_of](#validate_confirmation_of),
-[validate_numericality_of](#validate_numericality_of),
-[validate_presence_of](#validate_presence_of),
-[validate_uniqueness_of](#validate_uniqueness_of)*
+*Jump to: [allow_mass_assignment_of](#allow_mass_assignment_of), [allow_value / disallow_value](#allow_value / disallow_value), [ensure_inclusion_of](#ensure_inclusion_of), [ensure_exclusion_of](#ensure_exclusion_of), [ensure_length_of](#ensure_length_of), [have_secure_password](#have_secure_password), [validate_acceptance_of](#validate_acceptance_of), [validate_confirmation_of](#validate_confirmation_of), [validate_numericality_of](#validate_numericality_of), [validate_presence_of](#validate_presence_of), [validate_uniqueness_of](#validate_uniqueness_of)*
 
 #### allow_mass_assignment_of
 
@@ -551,11 +541,7 @@ end
 
 ### ActiveRecord Matchers
 
-*Jump to: [accept_nested_attributes_for](#accept_nested_attributes_for),
-[belong_to](#belong_to), [have_many](#have_many), [have_one](#have_one),
-[have_and_belong_to_many](#have_and_belong_to_many),
-[have_db_column](#have_db_column), [have_db_index](#have_db_index),
-[have_readonly_attribute](#have_readonly_attribute), [serialize](#serialize)*
+*Jump to: [accept_nested_attributes_for](#accept_nested_attributes_for), [belong_to](#belong_to), [have_many](#have_many), [have_one](#have_one), [have_and_belong_to_many](#have_and_belong_to_many), [have_db_column](#have_db_column), [have_db_index](#have_db_index), [have_readonly_attribute](#have_readonly_attribute), [serialize](#serialize)*
 
 #### accept_nested_attributes_for
 
@@ -859,10 +845,7 @@ end
 
 ### ActionController Matchers
 
-*Jump to: [filter_param](#filter_param), [redirect_to](#redirect_to),
-[render_template](#render_template), [render_with_layout](#render_with_layout),
-[rescue_from](#rescue_from), [respond_with](#respond_with),
-[set_session](#set_session), [set_the_flash](#set_the_flash)*
+*Jump to: [filter_param](#filter_param), [redirect_to](#redirect_to), [render_template](#render_template), [render_with_layout](#render_with_layout), [rescue_from](#rescue_from), [respond_with](#respond_with), [set_session](#set_session), [set_the_flash](#set_the_flash)*
 
 #### filter_param
 
