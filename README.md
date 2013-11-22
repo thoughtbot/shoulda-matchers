@@ -1198,6 +1198,11 @@ class PostsControllerTest < ActionController::TestCase
 end
 ```
 
+## Versioning
+
+shoulda-matchers follows Semantic Versioning 2.0 as defined at
+<http://semver.org>.
+
 ## Credits
 
 Shoulda is maintained and funded by [thoughtbot](http://thoughtbot.com/community).
