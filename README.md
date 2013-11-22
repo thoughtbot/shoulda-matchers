@@ -1,6 +1,6 @@
 # shoulda-matchers [![Gem Version][fury-badge]][fury] [![Build Status][travis-badge]][travis]
 
-[Official Documentation][ruby-docs]
+[Official Documentation][rubydocs]
 
 shoulda-matchers provides Test::Unit- and RSpec-compatible one-liners that test
 common Rails functionality. These tests would otherwise be much longer, more
@@ -1211,7 +1211,7 @@ to all the [contributors][contributors].
 
 shoulda-matchers is copyright © 2006-2013 thoughtbot, inc. It is free software,
 and may be redistributed under the terms specified in the
-[MIT-LICENSE][MIT-LICENSE] file.
+[MIT-LICENSE](MIT-LICENSE) file.
 
 [fury-badge]: https://badge.fury.io/rb/shoulda-matchers.png
 [fury]: http://badge.fury.io/rb/shoulda-matchers
