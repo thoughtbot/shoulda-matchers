@@ -12,7 +12,7 @@ Feature: integrate with Rails
         end
       end
       """
-    When I successfully run `bundle exec rake db:migrate --trace`
+    When I run migrations
     And I write to "app/models/user.rb" with:
       """
       class User < ActiveRecord::Base
@@ -111,3 +111,19 @@ Feature: integrate with Rails
     When I successfully run `bundle exec rake spec test:functionals SPEC_OPTS=-fs --trace`
     Then the output should contain "1 example, 0 failures"
     Then the output should indicate that 1 test was run
+
+  Scenario: The application uses RSpec, shoulda-matchers is declared before RSpec, and tests are run via Spring
+    And I configure the application to use "shoulda-matchers" from this project
+    When I configure the application to use rspec-rails
+    And I run the rspec generator
+    And I write to "spec/models/user_spec.rb" with:
+      """
+      require 'spec_helper'
+
+      describe User do
+        it { should validate_presence_of(:name) }
+      end
+      """
+    When I configure the application to use Spring
+    When I successfully run `bundle exec spring rspec -fs`
+    Then the output should contain "1 example, 0 failures"

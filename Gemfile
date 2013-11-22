@@ -5,6 +5,8 @@ gemspec
 # For test Rails application
 gem 'shoulda-context', '~> 1.1.2'
 gem 'sqlite3', :platform => :ruby
+gem 'spring'
+gem 'spring-commands-rspec'
 
 # Can't wrap in platform :jruby do...end block because appraisal doesn't support
 # it

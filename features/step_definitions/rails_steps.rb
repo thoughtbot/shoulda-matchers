@@ -32,6 +32,10 @@ When 'I generate a new rails application' do
   end
 end
 
+When 'I run migrations' do
+  step %(I successfully run `bundle exec rake db:migrate db:test:prepare --trace`)
+end
+
 When /^I configure the application to use "([^\"]+)" from this project$/ do |name|
   append_to_gemfile "gem '#{name}', :path => '#{PROJECT_ROOT}'"
   steps %{And I install gems}
@@ -68,6 +72,15 @@ end
 
 When 'I configure the application to use shoulda-context' do
   append_to_gemfile %q(gem 'shoulda-context', '~> 1.0')
+  steps %{And I install gems}
+end
+
+When 'I configure the application to use Spring' do
+  append_to_gemfile <<EOT
+gem 'spring'
+gem 'spring-commands-rspec', require: false
+EOT
+  write_file 'config/spring.rb', %q(require 'spring/commands/rspec')
   steps %{And I install gems}
 end
 
