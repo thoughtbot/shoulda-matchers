@@ -14,20 +14,12 @@ Simply add the following to your Gemfile:
 group :test do
   gem 'shoulda-matchers'
 end
-
-# `rspec-rails` needs to be in the development group so that Rails generators work.
-group :development, :test do
-  gem 'rspec-rails', '~> 2.12'
-end
 ```
 
 All of the matchers will get automatically included into your test framework so
 you can use them right away.
 
 ## Usage
-
-The matchers that shoulda-matchers provides can be grouped by which
-part of Rails they apply to:
 
 * [ActiveRecord](#activerecord-matchers)
   * [accept_nested_attributes_for](#accept_nested_attributes_for)
