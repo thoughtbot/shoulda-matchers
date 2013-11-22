@@ -21,6 +21,14 @@
   * `set_session['key'].to(nil)` will no longer pass when the key in question
     has not been set yet.
 
+* `allow_value` may raise an error if the attribute in question contains custom
+  logic to ignore certain values, resulting in a discrepancy between the value
+  you provide and the value that the attribute is actually set to. Specifically,
+  if the attribute cannot be changed from a non-nil value to a nil value, or
+  vice versa, then you'll get a CouldNotSetAttributeError. The current behavior
+  (which is to permit this) is misleading, as the test that you write by using
+  `allow_value` is different from the test that actually ends up getting run.
+
 ### Bug fixes
 
 * So far the tests for the gem have been running against only SQLite. Now they

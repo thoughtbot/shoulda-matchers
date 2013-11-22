@@ -140,17 +140,9 @@ module Shoulda
         end
 
         def disallows_and_double_checks_value_of!(value, message)
-          error_class = Shoulda::Matchers::ActiveModel::CouldNotSetPasswordError
-
-          disallows_value_of(value, message) do |matcher|
-            matcher._after_setting_value do
-              actual_value = @subject.__send__(@attribute)
-
-              if !actual_value.nil?
-                raise error_class.create(@subject.class)
-              end
-            end
-          end
+          disallows_value_of(value, message)
+        rescue ActiveModel::AllowValueMatcher::CouldNotSetAttributeError
+          raise ActiveModel::CouldNotSetPasswordError.create(@subject.class)
         end
 
         def blank_value

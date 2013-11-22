@@ -32,10 +32,18 @@ module UnitTests
     end
 
     def define_active_model_class(class_name, options = {}, &block)
+      accessors = options.fetch(:accessors, [])
+
       define_class(class_name) do
         include ActiveModel::Validations
 
-        options[:accessors].each do |column|
+        def initialize(attributes = {})
+          attributes.each do |name, value|
+            __send__("#{name}=", value)
+          end
+        end
+
+        accessors.each do |column|
           attr_accessor column.to_sym
         end
 

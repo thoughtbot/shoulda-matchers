@@ -163,25 +163,6 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
     end
   end
 
-  context 'when the attribute being tested intercepts the blank value we set on it (issue #479)' do
-    context 'for a non-collection attribute' do
-      it 'does not raise an error' do
-        record = define_model :example, attr: :string do
-          validates :attr, presence: true
-
-          def attr=(value)
-            value = '' if value.nil?
-            super(value)
-          end
-        end.new
-
-        expect do
-          expect(record).to validate_presence_of(:attr)
-        end.not_to raise_error
-      end
-    end
-  end
-
   def matcher
     validate_presence_of(:attr)
   end

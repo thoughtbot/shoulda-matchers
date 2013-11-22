@@ -315,4 +315,49 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
     end
   end
 
+  context 'when the attribute writer method ignores a non-nil value' do
+    context 'when the attribute has a reader method' do
+      it 'raises a CouldNotSetAttributeError' do
+        model = define_active_model_class 'Example' do
+          attr_reader :name
+
+          def name=(_value)
+            nil
+          end
+        end
+
+        assertion = -> {
+          expect(model.new).to allow_value('anything').for(:name)
+        }
+
+        expect(&assertion).to raise_error(
+          Shoulda::Matchers::ActiveModel::AllowValueMatcher::CouldNotSetAttributeError
+        )
+      end
+    end
+  end
+
+  context 'when the attribute writer method ignores a nil value' do
+    context 'when the attribute has a reader method' do
+      it 'raises a CouldNotSetAttribute error' do
+        model = define_active_model_class 'Example' do
+          attr_reader :name
+
+          def name=(value)
+            @name = value unless value.nil?
+          end
+        end
+
+        record = model.new(name: 'some name')
+
+        assertion = -> {
+          expect(record).to allow_value(nil).for(:name)
+        }
+
+        expect(&assertion).to raise_error(
+          Shoulda::Matchers::ActiveModel::AllowValueMatcher::CouldNotSetAttributeError
+        )
+      end
+    end
+  end
 end

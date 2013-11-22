@@ -170,6 +170,24 @@ module Shoulda
 
       # @private
       class AllowValueMatcher
+        # @private
+        class CouldNotSetAttributeError < Shoulda::Matchers::Error
+          def self.create(model, attribute, expected_value, actual_value)
+            super(
+              model: model,
+              attribute: attribute,
+              expected_value: expected_value,
+              actual_value: actual_value
+            )
+          end
+
+          attr_accessor :model, :attribute, :expected_value, :actual_value
+
+          def message
+            "Expected #{model.class} to be able to set #{attribute} to #{expected_value.inspect}, but got #{actual_value.inspect} instead."
+          end
+        end
+
         include Helpers
 
         attr_accessor :attribute_with_message
@@ -266,6 +284,7 @@ module Shoulda
 
         def set_attribute_ignoring_range_errors(value)
           instance.__send__("#{attribute_to_set}=", value)
+          ensure_that_attribute_has_been_changed_to_or_from_nil!(value)
         rescue RangeError => exception
           # Have to reset the attribute so that we don't get a RangeError the
           # next time we attempt to write the attribute (ActiveRecord seems to
@@ -276,6 +295,19 @@ module Shoulda
 
         def reset_attribute
           instance.send(:raw_write_attribute, attribute_to_set, nil)
+        end
+
+        def ensure_that_attribute_has_been_changed_to_or_from_nil!(expected_value)
+          actual_value = instance.__send__(attribute_to_set)
+
+          if expected_value.nil? != actual_value.nil?
+            raise CouldNotSetAttributeError.create(
+              instance.class,
+              attribute_to_set,
+              expected_value,
+              actual_value
+            )
+          end
         end
 
         def errors_match?
