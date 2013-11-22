@@ -1,6 +1,6 @@
-# shoulda-matchers [![Gem Version](https://badge.fury.io/rb/shoulda-matchers.png)](http://badge.fury.io/rb/shoulda-matchers) [![Build Status](https://secure.travis-ci.org/thoughtbot/shoulda-matchers.png?branch=master)](http://travis-ci.org/thoughtbot/shoulda-matchers)
+# shoulda-matchers [![Gem Version][fury-badge][fury] [![Build Status][travis-badge]][travis]
 
-[Official Documentation](http://rubydoc.info/github/thoughtbot/shoulda-matchers/master/frames)
+[Official Documentation][ruby-docs]
 
 shoulda-matchers provides Test::Unit- and RSpec-compatible one-liners that test
 common Rails functionality. These tests would otherwise be much longer, more
@@ -1204,11 +1204,19 @@ shoulda-matchers follows Semantic Versioning 2.0 as defined at
 
 ## Credits
 
-shoulda-matchers is maintained and funded by
-[thoughtbot](http://thoughtbot.com/community). Thank you to all the
-[contributors](https://github.com/thoughtbot/shoulda-matchers/contributors).
+shoulda-matchers is maintained and funded by [thoughtbot][community]. Thank you
+to all the [contributors][contributors].
 
 ## License
 
 shoulda-matchers is copyright © 2006-2013 thoughtbot, inc. It is free software,
-and may be redistributed under the terms specified in the MIT-LICENSE file.
+and may be redistributed under the terms specified in the
+[MIT-LICENSE][MIT-LICENSE] file.
+
+[fury-badge]: https://badge.fury.io/rb/shoulda-matchers.png
+[fury]: http://badge.fury.io/rb/shoulda-matchers
+[travis-badge]: https://secure.travis-ci.org/thoughtbot/shoulda-matchers.png?branch=master
+[travis]: http://travis-ci.org/thoughtbot/shoulda-matchers
+[rubydocs]: http://rubydoc.info/github/thoughtbot/shoulda-matchers/master/frames
+[community]: http://thoughtbot.com/community
+[contributors]: https://github.com/thoughtbot/shoulda-matchers/contributors
