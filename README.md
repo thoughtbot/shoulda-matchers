@@ -26,15 +26,20 @@ you can use them right away.
 
 ## Usage
 
-The matchers that shoulda-matchers provides can be divided into three 
-categories:
+The matchers that shoulda-matchers provides can be grouped by which
+part of Rails they apply to:
 
-* [ActiveRecord Matchers](#activerecord-matchers)
+* [ActiveRecord](#activerecord-matchers)
+  * [accept_nested_attributes_for](#accept_nested_attributes_for)
   * [belong_to](#belong_to)
   * [have_many](#have_many)
   * [have_one](#have_one)
   * [have_and_belong_to_many](#have_and_belong_to_many)
-* [ActiveModel Matchers](#activemodel-matchers)
+  * [have_db_column](#have_db_column)
+  * [have_db_index](#have_db_index)
+  * [have_readonly_attribute](#have_readonly_attribute)
+  * [serialize](#serialize)
+* [ActiveModel](#activemodel-matchers)
   * [allow_mass_assignment_of](#allow_mass_assignment_of)
   * [allow_value / disallow_value](#allow_value / disallow_value)
   * [ensure_inclusion_of](#ensure_inclusion_of)
@@ -46,7 +51,7 @@ categories:
   * [validate_numericality_of](#validate_numericality_of)
   * [validate_presence_of](#validate_presence_of)
   * [validate_uniqueness_of](#validate_uniqueness_of)
-* [ActionController Matchers](#actioncontroller-matchers)
+* [ActionController](#actioncontroller-matchers)
   * [filter_param](#filter_param)
   * [redirect_to](#redirect_to)
   * [render_template](#render_template)
@@ -58,7 +63,35 @@ categories:
 
 ### ActiveRecord Matchers
 
-These matchers give you a way to test associations in your models.
+#### accept_nested_attributes_for
+
+The `accept_nested_attributes_for` matcher tests usage of the
+`accepts_nested_attributes_for` macro.
+
+```ruby
+class Car
+  accept_nested_attributes_for :doors
+  accept_nested_attributes_for :mirrors
+  accept_nested_attributes_for :windows
+  accept_nested_attributes_for :engine
+end
+
+# RSpec
+describe Car do
+  it { should accept_nested_attributes_for(:doors) }
+  it { should accept_nested_attributes_for(:mirrors).allow_destroy }
+  it { should accept_nested_attributes_for(:windows).limit(3) }
+  it { should accept_nested_attributes_for(:engine).update_only }
+end
+
+# Test::Unit (with Shoulda)
+class CarTest < ActiveSupport::TestCase
+  should accept_nested_attributes_for(:doors)
+  should accept_nested_attributes_for(:mirrors).allow_destroy
+  should accept_nested_attributes_for(:windows).limit(3)
+  should accept_nested_attributes_for(:engine).update_only
+end
+```
 
 #### belong_to
 
@@ -188,8 +221,8 @@ end
 
 #### have_and_belong_to_many
 
-Finally, the `have_and_belong_to_many` matcher tests your
-`has_and_belongs_to_many` associations.
+The `have_and_belong_to_many` matcher tests your `has_and_belongs_to_many`
+associations.
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -219,9 +252,118 @@ class PersonTest < ActiveSupport::TestCase
 end
 ```
 
-### ActiveModel Matchers
+#### have_db_column
 
-These matchers give you a way to test validations and security rules.
+The `have_db_column` matcher tests that the table that backs your model
+has a specific column.
+
+```ruby
+class CreatePhones < ActiveRecord::Migration
+  def change
+    create_table :phones do |t|
+      t.decimal :supported_ios_version
+      t.string :model, null: false
+      t.decimal :camera_aperture, precision: 1
+    end
+  end
+end
+
+# RSpec
+describe Phone do
+  it { should have_db_column(:supported_ios_version) }
+  it { should have_db_column(:model).with_options(null: false) }
+  it { should have_db_column(:camera_aperture).of_type(:decimal).with_options(precision: 1) }
+end
+
+# Test::Unit
+class PhoneTest < ActiveSupport::TestCase
+  should have_db_column(:supported_ios_version)
+  should have_db_column(:model).with_options(null: false)
+  should have_db_column(:camera_aperture).of_type(:decimal).with_options(precision: 1)
+end
+```
+
+#### have_db_index
+
+The `have_db_index` matcher tests that the table that backs your model has a
+index on a specific column.
+
+```ruby
+class CreateBlogs < ActiveRecord::Migration
+  def change
+    create_table :blogs do |t|
+      t.integer :user_id, null: false
+      t.string :name, null: false
+    end
+
+    add_index :blogs, :user_id
+    add_index :blogs, :name, unique: true
+  end
+end
+
+# RSpec
+describe Blog do
+  it { should have_db_index(:user_id) }
+  it { should have_db_index(:name).unique(true) }
+end
+
+# Test::Unit
+class BlogTest < ActiveSupport::TestCase
+  should have_db_index(:user_id)
+  should have_db_index(:name).unique(true)
+end
+```
+
+#### have_readonly_attribute
+
+The `have_readonly_attribute` matcher tests usage of `attr_readonly`.
+
+```ruby
+class User < ActiveRecord::Base
+  attr_readonly :password
+end
+
+# RSpec
+describe User do
+  it { should have_readonly_attribute(:password) }
+end
+
+# Test::Unit
+class UserTest < ActiveSupport::TestCase
+  should have_readonly_attribute(:password)
+end
+```
+
+#### serialize
+
+The `serialize` matcher tests usage of the `serialize` macro.
+
+```ruby
+class ProductOptionsSerializer
+  def load(string)
+    # ...
+  end
+
+  def dump(options)
+    # ...
+  end
+end
+
+class Product < ActiveRecord::Base
+  serialize :customizations
+  serialize :specifications, ProductSpecsSerializer
+  serialize :options, ProductOptionsSerializer.new
+end
+
+# RSpec
+describe Product do
+  it { should serialize(:customizations) }
+  it { should serialize(:specifications).as(ProductSpecsSerializer) }
+  it { should serialize(:options).as_instance_of(ProductOptionsSerializer) }
+end
+```
+
+### ActiveModel Matchers
 
 #### allow_mass_assignment_of
 
@@ -731,8 +873,6 @@ end
 ```
 
 ### ActionController Matchers
-
-These matchers let you make assertions about various controller-level behavior.
 
 #### filter_param
 
