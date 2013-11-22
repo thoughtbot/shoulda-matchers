@@ -37,6 +37,13 @@
   `greater_than`, `greater_than_or_equal_to`, `less_than`, `less_than_or_equal_
   to` or `equal_to` is not appropriate.
 
+* Change `validate_presence_of` under Rails 4 so that if you are using it with a
+  user whose model `has_secure_password` and whose password is set to a value,
+  you will be instructed to use a user whose password is blank instead. The
+  reason for this change is due to the fact that Rails 4's version of
+  `has_secure_password` defines #password= such that `nil` will be ignored,
+  which interferes with how `validate_presence_of` works.
+
 # v 2.5.0
 
 * Fix Rails/Test::Unit integration to ensure that the test case classes we are
