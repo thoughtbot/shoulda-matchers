@@ -5,7 +5,6 @@ FileUtils.rm_rf(TESTAPP_ROOT) if File.exists?(TESTAPP_ROOT)
 
 `rails new #{TESTAPP_ROOT} --skip-bundle`
 
-ENV['BUNDLE_GEMFILE'] ||= TESTAPP_ROOT + '/Gemfile'
 ENV['RUBYOPT'] = ""
 
 Dir.chdir(TESTAPP_ROOT) do
@@ -28,6 +27,7 @@ Dir.chdir(TESTAPP_ROOT) do
   end
 end
 
+ENV['BUNDLE_GEMFILE'] ||= TESTAPP_ROOT + '/Gemfile'
 ENV['RAILS_ENV'] = 'test'
 
 require "#{TESTAPP_ROOT}/config/environment"
