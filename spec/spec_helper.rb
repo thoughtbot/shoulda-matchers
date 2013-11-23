@@ -5,7 +5,7 @@ FileUtils.rm_rf(TESTAPP_ROOT) if File.exists?(TESTAPP_ROOT)
 
 `rails new #{TESTAPP_ROOT} --skip-bundle`
 
-ENV['BUNDLE_GEMFILE'] ||= TESTAPP_ROOT + '/Gemfile'
+ENV['BUNDLE_GEMFILE'] = TESTAPP_ROOT + '/Gemfile'
 
 Dir.chdir(TESTAPP_ROOT) do
   retry_count = 0
