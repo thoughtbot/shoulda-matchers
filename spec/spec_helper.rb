@@ -15,7 +15,7 @@ Dir.chdir(TESTAPP_ROOT) do
       puts "#{key}: #{ENV[key].inspect}"
     end
     command = 'bundle install'
-    output = `#{command} 2>&1`
+    output = Bundler.with_clean_env { `#{command} 2>&1` }
     if $? == 0
       break
     else
