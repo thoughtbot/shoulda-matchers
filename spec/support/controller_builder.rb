@@ -1,7 +1,4 @@
 module ControllerBuilder
-  TMP_VIEW_PATH = File.expand_path(File.join(TESTAPP_ROOT, 'tmp',
-    'views')).freeze
-
   def self.included(example_group)
     example_group.class_eval do
       after do
@@ -18,8 +15,7 @@ module ControllerBuilder
   end
 
   def define_routes(&block)
-    Rails.application.routes.draw(&block)
-    @routes = Rails.application.routes
+    @routes = $test_app.draw_routes(&block)
     class << self
       include ActionDispatch::Assertions
     end
@@ -33,7 +29,7 @@ module ControllerBuilder
       layout false
       define_method(action, &block)
     end
-    controller_class.view_paths = [TMP_VIEW_PATH]
+    controller_class.view_paths = [ $test_app.temp_views_dir_path ]
 
     define_routes do
       get 'examples', :to => "examples##{action}"
@@ -59,15 +55,13 @@ module ControllerBuilder
   end
 
   def create_view(path, contents)
-    full_path = File.join(TMP_VIEW_PATH, path)
-    FileUtils.mkdir_p(File.dirname(full_path))
-    File.open(full_path, 'w') { |file| file.write(contents) }
+    $test_app.create_temp_view(path, contents)
   end
 
   private
 
   def delete_temporary_views
-    FileUtils.rm_rf(TMP_VIEW_PATH)
+    $test_app.delete_temp_views
   end
 
   def restore_original_routes

@@ -1,52 +1,22 @@
-# Create Rails environment based on the version given from Appraisal
-TESTAPP_ROOT = File.join(File.dirname(__FILE__), '..', 'tmp', 'aruba', 'testapp')
+require File.expand_path('../support/test_application', __FILE__)
 
-FileUtils.rm_rf(TESTAPP_ROOT) if File.exists?(TESTAPP_ROOT)
+$test_app = TestApplication.new
+$test_app.create
+$test_app.load
 
-`rails new #{TESTAPP_ROOT} --skip-bundle`
-
-ENV['RUBYOPT'] = ""
-
-Dir.chdir(TESTAPP_ROOT) do
-  retry_count = 0
-  loop do
-    puts "Current directory: #{Dir.pwd}"
-    %w(RUBYOPT BUNDLE_PATH BUNDLE_BIN_PATH BUNDLE_GEMFILE).each do |key|
-      puts "#{key}: #{ENV[key].inspect}"
-    end
-    command = 'bundle install'
-    output = Bundler.with_clean_env { `#{command} 2>&1` }
-    if $? == 0
-      break
-    else
-      retry_count += 1
-      if retry_count == 3
-        raise "Command '#{command}' failed:\n#{output}"
-      end
-    end
-  end
-end
-
-ENV['BUNDLE_GEMFILE'] ||= TESTAPP_ROOT + '/Gemfile'
+ENV['BUNDLE_GEMFILE'] ||= app.gemfile_path
 ENV['RAILS_ENV'] = 'test'
 
-require "#{TESTAPP_ROOT}/config/environment"
 require 'bourne'
 require 'shoulda-matchers'
 require 'rspec/rails'
 
-PROJECT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..')).freeze
-
+PROJECT_ROOT = File.expand_path('../..', __FILE__)
 $LOAD_PATH << File.join(PROJECT_ROOT, 'lib')
-
-Dir[File.join(PROJECT_ROOT, 'spec', 'support', '**', '*.rb')].each { |file| require(file) }
-
-# Run the migrations
-ActiveRecord::Migration.verbose = false
-ActiveRecord::Migrator.migrate(Rails.root.join('db/migrate'))
+Dir[ File.join(PROJECT_ROOT, 'spec/support/**/*.rb') ].each { |file| require file }
 
 RSpec.configure do |config|
   config.mock_with :mocha
   config.include Shoulda::Matchers::ActionController,
-                 :example_group => { :file_path => /action_controller/ }
+                 example_group: { file_path: /action_controller/ }
 end
