@@ -5,11 +5,15 @@ FileUtils.rm_rf(TESTAPP_ROOT) if File.exists?(TESTAPP_ROOT)
 
 `rails new #{TESTAPP_ROOT} --skip-bundle`
 
-ENV['BUNDLE_GEMFILE'] = TESTAPP_ROOT + '/Gemfile'
+ENV['BUNDLE_GEMFILE'] ||= TESTAPP_ROOT + '/Gemfile'
 
 Dir.chdir(TESTAPP_ROOT) do
   retry_count = 0
   loop do
+    puts "Current directory: #{Dir.pwd}"
+    %w(RUBYOPT BUNDLE_PATH BUNDLE_BIN_PATH BUNDLE_GEMFILE).each do |key|
+      puts "#{key}: #{ENV[key].inspect}"
+    end
     command = 'bundle install'
     output = `#{command} 2>&1`
     if $? == 0
@@ -45,3 +49,5 @@ RSpec.configure do |config|
   config.include Shoulda::Matchers::ActionController,
                  :example_group => { :file_path => /action_controller/ }
 end
+
+raise 'ok good'
