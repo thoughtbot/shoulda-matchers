@@ -3,7 +3,7 @@ module Shoulda # :nodoc:
     module ActiveModel # :nodoc:
       # Ensures that the model is invalid if the given attribute is not unique.
       # It uses the first existing record or creates a new one if no record
-      # exists in the database. It simply uses `:validate => false` to get
+      # exists in the database. It simply uses `validate: false` to get
       # around validations, so it will probably fail if there are `NOT NULL`
       # constraints. In that case, you must create a record before calling
       # `validate_uniqueness_of`.
@@ -110,12 +110,12 @@ module Shoulda # :nodoc:
           if options[:nil_value]
             value = nil
           else
-            value = "arbitrary_string"
+            value = 'a'
           end
 
           @subject.class.new.tap do |instance|
             instance.send("#{@attribute}=", value)
-            instance.save(:validate => false)
+            instance.save(validate: false)
           end
         end
 

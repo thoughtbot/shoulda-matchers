@@ -3,13 +3,23 @@ require 'spec_helper'
 describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
   context 'a model without a a uniqueness validation' do
     it 'rejects' do
-      model = define_model(:example, :attr => :string) { attr_accessible :attr } .new
-      Example.create!(:attr => 'value')
+      model = define_model(:example, attr: :string) { attr_accessible :attr } .new
+      Example.create!(attr: 'value')
       model.should_not matcher
     end
   end
 
   context 'a model with a uniqueness validation' do
+    context 'where the subject has a character limit' do
+      it 'tests with values within the character limit' do
+        model = define_model(:example, attr: { type: :string, options: { limit: 1 } }) do
+         attr_accessible :attr
+         validates_uniqueness_of :attr
+        end.new
+        model.should matcher
+      end
+    end
+
     context 'with an existing record' do
       it 'requires a unique value for that attribute' do
         create_existing
@@ -27,7 +37,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
 
       def create_existing
         define_model_with_other
-        Example.create!(:attr => 'value', :other => 1)
+        Example.create!(attr: 'value', other: 1)
       end
     end
 
@@ -40,7 +50,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
     end
 
     def define_model_with_other(options = {})
-      @model ||= define_model(:example, :attr => :string, :other => :integer) do
+      @model ||= define_model(:example, attr: :string, other: :integer) do
         attr_accessible :attr, :other
         validates_uniqueness_of :attr, options
       end
@@ -53,26 +63,26 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
 
   context 'a model with a uniqueness validation, a custom error, and an existing record' do
     it 'rejects when the actual message does not match the default message' do
-      validating_uniqueness_with_existing_record(:message => 'Bad value').
+      validating_uniqueness_with_existing_record(message: 'Bad value').
         should_not matcher
     end
 
     it 'rejects when the messages do not match' do
-      validating_uniqueness_with_existing_record(:message => 'Bad value').
+      validating_uniqueness_with_existing_record(message: 'Bad value').
         should_not matcher.with_message(/abc/)
     end
 
     it 'accepts when the messages match' do
-      validating_uniqueness_with_existing_record(:message => 'Bad value').
+      validating_uniqueness_with_existing_record(message: 'Bad value').
         should matcher.with_message(/Bad/)
     end
 
     def validating_uniqueness_with_existing_record(options = {})
-      model = define_model(:example, :attr => :string) do
+      model = define_model(:example, attr: :string) do
         attr_accessible :attr
         validates_uniqueness_of :attr, options
       end.new
-      Example.create!(:attr => 'value')
+      Example.create!(attr: 'value')
       model
     end
   end
@@ -114,27 +124,27 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
 
     context 'when the scoped attribute is a date' do
       it "accepts" do
-        validating_scoped_uniqueness([:scope1], :date, :scope1 => Date.today).
+        validating_scoped_uniqueness([:scope1], :date, scope1: Date.today).
           should matcher.scoped_to(:scope1)
       end
 
       context 'with an existing record that conflicts with scope.next' do
         it 'accepts' do
-          validating_scoped_uniqueness_with_conflicting_next(:scope1, :date, :scope1 => Date.today).
+          validating_scoped_uniqueness_with_conflicting_next(:scope1, :date, scope1: Date.today).
             should matcher.scoped_to(:scope1)
         end
       end
 
       context 'when too narrow of a scope is specified' do
         it 'rejects' do
-          validating_scoped_uniqueness([:scope1, :scope2], :date, :scope1 => Date.today, :scope2 => Date.today).
+          validating_scoped_uniqueness([:scope1, :scope2], :date, scope1: Date.today, scope2: Date.today).
             should_not matcher.scoped_to(:scope1, :scope2, :other)
         end
       end
 
       context 'when too broad of a scope is specified' do
         it 'rejects' do
-          validating_scoped_uniqueness([:scope1, :scope2], :date, :scope1 => Date.today, :scope2 => Date.today).
+          validating_scoped_uniqueness([:scope1, :scope2], :date, scope1: Date.today, scope2: Date.today).
             should_not matcher.scoped_to(:scope1)
         end
       end
@@ -142,34 +152,34 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
 
     context 'when the scoped attribute is a datetime' do
       it 'accepts' do
-        validating_scoped_uniqueness([:scope1], :datetime, :scope1 => DateTime.now).
+        validating_scoped_uniqueness([:scope1], :datetime, scope1: DateTime.now).
           should matcher.scoped_to(:scope1)
       end
 
       context 'with an existing record that conflicts with scope.next' do
         it 'accepts' do
-          validating_scoped_uniqueness_with_conflicting_next(:scope1, :datetime, :scope1 => DateTime.now).
+          validating_scoped_uniqueness_with_conflicting_next(:scope1, :datetime, scope1: DateTime.now).
             should matcher.scoped_to(:scope1)
         end
       end
 
       context 'with a nil value' do
         it 'accepts' do
-          validating_scoped_uniqueness([:scope1], :datetime, :scope1 => nil).
+          validating_scoped_uniqueness([:scope1], :datetime, scope1: nil).
             should matcher.scoped_to(:scope1)
         end
       end
 
       context 'when too narrow of a scope is specified' do
         it 'rejects' do
-          validating_scoped_uniqueness([:scope1, :scope2], :datetime, :scope1 => DateTime.now, :scope2 => DateTime.now).
+          validating_scoped_uniqueness([:scope1, :scope2], :datetime, scope1: DateTime.now, scope2: DateTime.now).
             should_not matcher.scoped_to(:scope1, :scope2, :other)
         end
       end
 
       context 'when too broad of a scope is specified' do
         it 'rejects' do
-          validating_scoped_uniqueness([:scope1, :scope2], :datetime, :scope1 => DateTime.now, :scope2 => DateTime.now).
+          validating_scoped_uniqueness([:scope1, :scope2], :datetime, scope1: DateTime.now, scope2: DateTime.now).
             should_not matcher.scoped_to(:scope1)
         end
       end
@@ -177,20 +187,20 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
 
     context 'when the scoped attribute is a uuid' do
       it 'accepts' do
-        validating_scoped_uniqueness([:scope1], :uuid, :scope1 => SecureRandom.uuid).
+        validating_scoped_uniqueness([:scope1], :uuid, scope1: SecureRandom.uuid).
           should matcher.scoped_to(:scope1)
       end
 
       context 'with an existing record that conflicts with scope.next' do
         it 'accepts' do
-          validating_scoped_uniqueness_with_conflicting_next(:scope1, :uuid, :scope1 => SecureRandom.uuid).
+          validating_scoped_uniqueness_with_conflicting_next(:scope1, :uuid, scope1: SecureRandom.uuid).
             should matcher.scoped_to(:scope1)
         end
       end
 
       context 'with a nil value' do
         it 'accepts' do
-          validating_scoped_uniqueness([:scope1], :uuid, :scope1 => nil).
+          validating_scoped_uniqueness([:scope1], :uuid, scope1: nil).
             should matcher.scoped_to(:scope1)
         end
       end
@@ -198,8 +208,8 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
       context 'when too narrow of a scope is specified' do
         it 'rejects' do
           record = validating_scoped_uniqueness([:scope1, :scope2], :uuid,
-            :scope1 => SecureRandom.uuid,
-            :scope2 => SecureRandom.uuid
+            scope1: SecureRandom.uuid,
+            scope2: SecureRandom.uuid
           )
           record.should_not matcher.scoped_to(:scope1, :scope2, :other)
         end
@@ -208,8 +218,8 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
       context 'when too broad of a scope is specified' do
         it 'rejects' do
           record = validating_scoped_uniqueness([:scope1, :scope2], :uuid,
-            :scope1 => SecureRandom.uuid,
-            :scope2 => SecureRandom.uuid
+            scope1: SecureRandom.uuid,
+            scope2: SecureRandom.uuid
           )
           record.should_not matcher.scoped_to(:scope1)
         end
@@ -221,15 +231,15 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
     end
 
     def create_record(attributes = {})
-      default_attributes = {:attr => 'value', :scope1 => 1, :scope2 => 2, :other => 3}
+      default_attributes = {attr: 'value', scope1: 1, scope2: 2, other: 3}
       Example.create!(default_attributes.merge(attributes))
     end
 
     def define_scoped_model(scope, scope_attr_type = :integer)
-      define_model(:example, :attr => :string, :scope1 => scope_attr_type,
-                   :scope2 => scope_attr_type, :other => :integer) do
+      define_model(:example, attr: :string, scope1: scope_attr_type,
+                   scope2: scope_attr_type, other: :integer) do
         attr_accessible :attr, :scope1, :scope2, :other
-        validates_uniqueness_of :attr, :scope => scope
+        validates_uniqueness_of :attr, scope: scope
       end
     end
 
@@ -278,7 +288,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
     context "when there is an existing entry with a nil" do
       it "should allow_nil" do
         model = define_model_with_allow_nil
-        Example.create!(:attr => nil)
+        Example.create!(attr: nil)
         model.should matcher.allow_nil
       end
     end
@@ -290,9 +300,9 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
     end
 
     def define_model_with_allow_nil
-      define_model(:example, :attr  => :integer) do
+      define_model(:example, attr: :integer) do
         attr_accessible :attr
-        validates_uniqueness_of :attr, :allow_nil => true
+        validates_uniqueness_of :attr, allow_nil: true
       end.new
     end
   end
@@ -301,7 +311,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
     context "when there is an existing entry with a nil" do
       it "should not allow_nil" do
         model = define_model_without_allow_nil
-        Example.create!(:attr => nil)
+        Example.create!(attr: nil)
         model.should_not matcher.allow_nil
       end
     end
@@ -312,7 +322,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
     end
 
     def define_model_without_allow_nil
-      define_model(:example, :attr  => :integer) do
+      define_model(:example, attr: :integer) do
         attr_accessible :attr
         validates_uniqueness_of :attr
       end.new
@@ -320,14 +330,14 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
   end
 
   def case_sensitive_validation_with_existing_value(attr_type)
-    model = define_model(:example, :attr => attr_type) do
+    model = define_model(:example, attr: attr_type) do
       attr_accessible :attr
-      validates_uniqueness_of :attr, :case_sensitive => true
+      validates_uniqueness_of :attr, case_sensitive: true
     end.new
     if attr_type == :string
-      Example.create!(:attr => 'value')
+      Example.create!(attr: 'value')
     elsif attr_type == :integer
-      Example.create!(:attr => 1)
+      Example.create!(attr: 1)
     else
       raise 'Must be :string or :integer'
     end
