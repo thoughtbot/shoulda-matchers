@@ -108,11 +108,6 @@ describe UserProfile do
       with_message('State must be open or closed')
   end
 
-  it do
-    should_not allow_value(nil).
-      for(:state).
-      with_message(/both city and state must be set/, against: :base)
-  end
 end
 
 # Test::Unit
@@ -127,6 +122,36 @@ class UserProfileTest < ActiveSupport::TestCase
   should allow_value('open', 'closed').
     for(:state).
     with_message('State must be open or closed')
+end
+```
+##### Gotchas
+
+When asserting against a validation, you may need to regex the message and change what its :against, as they can sometimes be different from the object. The below example demonstrates such a case with paperclip
+
+```ruby
+class Article < ActiveRecord::Base
+  has_attached_file :main_image
+  validates_attachment_content_type :main_image, :content_type => /image\/+/
+end
+
+irb> a = Article.new
+irb> a.main_image = File.open('file.txt')
+irb> a.valid?
+false
+irb> a.errors.messages
+{:main_image_content_type=>["is invalid"]}
+```
+
+The correct spec for this therefore might look like the following
+
+```ruby
+#Rspec
+describe Article do
+  it do
+    should_not allow_value("textfile.txt").
+      for(:main_image).
+      with_message(/is invalid/, against: :main_image_content_type)
+  end
 end
 ```
 
