@@ -107,6 +107,12 @@ describe UserProfile do
       for(:state).
       with_message('State must be open or closed')
   end
+
+  it do
+    should_not allow_value(nil).
+      for(:state).
+      with_message(/both city and state must be set/, against: :base)
+  end
 end
 
 # Test::Unit
