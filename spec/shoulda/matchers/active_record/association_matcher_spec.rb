@@ -282,6 +282,19 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       matcher.failure_message_for_should.should =~ /children should have destroy dependency/
     end
 
+    it 'accepts an association with a valid :source option' do
+      having_many_children(:source => :user).
+        should have_many(:children).source(:user)
+    end
+
+    it 'rejects an association with a bad :dependent option' do
+      matcher = have_many(:children).source(:user)
+
+      having_many_children.should_not matcher
+
+      matcher.failure_message_for_should.should =~ /children should have user as source option/
+    end
+
     it 'accepts an association with a valid :order option' do
       having_many_children(:order => :id).
         should have_many(:children).order(:id)
