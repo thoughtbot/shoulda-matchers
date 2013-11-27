@@ -618,6 +618,7 @@ The `have_many` matcher tests your `has_many` and `has_many :through` associatio
 class Person < ActiveRecord::Base
   has_many :friends
   has_many :acquaintances, through: :friends
+  has_many :job_offers, through: :friends, source: :opportunities
   has_many :coins, -> { where(condition: 'mint') }
   has_many :shirts, -> { order('color') }
   has_many :hopes, class_name: 'Dream'
@@ -632,6 +633,7 @@ end
 describe Person do
   it { should have_many(:friends) }
   it { should have_many(:acquaintances).through(:friends) }
+  it { should have_many(:job_offers).through(:friends).source(:opportunities) }
   it { should have_many(:coins).conditions(condition: 'mint') }
   it { should have_many(:shirts).order('color') }
   it { should have_many(:hopes).class_name('Dream') }
@@ -646,6 +648,7 @@ end
 class PersonTest < ActiveSupport::TestCase
   should have_many(:friends)
   should have_many(:acquaintances).through(:friends)
+  should have_many(:job_offers).through(:friends).source(:opportunities)
   should have_many(:coins).conditions(condition: 'mint')
   should have_many(:shirts).order('color')
   should have_many(:hopes).class_name('Dream')
@@ -665,6 +668,7 @@ The `have_one` matcher tests your `has_one` and `has_one :through` associations.
 class Person < ActiveRecord::Base
   has_one :partner
   has_one :life, through: :partner
+  has_one :car, through: :partner, source: :vehicle
   has_one :pet, -> { where('weight < 80') }
   has_one :focus, -> { order('priority desc') }
   has_one :chance, class_name: 'Opportunity'
@@ -677,6 +681,7 @@ end
 describe Person do
   it { should have_one(:partner) }
   it { should have_one(:life).through(:partner) }
+  it { should have_one(:car).through(:partner).source(:vehicle) }
   it { should have_one(:pet).conditions('weight < 80') }
   it { should have_one(:focus).order('priority desc') }
   it { should have_one(:chance).class_name('Opportunity') }

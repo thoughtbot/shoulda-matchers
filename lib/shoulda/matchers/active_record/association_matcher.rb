@@ -109,6 +109,12 @@ module Shoulda # :nodoc:
           self
         end
 
+        def source(source)
+          source_matcher = AssociationMatchers::SourceMatcher.new(source, name)
+          add_submatcher(source_matcher)
+          self
+        end
+
         def conditions(conditions)
           @options[:conditions] = conditions
           self

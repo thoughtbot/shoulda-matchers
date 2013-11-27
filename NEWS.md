@@ -13,10 +13,13 @@
 * The `ensure_inclusion_of` matcher now works with a decimal column.
 
 * Fix association matchers on Rails 3 so they work when used in conjunction with
-  a submatcher such as #order and an association that has :include on it.
+  a submatcher such as #order and an association that has `:include` on it.
 
 * Fix a bug where `validate_uniqueness_of` would fail if the attribute under
   test had a limit of fewer than 16 characters.
+
+* You can now test that your `has_many :through` or `has_one :through`
+  associations are defined with a `:source` option.
 
 # v 2.4.0
 
