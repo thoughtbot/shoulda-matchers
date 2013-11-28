@@ -287,7 +287,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
         should have_many(:children).source(:user)
     end
 
-    it 'rejects an association with a bad :dependent option' do
+    it 'rejects an association with a bad :source option' do
       matcher = have_many(:children).source(:user)
 
       having_many_children.should_not matcher
