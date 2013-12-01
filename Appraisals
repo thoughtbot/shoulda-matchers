@@ -1,3 +1,12 @@
+rails_4_0 = proc do
+  gem 'jquery-rails'
+  gem 'activeresource', '4.0.0'
+  # Test suite makes heavy use of attr_accessible
+  gem 'protected_attributes'
+end
+
+#---
+
 if RUBY_VERSION < '2.0'
   appraise '3.0' do
     gem 'rails', '~> 3.0.17'
@@ -21,13 +30,16 @@ appraise '3.2' do
   gem 'strong_parameters'
 end
 
-appraise '4.0' do
+appraise '4.0.0' do
+  instance_eval(&rails_4_0)
   gem 'rails', '4.0.0'
-  gem 'bcrypt-ruby', '~> 3.0.0' #FIXME: This should be ~> 3.1.0 for Rails 4.0
-  gem 'jquery-rails'
-  gem 'sass-rails', '~> 4.0.0'
-  gem 'activeresource', require: 'active_resource'
+  gem 'sass-rails', '4.0.0'
+  gem 'bcrypt-ruby', '~> 3.0.0'
+end
 
-  # Test suite makes heavy use of attr_accessible
-  gem 'protected_attributes'
+appraise '4.0.1' do
+  instance_eval(&rails_4_0)
+  gem 'rails', '4.0.1'
+  gem 'sass-rails', '4.0.1'
+  gem 'bcrypt-ruby', '~> 3.1.2'
 end
