@@ -11,12 +11,12 @@ module Shoulda # :nodoc:
           options[:even]  ||= false
 
           if options[:odd] && !options[:even]
-            @disallow_value_matcher = DisallowValueMatcher.new(NON_ODD_NUMBER_VALUE).
-              for(@attribute).
+            @disallow_value_matcher =
+              DisallowValueMatcher.new(@attribute, NON_ODD_NUMBER_VALUE).
               with_message(:odd)
           else
-            @disallow_value_matcher = DisallowValueMatcher.new(NON_EVEN_NUMBER_VALUE).
-              for(@attribute).
+            @disallow_value_matcher =
+              DisallowValueMatcher.new(@attribute, NON_EVEN_NUMBER_VALUE).
               with_message(:even)
           end
         end

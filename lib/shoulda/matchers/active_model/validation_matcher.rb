@@ -58,8 +58,7 @@ module Shoulda # :nodoc:
 
         def allow_value_matcher(value, message)
           matcher = AllowValueMatcher.
-            new(value).
-            for(@attribute).
+            new(@attribute, value).
             on(@context).
             with_message(message)
 
@@ -72,8 +71,7 @@ module Shoulda # :nodoc:
 
         def disallow_value_matcher(value, message)
           matcher = DisallowValueMatcher.
-            new(value).
-            for(@attribute).
+            new(@attribute, value).
             on(@context).
             with_message(message)
 

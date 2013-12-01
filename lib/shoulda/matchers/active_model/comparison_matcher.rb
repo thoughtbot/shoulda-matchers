@@ -6,15 +6,11 @@ module Shoulda # :nodoc:
       #                 is_greater_than(6).
       #                 less_than(20)...(and so on) }
       class ComparisonMatcher < ValidationMatcher
-        def initialize(value, operator)
+        def initialize(attribute, value, operator)
+          @attribute = attribute
           @value = value
           @operator = operator
           @message = nil
-        end
-
-        def for(attribute)
-          @attribute = attribute
-          self
         end
 
         def matches?(subject)
