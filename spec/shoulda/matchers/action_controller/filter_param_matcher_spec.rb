@@ -1,6 +1,11 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActionController::FilterParamMatcher do
+
+  it_behaves_like 'a matcher' do
+    let(:subject) { filter_param(:yolo) }
+  end
+
   it 'accepts filtering a filtered parameter' do
     filter(:secret)
 

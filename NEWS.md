@@ -1,5 +1,8 @@
 # HEAD
 
+* Add `shared_example` to define the matcher protocol. The tests for all new
+  matchers should include `it_behaves_like 'a matcher'`.
+
 * Fix `ensure_length_of` so that it uses the right message to validate when
   `is_equal_to` is specified in conjunction with a custom message.
 
