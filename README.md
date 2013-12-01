@@ -558,7 +558,7 @@ end
 # RSpec
 describe Car do
   it { should accept_nested_attributes_for(:doors) }
-  it { should accept_nested_attributes_for(:mirrors).allow_destroy }
+  it { should accept_nested_attributes_for(:mirrors).allow_destroy(true) }
   it { should accept_nested_attributes_for(:windows).limit(3) }
   it { should accept_nested_attributes_for(:engine).update_only }
 end
