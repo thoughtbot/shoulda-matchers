@@ -37,15 +37,26 @@ module Shoulda # :nodoc:
 
           def extract_relation_clause_from(relation, name)
             case name
-              when :conditions then relation.where_values_hash
-              when :order      then relation.order_values.join(', ')
-              else                  raise ArgumentError, "Unknown clause '#{name}'"
+            when :conditions
+              relation.where_values_hash
+            when :order
+              relation.order_values.map { |value| value_as_sql(value) }.join(', ')
+            else
+              raise ArgumentError, "Unknown clause '#{name}'"
             end
           end
 
           private
 
           attr_reader :subject, :name
+
+          def value_as_sql(value)
+            if value.respond_to?(:to_sql)
+              value.to_sql
+            else
+              value
+            end
+          end
         end
       end
     end
