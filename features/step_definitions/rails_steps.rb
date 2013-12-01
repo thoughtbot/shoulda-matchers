@@ -154,7 +154,7 @@ module FileHelpers
   end
 
   def rails_4?
-    match = ORIGINAL_BUNDLE_VARS['BUNDLE_GEMFILE'].match(/(\d)\.\d\.gemfile$/)
+    match = ORIGINAL_BUNDLE_VARS['BUNDLE_GEMFILE'].match(/(\d)\.\d\.(\d\.)?gemfile$/)
     match.captures[0] == '4'
   end
 end
