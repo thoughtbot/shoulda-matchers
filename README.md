@@ -31,6 +31,10 @@ Different matchers apply to different parts of Rails:
 
 *Jump to: [allow_mass_assignment_of](#allow_mass_assignment_of), [allow_value / disallow_value](#allow_value--disallow_value), [ensure_inclusion_of](#ensure_inclusion_of), [ensure_exclusion_of](#ensure_exclusion_of), [ensure_length_of](#ensure_length_of), [have_secure_password](#have_secure_password), [validate_acceptance_of](#validate_acceptance_of), [validate_confirmation_of](#validate_confirmation_of), [validate_numericality_of](#validate_numericality_of), [validate_presence_of](#validate_presence_of), [validate_uniqueness_of](#validate_uniqueness_of)*
 
+Note that all of the examples in this section are based on an ActiveRecord
+model for simplicity, but these matchers will work just as well using an
+ActiveModel model.
+
 #### allow_mass_assignment_of
 
 The `allow_mass_assignment_of` matcher tests usage of Rails 3's
@@ -89,18 +93,10 @@ end
 
 # RSpec
 describe UserProfile do
-  it do
-    should allow_value('http://foo.com', 'http://bar.com/baz').
-      for(:website_url)
-  end
+  it { should allow_value('http://foo.com', 'http://bar.com/baz').for(:website_url) }
+  it { should_not allow_value('asdfjkl').for(:website_url) }
 
-  it do
-    should_not allow_value('asdfjkl').for(:website_url)
-  end
-
-  it do
-    should allow_value(:birthday_as_string).on(:create)
-  end
+  it { should allow_value(:birthday_as_string).on(:create) }
 
   it do
     should allow_value('open', 'closed').
@@ -111,9 +107,7 @@ end
 
 # Test::Unit
 class UserProfileTest < ActiveSupport::TestCase
-  should allow_value('http://foo.com', 'http://bar.com/baz').
-    for(:website_url)
-
+  should allow_value('http://foo.com', 'http://bar.com/baz').for(:website_url)
   should_not allow_value('asdfjkl').for(:website_url)
 
   should allow_value(:birthday_as_string).on(:create)
@@ -124,7 +118,7 @@ class UserProfileTest < ActiveSupport::TestCase
 end
 ```
 
-**IMPORTANT NOTE!** Using `should_not` with `allow_value` completely negates the
+**PLEASE NOTE:** Using `should_not` with `allow_value` completely negates the
 assertion. This means that if multiple values are given to `allow_value`, the
 matcher succeeds once it sees the *first* value that will cause the record to be
 invalid:
@@ -144,14 +138,7 @@ of this, it carries the same caveat when multiple values are provided:
 ```ruby
 describe User do
   # 'b' and 'c' will not be tested
-  it do
-    should disallow_value('a', 'b', 'c').for(:website_url)
-  end
-
-  it do
-    should_not disallow_value('http://foo.com', 'http://bar.com').
-      for(:website_url)
-  end
+  it { should disallow_value('a', 'b', 'c').for(:website_url) }
 end
 ```
 
@@ -165,6 +152,7 @@ take values outside of this set.
 class Issue < ActiveRecord::Base
   validates_inclusion_of :state, in: %w(open resolved unresolved)
   validates_inclusion_of :priority, in: 1..5
+
   validates_inclusion_of :severity,
     in: %w(low medium high),
     message: 'Severity must be low, medium, or high'
@@ -172,13 +160,8 @@ end
 
 # RSpec
 describe Issue do
-  it do
-    should ensure_inclusion_of(:state).in_array(%w(open resolved unresolved))
-  end
-
-  it do
-    should ensure_inclusion_of(:state).in_range(1..5)
-  end
+  it { should ensure_inclusion_of(:state).in_array(%w(open resolved unresolved))
+  it { should ensure_inclusion_of(:state).in_range(1..5) }
 
   it do
     should ensure_inclusion_of(:severity).
@@ -191,6 +174,7 @@ end
 class IssueTest < ActiveSupport::TestCase
   should ensure_inclusion_of(:state).in_array(%w(open resolved unresolved))
   should ensure_inclusion_of(:state).in_range(1..5)
+
   should ensure_inclusion_of(:severity).
     in_array(%w(low medium high)).
     with_message('Severity must be low, medium, or high')
@@ -205,7 +189,6 @@ validation, asserting that an attribute cannot take a set of values.
 ```ruby
 class Game < ActiveRecord::Base
   validates_exclusion_of :supported_os, in: ['Mac', 'Linux']
-
   validates_exclusion_of :floors_with_enemies, in: 5..8
 
   validates_exclusion_of :weapon,
@@ -215,10 +198,7 @@ end
 
 # RSpec
 describe Game do
-  it do
-    should ensure_exclusion_of(:supported_os).in_array(['Mac', 'Linux'])
-  end
-
+  it { should ensure_exclusion_of(:supported_os).in_array(['Mac', 'Linux']) }
   it { should ensure_exclusion_of(:floors_with_enemies).in_range(5..8) }
 
   it do
@@ -231,7 +211,6 @@ end
 # Test::Unit
 class GameTest < ActiveSupport::TestCase
   should ensure_exclusion_of(:supported_os).in_array(['Mac', 'Linux'])
-
   should ensure_exclusion_of(:floors_with_enemies).in_range(5..8)
 
   should ensure_exclusion_of(:weapon).
@@ -253,11 +232,11 @@ class User < ActiveRecord::Base
 
   validates_length_of :api_token,
     in: 10..20,
-    message: 'API token must be in between 5 and 30 characters'
+    message: 'API token must be in between 10 and 20 characters'
 
   validates_length_of :secret_key, in: 15..100,
-    too_short: 'Password must be more than 15 characters',
-    too_long: 'Password cannot be more than 100 characters'
+    too_short: 'Secret key must be more than 15 characters',
+    too_long: 'Secret key cannot be more than 100 characters'
 end
 
 # RSpec
@@ -269,17 +248,17 @@ describe User do
 
   it do
     should ensure_length_of(:api_token).
-      is_at_least(5).
-      is_at_most(30).
-      message('Password must be in between 5 and 30 characters')
+      is_at_least(10).
+      is_at_most(20).
+      message('Password must be in between 10 and 20 characters')
   end
 
   it do
     should ensure_length_of(:secret_key).
-      is_at_least(5).
-      is_at_most(30).
-      with_short_message('Password must be more than 5 characters').
-      with_long_message('Password cannot be more than 30 characters')
+      is_at_least(15).
+      is_at_most(100).
+      with_short_message('Secret key must be more than 15 characters').
+      with_long_message('Secret key cannot be more than 100 characters')
   end
 end
 
@@ -291,15 +270,15 @@ class UserTest < ActiveSupport::TestCase
   should ensure_length_of(:password).is_at_least(5).is_at_most(30)
 
   should ensure_length_of(:api_token).
-    is_at_least(5).
-    is_at_most(30).
-    message('Password must be in between 5 and 30 characters')
+    is_at_least(15).
+    is_at_most(20).
+    message('Password must be in between 15 and 20 characters')
 
   should ensure_length_of(:secret_key).
-    is_at_least(5).
-    is_at_most(30).
-    with_short_message('Password must be more than 5 characters').
-    with_long_message('Password cannot be more than 30 characters')
+    is_at_least(15).
+    is_at_most(100).
+    with_short_message('Secret key must be more than 15 characters').
+    with_long_message('Secret key cannot be more than 100 characters')
 end
 ```
 
@@ -330,9 +309,7 @@ The `validate_acceptance_of` matcher tests usage of the
 `validates_acceptance_of` validation.
 
 ```ruby
-class Registration
-  include ActiveModel::Model
-
+class Registration < ActiveRecord::Base
   validates_acceptance_of :eula
   validates_acceptance_of :terms_of_service,
     message: 'You must accept the terms of service'
@@ -509,14 +486,14 @@ class PostTest < ActiveSupport::TestCase
 end
 ```
 
-**IMPORTANT NOTE!** This matcher works differently from other validation
-matchers. Since the very concept of uniqueness depends on checking against a
-pre-existing record in the database, this matcher will first use the model
-you're testing to query for such a record, and if it can't find an existing one,
-it will create one itself. Sometimes this step fails, especially if you have
-other validations on the attribute you're testing (or, if you have
-database-level restrictions on any attributes). In this case, the solution is to
-create a record before you use `validate_uniqueness_of`.
+**PLEASE NOTE:** This matcher works differently from other validation matchers.
+Since the very concept of uniqueness depends on checking against a pre-existing
+record in the database, this matcher will first use the model you're testing to
+query for such a record, and if it can't find an existing one, it will create
+one itself. Sometimes this step fails, especially if you have other validations
+on the attribute you're testing (or, if you have database-level restrictions on
+any attributes). In this case, the solution is to create a record before you use
+`validate_uniqueness_of`.
 
 For example, if you have this model:
 
@@ -560,15 +537,15 @@ describe Car do
   it { should accept_nested_attributes_for(:doors) }
   it { should accept_nested_attributes_for(:mirrors).allow_destroy(true) }
   it { should accept_nested_attributes_for(:windows).limit(3) }
-  it { should accept_nested_attributes_for(:engine).update_only }
+  it { should accept_nested_attributes_for(:engine).update_only(true) }
 end
 
 # Test::Unit (using Shoulda)
 class CarTest < ActiveSupport::TestCase
   should accept_nested_attributes_for(:doors)
-  should accept_nested_attributes_for(:mirrors).allow_destroy
+  should accept_nested_attributes_for(:mirrors).allow_destroy(true)
   should accept_nested_attributes_for(:windows).limit(3)
-  should accept_nested_attributes_for(:engine).update_only
+  should accept_nested_attributes_for(:engine).update_only(true)
 end
 ```
 
@@ -694,6 +671,7 @@ end
 class PersonTest < ActiveSupport::TestCase
   should have_one(:partner)
   should have_one(:life).through(:partner)
+  should have_one(:car).through(:partner).source(:vehicle)
   should have_one(:pet).conditions('weight < 80')
   should have_one(:focus).order('priority desc')
   should have_one(:chance).class_name('Opportunity')
@@ -853,11 +831,18 @@ describe Product do
   it { should serialize(:specifications).as(ProductSpecsSerializer) }
   it { should serialize(:options).as_instance_of(ProductOptionsSerializer) }
 end
+
+# Test::Unit
+class ProductTest < ActiveSupport::TestCase
+  should serialize(:customizations)
+  should serialize(:specifications).as(ProductSpecsSerializer)
+  should serialize(:options).as_instance_of(ProductOptionsSerializer)
+end
 ```
 
 ### ActionController Matchers
 
-*Jump to: [filter_param](#filter_param), [redirect_to](#redirect_to), [render_template](#render_template), [render_with_layout](#render_with_layout), [rescue_from](#rescue_from), [respond_with](#respond_with), [set_session](#set_session), [set_the_flash](#set_the_flash)*
+*Jump to: [filter_param](#filter_param), [redirect_to](#redirect_to), [render_template](#render_template), [render_with_layout](#render_with_layout), [rescue_from](#rescue_from), [respond_with](#respond_with), [route](#route), [set_session](#set_session), [set_the_flash](#set_the_flash)*
 
 #### filter_param
 
@@ -873,7 +858,7 @@ describe ApplicationController do
   it { should filter_param(:secret_key) }
 end
 
-# RSpec
+# Test::Unit
 class ApplicationControllerTest < ActionController::TestCase
   should filter_param(:secret_key)
 end
@@ -1077,22 +1062,19 @@ over `assert_routing`.
 
 ```ruby
 My::Application.routes.draw do
-  get '/posts/1' => 'posts#show'
+  get '/posts', controller: 'posts', action: 'index'
+  get '/posts/:id' => 'posts#show'
 end
 
 # RSpec
 describe 'Routing' do
-  it { should route(:get, '/posts/1').to(controller: 'posts', action: 'show', id: 1) }
-
-  # a shorter way to say this
+  it { should route(:get, '/posts').to(controller: 'posts', action: 'index') }
   it { should route(:get, '/posts/1').to('posts#show', id: 1) }
 end
 
 # Test::Unit
 class RoutesTest < ActionController::IntegrationTest
-  should route(:get, '/posts/1').to(controller: 'posts', action: 'show', id: 1)
-
-  # a shorter way to say this
+  should route(:get, '/posts').to(controller: 'posts', action: 'index')
   should route(:get, '/posts/1').to('posts#show', id: 1)
 end
 ```
