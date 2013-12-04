@@ -39,7 +39,7 @@ module Shoulda # :nodoc:
         private
 
         def blank_value
-          if collection?
+          if collection? || serialized?
             []
           else
             nil
@@ -57,6 +57,11 @@ module Shoulda # :nodoc:
         def reflection
           @subject.class.respond_to?(:reflect_on_association) &&
             @subject.class.reflect_on_association(@attribute)
+        end
+
+        def serialized?
+          @subject.class.respond_to?(:serialized_attributes) &&
+            @subject.class.serialized_attributes.keys.include?(@attribute.to_s)
         end
       end
     end
