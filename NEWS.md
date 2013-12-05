@@ -21,6 +21,8 @@
 * You can now test that your `has_many :through` or `has_one :through`
   associations are defined with a `:source` option.
 
+* Add `validates_absence_of` matcher.
+
 # v 2.4.0
 
 * Fix a bug with the `validate_numericality_of` matcher that would not allow the
