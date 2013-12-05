@@ -108,11 +108,6 @@ describe UserProfile do
       with_message('State must be open or closed')
   end
 
-  it do
-    should_not allow_value(nil).
-      for(:state).
-      with_message(/both city and state must be set/, against: :base)
-  end
 end
 
 # Test::Unit
@@ -158,6 +153,26 @@ describe User do
     should_not disallow_value('http://foo.com', 'http://bar.com').
       for(:website_url)
   end
+end
+```
+
+**NOTE** when confirming validations, sometimes the attribute you set is different from the attribute that has the validation message for it. In those instances, use the `against` option.
+
+```ruby
+it do
+  should_not allow_value(nil).
+    for(:state).
+    with_message("both city and state must be set", against: :base)
+end
+```
+
+and if you need more flexibility in message checking, `with_message` can take a regex as the first parameter as well.
+
+```ruby
+it do
+  should_not allow_value(nil).
+    for(:state).
+    with_message(/^state is invalid$/)
 end
 ```
 
