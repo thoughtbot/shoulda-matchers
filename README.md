@@ -29,7 +29,7 @@ Different matchers apply to different parts of Rails:
 
 ### ActiveModel Matchers
 
-*Jump to: [allow_mass_assignment_of](#allow_mass_assignment_of), [allow_value / disallow_value](#allow_value--disallow_value), [ensure_inclusion_of](#ensure_inclusion_of), [ensure_exclusion_of](#ensure_exclusion_of), [ensure_length_of](#ensure_length_of), [have_secure_password](#have_secure_password), [validate_acceptance_of](#validate_acceptance_of), [validate_confirmation_of](#validate_confirmation_of), [validate_numericality_of](#validate_numericality_of), [validate_presence_of](#validate_presence_of), [validate_uniqueness_of](#validate_uniqueness_of)*
+*Jump to: [allow_mass_assignment_of](#allow_mass_assignment_of), [allow_value / disallow_value](#allow_value--disallow_value), [ensure_inclusion_of](#ensure_inclusion_of), [ensure_exclusion_of](#ensure_exclusion_of), [ensure_length_of](#ensure_length_of), [have_secure_password](#have_secure_password), [validate_absence_of](#validate_absence_of), [validate_acceptance_of](#validate_acceptance_of), [validate_confirmation_of](#validate_confirmation_of), [validate_numericality_of](#validate_numericality_of), [validate_presence_of](#validate_presence_of), [validate_uniqueness_of](#validate_uniqueness_of)*
 
 #### allow_mass_assignment_of
 
@@ -321,6 +321,68 @@ end
 # Test::Unit
 class UserTest < ActiveSupport::TestCase
   should have_secure_password
+end
+```
+
+#### validate_absence_of
+
+The `validate_absence_of` matcher tests the usage of the
+`validates_absence_of` validation.
+
+```ruby
+# Rails 4
+class Tank
+  include ActiveModel::Model
+
+  validates_absence_of :arms
+  validates_absence_of :legs,
+    message: "Tanks don't have legs."
+end
+
+# RSpec
+describe Tank do
+  it { should validate_absence_of(:arms) }
+
+  it do
+    should validate_absence_of(:legs).
+      with_message("Tanks don't have legs.")
+  end
+end
+
+# Test::Unit
+class TankTest < ActiveSupport::TestCase
+  should validate_absence_of(:arms)
+
+  should validate_absence_of(:legs).
+    with_message("Tanks don't have legs.")
+end
+
+# Pre-Rails 4
+class Girl
+  include ActiveModel::Model
+
+  validates_inclusion_of :treads, :in => [nil, ''],
+    :message => :present # Remember to add a translation to I18n as well.
+  validates_inclusion_of :cannons, :in => [nil, ''],
+    :message => "Girls don't have cannons, they have tanks."
+end
+
+# RSpec
+describe Girl do
+  it { should validate_absence_of(:treads) }
+
+  it do
+    should validate_absence_of(:cannons).
+      with_message("Girls don't have cannons, they have tanks.")
+  end
+end
+
+# Test::Unit
+class GirlTest < ActiveSupport::TestCase
+  should validate_absence_of(:treads)
+
+  should validate_absence_of(:cannons).
+    with_message("Girls don't have cannons, they have tanks.")
 end
 ```
 
