@@ -12,7 +12,7 @@ module Shoulda # :nodoc:
       # Examples:
       #   it { should validate_absence_of(:name) }
       #   it { should validate_absence_of(:name).
-      #                 with_message(/is not included in list/) }
+      #                 with_message(/is not included in the list/) }
       #
       # Pre-Rails 4:
       # If you are not using Rails 4 and are testing for absence using a custom
