@@ -330,7 +330,6 @@ The `validate_absence_of` matcher tests the usage of the
 `validates_absence_of` validation.
 
 ```ruby
-# Rails 4
 class Tank
   include ActiveModel::Model
 
@@ -355,34 +354,6 @@ class TankTest < ActiveSupport::TestCase
 
   should validate_absence_of(:legs).
     with_message("Tanks don't have legs.")
-end
-
-# Pre-Rails 4
-class Girl
-  include ActiveModel::Model
-
-  validates_inclusion_of :treads, :in => [nil, ''],
-    :message => :present # Remember to add a translation to I18n as well.
-  validates_inclusion_of :cannons, :in => [nil, ''],
-    :message => "Girls don't have cannons, they have tanks."
-end
-
-# RSpec
-describe Girl do
-  it { should validate_absence_of(:treads) }
-
-  it do
-    should validate_absence_of(:cannons).
-      with_message("Girls don't have cannons, they have tanks.")
-  end
-end
-
-# Test::Unit
-class GirlTest < ActiveSupport::TestCase
-  should validate_absence_of(:treads)
-
-  should validate_absence_of(:cannons).
-    with_message("Girls don't have cannons, they have tanks.")
 end
 ```
 

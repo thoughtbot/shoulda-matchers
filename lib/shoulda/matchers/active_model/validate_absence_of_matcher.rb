@@ -12,14 +12,7 @@ module Shoulda # :nodoc:
       # Examples:
       #   it { should validate_absence_of(:name) }
       #   it { should validate_absence_of(:name).
-      #                 with_message(/is not included in the list/) }
-      #
-      # Pre-Rails 4:
-      # If you are not using Rails 4 and are testing for absence using a custom
-      # or inclusion validation, you can still use validate_absence_of to test
-      # it. Either set the message of the validation to <tt>:present</tt> or use
-      # <tt>with_message</tt> to change the message that validate_absence_of
-      # checks for.
+      #                 with_message(/may not be set/) }
       def validate_absence_of(attr)
         ValidateAbsenceOfMatcher.new(attr)
       end
