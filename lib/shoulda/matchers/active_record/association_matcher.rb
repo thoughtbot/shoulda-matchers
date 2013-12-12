@@ -1,4 +1,4 @@
-require 'forwardable'
+require 'active_support/core_ext/module/delegation'
 
 module Shoulda # :nodoc:
   module Matchers
