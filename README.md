@@ -93,7 +93,7 @@ end
 
 # RSpec
 describe UserProfile do
-  it { should allow_value('http://foo.com', 'http://bar.com/baz'). for(:website_url) }
+  it { should allow_value('http://foo.com', 'http://bar.com/baz').for(:website_url) }
   it { should_not allow_value('asdfjkl').for(:website_url) }
 
   it { should allow_value(:birthday_as_string).on(:create) }
