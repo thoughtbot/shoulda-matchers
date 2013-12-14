@@ -14,7 +14,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
 
     context 'a model without an absence validation' do
       it 'rejects' do
-        model = define_model(:example, :attr => :string).new
+        model = define_model(:example, attr: :string).new
         model.should_not validate_absence_of(:attr)
       end
     end
@@ -43,27 +43,27 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
 
     context 'a has_many association with an absence validation' do
       it 'requires the attribute to not be set' do
-        has_many_children(:absence => true).should validate_absence_of(:children)
+        has_many_children(absence: true).should validate_absence_of(:children)
       end
     end
 
     context 'a has_many association without an absence validation' do
       it 'does not require the attribute to not be set' do
-        has_many_children(:absence => false).
+        has_many_children(absence: false).
           should_not validate_absence_of(:children)
       end
     end
 
     context 'an absent has_and_belongs_to_many association' do
       it 'accepts' do
-        model = has_and_belongs_to_many_children(:absence => true)
+        model = has_and_belongs_to_many_children(absence: true)
         model.should validate_absence_of(:children)
       end
     end
 
     context 'a non-absent has_and_belongs_to_many association' do
       it 'rejects' do
-        model = has_and_belongs_to_many_children(:absence => false)
+        model = has_and_belongs_to_many_children(absence: false)
         model.should_not validate_absence_of(:children)
       end
     end
@@ -84,13 +84,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
     context "an attribute with a context-dependent validation" do
       context "without the validation context" do
         it "does not match" do
-          validating_absence(:on => :customisable).should_not validate_absence_of(:attr)
+          validating_absence(on: :customisable).should_not validate_absence_of(:attr)
         end
       end
 
       context "with the validation context" do
         it "matches" do
-          validating_absence(:on => :customisable).should validate_absence_of(:attr).on(:customisable)
+          validating_absence(on: :customisable).should validate_absence_of(:attr).on(:customisable)
         end
       end
     end
@@ -106,13 +106,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
     end
 
     def validating_absence(options = {})
-      define_model :example, :attr => :string do
+      define_model :example, attr: :string do
         validates_absence_of :attr, options
       end.new
     end
 
     def active_model(&block)
-      define_active_model_class('Example', :accessors => [:attr], &block).new
+      define_active_model_class('Example', accessors: [:attr], &block).new
     end
 
     def active_model_validating_absence
@@ -140,7 +140,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
         end
       end.new
 
-      create_table 'children_parents', :id => false do |t|
+      create_table 'children_parents', id: false do |t|
         t.integer :child_id
         t.integer :parent_id
       end
@@ -149,7 +149,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
     end
 
     def active_resource_model
-      define_active_resource_class :foo, :attr => :string do
+      define_active_resource_class :foo, attr: :string do
         validates_absence_of :attr
       end.new
     end
