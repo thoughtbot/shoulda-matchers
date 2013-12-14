@@ -4,39 +4,40 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
   if active_model_4_0?
     context 'a model with an absence validation' do
       it 'accepts' do
-        validating_absence.should matcher
+        validating_absence.should validate_absence_of(:attr)
       end
 
       it 'does not override the default message with a present' do
-        validating_absence.should matcher.with_message(nil)
+        validating_absence.should validate_absence_of(:attr).with_message(nil)
       end
     end
 
     context 'a model without an absence validation' do
       it 'rejects' do
-        define_model(:example, :attr => :string).new.should_not matcher
+        model = define_model(:example, :attr => :string).new
+        model.should_not validate_absence_of(:attr)
       end
     end
 
     context 'an ActiveModel class with an absence validation' do
       it 'accepts' do
-        active_model_validating_absence.should matcher
+        active_model_validating_absence.should validate_absence_of(:attr)
       end
 
       it 'does not override the default message with a blank' do
-        active_model_validating_absence.should matcher.with_message(nil)
+        active_model_validating_absence.should validate_absence_of(:attr).with_message(nil)
       end
     end
 
     context 'an ActiveModel class without an absence validation' do
       it 'rejects' do
-        active_model.should_not matcher
+        active_model.should_not validate_absence_of(:attr)
       end
 
       it 'provides the correct failure message' do
         message = %{Expected errors to include "must be blank" when attr is set to "HEY-OH!", got no errors}
 
-        expect { active_model.should matcher }.to fail_with_message(message)
+        expect { active_model.should validate_absence_of(:attr) }.to fail_with_message(message)
       end
     end
 
@@ -100,13 +101,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
     context "an attribute with a context-dependent validation" do
       context "without the validation context" do
         it "does not match" do
-          validating_absence(:on => :customisable).should_not matcher
+          validating_absence(:on => :customisable).should_not validate_absence_of(:attr)
         end
       end
 
       context "with the validation context" do
         it "matches" do
-          validating_absence(:on => :customisable).should matcher.on(:customisable)
+          validating_absence(:on => :customisable).should validate_absence_of(:attr).on(:customisable)
         end
       end
     end
@@ -119,10 +120,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
           }.to_not raise_exception
         end
       end
-    end
-
-    def matcher
-      validate_absence_of(:attr)
     end
 
     def validating_absence(options = {})
