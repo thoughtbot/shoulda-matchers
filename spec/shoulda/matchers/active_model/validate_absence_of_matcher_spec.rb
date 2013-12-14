@@ -69,15 +69,12 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
     end
 
     context "an i18n translation containing %{attribute} and %{model}" do
-      before do
-        stub_translation(
-                         "activerecord.errors.messages.present",
-                         "Please enter a %{attribute} for your %{model}")
-      end
-
       after { I18n.backend.reload! }
 
       it "does not raise an exception" do
+        stub_translation("activerecord.errors.messages.present",
+                         "%{attribute} must be blank in a %{model}")
+
         expect {
           validating_absence.should validate_absence_of(:attr)
         }.to_not raise_exception
