@@ -47,7 +47,7 @@ module Shoulda # :nodoc:
           elsif attribute_class == Fixnum
             1
           elsif !attribute_class || attribute_class == String
-            'HEY-OH!'
+            'an arbitrary value'
           else
             attribute_class.new
           end

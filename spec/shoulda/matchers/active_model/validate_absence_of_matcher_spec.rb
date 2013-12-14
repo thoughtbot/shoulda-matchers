@@ -35,7 +35,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
       end
 
       it 'provides the correct failure message' do
-        message = %{Expected errors to include "must be blank" when attr is set to "HEY-OH!", got no errors}
+        message = %{Expected errors to include "must be blank" when attr is set to "an arbitrary value", got no errors}
 
         expect { active_model.should validate_absence_of(:attr) }.to fail_with_message(message)
       end
