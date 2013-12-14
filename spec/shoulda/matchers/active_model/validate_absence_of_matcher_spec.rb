@@ -55,30 +55,16 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
     end
 
     context 'an absent has_and_belongs_to_many association' do
-      before do
-        @model = has_and_belongs_to_many_children(:absence => true)
-        create_table 'children_parents', :id => false do |t|
-          t.integer :child_id
-          t.integer :parent_id
-        end
-      end
-
       it 'accepts' do
-        @model.should validate_absence_of(:children)
+        model = has_and_belongs_to_many_children(:absence => true)
+        model.should validate_absence_of(:children)
       end
     end
 
     context 'a non-absent has_and_belongs_to_many association' do
-      before do
-        @model = has_and_belongs_to_many_children(:absence => false)
-        create_table 'children_parents', :id => false do |t|
-          t.integer :child_id
-          t.integer :parent_id
-        end
-      end
-
       it 'rejects' do
-        @model.should_not validate_absence_of(:children)
+        model = has_and_belongs_to_many_children(:absence => false)
+        model.should_not validate_absence_of(:children)
       end
     end
 
@@ -156,6 +142,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
           validates_absence_of :children
         end
       end.new
+
+      create_table 'children_parents', :id => false do |t|
+        t.integer :child_id
+        t.integer :parent_id
+      end
+
+      @model
     end
 
     def active_resource_model
