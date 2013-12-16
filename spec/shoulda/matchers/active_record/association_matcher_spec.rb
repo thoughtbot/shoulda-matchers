@@ -665,7 +665,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
   def define_association_with_conditions(model, macro, name, conditions, other_options={})
     args = []
     options = {}
-    if Shoulda::Matchers::RailsShim.rails_major_version == 4
+    if Shoulda::Matchers::RailsShim.active_record_major_version == 4
       args << lambda { where(conditions) }
     else
       options[:conditions] = conditions
@@ -677,7 +677,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
   def define_association_with_order(model, macro, name, order, other_options={})
     args = []
     options = {}
-    if Shoulda::Matchers::RailsShim.rails_major_version == 4
+    if Shoulda::Matchers::RailsShim.active_record_major_version == 4
       args << lambda { order(order) }
     else
       options[:order] = order
