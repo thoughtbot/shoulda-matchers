@@ -16,8 +16,14 @@ group :test do
 end
 ```
 
-All of the matchers which are listed below will get automatically included into
-your test framework so you can use them right away.
+shoulda-matchers automatically includes matchers for `ActiveRecord`,
+`ActiveModel`, and `ActionController` that you can use right away.
+
+It looks for these classes to already be loaded into the environment, so ensure
+that shoulda-matchers is loaded *after* any of these Rails classes. If you are
+using shoulda-matchers outside of Rails, such as in a Rack application,
+[Sinatra](http://www.sinatrarb.com/), or [Padrino](http://www.padrinorb.com/),
+you will need to ensure the loading is performed correctly.
 
 ## Usage
 
