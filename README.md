@@ -16,8 +16,17 @@ group :test do
 end
 ```
 
-All of the matchers which are listed below will get automatically included into
-your test framework so you can use them right away.
+shoulda-matchers automatically includes itself into your test framework. It will
+mix in the appropriate matchers for ActiveRecord, ActiveModel, and
+ActionController depending on the modules that are available at runtime. For
+instance, in order to use the ActiveRecord matchers, ActiveRecord must be
+available beforehand.
+
+If your application is on Rails, everything should "just work", as
+shoulda-matchers will most likely be declared after Rails in your Gemfile. If
+your application is on another framework such as Sinatra or Padrino, you may
+have a different setup, so you will want to ensure that you are requiring
+shoulda-matchers after the components of Rails you are using.
 
 ## Usage
 
