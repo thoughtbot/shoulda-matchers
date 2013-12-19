@@ -1,3 +1,5 @@
+require 'active_resource'
+
 module ActiveResourceBuilder
   def self.included(example_group)
     example_group.class_eval do
