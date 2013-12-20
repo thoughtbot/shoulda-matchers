@@ -1314,6 +1314,29 @@ class UserControllerTest < ActionController::TestCase
 end
 ```
 
+## Independent Matchers
+
+Matchers to test non-Rails-dependent code:
+
+#### delegate_method
+
+```ruby
+class Human < ActiveRecord::Base
+  has_one :robot
+  delegate :work, to: :robot
+end
+
+# RSpec
+describe Human do
+  it { should delegate_method(:work).to(:robot) }
+end
+
+# Test::Unit
+class HumanTest < ActiveSupport::TestCase
+  should delegate_method(:work).to(:robot)
+end
+```
+
 ## Versioning
 
 shoulda-matchers follows Semantic Versioning 2.0 as defined at

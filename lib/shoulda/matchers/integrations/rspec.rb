@@ -2,6 +2,9 @@
 require 'rspec/core'
 
 RSpec.configure do |config|
+  require 'shoulda/matchers/independent'
+  config.include Shoulda::Matchers::Independent
+
   if defined?(::ActiveRecord)
     require 'shoulda/matchers/active_record'
     require 'shoulda/matchers/active_model'
