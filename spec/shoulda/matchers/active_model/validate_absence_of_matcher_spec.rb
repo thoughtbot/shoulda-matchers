@@ -31,13 +31,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
 
     context 'an ActiveModel class without an absence validation' do
       it 'rejects' do
-        active_model.should_not validate_absence_of(:attr)
+        active_model_with(:attr).should_not validate_absence_of(:attr)
       end
 
       it 'provides the correct failure message' do
         message = %{Expected errors to include "must be blank" when attr is set to "an arbitrary value", got no errors}
 
-        expect { active_model.should validate_absence_of(:attr) }.to fail_with_message(message)
+        expect { active_model_with(:attr).should validate_absence_of(:attr) }.to fail_with_message(message)
       end
     end
 
@@ -101,12 +101,12 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
       end.new
     end
 
-    def active_model(&block)
-      define_active_model_class('Example', accessors: [:attr], &block).new
+    def active_model_with(attr, &block)
+      define_active_model_class('Example', accessors: [attr], &block).new
     end
 
     def active_model_validating_absence_of(attr)
-      active_model do
+      active_model_with(:attr) do
         validates_absence_of attr
       end
     end
