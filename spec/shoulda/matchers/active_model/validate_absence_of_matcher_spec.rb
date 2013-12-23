@@ -21,11 +21,11 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
 
     context 'an ActiveModel class with an absence validation' do
       it 'accepts' do
-        active_model_validating_absence.should validate_absence_of(:attr)
+        active_model_validating_absence_of(:attr).should validate_absence_of(:attr)
       end
 
       it 'does not override the default message with a blank' do
-        active_model_validating_absence.should validate_absence_of(:attr).with_message(nil)
+        active_model_validating_absence_of(:attr).should validate_absence_of(:attr).with_message(nil)
       end
     end
 
@@ -105,9 +105,9 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
       define_active_model_class('Example', accessors: [:attr], &block).new
     end
 
-    def active_model_validating_absence
+    def active_model_validating_absence_of(attr)
       active_model do
-        validates_absence_of :attr
+        validates_absence_of attr
       end
     end
 
