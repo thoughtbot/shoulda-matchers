@@ -4,11 +4,11 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
   if active_model_4_0?
     context 'a model with an absence validation' do
       it 'accepts' do
-        validating_absence.should validate_absence_of(:attr)
+        validating_absence_of(:attr).should validate_absence_of(:attr)
       end
 
       it 'does not override the default message with a present' do
-        validating_absence.should validate_absence_of(:attr).with_message(nil)
+        validating_absence_of(:attr).should validate_absence_of(:attr).with_message(nil)
       end
     end
 
@@ -76,7 +76,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
                          "%{attribute} must be blank in a %{model}")
 
         expect {
-          validating_absence.should validate_absence_of(:attr)
+          validating_absence_of(:attr).should validate_absence_of(:attr)
         }.to_not raise_exception
       end
     end
@@ -84,20 +84,20 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
     context "an attribute with a context-dependent validation" do
       context "without the validation context" do
         it "does not match" do
-          validating_absence(on: :customisable).should_not validate_absence_of(:attr)
+          validating_absence_of(:attr, on: :customisable).should_not validate_absence_of(:attr)
         end
       end
 
       context "with the validation context" do
         it "matches" do
-          validating_absence(on: :customisable).should validate_absence_of(:attr).on(:customisable)
+          validating_absence_of(:attr, on: :customisable).should validate_absence_of(:attr).on(:customisable)
         end
       end
     end
 
-    def validating_absence(options = {})
-      define_model :example, attr: :string do
-        validates_absence_of :attr, options
+    def validating_absence_of(attr, options = {})
+      define_model :example, attr => :string do
+        validates_absence_of attr, options
       end.new
     end
 
