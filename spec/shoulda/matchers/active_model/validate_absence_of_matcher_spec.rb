@@ -43,27 +43,27 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
 
     context 'a has_many association with an absence validation' do
       it 'requires the attribute to not be set' do
-        has_many_children(absence: true).should validate_absence_of(:children)
+        having_many(:children, absence: true).should validate_absence_of(:children)
       end
     end
 
     context 'a has_many association without an absence validation' do
       it 'does not require the attribute to not be set' do
-        has_many_children(absence: false).
+        having_many(:children, absence: false).
           should_not validate_absence_of(:children)
       end
     end
 
     context 'an absent has_and_belongs_to_many association' do
       it 'accepts' do
-        model = has_and_belongs_to_many_children(absence: true)
+        model = having_and_belonging_to_many(:children, absence: true)
         model.should validate_absence_of(:children)
       end
     end
 
     context 'a non-absent has_and_belongs_to_many association' do
       it 'rejects' do
-        model = has_and_belongs_to_many_children(absence: false)
+        model = having_and_belonging_to_many(:children, absence: false)
         model.should_not validate_absence_of(:children)
       end
     end
@@ -111,27 +111,27 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
       end
     end
 
-    def has_many_children(options = {})
-      define_model :child
+    def having_many(plural_name, options = {})
+      define_model plural_name.to_s.singularize
       define_model :parent do
-        has_many :children
+        has_many plural_name
         if options[:absence]
-          validates_absence_of :children
+          validates_absence_of plural_name
         end
       end.new
     end
 
-    def has_and_belongs_to_many_children(options = {})
-      define_model :child
+    def having_and_belonging_to_many(plural_name, options = {})
+      define_model plural_name.to_s.singularize
       @model = define_model :parent do
-        has_and_belongs_to_many :children
+        has_and_belongs_to_many plural_name
         if options[:absence]
-          validates_absence_of :children
+          validates_absence_of plural_name
         end
       end.new
 
       create_table 'children_parents', id: false do |t|
-        t.integer :child_id
+        t.integer "#{plural_name.to_s.singularize}_id"
         t.integer :parent_id
       end
 
