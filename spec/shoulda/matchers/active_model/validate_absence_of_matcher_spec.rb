@@ -95,16 +95,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
       end
     end
 
-    context 'an active_resource model' do
-      context 'with the validation context' do
-        it 'does not raise an exception' do
-          expect {
-            active_resource_model.should validate_absence_of(:attr)
-          }.to_not raise_exception
-        end
-      end
-    end
-
     def validating_absence(options = {})
       define_model :example, attr: :string do
         validates_absence_of :attr, options
@@ -146,12 +136,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
       end
 
       @model
-    end
-
-    def active_resource_model
-      define_active_resource_class :foo, attr: :string do
-        validates_absence_of :attr
-      end.new
     end
   end
 end
