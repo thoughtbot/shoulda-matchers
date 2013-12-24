@@ -18,7 +18,7 @@ describe Shoulda::Matchers::ActionController::RescueFromMatcher do
       it "asserts the controller responds to the handler method" do
         matcher = rescue_from(RuntimeError).with(:error_method)
         matcher.matches?(controller_with_rescue_from_and_invalid_method).should be_false
-        matcher.failure_message_for_should.should =~ /does not respond to/
+        matcher.failure_message.should =~ /does not respond to/
       end
     end
 
@@ -35,7 +35,7 @@ describe Shoulda::Matchers::ActionController::RescueFromMatcher do
     it "asserts controller is not setup with rescue_from" do
       matcher = rescue_from RuntimeError
       define_controller("RandomController").should_not matcher
-      matcher.failure_message_for_should_not.should =~ /Did not expect \w+ to rescue from/
+      matcher.failure_message_when_negated.should =~ /Did not expect \w+ to rescue from/
     end
   end
 

@@ -32,13 +32,15 @@ module Shoulda # :nodoc:
           assigned_correct_value? || cleared_value?
         end
 
-        def failure_message_for_should
+        def failure_message
           "Expected #{expectation}, but #{result}"
         end
+        alias failure_message_for_should failure_message
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           "Didn't expect #{expectation}, but #{result}"
         end
+        alias failure_message_for_should_not failure_message_when_negated
 
         def description
           description = "set session variable #{@key.inspect}"

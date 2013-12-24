@@ -27,7 +27,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
       the_matcher.matches?(define_model(:example, :attr => :string).new)
 
-      the_matcher.failure_message_for_should_not.should include 'Did not expect errors to include "is not a number"'
+      the_matcher.failure_message_when_negated.should include 'Did not expect errors to include "is not a number"'
     end
 
     it 'rejects with the ActiveRecord :not_an_integer message' do
@@ -35,7 +35,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
       the_matcher.matches?(define_model(:example, :attr => :string).new)
 
-      the_matcher.failure_message_for_should.should include 'Expected errors to include "must be an integer"'
+      the_matcher.failure_message.should include 'Expected errors to include "must be an integer"'
     end
 
     it 'rejects with the ActiveRecord :odd message' do
@@ -43,7 +43,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
       the_matcher.matches?(define_model(:example, :attr => :string).new)
 
-      the_matcher.failure_message_for_should.should include 'Expected errors to include "must be odd"'
+      the_matcher.failure_message.should include 'Expected errors to include "must be odd"'
     end
 
     it 'rejects with the ActiveRecord :even message' do
@@ -51,7 +51,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
       the_matcher.matches?(define_model(:example, :attr => :string).new)
 
-      the_matcher.failure_message_for_should.should include 'Expected errors to include "must be even"'
+      the_matcher.failure_message.should include 'Expected errors to include "must be even"'
     end
   end
 
@@ -69,7 +69,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
       the_matcher.matches?(validating_numericality)
 
-      the_matcher.failure_message_for_should.should include 'Expected errors to include "must be an integer"'
+      the_matcher.failure_message.should include 'Expected errors to include "must be an integer"'
     end
   end
 
@@ -87,7 +87,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
       the_matcher.matches?(validating_numericality)
 
-      the_matcher.failure_message_for_should.should include 'Expected errors to include "must be odd"'
+      the_matcher.failure_message.should include 'Expected errors to include "must be odd"'
     end
   end
 
@@ -105,7 +105,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
       the_matcher.matches?(validating_numericality)
 
-      the_matcher.failure_message_for_should.should include 'Expected errors to include "must be even"'
+      the_matcher.failure_message.should include 'Expected errors to include "must be even"'
     end
   end
 

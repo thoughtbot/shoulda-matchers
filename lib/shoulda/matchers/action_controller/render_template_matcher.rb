@@ -20,7 +20,10 @@ module Shoulda # :nodoc:
       end
 
       class RenderTemplateMatcher # :nodoc:
-        attr_reader :failure_message_for_should, :failure_message_for_should_not
+        attr_reader :failure_message, :failure_message_when_negated
+
+        alias failure_message_for_should failure_message
+        alias failure_message_for_should_not failure_message_when_negated
 
         def initialize(options, message, context)
           @options = options
@@ -48,10 +51,10 @@ module Shoulda # :nodoc:
         def renders_template?
           begin
             @context.send(:assert_template, @options, @message)
-            @failure_message_for_should_not = "Didn't expect to render #{@template}"
+            @failure_message_when_negated = "Didn't expect to render #{@template}"
             true
           rescue Shoulda::Matchers::AssertionError => error
-            @failure_message_for_should = error.message
+            @failure_message = error.message
             false
           end
         end

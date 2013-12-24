@@ -12,7 +12,10 @@ module Shoulda # :nodoc:
       end
 
       class RedirectToMatcher # :nodoc:
-        attr_reader :failure_message_for_should, :failure_message_for_should_not
+        attr_reader :failure_message, :failure_message_when_negated
+
+        alias failure_message_for_should failure_message
+        alias failure_message_for_should_not failure_message_when_negated
 
         def initialize(url_or_description, context, &block)
           if block
@@ -44,10 +47,10 @@ module Shoulda # :nodoc:
         def redirects_to_url?
           begin
             @context.send(:assert_redirected_to, url)
-            @failure_message_for_should_not = "Didn't expect to redirect to #{url}"
+            @failure_message_when_negated = "Didn't expect to redirect to #{url}"
             true
           rescue Shoulda::Matchers::AssertionError => error
-            @failure_message_for_should = error.message
+            @failure_message = error.message
             false
           end
         end

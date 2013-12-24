@@ -25,13 +25,15 @@ module Shoulda # :nodoc:
           self
         end
 
-        def failure_message_for_should
-          @allow_matcher.failure_message_for_should_not
+        def failure_message
+          @allow_matcher.failure_message_when_negated
         end
+        alias failure_message_for_should failure_message
 
-        def failure_message_for_should_not
-          @allow_matcher.failure_message_for_should
+        def failure_message_when_negated
+          @allow_matcher.failure_message
         end
+        alias failure_message_for_should_not failure_message_when_negated
 
         def allowed_types
           ''

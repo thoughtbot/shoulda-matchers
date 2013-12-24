@@ -247,7 +247,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
       matcher.matches?(having_many_children).should be_false
 
-      matcher.failure_message_for_should.should =~ /does not have any relationship to conceptions/
+      matcher.failure_message.should =~ /does not have any relationship to conceptions/
     end
 
     it 'rejects an association that has the wrong :through option' do
@@ -266,7 +266,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
       matcher = have_many(:children).through(:relationships)
       matcher.matches?(Parent.new).should be_false
-      matcher.failure_message_for_should.should =~ /through relationships, but got it through conceptions/
+      matcher.failure_message.should =~ /through relationships, but got it through conceptions/
     end
 
     it 'accepts an association with a valid :dependent option' do
@@ -279,7 +279,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
       having_many_children.should_not matcher
 
-      matcher.failure_message_for_should.should =~ /children should have destroy dependency/
+      matcher.failure_message.should =~ /children should have destroy dependency/
     end
 
     it 'accepts an association with a valid :source option' do
@@ -292,7 +292,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
       having_many_children.should_not matcher
 
-      matcher.failure_message_for_should.should =~ /children should have user as source option/
+      matcher.failure_message.should =~ /children should have user as source option/
     end
 
     it 'accepts an association with a valid :order option' do
@@ -305,7 +305,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
       having_many_children.should_not matcher
 
-      matcher.failure_message_for_should.should =~ /children should be ordered by id/
+      matcher.failure_message.should =~ /children should be ordered by id/
     end
 
     it 'accepts an association with a valid :conditions option' do
@@ -450,7 +450,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
       having_one_detail.should_not matcher
 
-      matcher.failure_message_for_should.should =~ /detail should have destroy dependency/
+      matcher.failure_message.should =~ /detail should have destroy dependency/
     end
 
     it 'accepts an association with a valid :order option' do
@@ -462,7 +462,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
       having_one_detail.should_not matcher
 
-      matcher.failure_message_for_should.should =~ /detail should be ordered by id/
+      matcher.failure_message.should =~ /detail should be ordered by id/
     end
 
     it 'accepts an association with a valid :conditions option' do

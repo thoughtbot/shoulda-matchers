@@ -87,13 +87,15 @@ module Shoulda # :nodoc:
           "only allow #{allowed_types} values for #{@attribute}"
         end
 
-        def failure_message_for_should
+        def failure_message
           submatcher_failure_messages_for_should.last
         end
+        alias failure_message_for_should failure_message
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           submatcher_failure_messages_for_should_not.last
         end
+        alias failure_message_for_should_not failure_message_when_negated
 
         private
 
@@ -114,11 +116,11 @@ module Shoulda # :nodoc:
         end
 
         def submatcher_failure_messages_for_should
-          failing_submatchers.map(&:failure_message_for_should)
+          failing_submatchers.map(&:failure_message)
         end
 
         def submatcher_failure_messages_for_should_not
-          failing_submatchers.map(&:failure_message_for_should_not)
+          failing_submatchers.map(&:failure_message_when_negated)
         end
 
         def failing_submatchers
