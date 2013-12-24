@@ -13,11 +13,11 @@ shared_examples 'a numerical submatcher' do
     subject.should respond_to(:matches?).with(1).arguments
   end
 
-  it 'implements the failure_message_for_should method' do
-    subject.should respond_to(:failure_message_for_should).with(0).arguments
+  it 'implements the failure_message method' do
+    subject.should respond_to(:failure_message).with(0).arguments
   end
 
-  it 'implements the failure_message_for_should_not method' do
-    subject.should respond_to(:failure_message_for_should_not).with(0).arguments
+  it 'implements the failure_message_when_negated method' do
+    subject.should respond_to(:failure_message_when_negated).with(0).arguments
   end
 end

@@ -11,7 +11,9 @@ module Shoulda # :nodoc:
       end
 
       class HaveSecurePasswordMatcher # :nodoc:
-        attr_reader :failure_message_for_should
+        attr_reader :failure_message
+
+        alias failure_message_for_should failure_message
 
         CORRECT_PASSWORD = "aBcDe12345"
         INCORRECT_PASSWORD = "password"
@@ -39,7 +41,7 @@ module Shoulda # :nodoc:
 
           if failure = validate
             key, params = failure
-            @failure_message_for_should = MESSAGES[key] % { subject: subject.class }.merge(params)
+            @failure_message = MESSAGES[key] % { subject: subject.class }.merge(params)
           end
 
           failure.nil?

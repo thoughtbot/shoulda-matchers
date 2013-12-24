@@ -162,7 +162,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
 
         matcher.matches?(validating_format(:with => /abc/, :strict => true))
 
-        matcher.failure_message_for_should_not.should eq 'Expected exception to include /abc/ ' +
+        matcher.failure_message_when_negated.should eq 'Expected exception to include /abc/ ' +
           'when attr is set to "xyz", got Attr is invalid'
       end
     end

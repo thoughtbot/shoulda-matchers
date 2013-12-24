@@ -19,13 +19,15 @@ module Shoulda # :nodoc:
           filters_key?
         end
 
-        def failure_message_for_should
+        def failure_message
           "Expected #{@key} to be filtered; filtered keys: #{filtered_keys.join(', ')}"
         end
+        alias failure_message_for_should failure_message
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           "Did not expect #{@key} to be filtered"
         end
+        alias failure_message_for_should_not failure_message_when_negated
 
         def description
           "filter #{@key}"

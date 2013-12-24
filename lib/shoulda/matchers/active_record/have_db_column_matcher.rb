@@ -51,13 +51,15 @@ module Shoulda # :nodoc:
             correct_primary?
         end
 
-        def failure_message_for_should
+        def failure_message
           "Expected #{expectation} (#{@missing})"
         end
+        alias failure_message_for_should failure_message
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           "Did not expect #{expectation}"
         end
+        alias failure_message_for_should_not failure_message_when_negated
 
         def description
           desc = "have db column named #{@column}"

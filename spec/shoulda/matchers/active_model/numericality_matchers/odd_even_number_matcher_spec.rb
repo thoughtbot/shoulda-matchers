@@ -57,7 +57,7 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OddEvenNumberMatc
 
       matcher.matches?(define_model(:example, :attr => :string).new)
 
-      matcher.failure_message_for_should.should include 'Expected errors to include "must be odd"'
+      matcher.failure_message.should include 'Expected errors to include "must be odd"'
     end
   end
 
@@ -71,7 +71,7 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OddEvenNumberMatc
 
       matcher.matches?(define_model(:example, :attr => :string).new)
 
-      matcher.failure_message_for_should.should include 'Expected errors to include "must be even"'
+      matcher.failure_message.should include 'Expected errors to include "must be even"'
     end
   end
 
