@@ -106,7 +106,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
     end
 
     def active_model_validating_absence_of(attr)
-      active_model_with(:attr) do
+      active_model_with(attr) do
         validates_absence_of attr
       end
     end
@@ -122,20 +122,18 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
     end
 
     def having_and_belonging_to_many(plural_name, options = {})
-      define_model plural_name.to_s.singularize
-      @model = define_model :parent do
-        has_and_belongs_to_many plural_name
-        if options[:absence]
-          validates_absence_of plural_name
-        end
-      end.new
-
       create_table 'children_parents', id: false do |t|
         t.integer "#{plural_name.to_s.singularize}_id"
         t.integer :parent_id
       end
 
-      @model
+      define_model plural_name.to_s.singularize
+      define_model :parent do
+        has_and_belongs_to_many plural_name
+        if options[:absence]
+          validates_absence_of plural_name
+        end
+      end.new
     end
   end
 end
