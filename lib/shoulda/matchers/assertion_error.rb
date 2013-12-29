@@ -7,7 +7,7 @@ module Shoulda
       # Test::Unit has been loaded already, so we use it
       AssertionError = Test::Unit::AssertionFailedError
     elsif Gem.ruby_version >= Gem::Version.new("1.9")
-      require 'minitest/unit'
+      require 'minitest'
       AssertionError = MiniTest::Assertion
     else
       raise 'No unit test library available'
