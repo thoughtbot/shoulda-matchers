@@ -14,6 +14,10 @@ module RailsVersions
   def rails_gte_4_1?
     Gem::Requirement.new('>= 4.1').satisfied_by?(rails_version)
   end
+
+  def active_record_supports_enum?
+    defined?(::ActiveRecord::Enum)
+  end
 end
 
 RSpec.configure do |config|
