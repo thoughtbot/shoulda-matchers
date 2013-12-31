@@ -95,7 +95,7 @@ describe Shoulda::Matchers::ActionController::SetTheFlashMatcher do
 
   context 'a controller that sets flash and flash.now' do
     it 'accepts setting any flash.now message' do
-      controller = build_response do
+      controller = build_fake_response do
         flash.now[:notice] = 'value'
         flash[:success] = 'great job'
       end
@@ -105,7 +105,7 @@ describe Shoulda::Matchers::ActionController::SetTheFlashMatcher do
     end
 
     it 'accepts setting a matched flash.now message' do
-      controller = build_response do
+      controller = build_fake_response do
         flash.now[:notice] = 'value'
         flash[:success] = 'great job'
       end
@@ -115,7 +115,7 @@ describe Shoulda::Matchers::ActionController::SetTheFlashMatcher do
     end
 
     it 'rejects setting a different flash.now message' do
-      controller = build_response do
+      controller = build_fake_response do
         flash.now[:notice] = 'value'
         flash[:success] = 'great job'
       end
@@ -132,11 +132,11 @@ describe Shoulda::Matchers::ActionController::SetTheFlashMatcher do
   end
 
   def controller_with_no_flashes
-    build_response
+    build_fake_response
   end
 
   def controller_with_flash(flash_hash)
-    build_response do
+    build_fake_response do
       flash_hash.each do |key, value|
         flash[key] = value
       end
@@ -144,7 +144,7 @@ describe Shoulda::Matchers::ActionController::SetTheFlashMatcher do
   end
 
   def controller_with_flash_now(flash_hash = { notice: 'hi' })
-    build_response do
+    build_fake_response do
       flash_hash.each do |key, value|
         flash.now[key] = value
       end

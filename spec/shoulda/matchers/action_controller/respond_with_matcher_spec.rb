@@ -24,7 +24,7 @@ describe Shoulda::Matchers::ActionController::RespondWithMatcher do
   end
 
   def controller_with_status(status)
-    build_response do
+    build_fake_response do
       render text: 'text', status: status
     end
   end

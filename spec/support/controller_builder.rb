@@ -21,7 +21,7 @@ module ControllerBuilder
     end
   end
 
-  def build_response(opts = {}, &block)
+  def build_fake_response(opts = {}, &block)
     action = opts[:action] || 'example'
     partial = opts[:partial] || '_partial'
     block ||= lambda { render nothing: true }

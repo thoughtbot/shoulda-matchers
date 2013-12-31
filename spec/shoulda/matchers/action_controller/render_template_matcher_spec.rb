@@ -21,7 +21,7 @@ describe Shoulda::Matchers::ActionController::RenderTemplateMatcher do
     end
 
     def controller_with_show
-      build_response(action: 'show') { render }
+      build_fake_response(action: 'show') { render }
     end
   end
 
@@ -47,13 +47,13 @@ describe Shoulda::Matchers::ActionController::RenderTemplateMatcher do
     end
 
     def controller_with_customer_partial
-      build_response(partial: '_customer') { render partial: 'customer' }
+      build_fake_response(partial: '_customer') { render partial: 'customer' }
     end
   end
 
   context 'a controller that does not render partials' do
     it 'accepts not rendering a partial' do
-      controller = build_response(action: 'show') { render }
+      controller = build_fake_response(action: 'show') { render }
 
       expect(controller).to render_template(partial: false)
     end
@@ -61,7 +61,7 @@ describe Shoulda::Matchers::ActionController::RenderTemplateMatcher do
 
   context 'a controller that renders a partial several times' do
     it 'accepts rendering that partial twice' do
-      controller = build_response(partial: '_customer') do
+      controller = build_fake_response(partial: '_customer') do
         render partial: 'customer', collection: [1,2]
       end
 
@@ -71,7 +71,7 @@ describe Shoulda::Matchers::ActionController::RenderTemplateMatcher do
 
   context 'a controller that does not render a template' do
     it 'rejects rendering a template' do
-      expect(build_response { render nothing: true }).
+      expect(build_fake_response { render nothing: true }).
         not_to render_template(:show)
     end
   end

@@ -85,7 +85,8 @@ module Shoulda # :nodoc:
 
         def flash_values
           if @options.key?(:key)
-            [flash.to_hash[@options[:key]]]
+            flash_hash = HashWithIndifferentAccess.new(flash.to_hash)
+            [flash_hash[@options[:key]]]
           else
             flash.to_hash.values
           end

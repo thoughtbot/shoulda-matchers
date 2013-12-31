@@ -67,7 +67,8 @@ When 'I configure the application to use rspec-rails in test and development' do
 end
 
 When 'I configure the application to use shoulda-context' do
-  append_to_gemfile %q(gem 'shoulda-context', '~> 1.0')
+  append_to_gemfile %q(gem 'shoulda-context', '~> 1.2.0')
+  append_to_gemfile %q(gem 'pry')
   steps %{And I install gems}
 end
 
@@ -112,7 +113,7 @@ Then /^the output should indicate that (\d+) tests? (?:was|were) run/ do |number
   # Rails 4 has slightly different output than Rails 3 due to
   # Test::Unit::TestCase -> MiniTest
   if rails_4?
-    steps %{Then the output should contain "#{number} tests, #{number} assertions, 0 failures, 0 errors, 0 skips"}
+    steps %{Then the output should match /#{number} (tests|runs), #{number} assertions, 0 failures, 0 errors, 0 skips/}
   else
     steps %{Then the output should contain "#{number} tests, #{number} assertions, 0 failures, 0 errors"}
   end
@@ -125,7 +126,7 @@ Then /^the output should indicate that (\d+) unit and (\d+) functional tests? we
   # Rails 3 runs separate test suites in separate processes, but Rails 4 does
   # not, so that's why we have to check for different things here
   if rails_4?
-    steps %{Then the output should contain "#{total} tests, #{total} assertions, 0 failures, 0 errors, 0 skips"}
+    steps %{Then the output should match /#{total} (tests|runs), #{total} assertions, 0 failures, 0 errors, 0 skips/}
   else
     steps %{Then the output should match /#{n1} tests, #{n1} assertions, 0 failures, 0 errors.+#{n2} tests, #{n2} assertions, 0 failures, 0 errors/}
   end
@@ -154,7 +155,7 @@ module FileHelpers
   end
 
   def rails_4?
-    match = ORIGINAL_BUNDLE_VARS['BUNDLE_GEMFILE'].match(/(\d)\.\d\.(\d\.)?gemfile$/)
+    match = ORIGINAL_BUNDLE_VARS['BUNDLE_GEMFILE'].match(/(\d)\.\d\.(\d\.)?(\w+\.)?gemfile$/)
     match.captures[0] == '4'
   end
 end

@@ -254,6 +254,9 @@ module Shoulda # :nodoc:
         def macro_correct?
           if reflection.macro == macro
             true
+          elsif reflection.macro == :has_many
+            macro == :has_and_belongs_to_many &&
+              reflection.name == @name
           else
             @missing = "actual association type was #{reflection.macro}"
             false

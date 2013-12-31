@@ -57,6 +57,10 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
   describe '#join_table' do
     context 'when the association was defined with a :join_table option' do
       it 'returns the value of the option' do
+        create_table :foos, id: false do |t|
+          t.integer :person_id
+          t.integer :country_id
+        end
         define_model(:person, country_id: :integer)
         country_model = define_model(:country) do
           has_and_belongs_to_many :people, join_table: 'foos'
