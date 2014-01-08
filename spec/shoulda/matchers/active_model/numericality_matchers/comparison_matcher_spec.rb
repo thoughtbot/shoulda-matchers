@@ -37,6 +37,20 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
     end
   end
 
+  describe '#allowed_types' do
+    [{ operator: :>, value: 0, ret_val: "'greater than 0'" },
+     { operator: :>=, value: -1.0, ret_val: "'greater than or equal to -1.0'" },
+     { operator: :==, value: 2.2, ret_val: "'equal to 2.2'" },
+     { operator: :<, value: -3, ret_val: "'less than -3'" },
+     { operator: :<=, value: 4, ret_val: "'less than or equal to 4'" },
+    ].each do |h|
+      context "with :#{h[:operator]} as operator and #{h[:value]} as value" do
+        subject { described_class.new(h[:value], h[:operator]).allowed_types }
+        it { should eq h[:ret_val] }
+      end
+    end
+  end
+
   def instance_with_validations(options = {})
     define_model :example, attr: :string do
       validates_numericality_of :attr, options
