@@ -1,10 +1,10 @@
 # HEAD
 
-* Fix `ensure_length_of` so that it uses the right message to validate when
-  `is_equal_to` is specified in conjunction with a custom message.
-
 * Fix Rails/Test::Unit integration to ensure that the test case classes we are
   re-opening actually exist.
+
+* Fix `ensure_length_of` so that it uses the right message to validate when
+  `is_equal_to` is specified in conjunction with a custom message.
 
 * The `route` matcher now accepts specifying a controller/action pair as a
   string instead of only a hash (e.g. `route(...).to('posts#index')` instead of
@@ -12,16 +12,25 @@
 
 * The `ensure_inclusion_of` matcher now works with a decimal column.
 
-* Fix association matchers on Rails 3 so they work when used in conjunction with
-  a submatcher such as #order and an association that has `:include` on it.
+* Under Rails 3, if you had an association matcher chained with the
+  the `order` submatcher -- e.g. `should have_many(:foos).order(:bar)` -- and
+  your association had an `:include` on it, using the matcher would raise an
+  error. This has been fixed.
 
-* Fix a bug where `validate_uniqueness_of` would fail if the attribute under
-  test had a limit of fewer than 16 characters.
+* Fix `validate_uniqueness_of` so it doesn't fail if the attribute under
+  test has a limit of fewer than 16 characters.
 
 * You can now test that your `has_many :through` or `has_one :through`
   associations are defined with a `:source` option.
 
-* Add `validates_absence_of` matcher.
+* Add new matcher `validates_absence_of`.
+
+* Update matchers so that they use `failure_message` and
+  `failure_message_when_negated` to define error messages. These are new methods
+  in the upcoming RSpec 3 release which replace `failure_message_for_should` and
+  `failure_message_for_should_not`. We've kept backward compatibility so all of
+  your existing tests should still work -- this is just to make sure when RSpec
+  3 is released you don't get a bunch of warnings.
 
 # v 2.4.0
 
