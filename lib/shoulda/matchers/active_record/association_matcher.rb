@@ -160,6 +160,7 @@ module Shoulda # :nodoc:
           @subject = subject
           association_exists? &&
             macro_correct? &&
+            class_exists? &&
             foreign_key_exists? &&
             class_name_correct? &&
             conditions_correct? &&
@@ -255,6 +256,14 @@ module Shoulda # :nodoc:
           else
             true
           end
+        end
+
+        def class_exists?
+          associated_class
+          true
+        rescue NameError
+          @missing = "#{reflection.class_name} does not exist"
+          false
         end
 
         def conditions_correct?
