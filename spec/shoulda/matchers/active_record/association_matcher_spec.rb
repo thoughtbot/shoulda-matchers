@@ -30,6 +30,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
     end
 
     it 'accepts a polymorphic association' do
+      define_model :parent
       define_model :child, parent_type: :string, parent_id: :integer do
         belongs_to :parent, polymorphic: true
       end
@@ -98,6 +99,21 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
     it 'rejects an association with a bad :class_name option' do
       belonging_to_parent.should_not belong_to(:parent).class_name('TreeChild')
+    end
+
+    it 'rejects an association with non-existent implicit class name' do
+      belonging_to_non_existent_class(:child, :parent).should_not belong_to(:parent)
+    end
+
+    it 'rejects an association with non-existent explicit class name' do
+      belonging_to_non_existent_class(:child, :parent, :class_name => 'Parent').should_not belong_to(:parent)
+    end
+
+    it 'adds error message when rejecting an association with non-existent class' do
+      message = 'Expected Child to have a belongs_to association called parent (Parent2 does not exist)'
+      expect {
+        belonging_to_non_existent_class(:child, :parent, :class_name => 'Parent2').should belong_to(:parent)
+      }.to fail_with_message(message)
     end
 
     context 'an association with a :validate option' do
@@ -192,6 +208,12 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       define_model :parent
       define_model :child, parent_id: :integer do
         belongs_to :parent, options
+      end.new
+    end
+
+    def belonging_to_non_existent_class(model_name, assoc_name, options = {})
+      define_model model_name, "#{assoc_name}_id" => :integer do
+        belongs_to assoc_name, options
       end.new
     end
   end
@@ -343,6 +365,21 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       having_many_children.should_not have_many(:children).class_name('Node')
     end
 
+    it 'rejects an association with non-existent implicit class name' do
+      having_many_non_existent_class(:parent, :children).should_not have_many(:children)
+    end
+
+    it 'rejects an association with non-existent explicit class name' do
+      having_many_non_existent_class(:parent, :children, :class_name => 'Child').should_not have_many(:children)
+    end
+
+    it 'adds error message when rejecting an association with non-existent class' do
+      message = 'Expected Parent to have a has_many association called children (Child2 does not exist)'
+      expect {
+        having_many_non_existent_class(:parent, :children, :class_name => 'Child2').should have_many(:children)
+      }.to fail_with_message(message)
+    end
+
     context 'validate' do
       it 'accepts when the :validate option matches' do
         having_many_children(validate: false).should have_many(:children).validate(false)
@@ -394,6 +431,12 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
         else
           model.has_many :children, options
         end
+      end.new
+    end
+
+    def having_many_non_existent_class(model_name, assoc_name, options = {})
+      define_model model_name do
+        has_many assoc_name, options
       end.new
     end
   end
@@ -500,6 +543,21 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       having_one_detail.should_not have_one(:detail).class_name('NotSet')
     end
 
+    it 'rejects an association with non-existent implicit class name' do
+      having_one_non_existent(:pserson, :detail).should_not have_one(:detail)
+    end
+
+    it 'rejects an association with non-existent explicit class name' do
+      having_one_non_existent(:person, :detail, :class_name => 'Detail').should_not have_one(:detail)
+    end
+
+    it 'adds error message when rejecting an association with non-existent class' do
+      message = 'Expected Person to have a has_one association called detail (Detail2 does not exist)'
+      expect {
+        having_one_non_existent(:person, :detail, :class_name => 'Detail2').should have_one(:detail)
+      }.to fail_with_message(message)
+    end
+
     it 'accepts an association with a through' do
       define_model :detail
 
@@ -549,6 +607,12 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
         else
           model.has_one :detail, options
         end
+      end.new
+    end
+
+    def having_one_non_existent(model_name, assoc_name, options = {})
+      define_model model_name do
+        has_one assoc_name, options
       end.new
     end
   end
@@ -630,6 +694,24 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
         should_not have_and_belong_to_many(:relatives).class_name('PersonRelatives')
     end
 
+    it 'rejects an association with non-existent implicit class name' do
+      having_and_belonging_to_many_non_existent_class(:person, :relatives).
+        should_not have_and_belong_to_many(:relatives)
+    end
+
+    it 'rejects an association with non-existent explicit class name' do
+      having_and_belonging_to_many_non_existent_class(:person, :relatives, :class_name => 'Relative')
+        .should_not have_and_belong_to_many(:relatives)
+    end
+
+    it 'adds error message when rejecting an association with non-existent class' do
+      message = 'Expected Person to have a has_and_belongs_to_many association called relatives (Relative2 does not exist)'
+      expect {
+        having_and_belonging_to_many_non_existent_class(:person, :relatives, :class_name => 'Relative2').
+          should have_and_belong_to_many(:relatives)
+      }.to fail_with_message(message)
+    end
+
     context 'validate' do
       it 'accepts when the :validate option matches' do
         having_and_belonging_to_many_relatives(validate: false).
@@ -658,6 +740,12 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
         relative_id: :integer
       define_model :person do
         has_and_belongs_to_many :relatives
+      end.new
+    end
+
+    def having_and_belonging_to_many_non_existent_class(model_name, assoc_name, options = {})
+      define_model model_name do
+        has_and_belongs_to_many assoc_name, options
       end.new
     end
   end
