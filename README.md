@@ -68,7 +68,7 @@ Different matchers apply to different parts of Rails:
 
 ### ActiveModel Matchers
 
-*Jump to: [allow_mass_assignment_of](#allow_mass_assignment_of), [allow_value / disallow_value](#allow_value--disallow_value), [ensure_inclusion_of](#ensure_inclusion_of), [ensure_exclusion_of](#ensure_exclusion_of), [ensure_length_of](#ensure_length_of), [have_secure_password](#have_secure_password), [validate_absence_of](#validate_absence_of), [validate_acceptance_of](#validate_acceptance_of), [validate_confirmation_of](#validate_confirmation_of), [validate_numericality_of](#validate_numericality_of), [validate_presence_of](#validate_presence_of), [validate_uniqueness_of](#validate_uniqueness_of)*
+*Jump to: [allow_mass_assignment_of](#allow_mass_assignment_of), [allow_value](#allow_value](#ensure_inclusion_of), [ensure_exclusion_of](#ensure_exclusion_of), [ensure_length_of](#ensure_length_of), [have_secure_password](#have_secure_password), [validate_absence_of](#validate_absence_of), [validate_acceptance_of](#validate_acceptance_of), [validate_confirmation_of](#validate_confirmation_of), [validate_numericality_of](#validate_numericality_of), [validate_presence_of](#validate_presence_of), [validate_uniqueness_of](#validate_uniqueness_of)*
 
 Note that all of the examples in this section are based on an ActiveRecord
 model for simplicity, but these matchers will work just as well using an
@@ -111,7 +111,7 @@ class UserTest < ActiveSupport::TestCase
 end
 ```
 
-#### allow_value / disallow_value
+#### allow_value
 
 The `allow_value` matcher tests usage of the `validates_format_of` validation.
 It asserts that an attribute can be set to one or more values, succeeding if
@@ -166,18 +166,6 @@ invalid:
 describe User do
   # 'b' and 'c' will not be tested
   it { should_not allow_value('a', 'b', 'c').for(:website_url) }
-end
-```
-
-The `disallow_value` matcher is the exact opposite of `allow_value`. That is,
-`should_not allow_value` can also be written `should disallow_value`, and
-`should allow_value` can also be written `should_not disallow_value`. Because
-of this, it carries the same caveat when multiple values are provided:
-
-```ruby
-describe User do
-  # 'b' and 'c' will not be tested
-  it { should disallow_value('a', 'b', 'c').for(:website_url) }
 end
 ```
 
