@@ -1,5 +1,7 @@
 # HEAD
 
+# v 2.5.0
+
 * Fix Rails/Test::Unit integration to ensure that the test case classes we are
   re-opening actually exist.
 
