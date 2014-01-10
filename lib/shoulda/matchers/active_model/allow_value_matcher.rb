@@ -63,6 +63,16 @@ module Shoulda # :nodoc:
           self
         end
 
+        def does_not_match?(instance)
+          self.instance = instance
+
+          values_to_match.all? do |value|
+            self.value = value
+            instance.send("#{attribute_to_set}=", value)
+            errors_match?
+          end
+        end
+
         def matches?(instance)
           self.instance = instance
 

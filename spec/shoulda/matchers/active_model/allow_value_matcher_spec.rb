@@ -42,6 +42,24 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
       validating_format(:with => /abc/).
         should_not allow_value('xyz', 'zyx', nil, []).for(:attr)
     end
+
+    context 'using #should_not' do
+      it 'rejects a good value that is after a bad value' do
+        expect {
+          validating_format(:with => /abc/).
+            should_not allow_value('xyz', 'abc').for(:attr)
+        }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
+      end
+    end
+
+    context 'using #should' do
+      it 'rejects a bad value that is after a good value' do
+        expect {
+          validating_format(:with => /abc/).
+            should allow_value('abc', 'xyz').for(:attr)
+        }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
+      end
+    end
   end
 
   context 'an attribute with a validation and a custom message' do
@@ -121,10 +139,6 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
 
     it "rejects several bad values (#{bad_values.map(&:inspect).join(', ')})" do
       model.should_not allow_value(*bad_values).for(:attr)
-    end
-
-    it "rejects a mix of both good and bad values" do
-      model.should_not allow_value('12345', *bad_values).for(:attr)
     end
   end
 
