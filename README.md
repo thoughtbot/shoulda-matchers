@@ -16,6 +16,15 @@ group :test do
 end
 ```
 
+If you're using Test::Unit, you'll need to add the shoulda gem to your Gemfile as well:
+
+```ruby
+group :test do
+  gem 'shoulda-matchers'
+  gem 'shoulda'
+end
+```
+
 shoulda-matchers automatically includes itself into your test framework. It will
 mix in the appropriate matchers for ActiveRecord, ActiveModel, and
 ActionController depending on the modules that are available at runtime. For
