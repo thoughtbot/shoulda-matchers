@@ -8,7 +8,9 @@ complex, and error-prone.
 
 ## Installation
 
-Simply add the following to your Gemfile:
+### RSpec
+
+Include the gem in your Gemfile:
 
 ```ruby
 group :test do
@@ -16,17 +18,45 @@ group :test do
 end
 ```
 
-shoulda-matchers automatically includes itself into your test framework. It will
-mix in the appropriate matchers for ActiveRecord, ActiveModel, and
-ActionController depending on the modules that are available at runtime. For
-instance, in order to use the ActiveRecord matchers, ActiveRecord must be
-available beforehand.
+### Test::Unit
+
+shoulda-matchers was originally a component of
+[Shoulda](http://github.com/thoughtbot/shoulda) -- it's what provides the nice
+`should` syntax which is demonstrated below. For this reason, include it in
+your Gemfile instead:
+
+```ruby
+group :test do
+  gem 'shoulda'
+end
+```
+
+### Non-Rails apps
+
+Once it is loaded, shoulda-matchers automatically includes itself into your test
+framework. It will mix in the appropriate matchers for ActiveRecord,
+ActiveModel, and ActionController depending on the modules that are available at
+runtime. For instance, in order to use the ActiveRecord matchers, ActiveRecord
+must be available beforehand.
 
 If your application is on Rails, everything should "just work", as
 shoulda-matchers will most likely be declared after Rails in your Gemfile. If
 your application is on another framework such as Sinatra or Padrino, you may
 have a different setup, so you will want to ensure that you are requiring
-shoulda-matchers after the components of Rails you are using.
+shoulda-matchers after the components of Rails you are using. For instance,
+if you wanted to use and test against ActiveModel, you'd say:
+
+```ruby
+gem 'activemodel'
+gem 'shoulda-matchers'
+```
+
+and not:
+
+```ruby
+gem 'shoulda-matchers'
+gem 'activemodel'
+```
 
 ## Usage
 
