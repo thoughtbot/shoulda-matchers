@@ -5,10 +5,6 @@ shared_examples 'a numerical submatcher' do
     expect(subject).to respond_to(:with_message).with(1).arguments
   end
 
-  it 'implements the allowed_types method' do
-    expect(subject).to respond_to(:allowed_types).with(0).arguments
-  end
-
   it 'implements the matches? method' do
     expect(subject).to respond_to(:matches?).with(1).arguments
   end

@@ -37,6 +37,20 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
     end
   end
 
+  describe '#comparison_description' do
+    [{ operator: :>, value: 0, expectation: 'greater than 0' },
+     { operator: :>=, value: -1.0, expectation: 'greater than or equal to -1.0' },
+     { operator: :==, value: 2.2, expectation: 'equal to 2.2' },
+     { operator: :<, value: -3, expectation: 'less than -3' },
+     { operator: :<=, value: 4, expectation: 'less than or equal to 4' },
+    ].each do |h|
+      context "with :#{h[:operator]} as operator and #{h[:value]} as value" do
+        subject { described_class.new(h[:value], h[:operator]).comparison_description }
+        it { should eq h[:expectation] }
+      end
+    end
+  end
+
   def instance_with_validations(options = {})
     define_model :example, attr: :string do
       validates_numericality_of :attr, options

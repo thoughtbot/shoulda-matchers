@@ -1,10 +1,6 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher do
-  it 'does not allow any types' do
-    expect(matcher('abcde').allowed_types).to eq ''
-  end
-
   context 'an attribute with a format validation' do
     it 'does not match if the value is allowed' do
       expect(validating_format(with: /abc/)).not_to matcher('abcde').for(:attr)
