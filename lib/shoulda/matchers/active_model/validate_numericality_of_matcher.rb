@@ -22,6 +22,7 @@ module Shoulda # :nodoc:
       end
 
       class ValidateNumericalityOfMatcher
+        NUMERIC_NAME = 'numbers'
         NON_NUMERIC_VALUE = 'abcd'
 
         def initialize(attribute)
@@ -62,13 +63,13 @@ module Shoulda # :nodoc:
         end
 
         def odd
-          odd_number_matcher = NumericalityMatchers::OddEvenNumberMatcher.new(@attribute, odd: true)
+          odd_number_matcher = NumericalityMatchers::OddNumberMatcher.new(@attribute)
           add_submatcher(odd_number_matcher)
           self
         end
 
         def even
-          even_number_matcher = NumericalityMatchers::OddEvenNumberMatcher.new(@attribute, even: true)
+          even_number_matcher = NumericalityMatchers::EvenNumberMatcher.new(@attribute)
           add_submatcher(even_number_matcher)
           self
         end
@@ -84,7 +85,7 @@ module Shoulda # :nodoc:
         end
 
         def description
-          "only allow #{allowed_types} values for #{@attribute}"
+          "only allow #{allowed_types} for #{@attribute}#{comparison_descriptions}"
         end
 
         def failure_message
@@ -128,12 +129,21 @@ module Shoulda # :nodoc:
         end
 
         def allowed_types
-          allowed = ['numeric'] + submatcher_allowed_types
-          allowed.join(', ')
+          allowed_array = submatcher_allowed_types
+          allowed_array.empty? ? NUMERIC_NAME : allowed_array.join(', ')
         end
 
         def submatcher_allowed_types
-          @submatchers.map(&:allowed_types).reject(&:empty?)
+          @submatchers.inject([]){|m, s| m << s.allowed_type if s.respond_to?(:allowed_type); m }
+        end
+
+        def comparison_descriptions
+          description_array = submatcher_comparison_descriptions
+          description_array.empty? ? '' : ' which are ' + submatcher_comparison_descriptions.join(' and ')
+        end
+
+        def submatcher_comparison_descriptions
+          @submatchers.inject([]){|m, s| m << s.comparison_description if s.respond_to?(:comparison_description); m }
         end
       end
     end

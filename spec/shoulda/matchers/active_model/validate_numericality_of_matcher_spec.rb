@@ -1,11 +1,6 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
-  context '#description' do
-    it 'states that it allows only numeric values' do
-      expect(matcher.description).to eq 'only allow numeric values for attr'
-    end
-  end
 
   context 'with a model with a numericality validation' do
     it 'accepts' do
@@ -19,7 +14,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
   context 'with a model without a numericality validation' do
     it 'rejects' do
-      expect(define_model(:example, attr: :string).new).not_to matcher
+      expect(not_validating_numericality).not_to matcher
     end
 
     it 'rejects with the ActiveRecord :not_a_number message' do
@@ -32,26 +27,23 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
     it 'rejects with the ActiveRecord :not_an_integer message' do
       the_matcher = matcher.only_integer
-
-      the_matcher.matches?(define_model(:example, attr: :string).new)
-
-      expect(the_matcher.failure_message).to include 'Expected errors to include "must be an integer"'
+      expect {
+        expect(not_validating_numericality).to the_matcher
+      }.to fail_with_message_including('Expected errors to include "must be an integer"')
     end
 
     it 'rejects with the ActiveRecord :odd message' do
       the_matcher = matcher.odd
-
-      the_matcher.matches?(define_model(:example, attr: :string).new)
-
-      expect(the_matcher.failure_message).to include 'Expected errors to include "must be odd"'
+      expect {
+        expect(not_validating_numericality).to the_matcher
+      }.to fail_with_message_including('Expected errors to include "must be odd"')
     end
 
     it 'rejects with the ActiveRecord :even message' do
       the_matcher = matcher.even
-
-      the_matcher.matches?(define_model(:example, attr: :string).new)
-
-      expect(the_matcher.failure_message).to include 'Expected errors to include "must be even"'
+      expect {
+        expect(not_validating_numericality).to the_matcher
+      }.to fail_with_message_including('Expected errors to include "must be even"')
     end
   end
 
@@ -66,10 +58,9 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
     it 'rejects with the ActiveRecord :not_an_integer message' do
       the_matcher = matcher.only_integer
-
-      the_matcher.matches?(validating_numericality)
-
-      expect(the_matcher.failure_message).to include 'Expected errors to include "must be an integer"'
+      expect {
+        expect(validating_numericality).to the_matcher
+      }.to fail_with_message_including('Expected errors to include "must be an integer"')
     end
   end
 
@@ -84,10 +75,9 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
     it 'rejects with the ActiveRecord :odd message' do
       the_matcher = matcher.odd
-
-      the_matcher.matches?(validating_numericality)
-
-      expect(the_matcher.failure_message).to include 'Expected errors to include "must be odd"'
+      expect {
+        expect(validating_numericality).to the_matcher
+      }.to fail_with_message_including('Expected errors to include "must be odd"')
     end
   end
 
@@ -102,22 +92,21 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
     it 'rejects with the ActiveRecord :even message' do
       the_matcher = matcher.even
-
-      the_matcher.matches?(validating_numericality)
-
-      expect(the_matcher.failure_message).to include 'Expected errors to include "must be even"'
+      expect {
+        expect(validating_numericality).to the_matcher
+      }.to fail_with_message_including('Expected errors to include "must be even"')
     end
   end
 
   context 'with a custom validation message' do
     it 'accepts when the messages match' do
       expect(validating_numericality(message: 'custom')).
-        to matcher.with_message(/custom/)
+          to matcher.with_message(/custom/)
     end
 
     it 'rejects when the messages do not match' do
       expect(validating_numericality(message: 'custom')).
-        not_to matcher.with_message(/wrong/)
+          not_to matcher.with_message(/wrong/)
     end
   end
 
@@ -134,10 +123,49 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
     end
   end
 
+  describe '#description' do
+    context 'without submatchers' do
+      it { expect(matcher.description).to eq 'only allow numbers for attr' }
+    end
+
+    context 'with only integer option' do
+      it { expect(matcher.only_integer.description).to eq 'only allow integers for attr' }
+    end
+
+    [:odd, :even].each do |type|
+      context "with #{type} option" do
+        it { expect(matcher.__send__(type).description).to eq "only allow #{type} numbers for attr" }
+      end
+    end
+
+    [:is_greater_than, :is_greater_than_or_equal_to, :is_less_than, :is_less_than_or_equal_to,
+     :is_equal_to ].each do |comparison|
+      context "with #{comparison} option" do
+        it { expect(matcher.__send__(comparison, 18).description).
+            to eq "only allow numbers for attr which are #{comparison.to_s.sub('is_','').gsub('_', ' ')} 18" }
+      end
+    end
+
+    context 'with odd, is_greater_than_or_equal_to option' do
+      it { expect(matcher.odd.is_greater_than_or_equal_to(18).description).
+          to eq "only allow odd numbers for attr which are greater than or equal to 18" }
+    end
+
+    context 'with only integer, is_greater_than and less_than_or_equal_to option' do
+      it { expect(matcher.only_integer.is_greater_than(18).is_less_than_or_equal_to(100).description).
+          to eq "only allow integers for attr which are greater than 18 and less than or equal to 100" }
+    end
+  end
+
+
   def validating_numericality(options = {})
     define_model :example, attr: :string do
       validates_numericality_of :attr, options
     end.new
+  end
+
+  def not_validating_numericality
+    define_model(:example, attr: :string).new
   end
 
   def matcher

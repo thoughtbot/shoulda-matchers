@@ -9,6 +9,10 @@
   non-password attribute which is in a model that `has_secure_password`. Doing
   so previously would result in a "Password digest missing on new record" error.
 
+* Fix description for `validate_numericality_of` so that if the matcher fails,
+  the error message reported does not say the matcher accepts integer values if
+  you didn't specify that.
+
 # v 2.5.0
 
 * Fix Rails/Test::Unit integration to ensure that the test case classes we are

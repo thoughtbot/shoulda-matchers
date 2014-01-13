@@ -23,12 +23,12 @@ module Shoulda # :nodoc:
             disallows_value_of(value_to_compare, @message)
           end
 
-          def allowed_types
-            'integer'
-          end
-
           def with_message(message)
             @message = message
+          end
+
+          def comparison_description
+            "#{expectation} #{@value}"
           end
 
           private
