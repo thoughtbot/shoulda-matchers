@@ -24,3 +24,5 @@ RSpec.configure do |config|
   config.include Shoulda::Matchers::ActionController,
                  example_group: { file_path: /action_controller/ }
 end
+
+I18n.enforce_available_locales = false
