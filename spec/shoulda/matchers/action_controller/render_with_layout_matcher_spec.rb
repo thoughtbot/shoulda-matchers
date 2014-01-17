@@ -5,15 +5,15 @@ describe Shoulda::Matchers::ActionController::RenderWithLayoutMatcher do
 
   context 'a controller that renders with a layout' do
     it 'accepts rendering with any layout' do
-      controller_with_wide_layout.should render_with_layout
+      expect(controller_with_wide_layout).to render_with_layout
     end
 
     it 'accepts rendering with that layout' do
-      controller_with_wide_layout.should render_with_layout(:wide)
+      expect(controller_with_wide_layout).to render_with_layout(:wide)
     end
 
     it 'rejects rendering with another layout' do
-      controller_with_wide_layout.should_not render_with_layout(:other)
+      expect(controller_with_wide_layout).not_to render_with_layout(:other)
     end
 
     def controller_with_wide_layout
@@ -27,7 +27,7 @@ describe Shoulda::Matchers::ActionController::RenderWithLayoutMatcher do
     it 'rejects rendering with a layout' do
       controller_without_layout = build_response { render layout: false }
 
-      controller_without_layout.should_not render_with_layout
+      expect(controller_without_layout).not_to render_with_layout
     end
   end
 
@@ -35,7 +35,7 @@ describe Shoulda::Matchers::ActionController::RenderWithLayoutMatcher do
     it 'rejects rendering with a layout' do
       controller_with_partial = build_response { render partial: 'partial' }
 
-      controller_with_partial.should_not render_with_layout
+      expect(controller_with_partial).not_to render_with_layout
     end
   end
 
@@ -43,7 +43,7 @@ describe Shoulda::Matchers::ActionController::RenderWithLayoutMatcher do
     it 'accepts that layout in that context' do
       set_in_context_layout('happy')
 
-      controller_without_layout.should render_with_layout('happy').in_context(self)
+      expect(controller_without_layout).to render_with_layout('happy').in_context(self)
     end
 
     def set_in_context_layout(layout)

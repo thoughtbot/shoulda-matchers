@@ -4,16 +4,16 @@ describe Shoulda::Matchers::ActionController::FilterParamMatcher do
   it 'accepts filtering a filtered parameter' do
     filter(:secret)
 
-    nil.should filter_param(:secret)
+    expect(nil).to filter_param(:secret)
   end
 
   it 'rejects filtering an unfiltered parameter' do
     filter(:secret)
     matcher = filter_param(:other)
 
-    matcher.matches?(nil).should be_false
+    expect(matcher.matches?(nil)).to eq false
 
-    matcher.failure_message.should =~ /Expected other to be filtered.*secret/
+    expect(matcher.failure_message).to match(/Expected other to be filtered.*secret/)
   end
 
   def filter(param)

@@ -16,6 +16,10 @@ $LOAD_PATH << File.join(PROJECT_ROOT, 'lib')
 Dir[ File.join(PROJECT_ROOT, 'spec/support/**/*.rb') ].each { |file| require file }
 
 RSpec.configure do |config|
+  config.expect_with :rspec do |c|
+    c.syntax = :expect
+  end
+
   config.mock_with :mocha
   config.include Shoulda::Matchers::ActionController,
                  example_group: { file_path: /action_controller/ }

@@ -5,65 +5,65 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
     it 'describes itself with multiple values' do
       matcher = allow_value('foo', 'bar').for(:baz)
 
-      matcher.description.should eq 'allow baz to be set to any of ["foo", "bar"]'
+      expect(matcher.description).to eq 'allow baz to be set to any of ["foo", "bar"]'
     end
 
     it 'describes itself with a single value' do
       matcher = allow_value('foo').for(:baz)
 
-      matcher.description.should eq 'allow baz to be set to "foo"'
+      expect(matcher.description).to eq 'allow baz to be set to "foo"'
     end
 
     if active_model_3_2?
       it 'describes itself with a strict validation' do
         strict_matcher = allow_value('xyz').for(:attr).strict
 
-        strict_matcher.description.
-          should eq %q(doesn't raise when attr is set to "xyz")
+        expect(strict_matcher.description).
+          to eq %q(doesn't raise when attr is set to "xyz")
       end
     end
   end
 
   context 'an attribute with a validation' do
     it 'allows a good value' do
-      validating_format(with: /abc/).should allow_value('abcde').for(:attr)
+      expect(validating_format(with: /abc/)).to allow_value('abcde').for(:attr)
     end
 
     it 'rejects a bad value' do
-      validating_format(with: /abc/).should_not allow_value('xyz').for(:attr)
+      expect(validating_format(with: /abc/)).not_to allow_value('xyz').for(:attr)
     end
 
     it 'allows several good values' do
-      validating_format(with: /abc/).
-        should allow_value('abcde', 'deabc').for(:attr)
+      expect(validating_format(with: /abc/)).
+        to allow_value('abcde', 'deabc').for(:attr)
     end
 
     it 'rejects several bad values' do
-      validating_format(with: /abc/).
-        should_not allow_value('xyz', 'zyx', nil, []).for(:attr)
+      expect(validating_format(with: /abc/)).
+        not_to allow_value('xyz', 'zyx', nil, []).for(:attr)
     end
   end
 
   context 'an attribute with a validation and a custom message' do
     it 'allows a good value' do
-      validating_format(with: /abc/, message: 'bad value').
-        should allow_value('abcde').for(:attr).with_message(/bad/)
+      expect(validating_format(with: /abc/, message: 'bad value')).
+        to allow_value('abcde').for(:attr).with_message(/bad/)
     end
 
     it 'rejects a bad value' do
-      validating_format(with: /abc/, message: 'bad value').
-        should_not allow_value('xyz').for(:attr).with_message(/bad/)
+      expect(validating_format(with: /abc/, message: 'bad value')).
+        not_to allow_value('xyz').for(:attr).with_message(/bad/)
     end
   end
 
   context 'an attribute where the message occurs on another attribute' do
     it 'allows a good value' do
-      record_with_custom_validation.should \
+      expect(record_with_custom_validation).to \
         allow_value('good value').for(:attr).with_message(/some message/, against: :attr2)
     end
 
     it 'rejects a bad value' do
-      record_with_custom_validation.should_not \
+      expect(record_with_custom_validation).not_to \
         allow_value('bad value').for(:attr).with_message(/some message/, against: :attr2)
     end
 
@@ -83,17 +83,17 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
   context "an attribute with a context-dependent validation" do
     context "without the validation context" do
       it "allows a bad value" do
-        validating_format(with: /abc/, on: :customisable).should allow_value("xyz").for(:attr)
+        expect(validating_format(with: /abc/, on: :customisable)).to allow_value("xyz").for(:attr)
       end
     end
 
     context "with the validation context" do
       it "allows a good value" do
-        validating_format(with: /abc/, on: :customisable).should allow_value("abcde").for(:attr).on(:customisable)
+        expect(validating_format(with: /abc/, on: :customisable)).to allow_value("abcde").for(:attr).on(:customisable)
       end
 
       it "rejects a bad value" do
-        validating_format(with: /abc/, on: :customisable).should_not allow_value("xyz").for(:attr).on(:customisable)
+        expect(validating_format(with: /abc/, on: :customisable)).not_to allow_value("xyz").for(:attr).on(:customisable)
       end
     end
   end
@@ -110,21 +110,21 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
     bad_values = [nil, '', 'abc', '0', '50001', '123456', []]
 
     it 'allows a good value' do
-      model.should allow_value('12345').for(:attr)
+      expect(model).to allow_value('12345').for(:attr)
     end
 
     bad_values.each do |bad_value|
       it "rejects a bad value (#{bad_value.inspect})" do
-        model.should_not allow_value(bad_value).for(:attr)
+        expect(model).not_to allow_value(bad_value).for(:attr)
       end
     end
 
     it "rejects several bad values (#{bad_values.map(&:inspect).join(', ')})" do
-      model.should_not allow_value(*bad_values).for(:attr)
+      expect(model).not_to allow_value(*bad_values).for(:attr)
     end
 
     it "rejects a mix of both good and bad values" do
-      model.should_not allow_value('12345', *bad_values).for(:attr)
+      expect(model).not_to allow_value('12345', *bad_values).for(:attr)
     end
   end
 
@@ -148,13 +148,13 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
   if active_model_3_2?
     context 'an attribute with a strict format validation' do
       it 'strictly rejects a bad value' do
-        validating_format(with: /abc/, strict: true).
-          should_not allow_value('xyz').for(:attr).strict
+        expect(validating_format(with: /abc/, strict: true)).
+          not_to allow_value('xyz').for(:attr).strict
       end
 
       it 'strictly allows a bad value with a different message' do
-        validating_format(with: /abc/, strict: true).
-          should allow_value('xyz').for(:attr).with_message(/abc/).strict
+        expect(validating_format(with: /abc/, strict: true)).
+          to allow_value('xyz').for(:attr).with_message(/abc/).strict
       end
 
       it 'provides a useful negative failure message' do
@@ -162,7 +162,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
 
         matcher.matches?(validating_format(with: /abc/, strict: true))
 
-        matcher.failure_message_when_negated.should eq 'Expected exception to include /abc/ ' +
+        expect(matcher.failure_message_when_negated).to eq 'Expected exception to include /abc/ ' +
           'when attr is set to "xyz", got Attr is invalid'
       end
     end

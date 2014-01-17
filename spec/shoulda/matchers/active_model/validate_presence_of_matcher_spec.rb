@@ -3,52 +3,52 @@ require 'spec_helper'
 describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
   context 'a model with a presence validation' do
     it 'accepts' do
-      validating_presence.should matcher
+      expect(validating_presence).to matcher
     end
 
     it 'does not override the default message with a blank' do
-      validating_presence.should matcher.with_message(nil)
+      expect(validating_presence).to matcher.with_message(nil)
     end
   end
 
   context 'a model without a presence validation' do
     it 'rejects' do
-      define_model(:example, attr: :string).new.should_not matcher
+      expect(define_model(:example, attr: :string).new).not_to matcher
     end
   end
 
   context 'an ActiveModel class with a presence validation' do
     it 'accepts' do
-      active_model_validating_presence.should matcher
+      expect(active_model_validating_presence).to matcher
     end
 
     it 'does not override the default message with a blank' do
-      active_model_validating_presence.should matcher.with_message(nil)
+      expect(active_model_validating_presence).to matcher.with_message(nil)
     end
   end
 
   context 'an ActiveModel class without a presence validation' do
     it 'rejects' do
-      active_model.should_not matcher
+      expect(active_model).not_to matcher
     end
 
     it 'provides the correct failure message' do
       message = %{Expected errors to include "can't be blank" when attr is set to nil, got no errors}
 
-      expect { active_model.should matcher }.to fail_with_message(message)
+      expect { expect(active_model).to matcher }.to fail_with_message(message)
     end
   end
 
   context 'a has_many association with a presence validation' do
     it 'requires the attribute to be set' do
-      has_many_children(presence: true).should validate_presence_of(:children)
+      expect(has_many_children(presence: true)).to validate_presence_of(:children)
     end
   end
 
   context 'a has_many association without a presence validation' do
     it 'does not require the attribute to be set' do
-      has_many_children(presence: false).
-        should_not validate_presence_of(:children)
+      expect(has_many_children(presence: false)).
+        not_to validate_presence_of(:children)
     end
   end
 
@@ -66,7 +66,7 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
     end
 
     it 'accepts' do
-      @model.should validate_presence_of(:children)
+      expect(@model).to validate_presence_of(:children)
     end
   end
 
@@ -83,7 +83,7 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
     end
 
     it 'rejects' do
-      @model.should_not validate_presence_of(:children)
+      expect(@model).not_to validate_presence_of(:children)
     end
   end
 
@@ -98,7 +98,7 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
 
     it "does not raise an exception" do
       expect {
-        validating_presence.should validate_presence_of(:attr)
+        expect(validating_presence).to validate_presence_of(:attr)
       }.to_not raise_exception
     end
   end
@@ -106,30 +106,30 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
   if active_model_3_2?
     context 'a strictly required attribute' do
       it 'accepts when the :strict options match' do
-        validating_presence(strict: true).should matcher.strict
+        expect(validating_presence(strict: true)).to matcher.strict
       end
 
       it 'rejects when the :strict options do not match' do
-        validating_presence(strict: false).should_not matcher.strict
+        expect(validating_presence(strict: false)).not_to matcher.strict
       end
     end
 
     it 'does not override the default message with a blank' do
-      validating_presence(strict: true).
-        should matcher.strict.with_message(nil)
+      expect(validating_presence(strict: true)).
+        to matcher.strict.with_message(nil)
     end
   end
 
   context "an attribute with a context-dependent validation" do
     context "without the validation context" do
       it "does not match" do
-        validating_presence(on: :customisable).should_not matcher
+        expect(validating_presence(on: :customisable)).not_to matcher
       end
     end
 
     context "with the validation context" do
       it "matches" do
-        validating_presence(on: :customisable).should matcher.on(:customisable)
+        expect(validating_presence(on: :customisable)).to matcher.on(:customisable)
       end
     end
   end
@@ -138,7 +138,7 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
     context 'with the validation context' do
       it 'does not raise an exception' do
         expect {
-          active_resource_model.should validate_presence_of(:attr)
+          expect(active_resource_model).to validate_presence_of(:attr)
         }.to_not raise_exception
       end
     end
