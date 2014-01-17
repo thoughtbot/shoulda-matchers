@@ -23,13 +23,13 @@ describe Shoulda::Matchers::ActiveModel::Helpers do
     context 'if no translation for the model attribute’s error exists' do
       context 'and the translation for the model’s error exists' do
         it 'provides the right error message for validate_presence_of' do
-          store_translations(:without => :model_attribute)
+          store_translations(without: :model_attribute)
 
           assert_presence_validation_has_correct_message
         end
 
         it 'provides the right error message for validates_length_of' do
-          store_translations(:without => :model_attribute)
+          store_translations(without: :model_attribute)
 
           assert_length_validation_has_correct_message
         end
@@ -38,13 +38,13 @@ describe Shoulda::Matchers::ActiveModel::Helpers do
       context 'and no translation for the model’s error exists' do
         context 'and the translation for the message exists' do
           it 'provides the right error message for validate_presence_of' do
-            store_translations(:without => [:model_attribute, :model])
+            store_translations(without: [:model_attribute, :model])
 
             assert_presence_validation_has_correct_message
           end
 
           it 'provides the right error message for validates_length_of' do
-            store_translations(:without => [:model_attribute, :model])
+            store_translations(without: [:model_attribute, :model])
 
             assert_length_validation_has_correct_message
           end
@@ -53,13 +53,13 @@ describe Shoulda::Matchers::ActiveModel::Helpers do
         context 'and no translation for the message exists' do
           context 'and the translation for the attribute exists' do
             it 'provides the right error message for validate_presence_of' do
-              store_translations(:without => [:model_attribute, :model, :message])
+              store_translations(without: [:model_attribute, :model, :message])
 
               assert_presence_validation_has_correct_message
             end
 
             it 'provides the right error message for validates_length_of' do
-              store_translations(:without => [:model_attribute, :model, :message])
+              store_translations(without: [:model_attribute, :model, :message])
 
               assert_length_validation_has_correct_message
             end
@@ -80,46 +80,46 @@ describe Shoulda::Matchers::ActiveModel::Helpers do
 
     context 'if ActiveModel::Errors#generate_message behavior has changed' do
       it 'provides the right error message for validate_presence_of' do
-        stub_active_model_message_generation(:type => :blank,
-                                              :message => 'Behavior has diverged.')
+        stub_active_model_message_generation(type: :blank,
+                                              message: 'Behavior has diverged.')
         assert_presence_validation_has_correct_message
       end
     end
   end
 
   def assert_presence_validation_has_correct_message
-    define_model :example, :attr => :string do
+    define_model :example, attr: :string do
       validates_presence_of :attr
     end.new.should validate_presence_of(:attr)
   end
 
   def assert_length_validation_has_correct_message
-    define_model :example, :attr => :string do
-      validates_length_of :attr, :is => 40, :allow_blank => true
+    define_model :example, attr: :string do
+      validates_length_of :attr, is: 40, allow_blank: true
     end.new.should ensure_length_of(:attr).is_equal_to(40)
   end
 
-  def store_translations(options = {:without => []})
+  def store_translations(options = {without: []})
     options[:without] = Array.wrap(options[:without] || [])
 
     translations = {
-      :activerecord => {
-        :errors => {
-          :models => {
-            :example => {
-              :attributes => {
-                :attr => {}
+      activerecord: {
+        errors: {
+          models: {
+            example: {
+              attributes: {
+                attr: {}
               }
             }
           },
-          :messages => {}
+          messages: {}
         }
       },
-      :errors => {
-        :attributes => {
-          :attr => {}
+      errors: {
+        attributes: {
+          attr: {}
         },
-        :messages => {}
+        messages: {}
       }
     }
 

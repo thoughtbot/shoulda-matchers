@@ -19,18 +19,18 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher do
 
   context 'a model without a confirmation validation' do
     it 'rejects' do
-      define_model(:example, :attr => :string).new.should_not matcher
+      define_model(:example, attr: :string).new.should_not matcher
     end
   end
 
   context 'a confirmation validation with a custom message' do
     it 'accepts when the message matches' do
-      validating_confirmation(:message => 'custom').
+      validating_confirmation(message: 'custom').
         should matcher.with_message(/custom/)
     end
 
     it 'rejects when the messages do not match' do
-      validating_confirmation(:message => 'custom').
+      validating_confirmation(message: 'custom').
         should_not matcher.with_message(/wrong/)
     end
   end
@@ -40,7 +40,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher do
   end
 
   def validating_confirmation(options = {})
-    define_model(:example, :attr => :string) do
+    define_model(:example, attr: :string) do
       validates_confirmation_of :attr, options
     end.new
   end

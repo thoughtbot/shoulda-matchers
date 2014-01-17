@@ -24,7 +24,7 @@ module ControllerBuilder
   def build_response(opts = {}, &block)
     action = opts[:action] || 'example'
     partial = opts[:partial] || '_partial'
-    block ||= lambda { render :nothing => true }
+    block ||= lambda { render nothing: true }
     controller_class = define_controller('Examples') do
       layout false
       define_method(action, &block)
@@ -32,7 +32,7 @@ module ControllerBuilder
     controller_class.view_paths = [ $test_app.temp_views_dir_path ]
 
     define_routes do
-      get 'examples', :to => "examples##{action}"
+      get 'examples', to: "examples##{action}"
     end
 
     create_view("examples/#{action}.html.erb", 'action')

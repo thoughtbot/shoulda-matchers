@@ -18,14 +18,14 @@ describe Shoulda::Matchers::ActionController::RenderWithLayoutMatcher do
 
     def controller_with_wide_layout
       create_view('layouts/wide.html.erb', 'some content, <%= yield %>')
-      build_response { render :layout => 'wide' }
+      build_response { render layout: 'wide' }
     end
   end
 
   context 'a controller that renders without a layout' do
 
     it 'rejects rendering with a layout' do
-      controller_without_layout = build_response { render :layout => false }
+      controller_without_layout = build_response { render layout: false }
 
       controller_without_layout.should_not render_with_layout
     end
@@ -33,7 +33,7 @@ describe Shoulda::Matchers::ActionController::RenderWithLayoutMatcher do
 
   context 'a controller that renders a partial' do
     it 'rejects rendering with a layout' do
-      controller_with_partial = build_response { render :partial => 'partial' }
+      controller_with_partial = build_response { render partial: 'partial' }
 
       controller_with_partial.should_not render_with_layout
     end
@@ -57,7 +57,7 @@ describe Shoulda::Matchers::ActionController::RenderWithLayoutMatcher do
     end
 
     def controller_without_layout
-      build_response { render :layout => false }
+      build_response { render layout: false }
     end
   end
 end

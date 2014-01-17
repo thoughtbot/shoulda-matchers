@@ -35,7 +35,7 @@ describe Shoulda::Matchers::ActiveRecord::SerializeMatcher do
     end
 
     def unserialized_model
-      @model ||= define_model(:example, :attr => :string).new
+      @model ||= define_model(:example, attr: :string).new
     end
   end
 
@@ -68,7 +68,7 @@ describe Shoulda::Matchers::ActiveRecord::SerializeMatcher do
   end
 
   def with_serialized_attr(type = nil)
-    define_model(:example, :attr => :string) do
+    define_model(:example, attr: :string) do
       if type
         serialize :attr, type
       else

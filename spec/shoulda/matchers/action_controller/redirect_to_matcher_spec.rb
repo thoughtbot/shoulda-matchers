@@ -28,7 +28,7 @@ describe Shoulda::Matchers::ActionController::RedirectToMatcher do
 
   context 'a controller that does not redirect' do
     it 'rejects redirecting to a url' do
-      controller = build_response { render :text => 'hello' }
+      controller = build_response { render text: 'hello' }
 
       controller.should_not redirect_to('/some/url')
     end

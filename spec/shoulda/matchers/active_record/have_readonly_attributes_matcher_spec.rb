@@ -9,7 +9,7 @@ describe Shoulda::Matchers::ActiveRecord::HaveReadonlyAttributeMatcher do
 
   context 'an attribute that is not part of the read-only set' do
     it 'rejects being read-only' do
-      model = define_model :example, :attr => :string, :other => :string do
+      model = define_model :example, attr: :string, other: :string do
         attr_readonly :attr
       end.new
 
@@ -19,12 +19,12 @@ describe Shoulda::Matchers::ActiveRecord::HaveReadonlyAttributeMatcher do
 
   context 'an attribute on a class with no readonly attributes' do
     it 'rejects being read-only' do
-      define_model(:example, :attr => :string).new.
+      define_model(:example, attr: :string).new.
         should_not have_readonly_attribute(:attr)
     end
 
     it 'assigns a failure message' do
-      model = define_model(:example, :attr => :string).new
+      model = define_model(:example, attr: :string).new
       matcher = have_readonly_attribute(:attr)
 
       matcher.matches?(model)
@@ -34,7 +34,7 @@ describe Shoulda::Matchers::ActiveRecord::HaveReadonlyAttributeMatcher do
   end
 
   def with_readonly_attr
-    define_model :example, :attr => :string do
+    define_model :example, attr: :string do
       attr_readonly :attr
     end.new
   end

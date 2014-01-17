@@ -13,7 +13,7 @@ module Shoulda # :nodoc:
       #   the test looks for any errors in <tt>errors.on(:attribute)</tt>.
       # * <tt>strict</tt> - expects the model to raise an exception when the
       #   validation fails rather than adding to the errors collection. Used for
-      #   testing `validates!` and the `:strict => true` validation options.
+      #   testing `validates!` and the `strict: true` validation options.
       #
       # Example:
       #   it { should_not allow_value('bad').for(:isbn) }
@@ -163,9 +163,9 @@ module Shoulda # :nodoc:
         def default_attribute_message
           default_error_message(
             options[:expected_message],
-            :model_name => model_name,
-            :instance => instance,
-            :attribute => attribute_to_set
+            model_name: model_name,
+            instance: instance,
+            attribute: attribute_to_set
           )
         end
 

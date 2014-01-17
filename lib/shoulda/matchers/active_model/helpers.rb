@@ -19,10 +19,10 @@ module Shoulda # :nodoc:
         # instance is given.
         #
         #   default_error_message(:blank)
-        #   default_error_message(:too_short, :count => 5)
-        #   default_error_message(:too_long, :count => 60)
-        #   default_error_message(:blank, :model_name => 'user', :attribute => 'name')
-        #   default_error_message(:blank, :instance => #<Model>, :attribute => 'name')
+        #   default_error_message(:too_short, count: 5)
+        #   default_error_message(:too_long, count: 60)
+        #   default_error_message(:blank, model_name: 'user', attribute: 'name')
+        #   default_error_message(:blank, instance: #<Model>, attribute: 'name')
         def default_error_message(key, options = {})
           model_name = options.delete(:model_name)
           attribute = options.delete(:attribute)
@@ -36,7 +36,7 @@ module Shoulda # :nodoc:
                                     :"errors.attributes.#{attribute}.#{key}",
                                     :"errors.messages.#{key}" ]
             I18n.translate(:"activerecord.errors.models.#{model_name}.attributes.#{attribute}.#{key}",
-              { :default => default_translation }.merge(options))
+              { default: default_translation }.merge(options))
           end
         end
       end

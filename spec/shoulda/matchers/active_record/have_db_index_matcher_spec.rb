@@ -13,12 +13,12 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher do
 
   context 'have_db_index with unique option' do
     it 'accepts an index of correct unique' do
-      with_index_on(:ssn, :unique => true).
+      with_index_on(:ssn, unique: true).
         should have_db_index(:ssn).unique(true)
     end
 
     it 'rejects an index of wrong unique' do
-      with_index_on(:ssn, :unique => false).
+      with_index_on(:ssn, unique: false).
         should_not have_db_index(:ssn).unique(true)
     end
   end
@@ -62,9 +62,9 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher do
 
   it 'allows an IndexDefinition to have a truthy value for unique' do
     index_definition = stub('ActiveRecord::ConnectionAdapters::IndexDefinition',
-      :unique => 7, :name => :age)
+      unique: 7, name: :age)
     matcher = have_db_index(:age).unique(true)
-    matcher.stubs(:matched_index => index_definition)
+    matcher.stubs(matched_index: index_definition)
 
     with_index_on(:age).should matcher
   end
