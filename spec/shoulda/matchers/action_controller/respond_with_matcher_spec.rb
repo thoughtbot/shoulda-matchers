@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActionController::RespondWithMatcher do
-  statuses = { :success => 200, :redirect => 301, :missing => 404, :error => 500,
-    :not_implemented => 501 }
+  statuses = { success: 200, redirect: 301, missing: 404, error: 500,
+    not_implemented: 501 }
 
   statuses.each do |human_name, numeric_code|
     context "a controller responding with #{human_name}" do
@@ -25,7 +25,7 @@ describe Shoulda::Matchers::ActionController::RespondWithMatcher do
 
   def controller_with_status(status)
     build_response do
-      render :text => 'text', :status => status
+      render text: 'text', status: status
     end
   end
 end

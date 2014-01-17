@@ -13,7 +13,7 @@ module Shoulda # :nodoc:
       #   it { should_not have_db_column(:admin).of_type(:boolean) }
       #   it { should have_db_column(:salary).
       #                 of_type(:decimal).
-      #                 with_options(:precision => 10, :scale => 2) }
+      #                 with_options(precision: 10, scale: 2) }
       #
       def have_db_column(column)
         HaveDbColumnMatcher.new(column)

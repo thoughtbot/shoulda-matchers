@@ -62,13 +62,13 @@ module Shoulda # :nodoc:
         end
 
         def odd
-          odd_number_matcher = NumericalityMatchers::OddEvenNumberMatcher.new(@attribute, :odd => true)
+          odd_number_matcher = NumericalityMatchers::OddEvenNumberMatcher.new(@attribute, odd: true)
           add_submatcher(odd_number_matcher)
           self
         end
 
         def even
-          even_number_matcher = NumericalityMatchers::OddEvenNumberMatcher.new(@attribute, :even => true)
+          even_number_matcher = NumericalityMatchers::OddEvenNumberMatcher.new(@attribute, even: true)
           add_submatcher(even_number_matcher)
           self
         end

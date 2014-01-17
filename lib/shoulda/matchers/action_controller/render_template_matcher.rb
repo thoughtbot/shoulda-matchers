@@ -8,13 +8,13 @@ module Shoulda # :nodoc:
       #   it { should render_template(:show)  }
       #
       #   assert that the "_customer" partial was rendered
-      #   it { should render_template(:partial => '_customer')  }
+      #   it { should render_template(partial: '_customer')  }
       #
       #   assert that the "_customer" partial was rendered twice
-      #   it { should render_template(:partial => '_customer', :count => 2)  }
+      #   it { should render_template(partial: '_customer', count: 2)  }
       #
       #   assert that no partials were rendered
-      #   it { should render_template(:partial => false)  }
+      #   it { should render_template(partial: false)  }
       def render_template(options = {}, message = nil)
         RenderTemplateMatcher.new(options, message, self)
       end

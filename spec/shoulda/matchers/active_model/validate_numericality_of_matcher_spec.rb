@@ -19,13 +19,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
   context 'with a model without a numericality validation' do
     it 'rejects' do
-      define_model(:example, :attr => :string).new.should_not matcher
+      define_model(:example, attr: :string).new.should_not matcher
     end
 
     it 'rejects with the ActiveRecord :not_a_number message' do
       the_matcher = matcher
 
-      the_matcher.matches?(define_model(:example, :attr => :string).new)
+      the_matcher.matches?(define_model(:example, attr: :string).new)
 
       the_matcher.failure_message_when_negated.should include 'Did not expect errors to include "is not a number"'
     end
@@ -33,7 +33,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
     it 'rejects with the ActiveRecord :not_an_integer message' do
       the_matcher = matcher.only_integer
 
-      the_matcher.matches?(define_model(:example, :attr => :string).new)
+      the_matcher.matches?(define_model(:example, attr: :string).new)
 
       the_matcher.failure_message.should include 'Expected errors to include "must be an integer"'
     end
@@ -41,7 +41,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
     it 'rejects with the ActiveRecord :odd message' do
       the_matcher = matcher.odd
 
-      the_matcher.matches?(define_model(:example, :attr => :string).new)
+      the_matcher.matches?(define_model(:example, attr: :string).new)
 
       the_matcher.failure_message.should include 'Expected errors to include "must be odd"'
     end
@@ -49,7 +49,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
     it 'rejects with the ActiveRecord :even message' do
       the_matcher = matcher.even
 
-      the_matcher.matches?(define_model(:example, :attr => :string).new)
+      the_matcher.matches?(define_model(:example, attr: :string).new)
 
       the_matcher.failure_message.should include 'Expected errors to include "must be even"'
     end
@@ -57,7 +57,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
   context 'with the only_integer option' do
     it 'allows integer values for that attribute' do
-      validating_numericality(:only_integer => true).should matcher.only_integer
+      validating_numericality(only_integer: true).should matcher.only_integer
     end
 
     it 'rejects when the model does not enforce integer values' do
@@ -75,7 +75,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
   context 'with the odd option' do
     it 'allows odd number values for that attribute' do
-      validating_numericality(:odd => true).should matcher.odd
+      validating_numericality(odd: true).should matcher.odd
     end
 
     it 'rejects when the model does not enforce odd number values' do
@@ -93,7 +93,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
   context 'with the even option' do
     it 'allows even number values for that attribute' do
-      validating_numericality(:even => true).should matcher.even
+      validating_numericality(even: true).should matcher.even
     end
 
     it 'rejects when the model does not enforce even number values' do
@@ -111,20 +111,20 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
   context 'with a custom validation message' do
     it 'accepts when the messages match' do
-      validating_numericality(:message => 'custom').
+      validating_numericality(message: 'custom').
         should matcher.with_message(/custom/)
     end
 
     it 'rejects when the messages do not match' do
-      validating_numericality(:message => 'custom').
+      validating_numericality(message: 'custom').
         should_not matcher.with_message(/wrong/)
     end
   end
 
   context 'when the subject is stubbed' do
     it 'retains stubs on submatchers' do
-      subject = define_model :example, :attr => :string do
-        validates_numericality_of :attr, :odd => true
+      subject = define_model :example, attr: :string do
+        validates_numericality_of :attr, odd: true
         before_validation :set_attr!
         def set_attr!; self.attr = 5 end
       end.new
@@ -135,7 +135,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
   end
 
   def validating_numericality(options = {})
-    define_model :example, :attr => :string do
+    define_model :example, attr: :string do
       validates_numericality_of :attr, options
     end.new
   end

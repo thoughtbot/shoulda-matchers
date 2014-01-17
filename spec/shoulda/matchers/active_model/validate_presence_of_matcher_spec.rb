@@ -13,7 +13,7 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
 
   context 'a model without a presence validation' do
     it 'rejects' do
-      define_model(:example, :attr => :string).new.should_not matcher
+      define_model(:example, attr: :string).new.should_not matcher
     end
   end
 
@@ -41,13 +41,13 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
 
   context 'a has_many association with a presence validation' do
     it 'requires the attribute to be set' do
-      has_many_children(:presence => true).should validate_presence_of(:children)
+      has_many_children(presence: true).should validate_presence_of(:children)
     end
   end
 
   context 'a has_many association without a presence validation' do
     it 'does not require the attribute to be set' do
-      has_many_children(:presence => false).
+      has_many_children(presence: false).
         should_not validate_presence_of(:children)
     end
   end
@@ -59,7 +59,7 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
         has_and_belongs_to_many :children
         validates_presence_of :children
       end.new
-      create_table 'children_parents', :id => false do |t|
+      create_table 'children_parents', id: false do |t|
         t.integer :child_id
         t.integer :parent_id
       end
@@ -76,7 +76,7 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
       @model = define_model :parent do
         has_and_belongs_to_many :children
       end.new
-      create_table 'children_parents', :id => false do |t|
+      create_table 'children_parents', id: false do |t|
         t.integer :child_id
         t.integer :parent_id
       end
@@ -106,16 +106,16 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
   if active_model_3_2?
     context 'a strictly required attribute' do
       it 'accepts when the :strict options match' do
-        validating_presence(:strict => true).should matcher.strict
+        validating_presence(strict: true).should matcher.strict
       end
 
       it 'rejects when the :strict options do not match' do
-        validating_presence(:strict => false).should_not matcher.strict
+        validating_presence(strict: false).should_not matcher.strict
       end
     end
 
     it 'does not override the default message with a blank' do
-      validating_presence(:strict => true).
+      validating_presence(strict: true).
         should matcher.strict.with_message(nil)
     end
   end
@@ -123,13 +123,13 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
   context "an attribute with a context-dependent validation" do
     context "without the validation context" do
       it "does not match" do
-        validating_presence(:on => :customisable).should_not matcher
+        validating_presence(on: :customisable).should_not matcher
       end
     end
 
     context "with the validation context" do
       it "matches" do
-        validating_presence(:on => :customisable).should matcher.on(:customisable)
+        validating_presence(on: :customisable).should matcher.on(:customisable)
       end
     end
   end
@@ -149,13 +149,13 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
   end
 
   def validating_presence(options = {})
-    define_model :example, :attr => :string do
+    define_model :example, attr: :string do
       validates_presence_of :attr, options
     end.new
   end
 
   def active_model(&block)
-    define_active_model_class('Example', :accessors => [:attr], &block).new
+    define_active_model_class('Example', accessors: [:attr], &block).new
   end
 
   def active_model_validating_presence
@@ -173,7 +173,7 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
   end
 
   def active_resource_model
-    define_active_resource_class :foo, :attr => :string do
+    define_active_resource_class :foo, attr: :string do
       validates_presence_of :attr
     end.new
   end

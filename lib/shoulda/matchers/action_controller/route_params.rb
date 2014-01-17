@@ -25,7 +25,7 @@ module Shoulda # :nodoc:
         def extract_params_from_string
           params = args[1] || {}
           controller, action = args[0].split('#')
-          params.merge!(:controller => controller, :action => action)
+          params.merge!(controller: controller, action: action)
         end
 
         def stringify_params

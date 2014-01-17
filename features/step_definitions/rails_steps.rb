@@ -33,14 +33,14 @@ When 'I generate a new rails application' do
 end
 
 When /^I configure the application to use "([^\"]+)" from this project$/ do |name|
-  append_to_gemfile "gem '#{name}', :path => '#{PROJECT_ROOT}'"
+  append_to_gemfile "gem '#{name}', path: '#{PROJECT_ROOT}'"
   steps %{And I install gems}
 end
 
 When /^I configure the application to use "([^\"]+)" from this project in test and development$/ do |name|
   append_to_gemfile <<-GEMFILE
   group :test, :development do
-    gem '#{name}', :path => '#{PROJECT_ROOT}'
+    gem '#{name}', path: '#{PROJECT_ROOT}'
   end
   GEMFILE
   steps %{And I install gems}

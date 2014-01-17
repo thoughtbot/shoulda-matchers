@@ -7,24 +7,24 @@ describe Shoulda::Matchers::ActionController::SetTheFlashMatcher do
 
   context 'a controller that sets a flash message' do
     it 'accepts setting any flash message' do
-      controller_with_flash(:notice => 'hi').should set_the_flash
+      controller_with_flash(notice: 'hi').should set_the_flash
     end
 
     it 'accepts setting the exact flash message' do
-      controller_with_flash(:notice => 'hi').should set_the_flash.to('hi')
+      controller_with_flash(notice: 'hi').should set_the_flash.to('hi')
     end
 
     it 'accepts setting a matched flash message' do
-      controller_with_flash(:notice => 'hello').should set_the_flash.to(/he/)
+      controller_with_flash(notice: 'hello').should set_the_flash.to(/he/)
     end
 
     it 'rejects setting a different flash message' do
-      controller_with_flash(:notice => 'hi').
+      controller_with_flash(notice: 'hi').
         should_not set_the_flash.to('other')
     end
 
     it 'rejects setting a different pattern' do
-      controller_with_flash(:notice => 'hi').
+      controller_with_flash(notice: 'hi').
         should_not set_the_flash.to(/other/)
     end
   end
@@ -39,56 +39,56 @@ describe Shoulda::Matchers::ActionController::SetTheFlashMatcher do
     end
 
     it 'accepts setting the exact flash.now message' do
-      controller_with_flash_now(:notice => 'hi').
+      controller_with_flash_now(notice: 'hi').
         should set_the_flash.now.to('hi')
     end
 
     it 'accepts setting a matched flash.now message' do
-      controller_with_flash_now(:notice => 'flasher').
+      controller_with_flash_now(notice: 'flasher').
         should set_the_flash.now.to(/lash/)
     end
 
     it 'rejects setting a different flash.now message' do
-      controller_with_flash_now(:notice => 'hi').
+      controller_with_flash_now(notice: 'hi').
         should_not set_the_flash.now.to('other')
     end
 
     it 'rejects setting a different flash.now pattern' do
-      controller_with_flash_now(:notice => 'hi').
+      controller_with_flash_now(notice: 'hi').
         should_not set_the_flash.now.to(/other/)
     end
   end
 
   context 'a controller that sets flash messages for multiple keys' do
     it 'accepts flash message for either key' do
-      controller = controller_with_flash(:notice => 'one', :alert => 'two')
+      controller = controller_with_flash(notice: 'one', alert: 'two')
 
       controller.should set_the_flash[:notice]
       controller.should set_the_flash[:alert]
     end
 
     it 'rejects a flash message that is not one of the set keys' do
-      controller_with_flash(:notice => 'one', :alert => 'two').
+      controller_with_flash(notice: 'one', alert: 'two').
         should_not set_the_flash[:warning]
     end
 
     it 'accepts exact flash message of notice' do
-      controller_with_flash(:notice => 'one', :alert => 'two').
+      controller_with_flash(notice: 'one', alert: 'two').
         should set_the_flash[:notice].to('one')
     end
 
     it 'accepts setting a matched flash message of notice' do
-      controller_with_flash(:notice => 'one', :alert => 'two').
+      controller_with_flash(notice: 'one', alert: 'two').
         should set_the_flash[:notice].to(/on/)
     end
 
     it 'rejects setting a different flash message of notice' do
-      controller_with_flash(:notice => 'one', :alert => 'two').
+      controller_with_flash(notice: 'one', alert: 'two').
         should_not set_the_flash[:notice].to('other')
     end
 
     it 'rejects setting a different pattern' do
-      controller_with_flash(:notice => 'one', :alert => 'two').
+      controller_with_flash(notice: 'one', alert: 'two').
         should_not set_the_flash[:notice].to(/other/)
     end
   end
@@ -143,7 +143,7 @@ describe Shoulda::Matchers::ActionController::SetTheFlashMatcher do
     end
   end
 
-  def controller_with_flash_now(flash_hash = { :notice => 'hi' })
+  def controller_with_flash_now(flash_hash = { notice: 'hi' })
     build_response do
       flash_hash.each do |key, value|
         flash.now[key] = value

@@ -59,7 +59,7 @@ module ModelBuilder
 
     if columns.key?(:id) && columns[:id] == false
       columns.delete(:id)
-      create_table(table_name, :id => false, &table_block)
+      create_table(table_name, id: false, &table_block)
     else
       create_table(table_name, &table_block)
     end

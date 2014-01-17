@@ -21,7 +21,7 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
 
   context 'an attribute that is blacklisted from mass-assignment' do
     it 'rejects being mass-assignable' do
-      model = define_model(:example, :blacklisted => :string) do
+      model = define_model(:example, blacklisted: :string) do
         attr_protected :blacklisted
       end.new
 
@@ -31,8 +31,8 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
 
   context 'an attribute that is not whitelisted for mass-assignment' do
     it 'rejects being mass-assignable' do
-      model = define_model(:example, :not_whitelisted => :string,
-        :whitelisted => :string) do
+      model = define_model(:example, not_whitelisted: :string,
+        whitelisted: :string) do
         attr_accessible :whitelisted
       end.new
 
@@ -42,7 +42,7 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
 
   context 'an attribute that is whitelisted for mass-assignment' do
     it 'accepts being mass-assignable' do
-      define_model(:example, :whitelisted => :string) do
+      define_model(:example, whitelisted: :string) do
         attr_accessible :whitelisted
       end.new.should allow_mass_assignment_of(:whitelisted)
     end
@@ -50,8 +50,8 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
 
   context 'an attribute not included in the mass-assignment blacklist' do
     it 'accepts being mass-assignable' do
-      model = define_model(:example, :not_blacklisted => :string,
-        :blacklisted => :string) do
+      model = define_model(:example, not_blacklisted: :string,
+        blacklisted: :string) do
         attr_protected :blacklisted
       end.new
 
@@ -75,7 +75,7 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
     end
 
     def no_protected_attributes
-      define_model(:example, :attr => :string).new
+      define_model(:example, attr: :string).new
     end
   end
 
@@ -85,7 +85,7 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
     end
 
     def all_protected_attributes
-      define_model(:example, :attr => :string) do
+      define_model(:example, attr: :string) do
         attr_accessible nil
       end.new
     end
@@ -102,8 +102,8 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
       end
 
       def mass_assignable_as_admin
-        define_model(:example, :attr => :string) do
-          attr_accessible :attr, :as => :admin
+        define_model(:example, attr: :string) do
+          attr_accessible :attr, as: :admin
         end.new
       end
     end

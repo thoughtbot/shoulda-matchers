@@ -18,7 +18,7 @@ module Shoulda
     #
     #   describe UsersController, 'on GET to show with a valid id' do
     #     before(:each) do
-    #       get :show, :id => User.first.to_param
+    #       get :show, id: User.first.to_param
     #     end
     #
     #     it { should respond_with(:success) }

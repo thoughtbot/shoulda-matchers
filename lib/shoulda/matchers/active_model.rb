@@ -44,7 +44,7 @@ module Shoulda
     # class User < ActiveRecord::Base
     #   validates_presence_of :name
     #   validates_presence_of :phone_number
-    #   validates_inclusion_of :status, :in => %w(Activated Pending), :strict => true
+    #   validates_inclusion_of :status, in: %w(Activated Pending), strict: true
     #   attr_accessible :name, :phone_number
     # end
     module ActiveModel
