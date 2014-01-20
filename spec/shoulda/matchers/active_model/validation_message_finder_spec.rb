@@ -7,7 +7,7 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
 
       description = finder.allow_description('allowed values')
 
-      description.should eq 'allow attr to be set to allowed values'
+      expect(description).to eq 'allow attr to be set to allowed values'
     end
   end
 
@@ -17,7 +17,7 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
 
       message = finder.expected_message_from('some message')
 
-      message.should eq 'some message'
+      expect(message).to eq 'some message'
     end
   end
 
@@ -27,7 +27,7 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
 
       result = finder.has_messages?
 
-      result.should be_true
+      expect(result).to eq true
     end
 
     it 'has no messages when all validations pass' do
@@ -35,7 +35,7 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
 
       result = finder.has_messages?
 
-      result.should be_false
+      expect(result).to eq false
     end
   end
 
@@ -45,7 +45,7 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
 
       messages = finder.messages
 
-      messages.should eq ['is invalid']
+      expect(messages).to eq ['is invalid']
     end
 
     it 'returns an empty array if there are no errors for the given attribute' do
@@ -53,7 +53,7 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
 
       messages = finder.messages
 
-      messages.should == []
+      expect(messages).to eq([])
     end
   end
 
@@ -68,7 +68,7 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
       description = finder.messages_description
 
       expected_messages = ['attr is invalid ("xyz")']
-      description.should eq "errors: #{expected_messages}"
+      expect(description).to eq "errors: #{expected_messages}"
     end
 
     it 'describes errors when there are none' do
@@ -76,7 +76,7 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
 
       description = finder.messages_description
 
-      description.should eq 'no errors'
+      expect(description).to eq 'no errors'
     end
 
     it 'should not fetch attribute values for errors that were copied from an autosaved belongs_to association' do
@@ -88,7 +88,7 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
       finder = Shoulda::Matchers::ActiveModel::ValidationMessageFinder.new(instance, :attribute)
 
       expected_messages = ['association.association_attribute is invalid']
-      finder.messages_description.should eq "errors: #{expected_messages}"
+      expect(finder.messages_description).to eq "errors: #{expected_messages}"
     end
 
   end
@@ -99,7 +99,7 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
 
       description = finder.source_description
 
-      description.should eq 'errors'
+      expect(description).to eq 'errors'
     end
   end
 

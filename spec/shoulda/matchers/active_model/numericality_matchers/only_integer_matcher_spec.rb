@@ -7,32 +7,32 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OnlyIntegerMatche
 
   context 'given an attribute that only allows integer values' do
     it 'matches' do
-      validating_only_integer.should new_matcher
+      expect(validating_only_integer).to new_matcher
     end
 
     it 'allows integer types' do
-      new_matcher.allowed_types.should eq 'integer'
+      expect(new_matcher.allowed_types).to eq 'integer'
     end
 
     it 'returns itself when given a message' do
       matcher = new_matcher
-      matcher.with_message('some message').should eq matcher
+      expect(matcher.with_message('some message')).to eq matcher
     end
   end
 
   context 'given an attribute that only allows integer values with a custom validation message' do
     it 'only accepts integer values for that attribute with that message' do
-      validating_only_integer(message: 'custom').should new_matcher.with_message(/custom/)
+      expect(validating_only_integer(message: 'custom')).to new_matcher.with_message(/custom/)
     end
 
     it 'rejects integer values for that attribute with another message' do
-      validating_only_integer(message: 'custom').should_not new_matcher.with_message(/wrong/)
+      expect(validating_only_integer(message: 'custom')).not_to new_matcher.with_message(/wrong/)
     end
   end
 
   context 'when the model does not have an only_integer validation' do
     it 'does not match' do
-      define_model(:example, attr: :string).new.should_not new_matcher
+      expect(define_model(:example, attr: :string).new).not_to new_matcher
     end
 
     it 'fails with the ActiveRecord :not_an_integer message' do
@@ -40,7 +40,7 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OnlyIntegerMatche
 
       matcher.matches?(define_model(:example, attr: :string).new)
 
-      matcher.failure_message.should include 'Expected errors to include "must be an integer"'
+      expect(matcher.failure_message).to include 'Expected errors to include "must be an integer"'
     end
   end
 

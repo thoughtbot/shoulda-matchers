@@ -7,18 +7,18 @@ describe Shoulda::Matchers::ActionController::RespondWithMatcher do
   statuses.each do |human_name, numeric_code|
     context "a controller responding with #{human_name}" do
       it 'accepts responding with a numeric response code' do
-        controller_with_status(numeric_code).should respond_with(numeric_code)
+        expect(controller_with_status(numeric_code)).to respond_with(numeric_code)
       end
 
       it 'accepts responding with a symbol response code' do
-        controller_with_status(numeric_code).should respond_with(human_name)
+        expect(controller_with_status(numeric_code)).to respond_with(human_name)
       end
 
       it 'rejects responding with another status' do
         another_status = statuses.except(human_name).keys.first
 
-        controller_with_status(numeric_code).
-          should_not respond_with(another_status)
+        expect(controller_with_status(numeric_code)).
+          not_to respond_with(another_status)
       end
     end
   end

@@ -88,15 +88,17 @@ describe Shoulda::Matchers::ActiveModel::Helpers do
   end
 
   def assert_presence_validation_has_correct_message
-    define_model :example, attr: :string do
+    record = define_model :example, attr: :string do
       validates_presence_of :attr
-    end.new.should validate_presence_of(:attr)
+    end.new
+    expect(record).to validate_presence_of(:attr)
   end
 
   def assert_length_validation_has_correct_message
-    define_model :example, attr: :string do
+    record = define_model :example, attr: :string do
       validates_length_of :attr, is: 40, allow_blank: true
-    end.new.should ensure_length_of(:attr).is_equal_to(40)
+    end.new
+    expect(record).to ensure_length_of(:attr).is_equal_to(40)
   end
 
   def store_translations(options = {without: []})

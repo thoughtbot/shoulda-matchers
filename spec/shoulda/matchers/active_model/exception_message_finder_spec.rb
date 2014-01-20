@@ -8,7 +8,7 @@ describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
 
         description = finder.allow_description('allowed values')
 
-        description.should eq %q(doesn't raise when attr is set to allowed values)
+        expect(description).to eq %q(doesn't raise when attr is set to allowed values)
       end
     end
 
@@ -18,7 +18,7 @@ describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
 
         message = finder.expected_message_from('some message')
 
-        message.should eq 'Attr some message'
+        expect(message).to eq 'Attr some message'
       end
     end
 
@@ -28,7 +28,7 @@ describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
 
         result = finder.has_messages?
 
-        result.should be_true
+        expect(result).to eq true
       end
 
       it 'has no messages when all validations pass' do
@@ -36,7 +36,7 @@ describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
 
         result = finder.has_messages?
 
-        result.should be_false
+        expect(result).to eq false
       end
     end
 
@@ -50,7 +50,7 @@ describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
 
         messages = finder.messages
 
-        messages.should eq ['Attr is invalid']
+        expect(messages).to eq ['Attr is invalid']
       end
     end
 
@@ -64,7 +64,7 @@ describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
 
         description = finder.messages_description
 
-        description.should eq 'Attr is invalid'
+        expect(description).to eq 'Attr is invalid'
       end
 
       it 'describes errors when there are none' do
@@ -72,7 +72,7 @@ describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
 
         description = finder.messages_description
 
-        description.should eq 'no exception'
+        expect(description).to eq 'no exception'
       end
     end
 
@@ -82,7 +82,7 @@ describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
 
         description = finder.source_description
 
-        description.should eq 'exception'
+        expect(description).to eq 'exception'
       end
     end
   end

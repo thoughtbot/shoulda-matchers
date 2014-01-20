@@ -26,7 +26,7 @@ module Shoulda
     #     it { should not_set_the_flash) }
     #
     #     it 'does something else really cool' do
-    #       assigns[:user].id.should == 1
+    #       expect(assigns[:user].id).to eq 1
     #     end
     #   end
     #

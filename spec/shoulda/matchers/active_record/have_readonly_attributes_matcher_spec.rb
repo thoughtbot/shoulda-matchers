@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Shoulda::Matchers::ActiveRecord::HaveReadonlyAttributeMatcher do
   context 'a read-only attribute' do
     it 'accepts' do
-      with_readonly_attr.should have_readonly_attribute(:attr)
+      expect(with_readonly_attr).to have_readonly_attribute(:attr)
     end
   end
 
@@ -13,14 +13,14 @@ describe Shoulda::Matchers::ActiveRecord::HaveReadonlyAttributeMatcher do
         attr_readonly :attr
       end.new
 
-      model.should_not have_readonly_attribute(:other)
+      expect(model).not_to have_readonly_attribute(:other)
     end
   end
 
   context 'an attribute on a class with no readonly attributes' do
     it 'rejects being read-only' do
-      define_model(:example, attr: :string).new.
-        should_not have_readonly_attribute(:attr)
+      expect(define_model(:example, attr: :string).new).
+        not_to have_readonly_attribute(:attr)
     end
 
     it 'assigns a failure message' do
@@ -29,7 +29,7 @@ describe Shoulda::Matchers::ActiveRecord::HaveReadonlyAttributeMatcher do
 
       matcher.matches?(model)
 
-      matcher.failure_message.should_not be_nil
+      expect(matcher.failure_message).not_to be_nil
     end
   end
 

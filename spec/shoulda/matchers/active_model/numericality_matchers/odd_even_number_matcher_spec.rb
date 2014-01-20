@@ -7,49 +7,49 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OddEvenNumberMatc
 
   context 'given an attribute that only allows odd number values' do
     it 'matches' do
-      validating_odd_number.should new_odd_matcher
+      expect(validating_odd_number).to new_odd_matcher
     end
 
     it 'returns itself when given a message' do
       matcher = new_odd_matcher
-      matcher.with_message('some message').should eq matcher
+      expect(matcher.with_message('some message')).to eq matcher
     end
   end
 
   context 'given an attribute that only allows even number values' do
     it 'matches' do
-      validating_even_number.should new_even_matcher
+      expect(validating_even_number).to new_even_matcher
     end
 
     it 'returns itself when given a message' do
       matcher = new_even_matcher
-      matcher.with_message('some message').should eq matcher
+      expect(matcher.with_message('some message')).to eq matcher
     end
   end
 
   context 'given an attribute that only allows odd number values with a custom validation message' do
     it 'only accepts odd number values for that attribute with that message' do
-      validating_odd_number(message: 'custom').should new_odd_matcher.with_message(/custom/)
+      expect(validating_odd_number(message: 'custom')).to new_odd_matcher.with_message(/custom/)
     end
 
     it 'rejects odd number values for that attribute with another message' do
-      validating_odd_number(message: 'custom').should_not new_odd_matcher.with_message(/wrong/)
+      expect(validating_odd_number(message: 'custom')).not_to new_odd_matcher.with_message(/wrong/)
     end
   end
 
   context 'given an attribute that only allows even number values with a custom validation message' do
     it 'only accepts even number values for that attribute with that message' do
-      validating_even_number(message: 'custom').should new_even_matcher.with_message(/custom/)
+      expect(validating_even_number(message: 'custom')).to new_even_matcher.with_message(/custom/)
     end
 
     it 'rejects even number values for that attribute with another message' do
-      validating_even_number(message: 'custom').should_not new_even_matcher.with_message(/wrong/)
+      expect(validating_even_number(message: 'custom')).not_to new_even_matcher.with_message(/wrong/)
     end
   end
 
   context 'when the model does not have an odd validation' do
     it 'does not match' do
-      define_model(:example, attr: :string).new.should_not new_odd_matcher
+      expect(define_model(:example, attr: :string).new).not_to new_odd_matcher
     end
 
     it 'fails with the ActiveRecord :odd message' do
@@ -57,13 +57,13 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OddEvenNumberMatc
 
       matcher.matches?(define_model(:example, attr: :string).new)
 
-      matcher.failure_message.should include 'Expected errors to include "must be odd"'
+      expect(matcher.failure_message).to include 'Expected errors to include "must be odd"'
     end
   end
 
   context 'when the model does not have an even validation' do
     it 'does not match' do
-      define_model(:example, attr: :string).new.should_not new_even_matcher
+      expect(define_model(:example, attr: :string).new).not_to new_even_matcher
     end
 
     it 'fails with the ActiveRecord :even message' do
@@ -71,7 +71,7 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OddEvenNumberMatc
 
       matcher.matches?(define_model(:example, attr: :string).new)
 
-      matcher.failure_message.should include 'Expected errors to include "must be even"'
+      expect(matcher.failure_message).to include 'Expected errors to include "must be even"'
     end
   end
 

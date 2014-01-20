@@ -9,7 +9,7 @@ describe Shoulda::Matchers::ActionController::RouteMatcher, type: :controller do
         get 'examples/*id', to: 'examples#example'
       end
 
-      controller.should route(:get, '/examples/foo/bar').
+      expect(controller).to route(:get, '/examples/foo/bar').
         to(action: 'example', id: 'foo/bar')
     end
   end
@@ -17,45 +17,45 @@ describe Shoulda::Matchers::ActionController::RouteMatcher, type: :controller do
   context 'given a controller with a defined route' do
 
     it 'accepts routing the correct path to the correct parameters' do
-      route_examples_to_examples.should route(:get, '/examples/1').
+      expect(route_examples_to_examples).to route(:get, '/examples/1').
         to(action: 'example', id: '1')
     end
 
     it 'accepts a symbol controller' do
       route_examples_to_examples
-      Object.new.should route(:get, '/examples/1').
+      expect(Object.new).to route(:get, '/examples/1').
         to(controller: :examples, action: 'example', id: '1')
     end
 
     it 'accepts a symbol action' do
-      route_examples_to_examples.should route(:get, '/examples/1').
+      expect(route_examples_to_examples).to route(:get, '/examples/1').
         to(action: :example, id: '1')
     end
 
     it 'accepts a non-string parameter' do
-      route_examples_to_examples.should route(:get, '/examples/1').
+      expect(route_examples_to_examples).to route(:get, '/examples/1').
         to(action: 'example', id: 1)
     end
 
     it 'rejects an undefined route' do
-      route_examples_to_examples.
-        should_not route(:get, '/bad_route').to(var: 'value')
+      expect(route_examples_to_examples).
+        not_to route(:get, '/bad_route').to(var: 'value')
     end
 
     it 'rejects a route for another controller' do
       route_examples_to_examples
       other = define_controller('Other').new
-      other.should_not route(:get, '/examples/1').
+      expect(other).not_to route(:get, '/examples/1').
         to(action: 'example', id: '1')
     end
 
     it 'rejects a route for different parameters' do
-      route_examples_to_examples.should_not route(:get, '/examples/1').
+      expect(route_examples_to_examples).not_to route(:get, '/examples/1').
         to(action: 'other', id: '1')
     end
 
     it "accepts a string as first parameter" do
-      route_examples_to_examples.should route(:get, '/examples/1').
+      expect(route_examples_to_examples).to route(:get, '/examples/1').
         to("examples#example", id: '1')
     end
 

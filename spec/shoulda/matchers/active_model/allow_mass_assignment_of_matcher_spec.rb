@@ -4,16 +4,16 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
   context '#description' do
     context 'without a role' do
       it 'includes the attribute name' do
-        described_class.new(:attr).description.
-          should eq 'allow mass assignment of attr'
+        expect(described_class.new(:attr).description).
+          to eq 'allow mass assignment of attr'
       end
     end
 
     if active_model_3_1?
       context 'with a role' do
         it 'includes the attribute name and the role' do
-          described_class.new(:attr).as(:admin).description.
-            should eq 'allow mass assignment of attr as admin'
+          expect(described_class.new(:attr).as(:admin).description).
+            to eq 'allow mass assignment of attr as admin'
         end
       end
     end
@@ -25,7 +25,7 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
         attr_protected :blacklisted
       end.new
 
-      model.should_not allow_mass_assignment_of(:blacklisted)
+      expect(model).not_to allow_mass_assignment_of(:blacklisted)
     end
   end
 
@@ -36,15 +36,15 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
         attr_accessible :whitelisted
       end.new
 
-      model.should_not allow_mass_assignment_of(:not_whitelisted)
+      expect(model).not_to allow_mass_assignment_of(:not_whitelisted)
     end
   end
 
   context 'an attribute that is whitelisted for mass-assignment' do
     it 'accepts being mass-assignable' do
-      define_model(:example, whitelisted: :string) do
+      expect(define_model(:example, whitelisted: :string) do
         attr_accessible :whitelisted
-      end.new.should allow_mass_assignment_of(:whitelisted)
+      end.new).to allow_mass_assignment_of(:whitelisted)
     end
   end
 
@@ -55,22 +55,22 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
         attr_protected :blacklisted
       end.new
 
-      model.should allow_mass_assignment_of(:not_blacklisted)
+      expect(model).to allow_mass_assignment_of(:not_blacklisted)
     end
   end
 
   unless active_model_3_2? || active_model_4_0?
     context 'an attribute on a class with no protected attributes' do
       it 'accepts being mass-assignable' do
-        no_protected_attributes.should allow_mass_assignment_of(:attr)
+        expect(no_protected_attributes).to allow_mass_assignment_of(:attr)
       end
 
       it 'assigns a negative failure message' do
         matcher = allow_mass_assignment_of(:attr)
 
-        matcher.matches?(no_protected_attributes).should be_true
+        expect(matcher.matches?(no_protected_attributes)).to eq true
 
-        matcher.failure_message_when_negated.should_not be_nil
+        expect(matcher.failure_message_when_negated).not_to be_nil
       end
     end
 
@@ -81,7 +81,7 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
 
   context 'an attribute on a class with all protected attributes' do
     it 'rejects being mass-assignable' do
-      all_protected_attributes.should_not allow_mass_assignment_of(:attr)
+      expect(all_protected_attributes).not_to allow_mass_assignment_of(:attr)
     end
 
     def all_protected_attributes
@@ -94,11 +94,11 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
   if active_model_3_1?
     context 'an attribute included in the mass-assignment whitelist for admin role only' do
       it 'rejects being mass-assignable' do
-        mass_assignable_as_admin.should_not allow_mass_assignment_of(:attr)
+        expect(mass_assignable_as_admin).not_to allow_mass_assignment_of(:attr)
       end
 
       it 'accepts being mass-assignable for admin' do
-        mass_assignable_as_admin.should allow_mass_assignment_of(:attr).as(:admin)
+        expect(mass_assignable_as_admin).to allow_mass_assignment_of(:attr).as(:admin)
       end
 
       def mass_assignable_as_admin
