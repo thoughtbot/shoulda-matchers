@@ -25,6 +25,8 @@
 * Change `validate_uniqueness_of(...)` so that it provides default values for
   non-nullable attributes.
 
+* Running `rake` now installs Appraisals before running the test suite.
+
 # v 2.5.0
 
 * Fix Rails/Test::Unit integration to ensure that the test case classes we are
