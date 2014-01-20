@@ -115,8 +115,16 @@ module Shoulda # :nodoc:
 
           @subject.class.new.tap do |instance|
             instance.send("#{@attribute}=", value)
+            if has_secure_password?
+              instance.password = 'password'
+              instance.password_confirmation = 'password'
+            end
             instance.save(validate: false)
           end
+        end
+
+        def has_secure_password?
+          @subject.class.ancestors.map(&:to_s).include?('ActiveModel::SecurePassword::InstanceMethodsOnActivation')
         end
 
         def set_scoped_attributes
