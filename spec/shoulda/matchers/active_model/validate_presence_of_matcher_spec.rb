@@ -87,6 +87,37 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
     end
   end
 
+  context 'a required serialized field' do
+    before do
+      @model = define_model :serial, :things => :string do
+        serialize :things
+        validates_presence_of :things
+      end.new
+      create_table 'serials' do |t|
+        t.string :things
+      end
+    end
+
+    it 'accepts' do
+      @model.should validate_presence_of(:things)
+    end
+  end
+
+  context 'a optional serialized field' do
+    before do
+      @model = define_model :serial, :things => :string do
+        serialize :things
+      end.new
+      create_table 'serials', :id => false do |t|
+        t.string :things
+      end
+    end
+
+    it 'accepts' do
+      @model.should_not validate_presence_of(:things)
+    end
+  end
+
   context "an i18n translation containing %{attribute} and %{model}" do
     before do
       stub_translation(
