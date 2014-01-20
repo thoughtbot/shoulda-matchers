@@ -5,6 +5,10 @@
 
 * Add ability to test `:autosave` option on associations.
 
+* Fix `validate_uniqueness_of(...).allow_nil` so that it can be used against an
+  non-password attribute which is in a model that `has_secure_password`. Doing
+  so previously would result in a "Password digest missing on new record" error.
+
 # v 2.5.0
 
 * Fix Rails/Test::Unit integration to ensure that the test case classes we are

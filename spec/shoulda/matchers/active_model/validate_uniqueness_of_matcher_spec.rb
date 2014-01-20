@@ -293,6 +293,18 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
       end
     end
 
+    if active_model_3_1?
+      context 'when the subject has a secure password' do
+        it 'allows nil on the attribute' do
+          model = define_model(:example, attr: :string, password_digest: :string) do |m|
+            validates_uniqueness_of :attr, allow_nil: true
+            has_secure_password
+          end.new
+          expect(model).to matcher.allow_nil
+        end
+      end
+    end
+
     it "should create a nil and verify that it is allowed" do
       model = define_model_with_allow_nil
       expect(model).to matcher.allow_nil
