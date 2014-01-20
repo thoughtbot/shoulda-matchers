@@ -199,7 +199,7 @@ end
 
 # RSpec
 describe Issue do
-  it { should ensure_inclusion_of(:state).in_array(%w(open resolved unresolved))
+  it { should ensure_inclusion_of(:state).in_array(%w(open resolved unresolved)) }
   it { should ensure_inclusion_of(:state).in_range(1..5) }
 
   it do
@@ -473,7 +473,7 @@ describe Person do
 
   it do
     should validate_numericality_of(:number_of_dependents).
-      with_message('Number of dependents must be a number' }
+      with_message('Number of dependents must be a number')
   end
 end
 
