@@ -24,6 +24,6 @@ task :default do
   end
 end
 
-task :appraise => ['appraisal:install'] do
-  exec 'rake appraisal'
+task :appraise do
+  exec 'appraisal install && appraisal rake'
 end

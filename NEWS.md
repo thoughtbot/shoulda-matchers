@@ -27,6 +27,9 @@
 
 * Running `rake` now installs Appraisals before running the test suite.
 
+* Additionally, we now manage Appraisals using the `appraisal` executable that
+  is coming in Appraisal 1.0.0 (we're using the beta for now).
+
 # v 2.5.0
 
 * Fix Rails/Test::Unit integration to ensure that the test case classes we are

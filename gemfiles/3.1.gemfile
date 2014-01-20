@@ -15,4 +15,4 @@ gem "jquery-rails"
 gem "sass-rails"
 gem "strong_parameters"
 
-gemspec :path=>"../"
+gemspec :path=>".././"
