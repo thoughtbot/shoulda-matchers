@@ -205,10 +205,116 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
       end
     end
   end
-end
 
-def validating_inclusion(options)
-  define_model(:example, attr: :string) do
-    validates_inclusion_of :attr, options
-  end.new
+  context 'against a boolean attribute' do
+    context 'which is nullable' do
+      context 'when ensuring inclusion of true' do
+        it "doesn't raise an error" do
+          record = validating_inclusion_of_boolean_in(:attr, [true], null: true)
+          expect(record).to ensure_inclusion_of(:attr).in_array([true])
+        end
+      end
+
+      context 'when ensuring inclusion of false' do
+        it "doesn't raise an error" do
+          record = validating_inclusion_of_boolean_in(:attr, [false], null: true)
+          expect(record).to ensure_inclusion_of(:attr).in_array([false])
+        end
+      end
+
+      context 'when ensuring inclusion of true and false' do
+        it "doesn't raise an error" do
+          record = validating_inclusion_of_boolean_in(:attr, [true, false], null: true)
+          capture(:stderr) do
+            expect(record).to ensure_inclusion_of(:attr).in_array([true, false])
+          end
+        end
+
+        it 'prints a warning' do
+          record = validating_inclusion_of_boolean_in(:attr, [true, false], null: true)
+          stderr = capture(:stderr) do
+            expect(record).to ensure_inclusion_of(:attr).in_array([true, false])
+          end
+          expect(stderr.gsub(/\n+/, ' ')).
+            to include('You are using `ensure_inclusion_of` to assert that a boolean column allows boolean values and disallows non-boolean ones')
+        end
+      end
+
+      context 'when ensuring inclusion of nil' do
+        it "doesn't raise an error" do
+          record = validating_inclusion_of_boolean_in(:attr, [nil], null: true)
+          capture(:stderr) do
+            expect(record).to ensure_inclusion_of(:attr).in_array([nil])
+          end
+        end
+
+        it 'prints a warning' do
+          record = validating_inclusion_of_boolean_in(:attr, [nil], null: true)
+          stderr = capture(:stderr) do
+            expect(record).to ensure_inclusion_of(:attr).in_array([nil])
+          end
+          expect(stderr.gsub(/\n+/, ' ')).
+            to include('You are using `ensure_inclusion_of` to assert that a boolean column allows nil')
+        end
+      end
+    end
+
+    context 'which is non-nullable' do
+      context 'when ensuring inclusion of true' do
+        it "doesn't raise an error" do
+          record = validating_inclusion_of_boolean_in(:attr, [true], null: false)
+          expect(record).to ensure_inclusion_of(:attr).in_array([true])
+        end
+      end
+
+      context 'when ensuring inclusion of false' do
+        it "doesn't raise an error" do
+          record = validating_inclusion_of_boolean_in(:attr, [false], null: false)
+          expect(record).to ensure_inclusion_of(:attr).in_array([false])
+        end
+      end
+
+      context 'when ensuring inclusion of true and false' do
+        it "doesn't raise an error" do
+          record = validating_inclusion_of_boolean_in(:attr, [true, false], null: false)
+          capture(:stderr) do
+            expect(record).to ensure_inclusion_of(:attr).in_array([true, false])
+          end
+        end
+
+        it 'prints a warning' do
+          record = validating_inclusion_of_boolean_in(:attr, [true, false], null: false)
+          stderr = capture(:stderr) do
+            expect(record).to ensure_inclusion_of(:attr).in_array([true, false])
+          end
+          expect(stderr.gsub(/\n+/, ' ')).
+            to include('You are using `ensure_inclusion_of` to assert that a boolean column allows boolean values and disallows non-boolean ones')
+        end
+      end
+
+      context 'when ensuring inclusion of nil' do
+        it 'raises a specific error' do
+          record = validating_inclusion_of_boolean_in(:attr, [nil], null: false)
+          error_class = Shoulda::Matchers::ActiveModel::NonNullableBooleanError
+          expect {
+            expect(record).to ensure_inclusion_of(:attr).in_array([nil])
+          }.to raise_error(error_class)
+        end
+      end
+    end
+  end
+
+  def validating_inclusion(options)
+    define_model(:example, attr: :string) do
+      validates_inclusion_of :attr, options
+    end.new
+  end
+
+  def validating_inclusion_of_boolean_in(attribute, values, options = {})
+    null = options.fetch(:null, true)
+    column_options = { type: :boolean, options: { null: null } }
+    define_model(:example, attribute => column_options) do
+      validates_inclusion_of attribute, in: values
+    end.new
+  end
 end

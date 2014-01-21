@@ -25,6 +25,25 @@ module Shoulda # :nodoc:
         ARBITRARY_OUTSIDE_STRING = 'shouldamatchersteststring'
         ARBITRARY_OUTSIDE_FIXNUM = 123456789
         ARBITRARY_OUTSIDE_DECIMAL = 0.123456789
+        BOOLEAN_ALLOWS_BOOLEAN_MESSAGE = <<EOT
+You are using `ensure_inclusion_of` to assert that a boolean column allows
+boolean values and disallows non-boolean ones. Assuming you are using
+`validates_format_of` in your model, be aware that it is not possible to fully
+test this, and in fact the validation is superfluous, as boolean columns will
+automatically convert non-boolean values to boolean ones. Hence, you should
+consider removing this test and the corresponding validation.
+EOT
+        BOOLEAN_ALLOWS_NIL_MESSAGE = <<EOT
+You are using `ensure_inclusion_of` to assert that a boolean column allows nil.
+Be aware that it is not possible to fully test this, as anything other than
+true, false or nil will be converted to false. Hence, you should consider
+removing this test and the corresponding validation.
+EOT
+        BOOLEAN_ALLOWS_NIL_WITH_NOT_NULL_MESSAGE = <<EOT
+You have specified that your model's #{@attribute} should ensure inclusion of nil.
+However, #{@attribute} is a boolean column which does not allow null values.
+Hence, this test will fail and there is no way to make it pass.
+EOT
 
         def initialize(attribute)
           super(attribute)
@@ -142,30 +161,63 @@ module Shoulda # :nodoc:
         end
 
         def disallows_value_outside_of_array?
-          disallows_value_of(value_outside_of_array)
+          if attribute_column.type == :boolean
+            case @array
+            when [true, false]
+              Shoulda::Matchers.warn BOOLEAN_ALLOWS_BOOLEAN_MESSAGE
+              return true
+            when [nil]
+              if attribute_column.null
+                Shoulda::Matchers.warn BOOLEAN_ALLOWS_NIL_MESSAGE
+                return true
+              else
+                raise NonNullableBooleanError, BOOLEAN_ALLOWS_NIL_WITH_NOT_NULL_MESSAGE
+              end
+            end
+          end
+
+          !allows_value_of(*values_outside_of_array)
         end
 
-        def value_outside_of_array
-          if @array.include?(outside_value)
+        def values_outside_of_array
+          if !(@array & outside_values).empty?
             raise CouldNotDetermineValueOutsideOfArray
           else
-            outside_value
+            outside_values
           end
         end
 
-        def outside_value
-          @outside_value ||= find_outside_value
-        end
-
-        def find_outside_value
-          case @subject.__send__(@attribute.to_s)
-          when Fixnum
-            ARBITRARY_OUTSIDE_FIXNUM
-          when BigDecimal
-            ARBITRARY_OUTSIDE_DECIMAL 
+        def outside_values
+          case attribute_column.type
+          when :boolean
+            boolean_outside_values
+          when :integer, :float
+            [ARBITRARY_OUTSIDE_FIXNUM]
+          when :decimal
+            [ARBITRARY_OUTSIDE_DECIMAL]
           else
-            ARBITRARY_OUTSIDE_STRING
+            [ARBITRARY_OUTSIDE_STRING]
           end
+        end
+
+        def boolean_outside_values
+          values = []
+
+          values << case @array
+            when [true]  then false
+            when [false] then true
+            else              raise CouldNotDetermineValueOutsideOfArray
+          end
+
+          if attribute_column.null
+            values << nil
+          end
+
+          values
+        end
+
+        def attribute_column
+          @subject.class.columns_hash[@attribute.to_s]
         end
       end
     end

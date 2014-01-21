@@ -13,6 +13,15 @@
   the error message reported does not say the matcher accepts integer values if
   you didn't specify that.
 
+* Fix `ensure_inclusion_of` so that you can use it against a boolean column
+  (and pass boolean values to `in_array`). There are two caveats:
+
+  * You should not test that your attribute allows both true and false
+    (`.in_array([true, false]`); there's no way to test that it doesn't accept
+    anything other than that.
+  * You cannot test that your attribute allows nil (`.in_array([nil])`) if
+    the column does not allow null values.
+
 # v 2.5.0
 
 * Fix Rails/Test::Unit integration to ensure that the test case classes we are
