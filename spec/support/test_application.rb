@@ -56,7 +56,30 @@ class TestApplication
   end
 
   def generate
+    rails_new
+    fix_available_locales_warning
+  end
+
+  def rails_new
     `rails new #{ROOT_DIR} --skip-bundle`
+  end
+
+  def fix_available_locales_warning
+    # See here for more on this:
+    # http://stackoverflow.com/questions/20361428/rails-i18n-validation-deprecation-warning
+
+    filename = File.join(ROOT_DIR, 'config/application.rb')
+
+    lines = File.read(filename).split("\n")
+    lines.insert(-3, <<EOT)
+if I18n.respond_to?(:enforce_available_locales=)
+  I18n.enforce_available_locales = false
+end
+EOT
+
+    File.open(filename, 'w') do |f|
+      f.write(lines.join("\n"))
+    end
   end
 
   def load_environment
