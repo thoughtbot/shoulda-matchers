@@ -21,13 +21,21 @@ module Shoulda
 
           def join_table
             join_table =
-              if reflection.respond_to?(:join_table)
+              if Rails::VERSION::STRING == '4.1.0.beta1' && !has_and_belongs_to_name_table_name.nil?
+                has_and_belongs_to_name_table_name
+              elsif reflection.respond_to?(:join_table)
                 reflection.join_table
               else
                 reflection.options[:join_table]
               end
 
             join_table.to_s
+          end
+
+          def has_and_belongs_to_name_table_name
+            return false if reflection.options[:through].nil?
+            @subject.reflect_on_all_associations.detect { |r| r.plural_name.to_sym == reflection.options[:through] }
+              .options[:class].table_name
           end
 
           def association_relation
