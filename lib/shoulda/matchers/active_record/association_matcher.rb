@@ -28,6 +28,8 @@ module Shoulda # :nodoc:
       # * <tt>dependent</tt> - tests that the association makes use of the
       #   dependent option.
       # * <tt>:class_name</tt> - tests that the association resoves to class_name.
+      # * <tt>:autosave</tt> - tests that the association makes use of the
+      #   autosave option.
       # * <tt>:validate</tt> - tests that the association makes use of the validate
       # option.
       #
@@ -48,6 +50,8 @@ module Shoulda # :nodoc:
       # * <tt>:dependent</tt> - tests that the association makes use of the
       #   dependent option.
       # * <tt>:class_name</tt> - tests that the association resolves to class_name.
+      # * <tt>:autosave</tt> - tests that the association makes use of the
+      #   autosave option.
       # * <tt>:validate</tt> - tests that the association makes use of the validate
       # option.
       #
@@ -120,6 +124,11 @@ module Shoulda # :nodoc:
           self
         end
 
+        def autosave(autosave)
+          @options[:autosave] = autosave
+          self
+        end
+
         def class_name(class_name)
           @options[:class_name] = class_name
           self
@@ -163,6 +172,7 @@ module Shoulda # :nodoc:
             class_exists? &&
             foreign_key_exists? &&
             class_name_correct? &&
+            autosave_correct? &&
             conditions_correct? &&
             join_table_exists? &&
             validate_correct? &&
@@ -264,6 +274,19 @@ module Shoulda # :nodoc:
         rescue NameError
           @missing = "#{reflection.class_name} does not exist"
           false
+        end
+
+        def autosave_correct?
+          if options.key?(:autosave)
+            if option_verifier.correct_for_boolean?(:autosave, options[:autosave])
+              true
+            else
+              @missing = "#{name} should have autosave set to #{options[:autosave]}"
+              false
+            end
+          else
+            true
+          end
         end
 
         def conditions_correct?

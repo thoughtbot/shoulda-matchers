@@ -3,6 +3,8 @@
 * Association matchers now test that the model being referred to (either
   implicitly or explicitly, using `:class_name`) actually exists.
 
+* Add ability to test `:autosave` option on associations.
+
 # v 2.5.0
 
 * Fix Rails/Test::Unit integration to ensure that the test case classes we are
