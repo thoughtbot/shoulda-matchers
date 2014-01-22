@@ -20,14 +20,4 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 1.9.2'
   s.add_dependency('activesupport', '>= 3.0.0')
-
-  s.add_development_dependency('appraisal',   '~> 1.0.0.beta2')
-  s.add_development_dependency('aruba')
-  s.add_development_dependency('pry')
-  s.add_development_dependency('bourne',      '~> 1.3')
-  s.add_development_dependency('bundler',     '~> 1.1')
-  s.add_development_dependency('cucumber',    '~> 1.1')
-  s.add_development_dependency('rails',       '~> 3.0')
-  s.add_development_dependency('rake',        '>= 0.9.2')
-  s.add_development_dependency('rspec-rails', '>= 2.13.1', '< 3')
 end
