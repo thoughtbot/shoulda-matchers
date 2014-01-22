@@ -32,12 +32,6 @@ module Shoulda
             join_table.to_s
           end
 
-          def has_and_belongs_to_name_table_name
-            return false if reflection.options[:through].nil?
-            @subject.reflect_on_all_associations.detect { |r| r.plural_name.to_sym == reflection.options[:through] }
-              .options[:class].table_name
-          end
-
           def association_relation
             if reflection.respond_to?(:scope)
               convert_scope_to_relation(reflection.scope)
@@ -80,6 +74,12 @@ module Shoulda
             else
               relation
             end
+          end
+
+          def has_and_belongs_to_name_table_name
+            return false if reflection.options[:through].nil?
+            @subject.reflect_on_all_associations.detect { |r| r.plural_name.to_sym == reflection.options[:through] }
+            .options[:class].table_name
           end
         end
       end
