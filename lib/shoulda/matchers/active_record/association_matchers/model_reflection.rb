@@ -21,7 +21,7 @@ module Shoulda
 
           def join_table
             join_table =
-              if Rails::VERSION::STRING == '4.1.0.beta1' && !has_and_belongs_to_name_table_name.nil?
+              if has_and_belongs_to_name_table_name
                 has_and_belongs_to_name_table_name
               elsif reflection.respond_to?(:join_table)
                 reflection.join_table
