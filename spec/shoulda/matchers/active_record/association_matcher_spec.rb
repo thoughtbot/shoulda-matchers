@@ -106,28 +106,28 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
     end
 
     it 'rejects an association with non-existent explicit class name' do
-      expect(belonging_to_non_existent_class(:child, :parent, :class_name => 'Parent')).not_to belong_to(:parent)
+      expect(belonging_to_non_existent_class(:child, :parent, class_name: 'Parent')).not_to belong_to(:parent)
     end
 
     it 'adds error message when rejecting an association with non-existent class' do
       message = 'Expected Child to have a belongs_to association called parent (Parent2 does not exist)'
       expect {
-        expect(belonging_to_non_existent_class(:child, :parent, :class_name => 'Parent2')).to belong_to(:parent)
+        expect(belonging_to_non_existent_class(:child, :parent, class_name: 'Parent2')).to belong_to(:parent)
       }.to fail_with_message(message)
     end
 
     it 'accepts an association with a matching :autosave option' do
-      define_model :parent, :adopter => :boolean
-      define_model :child, :parent_id => :integer do
-        belongs_to :parent, :autosave => true
+      define_model :parent, adopter: :boolean
+      define_model :child, parent_id: :integer do
+        belongs_to :parent, autosave: true
       end
       expect(Child.new).to belong_to(:parent).autosave(true)
     end
 
     it 'rejects an association with a non-matching :autosave option with the correct message' do
-      define_model :parent, :adopter => :boolean
-      define_model :child, :parent_id => :integer do
-        belongs_to :parent, :autosave => false
+      define_model :parent, adopter: :boolean
+      define_model :child, parent_id: :integer do
+        belongs_to :parent, autosave: false
       end
 
       message = 'Expected Child to have a belongs_to association called parent (parent should have autosave set to true)'
@@ -390,28 +390,28 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
     end
 
     it 'rejects an association with non-existent explicit class name' do
-      expect(having_many_non_existent_class(:parent, :children, :class_name => 'Child')).not_to have_many(:children)
+      expect(having_many_non_existent_class(:parent, :children, class_name: 'Child')).not_to have_many(:children)
     end
 
     it 'adds error message when rejecting an association with non-existent class' do
       message = 'Expected Parent to have a has_many association called children (Child2 does not exist)'
       expect {
-        expect(having_many_non_existent_class(:parent, :children, :class_name => 'Child2')).to have_many(:children)
+        expect(having_many_non_existent_class(:parent, :children, class_name: 'Child2')).to have_many(:children)
       }.to fail_with_message(message)
     end
 
     it 'accepts an association with a matching :autosave option' do
-      define_model :child, :parent_id => :integer
+      define_model :child, parent_id: :integer
       define_model :parent do
-        has_many :children, :autosave => true
+        has_many :children, autosave: true
       end
       expect(Parent.new).to have_many(:children).autosave(true)
     end
 
     it 'rejects an association with a non-matching :autosave option with the correct message' do
-      define_model :child, :parent_id => :integer
+      define_model :child, parent_id: :integer
       define_model :parent do
-        has_many :children, :autosave => false
+        has_many :children, autosave: false
       end
 
       message = 'Expected Parent to have a has_many association called children (children should have autosave set to true)'
@@ -571,17 +571,17 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
     end
 
     it 'accepts an association with a matching :autosave option' do
-      define_model :detail, :person_id => :integer, :disabled => :boolean
+      define_model :detail, person_id: :integer, disabled: :boolean
       define_model :person do
-        has_one :detail, :autosave => true
+        has_one :detail, autosave: true
       end
       expect(Person.new).to have_one(:detail).autosave(true)
     end
 
     it 'rejects an association with a non-matching :autosave option with the correct message' do
-      define_model :detail, :person_id => :integer, :disabled => :boolean
+      define_model :detail, person_id: :integer, disabled: :boolean
       define_model :person do
-        has_one :detail, :autosave => false
+        has_one :detail, autosave: false
       end
 
       message = 'Expected Person to have a has_one association called detail (detail should have autosave set to true)'
@@ -608,13 +608,13 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
     end
 
     it 'rejects an association with non-existent explicit class name' do
-      expect(having_one_non_existent(:person, :detail, :class_name => 'Detail')).not_to have_one(:detail)
+      expect(having_one_non_existent(:person, :detail, class_name: 'Detail')).not_to have_one(:detail)
     end
 
     it 'adds error message when rejecting an association with non-existent class' do
       message = 'Expected Person to have a has_one association called detail (Detail2 does not exist)'
       expect {
-        expect(having_one_non_existent(:person, :detail, :class_name => 'Detail2')).to have_one(:detail)
+        expect(having_one_non_existent(:person, :detail, class_name: 'Detail2')).to have_one(:detail)
       }.to fail_with_message(message)
     end
 
@@ -760,35 +760,35 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
     end
 
     it 'rejects an association with non-existent explicit class name' do
-      expect(having_and_belonging_to_many_non_existent_class(:person, :relatives, :class_name => 'Relative')).
+      expect(having_and_belonging_to_many_non_existent_class(:person, :relatives, class_name: 'Relative')).
         not_to have_and_belong_to_many(:relatives)
     end
 
     it 'adds error message when rejecting an association with non-existent class' do
       message = 'Expected Person to have a has_and_belongs_to_many association called relatives (Relative2 does not exist)'
       expect {
-        expect(having_and_belonging_to_many_non_existent_class(:person, :relatives, :class_name => 'Relative2')).
+        expect(having_and_belonging_to_many_non_existent_class(:person, :relatives, class_name: 'Relative2')).
           to have_and_belong_to_many(:relatives)
       }.to fail_with_message(message)
     end
 
     it 'accepts an association with a matching :autosave option' do
-      define_model :relatives, :adopted => :boolean
+      define_model :relatives, adopted: :boolean
       define_model :person do
-        has_and_belongs_to_many :relatives, :autosave => true
+        has_and_belongs_to_many :relatives, autosave: true
       end
-      define_model :people_relative, :person_id   => :integer,
-                                     :relative_id => :integer
+      define_model :people_relative, person_id: :integer,
+                                     relative_id: :integer
       expect(Person.new).to have_and_belong_to_many(:relatives).autosave(true)
     end
 
     it 'rejects an association with a non-matching :autosave option with the correct message' do
-      define_model :relatives, :adopted => :boolean
+      define_model :relatives, adopted: :boolean
       define_model :person do
         has_and_belongs_to_many :relatives
       end
-      define_model :people_relative, :person_id   => :integer,
-                                     :relative_id => :integer
+      define_model :people_relative, person_id: :integer,
+                                     relative_id: :integer
 
       message = 'Expected Person to have a has_and_belongs_to_many association called relatives (relatives should have autosave set to true)'
       expect {
