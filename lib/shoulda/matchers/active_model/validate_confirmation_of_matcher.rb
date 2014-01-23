@@ -1,16 +1,62 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActiveModel # :nodoc:
-      # Ensures that the model's attribute matches confirmation
+    module ActiveModel
+      # The `validate_confirmation_of` matcher tests usage of the
+      # `validates_confirmation_of` validation.
       #
-      # Example:
-      #   it { should validate_confirmation_of(:password) }
+      #     class User
+      #       include ActiveModel::Model
+      #       attr_accessor :email
+      #
+      #       validates_confirmation_of :email
+      #     end
+      #
+      #     # RSpec
+      #     describe User do
+      #       it { should validate_confirmation_of(:email) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class UserTest < ActiveSupport::TestCase
+      #       should validate_confirmation_of(:email)
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### with_message
+      #
+      # Use `with_message` if you are using a custom validation message.
+      #
+      #     class User
+      #       include ActiveModel::Model
+      #       attr_accessor :password
+      #
+      #       validates_confirmation_of :password,
+      #         message: 'Please re-enter your password'
+      #     end
+      #
+      #     # RSpec
+      #     describe User do
+      #       it do
+      #         should validate_confirmation_of(:password).
+      #           with_message('Please re-enter your password')
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class UserTest < ActiveSupport::TestCase
+      #       should validate_confirmation_of(:password).
+      #         with_message('Please re-enter your password')
+      #     end
+      #
+      # @return [ValidateConfirmationOfMatcher]
       #
       def validate_confirmation_of(attr)
         ValidateConfirmationOfMatcher.new(attr)
       end
 
-      class ValidateConfirmationOfMatcher < ValidationMatcher # :nodoc:
+      # @private
+      class ValidateConfirmationOfMatcher < ValidationMatcher
         include Helpers
 
         attr_reader :attribute, :confirmation_attribute

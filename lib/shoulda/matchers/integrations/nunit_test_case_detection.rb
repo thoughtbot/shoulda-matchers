@@ -1,6 +1,8 @@
 module Shoulda
   module Matchers
+    # @private
     module Integrations
+      # @private
       module NUnitTestCaseDetection
         def self.possible_test_case_constants
           [
@@ -29,6 +31,7 @@ module Shoulda
       end
     end
 
+    # @private
     def self.nunit_test_case_constants
       Integrations::NUnitTestCaseDetection.test_case_constants
     end

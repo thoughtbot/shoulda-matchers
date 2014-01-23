@@ -1,7 +1,8 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActiveModel # :nodoc:
-      class ValidationMatcher # :nodoc:
+    module ActiveModel
+      # @private
+      class ValidationMatcher
         attr_reader :failure_message
 
         alias failure_message_for_should failure_message

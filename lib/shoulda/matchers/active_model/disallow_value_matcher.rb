@@ -1,13 +1,13 @@
 require 'forwardable'
 
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActiveModel # :nodoc:
-      class DisallowValueMatcher # :nodoc:
+    module ActiveModel
+      # @private
+      class DisallowValueMatcher
         extend Forwardable
 
         def_delegators :allow_matcher, :_after_setting_value
-
         def initialize(value)
           @allow_matcher = AllowValueMatcher.new(value)
         end

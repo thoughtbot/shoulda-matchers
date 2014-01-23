@@ -1,36 +1,92 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActionController # :nodoc:
-
-      # Ensures that requesting +path+ using +method+ routes to +options+.
+    module ActionController
+      # The `route` matcher tests that a route resolves to a controller,
+      # action, and params; and that the controller, action, and params
+      # generates the same route. For an RSpec suite, this is like using a
+      # combination of `route_to` and `be_routable`. For a Test::Unit suite, it
+      # provides a more expressive syntax over `assert_routing`.
       #
-      # If you don't specify a controller, it will use the controller from the
-      # example group.
+      # You can use this matcher either in a controller test case or in a
+      # routing test case. For instance, given these routes:
       #
-      # +to_param+ is called on the +options+ given.
+      #     My::Application.routes.draw do
+      #       get '/posts', controller: 'posts', action: 'index'
+      #       get '/posts/:id' => 'posts#show'
+      #     end
       #
-      # Examples:
+      # You could choose to write tests for these routes alongside other tests
+      # for PostsController:
       #
-      #   it { should route(:get, '/posts').
-      #                 to(controller: :posts, action: :index) }
-      #   it { should route(:get, '/posts').to('posts#index') }
-      #   it { should route(:get, '/posts/new').to(action: :new) }
-      #   it { should route(:post, '/posts').to(action: :create) }
-      #   it { should route(:get, '/posts/1').to(action: :show, id: 1) }
-      #   it { should route(:get, '/posts/1').to('posts#show', id: 1) }
-      #   it { should route(:get, '/posts/1/edit').to(action: :edit, id: 1) }
-      #   it { should route(:put, '/posts/1').to(action: :update, id: 1) }
-      #   it { should route(:delete, '/posts/1').
-      #                 to(action: :destroy, id: 1) }
-      #   it { should route(:get, '/users/1/posts/1').
-      #                 to(action: :show, id: 1, user_id: 1) }
-      #   it { should route(:get, '/users/1/posts/1').
-      #                 to('posts#show', id: 1, user_id: 1) }
+      #     class PostsController < ApplicationController
+      #       # ...
+      #     end
+      #
+      #     # RSpec
+      #     describe PostsController do
+      #       it { should route(:get, '/posts').to(action: :index) }
+      #       it { should route(:get, '/posts/1').to(action: :show, id: 1) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PostsControllerTest < ActionController::TestCase
+      #       should route(:get, '/posts').to(action: 'index')
+      #       should route(:get, '/posts/1').to(action: :show, id: 1)
+      #     end
+      #
+      # Or you could place the tests along with other route tests:
+      #
+      #     # RSpec
+      #     describe 'Routing' do
+      #       it do
+      #         should route(:get, '/posts').
+      #           to(controller: :posts, action: :index)
+      #       end
+      #
+      #       it do
+      #         should route(:get, '/posts/1').
+      #           to('posts#show', id: 1)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class RoutesTest < ActionController::IntegrationTest
+      #       should route(:get, '/posts').
+      #         to(controller: :posts, action: :index)
+      #
+      #       should route(:get, '/posts/1').
+      #         to('posts#show', id: 1)
+      #     end
+      #
+      # Notice that in the former case, as we are inside of a test case for
+      # PostsController, we do not have to specify that the routes resolve to
+      # this controller. In the latter case we specify this using the
+      # `controller` key passed to the `to` qualifier.
+      #
+      # #### Qualifiers
+      #
+      # ##### to
+      #
+      # Use `to` to specify the action (along with the controller, if needed)
+      # that the route resolves to.
+      #
+      #     # Three ways of saying the same thing (using the example above)
+      #     route(:get, '/posts').to(action: index)
+      #     route(:get, '/posts').to(controller: :posts, action: index)
+      #     route(:get, '/posts').to('posts#index')
+      #
+      # If there are parameters in your route, then specify those too:
+      #
+      #     route(:get, '/posts/1').to('posts#show', id: 1)
+      #
+      # @return [RouteMatcher]
+      #
       def route(method, path)
         RouteMatcher.new(method, path, self)
       end
 
-      class RouteMatcher # :nodoc:
+      # @private
+      class RouteMatcher
         def initialize(method, path, context)
           @method  = method
           @path    = path

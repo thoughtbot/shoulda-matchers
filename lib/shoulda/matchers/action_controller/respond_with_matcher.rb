@@ -1,26 +1,95 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActionController # :nodoc:
-
-      # Ensures a controller responded with expected 'response' status code.
+    module ActionController
+      # The `respond_with` matcher tests that an action responds with a certain
+      # status code.
       #
-      # You can pass an explicit status number like 200, 301, 404, 500
-      # or its symbolic equivalent :success, :redirect, :missing, :error.
-      # See ActionController::StatusCodes for a full list.
+      # You can specify that the status should be a number:
       #
-      # Example:
+      #     class PostsController < ApplicationController
+      #       def index
+      #         render status: 403
+      #       end
+      #     end
       #
-      #   it { should respond_with(:success)  }
-      #   it { should respond_with(:redirect) }
-      #   it { should respond_with(:missing)  }
-      #   it { should respond_with(:error)    }
-      #   it { should respond_with(501)       }
+      #     # RSpec
+      #     describe PostsController do
+      #       describe 'GET #index' do
+      #         before { get :index }
+      #
+      #         it { should respond_with(403) }
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PostsControllerTest < ActionController::TestCase
+      #       context 'GET #index' do
+      #         setup { get :index }
+      #
+      #         should respond_with(403)
+      #       end
+      #     end
+      #
+      # You can specify that the status should be within a range of numbers:
+      #
+      #     class PostsController < ApplicationController
+      #       def destroy
+      #         render status: 508
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe PostsController do
+      #       describe 'DELETE #destroy' do
+      #         before { delete :destroy }
+      #
+      #         it { should respond_with(500..600) }
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PostsControllerTest < ActionController::TestCase
+      #       context 'DELETE #destroy' do
+      #         setup { delete :destroy }
+      #
+      #         should respond_with(500..600)
+      #       end
+      #     end
+      #
+      # Finally, you can specify that the status should be a symbol:
+      #
+      #     class PostsController < ApplicationController
+      #       def show
+      #         render status: :locked
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe PostsController do
+      #       describe 'GET #show' do
+      #         before { get :show }
+      #
+      #         it { should respond_with(:locked) }
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PostsControllerTest < ActionController::TestCase
+      #       context 'GET #show' do
+      #         setup { get :show }
+      #
+      #         should respond_with(:locked)
+      #       end
+      #     end
+      #
+      # @return [RespondWithMatcher]
+      #
       def respond_with(status)
         RespondWithMatcher.new(status)
       end
 
-      class RespondWithMatcher # :nodoc:
-
+      # @private
+      class RespondWithMatcher
         def initialize(status)
           @status = symbol_to_status_code(status)
         end

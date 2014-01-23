@@ -1,95 +1,751 @@
 require 'active_support/core_ext/module/delegation'
 
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActiveRecord # :nodoc:
-      # Ensure that the belongs_to relationship exists.
+    module ActiveRecord
+      # The `belong_to` matcher is used to ensure that a `belong_to` association
+      # exists on your model.
       #
-      # Options:
-      # * <tt>class_name</tt> - tests that the association resolves to class_name.
-      # * <tt>validate</tt> - tests that the association makes use of the validate
-      # option.
-      # * <tt>touch</tt> - tests that the association makes use of the touch
-      # option.
+      #     class Person < ActiveRecord::Base
+      #       belongs_to :organization
+      #     end
       #
-      # Example:
-      #   it { should belong_to(:parent) }
-      #   it { should belong_to(:parent).touch }
-      #   it { should belong_to(:parent).validate }
-      #   it { should belong_to(:parent).class_name("ModelClassName") }
+      #     # RSpec
+      #     describe Person do
+      #       it { should belong_to(:organization) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should belong_to(:organization)
+      #     end
+      #
+      # Note that polymorphic associations are automatically detected and do not
+      # need any qualifiers:
+      #
+      #     class Comment < ActiveRecord::Base
+      #       belongs_to :commentable, polymorphic: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Comment do
+      #       it { should belong_to(:commentable) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class CommentTest < ActiveSupport::TestCase
+      #       should belong_to(:commentable)
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### conditions
+      #
+      # Use `conditions` if your association is defined with a scope that sets
+      # the `where` clause.
+      #
+      #     class Person < ActiveRecord::Base
+      #       belongs_to :family, -> { where(everyone_is_perfect: false) }
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it do
+      #         should belong_to(:family).
+      #           conditions(everyone_is_perfect: false)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should belong_to(:family).
+      #         conditions(everyone_is_perfect: false)
+      #     end
+      #
+      # ##### order
+      #
+      # Use `order` if your association is defined with a scope that sets the
+      # `order` clause.
+      #
+      #     class Person < ActiveRecord::Base
+      #       belongs_to :previous_company, -> { order('hired_on desc') }
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should belong_to(:previous_company).order('hired_on desc') }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should belong_to(:previous_company).order('hired_on desc')
+      #     end
+      #
+      # ##### class_name
+      #
+      # Use `class_name` to test usage of the `:class_name` option. This
+      # asserts that the model you're referring to actually exists.
+      #
+      #     class Person < ActiveRecord::Base
+      #       belongs_to :ancient_city, class_name: 'City'
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should belong_to(:ancient_city).class_name('City') }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should belong_to(:ancient_city).class_name('City')
+      #     end
+      #
+      # ##### with_foreign_key
+      #
+      # Use `with_foreign_key` to test usage of the `:foreign_key` option.
+      #
+      #     class Person < ActiveRecord::Base
+      #       belongs_to :great_country, foreign_key: 'country_id'
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it do
+      #         should belong_to(:great_country).
+      #           with_foreign_key('country_id')
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should belong_to(:great_country).
+      #         with_foreign_key('country_id')
+      #     end
+      #
+      # ##### dependent
+      #
+      # Use `dependent` to assert that the `:dependent` option was specified.
+      #
+      #     class Person < ActiveRecord::Base
+      #       belongs_to :world, dependent: :destroy
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should belong_to(:world).dependent(:destroy) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should belong_to(:world).dependent(:destroy)
+      #     end
+      #
+      # ##### counter_cache
+      #
+      # Use `counter_cache` to assert that the `:counter_cache` option was
+      # specified.
+      #
+      #     class Person < ActiveRecord::Base
+      #       belongs_to :organization, counter_cache: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should belong_to(:organization).counter_cache(true) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should belong_to(:organization).counter_cache(true)
+      #     end
+      #
+      # ##### touch
+      #
+      # Use `touch` to assert that the `:touch` option was specified.
+      #
+      #     class Person < ActiveRecord::Base
+      #       belongs_to :organization, touch: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should belong_to(:organization).touch(true) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should belong_to(:organization).touch(true)
+      #     end
+      #
+      # #### autosave
+      #
+      # Use `autosave` to assert that the `:autosave` option was specified.
+      #
+      #     class Account < ActiveRecord::Base
+      #       belongs_to :bank, autosave: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Account do
+      #       it { should belong_to(:bank).autosave(true) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class AccountTest < ActiveSupport::TestCase
+      #       should belong_to(:bank).autosave(true)
+      #     end
+      #
+      # ##### inverse_of
+      #
+      # Use `inverse_of` to assert that the `:inverse_of` option was specified.
+      #
+      #     class Person < ActiveRecord::Base
+      #       belongs_to :organization, inverse_of: :employees
+      #     end
+      #
+      #     # RSpec
+      #     describe Person
+      #       it { should belong_to(:organization).inverse_of(:employees) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should belong_to(:organization).inverse_of(:employees)
+      #     end
+      #
+      # @return [AssociationMatcher]
       #
       def belong_to(name)
         AssociationMatcher.new(:belongs_to, name)
       end
 
-      # Ensures that the has_many relationship exists.  Will also test that the
-      # associated table has the required columns.  Works with polymorphic
-      # associations.
+      # The `have_many` matcher is used to test that a `has_many` or `has_many
+      # :through` association exists on your model.
       #
-      # Options:
-      # * <tt>through</tt> - association name for <tt>has_many :through</tt>
-      # * <tt>dependent</tt> - tests that the association makes use of the
-      #   dependent option.
-      # * <tt>class_name</tt> - tests that the association resoves to class_name.
-      # * <tt>autosave</tt> - tests that the association makes use of the
-      #   autosave option.
-      # * <tt>validate</tt> - tests that the association makes use of the validate
-      # option.
+      #     class Person < ActiveRecord::Base
+      #       has_many :friends
+      #     end
       #
-      # Example:
-      #   it { should have_many(:friends) }
-      #   it { should have_many(:enemies).through(:friends) }
-      #   it { should have_many(:enemies).dependent(:destroy) }
-      #   it { should have_many(:friends).autosave }
-      #   it { should have_many(:friends).validate }
-      #   it { should have_many(:friends).class_name("Friend") }
+      #     # RSpec
+      #     describe Person do
+      #       it { should have_many(:friends) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_many(:friends)
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### conditions
+      #
+      # Use `conditions` if your association is defined with a scope that sets
+      # the `where` clause.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_many :coins, -> { where(quality: 'mint') }
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should have_many(:coins).conditions(quality: 'mint') }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_many(:coins).conditions(quality: 'mint')
+      #     end
+      #
+      # ##### order
+      #
+      # Use `order` if your association is defined with a scope that sets the
+      # `order` clause.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_many :shirts, -> { order('color') }
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should have_many(:shirts).order('color') }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_many(:shirts).order('color')
+      #     end
+      #
+      # ##### class_name
+      #
+      # Use `class_name` to test usage of the `:class_name` option. This
+      # asserts that the model you're referring to actually exists.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_many :hopes, class_name: 'Dream'
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should have_many(:hopes).class_name('Dream') }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_many(:hopes).class_name('Dream')
+      #     end
+      #
+      # ##### with_foreign_key
+      #
+      # Use `with_foreign_key` to test usage of the `:foreign_key` option.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_many :worries, foreign_key: 'worrier_id'
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should have_many(:worries).with_foreign_key('worrier_id') }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_many(:worries).with_foreign_key('worrier_id')
+      #     end
+      #
+      # ##### dependent
+      #
+      # Use `dependent` to assert that the `:dependent` option was specified.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_many :secret_documents, dependent: :destroy
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should have_many(:secret_documents).dependent(:destroy) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_many(:secret_documents).dependent(:destroy)
+      #     end
+      #
+      # ##### through
+      #
+      # Use `through` to test usage of the `:through` option. This asserts that
+      # the association you are going through actually exists.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_many :acquaintances, through: :friends
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should have_many(:acquaintances).through(:friends) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_many(:acquaintances).through(:friends)
+      #     end
+      #
+      # ##### source
+      #
+      # Use `source` to test usage of the `:source` option on a `:through`
+      # association.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_many :job_offers, through: :friends, source: :opportunities
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it do
+      #         should have_many(:job_offers).
+      #           through(:friends).
+      #           source(:opportunities)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_many(:job_offers).
+      #         through(:friends).
+      #         source(:opportunities)
+      #     end
+      #
+      # ##### validate
+      #
+      # Use `validate` to assert that the `:validate` option was specified.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_many :ideas, validate: false
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should have_many(:ideas).validate(false) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_many(:ideas).validate(false)
+      #     end
+      #
+      # #### autosave
+      #
+      # Use `autosave` to assert that the `:autosave` option was specified.
+      #
+      #     class Player < ActiveRecord::Base
+      #       has_many :games, autosave: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Player do
+      #       it { should have_many(:games).autosave(true) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PlayerTest < ActiveSupport::TestCase
+      #       should have_many(:games).autosave(true)
+      #     end
+      #
+      # @return [AssociationMatcher]
       #
       def have_many(name)
         AssociationMatcher.new(:has_many, name)
       end
 
-      # Ensure that the has_one relationship exists.  Will also test that the
-      # associated table has the required columns.  Works with polymorphic
-      # associations.
+      # The `have_one` matcher is used to test that a `has_one` or `has_one
+      # :through` association exists on your model.
       #
-      # Options:
-      # * <tt>dependent</tt> - tests that the association makes use of the
-      #   dependent option.
-      # * <tt>class_name</tt> - tests that the association resolves to class_name.
-      # * <tt>autosave</tt> - tests that the association makes use of the
-      #   autosave option.
-      # * <tt>validate</tt> - tests that the association makes use of the validate
-      # option.
+      #     class Person < ActiveRecord::Base
+      #       has_one :partner
+      #     end
       #
-      # Example:
-      #   it { should have_one(:god) } # unless hindu
-      #   it { should have_one(:god).dependent }
-      #   it { should have_one(:god).autosave }
-      #   it { should have_one(:god).validate }
-      #   it { should have_one(:god).class_name("JHVH1") }
+      #     # RSpec
+      #     describe Person do
+      #       it { should have_one(:partner) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_one(:partner)
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### conditions
+      #
+      # Use `conditions` if your association is defined with a scope that sets
+      # the `where` clause.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_one :pet, -> { where('weight < 80') }
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should have_one(:pet).conditions('weight < 80') }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_one(:pet).conditions('weight < 80')
+      #     end
+      #
+      # ##### order
+      #
+      # Use `order` if your association is defined with a scope that sets the
+      # `order` clause.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_one :focus, -> { order('priority desc') }
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should have_one(:focus).order('priority desc') }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_one(:focus).order('priority desc')
+      #     end
+      #
+      # ##### class_name
+      #
+      # Use `class_name` to test usage of the `:class_name` option. This
+      # asserts that the model you're referring to actually exists.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_one :chance, class_name: 'Opportunity'
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should have_one(:chance).class_name('Opportunity') }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_one(:chance).class_name('Opportunity')
+      #     end
+      #
+      # ##### dependent
+      #
+      # Use `dependent` to test that the `:dependent` option was specified.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_one :contract, dependent: :nullify
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should have_one(:contract).dependent(:nullify) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_one(:contract).dependent(:nullify)
+      #     end
+      #
+      # ##### with_foreign_key
+      #
+      # Use `with_foreign_key` to test usage of the `:foreign_key` option.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_one :job, foreign_key: 'worker_id'
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should have_one(:job).with_foreign_key('worker_id') }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_one(:job).with_foreign_key('worker_id')
+      #     end
+      #
+      # ##### through
+      #
+      # Use `through` to test usage of the `:through` option. This asserts that
+      # the association you are going through actually exists.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_one :life, through: :partner
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should have_one(:life).through(:partner) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_one(:life).through(:partner)
+      #     end
+      #
+      # ##### source
+      #
+      # Use `source` to test usage of the `:source` option on a `:through`
+      # association.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_one :car, through: :partner, source: :vehicle
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should have_one(:car).through(:partner).source(:vehicle) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_one(:car).through(:partner).source(:vehicle)
+      #     end
+      #
+      # ##### validate
+      #
+      # Use `validate` to assert that the the `:validate` option was specified.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_one :parking_card, validate: false
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should have_one(:parking_card).validate(false) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_one(:parking_card).validate(false)
+      #     end
+      #
+      # #### autosave
+      #
+      # Use `autosave` to assert that the `:autosave` option was specified.
+      #
+      #     class Account < ActiveRecord::Base
+      #       has_one :bank, autosave: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Account do
+      #       it { should have_one(:bank).autosave(true) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class AccountTest < ActiveSupport::TestCase
+      #       should have_one(:bank).autosave(true)
+      #     end
+      #
+      # @return [AssociationMatcher]
       #
       def have_one(name)
         AssociationMatcher.new(:has_one, name)
       end
 
-      # Ensures that the has_and_belongs_to_many relationship exists, and that
-      # the join table is in place.
+      # The `have_and_belong_to_many` matcher is used to test that a
+      # `has_and_belongs_to_many` association exists on your model and that the
+      # join table exists in the database.
       #
-      # Options:
-      # * <tt>class_name</tt> - tests that the association resolves to class_name.
-      # * <tt>validate</tt> - tests that the association makes use of the validate
-      # option.
+      #     class Person < ActiveRecord::Base
+      #       has_and_belongs_to_many :awards
+      #     end
       #
-      # Example:
-      #   it { should have_and_belong_to_many(:posts) }
-      #   it { should have_and_belong_to_many(:posts).validate }
-      #   it { should have_and_belong_to_many(:posts).class_name("Post") }
+      #     # RSpec
+      #     describe Person do
+      #       it { should have_and_belong_to_many(:awards) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_and_belong_to_many(:awards)
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### conditions
+      #
+      # Use `conditions` if your association is defined with a scope that sets
+      # the `where` clause.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_and_belongs_to_many :issues, -> { where(difficulty: 'hard') }
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it do
+      #         should have_and_belong_to_many(:issues).
+      #           conditions(difficulty: 'hard')
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_and_belong_to_many(:issues).
+      #         conditions(difficulty: 'hard')
+      #     end
+      #
+      # ##### order
+      #
+      # Use `order` if your association is defined with a scope that sets the
+      # `order` clause.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_and_belongs_to_many :projects, -> { order('time_spent') }
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it do
+      #         should have_and_belong_to_many(:projects).
+      #           order('time_spent')
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_and_belong_to_many(:projects).
+      #         order('time_spent')
+      #     end
+      #
+      # ##### class_name
+      #
+      # Use `class_name` to test usage of the `:class_name` option. This
+      # asserts that the model you're referring to actually exists.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_and_belongs_to_many :places_visited, class_name: 'City'
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it do
+      #         should have_and_belong_to_many(:places_visited).
+      #           class_name('City')
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_and_belong_to_many(:places_visited).
+      #         class_name('City')
+      #     end
+      #
+      # ##### validate
+      #
+      # Use `validate` to test that the `:validate` option was specified.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_and_belongs_to_many :interviews, validate: false
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it do
+      #         should have_and_belong_to_many(:interviews).
+      #           validate(false)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_and_belong_to_many(:interviews).
+      #         validate(false)
+      #     end
+      #
+      # #### autosave
+      #
+      # Use `autosave` to assert that the `:autosave` option was specified.
+      #
+      #     class Publisher < ActiveRecord::Base
+      #       has_and_belongs_to_many :advertisers, autosave: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Publisher do
+      #       it { should have_and_belong_to_many(:advertisers).autosave(true) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class AccountTest < ActiveSupport::TestCase
+      #       should have_and_belong_to_many(:advertisers).autosave(true)
+      #     end
+      #
+      # @return [AssociationMatcher]
       #
       def have_and_belong_to_many(name)
         AssociationMatcher.new(:has_and_belongs_to_many, name)
       end
 
-      class AssociationMatcher # :nodoc:
+      # @private
+      class AssociationMatcher
         delegate :reflection, :model_class, :associated_class, :through?,
           :join_table, :polymorphic?, to: :reflector
 

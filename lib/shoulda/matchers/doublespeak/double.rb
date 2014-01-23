@@ -1,6 +1,7 @@
 module Shoulda
   module Matchers
     module Doublespeak
+      # @private
       class Double
         attr_reader :calls
 

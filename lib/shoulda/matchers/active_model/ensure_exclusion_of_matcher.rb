@@ -1,24 +1,96 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActiveModel # :nodoc:
-
-      # Ensure that the attribute's value is not in the range specified
+    module ActiveModel
+      # The `ensure_exclusion_of` matcher tests usage of the
+      # `validates_exclusion_of` validation, asserting that an attribute cannot
+      # take a blacklist of values, and inversely, can take values outside of
+      # this list.
       #
-      # Options:
-      # * <tt>in_array</tt> - the array of not allowed values for this attribute
-      # * <tt>in_range</tt> - the range of not allowed values for this attribute
-      # * <tt>with_message</tt> - value the test expects to find in
-      #   <tt>errors.on(:attribute)</tt>. Regexp or string. Defaults to the
-      #   translation for :exclusion.
+      # If your blacklist is an array of values, use `in_array`:
       #
-      # Example:
-      #   it { should ensure_exclusion_of(:age).in_range(30..60) }
+      #     class Game
+      #       include ActiveModel::Model
+      #       attr_accessor :supported_os
+      #
+      #       validates_exclusion_of :supported_os, in: ['Mac', 'Linux']
+      #     end
+      #
+      #     # RSpec
+      #     describe Game do
+      #       it do
+      #         should ensure_exclusion_of(:supported_os).
+      #           in_array(['Mac', 'Linux'])
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class GameTest < ActiveSupport::TestCase
+      #       should ensure_exclusion_of(:supported_os).
+      #         in_array(['Mac', 'Linux'])
+      #     end
+      #
+      # If your blacklist is a range of values, use `in_rnage`:
+      #
+      #     class Game
+      #       include ActiveModel::Model
+      #       attr_accessor :supported_os
+      #
+      #       validates_exclusion_of :supported_os, in: ['Mac', 'Linux']
+      #     end
+      #
+      #     # RSpec
+      #     describe Game do
+      #       it do
+      #         should ensure_exclusion_of(:floors_with_enemies).
+      #           in_range(5..8)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class GameTest < ActiveSupport::TestCase
+      #       should ensure_exclusion_of(:floors_with_enemies).
+      #         in_range(5..8)
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### with_message
+      #
+      # Use `with_message` if you are using a custom validation message.
+      #
+      #     class Game
+      #       include ActiveModel::Model
+      #       attr_accessor :weapon
+      #
+      #       validates_exclusion_of :weapon,
+      #         in: ['pistol', 'paintball gun', 'stick'],
+      #         message: 'You chose a puny weapon'
+      #     end
+      #
+      #     # RSpec
+      #     describe Game do
+      #       it do
+      #         should ensure_exclusion_of(:weapon).
+      #           in_array(['pistol', 'paintball gun', 'stick']).
+      #           with_message('You chose a puny weapon')
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class GameTest < ActiveSupport::TestCase
+      #       should ensure_exclusion_of(:weapon).
+      #         in_array(['pistol', 'paintball gun', 'stick']).
+      #         with_message('You chose a puny weapon')
+      #     end
+      #
+      # @return [EnsureExclusionOfMatcher]
       #
       def ensure_exclusion_of(attr)
         EnsureExclusionOfMatcher.new(attr)
       end
 
-      class EnsureExclusionOfMatcher < ValidationMatcher # :nodoc:
+      # @private
+      class EnsureExclusionOfMatcher < ValidationMatcher
         def in_array(array)
           @array = array
           self

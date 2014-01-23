@@ -2,6 +2,7 @@ require 'forwardable'
 
 module Shoulda
   module Matchers
+    # @private
     module Doublespeak
       class << self
         extend Forwardable

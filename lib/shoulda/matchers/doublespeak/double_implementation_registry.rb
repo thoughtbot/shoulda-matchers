@@ -1,6 +1,7 @@
 module Shoulda
   module Matchers
     module Doublespeak
+      # @private
       module DoubleImplementationRegistry
         class << self
           REGISTRY = {}

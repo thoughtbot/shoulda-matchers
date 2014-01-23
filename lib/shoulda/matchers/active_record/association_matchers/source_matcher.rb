@@ -1,7 +1,8 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActiveRecord # :nodoc:
+    module ActiveRecord
       module AssociationMatchers
+        # @private
         class SourceMatcher
           attr_accessor :missing_option
 

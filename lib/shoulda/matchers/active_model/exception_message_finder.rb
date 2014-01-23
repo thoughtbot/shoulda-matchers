@@ -1,7 +1,7 @@
 module Shoulda
   module Matchers
     module ActiveModel
-      # Finds message information from exceptions thrown by #valid?
+      # @private
       class ExceptionMessageFinder
         def initialize(instance, attribute, context=nil)
           @instance = instance

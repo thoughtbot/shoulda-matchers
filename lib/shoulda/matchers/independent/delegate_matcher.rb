@@ -1,30 +1,117 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module Independent # :nodoc:
-
-      # Ensure that a given method is delegated properly.
+    module Independent
+      # The `delegate_method` matcher tests that an object forwards messages
+      # to other, internal objects by way of delegation.
       #
-      # Basic Syntax:
-      #   it { should delegate_method(method_name).to(delegate_name) }
+      # In this example, we test that Courier forwards a call to #deliver onto
+      # its PostOffice instance:
       #
-      # Options:
-      # * <tt>:as</tt> - The name of the delegating method. Defaults to
-      #   method_name.
-      # * <tt>:with_arguments</tt> - Tests that the delegate method is called
-      #   with certain arguments.
+      #     require 'forwardable'
       #
-      # Examples:
-      #   it { should delegate_method(:deliver_mail).to(:mailman) }
-      #   it { should delegate_method(:deliver_mail).to(:mailman).
-      #     as(:deliver_mail_via_mailman) }
-      #   it { should delegate_method(:deliver_mail).to(:mailman).
-      #     as(:deliver_mail_hastily).
-      #     with_arguments('221B Baker St.', hastily: true) }
+      #     class Courier
+      #       extend Forwardable
+      #
+      #       attr_reader :post_office
+      #
+      #       def_delegators :post_office, :deliver
+      #
+      #       def initialize
+      #         @post_office = PostOffice.new
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe Courier do
+      #       it { should delegate_method(:deliver).to(:post_office) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class CourierTest < Test::Unit::TestCase
+      #       should delegate_method(:deliver).to(:post_office)
+      #     end
+      #
+      # To employ some terminology, we would say that Courier's #deliver method
+      # is the delegating method, PostOffice is the delegate object, and
+      # PostOffice#deliver is the delegate method.
+      #
+      # #### Qualifiers
+      #
+      # ##### as
+      #
+      # Use `as` if the name of the delegate method is different from the name
+      # of the delegating method.
+      #
+      # Here, Courier has a #deliver method, but instead of calling #deliver on
+      # the PostOffice, it calls #ship:
+      #
+      #     class Courier
+      #       attr_reader :post_office
+      #
+      #       def initialize
+      #         @post_office = PostOffice.new
+      #       end
+      #
+      #       def deliver(package)
+      #         post_office.ship(package)
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe Courier do
+      #       it { should delegate_method(:deliver).to(:post_office).as(:ship) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class CourierTest < Test::Unit::TestCase
+      #       should delegate_method(:deliver).to(:post_office).as(:ship)
+      #     end
+      #
+      # ##### with_arguments
+      #
+      # Use `with_arguments` to assert that the delegate method is called with
+      # certain arguments.
+      #
+      # Here, when Courier#deliver calls PostOffice#ship, it adds an options
+      # hash:
+      #
+      #     class Courier
+      #       attr_reader :post_office
+      #
+      #       def initialize
+      #         @post_office = PostOffice.new
+      #       end
+      #
+      #       def deliver(package)
+      #         post_office.ship(package, expedited: true)
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe Courier do
+      #       it do
+      #         should delegate_method(:deliver).
+      #           to(:post_office).
+      #           as(:ship).
+      #           with_arguments(expedited: true)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class CourierTest < Test::Unit::TestCase
+      #       should delegate_method(:deliver).
+      #         to(:post_office).
+      #         as(:ship).
+      #         with_arguments(expedited: true)
+      #     end
+      #
+      # @return [DelegateMatcher]
       #
       def delegate_method(delegating_method)
         DelegateMatcher.new(delegating_method)
       end
 
+      # @private
       class DelegateMatcher
         def initialize(delegating_method)
           @delegating_method = delegating_method
@@ -196,6 +283,7 @@ module Shoulda # :nodoc:
           string
         end
 
+        # @private
         class TargetNotDefinedError < StandardError
           def message
             'Delegation needs a target. Use the #to method to define one, e.g.

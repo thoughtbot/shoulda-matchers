@@ -1,67 +1,158 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActionController # :nodoc:
-      # Ensure a controller uses a given before_filter
+    module ActionController
+      # The `use_before_filter` matcher is used to test that a before_filter
+      # callback is defined within your controller.
       #
-      # Example:
+      #     class UsersController < ApplicationController
+      #       before_filter :authenticate_user!
+      #     end
       #
-      #   it { should use_before_filter(:authenticate_user!) }
-      #   it { should_not use_before_filter(:prevent_ssl) }
+      #     # RSpec
+      #     describe UsersController do
+      #       it { should use_before_filter(:authenticate_user!) }
+      #       it { should_not use_before_filter(:prevent_ssl) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class UsersControllerTest < ActionController::TestCase
+      #       should use_before_filter(:authenticate_user!)
+      #       should_not use_before_filter(:prevent_ssl)
+      #     end
+      #
+      # @return [CallbackMatcher]
+      #
       def use_before_filter(callback)
         CallbackMatcher.new(callback, :before, :filter)
       end
 
-      # Ensure a controller uses a given before_filter
+      # The `use_after_filter` matcher is used to test that an after_filter
+      # callback is defined within your controller.
       #
-      # Example:
+      #     class IssuesController < ApplicationController
+      #       after_filter :log_activity
+      #     end
       #
-      #   it { should use_after_filter(:log_activity) }
-      #   it { should_not use_after_filter(:destroy_user) }
+      #     # RSpec
+      #     describe IssuesController do
+      #       it { should use_after_filter(:log_activity) }
+      #       it { should_not use_after_filter(:destroy_user) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class IssuesControllerTest < ActionController::TestCase
+      #       should use_after_filter(:log_activity)
+      #       should_not use_after_filter(:destroy_user)
+      #     end
+      #
+      # @return [CallbackMatcher]
+      #
       def use_after_filter(callback)
         CallbackMatcher.new(callback, :after, :filter)
       end
 
-      # Ensure a controller uses a given before_action
+      # The `use_before_action` matcher is used to test that a before_action
+      # callback is defined within your controller.
       #
-      # Example:
+      #     class UsersController < ApplicationController
+      #       before_action :authenticate_user!
+      #     end
       #
-      #   it { should use_before_action(:authenticate_user!) }
-      #   it { should_not use_before_action(:prevent_ssl) }
+      #     # RSpec
+      #     describe UsersController do
+      #       it { should use_before_action(:authenticate_user!) }
+      #       it { should_not use_before_action(:prevent_ssl) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class UsersControllerTest < ActionController::TestCase
+      #       should use_before_action(:authenticate_user!)
+      #       should_not use_before_action(:prevent_ssl)
+      #     end
+      #
+      # @return [CallbackMatcher]
+      #
       def use_before_action(callback)
         CallbackMatcher.new(callback, :before, :action)
       end
 
-      # Ensure a controller uses a given after_action
+      # The `use_after_action` matcher is used to test that an after_action
+      # callback is defined within your controller.
       #
-      # Example:
+      #     class IssuesController < ApplicationController
+      #       after_action :log_activity
+      #     end
       #
-      #   it { should use_after_action(:log_activity) }
-      #   it { should_not use_after_action(:destroy_user) }
+      #     # RSpec
+      #     describe IssuesController do
+      #       it { should use_after_action(:log_activity) }
+      #       it { should_not use_after_action(:destroy_user) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class IssuesControllerTest < ActionController::TestCase
+      #       should use_after_action(:log_activity)
+      #       should_not use_after_action(:destroy_user)
+      #     end
+      #
+      # @return [CallbackMatcher]
+      #
       def use_after_action(callback)
         CallbackMatcher.new(callback, :after, :action)
       end
 
-      # Ensure a controller uses a given around_filter
+      # The `use_around_filter` matcher is used to test that an around_filter
+      # callback is defined within your controller.
       #
-      # Example:
+      #     class ChangesController < ApplicationController
+      #       around_filter :wrap_in_transaction
+      #     end
       #
-      #   it { should use_around_filter(:log_activity) }
-      #   it { should_not use_around_filter(:destroy_user) }
+      #     # RSpec
+      #     describe ChangesController do
+      #       it { should use_around_filter(:wrap_in_transaction) }
+      #       it { should_not use_around_filter(:save_view_context) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class ChangesControllerTest < ActionController::TestCase
+      #       should use_around_filter(:wrap_in_transaction)
+      #       should_not use_around_filter(:save_view_context)
+      #     end
+      #
+      # @return [CallbackMatcher]
+      #
       def use_around_filter(callback)
         CallbackMatcher.new(callback, :around, :filter)
       end
 
-      # Ensure a controller uses a given around_action
+      # The `use_around_action` matcher is used to test that an around_action
+      # callback is defined within your controller.
       #
-      # Example:
+      #     class ChangesController < ApplicationController
+      #       around_action :wrap_in_transaction
+      #     end
       #
-      #   it { should use_around_action(:log_activity) }
-      #   it { should_not use_around_action(:destroy_user) }
+      #     # RSpec
+      #     describe ChangesController do
+      #       it { should use_around_action(:wrap_in_transaction) }
+      #       it { should_not use_around_action(:save_view_context) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class ChangesControllerTest < ActionController::TestCase
+      #       should use_around_action(:wrap_in_transaction)
+      #       should_not use_around_action(:save_view_context)
+      #     end
+      #
+      # @return [CallbackMatcher]
+      #
       def use_around_action(callback)
         CallbackMatcher.new(callback, :around, :action)
       end
 
-      class CallbackMatcher # :nodoc:
+      # @private
+      class CallbackMatcher
         def initialize(method_name, kind, callback_type)
           @method_name = method_name
           @kind = kind

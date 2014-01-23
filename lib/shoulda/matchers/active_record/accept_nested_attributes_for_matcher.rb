@@ -1,26 +1,100 @@
 module Shoulda
   module Matchers
     module ActiveRecord
-      # Ensures that the model can accept nested attributes for the specified
-      # association.
+      # The `accept_nested_attributes_for` matcher tests usage of the
+      # `accepts_nested_attributes_for` macro.
       #
-      # Options:
-      # * <tt>allow_destroy</tt> - Whether or not to allow destroy
-      # * <tt>limit</tt> - Max number of nested attributes
-      # * <tt>update_only</tt> - Only allow updates
+      #     class Car < ActiveRecord::Base
+      #       accept_nested_attributes_for :doors
+      #     end
       #
-      # Example:
-      #   it { should accept_nested_attributes_for(:friends) }
-      #   it { should accept_nested_attributes_for(:friends).
-      #                 allow_destroy(true).
-      #                 limit(4) }
-      #   it { should accept_nested_attributes_for(:friends).
-      #                 update_only(true) }
+      #     # RSpec
+      #     describe Car do
+      #       it { should accept_nested_attributes_for(:doors) }
+      #     end
+      #
+      #     # Test::Unit (using Shoulda)
+      #     class CarTest < ActiveSupport::TestCase
+      #       should accept_nested_attributes_for(:doors)
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### allow_destroy
+      #
+      # Use `allow_destroy` to assert that the `:allow_destroy` option was
+      # specified.
+      #
+      #     class Car < ActiveRecord::Base
+      #       accept_nested_attributes_for :mirrors, allow_destroy: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Car do
+      #       it do
+      #         should accept_nested_attributes_for(:mirrors).
+      #           allow_destroy(true)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class CarTest < ActiveSupport::TestCase
+      #       should accept_nested_attributes_for(:mirrors).
+      #         allow_destroy(true)
+      #     end
+      #
+      # ##### limit
+      #
+      # Use `limit` to assert that the `:limit` option was specified.
+      #
+      #     class Car < ActiveRecord::Base
+      #       accept_nested_attributes_for :windows, limit: 3
+      #     end
+      #
+      #     # RSpec
+      #     describe Car do
+      #       it do
+      #         should accept_nested_attributes_for(:windows).
+      #           limit(3)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class CarTest < ActiveSupport::TestCase
+      #       should accept_nested_attributes_for(:windows).
+      #         limit(3)
+      #     end
+      #
+      # ##### update_only
+      #
+      # Use `update_only` to assert that the `:update_only` option was
+      # specified.
+      #
+      #     class Car < ActiveRecord::Base
+      #       accept_nested_attributes_for :engine, update_only: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Car do
+      #       it do
+      #         should accept_nested_attributes_for(:engine).
+      #           update_only(true)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class CarTest < ActiveSupport::TestCase
+      #       should accept_nested_attributes_for(:engine).
+      #         update_only(true)
+      #     end
+      #
+      # @return [AcceptNestedAttributesForMatcher]
       #
       def accept_nested_attributes_for(name)
         AcceptNestedAttributesForMatcher.new(name)
       end
 
+      # @private
       class AcceptNestedAttributesForMatcher
         def initialize(name)
           @name = name

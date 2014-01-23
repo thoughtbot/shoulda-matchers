@@ -1,24 +1,62 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActiveModel # :nodoc:
-
-      # Ensures that the model cannot be saved if the given attribute is not
-      # accepted.
+    module ActiveModel
+      # The `validate_acceptance_of` matcher tests usage of the
+      # `validates_acceptance_of` validation.
       #
-      # Options:
-      # * <tt>with_message</tt> - value the test expects to find in
-      #   <tt>errors.on(:attribute)</tt>. Regexp or string.  Defaults to the
-      #   translation for <tt>:accepted</tt>.
+      #     class Registration
+      #       include ActiveModel::Model
+      #       attr_accessor :eula
       #
-      # Example:
-      #   it { should validate_acceptance_of(:eula) }
+      #       validates_acceptance_of :eula
+      #     end
+      #
+      #     # RSpec
+      #     describe Registration do
+      #       it { should validate_acceptance_of(:eula) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class RegistrationTest < ActiveSupport::TestCase
+      #       should validate_acceptance_of(:eula)
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### with_message
+      #
+      # Use `with_message` if you are using a custom validation message.
+      #
+      #     class Registration
+      #       include ActiveModel::Model
+      #       attr_accessor :terms_of_service
+      #
+      #       validates_acceptance_of :terms_of_service,
+      #         message: 'You must accept the terms of service'
+      #     end
+      #
+      #     # RSpec
+      #     describe Registration do
+      #       it do
+      #         should validate_acceptance_of(:terms_of_service).
+      #           with_message('You must accept the terms of service')
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class RegistrationTest < ActiveSupport::TestCase
+      #       should validate_acceptance_of(:terms_of_service).
+      #         with_message('You must accept the terms of service')
+      #     end
+      #
+      # @return [ValidateAcceptanceOfMatcher]
       #
       def validate_acceptance_of(attr)
         ValidateAcceptanceOfMatcher.new(attr)
       end
 
-      class ValidateAcceptanceOfMatcher < ValidationMatcher # :nodoc:
-
+      # @private
+      class ValidateAcceptanceOfMatcher < ValidationMatcher
         def with_message(message)
           if message
             @expected_message = message

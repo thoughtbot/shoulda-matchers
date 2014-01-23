@@ -1,5 +1,6 @@
 module Shoulda
   module Matchers
+    # @private
     class Error < StandardError
       def self.create(attributes)
         allocate.tap do |error|

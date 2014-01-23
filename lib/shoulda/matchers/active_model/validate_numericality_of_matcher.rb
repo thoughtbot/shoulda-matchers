@@ -1,28 +1,284 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActiveModel # :nodoc:
-      # Ensure that the attribute is numeric.
+    module ActiveModel
+      # The `validate_numericality_of` matcher tests usage of the
+      # `validates_numericality_of` validation.
       #
-      # Options:
-      # * <tt>with_message</tt> - value the test expects to find in
-      #   <tt>errors.on(:attribute)</tt>. Regexp or string.  Defaults to the
-      #   translation for <tt>:not_a_number</tt>.
-      # * <tt>only_integer</tt> - allows only integer values
-      # * <tt>odd</tt> - Specifies the value must be an odd number.
-      # * <tt>even</tt> - Specifies the value must be an even number.
-      # * <tt>allow_nil</tt> - allows nil values
+      #     class Person
+      #       include ActiveModel::Model
+      #       attr_accessor :gpa
       #
-      # Examples:
-      #   it { should validate_numericality_of(:price) }
-      #   it { should validate_numericality_of(:age).only_integer }
-      #   it { should validate_numericality_of(:frequency).odd }
-      #   it { should validate_numericality_of(:frequency).even }
-      #   it { should validate_numericality_of(:rank).is_less_than_or_equal_to(10).allow_nil }
+      #       validates_numericality_of :gpa
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should validate_numericality_of(:gpa) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_numericality_of(:gpa)
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### only_integer
+      #
+      # Use `only_integer` to test usage of the `:only_integer` option. This
+      # asserts that your attribute only allows integer numbers and disallows
+      # non-integer ones.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attr_accessor :age
+      #
+      #       validates_numericality_of :age, only_integer: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should validate_numericality_of(:age).only_integer }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_numericality_of(:age).only_integer
+      #     end
+      #
+      # ##### is_less_than
+      #
+      # Use `is_less_than` to test usage of the the `:less_than` option. This
+      # asserts that the attribute can take a number which is less than the
+      # given value and cannot take a number which is greater than or equal to
+      # it.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attr_accessor :number_of_cars
+      #
+      #       validates_numericality_of :number_of_cars, less_than: 2
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it do
+      #         should validate_numericality_of(:number_of_cars).
+      #           is_less_than(2)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_numericality_of(:number_of_cars).
+      #         is_less_than(2)
+      #     end
+      #
+      # ##### is_less_than_or_equal_to
+      #
+      # Use `is_less_than_or_equal_to` to test usage of the
+      # `:less_than_or_equal_to` option. This asserts that the attribute can
+      # take a number which is less than or equal to the given value and cannot
+      # take a number which is greater than it.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attr_accessor :birth_year
+      #
+      #       validates_numericality_of :birth_year, less_than_or_equal_to: 1987
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it do
+      #         should validate_numericality_of(:birth_year).
+      #           is_less_than_or_equal_to(1987)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_numericality_of(:birth_year).
+      #         is_less_than_or_equal_to(1987)
+      #     end
+      #
+      # ##### is_equal_to
+      #
+      # Use `is_equal_to` to test usage of the `:equal_to` option. This asserts
+      # that the attribute can take a number which is equal to the given value
+      # and cannot take a number which is not equal.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attr_accessor :weight
+      #
+      #       validates_numericality_of :weight, equal_to: 150
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should validate_numericality_of(:weight).is_equal_to(150) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_numericality_of(:weight).is_equal_to(150)
+      #     end
+      #
+      # ##### is_greater_than_or_equal_to
+      #
+      # Use `is_greater_than_or_equal_to` to test usage of the
+      # `:greater_than_or_equal_to` option. This asserts that the attribute can
+      # take a number which is greater than or equal to the given value and
+      # cannot take a number which is less than it.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attr_accessor :height
+      #
+      #       validates_numericality_of :height, greater_than_or_equal_to: 55
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it do
+      #         should validate_numericality_of(:height).
+      #           is_greater_than_or_equal_to(55)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_numericality_of(:height).
+      #         is_greater_than_or_equal_to(55)
+      #     end
+      #
+      # ##### is_greater_than
+      #
+      # Use `is_greater_than` to test usage of tthe `:greater_than` option.
+      # This asserts that the attribute can take a number which is greater than
+      # the given value and cannot take a number less than or equal to it.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attr_accessor :legal_age
+      #
+      #       validates_numericality_of :legal_age, greater_than: 21
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it do
+      #         should validate_numericality_of(:legal_age).
+      #           is_greater_than(21)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_numericality_of(:legal_age).
+      #         is_greater_than(21)
+      #     end
+      #
+      # ##### even
+      #
+      # Use `even` to test usage of the `:even` option. This asserts that the
+      # attribute can take odd numbers and cannot take even ones.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attr_accessor :birth_month
+      #
+      #       validates_numericality_of :birth_month, even: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should validate_numericality_of(:birth_month).even }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_numericality_of(:birth_month).even
+      #     end
+      #
+      # ##### odd
+      #
+      # Use `odd` to test usage of the `:odd` option. This asserts that the
+      # attribute can take a number which is odd and cannot take a number which
+      # is even.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attr_accessor :birth_day
+      #
+      #       validates_numericality_of :birth_day, odd: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should validate_numericality_of(:birth_day).odd }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_numericality_of(:birth_day).odd
+      #     end
+      #
+      # ##### with_message
+      #
+      # Use `with_message` if you are using a custom validation message.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attr_accessor :number_of_dependents
+      #
+      #       validates_numericality_of :number_of_dependents,
+      #         message: 'Number of dependents must be a number'
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it do
+      #         should validate_numericality_of(:number_of_dependents).
+      #           with_message('Number of dependents must be a number')
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_numericality_of(:number_of_dependents).
+      #         with_message('Number of dependents must be a number')
+      #     end
+      #
+      # ##### allow_nil
+      #
+      # Use `allow_nil` to assert that the attribute allows nil.
+      #
+      #     class Age
+      #       include ActiveModel::Model
+      #       attr_accessor :age
+      #
+      #       validates_numericality_of :age, allow_nil: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Post do
+      #       it { should validate_numericality_of(:age).allow_nil }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PostTest < ActiveSupport::TestCase
+      #       should validate_numericality_of(:age).allow_nil
+      #     end
+      #
+      # @return [ValidateNumericalityOfMatcher]
       #
       def validate_numericality_of(attr)
         ValidateNumericalityOfMatcher.new(attr)
       end
 
+      # @private
       class ValidateNumericalityOfMatcher
         NUMERIC_NAME = 'numbers'
         NON_NUMERIC_VALUE = 'abcd'

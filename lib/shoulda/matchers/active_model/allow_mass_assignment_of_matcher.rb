@@ -1,21 +1,78 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActiveModel # :nodoc:
-
-      # Ensures that the attribute can be set on mass update.
+    module ActiveModel
+      # The `allow_mass_assignment_of` matcher tests usage of Rails 3's
+      # `attr_accessible` and `attr_protected` macros, asserting that an
+      # attribute in your model is contained in either the whitelist or
+      # blacklist and thus can or cannot be set via mass assignment.
       #
-      #   it { should_not allow_mass_assignment_of(:password) }
-      #   it { should allow_mass_assignment_of(:first_name) }
+      #     class Post
+      #       include ActiveModel::Model
+      #       include ActiveModel::MassAssignmentSecurity
+      #       attr_accessor :title
       #
-      # In Rails 3.1 you can check role as well:
+      #       attr_accessible :title
+      #     end
       #
-      #   it { should allow_mass_assignment_of(:first_name).as(:admin) }
+      #     class User
+      #       include ActiveModel::Model
+      #       include ActiveModel::MassAssignmentSecurity
+      #       attr_accessor :encrypted_password
+      #
+      #       attr_protected :encrypted_password
+      #     end
+      #
+      #     # RSpec
+      #     describe Post do
+      #       it { should allow_mass_assignment_of(:title) }
+      #     end
+      #
+      #     describe User do
+      #       it { should_not allow_mass_assignment_of(:encrypted_password) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PostTest < ActiveSupport::TestCase
+      #       should allow_mass_assignment_of(:title)
+      #     end
+      #
+      #     class UserTest < ActiveSupport::TestCase
+      #       should_not allow_mass_assignment_of(:encrypted_password)
+      #     end
+      #
+      # #### Optional qualifiers
+      #
+      # ##### as
+      #
+      # Use `as` if your mass-assignment rules apply only under a certain role
+      # *(Rails >= 3.1 only)*.
+      #
+      #     class Post
+      #       include ActiveModel::Model
+      #       include ActiveModel::MassAssignmentSecurity
+      #       attr_accessor :title
+      #
+      #       attr_accessible :title, as: :admin
+      #     end
+      #
+      #     # RSpec
+      #     describe Post do
+      #       it { should allow_mass_assignment_of(:title).as(:admin) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PostTest < ActiveSupport::TestCase
+      #       should allow_mass_assignment_of(:title).as(:admin)
+      #     end
+      #
+      # @return [AllowMassAssignmentOfMatcher]
       #
       def allow_mass_assignment_of(value)
         AllowMassAssignmentOfMatcher.new(value)
       end
 
-      class AllowMassAssignmentOfMatcher # :nodoc:
+      # @private
+      class AllowMassAssignmentOfMatcher
         attr_reader :failure_message, :failure_message_when_negated
 
         alias failure_message_for_should failure_message

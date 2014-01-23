@@ -1,23 +1,156 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActionController # :nodoc:
-
-      # Ensures that the flash contains the given value. Can be a String, a
-      # Regexp, or nil (indicating that the flash should not be set).
+    module ActionController
+      # The `set_the_flash` matcher is used to make assertions about the
+      # `flash` hash.
       #
-      # Example:
+      #     class PostsController < ApplicationController
+      #       def index
+      #         flash[:foo] = 'A candy bar'
+      #       end
       #
-      #   it { should set_the_flash }
-      #   it { should set_the_flash.to('Thank you for placing this order.') }
-      #   it { should set_the_flash.to(/created/i) }
-      #   it { should set_the_flash[:alert].to('Password does not match') }
-      #   it { should set_the_flash.to(/logged in/i).now }
-      #   it { should_not set_the_flash }
+      #       def destroy
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe PostsController do
+      #       describe 'GET #index' do
+      #         before { get :index }
+      #
+      #         it { should set_the_flash }
+      #       end
+      #
+      #       describe 'DELETE #destroy' do
+      #         before { delete :destroy }
+      #
+      #         it { should_not set_the_flash }
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PostsControllerTest < ActionController::TestCase
+      #       context 'GET #index' do
+      #         setup { get :index }
+      #
+      #         should set_the_flash
+      #       end
+      #
+      #       context 'DELETE #destroy' do
+      #         setup { delete :destroy }
+      #
+      #         should_not set_the_flash
+      #       end
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### []
+      #
+      # Use `[]` to narrow the scope of the matcher to a particular key.
+      #
+      #     class PostsController < ApplicationController
+      #       def index
+      #         flash[:foo] = 'A candy bar'
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe PostsController do
+      #       describe 'GET #index' do
+      #         before { get :index }
+      #
+      #         it { should set_the_flash[:foo] }
+      #         it { should_not set_the_flash[:bar] }
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PostsControllerTest < ActionController::TestCase
+      #       context 'GET #index' do
+      #         setup { get :show }
+      #
+      #         should set_the_flash[:foo]
+      #         should_not set_the_flash[:bar]
+      #       end
+      #     end
+      #
+      # ##### to
+      #
+      # Use `to` to assert that some key was set to a particular value, or that
+      # some key matches a particular regex.
+      #
+      #     class PostsController < ApplicationController
+      #       def index
+      #         flash[:foo] = 'A candy bar'
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe PostsController do
+      #       describe 'GET #index' do
+      #         before { get :index }
+      #
+      #         it { should set_the_flash.to('A candy bar') }
+      #         it { should set_the_flash.to(/bar/) }
+      #         it { should set_the_flash[:foo].to('bar') }
+      #         it { should_not set_the_flash[:foo].to('something else') }
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PostsControllerTest < ActionController::TestCase
+      #       context 'GET #index' do
+      #         setup { get :show }
+      #
+      #         should set_the_flash.to('A candy bar')
+      #         should set_the_flash.to(/bar/)
+      #         should set_the_flash[:foo].to('bar')
+      #         should_not set_the_flash[:foo].to('something else')
+      #       end
+      #     end
+      #
+      # ##### now
+      #
+      # Use `now` to change the scope of the matcher to use the "now" hash
+      # instead of the usual "future" hash.
+      #
+      #     class PostsController < ApplicationController
+      #       def show
+      #         flash.now[:foo] = 'bar'
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe PostsController do
+      #       describe 'GET #show' do
+      #         before { get :show }
+      #
+      #         it { should set_the_flash.now }
+      #         it { should set_the_flash[:foo].now }
+      #         it { should set_the_flash[:foo].to('bar').now }
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PostsControllerTest < ActionController::TestCase
+      #       context 'GET #index' do
+      #         setup { get :show }
+      #
+      #         should set_the_flash.now
+      #         should set_the_flash[:foo].now
+      #         should set_the_flash[:foo].to('bar').now
+      #       end
+      #     end
+      #
+      # @return [SetTheFlashMatcher]
+      #
       def set_the_flash
         SetTheFlashMatcher.new
       end
 
-      class SetTheFlashMatcher # :nodoc:
+      # @private
+      class SetTheFlashMatcher
         def initialize
           @options = {}
         end

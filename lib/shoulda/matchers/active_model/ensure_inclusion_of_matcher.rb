@@ -1,29 +1,225 @@
 require 'bigdecimal'
 
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActiveModel # :nodoc:
-
-      # Ensure that the attribute's value is in the range specified
+    module ActiveModel
+      # The `ensure_inclusion_of` matcher tests usage of the
+      # `validates_inclusion_of` validation, asserting that an attribute can
+      # take a whitelist of values and cannot take values outside of this list.
       #
-      # Options:
-      # * <tt>in_array</tt> - the array of allowed values for this attribute
-      # * <tt>in_range</tt> - the range of allowed values for this attribute
-      # * <tt>with_low_message</tt> - value the test expects to find in
-      #   <tt>errors.on(:attribute)</tt>. Regexp or string. Defaults to the
-      #   translation for :inclusion.
-      # * <tt>with_high_message</tt> - value the test expects to find in
-      #   <tt>errors.on(:attribute)</tt>. Regexp or string. Defaults to the
-      #   translation for :inclusion.
+      # If your whitelist is an array of values, use `in_array`:
       #
-      # Example:
-      #   it { should ensure_inclusion_of(:age).in_range(0..100) }
+      #     class Issue
+      #       include ActiveModel::Model
+      #       attr_accessor :state
+      #
+      #       validates_inclusion_of :state, in: %w(open resolved unresolved)
+      #     end
+      #
+      #     # RSpec
+      #     describe Issue do
+      #       it do
+      #         should ensure_inclusion_of(:state).
+      #           in_array(%w(open resolved unresolved))
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class IssueTest < ActiveSupport::TestCase
+      #       should ensure_inclusion_of(:state).
+      #         in_array(%w(open resolved unresolved))
+      #     end
+      #
+      # If your whitelist is a range of values, use `in_range`:
+      #
+      #     class Issue
+      #       include ActiveModel::Model
+      #       attr_accessor :priority
+      #
+      #       validates_inclusion_of :priority, in: 1..5
+      #     end
+      #
+      #     # RSpec
+      #     describe Issue do
+      #       it { should ensure_inclusion_of(:state).in_range(1..5) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class IssueTest < ActiveSupport::TestCase
+      #       should ensure_inclusion_of(:state).in_range(1..5)
+      #     end
+      #
+      # #### Optional qualifiers
+      #
+      # ##### with_message
+      #
+      # Use `with_message` if you are using a custom validation message.
+      #
+      #     class Issue
+      #       include ActiveModel::Model
+      #       attr_accessor :severity
+      #
+      #       validates_inclusion_of :severity,
+      #         in: %w(low medium high),
+      #         message: 'Severity must be low, medium, or high'
+      #     end
+      #
+      #     # RSpec
+      #     describe Issue do
+      #       it do
+      #         should ensure_inclusion_of(:severity).
+      #           in_array(%w(low medium high)).
+      #           with_message('Severity must be low, medium, or high')
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class IssueTest < ActiveSupport::TestCase
+      #       should ensure_inclusion_of(:severity).
+      #         in_array(%w(low medium high)).
+      #         with_message('Severity must be low, medium, or high')
+      #     end
+      #
+      # ##### with_low_message
+      #
+      # Use `with_low_message` if you have a custom validation message for when
+      # a given value is too low.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attr_accessor :age
+      #
+      #       validate :age_must_be_valid
+      #
+      #       private
+      #
+      #       def age_must_be_valid
+      #         if age < 65
+      #           self.errors.add :age, 'You do not receive any benefits'
+      #         end
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it do
+      #         should ensure_inclusion_of(:age).
+      #           in_range(0..65).
+      #           with_low_message('You do not receive any benefits')
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should ensure_inclusion_of(:age).
+      #         in_range(0..65).
+      #         with_low_message('You do not receive any benefits')
+      #     end
+      #
+      # ##### with_high_message
+      #
+      # Use `with_high_message` if you have a custom validation message for
+      # when a given value is too high.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attr_accessor :age
+      #
+      #       validate :age_must_be_valid
+      #
+      #       private
+      #
+      #       def age_must_be_valid
+      #         if age > 21
+      #           self.errors.add :age, "You're too old for this stuff"
+      #         end
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it do
+      #         should ensure_inclusion_of(:age).
+      #           in_range(0..21).
+      #           with_high_message("You're too old for this stuff")
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should ensure_inclusion_of(:age).
+      #         in_range(0..21).
+      #         with_high_message("You're too old for this stuff")
+      #     end
+      #
+      # ##### allow_nil
+      #
+      # Use `allow_nil` to assert that the attribute allows nil.
+      #
+      #     class Issue
+      #       include ActiveModel::Model
+      #       attr_accessor :state
+      #
+      #       validates_presence_of :state
+      #       validates_inclusion_of :state,
+      #         in: %w(open resolved unresolved),
+      #         allow_nil: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Issue do
+      #       it do
+      #         should ensure_inclusion_of(:state).
+      #           in_array(%w(open resolved unresolved)).
+      #           allow_nil
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class IssueTest < ActiveSupport::TestCase
+      #       should ensure_inclusion_of(:state).
+      #         in_array(%w(open resolved unresolved)).
+      #         allow_nil
+      #     end
+      #
+      # ##### allow_blank
+      #
+      # Use `allow_blank` to assert that the attribute allows blank.
+      #
+      #     class Issue
+      #       include ActiveModel::Model
+      #       attr_accessor :state
+      #
+      #       validates_presence_of :state
+      #       validates_inclusion_of :state,
+      #         in: %w(open resolved unresolved),
+      #         allow_blank: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Issue do
+      #       it do
+      #         should ensure_inclusion_of(:state).
+      #           in_array(%w(open resolved unresolved)).
+      #           allow_blank
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class IssueTest < ActiveSupport::TestCase
+      #       should ensure_inclusion_of(:state).
+      #         in_array(%w(open resolved unresolved)).
+      #         allow_blank
+      #     end
+      #
+      # @return [EnsureInclusionOfMatcher]
       #
       def ensure_inclusion_of(attr)
         EnsureInclusionOfMatcher.new(attr)
       end
 
-      class EnsureInclusionOfMatcher < ValidationMatcher # :nodoc:
+      # @private
+      class EnsureInclusionOfMatcher < ValidationMatcher
         ARBITRARY_OUTSIDE_STRING = 'shouldamatchersteststring'
         ARBITRARY_OUTSIDE_FIXNUM = 123456789
         ARBITRARY_OUTSIDE_DECIMAL = BigDecimal.new('0.123456789')

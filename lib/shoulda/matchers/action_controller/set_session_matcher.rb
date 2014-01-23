@@ -1,19 +1,76 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActionController # :nodoc:
-
-      # Ensures that a session key was set to the expected value.
+    module ActionController
+      # The `set_session` matcher is used to make assertions about the
+      # `session` hash.
       #
-      # Example:
+      #     class PostsController < ApplicationController
+      #       def show
+      #         session[:foo] = 'bar'
+      #       end
+      #     end
       #
-      #   it { should set_session(:message) }
-      #   it { should set_session(:user_id).to(@user.id) }
-      #   it { should_not set_session(:user_id) }
+      #     # RSpec
+      #     describe PostsController do
+      #       describe 'GET #show' do
+      #         before { get :show }
+      #
+      #         it { should set_session(:foo) }
+      #         it { should_not set_session(:baz) }
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PostsControllerTest < ActionController::TestCase
+      #       context 'GET #show' do
+      #         setup { get :show }
+      #
+      #         should set_session(:foo)
+      #         should_not set_session(:baz)
+      #       end
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### to
+      #
+      # Use `to` to assert that the key in the session hash was set to a
+      # particular value.
+      #
+      #     class PostsController < ApplicationController
+      #       def show
+      #         session[:foo] = 'bar'
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe PostsController do
+      #       describe 'GET #show' do
+      #         before { get :show }
+      #
+      #         it { should set_session(:foo).to('bar') }
+      #         it { should_not set_session(:foo).to('something else') }
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PostsControllerTest < ActionController::TestCase
+      #       context 'GET #show' do
+      #         setup { get :show }
+      #
+      #         should set_session(:foo).to('bar')
+      #         should_not set_session(:foo).to('something else')
+      #       end
+      #     end
+      #
+      # @return [SetSessionMatcher]
+      #
       def set_session(key)
         SetSessionMatcher.new(key)
       end
 
-      class SetSessionMatcher # :nodoc:
+      # @private
+      class SetSessionMatcher
         def initialize(key)
           @key = key.to_s
         end

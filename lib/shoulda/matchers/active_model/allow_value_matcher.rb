@@ -1,23 +1,164 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActiveModel # :nodoc:
-
-      # Ensures that the attribute can be set to the given value or values. If
-      # multiple values are given the match succeeds only if all given values
-      # are allowed. Otherwise, the matcher fails at the first bad value in the
-      # argument list (the remaining arguments are not processed then).
+    module ActiveModel
+      # The `allow_value` matcher is used to test that an attribute of a model
+      # can or cannot be set to a particular value or values. It is most
+      # commonly used in conjunction with the `validates_format_of` validation.
       #
-      # Options:
-      # * <tt>with_message</tt> - value the test expects to find in
-      #   <tt>errors.on(:attribute)</tt>. Regexp or string. If omitted,
-      #   the test looks for any errors in <tt>errors.on(:attribute)</tt>.
-      # * <tt>strict</tt> - expects the model to raise an exception when the
-      #   validation fails rather than adding to the errors collection. Used for
-      #   testing `validates!` and the `strict: true` validation options.
+      # #### should
       #
-      # Example:
-      #   it { should_not allow_value('bad').for(:isbn) }
-      #   it { should allow_value('isbn 1 2345 6789 0').for(:isbn) }
+      # In the positive form, `allow_value` asserts that an attribute can be
+      # set to one or more values, succeeding if none of the values cause the
+      # record to be invalid:
+      #
+      #     class UserProfile
+      #       include ActiveModel::Model
+      #       attr_accessor :website_url
+      #
+      #       validates_format_of :website_url, with: URI.regexp
+      #     end
+      #
+      #     # RSpec
+      #     describe UserProfile do
+      #       it do
+      #         should allow_value('http://foo.com', 'http://bar.com/baz').
+      #           for(:website_url)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class UserProfileTest < ActiveSupport::TestCase
+      #       should allow_value('http://foo.com', 'http://bar.com/baz').
+      #         for(:website_url)
+      #     end
+      #
+      # #### should_not
+      #
+      # In the negative form, `allow_value` asserts that an attribute cannot be
+      # set to one or more values, succeeding if the *first* value causes the
+      # record to be invalid.
+      #
+      # **This can be surprising** so in this case if you need to check that
+      # *all* of the values are invalid, use separate assertions:
+      #
+      #     class UserProfile
+      #       include ActiveModel::Model
+      #       attr_accessor :website_url
+      #
+      #       validates_format_of :website_url, with: URI.regexp
+      #     end
+      #
+      #     describe UserProfile do
+      #       # One assertion: 'buz' and 'bar' will not be tested
+      #       it { should_not allow_value('fiz', 'buz', 'bar').for(:website_url) }
+      #
+      #       # Three assertions, all tested separately
+      #       it { should_not allow_value('fiz').for(:website_url) }
+      #       it { should_not allow_value('buz').for(:website_url) }
+      #       it { should_not allow_value('bar').for(:website_url) }
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### on
+      #
+      # Use `on` if your validation applies only under a certain context.
+      #
+      #     class UserProfile
+      #       include ActiveModel::Model
+      #       attr_accessor :birthday_as_string
+      #
+      #       validates_format_of :birthday_as_string,
+      #         with: /^(\d+)-(\d+)-(\d+)$/,
+      #         on: :create
+      #     end
+      #
+      #     # RSpec
+      #     describe UserProfile do
+      #       it do
+      #         should allow_value('2013-01-01').
+      #           for(:birthday_as_string).
+      #           on(:create)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class UserProfileTest < ActiveSupport::TestCase
+      #       should allow_value('2013-01-01').
+      #         for(:birthday_as_string).
+      #         on(:create)
+      #     end
+      #
+      # ##### with_message
+      #
+      # Use `with_message` if you are using a custom validation message.
+      #
+      #     class UserProfile
+      #       include ActiveModel::Model
+      #       attr_accessor :state
+      #
+      #       validates_format_of :state,
+      #         with: /^(open|closed)$/,
+      #         message: 'State must be open or closed'
+      #     end
+      #
+      #     # RSpec
+      #     describe UserProfile do
+      #       it do
+      #         should allow_value('open', 'closed').
+      #           for(:state).
+      #           with_message('State must be open or closed')
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class UserProfileTest < ActiveSupport::TestCase
+      #       should allow_value('open', 'closed').
+      #         for(:state).
+      #         with_message('State must be open or closed')
+      #     end
+      #
+      # Use `with_message` with the `:against` option if the attribute the
+      # validation message is stored under is different from the attribute
+      # being validated.
+      #
+      #     class UserProfile
+      #       include ActiveModel::Model
+      #       attr_accessor :sports_team
+      #
+      #       validate :sports_team_must_be_valid
+      #
+      #       private
+      #
+      #       def sports_team_must_be_valid
+      #         if sports_team !~ /^(Broncos|Titans)$/i
+      #           self.errors.add :chosen_sports_team,
+      #             'Must be either a Broncos fan or a Titans fan'
+      #         end
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe UserProfile do
+      #       it do
+      #         should allow_value('Broncos', 'Titans').
+      #           for(:sports_team).
+      #           with_message('Must be either a Broncos or Titans fan',
+      #             against: :chosen_sports_team
+      #           )
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class UserProfileTest < ActiveSupport::TestCase
+      #       should allow_value('Broncos', 'Titans').
+      #         for(:sports_team).
+      #         with_message('Must be either a Broncos or Titans fan',
+      #           against: :chosen_sports_team
+      #         )
+      #     end
+      #
+      # @return [AllowValueMatcher]
       #
       def allow_value(*values)
         if values.empty?
@@ -27,7 +168,8 @@ module Shoulda # :nodoc:
         end
       end
 
-      class AllowValueMatcher # :nodoc:
+      # @private
+      class AllowValueMatcher
         include Helpers
 
         attr_accessor :attribute_with_message

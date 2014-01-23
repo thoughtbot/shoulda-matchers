@@ -1,38 +1,178 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActiveModel # :nodoc:
-      # Ensures that the model is invalid if the given attribute is not unique.
-      # It uses the first existing record or creates a new one if no record
-      # exists in the database. It simply uses `validate: false` to get
-      # around validations, so it will probably fail if there are `NOT NULL`
-      # constraints. In that case, you must create a record before calling
-      # `validate_uniqueness_of`.
+    module ActiveModel
+      # The `validate_uniqueness_of` matcher tests usage of the
+      # `validates_uniqueness_of` validation. It first checks for an existing
+      # instance of your model in the database, creating one if necessary. It
+      # then takes a new record and asserts that it fails validation if the
+      # attribute or attributes you've specified in the validation are set to
+      # values which are the same as those of the pre-existing record (thereby
+      # failing the uniqueness check).
       #
-      # Example:
-      #   it { should validate_uniqueness_of(:email) }
+      #     class Post < ActiveRecord::Base
+      #       validates_uniqueness_of :permalink
+      #     end
       #
-      # Options:
+      #     # RSpec
+      #     describe Post do
+      #       it { should validate_uniqueness_of(:permalink) }
+      #     end
       #
-      # * <tt>with_message</tt> - value the test expects to find in
-      #   <tt>errors.on(:attribute)</tt>. <tt>Regexp</tt> or <tt>String</tt>.
-      #   Defaults to the translation for <tt>:taken</tt>.
-      # * <tt>scoped_to</tt> - field(s) to scope the uniqueness to.
-      # * <tt>case_insensitive</tt> - ensures that the validation does not
-      #   check case. Off by default. Ignored by non-text attributes.
+      #     # Test::Unit
+      #     class PostTest < ActiveSupport::TestCase
+      #       should validate_uniqueness_of(:permalink)
+      #     end
       #
-      # Examples:
-      #   it { should validate_uniqueness_of(:keyword) }
-      #   it { should validate_uniqueness_of(:keyword).with_message(/dup/) }
-      #   it { should validate_uniqueness_of(:email).scoped_to(:name) }
-      #   it { should validate_uniqueness_of(:email).
-      #                 scoped_to(:first_name, :last_name) }
-      #   it { should validate_uniqueness_of(:keyword).case_insensitive }
+      # #### Caveat
+      #
+      # This matcher works a bit differently than other matchers. As noted
+      # before, it will create an instance of your model if one doesn't already
+      # exist. Sometimes this step fails, especially if you have database-level
+      # restrictions on any attributes other than the one which is unique. In
+      # this case, the solution is to **create a record manually** before you
+      # call `validate_uniqueness_of`.
+      #
+      # For example, say you have the following migration and model:
+      #
+      #     class CreatePosts < ActiveRecord::Migration
+      #       def change
+      #         create_table :posts do |t|
+      #           t.string :title
+      #           t.text :content, null: false
+      #         end
+      #       end
+      #     end
+      #
+      #     class Post < ActiveRecord::Base
+      #       validates :title, uniqueness: true
+      #     end
+      #
+      # You may be tempted to test the model like this:
+      #
+      #     describe Post do
+      #       it { should validate_uniqueness_of(:title) }
+      #     end
+      #
+      # However, running this test will fail with something like:
+      #
+      #     Failures:
+      #
+      #       1) Post should require case sensitive unique value for title
+      #          Failure/Error: it { should validate_uniqueness_of(:title) }
+      #          ActiveRecord::StatementInvalid:
+      #            SQLite3::ConstraintException: posts.content may not be NULL: INSERT INTO "posts" ("title") VALUES (?)
+      #
+      # To fix this, you'll need to write this instead:
+      #
+      #     describe Post do
+      #       it do
+      #         Post.create!(content: 'Here is the content')
+      #         should validate_uniqueness_of(:title)
+      #       end
+      #     end
+      #
+      # Or, if you're using
+      # [FactoryGirl](http://github.com/thoughtbot/factory_girl) and you have a
+      # `post` factory defined which automatically sets `content`, you can say:
+      #
+      #     describe Post do
+      #       it do
+      #         FactoryGirl.create(:post)
+      #         should validate_uniqueness_of(:title)
+      #       end
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### with_message
+      #
+      # Use `with_message` if you are using a custom validation message.
+      #
+      #     class Post < ActiveRecord::Base
+      #       validates_uniqueness_of :title, message: 'Please choose another title'
+      #     end
+      #
+      #     # RSpec
+      #     describe Post do
+      #       it do
+      #         should validate_uniqueness_of(:title).
+      #           with_message('Please choose another title')
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PostTest < ActiveSupport::TestCase
+      #       should validate_uniqueness_of(:title).
+      #         with_message('Please choose another title')
+      #     end
+      #
+      # ##### scoped_to
+      #
+      # Use `scoped_to` to test usage of the `:scope` option. This asserts that
+      # a new record fails validation if not only the primary attribute is not
+      # unique, but the scoped attributes are not unique either.
+      #
+      #     class Post < ActiveRecord::Base
+      #       validates_uniqueness_of :slug, scope: :user_id
+      #     end
+      #
+      #     # RSpec
+      #     describe Post do
+      #       it { should validate_uniqueness_of(:slug).scoped_to(:journal_id) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PostTest < ActiveSupport::TestCase
+      #       should validate_uniqueness_of(:slug).scoped_to(:journal_id)
+      #     end
+      #
+      # ##### case_insensitive
+      #
+      # Use `case_insensitive` to test usage of the `:case_sensitive` option
+      # with a false value. This asserts that the uniquable attributes fail
+      # validation even if their values are a different case than corresponding
+      # attributes in the pre-existing record.
+      #
+      #     class Post < ActiveRecord::Base
+      #       validates_uniqueness_of :key, case_sensitive: false
+      #     end
+      #
+      #     # RSpec
+      #     describe Post do
+      #       it { should validate_uniqueness_of(:key).case_insensitive }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PostTest < ActiveSupport::TestCase
+      #       should validate_uniqueness_of(:key).case_insensitive
+      #     end
+      #
+      # ##### allow_nil
+      #
+      # Use `allow_nil` to assert that the attribute allows nil.
+      #
+      #     class Post < ActiveRecord::Base
+      #       validates_uniqueness_of :author_id, allow_nil: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Post do
+      #       it { should validate_uniqueness_of(:author_id).allow_nil }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PostTest < ActiveSupport::TestCase
+      #       should validate_uniqueness_of(:author_id).allow_nil
+      #     end
+      #
+      # @return [ValidateUniquenessOfMatcher]
       #
       def validate_uniqueness_of(attr)
         ValidateUniquenessOfMatcher.new(attr)
       end
 
-      class ValidateUniquenessOfMatcher < ValidationMatcher # :nodoc:
+      # @private
+      class ValidateUniquenessOfMatcher < ValidationMatcher
         include Helpers
 
         def initialize(attribute)

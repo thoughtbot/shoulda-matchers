@@ -1,40 +1,204 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActiveModel # :nodoc:
-
-      # Ensures that the length of the attribute is validated. Only works with
-      # string/text columns because it uses a string to check length.
+    module ActiveModel
+      # The `ensure_length_of` matcher tests usage of the `validates_length_of`
+      # matcher. Note that this matcher is intended to be used against string
+      # columns and not integer columns.
       #
-      # Options:
-      # * <tt>is_at_least</tt> - minimum length of this attribute
-      # * <tt>is_at_most</tt> - maximum length of this attribute
-      # * <tt>is_equal_to</tt> - exact requred length of this attribute
-      # * <tt>with_short_message</tt> - value the test expects to find in
-      #   <tt>errors.on(:attribute)</tt>. Regexp or string.  Defaults to the
-      #   translation for :too_short.
-      # * <tt>with_long_message</tt> - value the test expects to find in
-      #   <tt>errors.on(:attribute)</tt>. Regexp or string.  Defaults to the
-      #   translation for :too_long.
-      # * <tt>with_message</tt> - value the test expects to find in
-      #   <tt>errors.on(:attribute)</tt>. Regexp or string.  Defaults to the
-      #   translation for :wrong_length. Used in conjunction with
-      #   <tt>is_equal_to</tt>.
+      # #### Qualifiers
       #
-      # Examples:
-      #   it { should ensure_length_of(:password).
-      #                 is_at_least(6).
-      #                 is_at_most(20) }
-      #   it { should ensure_length_of(:name).
-      #                 is_at_least(3).
-      #                 with_short_message(/not long enough/) }
-      #   it { should ensure_length_of(:ssn).
-      #                 is_equal_to(9).
-      #                 with_message(/is invalid/) }
+      # ##### is_at_least
+      #
+      # Use `is_at_least` to test usage of the `:minimum` option. This asserts
+      # that the attribute can take a string which is equal to or longer than
+      # the given length and cannot take a string which is shorter.
+      #
+      #     class User
+      #       include ActiveModel::Model
+      #       attr_accessor :bio
+      #
+      #       validates_length_of :bio, minimum: 15
+      #     end
+      #
+      #     # RSpec
+      #
+      #     describe User do
+      #       it { should ensure_length_of(:bio).is_at_least(15) }
+      #     end
+      #
+      #     # Test::Unit
+      #
+      #     class UserTest < ActiveSupport::TestCase
+      #       should ensure_length_of(:bio).is_at_least(15)
+      #     end
+      #
+      # ##### is_at_most
+      #
+      # Use `is_at_most` to test usage of the `:maximum` option. This asserts
+      # that the attribute can take a string which is equal to or shorter than
+      # the given length and cannot take a string which is longer.
+      #
+      #     class User
+      #       include ActiveModel::Model
+      #       attr_accessor :status_update
+      #
+      #       validates_length_of :status_update, maximum: 140
+      #     end
+      #
+      #     # RSpec
+      #     describe User do
+      #       it { should ensure_length_of(:status_update).is_at_most(140) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class UserTest < ActiveSupport::TestCase
+      #       should ensure_length_of(:status_update).is_at_most(140)
+      #     end
+      #
+      # ##### is_equal_to
+      #
+      # Use `is_at_equal` to test usage of the `:is` option. This asserts that
+      # the attribute can take a string which is exactly equal to the given
+      # length and cannot take a string which is shorter or longer.
+      #
+      #     class User
+      #       include ActiveModel::Model
+      #       attr_accessor :favorite_superhero
+      #
+      #       validates_length_of :favorite_superhero, is: 6
+      #     end
+      #
+      #     # RSpec
+      #     describe User do
+      #       it { should ensure_length_of(:favorite_superhero).is_equal_to(6) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class UserTest < ActiveSupport::TestCase
+      #       should ensure_length_of(:favorite_superhero).is_equal_to(6)
+      #     end
+      #
+      # ##### is_at_least + is_at_most
+      #
+      # Use `is_at_least` and `is_at_most` together to test usage of the `:in`
+      # option.
+      #
+      #     class User
+      #       include ActiveModel::Model
+      #       attr_accessor :password
+      #
+      #       validates_length_of :password, in: 5..30
+      #     end
+      #
+      #     # RSpec
+      #     describe User do
+      #       it do
+      #         should ensure_length_of(:password).
+      #           is_at_least(5).is_at_most(30)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class UserTest < ActiveSupport::TestCase
+      #       should ensure_length_of(:password).
+      #         is_at_least(5).is_at_most(30)
+      #     end
+      #
+      # ##### with_message
+      #
+      # Use `with_message` if you are using a custom validation message.
+      #
+      #     class User
+      #       include ActiveModel::Model
+      #       attr_accessor :api_token
+      #
+      #       validates_length_of :api_token,
+      #         minimum: 10,
+      #         message: "Password isn't long enough"
+      #     end
+      #
+      #     # RSpec
+      #     describe User do
+      #       it do
+      #         should ensure_length_of(:password).
+      #           is_at_least(10).
+      #           with_message("Password isn't long enough")
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class UserTest < ActiveSupport::TestCase
+      #       should ensure_length_of(:password).
+      #         is_at_least(10).
+      #         with_message("Password isn't long enough")
+      #     end
+      #
+      # ##### with_short_message
+      #
+      # Use `with_short_message` if you are using a custom "too short" message.
+      #
+      #     class User
+      #       include ActiveModel::Model
+      #       attr_accessor :secret_key
+      #
+      #       validates_length_of :secret_key,
+      #         in: 15..100,
+      #         too_short: 'Secret key must be more than 15 characters'
+      #     end
+      #
+      #     # RSpec
+      #     describe User do
+      #       it do
+      #         should ensure_length_of(:secret_key).
+      #           is_at_least(15).
+      #           with_short_message('Secret key must be more than 15 characters')
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class UserTest < ActiveSupport::TestCase
+      #       should ensure_length_of(:secret_key).
+      #         is_at_least(15).
+      #         with_short_message('Secret key must be more than 15 characters')
+      #     end
+      #
+      # ##### with_long_message
+      #
+      # Use `with_long_message` if you are using a custom "too long" message.
+      #
+      #     class User
+      #       include ActiveModel::Model
+      #       attr_accessor :secret_key
+      #
+      #       validates_length_of :secret_key,
+      #         in: 15..100,
+      #         too_long: 'Secret key must be less than 100 characters'
+      #     end
+      #
+      #     # RSpec
+      #     describe User do
+      #       it do
+      #         should ensure_length_of(:secret_key).
+      #           is_at_most(100).
+      #           with_long_message('Secret key must be less than 100 characters')
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class UserTest < ActiveSupport::TestCase
+      #       should ensure_length_of(:secret_key).
+      #         is_at_most(100).
+      #         with_long_message('Secret key must be less than 100 characters')
+      #     end
+      #
+      # @return [EnsureLengthOfMatcher]
+      #
       def ensure_length_of(attr)
         EnsureLengthOfMatcher.new(attr)
       end
 
-      class EnsureLengthOfMatcher < ValidationMatcher # :nodoc:
+      # @private
+      class EnsureLengthOfMatcher < ValidationMatcher
         include Helpers
 
         def initialize(attribute)

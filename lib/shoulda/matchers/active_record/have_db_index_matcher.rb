@@ -1,27 +1,76 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActiveRecord # :nodoc:
-
-      # Ensures that there are DB indices on the given columns or tuples of
-      # columns.
+    module ActiveRecord
+      # The `have_db_index` matcher tests that the table that backs your model
+      # has a index on a specific column.
       #
-      # Options:
-      # * <tt>unique</tt> - whether or not the index has a unique
-      #   constraint. Use <tt>true</tt> to explicitly test for a unique
-      #   constraint.  Use <tt>false</tt> to explicitly test for a non-unique
-      #   constraint.
+      #     class CreateBlogs < ActiveRecord::Migration
+      #       def change
+      #         create_table :blogs do |t|
+      #           t.integer :user_id
+      #         end
       #
-      # Examples:
+      #         add_index :blogs, :user_id
+      #       end
+      #     end
       #
-      #   it { should have_db_index(:age) }
-      #   it { should have_db_index([:commentable_type, :commentable_id]) }
-      #   it { should have_db_index(:ssn).unique(true) }
+      #     # RSpec
+      #     describe Blog do
+      #       it { should have_db_index(:user_id) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class BlogTest < ActiveSupport::TestCase
+      #       should have_db_index(:user_id)
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### unique
+      #
+      # Use `unique` to assert that the index is unique.
+      #
+      #     class CreateBlogs < ActiveRecord::Migration
+      #       def change
+      #         create_table :blogs do |t|
+      #           t.string :name
+      #         end
+      #
+      #         add_index :blogs, :name, unique: true
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe Blog do
+      #       it { should have_db_index(:name).unique(true) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class BlogTest < ActiveSupport::TestCase
+      #       should have_db_index(:name).unique(true)
+      #     end
+      #
+      # Since it only ever makes since for `unique` to be `true`, you can also
+      # leave off the argument to save some keystrokes:
+      #
+      #     # RSpec
+      #     describe Blog do
+      #       it { should have_db_index(:name).unique }
+      #     end
+      #
+      #     # Test::Unit
+      #     class BlogTest < ActiveSupport::TestCase
+      #       should have_db_index(:name).unique
+      #     end
+      #
+      # @return [HaveDbIndexMatcher]
       #
       def have_db_index(columns)
         HaveDbIndexMatcher.new(columns)
       end
 
-      class HaveDbIndexMatcher # :nodoc:
+      # @private
+      class HaveDbIndexMatcher
         def initialize(columns)
           @columns = normalize_columns_to_array(columns)
           @options = {}

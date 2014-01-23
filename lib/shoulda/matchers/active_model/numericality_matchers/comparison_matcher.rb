@@ -1,11 +1,8 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActiveModel # :nodoc:
+    module ActiveModel
       module NumericalityMatchers
-        # Examples:
-        #   it { should validate_numericality_of(:attr).
-        #                 is_greater_than(6).
-        #                 less_than(20)...(and so on) }
+        # @private
         class ComparisonMatcher < ValidationMatcher
           ERROR_MESSAGES = {
             :> => :greater_than,

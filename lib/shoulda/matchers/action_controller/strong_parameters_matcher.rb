@@ -10,10 +10,154 @@ require 'active_support/hash_with_indifferent_access'
 module Shoulda
   module Matchers
     module ActionController
+      # The `permit` matcher tests that an action in your controller receives a
+      # whitelist of parameters using Rails' Strong Parameters feature
+      # (specifically that `permit` was called with the correct arguments).
+      #
+      # Here's an example:
+      #
+      #     class UsersController < ApplicationController
+      #       def create
+      #         user = User.create(user_params)
+      #         # ...
+      #       end
+      #
+      #       private
+      #
+      #       def user_params
+      #         params.require(:user).permit(
+      #           :first_name,
+      #           :last_name,
+      #           :email,
+      #           :password
+      #         )
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe UsersController do
+      #       it do
+      #         should permit(:first_name, :last_name, :email, :password).
+      #           for(:create)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class UsersControllerTest < ActionController::TestCase
+      #       should permit(:first_name, :last_name, :email, :password).
+      #         for(:create)
+      #     end
+      #
+      # If your action requires query parameters in order to work, then you'll
+      # need to supply them:
+      #
+      #     class UsersController < ApplicationController
+      #       def update
+      #         user = User.find(params[:id])
+      #
+      #         if user.update_attributes(user_params)
+      #           # ...
+      #         else
+      #           # ...
+      #         end
+      #       end
+      #
+      #       private
+      #
+      #       def user_params
+      #         params.require(:user).permit(
+      #           :first_name,
+      #           :last_name,
+      #           :email,
+      #           :password
+      #         )
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe UsersController do
+      #       before do
+      #         create(:user, id: 1)
+      #       end
+      #
+      #       it do
+      #         should permit(:first_name, :last_name, :email, :password).
+      #           for(:update, params: { id: 1 })
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class UsersControllerTest < ActionController::TestCase
+      #       setup do
+      #         create(:user, id: 1)
+      #       end
+      #
+      #       should permit(:first_name, :last_name, :email, :password).
+      #         for(:update, params: { id: 1 })
+      #     end
+      #
+      # Finally, if you have an action that isn't one of the seven resourceful
+      # actions, then you'll need to provide the HTTP verb that it responds to:
+      #
+      #     Rails.application.routes.draw do
+      #       resources :users do
+      #         member do
+      #           put :toggle
+      #         end
+      #       end
+      #     end
+      #
+      #     class UsersController < ApplicationController
+      #       def toggle
+      #         user = User.find(params[:id])
+      #
+      #         if user.update_attributes(user_params)
+      #           # ...
+      #         else
+      #           # ...
+      #         end
+      #       end
+      #
+      #       private
+      #
+      #       def user_params
+      #         params.require(:user).permit(:activated)
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe UsersController do
+      #       before do
+      #         create(:user, id: 1)
+      #       end
+      #
+      #       it do
+      #         should permit(:activated).for(:toggle,
+      #           params: { id: 1 },
+      #           verb: :put
+      #         )
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class UsersControllerTest < ActionController::TestCase
+      #       setup do
+      #         create(:user, id: 1)
+      #       end
+      #
+      #       should permit(:activated).for(:toggle,
+      #         params: { id: 1 },
+      #         verb: :put
+      #       )
+      #     end
+      #
+      # @return [StrongParametersMatcher]
+      #
       def permit(*params)
         StrongParametersMatcher.new(params).in_context(self)
       end
 
+      # @private
       class StrongParametersMatcher
         attr_writer :stubbed_params
 
@@ -114,12 +258,14 @@ module Shoulda
           expected_permitted_params.map(&:inspect).to_sentence
         end
 
+        # @private
         class ActionNotDefinedError < StandardError
           def message
             'You must specify the controller action using the #for method.'
           end
         end
 
+        # @private
         class VerbNotDefinedError < StandardError
           def message
             'You must specify an HTTP verb when using a non-RESTful action. For example: for(:authorize, verb: :post)'

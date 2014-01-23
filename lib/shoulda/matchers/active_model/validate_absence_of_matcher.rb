@@ -1,24 +1,62 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActiveModel # :nodoc:
-
-      # Ensures that the model is not valid if the given attribute is present.
+    module ActiveModel
+      # The `validate_absence_of` matcher tests the usage of the
+      # `validates_absence_of` validation.
       #
-      # Options:
-      # * <tt>with_message</tt> - value the test expects to find in
-      #   <tt>errors.on(:attribute)</tt>. <tt>Regexp</tt> or <tt>String</tt>.
-      #   Defaults to the translation for <tt>:present</tt>.
+      #     class Artillery
+      #       include ActiveModel::Model
+      #       attr_accessor :arms
       #
-      # Examples:
-      #   it { should validate_absence_of(:name) }
-      #   it { should validate_absence_of(:name).
-      #                 with_message(/may not be set/) }
+      #       validates_absence_of :arms
+      #     end
+      #
+      #     # RSpec
+      #     describe Artillery do
+      #       it { should validate_absence_of(:arms) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class ArtilleryTest < ActiveSupport::TestCase
+      #       should validate_absence_of(:arms)
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### with_message
+      #
+      # Use `with_message` if you are using a custom validation message.
+      #
+      #     class Artillery
+      #       include ActiveModel::Model
+      #       attr_accessor :arms
+      #
+      #       validates_absence_of :arms,
+      #         message: "We're fresh outta arms here, soldier!"
+      #     end
+      #
+      #     # RSpec
+      #     describe Artillery do
+      #       it do
+      #         should validate_absence_of(:arms).
+      #           with_message("We're fresh outta arms here, soldier!")
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class ArtilleryTest < ActiveSupport::TestCase
+      #       should validate_absence_of(:arms).
+      #         with_message("We're fresh outta arms here, soldier!")
+      #     end
+      #
+      # @return [ValidateAbsenceOfMatcher}
+      #
       def validate_absence_of(attr)
         ValidateAbsenceOfMatcher.new(attr)
       end
 
-      class ValidateAbsenceOfMatcher < ValidationMatcher # :nodoc:
-
+      # @private
+      class ValidateAbsenceOfMatcher < ValidationMatcher
         def with_message(message)
           @expected_message = message
           self

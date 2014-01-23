@@ -1,25 +1,89 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActiveRecord # :nodoc:
-
-      # Ensures the database column exists.
+    module ActiveRecord
+      # The `have_db_column` matcher tests that the table that backs your model
+      # has a specific column.
       #
-      # Options:
-      # * <tt>of_type</tt> - db column type (:integer, :string, etc.)
-      # * <tt>with_options</tt> - same options available in migrations
-      #   (:default, :null, :limit, :precision, :scale)
+      #     class CreatePhones < ActiveRecord::Migration
+      #       def change
+      #         create_table :phones do |t|
+      #           t.string :supported_ios_version
+      #         end
+      #       end
+      #     end
       #
-      # Examples:
-      #   it { should_not have_db_column(:admin).of_type(:boolean) }
-      #   it { should have_db_column(:salary).
-      #                 of_type(:decimal).
-      #                 with_options(precision: 10, scale: 2) }
+      #     # RSpec
+      #     describe Phone do
+      #       it { should have_db_column(:supported_ios_version) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PhoneTest < ActiveSupport::TestCase
+      #       should have_db_column(:supported_ios_version)
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### of_type
+      #
+      # Use `of_type` to assert that a column is defined as a certain type.
+      #
+      #     class CreatePhones < ActiveRecord::Migration
+      #       def change
+      #         create_table :phones do |t|
+      #           t.decimal :camera_aperture
+      #         end
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe Phone do
+      #       it do
+      #         should have_db_column(:camera_aperture).of_type(:decimal)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PhoneTest < ActiveSupport::TestCase
+      #       should have_db_column(:camera_aperture).of_type(:decimal)
+      #     end
+      #
+      # ##### with_options
+      #
+      # Use `with_options` to assert that a column has been defined with
+      # certain options (`:precision`, `:limit`, `:default`, `:null`, `:scale`,
+      # or `:primary`).
+      #
+      #     class CreatePhones < ActiveRecord::Migration
+      #       def change
+      #         create_table :phones do |t|
+      #           t.decimal :camera_aperture, precision: 1, null: false
+      #         end
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe Phone do
+      #       it do
+      #         should have_db_column(:camera_aperture).
+      #           with_options(precision: 1, null: false)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PhoneTest < ActiveSupport::TestCase
+      #       should have_db_column(:camera_aperture).
+      #         with_options(precision: 1, null: false)
+      #     end
+      #
+      # @return [HaveDbColumnMatcher]
       #
       def have_db_column(column)
         HaveDbColumnMatcher.new(column)
       end
 
-      class HaveDbColumnMatcher # :nodoc:
+      # @private
+      class HaveDbColumnMatcher
         def initialize(column)
           @column = column
           @options = {}

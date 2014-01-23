@@ -1,25 +1,49 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActionController # :nodoc:
-      # Ensures a controller rendered the given template.
+    module ActionController
+      # The `render_template` matcher tests that an action renders a template
+      # or partial. In RSpec, it is very similar to rspec-rails's
+      # `render_template` matcher. In Test::Unit, it provides a more expressive
+      # syntax over `assert_template`.
       #
-      # Example:
+      #     class PostsController < ApplicationController
+      #       def show
+      #       end
+      #     end
       #
-      #   it { should render_template(:show)  }
+      #     # app/views/posts/show.html.erb
+      #     <%= render 'sidebar' %>
       #
-      #   assert that the "_customer" partial was rendered
-      #   it { should render_template(partial: '_customer')  }
+      #     # RSpec
+      #     describe PostsController do
+      #       describe 'GET #show' do
+      #         before { get :show }
       #
-      #   assert that the "_customer" partial was rendered twice
-      #   it { should render_template(partial: '_customer', count: 2)  }
+      #         it { should render_template('show') }
+      #         it { should render_template(partial: 'sidebar') }
+      #       end
+      #     end
       #
-      #   assert that no partials were rendered
-      #   it { should render_template(partial: false)  }
+      #     # Test::Unit
+      #     class PostsControllerTest < ActionController::TestCase
+      #       context 'GET #show' do
+      #         setup { get :show }
+      #
+      #         should render_template('show')
+      #         should render_template(partial: 'sidebar')
+      #       end
+      #     end
+      #
+      # 
+      #
+      # @return [RenderTemplateMatcher]
+      #
       def render_template(options = {}, message = nil)
         RenderTemplateMatcher.new(options, message, self)
       end
 
-      class RenderTemplateMatcher # :nodoc:
+      # @private
+      class RenderTemplateMatcher
         attr_reader :failure_message, :failure_message_when_negated
 
         alias failure_message_for_should failure_message

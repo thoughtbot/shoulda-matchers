@@ -1,8 +1,9 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActiveModel # :nodoc:
+    module ActiveModel
       module NumericalityMatchers
-        class OddNumberMatcher < NumericTypeMatcher # :nodoc:
+        # @private
+        class OddNumberMatcher < NumericTypeMatcher
           NON_ODD_NUMBER_VALUE  = 2
 
           def initialize(attribute, options = {})

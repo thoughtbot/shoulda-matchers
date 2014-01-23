@@ -1,8 +1,9 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActiveModel # :nodoc:
+    module ActiveModel
       module NumericalityMatchers
-        class OnlyIntegerMatcher < NumericTypeMatcher # :nodoc:
+        # @private
+        class OnlyIntegerMatcher
           NON_INTEGER_VALUE = 0.1
           def initialize(attribute)
             @attribute = attribute

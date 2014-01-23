@@ -4,6 +4,7 @@ module Shoulda
   module Matchers
     module ActiveRecord
       module AssociationMatchers
+        # @private
         class ModelReflection < SimpleDelegator
           def initialize(reflection)
             super(reflection)

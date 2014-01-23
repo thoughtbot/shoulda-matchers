@@ -1,6 +1,7 @@
 module Shoulda
   module Matchers
     module Doublespeak
+      # @private
       class World
         def register_double_collection(klass)
           double_collection = DoubleCollection.new(klass)

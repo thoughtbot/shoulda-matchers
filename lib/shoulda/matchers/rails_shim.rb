@@ -1,6 +1,7 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    class RailsShim # :nodoc:
+    # @private
+    class RailsShim
       def self.layouts_ivar
         if action_pack_major_version >= 4
           '@_layouts'

@@ -1,10 +1,41 @@
 module Shoulda
   module Matchers
     module ActionController
+      # The `rescue_from` matcher tests usage of the `rescue_from` macro. It
+      # asserts that an exception and method are present in the list of
+      # exception handlers, and that the handler method exists.
+      #
+      #     class ApplicationController < ActionController::Base
+      #       rescue_from ActiveRecord::RecordNotFound, with: :handle_not_found
+      #
+      #       private
+      #
+      #       def handle_not_found
+      #         # ...
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe ApplicationController do
+      #       it do
+      #         should rescue_from(ActiveRecord::RecordNotFound).
+      #           with(:handle_not_found)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class ApplicationControllerTest < ActionController::TestCase
+      #       should rescue_from(ActiveRecord::RecordNotFound).
+      #         with(:handle_not_found)
+      #     end
+      #
+      # @return [RescueFromMatcher]
+      #
       def rescue_from(exception)
         RescueFromMatcher.new exception
       end
 
+      # @private
       class RescueFromMatcher
         def initialize(exception)
           @exception = exception

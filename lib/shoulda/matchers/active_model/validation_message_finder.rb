@@ -1,8 +1,7 @@
 module Shoulda
   module Matchers
     module ActiveModel
-
-      # Finds message information from a model's #errors method.
+      # @private
       class ValidationMessageFinder
         include Helpers
 

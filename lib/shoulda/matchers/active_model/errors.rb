@@ -1,8 +1,10 @@
-module Shoulda # :nodoc:
+module Shoulda
   module Matchers
-    module ActiveModel # :nodoc:
+    module ActiveModel
+      # @private
       class CouldNotDetermineValueOutsideOfArray < RuntimeError; end
 
+      # @private
       class NonNullableBooleanError < Shoulda::Matchers::Error
         def self.create(attribute)
           super(attribute: attribute)
@@ -19,6 +21,7 @@ Hence, this test will fail and there is no way to make it pass.
         end
       end
 
+      # @private
       class CouldNotSetPasswordError < Shoulda::Matchers::Error
         def self.create(model)
           super(model: model)
