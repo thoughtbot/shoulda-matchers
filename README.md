@@ -135,7 +135,11 @@ describe UserProfile do
   it { should allow_value('http://foo.com', 'http://bar.com/baz').for(:website_url) }
   it { should_not allow_value('asdfjkl').for(:website_url) }
 
-  it { should allow_value(:birthday_as_string).on(:create) }
+  it do
+    should allow_value('2013-01-01').
+      for(:birthday_as_string).
+      on(:create)
+  end
 
   it do
     should allow_value('open', 'closed').
@@ -149,7 +153,9 @@ class UserProfileTest < ActiveSupport::TestCase
   should allow_value('http://foo.com', 'http://bar.com/baz').for(:website_url)
   should_not allow_value('asdfjkl').for(:website_url)
 
-  should allow_value(:birthday_as_string).on(:create)
+  should allow_value('2013-01-01').
+    for(:birthday_as_string).
+    on(:create)
 
   should allow_value('open', 'closed').
     for(:state).
@@ -277,7 +283,7 @@ describe User do
     should ensure_length_of(:api_token).
       is_at_least(10).
       is_at_most(20).
-      message('Password must be in between 10 and 20 characters')
+      with_message('Password must be in between 10 and 20 characters')
   end
 
   it do
@@ -299,7 +305,7 @@ class UserTest < ActiveSupport::TestCase
   should ensure_length_of(:api_token).
     is_at_least(15).
     is_at_most(20).
-    message('Password must be in between 15 and 20 characters')
+    with_message('Password must be in between 15 and 20 characters')
 
   should ensure_length_of(:secret_key).
     is_at_least(15).
