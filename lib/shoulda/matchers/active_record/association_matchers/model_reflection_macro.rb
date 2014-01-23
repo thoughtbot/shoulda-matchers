@@ -4,8 +4,8 @@ module Shoulda
       module AssociationMatchers
         class ModelReflectionMacro
 
-          def initialize(reflection, macro_name = nil)
-            @reflection, @macro_name = reflection, macro_name
+          def initialize(reflection, matcher = nil)
+            @reflection, @matcher = reflection, matcher
           end
 
           def join_table
@@ -21,8 +21,17 @@ module Shoulda
             join_table.to_s
           end
 
+          def macro_correct?
+            if reflection.macro == matcher.macro
+              true
+            elsif reflection.macro == :has_many
+              matcher.macro == :has_and_belongs_to_many &&
+                reflection.name == matcher.name
+            end
+          end
+
           private
-            attr_reader :reflection, :macro_name
+            attr_reader :reflection, :matcher
 
             def has_and_belongs_to_name_table_name
               return false if reflection.options[:through].nil?

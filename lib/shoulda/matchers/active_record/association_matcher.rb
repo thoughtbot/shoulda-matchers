@@ -76,6 +76,7 @@ module Shoulda # :nodoc:
       class AssociationMatcher # :nodoc:
         delegate :reflection, :model_class, :associated_class, :through?,
           :join_table, to: :reflector
+        attr_reader :name, :macro
 
         def initialize(macro, name)
           @macro = macro
@@ -84,6 +85,7 @@ module Shoulda # :nodoc:
           @submatchers = []
           @missing = ''
         end
+
 
         def through(through)
           through_matcher = AssociationMatchers::ThroughMatcher.new(through, name)
@@ -171,7 +173,7 @@ module Shoulda # :nodoc:
 
         private
 
-        attr_reader :submatchers, :missing, :subject, :macro, :name, :options
+        attr_reader :submatchers, :missing, :subject, :options
 
         def reflector
           @reflector ||= AssociationMatchers::ModelReflector.new(subject, name)
@@ -222,11 +224,8 @@ module Shoulda # :nodoc:
         end
 
         def macro_correct?
-          if reflection.macro == macro
+          if Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflectionMacro.new(reflection, self).macro_correct?
             true
-          elsif reflection.macro == :has_many
-            macro == :has_and_belongs_to_many &&
-              reflection.name == @name
           else
             @missing = "actual association type was #{reflection.macro}"
             false
