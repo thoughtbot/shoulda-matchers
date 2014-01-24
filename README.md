@@ -909,7 +909,7 @@ end
 
 ### ActionController Matchers
 
-*Jump to: [filter_param](#filter_param), [redirect_to](#redirect_to), [render_template](#render_template), [render_with_layout](#render_with_layout), [rescue_from](#rescue_from), [respond_with](#respond_with), [route](#route), [set_session](#set_session), [set_the_flash](#set_the_flash), [use_after_filter / use_after_action](#use_after_filter--use_after_action), [use_around_filter / use_around_action](#use_around_filter--use_around_action), [use_before_filter / use_around_action](#use_before_filter--use_before_action)*
+*Jump to: [filter_param](#filter_param), [permit](#permit), [redirect_to](#redirect_to), [render_template](#render_template), [render_with_layout](#render_with_layout), [rescue_from](#rescue_from), [respond_with](#respond_with), [route](#route), [set_session](#set_session), [set_the_flash](#set_the_flash), [use_after_filter / use_after_action](#use_after_filter--use_after_action), [use_around_filter / use_around_action](#use_around_filter--use_around_action), [use_before_filter / use_around_action](#use_before_filter--use_before_action)*
 
 #### filter_param
 
@@ -928,6 +928,34 @@ end
 # Test::Unit
 class ApplicationControllerTest < ActionController::TestCase
   should filter_param(:secret_key)
+end
+```
+
+#### permit
+
+The `permit` matcher tests that only whitelisted parameters are permitted.
+
+```ruby
+class UserController < ActionController::Base
+  def create
+    User.create(user_params)
+  end
+
+  private
+
+  def user_params
+    params.require(:user).permit(:email)
+  end
+end
+
+# RSpec
+describe UserController do
+  it { should permit(:email).for(:create) }
+end
+
+# Test::Unit
+class UserControllerTest < ActionController::TestCase
+  should permit(:email).for(:create)
 end
 ```
 

@@ -1,5 +1,3 @@
-require 'bourne'
-require 'active_support/deprecation'
 begin
   require 'strong_parameters'
 rescue LoadError
@@ -9,16 +7,23 @@ module Shoulda
   module Matchers
     module ActionController
       def permit(*attributes)
-        attributes_and_context = attributes + [self]
-        StrongParametersMatcher.new(*attributes_and_context)
+        StrongParametersMatcher.new(self, attributes)
       end
 
       class StrongParametersMatcher
-        def initialize(*attributes_and_context)
-          ActiveSupport::Deprecation.warn 'The strong_parameters matcher is deprecated and will be removed in 2.0'
-          @attributes = attributes_and_context[0...-1]
-          @context = attributes_and_context.last
-          @permitted_params = []
+        def self.stubbed_parameters_class
+          @stubbed_parameters_class ||= build_stubbed_parameters_class
+        end
+
+        def self.build_stubbed_parameters_class
+          Class.new(::ActionController::Parameters) do
+            include StubbedParameters
+          end
+        end
+
+        def initialize(context = nil, attributes)
+          @attributes = attributes
+          @context = context
         end
 
         def for(action, options = {})
@@ -37,52 +42,53 @@ module Shoulda
         end
 
         def does_not_match?(controller = nil)
-          simulate_controller_action && parameters_difference.present?
+          simulate_controller_action && parameters_intersection.empty?
         end
 
         def failure_message
           "Expected controller to permit #{parameters_difference.to_sentence}, but it did not."
         end
+        alias failure_message_for_should failure_message
 
-        def negative_failure_message
-          "Expected controller not to permit #{parameters_difference.to_sentence}, but it did."
+        def failure_message_when_negated
+          "Expected controller not to permit #{parameters_intersection.to_sentence}, but it did."
         end
+        alias failure_message_for_should_not failure_message_when_negated
 
         private
+
         attr_reader :verb, :action, :attributes, :context
-        attr_accessor :permitted_params
 
         def simulate_controller_action
           ensure_action_and_verb_present!
-          model_attrs = stubbed_model_attributes
+          stubbed_model_attributes
 
           context.send(verb, action)
 
-          verify_permit_call(model_attrs)
+          verify_permit_call
         end
 
-        def verify_permit_call(model_attrs)
-          matcher = Mocha::API::HaveReceived.new(:permit).with do |*params|
-            self.permitted_params = params
-          end
-
-          matcher.matches?(model_attrs)
-        rescue Mocha::ExpectationError
-          false
+        def verify_permit_call
+          @model_attrs.permit_was_called
         end
 
         def parameters_difference
-          attributes - permitted_params
+          attributes - @model_attrs.shoulda_permitted_params
+        end
+
+        def parameters_intersection
+          attributes & @model_attrs.shoulda_permitted_params
         end
 
         def stubbed_model_attributes
-          extend Mocha::API
+          @model_attrs = self.class.stubbed_parameters_class.new(arbitrary_attributes)
 
-          model_attrs = ::ActionController::Parameters.new(arbitrary_attributes)
-          model_attrs.stubs(:permit)
-          ::ActionController::Parameters.any_instance.stubs(:[]).returns(model_attrs)
-
-          model_attrs
+          local_model_attrs = @model_attrs
+          ::ActionController::Parameters.class_eval do
+            define_method :[] do |*args|
+              local_model_attrs
+            end
+          end
         end
 
         def ensure_action_and_verb_present!
@@ -95,12 +101,31 @@ module Shoulda
         end
 
         def arbitrary_attributes
-          {:any_key => 'any_value'}
+          {any_key: 'any_value'}
         end
 
         def verb_for_action
-          verb_lookup = { :create => :post, :update => :put }
+          verb_lookup = { create: :post, update: :put }
           verb_lookup[action]
+        end
+      end
+
+      module StrongParametersMatcher::StubbedParameters
+        extend ActiveSupport::Concern
+
+        included do
+          attr_accessor :permit_was_called, :shoulda_permitted_params
+        end
+
+        def initialize(*)
+          @permit_was_called = false
+          super
+        end
+
+        def permit(*args)
+          self.shoulda_permitted_params = args
+          self.permit_was_called = true
+          nil
         end
       end
 
@@ -113,7 +138,7 @@ module Shoulda
       class StrongParametersMatcher::VerbNotDefinedError < StandardError
         def message
           'You must specify an HTTP verb when using a non-RESTful action.' +
-          ' e.g. for(:authorize, :verb => :post)'
+          ' e.g. for(:authorize, verb: :post)'
         end
       end
     end

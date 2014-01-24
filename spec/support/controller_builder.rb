@@ -58,17 +58,12 @@ module ControllerBuilder
     $test_app.create_temp_view(path, contents)
   end
 
-  def controller_for_resource_with_strong_parameters(&block)
+  def controller_for_resource_with_strong_parameters(options = {}, &block)
     define_model "User"
     controller_class = define_controller "Users" do
-      def new
-        @user = User.new
-        render :nothing => true
-      end
-
-      def create
+      define_method options.fetch(:action) do
         @user = User.create(user_params)
-        render :nothing => true
+        render nothing: true
       end
 
       private
