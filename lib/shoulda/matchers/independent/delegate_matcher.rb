@@ -1,5 +1,3 @@
-require 'active_support/deprecation'
-
 module Shoulda # :nodoc:
   module Matchers
     module Independent # :nodoc:
@@ -10,13 +8,14 @@ module Shoulda # :nodoc:
       #   it { should delegate_method(:deliver_mail).to(:mailman) }
       #
       # Options:
-      # * <tt>:as</tt> - tests that the object being delegated to is called with a certain method
-      #   (defaults to same name as delegating method)
-      # * <tt>:with_arguments</tt> - tests that the method on the object being delegated to is
-      #   called with certain arguments
+      # * <tt>:as</tt> - tests that the object being delegated to is called
+      #    with a certain method (defaults to same name as delegating method)
+      # * <tt>:with_arguments</tt> - tests that the method on the object being
+      #   delegated to is called with certain arguments
       #
       # Examples:
-      #   it { should delegate_method(:deliver_mail).to(:mailman).as(:deliver_with_haste)
+      #   it { should delegate_method(:deliver_mail).to(:mailman).
+      #     as(:deliver_with_haste) }
       #   it { should delegate_method(:deliver_mail).to(:mailman).
       #     with_arguments('221B Baker St.', :hastily => true) }
       #
@@ -27,28 +26,26 @@ module Shoulda # :nodoc:
       class DelegateMatcher
         def initialize(delegating_method)
           @delegating_method = delegating_method
+          @delegated_arguments = []
         end
 
-        def matches?(subject)
-          @subject = subject
+        def matches?(_subject)
+          @subject = _subject
           ensure_target_method_is_present!
+          stub_target
 
           begin
-            extend Mocha::API
-
-            stubbed_object = stub(method_on_target)
-            subject.stubs(@target_method).returns(stubbed_object)
-            subject.send(@delegating_method)
-
-            matcher = Mocha::API::HaveReceived.new(method_on_target).with(*@delegated_arguments)
-            matcher.matches?(stubbed_object)
-          rescue NoMethodError, MiniTest::Assertion
+            subject.send(delegating_method, *delegated_arguments)
+            target_has_received_delegated_method? && target_has_received_arguments?
+          rescue NoMethodError
             false
           end
         end
 
         def description
-          add_clarifications_to("delegate method ##{@delegating_method} to :#{@target_method}")
+          add_clarifications_to(
+            "delegate method ##{delegating_method} to :#{target_method}"
+          )
         end
 
         def does_not_match?(subject)
@@ -70,47 +67,74 @@ module Shoulda # :nodoc:
           self
         end
 
-        def failure_message_for_should
+        def failure_message
           base = "Expected #{delegating_method_name} to delegate to #{target_method_name}"
           add_clarifications_to(base)
         end
+        alias failure_message_for_should failure_message
 
         private
 
+        attr_reader :delegated_arguments, :delegating_method, :method, :subject,
+          :target_method, :method_on_target
+
         def add_clarifications_to(message)
-          if @delegated_arguments.present?
-            message << " with arguments: #{@delegated_arguments.inspect}"
+          if delegated_arguments.present?
+            message << " with arguments: #{delegated_arguments.inspect}"
           end
 
-          if @method_on_target.present?
-            message << " as ##{@method_on_target}"
+          if method_on_target.present?
+            message << " as ##{method_on_target}"
           end
 
           message
         end
 
         def delegating_method_name
-          method_name_with_class(@delegating_method)
+          method_name_with_class(delegating_method)
         end
 
         def target_method_name
-          method_name_with_class(@target_method)
+          method_name_with_class(target_method)
         end
 
         def method_name_with_class(method)
-          if Class === @subject
-            @subject.name + '.' + method.to_s
+          if Class === subject
+            subject.name + '.' + method.to_s
           else
-            @subject.class.name + '#' + method.to_s
+            subject.class.name + '#' + method.to_s
           end
         end
 
-        def method_on_target
-          @method_on_target || @delegating_method
+        def target_has_received_delegated_method?
+          stubbed_target.has_received_method?
+        end
+
+        def target_has_received_arguments?
+          stubbed_target.has_received_arguments?(*delegated_arguments)
+        end
+
+        def stubbed_method
+          method_on_target || delegating_method
+        end
+
+        def stub_target
+          local_stubbed_target = stubbed_target
+          local_target_method = target_method
+
+          subject.instance_eval do
+            define_singleton_method local_target_method do
+              local_stubbed_target
+            end
+          end
+        end
+
+        def stubbed_target
+          @stubbed_target ||= StubbedTarget.new(stubbed_method)
         end
 
         def ensure_target_method_is_present!
-          if @target_method.blank?
+          if target_method.blank?
             raise TargetNotDefinedError
           end
         end
@@ -118,7 +142,8 @@ module Shoulda # :nodoc:
 
       class DelegateMatcher::TargetNotDefinedError < StandardError
         def message
-          'Delegation needs a target. Use the #to method to define one, e.g. `post_office.should delegate(:deliver_mail).to(:mailman)`'
+          'Delegation needs a target. Use the #to method to define one, e.g.
+          `post_office.should delegate(:deliver_mail).to(:mailman)`'.squish
         end
       end
 

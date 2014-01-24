@@ -1324,6 +1324,11 @@ Matchers to test non-Rails-dependent code:
 class Human < ActiveRecord::Base
   has_one :robot
   delegate :work, to: :robot
+
+  # alternatively, if you are not using Rails
+  def work
+    robot.work
+  end
 end
 
 # RSpec
