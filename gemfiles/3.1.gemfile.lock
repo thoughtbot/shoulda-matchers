@@ -3,6 +3,7 @@ PATH
   specs:
     shoulda-matchers (2.5.0)
       activesupport (>= 3.0.0)
+      bourne (~> 1.3)
 
 GEM
   remote: https://rubygems.org/
