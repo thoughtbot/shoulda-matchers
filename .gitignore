@@ -3,6 +3,7 @@
 *.swp
 .bundle
 .svn/
+.yardoc
 coverage
 doc
 pkg
