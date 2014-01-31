@@ -24,7 +24,7 @@ module Shoulda # :nodoc:
           end
 
           def allowed_types
-            'integer'
+            "'#{expectation} #{@value}'"
           end
 
           def with_message(message)
