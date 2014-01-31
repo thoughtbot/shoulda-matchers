@@ -32,19 +32,6 @@ module Shoulda # :nodoc:
         ValidateUniquenessOfMatcher.new(attr)
       end
 
-      module TestModels
-        def self.new(klass)
-          name = klass.dup
-          name.next! while self.const_defined?(name)
-          self.const_set(name, klass.constantize.dup)
-          self.const_get(name)
-        end
-
-        def self.teardown
-          self.constants.each { |c| self.send(:remove_const, c) }
-        end
-      end
-
       class ValidateUniquenessOfMatcher < ValidationMatcher # :nodoc:
         include Helpers
 
@@ -91,7 +78,7 @@ module Shoulda # :nodoc:
               validate_after_scope_change? &&
               allows_nil?
           ensure
-            TestModels.teardown
+            UniquenessHelpers::TestModels.teardown
           end
         end
 
@@ -183,7 +170,7 @@ module Shoulda # :nodoc:
 
               next_value =
                 if scope.to_s =~ /_type$/ && is_model_klass?(previous_value)
-                  TestModels.new(previous_value).to_s
+                  UniquenessHelpers::TestModels.new(previous_value).to_s
                 elsif previous_value.respond_to?(:next)
                   previous_value.next
                 elsif previous_value.respond_to?(:to_datetime)
