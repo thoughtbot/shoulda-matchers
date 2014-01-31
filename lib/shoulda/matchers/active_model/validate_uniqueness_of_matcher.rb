@@ -34,9 +34,9 @@ module Shoulda # :nodoc:
 
       module TestModels
         def self.new(klass)
-          name = klass.to_s
+          name = klass.dup
           name.next! while self.const_defined?(name)
-          self.const_set(name, klass.dup)
+          self.const_set(name, klass.constantize.dup)
           self.const_get(name)
         end
 
@@ -166,6 +166,10 @@ module Shoulda # :nodoc:
           @existing_record = create_record_in_database
         end
 
+        def is_model_klass?(value)
+          klass = value.constantize rescue nil && klass.ancestors.include?(::ActiveRecord::Base)
+        end
+
         def validate_after_scope_change?
           if @options[:scopes].blank?
             true
@@ -178,8 +182,8 @@ module Shoulda # :nodoc:
               previous_value ||= correct_type_for_column(@subject.class.columns_hash[scope.to_s])
 
               next_value =
-                if scope.to_s =~ /_type$/ && klass = previous_value.constantize rescue nil && klass.ancestors.include?(::ActiveRecord::Base)
-                  TestModels.new(klass).to_s
+                if scope.to_s =~ /_type$/ && is_model_klass?(previous_value)
+                  TestModels.new(previous_value).to_s
                 elsif previous_value.respond_to?(:next)
                   previous_value.next
                 elsif previous_value.respond_to?(:to_datetime)
