@@ -909,7 +909,7 @@ end
 
 ### ActionController Matchers
 
-*Jump to: [filter_param](#filter_param), [redirect_to](#redirect_to), [render_template](#render_template), [render_with_layout](#render_with_layout), [rescue_from](#rescue_from), [respond_with](#respond_with), [route](#route), [set_session](#set_session), [set_the_flash](#set_the_flash)*
+*Jump to: [filter_param](#filter_param), [redirect_to](#redirect_to), [render_template](#render_template), [render_with_layout](#render_with_layout), [rescue_from](#rescue_from), [respond_with](#respond_with), [route](#route), [set_session](#set_session), [set_the_flash](#set_the_flash), [use_after_filter](#use_after_filter), [use_before_filter](#use_before_filter)*
 
 #### filter_param
 
@@ -1248,6 +1248,46 @@ class PostsControllerTest < ActionController::TestCase
 
     should_not set_the_flash
   end
+end
+```
+
+#### use_after_filter
+
+The `use_after_filter` ensures a given `after_filter` is used.
+
+```ruby
+class UserController < ActionController::Base
+  after_filter :log_activity
+end
+
+# RSpec
+describe UserController do
+  it { should use_after_filter(:log_activity) }
+end
+
+# Test::Unit
+class UserControllerTest < ActionController::TestCase
+  should use_after_filter(:log_activity)
+end
+```
+
+#### use_before_filter
+
+The `use_before_filter` ensures a given `before_filter` is used.
+
+```ruby
+class UserController < ActionController::Base
+  before_filter :authenticate_user!
+end
+
+# RSpec
+describe UserController do
+  it { should use_before_filter(:authenticate_user!) }
+end
+
+# Test::Unit
+class UserControllerTest < ActionController::TestCase
+  should use_before_filter(:authenticate_user!)
 end
 ```
 
