@@ -153,7 +153,7 @@ module Shoulda # :nodoc:
           @existing_record = create_record_in_database
         end
 
-        def is_model_klass?(value)
+        def model_class?(value)
           klass = value.constantize rescue nil && klass.ancestors.include?(::ActiveRecord::Base)
         end
 
@@ -169,7 +169,7 @@ module Shoulda # :nodoc:
               previous_value ||= correct_type_for_column(@subject.class.columns_hash[scope.to_s])
 
               next_value =
-                if scope.to_s =~ /_type$/ && is_model_klass?(previous_value)
+                if scope.to_s =~ /_type$/ && model_class?(previous_value)
                   UniquenessHelpers::TestModels.new(previous_value).to_s
                 elsif previous_value.respond_to?(:next)
                   previous_value.next
