@@ -104,7 +104,7 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbColumnMatcher do
 
   def with_table(column_name, column_type, options)
     create_table 'employees' do |table|
-      table.send(column_type, column_name, options)
+      table.__send__(column_type, column_name, options)
     end
     define_model_class('Employee').new
   end

@@ -114,7 +114,7 @@ module Shoulda # :nodoc:
           end
 
           @subject.class.new.tap do |instance|
-            instance.send("#{@attribute}=", value)
+            instance.__send__("#{@attribute}=", value)
             if has_secure_password?
               instance.password = 'password'
               instance.password_confirmation = 'password'
@@ -132,7 +132,7 @@ module Shoulda # :nodoc:
             @options[:scopes].all? do |scope|
               setter = :"#{scope}="
               if @subject.respond_to?(setter)
-                @subject.send(setter, existing_record.send(scope))
+                @subject.__send__(setter, existing_record.__send__(scope))
                 true
               else
                 @failure_message = "#{class_name} doesn't seem to have a #{scope} attribute."
@@ -176,10 +176,10 @@ module Shoulda # :nodoc:
                   previous_value.to_s.next
                 end
 
-              @subject.send("#{scope}=", next_value)
+              @subject.__send__("#{scope}=", next_value)
 
               if allows_value_of(existing_value, @expected_message)
-                @subject.send("#{scope}=", previous_value)
+                @subject.__send__("#{scope}=", previous_value)
 
                 @failure_message_when_negated <<
                   " (with different value of #{scope})"
@@ -209,7 +209,7 @@ module Shoulda # :nodoc:
         end
 
         def existing_value
-          value = existing_record.send(@attribute)
+          value = existing_record.__send__(@attribute)
           if @options[:case_insensitive] && value.respond_to?(:swapcase!)
             value.swapcase!
           end

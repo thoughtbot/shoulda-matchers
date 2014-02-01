@@ -64,7 +64,7 @@ module Shoulda # :nodoc:
         def set_confirmation(val)
           setter = :"#{@confirmation_attribute}="
           if @subject.respond_to?(setter)
-            @subject.send(setter, val)
+            @subject.__send__(setter, val)
           end
         end
 

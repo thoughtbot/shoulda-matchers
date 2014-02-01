@@ -6,7 +6,7 @@ module Shoulda # :nodoc:
           obj.errors.map do |attribute, model|
             msg = "#{attribute} #{model}"
             if attribute.to_sym != :base && obj.respond_to?(attribute)
-              msg << " (#{obj.send(attribute).inspect})"
+              msg << " (#{obj.__send__(attribute).inspect})"
             end
             msg
           end
