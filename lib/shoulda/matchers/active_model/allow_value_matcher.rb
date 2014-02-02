@@ -68,7 +68,7 @@ module Shoulda # :nodoc:
 
           values_to_match.none? do |value|
             self.value = value
-            instance.send("#{attribute_to_set}=", value)
+            instance.__send__("#{attribute_to_set}=", value)
             errors_match?
           end
         end

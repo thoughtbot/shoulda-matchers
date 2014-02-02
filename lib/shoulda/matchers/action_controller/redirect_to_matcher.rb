@@ -46,7 +46,7 @@ module Shoulda # :nodoc:
 
         def redirects_to_url?
           begin
-            @context.send(:assert_redirected_to, url)
+            @context.__send__(:assert_redirected_to, url)
             @failure_message_when_negated = "Didn't expect to redirect to #{url}"
             true
           rescue Shoulda::Matchers::AssertionError => error

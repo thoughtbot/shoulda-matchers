@@ -158,7 +158,7 @@ module Shoulda # :nodoc:
         end
 
         def find_outside_value
-          case @subject.send(@attribute.to_s)
+          case @subject.__send__(@attribute.to_s)
           when Fixnum
             ARBITRARY_OUTSIDE_FIXNUM
           when BigDecimal
