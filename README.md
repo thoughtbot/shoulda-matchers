@@ -1329,16 +1329,28 @@ class Human < ActiveRecord::Base
   def work
     robot.work
   end
+
+  def protect
+    robot.protect('Sarah Connor')
+  end
+
+  def speak
+    robot.beep_boop
+  end
 end
 
 # RSpec
 describe Human do
   it { should delegate_method(:work).to(:robot) }
+  it { should delegate_method(:protect).to(:robot).with_arguments('Sarah Connor') }
+  it { should delegate_method(:beep_boop).to(:robot).as(:speak) }
 end
 
 # Test::Unit
 class HumanTest < ActiveSupport::TestCase
   should delegate_method(:work).to(:robot)
+  should delegate_method(:protect).to(:robot).with_arguments('Sarah Connor')
+  should delegate_method(:beep_boop).to(:robot).as(:speak)
 end
 ```
 
