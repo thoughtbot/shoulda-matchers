@@ -22,6 +22,9 @@
   * You cannot test that your attribute allows nil (`.in_array([nil])`) if
     the column does not allow null values.
 
+* Change `validate_uniqueness_of(...)` so that it provides default values for
+  non-nullable attributes.
+
 # v 2.5.0
 
 * Fix Rails/Test::Unit integration to ensure that the test case classes we are

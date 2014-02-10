@@ -115,6 +115,11 @@ module Shoulda # :nodoc:
 
           @subject.class.new.tap do |instance|
             instance.__send__("#{@attribute}=", value)
+            
+            other_non_nullable_columns.each do |non_nullable_column|
+              instance.__send__("#{non_nullable_column.name}=", correct_type_for_column(non_nullable_column))
+            end
+            
             if has_secure_password?
               instance.password = 'password'
               instance.password_confirmation = 'password'
@@ -193,7 +198,7 @@ module Shoulda # :nodoc:
         end
 
         def correct_type_for_column(column)
-          if column.type == :string
+          if column.type == :string || column.type == :binary
             '0'
           elsif column.type == :datetime
             DateTime.now
@@ -214,6 +219,12 @@ module Shoulda # :nodoc:
             value.swapcase!
           end
           value
+        end
+
+        def other_non_nullable_columns
+          @subject.class.columns.select do |column|
+            column.name != @attribute && !column.null && !column.primary
+          end
         end
       end
     end
