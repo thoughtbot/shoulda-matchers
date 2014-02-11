@@ -6,14 +6,17 @@ module Shoulda # :nodoc:
       # Ensure that the belongs_to relationship exists.
       #
       # Options:
-      # * <tt>:class_name</tt> - tests that the association resolves to class_name.
-      # * <tt>:validate</tt> - tests that the association makes use of the validate
+      # * <tt>class_name</tt> - tests that the association resolves to class_name.
+      # * <tt>validate</tt> - tests that the association makes use of the validate
       # option.
-      # * <tt>:touch</tt> - tests that the association makes use of the touch
+      # * <tt>touch</tt> - tests that the association makes use of the touch
       # option.
       #
       # Example:
       #   it { should belong_to(:parent) }
+      #   it { should belong_to(:parent).touch }
+      #   it { should belong_to(:parent).validate }
+      #   it { should belong_to(:parent).class_name("ModelClassName") }
       #
       def belong_to(name)
         AssociationMatcher.new(:belongs_to, name)
@@ -27,16 +30,19 @@ module Shoulda # :nodoc:
       # * <tt>through</tt> - association name for <tt>has_many :through</tt>
       # * <tt>dependent</tt> - tests that the association makes use of the
       #   dependent option.
-      # * <tt>:class_name</tt> - tests that the association resoves to class_name.
-      # * <tt>:autosave</tt> - tests that the association makes use of the
+      # * <tt>class_name</tt> - tests that the association resoves to class_name.
+      # * <tt>autosave</tt> - tests that the association makes use of the
       #   autosave option.
-      # * <tt>:validate</tt> - tests that the association makes use of the validate
+      # * <tt>validate</tt> - tests that the association makes use of the validate
       # option.
       #
       # Example:
       #   it { should have_many(:friends) }
       #   it { should have_many(:enemies).through(:friends) }
       #   it { should have_many(:enemies).dependent(:destroy) }
+      #   it { should have_many(:friends).autosave }
+      #   it { should have_many(:friends).validate }
+      #   it { should have_many(:friends).class_name("Friend") }
       #
       def have_many(name)
         AssociationMatcher.new(:has_many, name)
@@ -47,16 +53,20 @@ module Shoulda # :nodoc:
       # associations.
       #
       # Options:
-      # * <tt>:dependent</tt> - tests that the association makes use of the
+      # * <tt>dependent</tt> - tests that the association makes use of the
       #   dependent option.
-      # * <tt>:class_name</tt> - tests that the association resolves to class_name.
-      # * <tt>:autosave</tt> - tests that the association makes use of the
+      # * <tt>class_name</tt> - tests that the association resolves to class_name.
+      # * <tt>autosave</tt> - tests that the association makes use of the
       #   autosave option.
-      # * <tt>:validate</tt> - tests that the association makes use of the validate
+      # * <tt>validate</tt> - tests that the association makes use of the validate
       # option.
       #
       # Example:
       #   it { should have_one(:god) } # unless hindu
+      #   it { should have_one(:god).dependent }
+      #   it { should have_one(:god).autosave }
+      #   it { should have_one(:god).validate }
+      #   it { should have_one(:god).class_name("JHVH1") }
       #
       def have_one(name)
         AssociationMatcher.new(:has_one, name)
@@ -66,12 +76,14 @@ module Shoulda # :nodoc:
       # the join table is in place.
       #
       # Options:
-      # * <tt>:class_name</tt> - tests that the association resolves to class_name.
-      # * <tt>:validate</tt> - tests that the association makes use of the validate
+      # * <tt>class_name</tt> - tests that the association resolves to class_name.
+      # * <tt>validate</tt> - tests that the association makes use of the validate
       # option.
       #
       # Example:
       #   it { should have_and_belong_to_many(:posts) }
+      #   it { should have_and_belong_to_many(:posts).validate }
+      #   it { should have_and_belong_to_many(:posts).class_name("Post") }
       #
       def have_and_belong_to_many(name)
         AssociationMatcher.new(:has_and_belongs_to_many, name)
