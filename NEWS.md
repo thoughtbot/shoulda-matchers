@@ -13,6 +13,9 @@
   the error message reported does not say the matcher accepts integer values if
   you didn't specify that.
 
+* Change `validate_uniqueness_of(...)` so that it provides default values for
+  non-nullable attributes.
+
 # v 2.5.0
 
 * Fix Rails/Test::Unit integration to ensure that the test case classes we are
