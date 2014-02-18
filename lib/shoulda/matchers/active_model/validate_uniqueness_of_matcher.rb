@@ -71,10 +71,15 @@ module Shoulda # :nodoc:
         def matches?(subject)
           @subject = subject.class.new
           @expected_message ||= :taken
-          set_scoped_attributes &&
-            validate_everything_except_duplicate_nils? &&
-            validate_after_scope_change? &&
-            allows_nil?
+
+          begin
+            set_scoped_attributes &&
+              validate_everything_except_duplicate_nils? &&
+              validate_after_scope_change? &&
+              allows_nil?
+          ensure
+            UniquenessHelpers::TestModels.teardown
+          end
         end
 
         private
@@ -156,6 +161,10 @@ module Shoulda # :nodoc:
           @existing_record = create_record_in_database
         end
 
+        def model_class?(value)
+          klass = value.constantize rescue nil && klass.ancestors.include?(::ActiveRecord::Base)
+        end
+
         def validate_after_scope_change?
           if @options[:scopes].blank?
             true
@@ -168,7 +177,9 @@ module Shoulda # :nodoc:
               previous_value ||= correct_type_for_column(@subject.class.columns_hash[scope.to_s])
 
               next_value =
-                if previous_value.respond_to?(:next)
+                if scope.to_s =~ /_type$/ && model_class?(previous_value)
+                  UniquenessHelpers::TestModels.new(previous_value).to_s
+                elsif previous_value.respond_to?(:next)
                   previous_value.next
                 elsif previous_value.respond_to?(:to_datetime)
                   previous_value.to_datetime.next
