@@ -10,12 +10,14 @@ module Shoulda # :nodoc:
       # * <tt>only_integer</tt> - allows only integer values
       # * <tt>odd</tt> - Specifies the value must be an odd number.
       # * <tt>even</tt> - Specifies the value must be an even number.
+      # * <tt>allow_nil</tt> - allows nil values
       #
       # Examples:
       #   it { should validate_numericality_of(:price) }
       #   it { should validate_numericality_of(:age).only_integer }
       #   it { should validate_numericality_of(:frequency).odd }
       #   it { should validate_numericality_of(:frequency).even }
+      #   it { should validate_numericality_of(:rank).less_than_or_equal_to(10).allow_nil }
       #
       def validate_numericality_of(attr)
         ValidateNumericalityOfMatcher.new(attr)
@@ -34,6 +36,11 @@ module Shoulda # :nodoc:
 
         def only_integer
           add_submatcher(NumericalityMatchers::OnlyIntegerMatcher.new(@attribute))
+          self
+        end
+
+        def allow_nil
+          add_submatcher(AllowValueMatcher.new(nil).for(@attribute).with_message(:not_a_number))
           self
         end
 

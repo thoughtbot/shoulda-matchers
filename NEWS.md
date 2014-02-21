@@ -30,6 +30,9 @@
 * Additionally, we now manage Appraisals using the `appraisal` executable that
   is coming in Appraisal 1.0.0 (we're using the beta for now).
 
+* Add `allow_nil` option to `validate_numericality_of` so that you can validate
+  that numeric values are validated only if a value is supplied.
+
 # v 2.5.0
 
 * Fix Rails/Test::Unit integration to ensure that the test case classes we are

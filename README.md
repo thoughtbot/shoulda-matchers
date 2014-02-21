@@ -448,6 +448,7 @@ class Person < ActiveRecord::Base
   validates_numericality_of :birth_year, less_than_or_equal_to: 1987
   validates_numericality_of :birth_day, odd: true
   validates_numericality_of :birth_month, even: true
+  validates_numericality_of :rank, less_than_or_equal_to: 10, allow_nil: true
 
   validates_numericality_of :number_of_dependents,
     message: 'Number of dependents must be a number'
