@@ -12,4 +12,4 @@ gem "therubyrhino", :platform=>:jruby
 gem "rails", "~> 3.0.17"
 gem "strong_parameters"
 
-gemspec :path=>"../"
+gemspec :path=>".././"

@@ -15,14 +15,15 @@ Cucumber::Rake::Task.new do |t|
   t.cucumber_opts = ['--format', (ENV['CUCUMBER_FORMAT'] || 'progress')]
 end
 
-task :default do |t|
+task :default do
   if ENV['BUNDLE_GEMFILE'] =~ /gemfiles/
-    exec 'rake spec cucumber'
+    Rake::Task['spec'].invoke
+    Rake::Task['cucumber'].invoke
   else
-    Rake::Task['appraise'].execute
+    Rake::Task['appraise'].invoke
   end
 end
 
-task :appraise => ['appraisal:install'] do |t|
-  exec 'rake appraisal'
+task :appraise do
+  exec 'appraisal install && appraisal rake'
 end

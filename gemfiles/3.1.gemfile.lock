@@ -35,9 +35,10 @@ GEM
       activesupport (= 3.1.11)
     activesupport (3.1.11)
       multi_json (~> 1.0)
-    appraisal (0.5.1)
+    appraisal (1.0.0.beta2)
       bundler
       rake
+      thor (>= 0.14.0)
     arel (2.2.3)
     aruba (0.5.1)
       childprocess (~> 0.3.6)
@@ -149,7 +150,7 @@ PLATFORMS
 DEPENDENCIES
   activerecord-jdbc-adapter
   activerecord-jdbcsqlite3-adapter
-  appraisal (~> 0.4)
+  appraisal (~> 1.0.0.beta2)
   aruba
   bcrypt-ruby (~> 3.0.0)
   bourne (~> 1.3)
