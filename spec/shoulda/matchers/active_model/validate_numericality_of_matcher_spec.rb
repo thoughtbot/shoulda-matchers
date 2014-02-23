@@ -47,6 +47,19 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
     end
   end
 
+  context 'with the allow_nil option' do
+    it 'allows nil values for that attribute' do
+      expect(validating_numericality(allow_nil: true)).to matcher.allow_nil
+    end
+
+    it 'rejects when the model does not allow nil' do
+      the_matcher = matcher.allow_nil
+      expect {
+        expect(validating_numericality).to the_matcher
+      }.to fail_with_message_including('Did not expect errors to include "is not a number"')
+    end
+  end
+
   context 'with the only_integer option' do
     it 'allows integer values for that attribute' do
       expect(validating_numericality(only_integer: true)).to matcher.only_integer
