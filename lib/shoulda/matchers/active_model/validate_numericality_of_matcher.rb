@@ -26,58 +26,68 @@ module Shoulda # :nodoc:
       class ValidateNumericalityOfMatcher
         NUMERIC_NAME = 'numbers'
         NON_NUMERIC_VALUE = 'abcd'
+        DEFAULT_DIFF_TO_COMPARE = 0.000_000_000_001
+        attr_reader :diff_to_compare
 
         def initialize(attribute)
           @attribute = attribute
           @submatchers = []
-
+          @diff_to_compare = DEFAULT_DIFF_TO_COMPARE
           add_disallow_value_matcher
         end
 
         def only_integer
-          add_submatcher(NumericalityMatchers::OnlyIntegerMatcher.new(@attribute))
+          prepare_submatcher(
+            NumericalityMatchers::OnlyIntegerMatcher.new(@attribute)
+          )
           self
         end
 
         def allow_nil
-          add_submatcher(AllowValueMatcher.new(nil).for(@attribute).with_message(:not_a_number))
-          self
-        end
-
-        def is_greater_than(value)
-          add_submatcher(NumericalityMatchers::ComparisonMatcher.new(value, :>).for(@attribute))
-          self
-        end
-
-        def is_greater_than_or_equal_to(value)
-          add_submatcher(NumericalityMatchers::ComparisonMatcher.new(value, :>=).for(@attribute))
-          self
-        end
-
-        def is_equal_to(value)
-          add_submatcher(NumericalityMatchers::ComparisonMatcher.new(value, :==).for(@attribute))
-          self
-        end
-
-        def is_less_than(value)
-          add_submatcher(NumericalityMatchers::ComparisonMatcher.new(value, :<).for(@attribute))
-          self
-        end
-
-        def is_less_than_or_equal_to(value)
-          add_submatcher(NumericalityMatchers::ComparisonMatcher.new(value, :<=).for(@attribute))
+          prepare_submatcher(
+            AllowValueMatcher.new(nil)
+              .for(@attribute)
+              .with_message(:not_a_number)
+          )
           self
         end
 
         def odd
-          odd_number_matcher = NumericalityMatchers::OddNumberMatcher.new(@attribute)
-          add_submatcher(odd_number_matcher)
+          prepare_submatcher(
+            NumericalityMatchers::OddNumberMatcher.new(@attribute)
+          )
           self
         end
 
         def even
-          even_number_matcher = NumericalityMatchers::EvenNumberMatcher.new(@attribute)
-          add_submatcher(even_number_matcher)
+          prepare_submatcher(
+            NumericalityMatchers::EvenNumberMatcher.new(@attribute)
+          )
+          self
+        end
+
+        def is_greater_than(value)
+          prepare_submatcher(comparison_matcher_for(value, :>).for(@attribute))
+          self
+        end
+
+        def is_greater_than_or_equal_to(value)
+          prepare_submatcher(comparison_matcher_for(value, :>=).for(@attribute))
+          self
+        end
+
+        def is_equal_to(value)
+          prepare_submatcher(comparison_matcher_for(value, :==).for(@attribute))
+          self
+        end
+
+        def is_less_than(value)
+          prepare_submatcher(comparison_matcher_for(value, :<).for(@attribute))
+          self
+        end
+
+        def is_less_than_or_equal_to(value)
+          prepare_submatcher(comparison_matcher_for(value, :<=).for(@attribute))
           self
         end
 
@@ -115,8 +125,25 @@ module Shoulda # :nodoc:
           add_submatcher(disallow_value_matcher)
         end
 
+        def prepare_submatcher(submatcher)
+          add_submatcher(submatcher)
+          if submatcher.respond_to?(:diff_to_compare)
+            update_diff_to_compare(submatcher)
+          end
+        end
+
+        def comparison_matcher_for(value, operator)
+          NumericalityMatchers::ComparisonMatcher
+            .new(self, value, operator)
+            .for(@attribute)
+        end
+
         def add_submatcher(submatcher)
           @submatchers << submatcher
+        end
+
+        def update_diff_to_compare(matcher)
+          @diff_to_compare = [@diff_to_compare, matcher.diff_to_compare].max
         end
 
         def submatchers_match?
@@ -150,7 +177,12 @@ module Shoulda # :nodoc:
         end
 
         def submatcher_comparison_descriptions
-          @submatchers.inject([]){|m, s| m << s.comparison_description if s.respond_to?(:comparison_description); m }
+          @submatchers.inject([]) do |arr, submatcher|
+            if submatcher.respond_to? :comparison_description
+              arr << submatcher.comparison_description
+            end
+            arr
+          end
         end
       end
     end

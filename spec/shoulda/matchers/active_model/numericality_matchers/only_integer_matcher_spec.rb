@@ -10,6 +10,10 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OnlyIntegerMatche
     expect(subject.allowed_type).to eq 'integers'
   end
 
+  describe '#diff_to_compare' do
+    it { expect(subject.diff_to_compare).to eq 1 }
+  end
+
   context 'given an attribute that only allows integer values' do
     it 'matches' do
       match = subject
