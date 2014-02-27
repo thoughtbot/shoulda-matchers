@@ -33,6 +33,10 @@
 * Add `allow_nil` option to `validate_numericality_of` so that you can validate
   that numeric values are validated only if a value is supplied.
 
+* Fix `validate_numericality_of` so that test fails when the value with
+  `greater_than`, `greater_than_or_equal_to`, `less_than`, `less_than_or_equal_
+  to` or `equal_to` is not appropriate.
+
 # v 2.5.0
 
 * Fix Rails/Test::Unit integration to ensure that the test case classes we are

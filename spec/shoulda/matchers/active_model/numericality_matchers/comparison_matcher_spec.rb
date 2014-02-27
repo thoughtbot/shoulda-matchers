@@ -1,33 +1,129 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher do
-  it_behaves_like 'a numerical submatcher' do
-    subject { described_class.new(0, :>) }
+  subject { described_class.new(matcher, 0, :>) }
+
+  it_behaves_like 'a numerical submatcher'
+
+  context 'when initialized without correct numerical matcher' do
+    it 'raises an argument error' do
+      fake_matcher = matcher
+      class << fake_matcher
+        undef_method :diff_to_compare
+      end
+      expect do
+        described_class.new(fake_matcher, 0, :>)
+      end.to raise_error ArgumentError
+    end
   end
 
   context 'is_greater_than' do
-    it { expect(instance_with_validations(greater_than: 2)).to matcher.is_greater_than(2) }
-    it { expect(instance_without_validations).not_to matcher.is_greater_than(2) }
+    it do
+      expect(instance_with_validations(greater_than: 2))
+        .to matcher.is_greater_than(2)
+    end
+
+    it do
+      expect(instance_with_validations(greater_than: 1.5))
+        .not_to matcher.is_greater_than(2)
+    end
+
+    it do
+      expect(instance_with_validations(greater_than: 2.5))
+        .not_to matcher.is_greater_than(2)
+    end
+
+    it do
+      expect(instance_without_validations).not_to matcher.is_greater_than(2)
+    end
   end
 
   context 'greater_than_or_equal_to' do
-    it { expect(instance_with_validations(greater_than_or_equal_to: 2)).to matcher.is_greater_than_or_equal_to(2) }
-    it { expect(instance_without_validations).not_to matcher.is_greater_than_or_equal_to(2) }
+    it do
+      expect(instance_with_validations(greater_than_or_equal_to: 2))
+        .to matcher.is_greater_than_or_equal_to(2)
+    end
+
+    it do
+      expect(instance_with_validations(greater_than_or_equal_to: 1.5))
+        .not_to matcher.is_greater_than_or_equal_to(2)
+    end
+
+    it do
+      expect(instance_with_validations(greater_than_or_equal_to: 2.5))
+        .not_to matcher.is_greater_than_or_equal_to(2)
+    end
+
+    it do
+      expect(instance_without_validations)
+        .not_to matcher.is_greater_than_or_equal_to(2)
+    end
   end
 
   context 'less_than' do
-    it { expect(instance_with_validations(less_than: 2)).to matcher.is_less_than(2) }
-    it { expect(instance_without_validations).not_to matcher.is_less_than(2) }
+    it do
+      expect(instance_with_validations(less_than: 2))
+        .to matcher.is_less_than(2)
+    end
+
+    it do
+      expect(instance_with_validations(less_than: 1.5))
+        .not_to matcher.is_less_than(2)
+    end
+
+    it do
+      expect(instance_with_validations(less_than: 2.5))
+        .not_to matcher.is_less_than(2)
+    end
+
+    it do
+      expect(instance_without_validations)
+        .not_to matcher.is_less_than(2)
+    end
   end
 
   context 'less_than_or_equal_to' do
-    it { expect(instance_with_validations(less_than_or_equal_to: 2)).to matcher.is_less_than_or_equal_to(2) }
-    it { expect(instance_without_validations).not_to matcher.is_less_than_or_equal_to(2) }
+    it do
+      expect(instance_with_validations(less_than_or_equal_to: 2))
+        .to matcher.is_less_than_or_equal_to(2)
+    end
+
+    it do
+      expect(instance_with_validations(less_than_or_equal_to: 1.5))
+        .not_to matcher.is_less_than_or_equal_to(2)
+    end
+
+    it do
+      expect(instance_with_validations(less_than_or_equal_to: 2.5))
+        .not_to matcher.is_less_than_or_equal_to(2)
+    end
+
+    it do
+      expect(instance_without_validations)
+        .not_to matcher.is_less_than_or_equal_to(2)
+    end
   end
 
   context 'is_equal_to' do
-    it { expect(instance_with_validations(equal_to: 0)).to matcher.is_equal_to(0) }
-    it { expect(instance_without_validations).not_to matcher.is_equal_to(0) }
+    it do
+      expect(instance_with_validations(equal_to: 0))
+        .to matcher.is_equal_to(0)
+    end
+
+    it do
+      expect(instance_with_validations(equal_to: -0.5))
+        .not_to matcher.is_equal_to(0)
+    end
+
+    it do
+      expect(instance_with_validations(equal_to: 0.5))
+        .not_to matcher.is_equal_to(0)
+    end
+
+    it do
+      expect(instance_without_validations)
+        .not_to matcher.is_equal_to(0)
+    end
   end
 
   context 'with_message' do
@@ -45,7 +141,10 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
      { operator: :<=, value: 4, expectation: 'less than or equal to 4' },
     ].each do |h|
       context "with :#{h[:operator]} as operator and #{h[:value]} as value" do
-        subject { described_class.new(h[:value], h[:operator]).comparison_description }
+        subject do
+          described_class.new(matcher, h[:value], h[:operator])
+            .comparison_description
+        end
         it { should eq h[:expectation] }
       end
     end

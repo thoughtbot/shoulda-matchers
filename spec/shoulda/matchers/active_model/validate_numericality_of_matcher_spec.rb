@@ -22,28 +22,35 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
       the_matcher.matches?(define_model(:example, attr: :string).new)
 
-      expect(the_matcher.failure_message_when_negated).to include 'Did not expect errors to include "is not a number"'
+      expect(the_matcher.failure_message_when_negated)
+        .to include 'Did not expect errors to include "is not a number"'
     end
 
     it 'rejects with the ActiveRecord :not_an_integer message' do
       the_matcher = matcher.only_integer
-      expect {
+      expect do
         expect(not_validating_numericality).to the_matcher
-      }.to fail_with_message_including('Expected errors to include "must be an integer"')
+      end.to fail_with_message_including(
+        'Expected errors to include "must be an integer"'
+      )
     end
 
     it 'rejects with the ActiveRecord :odd message' do
       the_matcher = matcher.odd
-      expect {
+      expect do
         expect(not_validating_numericality).to the_matcher
-      }.to fail_with_message_including('Expected errors to include "must be odd"')
+      end.to fail_with_message_including(
+        'Expected errors to include "must be odd"'
+      )
     end
 
     it 'rejects with the ActiveRecord :even message' do
       the_matcher = matcher.even
-      expect {
+      expect do
         expect(not_validating_numericality).to the_matcher
-      }.to fail_with_message_including('Expected errors to include "must be even"')
+      end.to fail_with_message_including(
+        'Expected errors to include "must be even"'
+      )
     end
   end
 
@@ -71,9 +78,11 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
     it 'rejects with the ActiveRecord :not_an_integer message' do
       the_matcher = matcher.only_integer
-      expect {
+      expect do
         expect(validating_numericality).to the_matcher
-      }.to fail_with_message_including('Expected errors to include "must be an integer"')
+      end.to fail_with_message_including(
+        'Expected errors to include "must be an integer"'
+      )
     end
   end
 
@@ -88,9 +97,11 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
     it 'rejects with the ActiveRecord :odd message' do
       the_matcher = matcher.odd
-      expect {
+      expect do
         expect(validating_numericality).to the_matcher
-      }.to fail_with_message_including('Expected errors to include "must be odd"')
+      end.to fail_with_message_including(
+        'Expected errors to include "must be odd"'
+      )
     end
   end
 
@@ -105,9 +116,123 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
 
     it 'rejects with the ActiveRecord :even message' do
       the_matcher = matcher.even
-      expect {
+      expect do
         expect(validating_numericality).to the_matcher
-      }.to fail_with_message_including('Expected errors to include "must be even"')
+      end.to fail_with_message_including(
+        'Expected errors to include "must be even"'
+      )
+    end
+  end
+
+  context 'with multiple options together' do
+    context 'the success cases' do
+      it do
+        expect(validating_numericality(only_integer: true, greater_than: 18))
+          .to matcher.only_integer.is_greater_than(18)
+      end
+
+      it do
+        expect(validating_numericality(even: true, greater_than: 18))
+          .to matcher.even.is_greater_than(18)
+      end
+      it do
+        expect(validating_numericality(odd: true, less_than_or_equal_to: 99))
+          .to matcher.odd.is_less_than_or_equal_to(99)
+      end
+
+      it do
+        expect(validating_numericality(
+                 only_integer: true,
+                 greater_than: 18,
+                 less_than: 99)
+        ).to matcher.only_integer.is_greater_than(18).is_less_than(99)
+      end
+    end
+
+    context 'the failure cases with different validators' do
+      it do
+        expect(validating_numericality(even: true, greater_than: 18))
+          .not_to matcher.only_integer.is_greater_than(18)
+      end
+
+      it do
+        expect(validating_numericality(greater_than: 18))
+          .not_to matcher.only_integer.is_greater_than(18)
+      end
+
+      it do
+        expect(
+          validating_numericality(even: true, greater_than_or_equal_to: 18)
+        ).not_to matcher.even.is_greater_than(18)
+      end
+
+      it do
+        expect(validating_numericality(odd: true, greater_than: 18))
+          .not_to matcher.even.is_greater_than(18)
+      end
+
+      it do
+        expect(validating_numericality(
+                 odd: true,
+                 greater_than_or_equal_to: 99
+               )
+        ).not_to matcher.odd.is_less_than_or_equal_to(99)
+      end
+
+      it do
+        expect(validating_numericality(
+                 only_integer: true,
+                 greater_than_or_equal_to: 18,
+                 less_than: 99
+               )
+        ).not_to matcher.only_integer.is_greater_than(18).is_less_than(99)
+      end
+    end
+
+    context 'the failure cases with wrong values' do
+      it do
+        expect(validating_numericality(only_integer: true, greater_than: 19))
+          .not_to matcher.only_integer.is_greater_than(18)
+      end
+
+      it do
+        expect(validating_numericality(only_integer: true, greater_than: 17))
+          .not_to matcher.only_integer.is_greater_than(18)
+      end
+
+      it do
+        expect(validating_numericality(even: true, greater_than: 20))
+          .not_to matcher.even.is_greater_than(18)
+      end
+
+      it do
+        expect(validating_numericality(even: true, greater_than: 16))
+          .not_to matcher.even.is_greater_than(18)
+      end
+
+      it do
+        expect(validating_numericality(odd: true, less_than_or_equal_to: 101))
+         .not_to matcher.odd.is_less_than_or_equal_to(99)
+      end
+
+      it do
+        expect(validating_numericality(odd: true, less_than_or_equal_to: 97))
+          .not_to matcher.odd.is_less_than_or_equal_to(99)
+      end
+
+      it do
+        expect(validating_numericality(only_integer: true,
+                                          greater_than: 19,
+                                          less_than: 99))
+          .not_to matcher.only_integer.is_greater_than(18).is_less_than(99)
+      end
+
+      it do
+        expect(validating_numericality(only_integer: true,
+                                          greater_than: 18,
+                                          less_than: 100))
+          .not_to matcher.only_integer.is_greater_than(18).is_less_than(99)
+      end
     end
   end
 
@@ -142,26 +267,45 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
     end
 
     context 'with only integer option' do
-      it { expect(matcher.only_integer.description).to eq 'only allow integers for attr' }
+      it do
+        expect(matcher.only_integer.description)
+          .to eq 'only allow integers for attr'
+      end
     end
 
     [:odd, :even].each do |type|
       context "with #{type} option" do
-        it { expect(matcher.__send__(type).description).to eq "only allow #{type} numbers for attr" }
+        it do
+          expect(matcher.__send__(type).description)
+            .to eq "only allow #{type} numbers for attr"
+        end
       end
     end
 
-    [:is_greater_than, :is_greater_than_or_equal_to, :is_less_than, :is_less_than_or_equal_to,
+    [:is_greater_than,
+     :is_greater_than_or_equal_to,
+     :is_less_than,
+     :is_less_than_or_equal_to,
      :is_equal_to ].each do |comparison|
       context "with #{comparison} option" do
-        it { expect(matcher.__send__(comparison, 18).description).
-            to eq "only allow numbers for attr which are #{comparison.to_s.sub('is_','').gsub('_', ' ')} 18" }
+        it do
+          expect(matcher.__send__(comparison, 18).description)
+          .to eq(
+            'only allow numbers for attr which are ' +
+            "#{comparison.to_s.sub('is_', '').gsub('_', ' ')} 18"
+          )
+        end
       end
     end
 
     context 'with odd, is_greater_than_or_equal_to option' do
-      it { expect(matcher.odd.is_greater_than_or_equal_to(18).description).
-          to eq "only allow odd numbers for attr which are greater than or equal to 18" }
+      it do
+        expect(matcher.odd.is_greater_than_or_equal_to(18).description)
+          .to eq(
+            'only allow odd numbers for attr ' +
+            'which are greater than or equal to 18'
+          )
+      end
     end
 
     context 'with only integer, is_greater_than and less_than_or_equal_to option' do

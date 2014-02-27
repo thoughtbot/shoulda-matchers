@@ -20,6 +20,10 @@ module Shoulda # :nodoc:
             raise NotImplementedError
           end
 
+          def diff_to_compare
+            raise NotImplementedError
+          end
+
           def failure_message
             @disallow_value_matcher.failure_message
           end

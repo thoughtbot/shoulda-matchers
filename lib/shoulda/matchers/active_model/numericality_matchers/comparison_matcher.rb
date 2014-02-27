@@ -7,7 +7,11 @@ module Shoulda # :nodoc:
         #                 is_greater_than(6).
         #                 less_than(20)...(and so on) }
         class ComparisonMatcher < ValidationMatcher
-          def initialize(value, operator)
+          def initialize(numericality_matcher, value, operator)
+            unless numericality_matcher.respond_to? :diff_to_compare
+              raise ArgumentError, 'numericality_matcher is invalid'
+            end
+            @numericality_matcher = numericality_matcher
             @value = value
             @operator = operator
             @message = nil
@@ -20,7 +24,7 @@ module Shoulda # :nodoc:
 
           def matches?(subject)
             @subject = subject
-            disallows_value_of(value_to_compare, @message)
+            all_bounds_correct?
           end
 
           def with_message(message)
@@ -33,14 +37,23 @@ module Shoulda # :nodoc:
 
           private
 
-          def value_to_compare
-            case @operator
-              when :> then [@value, @value - 1].sample
-              when :>= then @value - 1
-              when :== then @value + 1
-              when :< then [@value, @value + 1].sample
-              when :<= then @value + 1
-            end
+          def comparison_combos
+            allow = :allows_value_of
+            disallow = :disallows_value_of
+            checker_types =
+              case @operator
+                when :> then [allow, disallow, disallow]
+                when :>= then [allow, allow, disallow]
+                when :== then [disallow, allow, disallow]
+                when :< then [disallow, disallow, allow]
+                when :<= then [disallow, allow, allow]
+              end
+            diffs_to_compare.zip(checker_types)
+          end
+
+          def diffs_to_compare
+            diff = @numericality_matcher.diff_to_compare
+            [diff, 0, -diff]
           end
 
           def expectation
@@ -50,6 +63,12 @@ module Shoulda # :nodoc:
               when :== then "equal to"
               when :< then "less than"
               when :<= then "less than or equal to"
+            end
+          end
+
+          def all_bounds_correct?
+            comparison_combos.all? do |diff, checker_type|
+              __send__(checker_type, @value + diff, @message)
             end
           end
         end

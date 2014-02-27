@@ -14,6 +14,10 @@ module Shoulda # :nodoc:
           def allowed_type
             'integers'
           end
+
+          def diff_to_compare
+            1
+          end
         end
       end
     end

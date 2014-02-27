@@ -15,6 +15,10 @@ module Shoulda # :nodoc:
           def allowed_type
             'odd numbers'
           end
+
+          def diff_to_compare
+            2
+          end
         end
       end
     end
