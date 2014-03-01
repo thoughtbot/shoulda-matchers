@@ -20,7 +20,6 @@ module Shoulda # :nodoc:
       end
 
       class ValidatePresenceOfMatcher < ValidationMatcher # :nodoc:
-
         def with_message(message)
           @expected_message = message if message
           self
@@ -30,6 +29,12 @@ module Shoulda # :nodoc:
           super(subject)
           @expected_message ||= :blank
           disallows_value_of(blank_value, @expected_message)
+        rescue Shoulda::Matchers::ActiveModel::CouldNotClearAttribute => error
+          if @attribute == :password
+            raise Shoulda::Matchers::ActiveModel::CouldNotSetPasswordError.create(subject.class)
+          else
+            raise error
+          end
         end
 
         def description

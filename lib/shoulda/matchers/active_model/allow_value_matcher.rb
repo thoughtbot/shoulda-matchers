@@ -68,7 +68,7 @@ module Shoulda # :nodoc:
 
           values_to_match.none? do |value|
             self.value = value
-            instance.__send__("#{attribute_to_set}=", value)
+            set_and_double_check_attribute!(attribute_to_set, value)
             errors_match?
           end
         end
@@ -92,6 +92,24 @@ module Shoulda # :nodoc:
         attr_accessor :values_to_match, :message_finder_factory,
           :instance, :attribute_to_set, :attribute_to_check_message_against,
           :context, :value, :matched_error
+
+        def set_and_double_check_attribute!(attribute_name, value)
+          instance.__send__("#{attribute_name}=", value)
+
+          if value.nil?
+            ensure_attribute_was_cleared!(attribute_name)
+          end
+        end
+
+        def ensure_attribute_was_cleared!(attribute_name)
+          if instance.respond_to?(attribute_name)
+            actual_value = instance.__send__(attribute_name)
+
+            if !actual_value.nil?
+              raise Shoulda::Matchers::ActiveModel::CouldNotClearAttribute.create(actual_value)
+            end
+          end
+        end
 
         def errors_match?
           has_messages? && errors_for_attribute_match?
