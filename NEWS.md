@@ -1,5 +1,8 @@
 # HEAD
 
+* Change `have_db_index(...).unique(unique)` so that the `unique` argument
+  is optional, allowing for the shorter `have_db_index(...).unique` syntax.
+
 * Association matchers now test that the model being referred to (either
   implicitly or explicitly, using `:class_name`) actually exists.
 

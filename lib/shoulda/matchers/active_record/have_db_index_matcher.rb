@@ -27,7 +27,7 @@ module Shoulda # :nodoc:
           @options = {}
         end
 
-        def unique(unique)
+        def unique(unique = true)
           @options[:unique] = unique
           self
         end
