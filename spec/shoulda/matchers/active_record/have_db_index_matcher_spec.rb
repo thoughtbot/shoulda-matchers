@@ -52,6 +52,10 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher do
     expect(have_db_index(:user_id).unique(true).description).to match(/a unique index/)
   end
 
+  it 'describes a unique index as unique when no argument is given' do
+    expect(have_db_index(:user_id).unique.description).to match(/a unique index/)
+  end
+
   it 'describes a non-unique index as non-unique' do
     expect(have_db_index(:user_id).unique(false).description).to match(/a non-unique index/)
   end
