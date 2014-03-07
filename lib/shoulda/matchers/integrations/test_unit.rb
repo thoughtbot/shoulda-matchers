@@ -11,6 +11,13 @@ module Test
   end
 end
 
+if defined?(ActiveSupport::TestCase)
+  ActiveSupport::TestCase.class_eval do
+    include Shoulda::Matchers::Independent
+    extend Shoulda::Matchers::Independent
+  end
+end
+
 if defined?(ActionController) && defined?(ActionController::TestCase)
   require 'shoulda/matchers/action_controller'
 
