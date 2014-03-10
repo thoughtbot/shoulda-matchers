@@ -17,7 +17,7 @@ module Shoulda # :nodoc:
       #   it { should validate_numericality_of(:age).only_integer }
       #   it { should validate_numericality_of(:frequency).odd }
       #   it { should validate_numericality_of(:frequency).even }
-      #   it { should validate_numericality_of(:rank).less_than_or_equal_to(10).allow_nil }
+      #   it { should validate_numericality_of(:rank).is_less_than_or_equal_to(10).allow_nil }
       #
       def validate_numericality_of(attr)
         ValidateNumericalityOfMatcher.new(attr)
