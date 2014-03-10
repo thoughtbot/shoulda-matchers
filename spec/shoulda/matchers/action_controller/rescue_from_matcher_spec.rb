@@ -28,12 +28,6 @@ describe Shoulda::Matchers::ActionController::RescueFromMatcher do
         it_behaves_like 'handler is correct'
       end
 
-      context 'the handler is private'
-        it "asserts rescue_from was set up with handler method" do
-          expect(controller_with_rescue_from_and_method).to rescue_from(RuntimeError).with(:error_method)
-        end
-      end
-
       it "asserts rescue_from was not set up with incorrect handler method" do
         expect(controller_with_rescue_from_and_method).not_to rescue_from(RuntimeError).with(:other_method)
       end
