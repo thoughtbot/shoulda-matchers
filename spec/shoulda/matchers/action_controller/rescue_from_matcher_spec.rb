@@ -7,8 +7,25 @@ describe Shoulda::Matchers::ActionController::RescueFromMatcher do
     end
 
     context 'with a handler method' do
-      it "asserts rescue_from was set up with handler method" do
-        expect(controller_with_rescue_from_and_method).to rescue_from(RuntimeError).with(:error_method)
+      shared_examples 'handler is correct' do
+        it "asserts rescue_from was set up with handler method" do
+          expect(controller).to rescue_from(RuntimeError).with(:error_method)
+        end
+      end
+
+      context 'the handler is public' do
+        let(:controller) { controller_with_rescue_from_and_method(:public) }
+        it_behaves_like 'handler is correct'
+      end
+
+      context 'the handler is protected' do
+        let(:controller) { controller_with_rescue_from_and_method(:protected) }
+        it_behaves_like 'handler is correct'
+      end
+
+      context 'the handler is private' do
+        let(:controller) { controller_with_rescue_from_and_method(:private) }
+        it_behaves_like 'handler is correct'
       end
 
       it "asserts rescue_from was not set up with incorrect handler method" do
@@ -51,13 +68,25 @@ describe Shoulda::Matchers::ActionController::RescueFromMatcher do
     end
   end
 
-  def controller_with_rescue_from_and_method
+  def controller_with_rescue_from_and_method(access = :public)
     controller = controller_with_rescue_from_and_invalid_method
     class << controller
       def error_method
         true
       end
     end
+
+    case access
+    when :protected
+      class << controller
+        protected :error_method
+      end
+    when :private
+      class << controller
+        private :error_method
+      end
+    end
+
     controller
   end
 end

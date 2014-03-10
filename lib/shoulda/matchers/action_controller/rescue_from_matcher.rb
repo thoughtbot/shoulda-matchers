@@ -72,7 +72,7 @@ module Shoulda
 
         def handler_exists?
           if expected_method.present?
-            controller.respond_to? expected_method
+            controller.respond_to? expected_method, true
           else
             true
           end
