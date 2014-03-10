@@ -1,5 +1,8 @@
 # HEAD
 
+* Rescue_from matcher now checks the presence of pointed method without 
+  paying attention to access modifiers
+
 * Association matchers now test that the model being referred to (either
   implicitly or explicitly, using `:class_name`) actually exists.
 
