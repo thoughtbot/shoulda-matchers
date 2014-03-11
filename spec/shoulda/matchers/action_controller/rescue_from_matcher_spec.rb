@@ -11,6 +11,10 @@ describe Shoulda::Matchers::ActionController::RescueFromMatcher do
         expect(controller_with_rescue_from_and_method).to rescue_from(RuntimeError).with(:error_method)
       end
 
+      it "asserts rescue_from was set up with a private handler method" do
+        expect(controller_with_rescue_from_and_private_method).to rescue_from(RuntimeError).with(:error_method)
+      end
+
       it "asserts rescue_from was not set up with incorrect handler method" do
         expect(controller_with_rescue_from_and_method).not_to rescue_from(RuntimeError).with(:other_method)
       end
@@ -54,6 +58,17 @@ describe Shoulda::Matchers::ActionController::RescueFromMatcher do
   def controller_with_rescue_from_and_method
     controller = controller_with_rescue_from_and_invalid_method
     class << controller
+      def error_method
+        true
+      end
+    end
+    controller
+  end
+
+  def controller_with_rescue_from_and_private_method
+    controller = controller_with_rescue_from_and_invalid_method
+    class << controller
+      private
       def error_method
         true
       end
