@@ -47,6 +47,8 @@
   `has_secure_password` defines #password= such that `nil` will be ignored,
   which interferes with how `validate_presence_of` works.
 
+* Add ability to test `belongs_to` associations defined with `:inverse_of`.
+
 # v 2.5.0
 
 * Fix Rails/Test::Unit integration to ensure that the test case classes we are

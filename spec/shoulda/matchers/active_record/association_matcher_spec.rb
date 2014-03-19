@@ -66,6 +66,21 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       expect(belonging_to_parent).not_to belong_to(:parent).counter_cache
     end
 
+    it 'accepts an association with a valid :inverse_of option' do
+      expect(belonging_to_parent(inverse_of: :children))
+        .to belong_to(:parent).inverse_of(:children)
+    end
+
+    it 'rejects an association with a bad :inverse_of option' do
+      expect(belonging_to_parent(inverse_of: :other_children))
+        .not_to belong_to(:parent).inverse_of(:children)
+    end
+
+    it 'rejects an association that has no :inverse_of option' do
+      expect(belonging_to_parent)
+        .not_to belong_to(:parent).inverse_of(:children)
+    end
+
     it 'accepts an association with a valid :conditions option' do
       define_model :parent, adopter: :boolean
       define_model(:child, parent_id: :integer).tap do |model|
