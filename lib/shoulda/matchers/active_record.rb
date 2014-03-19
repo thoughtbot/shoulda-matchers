@@ -1,5 +1,6 @@
 require 'shoulda/matchers/active_record/association_matcher'
 require 'shoulda/matchers/active_record/association_matchers/counter_cache_matcher'
+require 'shoulda/matchers/active_record/association_matchers/inverse_of_matcher'
 require 'shoulda/matchers/active_record/association_matchers/order_matcher'
 require 'shoulda/matchers/active_record/association_matchers/through_matcher'
 require 'shoulda/matchers/active_record/association_matchers/dependent_matcher'

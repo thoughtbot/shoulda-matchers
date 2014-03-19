@@ -125,6 +125,13 @@ module Shoulda # :nodoc:
           self
         end
 
+        def inverse_of(inverse_of)
+          inverse_of_matcher =
+            AssociationMatchers::InverseOfMatcher.new(inverse_of, name)
+          add_submatcher(inverse_of_matcher)
+          self
+        end
+
         def source(source)
           source_matcher = AssociationMatchers::SourceMatcher.new(source, name)
           add_submatcher(source_matcher)
