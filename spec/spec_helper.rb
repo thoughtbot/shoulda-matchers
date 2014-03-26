@@ -10,6 +10,7 @@ ENV['RAILS_ENV'] = 'test'
 require 'bourne'
 require 'shoulda-matchers'
 require 'rspec/rails'
+require 'turbolinks'
 
 PROJECT_ROOT = File.expand_path('../..', __FILE__)
 $LOAD_PATH << File.join(PROJECT_ROOT, 'lib')

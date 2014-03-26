@@ -909,7 +909,7 @@ end
 
 ### ActionController Matchers
 
-*Jump to: [filter_param](#filter_param), [redirect_to](#redirect_to), [render_template](#render_template), [render_with_layout](#render_with_layout), [rescue_from](#rescue_from), [respond_with](#respond_with), [route](#route), [set_session](#set_session), [set_the_flash](#set_the_flash), [use_after_filter / use_after_action](#use_after_filter--use_after_action), [use_around_filter / use_around_action](#use_around_filter--use_around_action), [use_before_filter / use_around_action](#use_before_filter--use_before_action)*
+*Jump to: [filter_param](#filter_param), [redirect_to](#redirect_to), [redirect_via_turbolinks_to](#redirect_via_turbolinks_to), [render_template](#render_template), [render_with_layout](#render_with_layout), [rescue_from](#rescue_from), [respond_with](#respond_with), [route](#route), [set_session](#set_session), [set_the_flash](#set_the_flash), [use_after_filter / use_after_action](#use_after_filter--use_after_action), [use_around_filter / use_around_action](#use_around_filter--use_around_action), [use_before_filter / use_around_action](#use_before_filter--use_before_action)*
 
 #### filter_param
 
@@ -960,6 +960,36 @@ class PostsControllerTest < ActionController::TestCase
     setup { get :list }
 
     should redirect_to { posts_path }
+  end
+end
+```
+
+#### redirect_via_turbolinks_to
+
+The `redirect_via_turbolinks_to` matcher tests that an action redirects to a certain location via turbolinks.
+
+```ruby
+class PostsController < ApplicationController
+  def show
+    redirect_via_turbolinks_to :index
+  end
+end
+
+# RSpec
+describe PostsController do
+  describe 'GET #list' do
+    before { get :list }
+
+    it { should redirect_via_turbolinks_to(posts_path) }
+  end
+end
+
+# Test::Unit
+class PostsControllerTest < ActionController::TestCase
+  context 'GET #list' do
+    setup { get :list }
+
+    should redirect_via_turbolinks_to { posts_path }
   end
 end
 ```
