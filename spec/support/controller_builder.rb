@@ -58,6 +58,25 @@ module ControllerBuilder
     $test_app.create_temp_view(path, contents)
   end
 
+  def controller_for_resource_with_strong_parameters(options = {}, &block)
+    define_model "User"
+    controller_class = define_controller "Users" do
+      define_method options.fetch(:action) do
+        @user = User.create(user_params)
+        render nothing: true
+      end
+
+      private
+      define_method :user_params, &block
+    end
+
+    setup_rails_controller_test(controller_class)
+
+    define_routes { resources :users }
+
+    controller_class
+  end
+
   private
 
   def delete_temporary_views

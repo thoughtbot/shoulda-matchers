@@ -9,6 +9,7 @@ require 'shoulda/matchers/action_controller/redirect_to_matcher'
 require 'shoulda/matchers/action_controller/render_template_matcher'
 require 'shoulda/matchers/action_controller/rescue_from_matcher'
 require 'shoulda/matchers/action_controller/callback_matcher'
+require 'shoulda/matchers/action_controller/strong_parameters_matcher'
 
 module Shoulda
   module Matchers
