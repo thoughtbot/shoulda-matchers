@@ -1,5 +1,7 @@
 # HEAD
 
+* Add new matcher `redirect_via_turbolinks_to`.
+
 * Change `have_db_index(...).unique(unique)` so that the `unique` argument
   is optional, allowing for the shorter `have_db_index(...).unique` syntax.
 
