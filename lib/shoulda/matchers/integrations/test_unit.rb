@@ -29,6 +29,15 @@ if defined?(ActionController) && defined?(ActionController::TestCase)
       @controller
     end
   end
+
+  if defined?(Turbolinks)
+    require 'shoulda/matchers/turbolinks'
+
+    ActionController::TestCase.class_eval do
+      include Shoulda::Matchers::Turbolinks
+      extend Shoulda::Matchers::Turbolinks
+    end
+  end
 end
 
 if defined?(ActiveRecord) && defined?(ActiveSupport::TestCase)

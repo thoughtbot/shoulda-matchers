@@ -1,12 +1,12 @@
 module Shoulda # :nodoc:
   module Matchers
-    module ActionController # :nodoc:
-      # Ensures a controller redirected to the given url.
+    module Turbolinks # :nodoc:
+      # Ensures a controller redirected to the given url via turbolinks
       #
       # Example:
       #
-      #   it { should redirect_to('http://somewhere.com')  }
-      #   it { should redirect_to(users_path)  }
+      #   it { should redirect_via_turbolinks_to('http://somewhere.com')  }
+      #   it { should redirect_via_turbolinks_to(users_path)  }
       def redirect_via_turbolinks_to(url_or_description, &block)
        RedirectViaTurbolinksToMatcher.new(url_or_description, self, &block)
       end

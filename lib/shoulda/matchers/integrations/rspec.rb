@@ -19,5 +19,9 @@ RSpec.configure do |config|
   if defined?(::ActionController)
     require 'shoulda/matchers/action_controller'
     config.include Shoulda::Matchers::ActionController
+    if defined?(::Turbolinks)
+      require 'shoulda/matchers/turbolinks'
+      config.include Shoulda::Matchers::Turbolinks
+    end
   end
 end
