@@ -7,25 +7,19 @@ describe Shoulda::Matchers::ActionController::RescueFromMatcher do
     end
 
     context 'with a handler method' do
-      shared_examples 'handler is correct' do
-        it 'asserts rescue_from was set up with handler method' do
-          expect(controller).to rescue_from(RuntimeError).with(:error_method)
-        end
+      it 'asserts rescue_from can find the handler when it is public' do
+        controller = controller_with_rescue_from_and_method(:public)
+        check_rescue_with_method_for(controller)
       end
 
-      context 'the handler is public' do
-        let(:controller) { controller_with_rescue_from_and_method(:public) }
-        it_behaves_like 'handler is correct'
+      it 'asserts rescue_from can find the handler when it is protected' do
+        controller = controller_with_rescue_from_and_method(:protected)
+        check_rescue_with_method_for(controller)
       end
 
-      context 'the handler is protected' do
-        let(:controller) { controller_with_rescue_from_and_method(:protected) }
-        it_behaves_like 'handler is correct'
-      end
-
-      context 'the handler is private' do
-        let(:controller) { controller_with_rescue_from_and_method(:private) }
-        it_behaves_like 'handler is correct'
+      it 'asserts rescue_from can find the handler when it is private' do
+        controller = controller_with_rescue_from_and_method(:private)
+        check_rescue_with_method_for(controller)
       end
 
       it 'asserts rescue_from was not set up with incorrect handler method' do
@@ -54,6 +48,10 @@ describe Shoulda::Matchers::ActionController::RescueFromMatcher do
       expect(define_controller('RandomController')).not_to matcher
       expect(matcher.failure_message_when_negated).to match(/Did not expect \w+ to rescue from/)
     end
+  end
+
+  def check_rescue_with_method_for(controller)
+    expect(controller).to rescue_from(RuntimeError).with(:error_method)
   end
 
   def controller_with_rescue_from
