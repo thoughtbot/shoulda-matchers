@@ -2,6 +2,7 @@
 *.swo
 *.swp
 .bundle
+.gh-pages
 .svn/
 .yardoc
 coverage
