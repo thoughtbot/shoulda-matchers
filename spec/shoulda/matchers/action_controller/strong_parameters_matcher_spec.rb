@@ -29,6 +29,33 @@ describe Shoulda::Matchers::ActionController do
 end
 
 describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
+  describe '#description' do
+    it 'returns the correct string' do
+      options = { action: :create, method: :post }
+      controller_for_resource_with_strong_parameters(options) do
+        params.permit(:name, :age)
+      end
+
+      matcher = described_class.new([:name, :age, :height]).for(:create)
+      expect(matcher.description).
+        to eq 'permit POST #create to receive parameters :name, :age, and :height'
+    end
+
+    context 'when a verb is specified' do
+      it 'returns the correct string' do
+        options = { action: :some_action }
+        controller_for_resource_with_strong_parameters(options) do
+          params.permit(:name, :age)
+        end
+
+        matcher = described_class.new([:name]).
+          for(:some_action, verb: :put)
+        expect(matcher.description).
+          to eq 'permit PUT #some_action to receive parameters :name'
+      end
+    end
+  end
+
   describe "#matches?" do
     it "is true for a subset of the allowable attributes" do
       controller_for_resource_with_strong_parameters(action: :create) do
