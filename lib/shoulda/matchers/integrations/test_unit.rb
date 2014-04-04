@@ -1,26 +1,14 @@
 # :enddoc:
-require 'test/unit/testcase'
-require 'shoulda/matchers/independent'
+require 'shoulda/matchers/integrations/nunit_test_case_detection'
 
-module Test
-  module Unit
-    class TestCase
-      include Shoulda::Matchers::Independent
-      extend Shoulda::Matchers::Independent
-    end
-  end
-end
-
-if defined?(ActiveSupport::TestCase)
-  ActiveSupport::TestCase.class_eval do
+Shoulda::Matchers.nunit_test_case_constants.each do |constant|
+  constant.class_eval do
     include Shoulda::Matchers::Independent
     extend Shoulda::Matchers::Independent
   end
 end
 
-if defined?(ActionController) && defined?(ActionController::TestCase)
-  require 'shoulda/matchers/action_controller'
-
+if defined?(ActionController::TestCase)
   ActionController::TestCase.class_eval do
     include Shoulda::Matchers::ActionController
     extend Shoulda::Matchers::ActionController
@@ -31,17 +19,11 @@ if defined?(ActionController) && defined?(ActionController::TestCase)
   end
 end
 
-if defined?(ActiveRecord) && defined?(ActiveSupport::TestCase)
-  require 'shoulda/matchers/active_record'
-
+if defined?(ActiveSupport::TestCase)
   ActiveSupport::TestCase.class_eval do
     include Shoulda::Matchers::ActiveRecord
     extend Shoulda::Matchers::ActiveRecord
   end
-end
-
-if defined?(ActiveModel) && defined?(ActiveSupport::TestCase)
-  require 'shoulda/matchers/active_model'
 
   ActiveSupport::TestCase.class_eval do
     include Shoulda::Matchers::ActiveModel

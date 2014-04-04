@@ -1,23 +1,19 @@
 # :enddoc:
-require 'rspec/core'
 
-RSpec.configure do |config|
-  require 'shoulda/matchers/independent'
-  config.include Shoulda::Matchers::Independent
+if RSpec.respond_to?(:configure)
+  RSpec.configure do |config|
+    config.include Shoulda::Matchers::Independent
 
-  if defined?(::ActiveRecord)
-    require 'shoulda/matchers/active_record'
-    require 'shoulda/matchers/active_model'
-    config.include Shoulda::Matchers::ActiveRecord
-    config.include Shoulda::Matchers::ActiveModel
+    if defined?(ActiveRecord)
+      config.include Shoulda::Matchers::ActiveRecord
+    end
 
-  elsif defined?(::ActiveModel)
-    require 'shoulda/matchers/active_model'
-    config.include Shoulda::Matchers::ActiveModel
-  end
+    if defined?(ActiveModel)
+      config.include Shoulda::Matchers::ActiveModel
+    end
 
-  if defined?(::ActionController)
-    require 'shoulda/matchers/action_controller'
-    config.include Shoulda::Matchers::ActionController
+    if defined?(ActionController)
+      config.include Shoulda::Matchers::ActionController
+    end
   end
 end
