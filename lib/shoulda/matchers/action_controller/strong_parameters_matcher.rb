@@ -61,9 +61,13 @@ module Shoulda
 
         def simulate_controller_action
           ensure_action_and_verb_present!
-          stubbed_model_attributes
+          stub_model_attributes
 
-          context.send(verb, action)
+          begin
+            context.send(verb, action)
+          ensure
+            unstub_model_attributes
+          end
 
           verify_permit_call
         end
@@ -80,14 +84,23 @@ module Shoulda
           attributes & @model_attrs.shoulda_permitted_params
         end
 
-        def stubbed_model_attributes
+        def stub_model_attributes
           @model_attrs = self.class.stubbed_parameters_class.new(arbitrary_attributes)
 
           local_model_attrs = @model_attrs
           ::ActionController::Parameters.class_eval do
+            alias_method :'shoulda_original_[]', :[]
+
             define_method :[] do |*args|
               local_model_attrs
             end
+          end
+        end
+
+        def unstub_model_attributes
+          ::ActionController::Parameters.class_eval do
+            alias_method :[], :'shoulda_original_[]'
+            undef_method :'shoulda_original_[]'
           end
         end
 
