@@ -102,6 +102,35 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
       expect { matcher.matches? }
         .to raise_error(Shoulda::Matchers::ActionController::StrongParametersMatcher::VerbNotDefinedError)
     end
+
+    context 'Stubbing ActionController::Parameters#[]' do
+      it "does not permanently stub []" do
+        controller_for_resource_with_strong_parameters(action: :create) do
+          params.require(:user).permit(:name)
+        end
+
+        described_class.new([:name]).in_context(self).for(:create).matches?
+
+        param = ActionController::Parameters.new(name: 'Ralph')[:name]
+        expect(param.singleton_class).not_to include(
+          Shoulda::Matchers::ActionController::StrongParametersMatcher::StubbedParameters
+        )
+      end
+
+      it 'prevents permanently overwriting [] on error' do
+        stub_controller_with_exception
+
+        begin
+          described_class.new([:name]).in_context(self).for(:create).matches?
+        rescue SimulatedError
+        end
+
+        param = ActionController::Parameters.new(name: 'Ralph')[:name]
+        expect(param.singleton_class).not_to include(
+          Shoulda::Matchers::ActionController::StrongParametersMatcher::StubbedParameters
+        )
+      end
+    end
   end
 
   describe "failure message" do
@@ -157,4 +186,20 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
       end
     end
   end
+
+  def stub_controller_with_exception
+    controller = define_controller('Examples') do
+      def create
+        raise SimulatedError
+      end
+    end
+
+    setup_rails_controller_test(controller)
+
+    define_routes do
+      get 'examples', to: 'examples#create'
+    end
+  end
+
+  class SimulatedError < StandardError; end
 end
