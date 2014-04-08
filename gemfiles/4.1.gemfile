@@ -11,9 +11,9 @@ gem "jruby-openssl", :platform=>:jruby
 gem "therubyrhino", :platform=>:jruby
 gem "jquery-rails"
 gem "activeresource", "4.0.0"
-gem "protected_attributes"
-gem "rails", "4.0.0"
-gem "sass-rails", "4.0.0"
-gem "bcrypt-ruby", "~> 3.0.0"
+gem "rails", "~> 4.1.0"
+gem "sass-rails", "4.0.3"
+gem "bcrypt-ruby", "~> 3.1.2"
+gem "protected_attributes", "~> 1.0.6"
 
 gemspec :path=>".././"

@@ -41,7 +41,7 @@ describe Shoulda::Matchers::ActionController::SetSessionMatcher do
     end
 
     def controller_with_session(session_hash)
-      build_response do
+      build_fake_response do
         session_hash.each do |key, value|
           session[key] = value
         end

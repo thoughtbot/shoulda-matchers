@@ -22,13 +22,13 @@ describe Shoulda::Matchers::ActionController::RedirectToMatcher do
     end
 
     def controller_redirecting_to(url)
-      build_response { redirect_to url }
+      build_fake_response { redirect_to url }
     end
   end
 
   context 'a controller that does not redirect' do
     it 'rejects redirecting to a url' do
-      controller = build_response { render text: 'hello' }
+      controller = build_fake_response { render text: 'hello' }
 
       expect(controller).not_to redirect_to('/some/url')
     end

@@ -43,3 +43,11 @@ appraise '4.0.1' do
   gem 'sass-rails', '4.0.1'
   gem 'bcrypt-ruby', '~> 3.1.2'
 end
+
+appraise '4.1' do
+  instance_eval(&rails_4_0)
+  gem 'rails', '~> 4.1.0'
+  gem 'sass-rails', '4.0.3'
+  gem 'bcrypt-ruby', '~> 3.1.2'
+  gem "protected_attributes", '~> 1.0.6'
+end
