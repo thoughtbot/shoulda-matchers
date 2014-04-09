@@ -531,7 +531,7 @@ end
 # RSpec
 describe Post do
   it { should validate_uniqueness_of(:permalink) }
-  it { should validate_uniqueness_of(:slug).scoped_to(:journal_id) }
+  it { should validate_uniqueness_of(:slug).scoped_to(:user_id) }
   it { should validate_uniqueness_of(:key).case_insensitive }
   it { should validate_uniqueness_of(:author_id).allow_nil }
 
@@ -544,7 +544,7 @@ end
 # Test::Unit
 class PostTest < ActiveSupport::TestCase
   should validate_uniqueness_of(:permalink)
-  should validate_uniqueness_of(:slug).scoped_to(:journal_id)
+  should validate_uniqueness_of(:slug).scoped_to(:user_id)
   should validate_uniqueness_of(:key).case_insensitive
   should validate_uniqueness_of(:author_id).allow_nil
 
