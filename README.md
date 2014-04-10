@@ -194,7 +194,7 @@ end
 # RSpec
 describe Issue do
   it { should ensure_inclusion_of(:state).in_array(%w(open resolved unresolved)) }
-  it { should ensure_inclusion_of(:state).in_range(1..5) }
+  it { should ensure_inclusion_of(:priority).in_range(1..5) }
 
   it do
     should ensure_inclusion_of(:severity).
@@ -206,7 +206,7 @@ end
 # Test::Unit
 class IssueTest < ActiveSupport::TestCase
   should ensure_inclusion_of(:state).in_array(%w(open resolved unresolved))
-  should ensure_inclusion_of(:state).in_range(1..5)
+  should ensure_inclusion_of(:priority).in_range(1..5)
 
   should ensure_inclusion_of(:severity).
     in_array(%w(low medium high)).
