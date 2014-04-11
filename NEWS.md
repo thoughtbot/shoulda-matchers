@@ -52,6 +52,8 @@
 * Fix `rescue_from` matcher so that it does not raise an error when testing
   a method handler which has been marked as protected or private.
 
+* Add missing description to `permit` matcher.
+
 # v 2.5.0
 
 * Fix Rails/Test::Unit integration to ensure that the test case classes we are

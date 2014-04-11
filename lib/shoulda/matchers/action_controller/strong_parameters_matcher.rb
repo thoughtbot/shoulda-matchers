@@ -37,6 +37,10 @@ module Shoulda
           self
         end
 
+        def description
+          "permit #{verb.upcase} ##{action} to receive parameters #{attributes_as_sentence}"
+        end
+
         def matches?(controller = nil)
           simulate_controller_action && parameters_difference.empty?
         end
@@ -107,6 +111,10 @@ module Shoulda
         def verb_for_action
           verb_lookup = { create: :post, update: :put }
           verb_lookup[action]
+        end
+
+        def attributes_as_sentence
+          attributes.map(&:inspect).to_sentence
         end
       end
 
