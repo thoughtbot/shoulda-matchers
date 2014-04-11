@@ -30,8 +30,8 @@
 
 * Running `rake` now installs Appraisals before running the test suite.
 
-* Additionally, we now manage Appraisals using the `appraisal` executable that
-  is coming in Appraisal 1.0.0 (we're using the beta for now).
+* Additionally, we now manage Appraisals using the `appraisal` executable in
+  Appraisal 1.0.0.
 
 * Add `allow_nil` option to `validate_numericality_of` so that you can validate
   that numeric values are validated only if a value is supplied.
@@ -53,6 +53,10 @@
   a method handler which has been marked as protected or private.
 
 * Add missing description to `permit` matcher.
+
+* Fix compatibility with Rails 4.1:
+  * `set_the_flash` and `have_and_belongs_to_many` no longer raise errors
+  * Minitest no longer prints warnings whenever shoulda-matchers is required
 
 # v 2.5.0
 
