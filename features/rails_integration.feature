@@ -12,7 +12,7 @@ Feature: integrate with Rails
         end
       end
       """
-    When I successfully run `bundle exec rake db:migrate --trace`
+    When I successfully run `bundle exec rake db:migrate db:test:prepare --trace`
     And I write to "app/models/user.rb" with:
       """
       class User < ActiveRecord::Base
