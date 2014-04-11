@@ -1,7 +1,7 @@
 # HEAD
 
-* Change `have_db_index(...).unique(unique)` so that the `unique` argument
-  is optional, allowing for the shorter `have_db_index(...).unique` syntax.
+* The boolean argument to `have_db_index`'s `unique` option is now optional, for
+  consistency with other matchers.
 
 * Association matchers now test that the model being referred to (either
   implicitly or explicitly, using `:class_name`) actually exists.
@@ -28,10 +28,9 @@
 * Change `validate_uniqueness_of(...)` so that it provides default values for
   non-nullable attributes.
 
-* Running `rake` now installs Appraisals before running the test suite.
-
-* Additionally, we now manage Appraisals using the `appraisal` executable in
-  Appraisal 1.0.0.
+* Running `rake` now installs Appraisals before running the test suite. 
+  (Additionally, we now manage Appraisals using the `appraisal` executable in
+  Appraisal 1.0.0.)
 
 * Add `allow_nil` option to `validate_numericality_of` so that you can validate
   that numeric values are validated only if a value is supplied.
@@ -49,12 +48,17 @@
 
 * Add ability to test `belongs_to` associations defined with `:inverse_of`.
 
+* Add back matchers that were removed in 2.0.0: `permit`, for testing strong
+  parameters, and `delegate_method`, for testing delegation.
+
+* Add new matchers for testing controller filters: `before_filter`,
+  `after_filter`, and `around_filter` (aliased to `before_action`,
+  `after_action` and `around_action` for Rails 4).
+
 * Fix `rescue_from` matcher so that it does not raise an error when testing
   a method handler which has been marked as protected or private.
 
-* Add missing description to `permit` matcher.
-
-* Fix compatibility with Rails 4.1:
+* Fix compatibility issues with Rails 4.1:
   * `set_the_flash` and `have_and_belongs_to_many` no longer raise errors
   * Minitest no longer prints warnings whenever shoulda-matchers is required
 
