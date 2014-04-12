@@ -15,6 +15,10 @@ module Shoulda
             reflection.klass
           end
 
+          def polymorphic?
+            reflection.options[:polymorphic]
+          end
+
           def through?
             reflection.options[:through]
           end
