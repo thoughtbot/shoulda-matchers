@@ -1,4 +1,4 @@
-# HEAD
+# 2.6.0
 
 * The boolean argument to `have_db_index`'s `unique` option is now optional, for
   consistency with other matchers.
