@@ -4,7 +4,7 @@ module Shoulda # :nodoc:
       module AssociationMatchers
         class ModelReflector
           delegate :associated_class, :through?, :join_table,
-            :association_relation, to: :reflection
+            :association_relation, :polymorphic?, to: :reflection
 
           def initialize(subject, name)
             @subject = subject

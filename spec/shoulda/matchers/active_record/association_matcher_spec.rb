@@ -30,7 +30,6 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
     end
 
     it 'accepts a polymorphic association' do
-      define_model :parent
       define_model :child, parent_type: :string, parent_id: :integer do
         belongs_to :parent, polymorphic: true
       end

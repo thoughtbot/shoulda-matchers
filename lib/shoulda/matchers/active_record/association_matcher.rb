@@ -91,7 +91,7 @@ module Shoulda # :nodoc:
 
       class AssociationMatcher # :nodoc:
         delegate :reflection, :model_class, :associated_class, :through?,
-          :join_table, to: :reflector
+          :join_table, :polymorphic?, to: :reflector
 
         def initialize(macro, name)
           @macro = macro
@@ -188,7 +188,7 @@ module Shoulda # :nodoc:
           @subject = subject
           association_exists? &&
             macro_correct? &&
-            class_exists? &&
+            (polymorphic? || class_exists?) &&
             foreign_key_exists? &&
             class_name_correct? &&
             autosave_correct? &&
