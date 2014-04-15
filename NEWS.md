@@ -1,3 +1,8 @@
+# HEAD
+
+* Fix to prevent inclusion of the ActiveRecord matchers when ActiveRecord isn't
+  defined (i.e. you are using ActiveModel only).
+
 # 2.6.0
 
 * The boolean argument to `have_db_index`'s `unique` option is now optional, for
