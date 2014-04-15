@@ -21,12 +21,14 @@ end
 
 if defined?(ActiveSupport::TestCase)
   ActiveSupport::TestCase.class_eval do
-    include Shoulda::Matchers::ActiveRecord
-    extend Shoulda::Matchers::ActiveRecord
-  end
+    if defined?(ActiveRecord)
+      include Shoulda::Matchers::ActiveRecord
+      extend Shoulda::Matchers::ActiveRecord
+    end
 
-  ActiveSupport::TestCase.class_eval do
-    include Shoulda::Matchers::ActiveModel
-    extend Shoulda::Matchers::ActiveModel
+    if defined?(ActiveModel)
+      include Shoulda::Matchers::ActiveModel
+      extend Shoulda::Matchers::ActiveModel
+    end
   end
 end
