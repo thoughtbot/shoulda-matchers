@@ -1,3 +1,8 @@
+# 2.6.1
+
+* Fix `ComparisonMatcher` so that `validate_numericality_of` comparison matchers
+  work with large numbers (#483).
+
 # 2.6.0
 
 * The boolean argument to `have_db_index`'s `unique` option is now optional, for

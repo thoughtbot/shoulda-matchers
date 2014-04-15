@@ -5,6 +5,12 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
 
   it_behaves_like 'a numerical submatcher'
 
+  describe '#diff_to_compare' do
+    it { expect(subject.diff_to_compare).to eq 0.000_001 }
+    it { expect(described_class.new(matcher, 2**34, :>).diff_to_compare).to eq 1 }
+    it { expect(described_class.new(matcher, -2**34, :>).diff_to_compare).to eq 1 }
+  end
+
   context 'when initialized without correct numerical matcher' do
     it 'raises an argument error' do
       fake_matcher = matcher
