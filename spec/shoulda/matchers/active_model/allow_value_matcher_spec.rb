@@ -24,6 +24,20 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
     end
   end
 
+  describe '#_after_setting_value' do
+    it 'sets a block which is yielded after each value is set on the attribute' do
+      attribute = :attr
+      record = define_model(:example, attribute => :string).new
+      matcher = described_class.new('a', 'b', 'c').for(attribute)
+      call_count = 0
+
+      matcher._after_setting_value { call_count += 1 }
+      matcher.matches?(record)
+
+      expect(call_count).to eq 3
+    end
+  end
+
   context 'an attribute with a validation' do
     it 'allows a good value' do
       expect(validating_format(with: /abc/)).to allow_value('abcde').for(:attr)

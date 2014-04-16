@@ -37,6 +37,7 @@ module Shoulda # :nodoc:
           self.values_to_match = values
           self.message_finder_factory = ValidationMessageFinder
           self.options = {}
+          self.after_setting_value_callback = -> {}
         end
 
         def for(attribute)
@@ -63,12 +64,16 @@ module Shoulda # :nodoc:
           self
         end
 
+        def _after_setting_value(&callback)  # :nodoc:
+          self.after_setting_value_callback = callback
+        end
+
         def matches?(instance)
           self.instance = instance
 
           values_to_match.none? do |value|
             self.value = value
-            set_and_double_check_attribute!(attribute_to_set, value)
+            set_value(value)
             errors_match?
           end
         end
@@ -91,24 +96,11 @@ module Shoulda # :nodoc:
 
         attr_accessor :values_to_match, :message_finder_factory,
           :instance, :attribute_to_set, :attribute_to_check_message_against,
-          :context, :value, :matched_error
+          :context, :value, :matched_error, :after_setting_value_callback
 
-        def set_and_double_check_attribute!(attribute_name, value)
-          instance.__send__("#{attribute_name}=", value)
-
-          if value.nil?
-            ensure_attribute_was_cleared!(attribute_name)
-          end
-        end
-
-        def ensure_attribute_was_cleared!(attribute_name)
-          if instance.respond_to?(attribute_name)
-            actual_value = instance.__send__(attribute_name)
-
-            if !actual_value.nil?
-              raise Shoulda::Matchers::ActiveModel::CouldNotClearAttribute.create(actual_value)
-            end
-          end
+        def set_value(value)
+          instance.__send__("#{attribute_to_set}=", value)
+          after_setting_value_callback.call
         end
 
         def errors_match?
