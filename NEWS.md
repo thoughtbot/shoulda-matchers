@@ -11,6 +11,8 @@
   `validate_presence_of` when used in conjunction with `has_secure_password`.
   That fix has been updated so that it does not affect `allow_value`.
 
+* Fix callback matchers and correct test coverage.
+
 * Fix `permit` so that it does not interfere with the existing `params` hash of
   the controller you're testing.
 
