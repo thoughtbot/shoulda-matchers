@@ -68,18 +68,20 @@ module Shoulda # :nodoc:
           @callback_type = callback_type
         end
 
-        def matches?(subject)
-          @subject = subject
+        def matches?(controller)
+          @controller = controller
+          @controller_class = controller.class
+
           callbacks.map(&:filter).include?(method_name)
         end
 
         def failure_message
-          "Expected that #{subject.name} would have :#{method_name} as a #{kind}_#{callback_type}"
+          "Expected that #{controller_class.name} would have :#{method_name} as a #{kind}_#{callback_type}"
         end
         alias failure_message_for_should failure_message
 
         def failure_message_when_negated
-          "Expected that #{subject.name} would not have :#{method_name} as a #{kind}_#{callback_type}"
+          "Expected that #{controller_class.name} would not have :#{method_name} as a #{kind}_#{callback_type}"
         end
         alias failure_message_for_should_not failure_message_when_negated
 
@@ -90,10 +92,13 @@ module Shoulda # :nodoc:
         private
 
         def callbacks
-          subject._process_action_callbacks.select { |callback| callback.kind == kind }
+          controller_class._process_action_callbacks.select do |callback|
+            callback.kind == kind
+          end
         end
 
-        attr_reader :method_name, :subject, :kind, :callback_type
+        attr_reader :method_name, :controller, :controller_class, :kind,
+          :callback_type
       end
     end
   end
