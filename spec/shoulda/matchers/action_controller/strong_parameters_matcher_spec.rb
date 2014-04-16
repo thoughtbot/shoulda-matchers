@@ -3,27 +3,27 @@ require 'spec_helper'
 describe Shoulda::Matchers::ActionController do
   describe "#permit" do
     it 'matches when the sent parameter is allowed' do
-      controller_class = controller_for_resource_with_strong_parameters(action: :create) do
+      controller_for_resource_with_strong_parameters(action: :create) do
         params.require(:user).permit(:name)
       end
 
-      expect(controller_class).to permit(:name).for(:create)
+      expect(@controller).to permit(:name).for(:create)
     end
 
     it 'does not match when the sent parameter is not allowed' do
-      controller_class = controller_for_resource_with_strong_parameters(action: :create) do
+      controller_for_resource_with_strong_parameters(action: :create) do
         params.require(:user).permit(:name)
       end
 
-      expect(controller_class).not_to permit(:admin).for(:create)
+      expect(@controller).not_to permit(:admin).for(:create)
     end
 
     it 'matches against multiple attributes' do
-      controller_class = controller_for_resource_with_strong_parameters(action: :create) do
+      controller_for_resource_with_strong_parameters(action: :create) do
         params.require(:user).permit(:name, :age)
       end
 
-      expect(controller_class).to permit(:name, :age).for(:create)
+      expect(@controller).to permit(:name, :age).for(:create)
     end
   end
 end
@@ -63,7 +63,7 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
       end
 
       matcher = described_class.new([:name]).in_context(self).for(:create)
-      expect(matcher.matches?).to be_true
+      expect(matcher.matches?(@controller)).to be_true
     end
 
     it "is true for all the allowable attributes" do
@@ -72,7 +72,7 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
       end
 
       matcher = described_class.new([:name, :age]).in_context(self).for(:create)
-      expect(matcher.matches?).to be_true
+      expect(matcher.matches?(@controller)).to be_true
     end
 
     it "is false when any attributes are not allowed" do
@@ -81,76 +81,104 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
       end
 
       matcher = described_class.new([:name, :admin]).in_context(self).for(:create)
-      expect(matcher.matches?).to be_false
+      expect(matcher.matches?(@controller)).to be_false
     end
 
     it "is false when permit is not called" do
-      controller_for_resource_with_strong_parameters(action: :create) {}
+      controller_for_resource_with_strong_parameters(action: :create)
 
       matcher = described_class.new([:name]).in_context(self).for(:create)
-      expect(matcher.matches?).to be_false
+      expect(matcher.matches?(@controller)).to be_false
     end
 
     it "requires an action" do
+      controller_for_resource_with_strong_parameters
       matcher = described_class.new([:name])
-      expect { matcher.matches? }
+      expect { matcher.matches?(@controller) }
         .to raise_error(Shoulda::Matchers::ActionController::StrongParametersMatcher::ActionNotDefinedError)
     end
 
     it "requires a verb for non-restful action" do
+      controller_for_resource_with_strong_parameters
       matcher = described_class.new([:name]).for(:authorize)
-      expect { matcher.matches? }
+      expect { matcher.matches?(@controller) }
         .to raise_error(Shoulda::Matchers::ActionController::StrongParametersMatcher::VerbNotDefinedError)
     end
 
-    context 'Stubbing ActionController::Parameters#[]' do
-      it "does not permanently stub []" do
+    context 'stubbing params on the controller' do
+      it 'still allows the original params to be set and accessed' do
+        actual_value = nil
+
+        controller_for_resource_with_strong_parameters(action: :create) do
+          params[:foo] = 'bar'
+          actual_value = params[:foo]
+
+          params.require(:user).permit(:name)
+        end
+
+        matcher = described_class.new([:name]).in_context(self).for(:create)
+        matcher.matches?(@controller)
+
+        expect(actual_value).to eq 'bar'
+      end
+
+      it 'stubs the params while the controller action is being run' do
+        params_class = nil
+
+        controller_for_resource_with_strong_parameters(action: :create) do
+          params_class = params.class
+          params.require(:user).permit(:name)
+        end
+
+        matcher = described_class.new([:name]).in_context(self).for(:create)
+        matcher.matches?(@controller)
+
+        expect(params_class).to be described_class::StubbedParameters
+      end
+
+      it 'does not permanently stub params' do
         controller_for_resource_with_strong_parameters(action: :create) do
           params.require(:user).permit(:name)
         end
 
-        described_class.new([:name]).in_context(self).for(:create).matches?
+        matcher = described_class.new([:name]).in_context(self).for(:create)
+        matcher.matches?(@controller)
 
-        param = ActionController::Parameters.new(name: 'Ralph')[:name]
-        expect(param.singleton_class).not_to include(
-          Shoulda::Matchers::ActionController::StrongParametersMatcher::StubbedParameters
-        )
+        expect(@controller.params).to be_a(ActionController::Parameters)
       end
 
-      it 'prevents permanently overwriting [] on error' do
+      it 'prevents permanently stubbing params on error' do
         stub_controller_with_exception
 
         begin
-          described_class.new([:name]).in_context(self).for(:create).matches?
+          matcher = described_class.new([:name]).in_context(self).for(:create)
+          matcher.matches?(@controller)
         rescue SimulatedError
         end
 
-        param = ActionController::Parameters.new(name: 'Ralph')[:name]
-        expect(param.singleton_class).not_to include(
-          Shoulda::Matchers::ActionController::StrongParametersMatcher::StubbedParameters
-        )
+        expect(@controller.params).to be_a(ActionController::Parameters)
       end
     end
   end
 
   describe "failure message" do
     it "includes all missing attributes" do
-      controller_class = controller_for_resource_with_strong_parameters(action: :create) do
+      controller_for_resource_with_strong_parameters(action: :create) do
         params.require(:user).permit(:name, :age)
       end
 
       expect {
-        expect(controller_class).to permit(:name, :age, :city, :country).for(:create)
+        expect(@controller).to permit(:name, :age, :city, :country).for(:create)
       }.to fail_with_message("Expected controller to permit city and country, but it did not.")
     end
 
     it "includes all attributes that should not have been allowed but were" do
-      controller_class = controller_for_resource_with_strong_parameters(action: :create) do
+      controller_for_resource_with_strong_parameters(action: :create) do
         params.require(:user).permit(:name, :age)
       end
 
       expect {
-        expect(controller_class).not_to permit(:name, :age).for(:create)
+        expect(@controller).not_to permit(:name, :age).for(:create)
       }.to fail_with_message("Expected controller not to permit name and age, but it did.")
     end
   end
@@ -158,43 +186,46 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
   describe "#for" do
     context "when given :create" do
       it "posts to the controller" do
+        controller = ActionController::Base.new
         context = stub('context', post: nil)
         matcher = described_class.new([:name]).in_context(context).for(:create)
 
-        matcher.matches?
+        matcher.matches?(controller)
         expect(context).to have_received(:post).with(:create)
       end
     end
 
     context "when given :update" do
       it "puts to the controller" do
+        controller = ActionController::Base.new
         context = stub('context', put: nil)
         matcher = described_class.new([:name]).in_context(context).for(:update)
 
-        matcher.matches?
+        matcher.matches?(controller)
         expect(context).to have_received(:put).with(:update)
       end
     end
 
     context "when given a custom action and verb" do
       it "deletes to the controller" do
+        controller = ActionController::Base.new
         context = stub('context', delete: nil)
         matcher = described_class.new([:name]).in_context(context).for(:hide, verb: :delete)
 
-        matcher.matches?
+        matcher.matches?(controller)
         expect(context).to have_received(:delete).with(:hide)
       end
     end
   end
 
   def stub_controller_with_exception
-    controller = define_controller('Examples') do
+    controller_class = define_controller('Examples') do
       def create
         raise SimulatedError
       end
     end
 
-    setup_rails_controller_test(controller)
+    setup_rails_controller_test(controller_class)
 
     define_routes do
       get 'examples', to: 'examples#create'

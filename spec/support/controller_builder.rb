@@ -59,9 +59,12 @@ module ControllerBuilder
   end
 
   def controller_for_resource_with_strong_parameters(options = {}, &block)
+    controller_name = 'Users'
+    block ||= -> { {} }
+
     define_model "User"
-    controller_class = define_controller "Users" do
-      define_method options.fetch(:action) do
+    controller_class = define_controller controller_name do
+      define_method options.fetch(:action, 'some_action') do
         @user = User.create(user_params)
         render nothing: true
       end
@@ -72,7 +75,10 @@ module ControllerBuilder
 
     setup_rails_controller_test(controller_class)
 
-    define_routes { resources :users }
+    collection_name = controller_name.
+      to_s.sub(/Controller$/, '').underscore.
+      to_sym
+    define_routes { resources(collection_name) }
 
     controller_class
   end
