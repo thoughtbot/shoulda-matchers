@@ -146,9 +146,9 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
 
   if rails_4_x?
     context 'against a pre-set password in a model that has_secure_password' do
-      it 'raises an error to instruct the user' do
+      it 'raises a CouldNotSetPasswordError exception' do
         user_class = define_model :user, password_digest: :string do
-          has_secure_password
+          has_secure_password validations: false
           validates_presence_of :password
         end
 
@@ -156,9 +156,28 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
         user.password = 'something'
 
         error_class = Shoulda::Matchers::ActiveModel::CouldNotSetPasswordError
-        expect {
+        expect do
           expect(user).to validate_presence_of(:password)
-        }.to raise_error(error_class)
+        end.to raise_error(error_class)
+      end
+    end
+  end
+
+  context 'when the attribute being tested intercepts the blank value we set on it (issue #479)' do
+    context 'for a non-collection attribute' do
+      it 'does not raise an error' do
+        record = define_model :example, attr: :string do
+          validates :attr, presence: true
+
+          def attr=(value)
+            value = '' if value.nil?
+            super(value)
+          end
+        end.new
+
+        expect do
+          expect(record).to validate_presence_of(:attr)
+        end.not_to raise_error
       end
     end
   end

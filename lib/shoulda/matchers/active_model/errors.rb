@@ -5,18 +5,6 @@ module Shoulda # :nodoc:
 
       class NonNullableBooleanError < Shoulda::Matchers::Error; end
 
-      class CouldNotClearAttribute < Shoulda::Matchers::Error
-        def self.create(actual_value)
-          super(actual_value: actual_value)
-        end
-
-        attr_accessor :actual_value
-
-        def message
-          "Expected value to be nil, but was #{actual_value.inspect}."
-        end
-      end
-
       class CouldNotSetPasswordError < Shoulda::Matchers::Error
         def self.create(model)
           super(model: model)
