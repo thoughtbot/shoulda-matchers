@@ -18,6 +18,20 @@ group :test do
 end
 ```
 
+Note that if you're using a Rails preloader like Spring, you'll need to manually
+require shoulda-matchers in your spec_helper after you require RSpec:
+
+```ruby
+# Gemfile
+group :test do
+  gem 'shoulda-matchers', require: false
+end
+
+# spec_helper
+require 'rspec/rails'
+require 'shoulda/matchers'
+```
+
 ### Test::Unit
 
 shoulda-matchers was originally a component of
