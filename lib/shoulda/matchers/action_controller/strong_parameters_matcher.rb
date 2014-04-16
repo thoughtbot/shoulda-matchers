@@ -1,7 +1,11 @@
+require 'delegate'
+
 begin
   require 'strong_parameters'
 rescue LoadError
 end
+
+require 'active_support/hash_with_indifferent_access'
 
 module Shoulda
   module Matchers
@@ -11,19 +15,12 @@ module Shoulda
       end
 
       class StrongParametersMatcher
-        def self.stubbed_parameters_class
-          @stubbed_parameters_class ||= build_stubbed_parameters_class
-        end
-
-        def self.build_stubbed_parameters_class
-          Class.new(::ActionController::Parameters) do
-            include StubbedParameters
-          end
-        end
+        attr_writer :stubbed_params
 
         def initialize(context = nil, attributes)
           @attributes = attributes
           @context = context
+          @stubbed_params = NullStubbedParameters.new
         end
 
         def for(action, options = {})
@@ -41,11 +38,13 @@ module Shoulda
           "permit #{verb.upcase} ##{action} to receive parameters #{attributes_as_sentence}"
         end
 
-        def matches?(controller = nil)
+        def matches?(controller)
+          @controller = controller
           simulate_controller_action && parameters_difference.empty?
         end
 
-        def does_not_match?(controller = nil)
+        def does_not_match?(controller)
+          @controller = controller
           simulate_controller_action && parameters_intersection.empty?
         end
 
@@ -61,50 +60,48 @@ module Shoulda
 
         private
 
-        attr_reader :verb, :action, :attributes, :context
+        attr_reader :controller, :verb, :action, :attributes, :context
 
         def simulate_controller_action
           ensure_action_and_verb_present!
-          stub_model_attributes
+          stub_params
 
           begin
             context.send(verb, action)
           ensure
-            unstub_model_attributes
+            unstub_params
           end
 
           verify_permit_call
         end
 
         def verify_permit_call
-          @model_attrs.permit_was_called
+          @stubbed_params.permit_was_called
         end
 
         def parameters_difference
-          attributes - @model_attrs.shoulda_permitted_params
+          attributes - @stubbed_params.shoulda_permitted_params
         end
 
         def parameters_intersection
-          attributes & @model_attrs.shoulda_permitted_params
+          attributes & @stubbed_params.shoulda_permitted_params
         end
 
-        def stub_model_attributes
-          @model_attrs = self.class.stubbed_parameters_class.new(arbitrary_attributes)
+        def stub_params
+          matcher = self
 
-          local_model_attrs = @model_attrs
-          ::ActionController::Parameters.class_eval do
-            alias_method :'shoulda_original_[]', :[]
+          controller.singleton_class.class_eval do
+            alias_method :__shoulda_original_params__, :params
 
-            define_method :[] do |*args|
-              local_model_attrs
+            define_method :params do
+              matcher.stubbed_params = StubbedParameters.new(__shoulda_original_params__)
             end
           end
         end
 
-        def unstub_model_attributes
-          ::ActionController::Parameters.class_eval do
-            alias_method :[], :'shoulda_original_[]'
-            undef_method :'shoulda_original_[]'
+        def unstub_params
+          controller.singleton_class.class_eval do
+            alias_method :params, :__shoulda_original_params__
           end
         end
 
@@ -117,10 +114,6 @@ module Shoulda
           end
         end
 
-        def arbitrary_attributes
-          {any_key: 'any_value'}
-        end
-
         def verb_for_action
           verb_lookup = { create: :post, update: :put }
           verb_lookup[action]
@@ -129,37 +122,44 @@ module Shoulda
         def attributes_as_sentence
           attributes.map(&:inspect).to_sentence
         end
-      end
 
-      module StrongParametersMatcher::StubbedParameters
-        extend ActiveSupport::Concern
+        class StubbedParameters < SimpleDelegator
+          attr_reader :permit_was_called, :shoulda_permitted_params
 
-        included do
-          attr_accessor :permit_was_called, :shoulda_permitted_params
+          def initialize(original_params)
+            super(original_params)
+            @permit_was_called = false
+          end
+
+          def require(*args)
+            self
+          end
+
+          def permit(*args)
+            @shoulda_permitted_params = args
+            @permit_was_called = true
+            super(*args)
+          end
         end
 
-        def initialize(*)
-          @permit_was_called = false
-          super
+        class NullStubbedParameters < ActiveSupport::HashWithIndifferentAccess
+          def permit_was_called; false; end
+          def shoulda_permitted_params; self; end
+          def require(*); self; end
+          def permit(*); self; end
         end
 
-        def permit(*args)
-          self.shoulda_permitted_params = args
-          self.permit_was_called = true
-          nil
+        class ActionNotDefinedError < StandardError
+          def message
+            'You must specify the controller action using the #for method.'
+          end
         end
-      end
 
-      class StrongParametersMatcher::ActionNotDefinedError < StandardError
-        def message
-          'You must specify the controller action using the #for method.'
-        end
-      end
-
-      class StrongParametersMatcher::VerbNotDefinedError < StandardError
-        def message
-          'You must specify an HTTP verb when using a non-RESTful action.' +
-          ' e.g. for(:authorize, verb: :post)'
+        class VerbNotDefinedError < StandardError
+          def message
+            'You must specify an HTTP verb when using a non-RESTful action.' +
+            ' e.g. for(:authorize, verb: :post)'
+          end
         end
       end
     end

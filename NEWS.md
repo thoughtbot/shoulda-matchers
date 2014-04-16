@@ -1,7 +1,7 @@
 # 2.6.1
 
 * Fix `ComparisonMatcher` so that `validate_numericality_of` comparison matchers
-  work with large numbers (#483).
+  work with large numbers.
 
 * Fix so that ActiveRecord matchers aren't included when ActiveRecord
   isn't defined (i.e. if you are using ActiveModel only).
@@ -10,6 +10,9 @@
   CouldNotClearAttribute). This was originally done as a part of a fix for
   `validate_presence_of` when used in conjunction with `has_secure_password`.
   That fix has been updated so that it does not affect `allow_value`.
+
+* Fix `permit` so that it does not interfere with the existing `params` hash of
+  the controller you're testing.
 
 # 2.6.0
 
