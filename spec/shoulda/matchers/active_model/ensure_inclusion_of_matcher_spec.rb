@@ -3,16 +3,6 @@ require 'spec_helper'
 describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
   shared_context 'for a generic attribute' do
     def self.contexts_for_option(option_name, &block)
-      # when allow_blank
-      # - matches when specifies allow_blank: true
-      # - doesn't match when allow_blank not specified
-      # when allow_blank(true)
-      # - matches when specifies allow_blank: true
-      # - doesn't match when allow_blank not specified
-      # when allow_blank(false)
-      # - doesn't match when specifies allow_blank: true
-      # - matches when allow_blank not specified
-
       [nil, true, false].each do |option_value|
         context_name = "+ #{option_name}"
         option_args = []
@@ -33,9 +23,10 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     end
 
     context 'against an integer attribute' do
-      def build_object(options = {})
+      def build_object(options = {}, &block)
         build_object_with_generic_attribute(
-          options.merge(attribute_type: :integer)
+          options.merge(attribute_type: :integer),
+          &block
         )
       end
 
@@ -218,16 +209,40 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
         end
       end
 
-      context 'when attribute has a custom validation' do
+      context 'when attribute validates a range of values via custom validation' do
+        it 'matches ensuring the correct range and messages' do
+          expect_to_match_ensuring_range_and_messages(2..5, 2, 5)
+          expect_to_match_ensuring_range_and_messages(2...5, 2, 4)
+        end
+
+        def expect_to_match_ensuring_range_and_messages(range, low_value, high_value)
+          low_message = 'too low'
+          high_message = 'too high'
+
+          builder = build_object do |attribute|
+            value = __send__(attribute)
+
+            if value < low_value
+              errors.add(attribute, low_message)
+            elsif value > high_value
+              errors.add(attribute, high_message)
+            end
+          end
+
+          expect_to_match(builder) do |matcher|
+            matcher.
+              in_range(range).
+              with_low_message(low_message).
+              with_high_message(high_message)
+          end
+        end
       end
     end
 
-    context 'against a float attribute' do
-      # copy from above
-    end
-
-    context 'against a decimal attribute' do
-      # copy from above
+    %w(float decimal).each do |attribute_type|
+      context "against a #{attribute_type} attribute" do
+        # copy from above
+      end
     end
 
     context 'against a boolean attribute' do
@@ -368,7 +383,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
   context 'for a database column' do
     include_context 'for a generic attribute'
 
-    def build_object_with_generic_attribute(options = {})
+    def build_object_with_generic_attribute(options = {}, &block)
       attribute_name = :attr
       attribute_type = options.fetch(:attribute_type)
       validation_options = options[:validation_options]
@@ -376,6 +391,14 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
       model = define_model :example, attribute_name => attribute_type do
         if validation_options
           validates_inclusion_of attribute_name, validation_options
+        end
+
+        if block
+          define_method :custom_validation do
+            instance_exec(attribute_name, &block)
+          end
+
+          validate :custom_validation
         end
       end
 
