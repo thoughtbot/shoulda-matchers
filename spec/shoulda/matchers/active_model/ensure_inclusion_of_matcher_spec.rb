@@ -51,10 +51,48 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
       end
     end
 
-    %w(float decimal).each do |attribute_type|
-      context "against a #{attribute_type} attribute" do
-        # copy from above
+    context "against a float attribute" do
+      def build_object(options = {}, &block)
+        build_object_with_generic_attribute(
+          options.merge(attribute_type: :float),
+          &block
+        )
       end
+
+      def build_object_allowing(values, options = {})
+        build_object(validation_options: options.merge(in: values))
+      end
+
+      it_behaves_like 'using an array of valid values',
+        possible_values: [1.0, 2.0, 3.0, 4.0, 5.0],
+        zero: 0.0,
+        outside_value: described_class::ARBITRARY_OUTSIDE_FIXNUM
+
+      it_behaves_like 'using a range of valid values',
+        possible_values: 1.0..5.0,
+        zero: 0.0
+    end
+
+    context "against a decimal attribute" do
+      def build_object(options = {}, &block)
+        build_object_with_generic_attribute(
+          options.merge(attribute_type: :decimal),
+          &block
+        )
+      end
+
+      def build_object_allowing(values, options = {})
+        build_object(validation_options: options.merge(in: values))
+      end
+
+      it_behaves_like 'using an array of valid values',
+        possible_values: [1.0, 2.0, 3.0, 4.0, 5.0],
+        zero: 0.0,
+        outside_value: described_class::ARBITRARY_OUTSIDE_DECIMAL
+
+      it_behaves_like 'using a range of valid values',
+        possible_values: 1.0..5.0,
+        zero: 0.0
     end
 
     context 'against a boolean attribute' do
