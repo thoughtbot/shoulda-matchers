@@ -100,7 +100,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
         include_context 'against a boolean attribute for true and false'
 
         context 'when ensuring inclusion of nil' do
-          it "doesn't raise an error" do
+          it 'matches' do
             valid_values = [nil]
             builder = build_object_allowing(valid_values)
             capture(:stderr) do
@@ -466,7 +466,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
 
   shared_context 'against a boolean attribute for true and false' do
     context 'when ensuring inclusion of true' do
-      it "doesn't raise an error" do
+      it 'matches' do
         valid_values = [true]
         builder = build_object_allowing(valid_values)
         expect_to_match_in_array(builder, valid_values)
@@ -474,7 +474,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     end
 
     context 'when ensuring inclusion of false' do
-      it "doesn't raise an error" do
+      it 'matches' do
         valid_values = [false]
         builder = build_object_allowing(valid_values)
         expect_to_match_in_array(builder, valid_values)
@@ -482,7 +482,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     end
 
     context 'when ensuring inclusion of true and false' do
-      it "doesn't raise an error" do
+      it 'matches' do
         valid_values = [true, false]
         builder = build_object_allowing(valid_values)
         capture(:stderr) do
@@ -502,7 +502,6 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
         expect(stderr.gsub(/\n+/, ' ')).to include(message)
       end
     end
-
   end
 
   context 'for a database column' do
