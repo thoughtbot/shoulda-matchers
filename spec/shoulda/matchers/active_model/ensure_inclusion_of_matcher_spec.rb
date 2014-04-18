@@ -515,15 +515,16 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
         options: options.fetch(:column_options, {})
       }
       validation_options = options[:validation_options]
+      custom_validation = options[:custom_validation]
 
       model = define_model :example, attribute_name => column_options do
         if validation_options
           validates_inclusion_of attribute_name, validation_options
         end
 
-        if block
+        if custom_validation
           define_method :custom_validation do
-            instance_exec(attribute_name, &block)
+            instance_exec(attribute_name, &custom_validation)
           end
 
           validate :custom_validation
@@ -588,7 +589,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     low_message = 'too low'
     high_message = 'too high'
 
-    builder = build_object do |attribute|
+    builder = build_object custom_validation: ->(attribute) {
       value = __send__(attribute)
 
       if value < low_value
@@ -596,7 +597,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
       elsif value > high_value
         errors.add(attribute, high_message)
       end
-    end
+    }
 
     expect_to_match(builder) do |matcher|
       matcher.
