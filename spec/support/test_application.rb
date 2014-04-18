@@ -92,7 +92,7 @@ EOT
   end
 
   def install_gems
-    retrying('bundle install') do |command|
+    retrying('bundle check || bundle install') do |command|
       Bundler.with_clean_env { `#{command}` }
     end
   end
