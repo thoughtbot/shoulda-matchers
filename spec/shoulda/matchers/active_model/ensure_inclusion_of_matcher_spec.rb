@@ -23,6 +23,22 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     end
 
     context 'against an integer attribute' do
+      it_behaves_like 'it supports in_array',
+        possible_values: (1..5).to_a,
+        zero: 0,
+        outside_value: described_class::ARBITRARY_OUTSIDE_FIXNUM
+
+      it_behaves_like 'it supports in_range',
+        possible_values: 1..5,
+        zero: 0
+
+      context 'when attribute validates a range of values via custom validation' do
+        it 'matches ensuring the correct range and messages' do
+          expect_to_match_ensuring_range_and_messages(2..5, 2, 5)
+          expect_to_match_ensuring_range_and_messages(2...5, 2, 4)
+        end
+      end
+
       def build_object(options = {}, &block)
         build_object_with_generic_attribute(
           options.merge(attribute_type: :integer),
@@ -33,25 +49,18 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
       def add_outside_value_to(values)
         values + [values.last + 1]
       end
-
-      it_behaves_like 'using an array of valid values',
-        possible_values: (1..5).to_a,
-        zero: 0,
-        outside_value: described_class::ARBITRARY_OUTSIDE_FIXNUM
-
-      it_behaves_like 'using a range of valid values',
-        possible_values: 1..5,
-        zero: 0
-
-      context 'when attribute validates a range of values via custom validation' do
-        it 'matches ensuring the correct range and messages' do
-          expect_to_match_ensuring_range_and_messages(2..5, 2, 5)
-          expect_to_match_ensuring_range_and_messages(2...5, 2, 4)
-        end
-      end
     end
 
     context "against a float attribute" do
+      it_behaves_like 'it supports in_array',
+        possible_values: [1.0, 2.0, 3.0, 4.0, 5.0],
+        zero: 0.0,
+        outside_value: described_class::ARBITRARY_OUTSIDE_FIXNUM
+
+      it_behaves_like 'it supports in_range',
+        possible_values: 1.0..5.0,
+        zero: 0.0
+
       def build_object(options = {}, &block)
         build_object_with_generic_attribute(
           options.merge(attribute_type: :float),
@@ -62,18 +71,18 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
       def add_outside_value_to(values)
         values + [values.last + 1]
       end
-
-      it_behaves_like 'using an array of valid values',
-        possible_values: [1.0, 2.0, 3.0, 4.0, 5.0],
-        zero: 0.0,
-        outside_value: described_class::ARBITRARY_OUTSIDE_FIXNUM
-
-      it_behaves_like 'using a range of valid values',
-        possible_values: 1.0..5.0,
-        zero: 0.0
     end
 
     context "against a decimal attribute" do
+      it_behaves_like 'it supports in_array',
+        possible_values: [1.0, 2.0, 3.0, 4.0, 5.0],
+        zero: 0.0,
+        outside_value: described_class::ARBITRARY_OUTSIDE_DECIMAL
+
+      it_behaves_like 'it supports in_range',
+        possible_values: 1.0..5.0,
+        zero: 0.0
+
       def build_object(options = {}, &block)
         build_object_with_generic_attribute(
           options.merge(attribute_type: :decimal),
@@ -84,57 +93,15 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
       def add_outside_value_to(values)
         values + [values.last + 1]
       end
-
-      it_behaves_like 'using an array of valid values',
-        possible_values: [1.0, 2.0, 3.0, 4.0, 5.0],
-        zero: 0.0,
-        outside_value: described_class::ARBITRARY_OUTSIDE_DECIMAL
-
-      it_behaves_like 'using a range of valid values',
-        possible_values: 1.0..5.0,
-        zero: 0.0
     end
 
     context 'against a boolean attribute' do
-      def build_object(options = {}, &block)
-        build_object_with_generic_attribute(
-          options.merge(attribute_type: :boolean),
-          &block
-        )
-      end
-
       context 'which is nullable' do
-        def build_object(options = {}, &block)
-          super(options.merge(attribute_options: { null: true }))
-        end
+        include_context 'against a boolean attribute for true and false'
 
-        it_behaves_like 'against a boolean attribute (generically)'
-      end
-
-      context 'which is non-nullable' do
-        def build_object(options = {}, &block)
-          super(options.merge(attribute_options: { null: false }))
-        end
-
-        context 'when ensuring inclusion of true' do
+        context 'when ensuring inclusion of nil' do
           it "doesn't raise an error" do
-            valid_values = [true]
-            builder = build_object_allowing(valid_values)
-            expect_to_match_in_array(builder, valid_values)
-          end
-        end
-
-        context 'when ensuring inclusion of false' do
-          it "doesn't raise an error" do
-            valid_values = [false]
-            builder = build_object_allowing(valid_values)
-            expect_to_match_in_array(builder, valid_values)
-          end
-        end
-
-        context 'when ensuring inclusion of true and false' do
-          it "doesn't raise an error" do
-            valid_values = [true, false]
+            valid_values = [nil]
             builder = build_object_allowing(valid_values)
             capture(:stderr) do
               expect_to_match_in_array(builder, valid_values)
@@ -142,9 +109,9 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
           end
 
           it 'prints a warning' do
-            valid_values = [true, false]
+            valid_values = [nil]
             builder = build_object_allowing(valid_values)
-            message = 'You are using `ensure_inclusion_of` to assert that a boolean column allows boolean values and disallows non-boolean ones'
+            message = 'You are using `ensure_inclusion_of` to assert that a boolean column allows nil'
 
             stderr = capture(:stderr) do
               expect_to_match_in_array(builder, valid_values)
@@ -153,6 +120,14 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
             expect(stderr.gsub(/\n+/, ' ')).to include(message)
           end
         end
+
+        def build_object(options = {}, &block)
+          super(options.merge(attribute_options: { null: true }))
+        end
+      end
+
+      context 'which is non-nullable' do
+        include_context 'against a boolean attribute for true and false'
 
         context 'when ensuring inclusion of nil' do
           it 'raises a specific error' do
@@ -165,10 +140,25 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
             }.to raise_error(error_class)
           end
         end
+
+        def build_object(options = {}, &block)
+          super(options.merge(attribute_options: { null: false }))
+        end
+      end
+
+      def build_object(options = {}, &block)
+        build_object_with_generic_attribute(
+          options.merge(attribute_type: :boolean),
+          &block
+        )
       end
     end
 
-    context "against a string attribute" do
+    context 'against a string attribute' do
+      it_behaves_like 'it supports in_array',
+        possible_values: %w(foo bar baz),
+        outside_value: described_class::ARBITRARY_OUTSIDE_STRING
+
       def build_object(options = {}, &block)
         build_object_with_generic_attribute(
           options.merge(attribute_type: :string),
@@ -179,10 +169,6 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
       def add_outside_value_to(values)
         values + %w(qux)
       end
-
-      it_behaves_like 'using an array of valid values',
-        possible_values: %w(foo bar baz),
-        outside_value: described_class::ARBITRARY_OUTSIDE_STRING
     end
   end
 
@@ -304,18 +290,10 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     end
   end
 
-  shared_examples_for 'using an array of valid values' do |args|
+  shared_examples_for 'it supports in_array' do |args|
     possible_values = args.fetch(:possible_values)
     zero = args[:zero]
     outside_value = args.fetch(:outside_value)
-
-    def expect_to_match_on_values(builder, values, &block)
-      expect_to_match_in_array(builder, values, &block)
-    end
-
-    def expect_not_to_match_on_values(builder, values, &block)
-      expect_not_to_match_in_array(builder, values, &block)
-    end
 
     it 'does not match a record with no validations' do
       builder = build_object
@@ -389,18 +367,18 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
         end
       end
     end
+
+    def expect_to_match_on_values(builder, values, &block)
+      expect_to_match_in_array(builder, values, &block)
+    end
+
+    def expect_not_to_match_on_values(builder, values, &block)
+      expect_not_to_match_in_array(builder, values, &block)
+    end
   end
 
-  shared_examples_for 'using a range of valid values' do |args|
+  shared_examples_for 'it supports in_range' do |args|
     possible_values = args[:possible_values]
-
-    def expect_to_match_on_values(builder, range, &block)
-      expect_to_match_in_range(builder, range, &block)
-    end
-
-    def expect_not_to_match_on_values(builder, range, &block)
-      expect_not_to_match_in_range(builder, range, &block)
-    end
 
     it 'does not match a record with no validations' do
       builder = build_object
@@ -476,9 +454,17 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
         end
       end
     end
+
+    def expect_to_match_on_values(builder, range, &block)
+      expect_to_match_in_range(builder, range, &block)
+    end
+
+    def expect_not_to_match_on_values(builder, range, &block)
+      expect_not_to_match_in_range(builder, range, &block)
+    end
   end
 
-  shared_examples_for 'against a boolean attribute (generically)' do
+  shared_context 'against a boolean attribute for true and false' do
     context 'when ensuring inclusion of true' do
       it "doesn't raise an error" do
         valid_values = [true]
@@ -517,27 +503,6 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
       end
     end
 
-    context 'when ensuring inclusion of nil' do
-      it "doesn't raise an error" do
-        valid_values = [nil]
-        builder = build_object_allowing(valid_values)
-        capture(:stderr) do
-          expect_to_match_in_array(builder, valid_values)
-        end
-      end
-
-      it 'prints a warning' do
-        valid_values = [nil]
-        builder = build_object_allowing(valid_values)
-        message = 'You are using `ensure_inclusion_of` to assert that a boolean column allows nil'
-
-        stderr = capture(:stderr) do
-          expect_to_match_in_array(builder, valid_values)
-        end
-
-        expect(stderr.gsub(/\n+/, ' ')).to include(message)
-      end
-    end
   end
 
   context 'for a database column' do
@@ -568,12 +533,16 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
 
       object = model.new
 
-      builder_class.new(attribute_name, object, validation_options)
+      object_builder_class.new(attribute_name, object, validation_options)
     end
   end
 
-  def builder_class
-    @_builder_class ||= Struct.new(:attribute, :object, :validation_options)
+  def object_builder_class
+    @_object_builder_class ||= Struct.new(:attribute, :object, :validation_options)
+  end
+
+  def build_object_allowing(values, options = {})
+    build_object(validation_options: options.merge(in: values))
   end
 
   def expect_to_match(builder)
@@ -586,32 +555,6 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     matcher = ensure_inclusion_of(builder.attribute)
     yield matcher if block_given?
     expect(builder.object).not_to(matcher)
-  end
-
-  def expect_to_match_ensuring_range_and_messages(range, low_value, high_value)
-    low_message = 'too low'
-    high_message = 'too high'
-
-    builder = build_object do |attribute|
-      value = __send__(attribute)
-
-      if value < low_value
-        errors.add(attribute, low_message)
-      elsif value > high_value
-        errors.add(attribute, high_message)
-      end
-    end
-
-    expect_to_match(builder) do |matcher|
-      matcher.
-        in_range(range).
-        with_low_message(low_message).
-        with_high_message(high_message)
-    end
-  end
-
-  def build_object_allowing(values, options = {})
-    build_object(validation_options: options.merge(in: values))
   end
 
   def expect_to_match_in_array(builder, array)
@@ -639,6 +582,28 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     expect_not_to_match(builder) do |matcher|
       matcher.in_range(range)
       yield matcher if block_given?
+    end
+  end
+
+  def expect_to_match_ensuring_range_and_messages(range, low_value, high_value)
+    low_message = 'too low'
+    high_message = 'too high'
+
+    builder = build_object do |attribute|
+      value = __send__(attribute)
+
+      if value < low_value
+        errors.add(attribute, low_message)
+      elsif value > high_value
+        errors.add(attribute, high_message)
+      end
+    end
+
+    expect_to_match(builder) do |matcher|
+      matcher.
+        in_range(range).
+        with_low_message(low_message).
+        with_high_message(high_message)
     end
   end
 end
