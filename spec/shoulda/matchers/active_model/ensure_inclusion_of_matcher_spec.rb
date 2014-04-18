@@ -26,7 +26,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
       it_behaves_like 'it supports in_array',
         possible_values: (1..5).to_a,
         zero: 0,
-        outside_value: described_class::ARBITRARY_OUTSIDE_FIXNUM
+        reserved_outside_value: described_class::ARBITRARY_OUTSIDE_FIXNUM
 
       it_behaves_like 'it supports in_range',
         possible_values: 1..5,
@@ -55,7 +55,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
       it_behaves_like 'it supports in_array',
         possible_values: [1.0, 2.0, 3.0, 4.0, 5.0],
         zero: 0.0,
-        outside_value: described_class::ARBITRARY_OUTSIDE_FIXNUM
+        reserved_outside_value: described_class::ARBITRARY_OUTSIDE_FIXNUM
 
       it_behaves_like 'it supports in_range',
         possible_values: 1.0..5.0,
@@ -77,7 +77,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
       it_behaves_like 'it supports in_array',
         possible_values: [1.0, 2.0, 3.0, 4.0, 5.0],
         zero: 0.0,
-        outside_value: described_class::ARBITRARY_OUTSIDE_DECIMAL
+        reserved_outside_value: described_class::ARBITRARY_OUTSIDE_DECIMAL
 
       it_behaves_like 'it supports in_range',
         possible_values: 1.0..5.0,
@@ -157,7 +157,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     context 'against a string attribute' do
       it_behaves_like 'it supports in_array',
         possible_values: %w(foo bar baz),
-        outside_value: described_class::ARBITRARY_OUTSIDE_STRING
+        reserved_outside_value: described_class::ARBITRARY_OUTSIDE_STRING
 
       def build_object(options = {}, &block)
         build_object_with_generic_attribute(
@@ -293,7 +293,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
   shared_examples_for 'it supports in_array' do |args|
     possible_values = args.fetch(:possible_values)
     zero = args[:zero]
-    outside_value = args.fetch(:outside_value)
+    reserved_outside_value = args.fetch(:reserved_outside_value)
 
     it 'does not match a record with no validations' do
       builder = build_object
@@ -325,9 +325,9 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
 
     it 'raises an error when valid and given value is our test outside value' do
       error_class = Shoulda::Matchers::ActiveModel::CouldNotDetermineValueOutsideOfArray
-      builder = build_object_allowing([outside_value])
+      builder = build_object_allowing([reserved_outside_value])
 
-      expect { expect_to_match_on_values(builder, [outside_value]) }.
+      expect { expect_to_match_on_values(builder, [reserved_outside_value]) }.
         to raise_error(error_class)
     end
 
