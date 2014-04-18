@@ -390,28 +390,28 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
       expect_to_match_on_values(builder, possible_values)
     end
 
-    it 'does not match given a range whose first value falls outside valid range' do
+    it 'does not match given a range whose start value falls outside valid range' do
       builder = build_object_allowing(possible_values)
       expect_not_to_match_on_values(builder,
         Range.new(possible_values.first - 1, possible_values.last)
       )
     end
 
-    it 'does not match given a range whose first value falls inside valid range' do
+    it 'does not match given a range whose start value falls inside valid range' do
       builder = build_object_allowing(possible_values)
       expect_not_to_match_on_values(builder,
         Range.new(possible_values.first + 1, possible_values.last)
       )
     end
 
-    it 'does not match given a range whose second value falls inside valid range' do
+    it 'does not match given a range whose end value falls inside valid range' do
       builder = build_object_allowing(possible_values)
       expect_not_to_match_on_values(builder,
         Range.new(possible_values.first, possible_values.last - 1)
       )
     end
 
-    it 'does not match given a range whose second value falls outside valid range' do
+    it 'does not match given a range whose end value falls outside valid range' do
       builder = build_object_allowing(possible_values)
       expect_not_to_match_on_values(builder,
         Range.new(possible_values.first, possible_values.last + 1)
