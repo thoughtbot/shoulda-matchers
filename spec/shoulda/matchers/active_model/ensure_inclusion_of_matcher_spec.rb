@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
   shared_context 'for a generic attribute' do
-    def self.contexts_for_option(option_name, &block)
+    def self.testing_values_of_option(option_name, &block)
       [nil, true, false].each do |option_value|
         context_name = "+ #{option_name}"
         option_args = []
@@ -175,7 +175,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
   shared_examples_for 'it supports allow_nil' do |args|
     valid_values = args.fetch(:valid_values)
 
-    contexts_for_option 'allow_nil' do |option_args, matches_or_not, to_or_not_to|
+    testing_values_of_option 'allow_nil' do |option_args, matches_or_not, to_or_not_to|
       it "#{matches_or_not[0]} when the validation specifies allow_nil" do
         builder = build_object_allowing(valid_values, allow_nil: true)
 
@@ -197,7 +197,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
   shared_examples_for 'it supports allow_blank' do |args|
     valid_values = args.fetch(:valid_values)
 
-    contexts_for_option 'allow_blank' do |option_args, matches_or_not, to_or_not_to|
+    testing_values_of_option 'allow_blank' do |option_args, matches_or_not, to_or_not_to|
       it "#{matches_or_not[0]} when the validation specifies allow_blank" do
         builder = build_object_allowing(valid_values, allow_blank: true)
 
