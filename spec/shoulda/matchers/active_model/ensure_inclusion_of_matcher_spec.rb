@@ -3,13 +3,23 @@ require 'spec_helper'
 describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
   shared_context 'for a generic attribute' do
     def self.contexts_for_option(option_name, &block)
+      # when allow_blank
+      # - matches when specifies allow_blank: true
+      # - doesn't match when allow_blank not specified
+      # when allow_blank(true)
+      # - matches when specifies allow_blank: true
+      # - doesn't match when allow_blank not specified
+      # when allow_blank(false)
+      # - doesn't match when specifies allow_blank: true
+      # - matches when allow_blank not specified
+
       [nil, true, false].each do |option_value|
         context_name = "+ #{option_name}"
         option_args = []
         matches_or_not = ['matches', 'does not match']
         to_or_not_to = [:to, :not_to]
 
-        unless option_value.nil?
+        unless option_value == nil
           context_name << "(#{option_value})"
           option_args = [option_value]
         end
@@ -19,9 +29,6 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
           to_or_not_to.reverse!
         end
 
-        context context_name do
-          instance_exec option_args, matches_or_not, to_or_not_to, &block
-        end
       end
     end
 
@@ -37,14 +44,14 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
       end
 
       context 'using an array of valid values' do
-        def expect_to_allow_values(builder, values)
+        def expect_to_match_on_values(builder, values)
           expect_to_match(builder) do |matcher|
             matcher.in_array(values)
             yield matcher if block_given?
           end
         end
 
-        def expect_not_to_allow_values(builder, values)
+        def expect_not_to_match_on_values(builder, values)
           expect_not_to_match(builder) do |matcher|
             matcher.in_array(values)
             yield matcher if block_given?
@@ -53,29 +60,29 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
 
         it 'does not match a record with no validations' do
           builder = build_object
-          expect_not_to_allow_values(builder, [1, 2])
+          expect_not_to_match_on_values(builder, [1, 2])
         end
 
         it 'matches given the same array of valid values' do
           valid_values = [1, 2]
           builder = build_object_allowing(valid_values)
-          expect_to_allow_values(builder, valid_values)
+          expect_to_match_on_values(builder, valid_values)
         end
 
         it 'matches given a subset of the valid values' do
           builder = build_object_allowing([1, 2, 3])
-          expect_to_allow_values(builder, [2, 3])
+          expect_to_match_on_values(builder, [2, 3])
         end
 
         it 'matches when one of the given values is a 0' do
           valid_values = [0, 1, 2]
           builder = build_object_allowing(valid_values)
-          expect_to_allow_values(builder, valid_values)
+          expect_to_match_on_values(builder, valid_values)
         end
 
         it 'does not match when one of the given values is invalid' do
           builder = build_object_allowing([0, 1, 2])
-          expect_not_to_allow_values(builder, [1, 2, 3])
+          expect_not_to_match_on_values(builder, [1, 2, 3])
         end
 
         it 'raises an error when valid and given value is our test outside value' do
@@ -83,124 +90,13 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
           error_class = Shoulda::Matchers::ActiveModel::CouldNotDetermineValueOutsideOfArray
           builder = build_object_allowing([value])
 
-          expect { expect_to_allow_values(builder, [value]) }.
+          expect { expect_to_match_on_values(builder, [value]) }.
             to raise_error(error_class)
         end
 
-        contexts_for_option 'allow_nil' do |option_args, matches_or_not, to_or_not_to|
-          it "#{matches_or_not[0]} when the validation specifies allow_nil" do
-            valid_values = [1, 2, 3]
-            builder = build_object_allowing(valid_values, allow_nil: true)
-
-            __send__("expect_#{to_or_not_to[0]}_allow_values", builder, valid_values) do |matcher|
-              matcher.allow_nil(*option_args)
-            end
-          end
-
-          it "#{matches_or_not[0]} when nil is specified as a valid value manually" do
-            builder = build_object_allowing([0, 1, 2, nil])
-
-            __send__("expect_#{to_or_not_to[0]}_allow_values", builder, [0, 1, 2]) do |matcher|
-              matcher.allow_nil(*option_args)
-            end
-          end
-
-          it "#{matches_or_not[1]} when the validation does not specify allow_nil" do
-            valid_values = [1, 2, 3]
-            builder = build_object_allowing(valid_values)
-
-            __send__("expect_#{to_or_not_to[1]}_allow_values", builder, valid_values) do |matcher|
-              matcher.allow_nil(*option_args)
-            end
-          end
-        end
-
-        contexts_for_option 'allow_blank' do |option_args, matches_or_not, to_or_not_to|
-          it "#{matches_or_not[0]} when the validation specifies allow_blank" do
-            valid_values = [1, 2, 3]
-            builder = build_object_allowing(valid_values, allow_blank: true)
-
-            __send__("expect_#{to_or_not_to[0]}_allow_values", builder, valid_values) do |matcher|
-              matcher.allow_blank(*option_args)
-            end
-          end
-
-          it "#{matches_or_not[0]} when nil is specified as a valid value manually" do
-            builder = build_object_allowing([0, 1, 2, nil])
-
-            __send__("expect_#{to_or_not_to[0]}_allow_values", builder, [0, 1, 2]) do |matcher|
-              matcher.allow_blank(*option_args)
-            end
-          end
-        end
-
-        context '+ with_message' do
-          context 'given a string' do
-            it 'matches when validation uses given message' do
-              builder = build_object_allowing([1, 2, 3], message: 'a message')
-
-              expect_to_allow_values(builder, [1, 2, 3]) do |matcher|
-                matcher.with_message('a message')
-              end
-            end
-
-            it 'does not match when validation uses the default message instead of given message' do
-              pending 'does not work'
-
-              builder = build_object_allowing([1, 2, 3])
-
-              expect_not_to_allow_values(builder, [1, 2, 3]) do |matcher|
-                matcher.with_message('a message')
-              end
-            end
-
-            it 'does not match when validation uses a message but it is not same as given' do
-              builder = build_object_allowing([1, 2, 3], message: 'a different message')
-
-              expect_to_allow_values(builder, [1, 2, 3]) do |matcher|
-                matcher.with_message('a message')
-              end
-            end
-          end
-
-          context 'given a regex' do
-            it 'matches when validation uses a message that matches the regex' do
-              builder = build_object_allowing([1, 2, 3], message: 'this is a message')
-
-              expect_to_allow_values(builder, [1, 2, 3]) do |matcher|
-                matcher.with_message(/a message/)
-              end
-            end
-
-            it 'does not match when validation uses the default message instead of given message' do
-              pending 'does not work'
-
-              builder = build_object_allowing([1, 2, 3])
-
-              expect_not_to_allow_values(builder, [1, 2, 3]) do |matcher|
-                matcher.with_message(/a message/)
-              end
-            end
-
-            it 'does not match when validation uses a message but it does not match regex' do
-              builder = build_object_allowing([1, 2, 3], message: 'a different message')
-
-              expect_to_allow_values(builder, [1, 2, 3]) do |matcher|
-                matcher.with_message(/a message/)
-              end
-            end
-          end
-
-          context 'given nil' do
-            it 'is as if with_message had never been called' do
-              builder = build_object_allowing([1, 2, 3])
-
-              expect_to_allow_values(builder, [1, 2, 3]) do |matcher|
-                matcher.with_message(nil)
-              end
-            end
-          end
-        end
+        it_behaves_like 'it supports allow_nil', valid_values: [1, 2, 3]
+        it_behaves_like 'it supports allow_blank', valid_values: [1, 2, 3]
+        it_behaves_like 'it supports with_message', valid_values: [1, 2, 3]
 
         if active_model_3_2?
           context '+ strict' do
@@ -209,7 +105,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
                 valid_values = [1, 2, 3]
                 builder = build_object_allowing(valid_values, strict: true)
 
-                expect_to_allow_values(builder, valid_values) do |matcher|
+                expect_to_match_on_values(builder, valid_values) do |matcher|
                   matcher.strict
                 end
               end
@@ -217,7 +113,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
               it 'does not match when some of the given are not valid' do
                 builder = build_object_allowing([1, 2, 3], strict: true)
 
-                expect_not_to_allow_values(builder, [2, 3, 4]) do |matcher|
+                expect_not_to_match_on_values(builder, [2, 3, 4]) do |matcher|
                   matcher.strict
                 end
               end
@@ -228,7 +124,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
                 valid_values = [1, 2, 3]
                 builder = build_object_allowing(valid_values)
 
-                expect_not_to_allow_values(builder, valid_values) do |matcher|
+                expect_not_to_match_on_values(builder, valid_values) do |matcher|
                   matcher.strict
                 end
               end
@@ -238,7 +134,88 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
       end
 
       context 'using a range of valid values' do
-        # same thing as above
+        def expect_to_match_on_values(builder, range)
+          expect_to_match(builder) do |matcher|
+            matcher.in_range(range)
+            yield matcher if block_given?
+          end
+        end
+
+        def expect_not_to_match_on_values(builder, range)
+          expect_not_to_match(builder) do |matcher|
+            matcher.in_range(range)
+            yield matcher if block_given?
+          end
+        end
+
+        it 'does not match a record with no validations' do
+          builder = build_object
+          expect_not_to_match_on_values(builder, 1..3)
+        end
+
+        it 'matches given a range that exactly matches the valid range' do
+          valid_values = 1..3
+          builder = build_object_allowing(valid_values)
+          expect_to_match_on_values(builder, valid_values)
+        end
+
+        it 'does not match given a range whose first value falls outside valid range' do
+          builder = build_object_allowing(2..3)
+          expect_not_to_match_on_values(builder, 1..3)
+        end
+
+        it 'does not match given a range whose first value falls inside valid range' do
+          builder = build_object_allowing(1..3)
+          expect_not_to_match_on_values(builder, 2..3)
+        end
+
+        it 'does not match given a range whose second value falls inside valid range' do
+          builder = build_object_allowing(1..3)
+          expect_not_to_match_on_values(builder, 1..2)
+        end
+
+        it 'does not match given a range whose second value falls outside valid range' do
+          builder = build_object_allowing(1..3)
+          expect_not_to_match_on_values(builder, 1..4)
+        end
+
+        it_behaves_like 'it supports allow_nil', valid_values: 1..3
+        it_behaves_like 'it supports allow_blank', valid_values: 1..3
+        it_behaves_like 'it supports with_message', valid_values: 1..3
+
+        if active_model_3_2?
+          context '+ strict' do
+            context 'when the validation specifies strict' do
+              it 'matches when all of the given values are valid' do
+                valid_values = [1, 2, 3]
+                builder = build_object_allowing(valid_values, strict: true)
+
+                expect_to_match_on_values(builder, valid_values) do |matcher|
+                  matcher.strict
+                end
+              end
+
+              it 'does not match when some of the given are not valid' do
+                builder = build_object_allowing([1, 2, 3], strict: true)
+
+                expect_not_to_match_on_values(builder, [2, 3, 4]) do |matcher|
+                  matcher.strict
+                end
+              end
+            end
+
+            context 'when the validation does not specify strict' do
+              it 'does not match' do
+                valid_values = [1, 2, 3]
+                builder = build_object_allowing(valid_values)
+
+                expect_not_to_match_on_values(builder, valid_values) do |matcher|
+                  matcher.strict
+                end
+              end
+            end
+          end
+        end
       end
 
       context 'when attribute has a custom validation' do
@@ -267,6 +244,124 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
       end
 
       # copy from above
+    end
+  end
+
+  shared_examples_for 'it supports allow_nil' do |args|
+    valid_values = args.fetch(:valid_values)
+
+    contexts_for_option 'allow_nil' do |option_args, matches_or_not, to_or_not_to|
+      it "#{matches_or_not[0]} when the validation specifies allow_nil" do
+        builder = build_object_allowing(valid_values, allow_nil: true)
+
+        __send__("expect_#{to_or_not_to[0]}_match_on_values", builder, valid_values) do |matcher|
+          matcher.allow_nil(*option_args)
+        end
+      end
+
+      it "#{matches_or_not[1]} when the validation does not specify allow_nil" do
+        builder = build_object_allowing(valid_values)
+
+        __send__("expect_#{to_or_not_to[1]}_match_on_values", builder, valid_values) do |matcher|
+          matcher.allow_nil(*option_args)
+        end
+      end
+    end
+  end
+
+  shared_examples_for 'it supports allow_blank' do |args|
+    valid_values = args.fetch(:valid_values)
+
+    contexts_for_option 'allow_blank' do |option_args, matches_or_not, to_or_not_to|
+      it "#{matches_or_not[0]} when the validation specifies allow_blank" do
+        builder = build_object_allowing(valid_values, allow_blank: true)
+
+        __send__("expect_#{to_or_not_to[0]}_match_on_values", builder, valid_values) do |matcher|
+          matcher.allow_blank(*option_args)
+        end
+      end
+
+      it "#{matches_or_not[1]} when the validation does not specify allow_blank" do
+        builder = build_object_allowing(valid_values)
+
+        __send__("expect_#{to_or_not_to[1]}_match_on_values", builder, valid_values) do |matcher|
+          matcher.allow_blank(*option_args)
+        end
+      end
+    end
+  end
+
+  shared_examples_for 'it supports with_message' do |args|
+    valid_values = args.fetch(:valid_values)
+
+    context 'given a string' do
+      it 'matches when validation uses given message' do
+        builder = build_object_allowing(valid_values, message: 'a message')
+
+        expect_to_match_on_values(builder, valid_values) do |matcher|
+          matcher.with_message('a message')
+        end
+      end
+
+      it 'does not match when validation uses the default message instead of given message' do
+        pending 'does not work'
+
+        builder = build_object_allowing(valid_values)
+
+        expect_not_to_match_on_values(builder, valid_values) do |matcher|
+          matcher.with_message('a message')
+        end
+      end
+
+      it 'does not match when validation uses a message but it is not same as given' do
+        pending 'does not work'
+
+        builder = build_object_allowing(valid_values, message: 'a different message')
+
+        expect_not_to_match_on_values(builder, valid_values) do |matcher|
+          matcher.with_message('a message')
+        end
+      end
+    end
+
+    context 'given a regex' do
+      it 'matches when validation uses a message that matches the regex' do
+        builder = build_object_allowing(valid_values, message: 'this is a message')
+
+        expect_to_match_on_values(builder, valid_values) do |matcher|
+          matcher.with_message(/a message/)
+        end
+      end
+
+      it 'does not match when validation uses the default message instead of given message' do
+        pending 'does not work'
+
+        builder = build_object_allowing(valid_values)
+
+        expect_not_to_match_on_values(builder, valid_values) do |matcher|
+          matcher.with_message(/a message/)
+        end
+      end
+
+      it 'does not match when validation uses a message but it does not match regex' do
+        pending 'does not work'
+
+        builder = build_object_allowing(valid_values, message: 'a different message')
+
+        expect_not_to_match_on_values(builder, valid_values) do |matcher|
+          matcher.with_message(/a message/)
+        end
+      end
+    end
+
+    context 'given nil' do
+      it 'is as if with_message had never been called' do
+        builder = build_object_allowing(valid_values)
+
+        expect_to_match_on_values(builder, valid_values) do |matcher|
+          matcher.with_message(nil)
+        end
+      end
     end
   end
 
