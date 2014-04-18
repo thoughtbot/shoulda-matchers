@@ -338,7 +338,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     if active_model_3_2?
       context '+ strict' do
         context 'when the validation specifies strict' do
-          it 'does not match when the given values match the valid values' do
+          it 'matches when the given values match the valid values' do
             builder = build_object_allowing(possible_values, strict: true)
 
             expect_to_match_on_values(builder, possible_values) do |matcher|
