@@ -122,6 +122,40 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
         not_to matcher.scoped_to(:fake)
     end
 
+    if rails_gte_4_1?
+      context 'when the scoped attribute is an enum' do
+        it 'accepts' do
+          expect(validating_scoped_uniqueness_with_enum([:scope1], scope1: 0)).
+            to matcher.scoped_to(:scope1)
+        end
+
+        context 'with a nil value' do
+          it 'accepts' do
+            expect(validating_scoped_uniqueness_with_enum([:scope1], scope1: nil)).
+              to matcher.scoped_to(:scope1)
+          end
+        end
+
+        context 'when too narrow of a scope is specified' do
+          it 'rejects' do
+            expect(validating_scoped_uniqueness_with_enum_with_two_scopes).
+              not_to matcher.scoped_to(:scope1, :scope2, :other)
+          end
+        end
+
+        context 'when too broad of a scope is specified' do
+          it 'rejects' do
+            expect(validating_scoped_uniqueness_with_enum_with_two_scopes).
+              not_to matcher.scoped_to(:scope1)
+          end
+        end
+
+        def validating_scoped_uniqueness_with_enum_with_two_scopes
+          validating_scoped_uniqueness_with_enum([:scope1, :scope2], scope1: 0, scope2: 0)
+        end
+      end
+    end
+
     context 'when the scoped attribute is a date' do
       it "accepts" do
         expect(validating_scoped_uniqueness([:scope1], :date, scope1: Date.today)).
@@ -248,6 +282,14 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
       model = define_scoped_model(*args).new
       create_existing_record(attributes)
       model
+    end
+
+    def validating_scoped_uniqueness_with_enum(*args)
+      attributes = args.extract_options!
+      model = define_scoped_model(*args)
+      model.enum scope1: [:foo, :bar]
+      create_existing_record(attributes)
+      model.new
     end
 
     def validating_scoped_uniqueness_with_conflicting_next(*args)

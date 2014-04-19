@@ -32,6 +32,8 @@
 * Fix `delegate_method` so that it does not stub the target method forever,
   returning it to its original implementation after the match ends.
 
+* Fix `validate_uniqueness_of` to work with Rails 4.1 enum columns.
+
 # 2.6.0
 
 * The boolean argument to `have_db_index`'s `unique` option is now optional, for

@@ -173,7 +173,12 @@ module Shoulda # :nodoc:
               previous_value ||= correct_type_for_column(@subject.class.columns_hash[scope.to_s])
 
               next_value =
-                if previous_value.respond_to?(:next)
+                if @subject.class.respond_to?(:defined_enums) && @subject.defined_enums[scope.to_s]
+                  available_values = @subject.defined_enums[scope.to_s].reject do |key, _|
+                    key == previous_value
+                  end
+                  available_values.keys.last
+                elsif previous_value.respond_to?(:next)
                   previous_value.next
                 elsif previous_value.respond_to?(:to_datetime)
                   previous_value.to_datetime.next
