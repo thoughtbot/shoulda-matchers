@@ -29,6 +29,9 @@
   then you can now specify those params:
   `permit(:first_name, :last_name).for(:update, params: { id: 42 })`.
 
+* Fix `delegate_method` so that it does not stub the target method forever,
+  returning it to its original implementation after the match ends.
+
 # 2.6.0
 
 * The boolean argument to `have_db_index`'s `unique` option is now optional, for
