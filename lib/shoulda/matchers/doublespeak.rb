@@ -1,0 +1,5 @@
+require 'shoulda/matchers/doublespeak/double'
+require 'shoulda/matchers/doublespeak/double_collection'
+require 'shoulda/matchers/doublespeak/double_implementation_registry'
+require 'shoulda/matchers/doublespeak/proxy_implementation'
+require 'shoulda/matchers/doublespeak/stub_implementation'
