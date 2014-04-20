@@ -10,6 +10,14 @@ use validate_inclusion_of instead, ensure_inclusion_of will be removed.
 EOT
     expect(stderr).to eql(warning)
   end
+
+  it '#validate_inclusion_of' do
+    Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher.stubs(:new)
+
+    validate_inclusion_of(:attr)
+    expect(Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher)
+      .to have_received(:new).with(:attr).once
+  end
 end
 
 describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
