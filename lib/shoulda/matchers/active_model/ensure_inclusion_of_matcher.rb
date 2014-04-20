@@ -18,6 +18,7 @@ module Shoulda # :nodoc:
       #   it { should ensure_inclusion_of(:age).in_range(0..100) }
       #
       def ensure_inclusion_of(attr)
+        Shoulda::Matchers.warn('use validate_inclusion_of instead, ensure_inclusion_of will be removed.')
         EnsureInclusionOfMatcher.new(attr)
       end
 
