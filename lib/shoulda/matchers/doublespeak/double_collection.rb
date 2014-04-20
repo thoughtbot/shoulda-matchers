@@ -7,34 +7,27 @@ module Shoulda
           @doubles_by_method_name = {}
         end
 
-        def stub(method_name)
-          add(method_name, :stub)
+        def register_stub(method_name)
+          register_double(method_name, :stub)
         end
 
-        def proxy(method_name)
-          add(method_name, :proxy)
+        def register_proxy(method_name)
+          register_double(method_name, :proxy)
         end
 
-        def install_all
+        def activate
           doubles_by_method_name.each do |method_name, double|
-            double.install
+            double.activate
           end
         end
 
-        def uninstall_all
+        def deactivate
           doubles_by_method_name.each do |method_name, double|
-            double.uninstall
+            double.deactivate
           end
         end
 
-        def installing_all
-          install_all
-          yield
-        ensure
-          uninstall_all
-        end
-
-        def calls_on(method_name)
+        def calls_to(method_name)
           double = doubles_by_method_name[method_name]
 
           if double
@@ -48,7 +41,7 @@ module Shoulda
 
         attr_reader :klass, :doubles_by_method_name
 
-        def add(method_name, implementation_type)
+        def register_double(method_name, implementation_type)
           implementation =
             DoubleImplementationRegistry.find(implementation_type)
           double = Double.new(klass, method_name, implementation)

@@ -35,7 +35,7 @@ module Shoulda::Matchers::Doublespeak
       end
     end
 
-    describe '#install' do
+    describe '#activate' do
       it 'replaces the method with an implementation' do
         implementation = stub
         klass = create_class(a_method: 42)
@@ -45,32 +45,32 @@ module Shoulda::Matchers::Doublespeak
         block = -> {}
         implementation.expects(:call).with(double, instance, args, block)
 
-        double.install
+        double.activate
         instance.a_method(*args, &block)
       end
     end
 
-    describe '#uninstall' do
+    describe '#deactivate' do
       it 'restores the original method after being doubled' do
         implementation = stub(call: nil)
         klass = create_class(a_method: 42)
         instance = klass.new
         double = described_class.new(klass, :a_method, implementation)
 
-        double.install
-        double.uninstall
+        double.activate
+        double.deactivate
         expect(instance.a_method).to eq 42
       end
 
-      it 'still restores the original method if #install was called twice' do
+      it 'still restores the original method if #activate was called twice' do
         implementation = stub(call: nil)
         klass = create_class(a_method: 42)
         instance = klass.new
         double = described_class.new(klass, :a_method, implementation)
 
-        double.install
-        double.install
-        double.uninstall
+        double.activate
+        double.activate
+        double.deactivate
         expect(instance.a_method).to eq 42
       end
 
@@ -80,7 +80,7 @@ module Shoulda::Matchers::Doublespeak
         instance = klass.new
         double = described_class.new(klass, :a_method, implementation)
 
-        double.uninstall
+        double.deactivate
         expect(instance.a_method).to eq 42
       end
     end
@@ -116,7 +116,7 @@ module Shoulda::Matchers::Doublespeak
           method_called = true
         end
 
-        double.install
+        double.activate
         double.call_original_method(instance, expected_args, expected_block)
 
         expect(expected_args).to eq actual_args
