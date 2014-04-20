@@ -10,6 +10,10 @@ module RailsVersions
   def rails_4_x?
     Gem::Requirement.new('~> 4.0').satisfied_by?(rails_version)
   end
+
+  def rails_gte_41?
+    Gem::Requirement.new('>= 4.1').satisfied_by?(rails_version)
+  end
 end
 
 RSpec.configure do |config|

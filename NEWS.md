@@ -1,4 +1,4 @@
-# 2.6.1
+# HEAD
 
 * Fix `ComparisonMatcher` so that `validate_numericality_of` comparison matchers
   work with large numbers.
@@ -13,8 +13,21 @@
 
 * Fix callback matchers and correct test coverage.
 
-* Fix `permit` so that it does not interfere with the existing `params` hash of
-  the controller you're testing.
+* Fix `permit` so that it does not interfere with different usages of `params`
+  in your controller action. Specifically, this will not raise an error:
+  `params.fetch(:foo, {}).permit(:bar, :baz)` (the `permit` will have no
+  problems recognizing that :bar and :baz are permitted params).
+
+* Fix `permit` on Rails 4.1 to use PATCH by default for #update instead of PUT.
+  Previously you had to specify this manually.
+
+* Fix `permit` so that it track multiple calls to #permit in your controller
+  action. Previously only the last usage of #permit would be considered in
+  determining whether the matcher matched.
+
+* Fix `permit` so that if the route for your action requires params (such as id)
+  then you can now specify those params:
+  `permit(:first_name, :last_name).for(:update, params: { id: 42 })`.
 
 # 2.6.0
 
