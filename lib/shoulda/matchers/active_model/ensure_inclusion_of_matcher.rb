@@ -39,11 +39,6 @@ Be aware that it is not possible to fully test this, as anything other than
 true, false or nil will be converted to false. Hence, you should consider
 removing this test and the corresponding validation.
 EOT
-        BOOLEAN_ALLOWS_NIL_WITH_NOT_NULL_MESSAGE = <<EOT
-You have specified that your model's #{@attribute} should ensure inclusion of nil.
-However, #{@attribute} is a boolean column which does not allow null values.
-Hence, this test will fail and there is no way to make it pass.
-EOT
 
         def initialize(attribute)
           super(attribute)
@@ -181,7 +176,7 @@ EOT
                 Shoulda::Matchers.warn BOOLEAN_ALLOWS_NIL_MESSAGE
                 return true
               else
-                raise NonNullableBooleanError, BOOLEAN_ALLOWS_NIL_WITH_NOT_NULL_MESSAGE
+                raise NonNullableBooleanError.create(@attribute)
               end
             end
           end
