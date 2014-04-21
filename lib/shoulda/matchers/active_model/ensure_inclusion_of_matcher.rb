@@ -1,3 +1,5 @@
+require 'bigdecimal'
+
 module Shoulda # :nodoc:
   module Matchers
     module ActiveModel # :nodoc:
@@ -24,7 +26,7 @@ module Shoulda # :nodoc:
       class EnsureInclusionOfMatcher < ValidationMatcher # :nodoc:
         ARBITRARY_OUTSIDE_STRING = 'shouldamatchersteststring'
         ARBITRARY_OUTSIDE_FIXNUM = 123456789
-        ARBITRARY_OUTSIDE_DECIMAL = 0.123456789
+        ARBITRARY_OUTSIDE_DECIMAL = BigDecimal.new('0.123456789')
         BOOLEAN_ALLOWS_BOOLEAN_MESSAGE = <<EOT
 You are using `ensure_inclusion_of` to assert that a boolean column allows
 boolean values and disallows non-boolean ones. Assuming you are using
@@ -100,13 +102,9 @@ EOT
           if @range
             @low_message  ||= :inclusion
             @high_message ||= :inclusion
-
-            disallows_lower_value &&
-              allows_minimum_value &&
-              disallows_higher_value &&
-              allows_maximum_value
+            matches_for_range?
           elsif @array
-            if allows_all_values_in_array? && allows_blank_value? && allows_nil_value? && disallows_value_outside_of_array?
+            if matches_for_array?
               true
             else
               @failure_message = "#{@array} doesn't match array in validation"
@@ -116,6 +114,20 @@ EOT
         end
 
         private
+
+        def matches_for_range?
+          disallows_lower_value &&
+            allows_minimum_value &&
+            disallows_higher_value &&
+            allows_maximum_value
+        end
+
+        def matches_for_array?
+          allows_all_values_in_array? &&
+            allows_blank_value? &&
+            allows_nil_value? &&
+            disallows_value_outside_of_array?
+        end
 
         def allows_blank_value?
           if @options.key?(:allow_blank)
@@ -161,7 +173,7 @@ EOT
         end
 
         def disallows_value_outside_of_array?
-          if attribute_column.type == :boolean
+          if attribute_type == :boolean
             case @array
             when [true, false]
               Shoulda::Matchers.warn BOOLEAN_ALLOWS_BOOLEAN_MESSAGE
@@ -188,10 +200,10 @@ EOT
         end
 
         def outside_values
-          case attribute_column.type
+          case attribute_type
           when :boolean
             boolean_outside_values
-          when :integer, :float
+          when :fixnum
             [ARBITRARY_OUTSIDE_FIXNUM]
           when :decimal
             [ARBITRARY_OUTSIDE_DECIMAL]
@@ -209,15 +221,50 @@ EOT
             else              raise CouldNotDetermineValueOutsideOfArray
           end
 
-          if attribute_column.null
+          if attribute_allows_nil?
             values << nil
           end
 
           values
         end
 
+        def attribute_type
+          if attribute_column
+            column_type_to_attribute_type(attribute_column.type)
+          else
+            value_to_attribute_type(@subject.__send__(@attribute))
+          end
+        end
+
+        def attribute_allows_nil?
+          if attribute_column
+            attribute_column.null
+          else
+            true
+          end
+        end
+
         def attribute_column
-          @subject.class.columns_hash[@attribute.to_s]
+          if @subject.class.respond_to?(:columns_hash)
+            @subject.class.columns_hash[@attribute.to_s]
+          end
+        end
+
+        def column_type_to_attribute_type(type)
+          case type
+            when :boolean, :decimal then type
+            when :integer, :float then :fixnum
+            else :default
+          end
+        end
+
+        def value_to_attribute_type(value)
+          case value
+            when true, false then :boolean
+            when BigDecimal then :decimal
+            when Fixnum then :fixnum
+            else :default
+          end
         end
       end
     end
