@@ -41,7 +41,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
 
       def build_object(options = {}, &block)
         build_object_with_generic_attribute(
-          options.merge(column_type: :integer),
+          options.merge(column_type: :integer, value: 1),
           &block
         )
       end
@@ -63,7 +63,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
 
       def build_object(options = {}, &block)
         build_object_with_generic_attribute(
-          options.merge(column_type: :float),
+          options.merge(column_type: :float, value: 1.0),
           &block
         )
       end
@@ -75,82 +75,25 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
 
     context "against a decimal attribute" do
       it_behaves_like 'it supports in_array',
-        possible_values: [1.0, 2.0, 3.0, 4.0, 5.0],
-        zero: 0.0,
+        possible_values: [1.0, 2.0, 3.0, 4.0, 5.0].map { |number|
+          BigDecimal.new(number.to_s)
+        },
+        zero: BigDecimal.new('0.0'),
         reserved_outside_value: described_class::ARBITRARY_OUTSIDE_DECIMAL
 
       it_behaves_like 'it supports in_range',
-        possible_values: 1.0..5.0,
-        zero: 0.0
+        possible_values: BigDecimal.new('1.0') .. BigDecimal.new('5.0'),
+        zero: BigDecimal.new('0.0')
 
       def build_object(options = {}, &block)
         build_object_with_generic_attribute(
-          options.merge(column_type: :decimal),
+          options.merge(column_type: :decimal, value: BigDecimal.new('1.0')),
           &block
         )
       end
 
       def add_outside_value_to(values)
         values + [values.last + 1]
-      end
-    end
-
-    context 'against a boolean attribute' do
-      context 'which is nullable' do
-        include_context 'against a boolean attribute for true and false'
-
-        context 'when ensuring inclusion of nil' do
-          it 'matches' do
-            valid_values = [nil]
-            builder = build_object_allowing(valid_values)
-            capture(:stderr) do
-              expect_to_match_in_array(builder, valid_values)
-            end
-          end
-
-          it 'prints a warning' do
-            valid_values = [nil]
-            builder = build_object_allowing(valid_values)
-            message = 'You are using `ensure_inclusion_of` to assert that a boolean column allows nil'
-
-            stderr = capture(:stderr) do
-              expect_to_match_in_array(builder, valid_values)
-            end
-
-            expect(stderr.gsub(/\n+/, ' ')).to include(message)
-          end
-        end
-
-        def build_object(options = {}, &block)
-          super(options.merge(column_options: { null: true }))
-        end
-      end
-
-      context 'which is non-nullable' do
-        include_context 'against a boolean attribute for true and false'
-
-        context 'when ensuring inclusion of nil' do
-          it 'raises a specific error' do
-            valid_values = [nil]
-            builder = build_object_allowing(valid_values)
-            error_class = Shoulda::Matchers::ActiveModel::NonNullableBooleanError
-
-            expect {
-              expect_to_match_in_array(builder, valid_values)
-            }.to raise_error(error_class)
-          end
-        end
-
-        def build_object(options = {}, &block)
-          super(options.merge(column_options: { null: false }))
-        end
-      end
-
-      def build_object(options = {}, &block)
-        build_object_with_generic_attribute(
-          options.merge(column_type: :boolean),
-          &block
-        )
       end
     end
 
@@ -507,6 +450,66 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
   context 'for a database column' do
     include_context 'for a generic attribute'
 
+    context 'against a boolean attribute' do
+      context 'which is nullable' do
+        include_context 'against a boolean attribute for true and false'
+
+        context 'when ensuring inclusion of nil' do
+          it 'matches' do
+            valid_values = [nil]
+            builder = build_object_allowing(valid_values)
+            capture(:stderr) do
+              expect_to_match_in_array(builder, valid_values)
+            end
+          end
+
+          it 'prints a warning' do
+            valid_values = [nil]
+            builder = build_object_allowing(valid_values)
+            message = 'You are using `ensure_inclusion_of` to assert that a boolean column allows nil'
+
+            stderr = capture(:stderr) do
+              expect_to_match_in_array(builder, valid_values)
+            end
+
+            expect(stderr.gsub(/\n+/, ' ')).to include(message)
+          end
+        end
+
+        def build_object(options = {}, &block)
+          super(options.merge(column_options: { null: true }, value: true))
+        end
+      end
+
+      context 'which is non-nullable' do
+        include_context 'against a boolean attribute for true and false'
+
+        context 'when ensuring inclusion of nil' do
+          it 'raises a specific error' do
+            valid_values = [nil]
+            builder = build_object_allowing(valid_values)
+            error_class = Shoulda::Matchers::ActiveModel::NonNullableBooleanError
+
+            expect {
+              expect_to_match_in_array(builder, valid_values)
+            }.to raise_error(error_class)
+          end
+        end
+
+        def build_object(options = {}, &block)
+          super(options.merge(column_options: { null: false }))
+        end
+      end
+
+      def build_object(options = {}, &block)
+        build_object_with_generic_attribute(
+          options.merge(column_type: :boolean),
+          &block
+        )
+      end
+    end
+
+
     def build_object_with_generic_attribute(options = {}, &block)
       attribute_name = :attr
       column_type = options.fetch(:column_type)
@@ -517,19 +520,13 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
       validation_options = options[:validation_options]
       custom_validation = options[:custom_validation]
 
-      model = define_model :example, attribute_name => column_options do
-        if validation_options
-          validates_inclusion_of attribute_name, validation_options
-        end
-
-        if custom_validation
-          define_method :custom_validation do
-            instance_exec(attribute_name, &custom_validation)
-          end
-
-          validate :custom_validation
-        end
-      end
+      model = define_model :example, attribute_name => column_options
+      customize_model_class(
+        model,
+        attribute_name,
+        validation_options,
+        custom_validation
+      )
 
       object = model.new
 
@@ -537,8 +534,64 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
     end
   end
 
+  context 'for a plain Ruby attribute' do
+    include_context 'for a generic attribute'
+
+    context 'against a boolean attribute (designated by true)' do
+      include_context 'against a boolean attribute for true and false'
+
+      def build_object(options = {}, &block)
+        build_object_with_generic_attribute(options.merge(value: true))
+      end
+    end
+
+    context 'against a boolean attribute (designated by false)' do
+      include_context 'against a boolean attribute for true and false'
+
+      def build_object(options = {}, &block)
+        build_object_with_generic_attribute(options.merge(value: false))
+      end
+    end
+
+    def build_object_with_generic_attribute(options = {}, &block)
+      attribute_name = :attr
+      validation_options = options[:validation_options]
+      custom_validation = options[:custom_validation]
+      value = options[:value]
+
+      model = define_active_model_class :example, accessors: [attribute_name]
+      customize_model_class(
+        model,
+        attribute_name,
+        validation_options,
+        custom_validation
+      )
+
+      object = model.new
+      object.__send__("#{attribute_name}=", value)
+
+      object_builder_class.new(attribute_name, object, validation_options)
+    end
+  end
+
   def object_builder_class
     @_object_builder_class ||= Struct.new(:attribute, :object, :validation_options)
+  end
+
+  def customize_model_class(klass, attribute_name, validation_options, custom_validation)
+    klass.class_eval do
+      if validation_options
+        validates_inclusion_of attribute_name, validation_options
+      end
+
+      if custom_validation
+        define_method :custom_validation do
+          instance_exec(attribute_name, &custom_validation)
+        end
+
+        validate :custom_validation
+      end
+    end
   end
 
   def build_object_allowing(values, options = {})
