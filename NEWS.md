@@ -1,3 +1,8 @@
+# HEAD
+
+* Fix `validate_uniqueness_of.scoped_to` when the scope is a Rails 4.1 enum
+  column.
+
 # 2.6.1
 
 * Fix `ComparisonMatcher` so that `validate_numericality_of` comparison matchers
