@@ -125,35 +125,33 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
     if rails_4_1_x?
       context 'when the scoped attribute is an enum' do
         it 'accepts' do
-          expect(validating_scoped_uniqueness_enum([:scope1], scope1: 0)).
+          expect(validating_scoped_uniqueness_with_enum([:scope1], scope1: 0)).
             to matcher.scoped_to(:scope1)
         end
 
         context 'with a nil value' do
           it 'accepts' do
-            expect(validating_scoped_uniqueness_enum([:scope1], scope1: nil)).
+            expect(validating_scoped_uniqueness_with_enum([:scope1], scope1: nil)).
               to matcher.scoped_to(:scope1)
           end
         end
 
         context 'when too narrow of a scope is specified' do
           it 'rejects' do
-            expect(
-              validating_scoped_uniqueness_enum(
-                [:scope1, :scope2], scope1: 0, scope2: 0
-              )
-            ).not_to matcher.scoped_to(:scope1, :scope2, :other)
+            expect(validating_scoped_uniqueness_with_enum_with_two_scopes).
+              not_to matcher.scoped_to(:scope1, :scope2, :other)
           end
         end
 
         context 'when too broad of a scope is specified' do
           it 'rejects' do
-            expect(
-              validating_scoped_uniqueness_enum(
-                [:scope1, :scope2], scope1: 0, scope2: 0
-              )
-            ).not_to matcher.scoped_to(:scope1)
+            expect(validating_scoped_uniqueness_with_enum_with_two_scopes).
+              not_to matcher.scoped_to(:scope1)
           end
+        end
+
+        def validating_scoped_uniqueness_with_enum_with_two_scopes
+          validating_scoped_uniqueness_with_enum([:scope1, :scope2], scope1: 0, scope2: 0)
         end
       end
     end
@@ -286,7 +284,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
       model
     end
 
-    def validating_scoped_uniqueness_enum(*args)
+    def validating_scoped_uniqueness_with_enum(*args)
       attributes = args.extract_options!
       model = define_scoped_model(*args)
       model.enum scope1: [:foo, :bar]
