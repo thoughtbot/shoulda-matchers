@@ -3,7 +3,21 @@ module Shoulda # :nodoc:
     module ActiveModel # :nodoc:
       class CouldNotDetermineValueOutsideOfArray < RuntimeError; end
 
-      class NonNullableBooleanError < Shoulda::Matchers::Error; end
+      class NonNullableBooleanError < Shoulda::Matchers::Error
+        def self.create(attribute)
+          super(attribute: attribute)
+        end
+
+        attr_accessor :attribute
+
+        def message
+          <<-EOT.strip
+You have specified that your model's #{attribute} should ensure inclusion of nil.
+However, #{attribute} is a boolean column which does not allow null values.
+Hence, this test will fail and there is no way to make it pass.
+          EOT
+        end
+      end
 
       class CouldNotSetPasswordError < Shoulda::Matchers::Error
         def self.create(model)
