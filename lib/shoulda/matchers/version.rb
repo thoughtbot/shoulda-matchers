@@ -1,5 +1,5 @@
 module Shoulda
   module Matchers
-    VERSION = '2.6.0'.freeze
+    VERSION = '2.6.1.rc1'.freeze
   end
 end
