@@ -1,5 +1,25 @@
 require 'spec_helper'
 
+describe Shoulda::Matchers::ActiveModel do
+  it '#ensure_inclusion_of' do
+    stderr = capture(:stderr) { ensure_inclusion_of(:attr) }
+    warning = <<EOT
+Warning from shoulda-matchers:
+
+use validate_inclusion_of instead, ensure_inclusion_of will be removed.
+EOT
+    expect(stderr).to eql(warning)
+  end
+
+  it '#validate_inclusion_of' do
+    Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher.stubs(:new)
+
+    validate_inclusion_of(:attr)
+    expect(Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher)
+      .to have_received(:new).with(:attr).once
+  end
+end
+
 describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
   shared_context 'for a generic attribute' do
     def self.testing_values_of_option(option_name, &block)
