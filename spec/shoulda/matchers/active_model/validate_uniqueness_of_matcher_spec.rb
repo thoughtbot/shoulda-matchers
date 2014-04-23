@@ -122,7 +122,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
         not_to matcher.scoped_to(:fake)
     end
 
-    if rails_4_1_x?
+    if rails_gte_4_1?
       context 'when the scoped attribute is an enum' do
         it 'accepts' do
           expect(validating_scoped_uniqueness_with_enum([:scope1], scope1: 0)).
