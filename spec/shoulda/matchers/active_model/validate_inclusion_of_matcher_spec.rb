@@ -1,5 +1,11 @@
 require 'spec_helper'
 
+describe Shoulda::Matchers::ActiveModel do
+  it '#ensure_inclusion_of' do
+    expect(method :ensure_inclusion_of).to eq(method :validate_inclusion_of)
+  end
+end
+
 describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher do
   shared_context 'for a generic attribute' do
     def self.testing_values_of_option(option_name, &block)

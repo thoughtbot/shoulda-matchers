@@ -22,6 +22,7 @@ module Shoulda # :nodoc:
       def validate_inclusion_of(attr)
         ValidateInclusionOfMatcher.new(attr)
       end
+      alias_method :ensure_inclusion_of, :validate_inclusion_of
 
       class ValidateInclusionOfMatcher < ValidationMatcher # :nodoc:
         ARBITRARY_OUTSIDE_STRING = 'shouldamatchersteststring'
