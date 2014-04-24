@@ -17,18 +17,18 @@ module Shoulda # :nodoc:
       #   translation for :inclusion.
       #
       # Example:
-      #   it { should ensure_inclusion_of(:age).in_range(0..100) }
+      #   it { should validate_inclusion_of(:age).in_range(0..100) }
       #
-      def ensure_inclusion_of(attr)
-        EnsureInclusionOfMatcher.new(attr)
+      def validate_inclusion_of(attr)
+        ValidateInclusionOfMatcher.new(attr)
       end
 
-      class EnsureInclusionOfMatcher < ValidationMatcher # :nodoc:
+      class ValidateInclusionOfMatcher < ValidationMatcher # :nodoc:
         ARBITRARY_OUTSIDE_STRING = 'shouldamatchersteststring'
         ARBITRARY_OUTSIDE_FIXNUM = 123456789
         ARBITRARY_OUTSIDE_DECIMAL = BigDecimal.new('0.123456789')
         BOOLEAN_ALLOWS_BOOLEAN_MESSAGE = <<EOT
-You are using `ensure_inclusion_of` to assert that a boolean column allows
+You are using `validate_inclusion_of` to assert that a boolean column allows
 boolean values and disallows non-boolean ones. Assuming you are using
 `validates_format_of` in your model, be aware that it is not possible to fully
 test this, and in fact the validation is superfluous, as boolean columns will
@@ -36,7 +36,7 @@ automatically convert non-boolean values to boolean ones. Hence, you should
 consider removing this test and the corresponding validation.
 EOT
         BOOLEAN_ALLOWS_NIL_MESSAGE = <<EOT
-You are using `ensure_inclusion_of` to assert that a boolean column allows nil.
+You are using `validate_inclusion_of` to assert that a boolean column allows nil.
 Be aware that it is not possible to fully test this, as anything other than
 true, false or nil will be converted to false. Hence, you should consider
 removing this test and the corresponding validation.
