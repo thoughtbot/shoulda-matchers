@@ -12,8 +12,8 @@ complex, and error-prone.
   tests usage of Rails 3's `attr_accessible` and `attr_protected` macros.
 * **[allow_value](lib/shoulda/matchers/active_model/allow_value_matcher.rb)** tests usage of
   the `validates_format_of` validation.
-* **[ensure_inclusion_of](lib/shoulda/matchers/active_model/ensure_inclusion_of_matcher.rb)** tests
-  usage of `validates_inclusion_of`.
+* **[validate_inclusion_of](lib/shoulda/matchers/active_model/validate_inclusion_of_matcher.rb)**
+  tests usage of `validates_inclusion_of`.
 * **[ensure_exclusion_of](lib/shoulda/matchers/active_model/ensure_exclusion_of_matcher.rb)** tests
   usage of `validates_exclusion_of`.
 * **[ensure_length_of](lib/shoulda/matchers/active_model/ensure_length_of_matcher.rb)** tests usage

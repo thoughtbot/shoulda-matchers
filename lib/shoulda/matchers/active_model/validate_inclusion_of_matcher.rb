@@ -3,7 +3,7 @@ require 'bigdecimal'
 module Shoulda
   module Matchers
     module ActiveModel
-      # The `ensure_inclusion_of` matcher tests usage of the
+      # The `validate_inclusion_of` matcher tests usage of the
       # `validates_inclusion_of` validation, asserting that an attribute can
       # take a whitelist of values and cannot take values outside of this list.
       #
@@ -19,14 +19,14 @@ module Shoulda
       #     # RSpec
       #     describe Issue do
       #       it do
-      #         should ensure_inclusion_of(:state).
+      #         should validate_inclusion_of(:state).
       #           in_array(%w(open resolved unresolved))
       #       end
       #     end
       #
       #     # Test::Unit
       #     class IssueTest < ActiveSupport::TestCase
-      #       should ensure_inclusion_of(:state).
+      #       should validate_inclusion_of(:state).
       #         in_array(%w(open resolved unresolved))
       #     end
       #
@@ -41,12 +41,12 @@ module Shoulda
       #
       #     # RSpec
       #     describe Issue do
-      #       it { should ensure_inclusion_of(:state).in_range(1..5) }
+      #       it { should validate_inclusion_of(:state).in_range(1..5) }
       #     end
       #
       #     # Test::Unit
       #     class IssueTest < ActiveSupport::TestCase
-      #       should ensure_inclusion_of(:state).in_range(1..5)
+      #       should validate_inclusion_of(:state).in_range(1..5)
       #     end
       #
       # #### Optional qualifiers
@@ -67,7 +67,7 @@ module Shoulda
       #     # RSpec
       #     describe Issue do
       #       it do
-      #         should ensure_inclusion_of(:severity).
+      #         should validate_inclusion_of(:severity).
       #           in_array(%w(low medium high)).
       #           with_message('Severity must be low, medium, or high')
       #       end
@@ -75,7 +75,7 @@ module Shoulda
       #
       #     # Test::Unit
       #     class IssueTest < ActiveSupport::TestCase
-      #       should ensure_inclusion_of(:severity).
+      #       should validate_inclusion_of(:severity).
       #         in_array(%w(low medium high)).
       #         with_message('Severity must be low, medium, or high')
       #     end
@@ -103,7 +103,7 @@ module Shoulda
       #     # RSpec
       #     describe Person do
       #       it do
-      #         should ensure_inclusion_of(:age).
+      #         should validate_inclusion_of(:age).
       #           in_range(0..65).
       #           with_low_message('You do not receive any benefits')
       #       end
@@ -111,7 +111,7 @@ module Shoulda
       #
       #     # Test::Unit
       #     class PersonTest < ActiveSupport::TestCase
-      #       should ensure_inclusion_of(:age).
+      #       should validate_inclusion_of(:age).
       #         in_range(0..65).
       #         with_low_message('You do not receive any benefits')
       #     end
@@ -139,7 +139,7 @@ module Shoulda
       #     # RSpec
       #     describe Person do
       #       it do
-      #         should ensure_inclusion_of(:age).
+      #         should validate_inclusion_of(:age).
       #           in_range(0..21).
       #           with_high_message("You're too old for this stuff")
       #       end
@@ -147,7 +147,7 @@ module Shoulda
       #
       #     # Test::Unit
       #     class PersonTest < ActiveSupport::TestCase
-      #       should ensure_inclusion_of(:age).
+      #       should validate_inclusion_of(:age).
       #         in_range(0..21).
       #         with_high_message("You're too old for this stuff")
       #     end
@@ -169,7 +169,7 @@ module Shoulda
       #     # RSpec
       #     describe Issue do
       #       it do
-      #         should ensure_inclusion_of(:state).
+      #         should validate_inclusion_of(:state).
       #           in_array(%w(open resolved unresolved)).
       #           allow_nil
       #       end
@@ -177,7 +177,7 @@ module Shoulda
       #
       #     # Test::Unit
       #     class IssueTest < ActiveSupport::TestCase
-      #       should ensure_inclusion_of(:state).
+      #       should validate_inclusion_of(:state).
       #         in_array(%w(open resolved unresolved)).
       #         allow_nil
       #     end
@@ -199,7 +199,7 @@ module Shoulda
       #     # RSpec
       #     describe Issue do
       #       it do
-      #         should ensure_inclusion_of(:state).
+      #         should validate_inclusion_of(:state).
       #           in_array(%w(open resolved unresolved)).
       #           allow_blank
       #       end
@@ -207,24 +207,25 @@ module Shoulda
       #
       #     # Test::Unit
       #     class IssueTest < ActiveSupport::TestCase
-      #       should ensure_inclusion_of(:state).
+      #       should validate_inclusion_of(:state).
       #         in_array(%w(open resolved unresolved)).
       #         allow_blank
       #     end
       #
-      # @return [EnsureInclusionOfMatcher]
+      # @return [ValidateInclusionOfMatcher]
       #
-      def ensure_inclusion_of(attr)
-        EnsureInclusionOfMatcher.new(attr)
+      def validate_inclusion_of(attr)
+        ValidateInclusionOfMatcher.new(attr)
       end
+      alias_method :ensure_inclusion_of, :validate_inclusion_of
 
       # @private
-      class EnsureInclusionOfMatcher < ValidationMatcher
+      class ValidateInclusionOfMatcher < ValidationMatcher
         ARBITRARY_OUTSIDE_STRING = 'shouldamatchersteststring'
         ARBITRARY_OUTSIDE_FIXNUM = 123456789
         ARBITRARY_OUTSIDE_DECIMAL = BigDecimal.new('0.123456789')
         BOOLEAN_ALLOWS_BOOLEAN_MESSAGE = <<EOT
-You are using `ensure_inclusion_of` to assert that a boolean column allows
+You are using `validate_inclusion_of` to assert that a boolean column allows
 boolean values and disallows non-boolean ones. Assuming you are using
 `validates_format_of` in your model, be aware that it is not possible to fully
 test this, and in fact the validation is superfluous, as boolean columns will
@@ -232,7 +233,7 @@ automatically convert non-boolean values to boolean ones. Hence, you should
 consider removing this test and the corresponding validation.
 EOT
         BOOLEAN_ALLOWS_NIL_MESSAGE = <<EOT
-You are using `ensure_inclusion_of` to assert that a boolean column allows nil.
+You are using `validate_inclusion_of` to assert that a boolean column allows nil.
 Be aware that it is not possible to fully test this, as anything other than
 true, false or nil will be converted to false. Hence, you should consider
 removing this test and the corresponding validation.
