@@ -261,7 +261,7 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
     end
 
     context 'when given :update' do
-      if rails_gte_41?
+      if rails_gte_4_1?
         it 'PATCHes to the controller' do
           controller = ActionController::Base.new
           context = mock()
