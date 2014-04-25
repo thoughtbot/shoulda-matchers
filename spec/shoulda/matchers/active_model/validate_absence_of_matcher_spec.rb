@@ -2,6 +2,21 @@ require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
   if active_model_4_0?
+    def self.available_column_types
+      [
+        :string,
+        :text,
+        :integer,
+        :float,
+        :decimal,
+        :datetime,
+        :timestamp,
+        :time,
+        :date,
+        :binary
+      ]
+    end
+
     context 'a model with an absence validation' do
       it 'accepts' do
         expect(validating_absence_of(:attr)).to validate_absence_of(:attr)
@@ -9,6 +24,15 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
 
       it 'does not override the default message with a present' do
         expect(validating_absence_of(:attr)).to validate_absence_of(:attr).with_message(nil)
+      end
+
+      available_column_types.each do |type|
+        context "when column is of type #{type}" do
+          it "accepts" do
+            expect(validating_absence_of(:attr, {}, type: type)).
+              to validate_absence_of(:attr)
+          end
+        end
       end
     end
 
@@ -95,9 +119,12 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
       end
     end
 
-    def validating_absence_of(attr, options = {})
-      define_model :example, attr => :string do
-        validates_absence_of attr, options
+    def validating_absence_of(attr, validation_options = {}, given_column_options = {})
+      default_column_options = { type: :string, options: {} }
+      column_options = default_column_options.merge(given_column_options)
+
+      define_model :example, attr => column_options do
+        validates_absence_of attr, validation_options
       end.new
     end
 

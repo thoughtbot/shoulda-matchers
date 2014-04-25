@@ -24,6 +24,9 @@
   the record had to be persisted in order for the matcher to work. Now this is
   no longer the case and the record can remain unpersisted.
 
+* Fix `validate_absence_of`: it required that a string be passed as the
+  attribute name rather than a symbol (which is the usual and documented usage).
+
 ### Improvements
 
 * `have_and_belongs_to_many` now checks to make sure that the join table
@@ -140,7 +143,7 @@
 * Change `validate_uniqueness_of(...)` so that it provides default values for
   non-nullable attributes.
 
-* Running `rake` now installs Appraisals before running the test suite. 
+* Running `rake` now installs Appraisals before running the test suite.
   (Additionally, we now manage Appraisals using the `appraisal` executable in
   Appraisal 1.0.0.)
 
