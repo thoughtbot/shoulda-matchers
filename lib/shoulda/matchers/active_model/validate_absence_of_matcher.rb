@@ -55,8 +55,8 @@ module Shoulda # :nodoc:
 
         def attribute_class
           @subject.class.respond_to?(:columns_hash) &&
-            @subject.class.columns_hash[@attribute].respond_to?(:klass) &&
-            @subject.class.columns_hash[@attribute].klass
+            @subject.class.columns_hash[@attribute.to_s].respond_to?(:klass) &&
+            @subject.class.columns_hash[@attribute.to_s].klass
         end
 
         def collection?

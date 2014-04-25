@@ -1,5 +1,8 @@
 # HEAD
 
+* Typecast absence_of matcher's `@attribute` to String because
+  `ActiveRecord.columns_hash` returns Hash with String keys.
+
 * Fix `ComparisonMatcher` so that `validate_numericality_of` comparison matchers
   work with large numbers.
 
@@ -64,7 +67,7 @@
 * Change `validate_uniqueness_of(...)` so that it provides default values for
   non-nullable attributes.
 
-* Running `rake` now installs Appraisals before running the test suite. 
+* Running `rake` now installs Appraisals before running the test suite.
   (Additionally, we now manage Appraisals using the `appraisal` executable in
   Appraisal 1.0.0.)
 
