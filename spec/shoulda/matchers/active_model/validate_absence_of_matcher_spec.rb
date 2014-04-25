@@ -10,6 +10,26 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
       it 'does not override the default message with a present' do
         expect(validating_absence_of(:attr)).to validate_absence_of(:attr).with_message(nil)
       end
+
+      context 'with different type of attribute' do
+        [:string,
+         :text,
+         :integer,
+         :float,
+         :decimal,
+         :datetime,
+         :timestamp,
+         :time,
+         :date,
+         :binary].each do |type|
+          context "with #{type} column" do
+            it 'accepts' do
+              expect(validating_absence_of(:attr, type: type)).
+                to validate_absence_of(:attr)
+            end
+          end
+        end
+      end
     end
 
     context 'a model without an absence validation' do
@@ -96,7 +116,9 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher do
     end
 
     def validating_absence_of(attr, options = {})
-      define_model :example, attr => :string do
+      attr_type = options.delete(:type) || :string
+
+      define_model :example, attr => attr_type do
         validates_absence_of attr, options
       end.new
     end

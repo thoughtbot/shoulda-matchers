@@ -44,8 +44,10 @@ module Shoulda # :nodoc:
             else
               obj
             end
-          elsif attribute_class == Fixnum
+          elsif [Fixnum, Float].include?(attribute_class)
             1
+          elsif attribute_class == BigDecimal
+            BigDecimal.new(1, 0)
           elsif !attribute_class || attribute_class == String
             'an arbitrary value'
           else
@@ -55,8 +57,8 @@ module Shoulda # :nodoc:
 
         def attribute_class
           @subject.class.respond_to?(:columns_hash) &&
-            @subject.class.columns_hash[@attribute].respond_to?(:klass) &&
-            @subject.class.columns_hash[@attribute].klass
+            @subject.class.columns_hash[@attribute.to_s].respond_to?(:klass) &&
+            @subject.class.columns_hash[@attribute.to_s].klass
         end
 
         def collection?
