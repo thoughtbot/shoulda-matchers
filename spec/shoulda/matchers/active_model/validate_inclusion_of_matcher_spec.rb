@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 describe Shoulda::Matchers::ActiveModel do
-  it '#ensure_inclusion_of' do
-    expect(method :ensure_inclusion_of).to eq(method :validate_inclusion_of)
+  describe '#ensure_inclusion_of' do
+    it 'is aliased to #validate_inclusion_of' do
+      expect(method :ensure_inclusion_of).to eq(method :validate_inclusion_of)
+    end
   end
 end
 
