@@ -1,5 +1,13 @@
 # HEAD
 
+## Features
+
+* Teach `with_message` qualifier on `allow_value` to accept a hash of i18n
+  interpolation values:
+  `allow_value('foo').for(:attr).with_message(:greater_than, values: { count: 20 })`.
+
+## Bug fixes
+
 * Fix `ComparisonMatcher` so that `validate_numericality_of` comparison matchers
   work with large numbers.
 

@@ -68,6 +68,24 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
       expect(validating_format(with: /abc/, message: 'bad value')).
         not_to allow_value('xyz').for(:attr).with_message(/bad/)
     end
+
+    it 'allows interpolation values for the message to be provided' do
+      options = {
+        attribute_name: :attr,
+        attribute_type: :string
+      }
+
+      record = record_with_custom_validation(options) do
+        if self.attr == 'xyz'
+          self.errors.add :attr, :greater_than, count: 2
+        end
+      end
+
+      expect(record).
+        not_to allow_value('xyz').
+        for(:attr).
+        with_message(:greater_than, values: { count: 2 })
+    end
   end
 
   context 'an attribute where the message occurs on another attribute' do

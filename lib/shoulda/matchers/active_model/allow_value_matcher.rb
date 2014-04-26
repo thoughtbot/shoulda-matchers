@@ -53,9 +53,12 @@ module Shoulda # :nodoc:
 
         def with_message(message, options={})
           self.options[:expected_message] = message
+          self.options[:expected_message_values] = options.fetch(:values, {})
+
           if options.key?(:against)
             self.attribute_to_check_message_against = options[:against]
           end
+
           self
         end
 
@@ -173,10 +176,18 @@ module Shoulda # :nodoc:
         def default_attribute_message
           default_error_message(
             options[:expected_message],
+            default_attribute_message_values
+          )
+        end
+
+        def default_attribute_message_values
+          defaults = {
             model_name: model_name,
             instance: instance,
-            attribute: attribute_to_set
-          )
+            attribute: attribute_to_set,
+          }
+
+          defaults.merge(options[:expected_message_values])
         end
 
         def model_name
