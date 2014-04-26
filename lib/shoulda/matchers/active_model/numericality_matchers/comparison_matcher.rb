@@ -7,6 +7,13 @@ module Shoulda # :nodoc:
         #                 is_greater_than(6).
         #                 less_than(20)...(and so on) }
         class ComparisonMatcher < ValidationMatcher
+          ERROR_MESSAGES = {
+            :> => :greater_than,
+            :>= => :greater_than_or_equal_to,
+            :< => :less_than,
+            :<= => :less_than_or_equal_to,
+            :== => :equal_to
+          }
 
           def initialize(numericality_matcher, value, operator)
             unless numericality_matcher.respond_to? :diff_to_compare
@@ -15,7 +22,8 @@ module Shoulda # :nodoc:
             @numericality_matcher = numericality_matcher
             @value = value
             @operator = operator
-            @message = nil
+            @message = ERROR_MESSAGES[operator]
+            @comparison_combos = comparison_combos
           end
 
           def for(attribute)
@@ -68,8 +76,10 @@ module Shoulda # :nodoc:
           end
 
           def all_bounds_correct?
-            comparison_combos.all? do |diff, checker_type|
-              __send__(checker_type, @value + diff, @message)
+            @comparison_combos.all? do |diff, checker_type|
+              __send__(checker_type, @value + diff) do |matcher|
+                matcher.with_message(@message, values: { count: @value })
+              end
             end
           end
         end
