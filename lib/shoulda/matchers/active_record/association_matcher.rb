@@ -850,6 +850,7 @@ module Shoulda
             autosave_correct? &&
             conditions_correct? &&
             join_table_exists? &&
+            join_table_has_correct_columns? &&
             validate_correct? &&
             touch_correct? &&
             submatchers_match?
@@ -988,6 +989,29 @@ module Shoulda
             @missing = "join table #{join_table} doesn't exist"
             false
           end
+        end
+
+        def join_table_has_correct_columns?
+          return true if macro != :has_and_belongs_to_many
+
+          column_names = model_class.connection.columns(join_table).map(&:name)
+          missing = join_table_keys.select { |k| !column_names.include?(k) }
+
+          if missing.empty?
+            true
+          else
+            column = missing.count > 1 ? "columns" : "column"
+            missing = missing.join(", ")
+            @missing = "join table #{join_table} missing #{column}: #{missing}"
+            false
+          end
+        end
+
+        def join_table_keys
+          [
+            "#{model_class.name.underscore}_id",
+            "#{associated_class.name.underscore}_id"
+          ]
         end
 
         def validate_correct?
