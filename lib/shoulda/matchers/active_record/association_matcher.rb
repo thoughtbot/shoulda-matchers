@@ -847,9 +847,9 @@ module Shoulda
             (polymorphic? || class_exists?) &&
             foreign_key_exists? &&
             class_name_correct? &&
+            join_table_correct? &&
             autosave_correct? &&
             conditions_correct? &&
-            join_table_exists? &&
             validate_correct? &&
             touch_correct? &&
             submatchers_match?
@@ -889,7 +889,8 @@ module Shoulda
         end
 
         def missing_options
-          [missing, failing_submatchers.map(&:missing_option)].flatten.join
+          missing_options = [missing, failing_submatchers.map(&:missing_option)]
+          missing_options.flatten.compact.join(', ')
         end
 
         def failing_submatchers
@@ -946,6 +947,19 @@ module Shoulda
           end
         end
 
+        def join_table_correct?
+          if macro != :has_and_belongs_to_many || join_table_matcher.matches?(@subject)
+            true
+          else
+            @missing = join_table_matcher.failure_message
+            false
+          end
+        end
+
+        def join_table_matcher
+          @join_table_matcher ||= AssociationMatchers::JoinTableMatcher.new(self)
+        end
+
         def class_exists?
           associated_class
           true
@@ -977,16 +991,6 @@ module Shoulda
             end
           else
             true
-          end
-        end
-
-        def join_table_exists?
-          if macro != :has_and_belongs_to_many ||
-              model_class.connection.tables.include?(join_table)
-            true
-          else
-            @missing = "join table #{join_table} doesn't exist"
-            false
           end
         end
 

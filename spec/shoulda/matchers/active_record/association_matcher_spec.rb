@@ -712,7 +712,24 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
         has_and_belongs_to_many :relatives
       end
 
-      expect(Person.new).not_to have_and_belong_to_many(:relatives)
+      expected_failure_message = "join table people_relatives doesn't exist"
+
+      expect do
+        expect(Person.new).to have_and_belong_to_many(:relatives)
+      end.to fail_with_message_including(expected_failure_message)
+    end
+
+    it 'rejects an association with a join table with incorrect columns' do
+      define_model :relative
+      define_model :person do
+        has_and_belongs_to_many :relatives
+      end
+
+      define_model :people_relative, id: false, some_crazy_id: :integer
+
+      expect do
+        expect(Person.new).to have_and_belong_to_many(:relatives)
+      end.to fail_with_message_including('missing columns: person_id, relative_id')
     end
 
     it 'rejects an association of the wrong type' do
