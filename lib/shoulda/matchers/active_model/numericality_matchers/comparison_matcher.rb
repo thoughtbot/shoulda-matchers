@@ -7,8 +7,6 @@ module Shoulda # :nodoc:
         #                 is_greater_than(6).
         #                 less_than(20)...(and so on) }
         class ComparisonMatcher < ValidationMatcher
-          DIFF_TO_COMPARE_PRECISION_CHANGE_NUMBER = 2**34
-          attr_reader :diff_to_compare
 
           def initialize(numericality_matcher, value, operator)
             unless numericality_matcher.respond_to? :diff_to_compare
@@ -18,7 +16,6 @@ module Shoulda # :nodoc:
             @value = value
             @operator = operator
             @message = nil
-            @diff_to_compare = value.abs < DIFF_TO_COMPARE_PRECISION_CHANGE_NUMBER ? 0.000_001 : 1
           end
 
           def for(attribute)

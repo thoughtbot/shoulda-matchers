@@ -26,7 +26,8 @@ module Shoulda # :nodoc:
       class ValidateNumericalityOfMatcher
         NUMERIC_NAME = 'numbers'
         NON_NUMERIC_VALUE = 'abcd'
-        DEFAULT_DIFF_TO_COMPARE = 0.000_000_000_001
+        DEFAULT_DIFF_TO_COMPARE = 1
+
         attr_reader :diff_to_compare
 
         def initialize(attribute)

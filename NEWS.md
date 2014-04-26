@@ -8,8 +8,12 @@
 
 ## Bug fixes
 
-* Fix `ComparisonMatcher` so that `validate_numericality_of` comparison matchers
-  work with large numbers.
+* Revert changes to `validate_numericality_of` made in the last release, which
+  made it so that comparison qualifiers specified on the validation are tested
+  using a very small decimal number offset rather than a whole number by
+  default, except if the matcher was qualified with `only_integer`. This means
+  that prior to 2.6.0, if your validation specified `only_integer` and you did
+  not, then after 2.6.0 that test now fails.
 
 * Fix so that ActiveRecord matchers aren't included when ActiveRecord
   isn't defined (i.e. if you are using ActiveModel only).
