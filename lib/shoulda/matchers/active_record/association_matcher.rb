@@ -743,7 +743,7 @@ module Shoulda
       def have_and_belong_to_many(name)
         AssociationMatcher.new(:has_and_belongs_to_many, name).tap do |matcher|
           join_table_verifier = AssociationMatchers::JoinTableMatcher.new(matcher)
-          matcher.send(:add_submatcher, join_table_verifier)
+          matcher.add_submatcher(join_table_verifier)
         end
       end
 
