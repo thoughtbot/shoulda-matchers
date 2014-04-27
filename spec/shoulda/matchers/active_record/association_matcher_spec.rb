@@ -721,12 +721,11 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
         has_and_belongs_to_many :relatives
       end
 
-      define_model :people_relative, id: false, person_id: :integer,
-        some_other_id: :integer
+      define_model :people_relative, id: false, some_crazy_id: :integer
 
       expect do
         expect(Person.new).to have_and_belong_to_many(:relatives)
-      end.to fail_with_message_including("missing column: relative_id")
+      end.to fail_with_message_including("missing columns: person_id, relative_id")
     end
 
     it 'rejects an association of the wrong type' do
