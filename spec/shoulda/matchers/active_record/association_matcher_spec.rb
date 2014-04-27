@@ -792,7 +792,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
     end
 
     it 'adds error message when rejecting an association with non-existent class' do
-      message = "Expected Person to have a has_and_belongs_to_many association called relatives (Relative2 does not exist, join table people_relative2s doesn't exist)"
+      message = 'Expected Person to have a has_and_belongs_to_many association called relatives (Relative2 does not exist)'
       expect {
         expect(having_and_belonging_to_many_non_existent_class(:person, :relatives, class_name: 'Relative2')).
           to have_and_belong_to_many(:relatives)

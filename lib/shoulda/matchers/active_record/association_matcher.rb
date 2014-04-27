@@ -891,7 +891,8 @@ module Shoulda
         end
 
         def missing_options
-          [missing, failing_submatchers.map(&:missing_option)].flatten.join(', ')
+          missing_options = [missing, failing_submatchers.map(&:missing_option)]
+          missing_options.flatten.compact.join(', ')
         end
 
         def failing_submatchers
