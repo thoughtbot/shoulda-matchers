@@ -2,9 +2,9 @@ module Shoulda # :nodoc:
   module Matchers
     module ActiveRecord # :nodoc:
       module AssociationMatchers
-
-        class JoinTableVerifier
+        class JoinTableMatcher
           attr_reader :association_matcher, :failure_message
+          alias :missing_option :failure_message
 
           delegate :model_class, :join_table, :associated_class,
             to: :association_matcher
@@ -16,7 +16,7 @@ module Shoulda # :nodoc:
             @failure_messages = []
           end
 
-          def correct?
+          def matches?(subject)
             join_table_exists? &&
               join_table_has_correct_columns?
           end

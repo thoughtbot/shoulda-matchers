@@ -741,7 +741,10 @@ module Shoulda
       # @return [AssociationMatcher]
       #
       def have_and_belong_to_many(name)
-        AssociationMatcher.new(:has_and_belongs_to_many, name)
+        AssociationMatcher.new(:has_and_belongs_to_many, name).tap do |matcher|
+          join_table_verifier = AssociationMatchers::JoinTableMatcher.new(matcher)
+          matcher.send(:add_submatcher, join_table_verifier)
+        end
       end
 
       # @private
@@ -849,7 +852,6 @@ module Shoulda
             class_name_correct? &&
             autosave_correct? &&
             conditions_correct? &&
-            join_table_correct? &&
             validate_correct? &&
             touch_correct? &&
             submatchers_match?
@@ -889,7 +891,7 @@ module Shoulda
         end
 
         def missing_options
-          [missing, failing_submatchers.map(&:missing_option)].flatten.join
+          [missing, failing_submatchers.map(&:missing_option)].flatten.join(", ")
         end
 
         def failing_submatchers
@@ -977,18 +979,6 @@ module Shoulda
             end
           else
             true
-          end
-        end
-
-        def join_table_correct?
-          return true unless macro == :has_and_belongs_to_many
-
-          join_table_verifier = AssociationMatchers::JoinTableVerifier.new(self)
-          if join_table_verifier.correct?
-            true
-          else
-            @missing = join_table_verifier.failure_message
-            false
           end
         end
 
