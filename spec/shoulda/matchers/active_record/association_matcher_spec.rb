@@ -725,7 +725,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
       expect do
         expect(Person.new).to have_and_belong_to_many(:relatives)
-      end.to fail_with_message_including("missing columns: person_id, relative_id")
+      end.to fail_with_message_including('missing columns: person_id, relative_id')
     end
 
     it 'rejects an association of the wrong type' do

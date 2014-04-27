@@ -63,15 +63,15 @@ module Shoulda # :nodoc:
           end
 
           def missing_columns_message
-            missing = missing_columns.join(", ")
+            missing = missing_columns.join(', ')
             "join table #{join_table} missing #{column_label}: #{missing}"
           end
 
           def column_label
             if missing_columns.count > 1
-              "columns"
+              'columns'
             else
-              "column"
+              'column'
             end
           end
 
