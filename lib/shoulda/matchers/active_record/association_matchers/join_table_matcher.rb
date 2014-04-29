@@ -17,8 +17,7 @@ module Shoulda # :nodoc:
           end
 
           def matches?(subject)
-            class_exists? &&
-              join_table_exists? &&
+            join_table_exists? &&
               join_table_has_correct_columns?
           end
 

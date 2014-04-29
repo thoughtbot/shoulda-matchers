@@ -741,10 +741,7 @@ module Shoulda
       # @return [AssociationMatcher]
       #
       def have_and_belong_to_many(name)
-        AssociationMatcher.new(:has_and_belongs_to_many, name).tap do |matcher|
-          join_table_verifier = AssociationMatchers::JoinTableMatcher.new(matcher)
-          matcher.add_submatcher(join_table_verifier)
-        end
+        AssociationMatcher.new(:has_and_belongs_to_many, name)
       end
 
       # @private
@@ -850,6 +847,7 @@ module Shoulda
             (polymorphic? || class_exists?) &&
             foreign_key_exists? &&
             class_name_correct? &&
+            join_table_correct? &&
             autosave_correct? &&
             conditions_correct? &&
             validate_correct? &&
@@ -947,6 +945,21 @@ module Shoulda
           else
             true
           end
+        end
+
+        def join_table_correct?
+          return true unless macro == :has_and_belongs_to_many
+
+          if join_table_matcher.matches?(@subject)
+            true
+          else
+            @missing = join_table_matcher.failure_message
+            false
+          end
+        end
+
+        def join_table_matcher
+          @join_table_matcher ||= AssociationMatchers::JoinTableMatcher.new(self)
         end
 
         def class_exists?
