@@ -1,4 +1,4 @@
-# HEAD
+# 2.6.1
 
 ## Features
 
@@ -13,10 +13,11 @@
   using a very small decimal number offset rather than a whole number by
   default, except if the matcher was qualified with `only_integer`. This means
   that prior to 2.6.0, if your validation specified `only_integer` and you did
-  not, then after 2.6.0 that test now fails.
+  not, then after 2.6.0 that test would fail. This is now fixed.
 
-* Fix so that ActiveRecord matchers aren't included when ActiveRecord
-  isn't defined (i.e. if you are using ActiveModel only).
+* Fix regression in previous release where ActiveRecord matchers would not be
+  included when ActiveRecord wasn't defined (i.e. if you were using ActiveModel
+  only).
 
 * Revert the behavior of `allow_value` changed in 2.6.0 (it will no longer raise
   CouldNotClearAttribute). This was originally done as a part of a fix for
