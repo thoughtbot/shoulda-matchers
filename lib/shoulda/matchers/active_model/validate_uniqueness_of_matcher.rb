@@ -117,8 +117,10 @@ module Shoulda # :nodoc:
             instance.__send__("#{@attribute}=", value)
             
             other_non_nullable_columns.each do |non_nullable_column|
-              unless instance.__send__("#{non_nullable_column.name}")
-                instance.__send__("#{non_nullable_column.name}=", correct_type_for_column(non_nullable_column))
+              column_name = non_nullable_column.name
+              valid_value = correct_type_for_column(non_nullable_column)
+              unless instance.__send__(column_name)
+                instance.__send__("#{column_name}=", valid_value)
               end
             end
 
