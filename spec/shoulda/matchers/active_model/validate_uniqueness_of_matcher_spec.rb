@@ -424,6 +424,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
           attr_accessible :attr, :non_nullable
           validates_uniqueness_of :attr
           after_initialize :set_default
+
           def set_default
             self.non_nullable = 'default'
           end
