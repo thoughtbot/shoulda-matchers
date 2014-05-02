@@ -419,7 +419,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
 
       it 'the original default value remains after the matcher runs' do
         instance = define_model_with_non_nullable_default_values_only.new
-        expect(instance).to matcher 
+        expect(instance).to matcher
         expect(instance.non_nullable).to eq('default')
       end
 
