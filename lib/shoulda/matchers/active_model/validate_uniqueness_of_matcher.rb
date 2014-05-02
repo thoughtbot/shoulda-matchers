@@ -119,7 +119,7 @@ module Shoulda # :nodoc:
             other_non_nullable_columns.each do |non_nullable_column|
               column_name = non_nullable_column.name
               valid_value = correct_type_for_column(non_nullable_column)
-              unless instance.__send__(column_name)
+              if instance.__send__(column_name).nil?
                 instance.__send__("#{column_name}=", valid_value)
               end
             end

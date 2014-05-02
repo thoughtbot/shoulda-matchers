@@ -411,10 +411,15 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
       end
     end
 
-    context 'with a default value setter does not have its value overwritten' do
-      it 'does not error or reset default non-null value' do
+    context 'against a model with other attributes that only allow a valid set of non-null values and default to one of these values' do
+      it 'does not raise an database null constraint error' do
         instance = define_model_with_non_nullable_default_values_only.new
         expect { expect(instance).to matcher }.not_to raise_error
+      end
+
+      it 'the original default value remains after the matcher runs' do
+        instance = define_model_with_non_nullable_default_values_only.new
+        expect(instance).to matcher 
         expect(instance.non_nullable).to eq('default')
       end
 
