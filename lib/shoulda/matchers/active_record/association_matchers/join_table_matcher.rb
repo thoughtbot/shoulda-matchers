@@ -41,10 +41,6 @@ module Shoulda # :nodoc:
 
           private
 
-          def class_exists?
-            association_matcher.send(:class_exists?)
-          end
-
           def missing_columns
             @missing_columns ||= expected_join_table_columns.select do |key|
               !actual_join_table_columns.include?(key)
@@ -78,7 +74,6 @@ module Shoulda # :nodoc:
               'column'
             end
           end
-
         end
       end
     end
