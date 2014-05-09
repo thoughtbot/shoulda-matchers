@@ -1,12 +1,21 @@
+# HEAD
+
+* Revert change to `validate_uniqueness_of` made in 2.6.0 so that it no longer
+  provides default values for non-primary, non-nullable columns. This approach
+  was causing test failures because it makes the assumption that none of these
+  columns allow only specific values, which is not true. If you get an error
+  from `validate_uniqueness_of`, your best bet continues to be creating a record
+  manually and calling `validate_uniqueness_of` on that instead.
+
 # 2.6.1
 
-## Features
+### Features
 
 * Teach `with_message` qualifier on `allow_value` to accept a hash of i18n
   interpolation values:
   `allow_value('foo').for(:attr).with_message(:greater_than, values: { count: 20 })`.
 
-## Bug fixes
+### Bug fixes
 
 * Revert changes to `validate_numericality_of` made in the last release, which
   made it so that comparison qualifiers specified on the validation are tested

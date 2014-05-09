@@ -383,42 +383,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
     end
   end
 
-  context "a model with non-nullable attribute" do
-    context "of type" do
-      [:string, :text, :integer, :float, :decimal, :datetime, :timestamp, :time, :date, :binary, :boolean].each do |type|
-        context type do
-          it "does not raise an error" do
-            model = define_model_with_non_nullable(type)
-            expect { expect(model).to matcher }.not_to raise_error
-          end
-        end
-      end
-    end
-
-    context "that is a primary key" do
-      it "does not cause duplicate entry errors by re-using default values for primary keys" do
-        create_table :examples, id: false do |t|
-          t.string :attr
-          t.integer :non_nullable, primary: true
-        end
-        model_class = define_model(:example, attr: :string) do
-          validates_uniqueness_of :attr
-        end
-        model_1 = model_class.new
-        model_2 = model_class.new
-        expect(model_1).to matcher
-        expect { expect(model_2).to matcher }.not_to raise_error 
-      end
-    end
-
-    def define_model_with_non_nullable(type)
-      define_model(:example, attr: :string, non_nullable: { type: type, options: { null: false } }) do
-        attr_accessible :attr, :non_nullable
-        validates_uniqueness_of :attr
-      end.new
-    end
-  end
-
   def case_sensitive_validation_with_existing_value(attr_type)
     model = define_model(:example, attr: attr_type) do
       attr_accessible :attr
