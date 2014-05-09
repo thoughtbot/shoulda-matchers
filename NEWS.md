@@ -8,6 +8,9 @@
 
 ## Bug fixes
 
+* Fix `validate_uniqueness_of` to not overwrite default column values with
+  unacceptable dummy value when creating a new record.  Introduced in 2.6.0.
+
 * Revert changes to `validate_numericality_of` made in the last release, which
   made it so that comparison qualifiers specified on the validation are tested
   using a very small decimal number offset rather than a whole number by

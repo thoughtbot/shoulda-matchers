@@ -117,9 +117,13 @@ module Shoulda # :nodoc:
             instance.__send__("#{@attribute}=", value)
             
             other_non_nullable_columns.each do |non_nullable_column|
-              instance.__send__("#{non_nullable_column.name}=", correct_type_for_column(non_nullable_column))
+              column_name = non_nullable_column.name
+              valid_value = correct_type_for_column(non_nullable_column)
+              if instance.__send__(column_name).nil?
+                instance.__send__("#{column_name}=", valid_value)
+              end
             end
-            
+
             if has_secure_password?
               instance.password = 'password'
               instance.password_confirmation = 'password'

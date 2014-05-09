@@ -411,6 +411,37 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
       end
     end
 
+    context 'against a model with other attributes that only allow a valid set of non-null values and default to one of these values' do
+      it 'does not raise an database null constraint error' do
+        instance = define_model_with_non_nullable_default_values_only.new
+        expect { expect(instance).to matcher }.not_to raise_error
+      end
+
+      it 'the original default value remains after the matcher runs' do
+        instance = define_model_with_non_nullable_default_values_only.new
+        expect(instance).to matcher
+        expect(instance.non_nullable).to eq('default')
+      end
+
+      def define_model_with_non_nullable_default_values_only
+        options = { type: :string, options: { null: false } }
+        define_model(:example, attr: :string, non_nullable: options) do
+          attr_accessible :attr, :non_nullable
+          validates_uniqueness_of :attr
+          after_initialize :set_default
+
+          def set_default
+            self.non_nullable = 'default'
+          end
+
+          def non_nullable=(value)
+            value = nil if value != 'default'
+            super(value)
+          end
+        end
+      end
+    end
+
     def define_model_with_non_nullable(type)
       define_model(:example, attr: :string, non_nullable: { type: type, options: { null: false } }) do
         attr_accessible :attr, :non_nullable
