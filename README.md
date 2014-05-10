@@ -82,7 +82,7 @@ Different matchers apply to different parts of Rails:
 
 ### ActiveModel Matchers
 
-*Jump to: [allow_mass_assignment_of](#allow_mass_assignment_of), [allow_value](#allow_value), [ensure_inclusion_of](#ensure_inclusion_of), [ensure_exclusion_of](#ensure_exclusion_of), [ensure_length_of](#ensure_length_of), [have_secure_password](#have_secure_password), [validate_absence_of](#validate_absence_of), [validate_acceptance_of](#validate_acceptance_of), [validate_confirmation_of](#validate_confirmation_of), [validate_numericality_of](#validate_numericality_of), [validate_presence_of](#validate_presence_of), [validate_uniqueness_of](#validate_uniqueness_of)*
+*Jump to: [allow_mass_assignment_of](#allow_mass_assignment_of), [allow_value](#allow_value), [ensure_inclusion_of](#ensure_inclusion_of), [validate_exclusion_of](#validate_exclusion_of), [ensure_length_of](#ensure_length_of), [have_secure_password](#have_secure_password), [validate_absence_of](#validate_absence_of), [validate_acceptance_of](#validate_acceptance_of), [validate_confirmation_of](#validate_confirmation_of), [validate_numericality_of](#validate_numericality_of), [validate_presence_of](#validate_presence_of), [validate_uniqueness_of](#validate_uniqueness_of)*
 
 Note that all of the examples in this section are based on an ActiveRecord
 model for simplicity, but these matchers will work just as well using an
@@ -228,9 +228,9 @@ class IssueTest < ActiveSupport::TestCase
 end
 ```
 
-#### ensure_exclusion_of
+#### validate_exclusion_of
 
-The `ensure_exclusion_of` matcher tests usage of the `validates_exclusion_of`
+The `validate_exclusion_of` matcher tests usage of the `validates_exclusion_of`
 validation, asserting that an attribute cannot take a set of values.
 
 ```ruby
@@ -245,11 +245,11 @@ end
 
 # RSpec
 describe Game do
-  it { should ensure_exclusion_of(:supported_os).in_array(['Mac', 'Linux']) }
-  it { should ensure_exclusion_of(:floors_with_enemies).in_range(5..8) }
+  it { should validate_exclusion_of(:supported_os).in_array(['Mac', 'Linux']) }
+  it { should validate_exclusion_of(:floors_with_enemies).in_range(5..8) }
 
   it do
-    should ensure_exclusion_of(:weapon).
+    should validate_exclusion_of(:weapon).
       in_array(['pistol', 'paintball gun', 'stick']).
       with_message('You chose a puny weapon')
   end
@@ -257,10 +257,10 @@ end
 
 # Test::Unit
 class GameTest < ActiveSupport::TestCase
-  should ensure_exclusion_of(:supported_os).in_array(['Mac', 'Linux'])
-  should ensure_exclusion_of(:floors_with_enemies).in_range(5..8)
+  should validate_exclusion_of(:supported_os).in_array(['Mac', 'Linux'])
+  should validate_exclusion_of(:floors_with_enemies).in_range(5..8)
 
-  should ensure_exclusion_of(:weapon).
+  should validate_exclusion_of(:weapon).
     in_array(['pistol', 'paintball gun', 'stick']).
     with_message('You chose a puny weapon')
 end
