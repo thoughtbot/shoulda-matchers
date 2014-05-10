@@ -1,7 +1,7 @@
 module Shoulda
   module Matchers
     module ActiveModel
-      # The `ensure_exclusion_of` matcher tests usage of the
+      # The `validate_exclusion_of` matcher tests usage of the
       # `validates_exclusion_of` validation, asserting that an attribute cannot
       # take a blacklist of values, and inversely, can take values outside of
       # this list.
@@ -18,14 +18,14 @@ module Shoulda
       #     # RSpec
       #     describe Game do
       #       it do
-      #         should ensure_exclusion_of(:supported_os).
+      #         should validate_exclusion_of(:supported_os).
       #           in_array(['Mac', 'Linux'])
       #       end
       #     end
       #
       #     # Test::Unit
       #     class GameTest < ActiveSupport::TestCase
-      #       should ensure_exclusion_of(:supported_os).
+      #       should validate_exclusion_of(:supported_os).
       #         in_array(['Mac', 'Linux'])
       #     end
       #
@@ -41,14 +41,14 @@ module Shoulda
       #     # RSpec
       #     describe Game do
       #       it do
-      #         should ensure_exclusion_of(:floors_with_enemies).
+      #         should validate_exclusion_of(:floors_with_enemies).
       #           in_range(5..8)
       #       end
       #     end
       #
       #     # Test::Unit
       #     class GameTest < ActiveSupport::TestCase
-      #       should ensure_exclusion_of(:floors_with_enemies).
+      #       should validate_exclusion_of(:floors_with_enemies).
       #         in_range(5..8)
       #     end
       #
@@ -70,7 +70,7 @@ module Shoulda
       #     # RSpec
       #     describe Game do
       #       it do
-      #         should ensure_exclusion_of(:weapon).
+      #         should validate_exclusion_of(:weapon).
       #           in_array(['pistol', 'paintball gun', 'stick']).
       #           with_message('You chose a puny weapon')
       #       end
@@ -78,19 +78,20 @@ module Shoulda
       #
       #     # Test::Unit
       #     class GameTest < ActiveSupport::TestCase
-      #       should ensure_exclusion_of(:weapon).
+      #       should validate_exclusion_of(:weapon).
       #         in_array(['pistol', 'paintball gun', 'stick']).
       #         with_message('You chose a puny weapon')
       #     end
       #
-      # @return [EnsureExclusionOfMatcher]
+      # @return [ValidateExclusionOfMatcher]
       #
-      def ensure_exclusion_of(attr)
-        EnsureExclusionOfMatcher.new(attr)
+      def validate_exclusion_of(attr)
+        ValidateExclusionOfMatcher.new(attr)
       end
+      alias_method :ensure_exclusion_of, :validate_exclusion_of
 
       # @private
-      class EnsureExclusionOfMatcher < ValidationMatcher
+      class ValidateExclusionOfMatcher < ValidationMatcher
         def initialize(attribute)
           super(attribute)
           @array = nil
