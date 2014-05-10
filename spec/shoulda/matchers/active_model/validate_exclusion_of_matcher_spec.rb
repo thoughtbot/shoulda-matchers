@@ -1,5 +1,13 @@
 require 'spec_helper'
 
+describe Shoulda::Matchers::ActiveModel do
+  describe '#ensure_exclusion_of' do
+    it 'is aliased to #validate_exclusion_of' do
+      expect(method(:ensure_exclusion_of)).to eq(method(:validate_exclusion_of))
+    end
+  end
+end
+
 describe Shoulda::Matchers::ActiveModel::ValidateExclusionOfMatcher do
   context 'an attribute which must be excluded from a range' do
     it 'accepts ensuring the correct range' do

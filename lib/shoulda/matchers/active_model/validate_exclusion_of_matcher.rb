@@ -17,6 +17,7 @@ module Shoulda # :nodoc:
       def validate_exclusion_of(attr)
         ValidateExclusionOfMatcher.new(attr)
       end
+      alias_method :ensure_exclusion_of, :validate_exclusion_of
 
       class ValidateExclusionOfMatcher < ValidationMatcher # :nodoc:
         def in_array(array)
