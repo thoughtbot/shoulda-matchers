@@ -9,11 +9,11 @@ require 'shoulda/matchers/independent'
 
 if defined?(ActiveModel)
   require 'shoulda/matchers/active_model'
+  if defined?(ActiveRecord)
+    require 'shoulda/matchers/active_record'
+  end
 end
 
-if defined?(ActiveRecord)
-  require 'shoulda/matchers/active_record'
-end
 
 if defined?(ActionController)
   require 'shoulda/matchers/action_controller'
