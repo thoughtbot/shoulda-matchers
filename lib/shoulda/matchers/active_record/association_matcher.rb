@@ -948,9 +948,7 @@ module Shoulda
         end
 
         def join_table_correct?
-          return true unless macro == :has_and_belongs_to_many
-
-          if join_table_matcher.matches?(@subject)
+          if macro != :has_and_belongs_to_many || join_table_matcher.matches?(@subject)
             true
           else
             @missing = join_table_matcher.failure_message
