@@ -13,7 +13,6 @@ module Shoulda # :nodoc:
 
           def initialize(association_matcher)
             @association_matcher = association_matcher
-            @failure_messages = []
           end
 
           def matches?(subject)
