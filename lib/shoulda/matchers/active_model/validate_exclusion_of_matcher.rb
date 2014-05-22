@@ -12,13 +12,14 @@ module Shoulda # :nodoc:
       #   translation for :exclusion.
       #
       # Example:
-      #   it { should ensure_exclusion_of(:age).in_range(30..60) }
+      #   it { should validate_exclusion_of(:age).in_range(30..60) }
       #
-      def ensure_exclusion_of(attr)
-        EnsureExclusionOfMatcher.new(attr)
+      def validate_exclusion_of(attr)
+        ValidateExclusionOfMatcher.new(attr)
       end
+      alias_method :ensure_exclusion_of, :validate_exclusion_of
 
-      class EnsureExclusionOfMatcher < ValidationMatcher # :nodoc:
+      class ValidateExclusionOfMatcher < ValidationMatcher # :nodoc:
         def in_array(array)
           @array = array
           self
