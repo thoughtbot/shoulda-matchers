@@ -893,8 +893,8 @@ module Shoulda
         end
 
         def failing_submatchers
-          @failing_submatchers ||= submatchers.select do |matcher|
-            !matcher.matches?(subject)
+          @failing_submatchers ||= submatchers.reject do |matcher|
+            matcher.matches?(subject)
           end
         end
 
