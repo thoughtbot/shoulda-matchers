@@ -139,7 +139,7 @@ module Shoulda # :nodoc:
         end
 
         def subject_has_target_method?
-          subject.respond_to?(target_method)
+          subject.respond_to?(target_method, true)
         end
 
         def ensure_target_method_is_present!
