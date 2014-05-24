@@ -1,5 +1,9 @@
 # HEAD
 
+### Bug fixes
+
+* Fix `delegate_method` so that it works if the delegate method is private.
+
 ### Improvements
 
 * `have_and_belongs_to_many` now checks to make sure that the join table

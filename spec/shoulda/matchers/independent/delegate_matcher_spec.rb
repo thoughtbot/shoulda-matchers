@@ -131,6 +131,29 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
     end
   end
 
+  context 'given a private method that delegates properly' do
+    before do
+      define_class(:mailman)
+
+      define_class(:post_office) do
+        def deliver_mail
+          mailman.deliver_mail
+        end
+
+        def mailman
+          Mailman.new
+        end
+
+        private :mailman
+      end
+    end
+
+    it 'accepts' do
+      post_office = PostOffice.new
+      expect(post_office).to delegate_method(:deliver_mail).to(:mailman)
+    end
+  end
+
   context 'given a method that delegates properly with arguments' do
     before do
       define_class(:mailman)
