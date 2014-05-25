@@ -82,7 +82,7 @@ Different matchers apply to different parts of Rails:
 
 ### ActiveModel Matchers
 
-*Jump to: [allow_mass_assignment_of](#allow_mass_assignment_of), [allow_value](#allow_value), [ensure_inclusion_of](#ensure_inclusion_of), [ensure_exclusion_of](#ensure_exclusion_of), [ensure_length_of](#ensure_length_of), [have_secure_password](#have_secure_password), [validate_absence_of](#validate_absence_of), [validate_acceptance_of](#validate_acceptance_of), [validate_confirmation_of](#validate_confirmation_of), [validate_numericality_of](#validate_numericality_of), [validate_presence_of](#validate_presence_of), [validate_uniqueness_of](#validate_uniqueness_of)*
+*Jump to: [allow_mass_assignment_of](#allow_mass_assignment_of), [allow_value](#allow_value), [validate_inclusion_of](#validate_inclusion_of), [ensure_exclusion_of](#ensure_exclusion_of), [ensure_length_of](#ensure_length_of), [have_secure_password](#have_secure_password), [validate_absence_of](#validate_absence_of), [validate_acceptance_of](#validate_acceptance_of), [validate_confirmation_of](#validate_confirmation_of), [validate_numericality_of](#validate_numericality_of), [validate_presence_of](#validate_presence_of), [validate_uniqueness_of](#validate_uniqueness_of)*
 
 Note that all of the examples in this section are based on an ActiveRecord
 model for simplicity, but these matchers will work just as well using an
@@ -189,9 +189,9 @@ describe User do
 end
 ```
 
-#### ensure_inclusion_of
+#### validate_inclusion_of
 
-The `ensure_inclusion_of` matcher tests usage of the `validates_inclusion_of`
+The `validate_inclusion_of` matcher tests usage of the `validates_inclusion_of`
 validation, asserting that an attribute can take a set of values and cannot
 take values outside of this set.
 
@@ -207,11 +207,11 @@ end
 
 # RSpec
 describe Issue do
-  it { should ensure_inclusion_of(:state).in_array(%w(open resolved unresolved)) }
-  it { should ensure_inclusion_of(:priority).in_range(1..5) }
+  it { should validate_inclusion_of(:state).in_array(%w(open resolved unresolved)) }
+  it { should validate_inclusion_of(:priority).in_range(1..5) }
 
   it do
-    should ensure_inclusion_of(:severity).
+    should validate_inclusion_of(:severity).
       in_array(%w(low medium high)).
       with_message('Severity must be low, medium, or high')
   end
@@ -219,10 +219,10 @@ end
 
 # Test::Unit
 class IssueTest < ActiveSupport::TestCase
-  should ensure_inclusion_of(:state).in_array(%w(open resolved unresolved))
-  should ensure_inclusion_of(:priority).in_range(1..5)
+  should validate_inclusion_of(:state).in_array(%w(open resolved unresolved))
+  should validate_inclusion_of(:priority).in_range(1..5)
 
-  should ensure_inclusion_of(:severity).
+  should validate_inclusion_of(:severity).
     in_array(%w(low medium high)).
     with_message('Severity must be low, medium, or high')
 end

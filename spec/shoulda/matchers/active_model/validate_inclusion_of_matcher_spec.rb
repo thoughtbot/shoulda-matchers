@@ -1,6 +1,14 @@
 require 'spec_helper'
 
-describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
+describe Shoulda::Matchers::ActiveModel do
+  describe '#ensure_inclusion_of' do
+    it 'is aliased to #validate_inclusion_of' do
+      expect(method(:ensure_inclusion_of)).to eq(method(:validate_inclusion_of))
+    end
+  end
+end
+
+describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher do
   shared_context 'for a generic attribute' do
     def self.testing_values_of_option(option_name, &block)
       [nil, true, false].each do |option_value|
@@ -436,7 +444,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
       it 'prints a warning' do
         valid_values = [true, false]
         builder = build_object_allowing(valid_values)
-        message = 'You are using `ensure_inclusion_of` to assert that a boolean column allows boolean values and disallows non-boolean ones'
+        message = 'You are using `validate_inclusion_of` to assert that a boolean column allows boolean values and disallows non-boolean ones'
 
         stderr = capture(:stderr) do
           expect_to_match_in_array(builder, valid_values)
@@ -466,7 +474,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
           it 'prints a warning' do
             valid_values = [nil]
             builder = build_object_allowing(valid_values)
-            message = 'You are using `ensure_inclusion_of` to assert that a boolean column allows nil'
+            message = 'You are using `validate_inclusion_of` to assert that a boolean column allows nil'
 
             stderr = capture(:stderr) do
               expect_to_match_in_array(builder, valid_values)
@@ -599,13 +607,13 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
   end
 
   def expect_to_match(builder)
-    matcher = ensure_inclusion_of(builder.attribute)
+    matcher = validate_inclusion_of(builder.attribute)
     yield matcher if block_given?
     expect(builder.object).to(matcher)
   end
 
   def expect_not_to_match(builder)
-    matcher = ensure_inclusion_of(builder.attribute)
+    matcher = validate_inclusion_of(builder.attribute)
     yield matcher if block_given?
     expect(builder.object).not_to(matcher)
   end
