@@ -7,6 +7,9 @@
   from `validate_uniqueness_of`, your best bet continues to be creating a record
   manually and calling `validate_uniqueness_of` on that instead.
 
+* Warn when `ensure_inclusion_of` is chained with `.in_array [false, true]`
+  as well as with `.in_array [true, false]`.
+
 # 2.6.1
 
 ### Features
