@@ -382,7 +382,7 @@ EOT
         def disallows_value_outside_of_array?
           if attribute_type == :boolean
             case @array
-            when [true, false]
+            when [false, true], [true, false]
               Shoulda::Matchers.warn BOOLEAN_ALLOWS_BOOLEAN_MESSAGE
               return true
             when [nil]
