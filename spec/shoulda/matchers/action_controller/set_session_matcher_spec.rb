@@ -6,6 +6,10 @@ describe Shoulda::Matchers::ActionController::SetSessionMatcher do
       expect(controller_with_session(var: 'hi')).to set_session(:var)
     end
 
+    it 'accepts assigning to that variable with specifying the key by string' do
+      expect(controller_with_session(var: 'hi')).to set_session("var")
+    end
+
     it 'accepts assigning the correct value to that variable' do
       expect(controller_with_session(var: 'hi')).to set_session(:var).to('hi')
     end
@@ -22,8 +26,24 @@ describe Shoulda::Matchers::ActionController::SetSessionMatcher do
       expect(controller_with_session(var: 'hi')).to set_session(:other).to(nil)
     end
 
+    it 'accepts assigning nil to that variable (i.e. to(nil) does not check anything)' do
+      expect(controller_with_session(var: 'hi')).to set_session(:var).to(nil)
+    end
+
+    it 'accepts assigning nil to cleared variable' do
+      expect(controller_with_session(var: nil)).to set_session(:var).to(nil)
+    end
+
     it 'accepts assigning false to that variable' do
       expect(controller_with_session(var: false)).to set_session(:var).to(false)
+    end
+
+    it 'rejects assigning false to other variable' do
+      expect(controller_with_session(var: false)).not_to set_session(:other).to(false)
+    end
+
+    it 'rejects assigning false to a variable with value' do
+      expect(controller_with_session(var: "hi")).not_to set_session(:other).to(false)
     end
 
     it 'accepts assigning to the same value in the test context' do
@@ -40,6 +60,48 @@ describe Shoulda::Matchers::ActionController::SetSessionMatcher do
         not_to set_session(:var).in_context(self).to { expected }
     end
 
+    it 'accepts assigning nil to another variable in the test context' do
+      expected = nil
+
+      expect(controller_with_session(var: 'hi')).
+        to set_session(:other).in_context(self).to { expected }
+    end
+
+    it 'accepts assigning nil to that variable in the test context !!BUG!!' do
+      expected = nil
+
+      expect(controller_with_session(var: 'hi')).
+        to set_session(:var).in_context(self).to { expected }
+    end
+
+    it 'accepts assigning nil to a cleared variable in the test context' do
+      expected = nil
+
+      expect(controller_with_session(var: nil)).
+        to set_session(:var).in_context(self).to { expected }
+    end
+
+    it 'accepts assigning false to that variable in the test context' do
+      expected = false
+
+      expect(controller_with_session(var: false)).
+        to set_session(:var).in_context(self).to { expected }
+    end
+
+    it 'accepts assigning false to other variable in the test context' do
+      expected = false
+
+      expect(controller_with_session(var: false)).
+        not_to set_session(:other).in_context(self).to { expected }
+    end
+
+    it 'accepts assigning false to other variable in the test context' do
+      expected = false
+
+      expect(controller_with_session(var: 'hi')).
+        not_to set_session(:var).in_context(self).to { expected }
+    end
+
     def controller_with_session(session_hash)
       build_fake_response do
         session_hash.each do |key, value|
@@ -49,3 +111,4 @@ describe Shoulda::Matchers::ActionController::SetSessionMatcher do
     end
   end
 end
+
