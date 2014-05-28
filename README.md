@@ -1385,14 +1385,14 @@ end
 describe Human do
   it { should delegate_method(:work).to(:robot) }
   it { should delegate_method(:protect).to(:robot).with_arguments('Sarah Connor') }
-  it { should delegate_method(:beep_boop).to(:robot).as(:speak) }
+  it { should delegate_method(:speak).to(:robot).as(:beep_boop) }
 end
 
 # Test::Unit
 class HumanTest < ActiveSupport::TestCase
   should delegate_method(:work).to(:robot)
   should delegate_method(:protect).to(:robot).with_arguments('Sarah Connor')
-  should delegate_method(:beep_boop).to(:robot).as(:speak)
+  should delegate_method(:speak).to(:robot).as(:beep_boop)
 end
 ```
 
