@@ -9,6 +9,8 @@ module Shoulda # :nodoc:
       #   it { should set_session(:message) }
       #   it { should set_session(:user_id).to(@user.id) }
       #   it { should_not set_session(:user_id) }
+      #   it { should set_session(:user_id).to(false) }
+      #   it { should set_session(:user_id).to(nil) }
       def set_session(key)
         SetSessionMatcher.new(key)
       end
@@ -67,7 +69,7 @@ module Shoulda # :nodoc:
 
         def assigned_correct_value?
           if assigned_value?
-            if @value.nil?
+            if not defined?(@value)
               true
             else
               assigned_value == @value

@@ -26,8 +26,8 @@ describe Shoulda::Matchers::ActionController::SetSessionMatcher do
       expect(controller_with_session(var: 'hi')).to set_session(:other).to(nil)
     end
 
-    it 'accepts assigning nil to that variable (i.e. to(nil) does not check anything)' do
-      expect(controller_with_session(var: 'hi')).to set_session(:var).to(nil)
+    it 'rejects assigning nil to that variable' do
+      expect(controller_with_session(var: 'hi')).not_to set_session(:var).to(nil)
     end
 
     it 'accepts assigning nil to cleared variable' do
@@ -67,11 +67,11 @@ describe Shoulda::Matchers::ActionController::SetSessionMatcher do
         to set_session(:other).in_context(self).to { expected }
     end
 
-    it 'accepts assigning nil to that variable in the test context !!BUG!!' do
+    it 'rejects assigning nil to that variable in the test context' do
       expected = nil
 
       expect(controller_with_session(var: 'hi')).
-        to set_session(:var).in_context(self).to { expected }
+        not_to set_session(:var).in_context(self).to { expected }
     end
 
     it 'accepts assigning nil to a cleared variable in the test context' do
