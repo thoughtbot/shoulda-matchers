@@ -1207,6 +1207,7 @@ describe PostsController do
 
     it { should set_session(:foo).to('bar') }
     it { should_not set_session(:baz) }
+    it { should set_session(:baz).to(nil) }
   end
 end
 
@@ -1217,6 +1218,7 @@ class PostsControllerTest < ActionController::TestCase
 
     should set_session(:foo).to('bar')
     should_not set_session(:baz)
+    should set_session(:baz).to(nil)
   end
 end
 ```
