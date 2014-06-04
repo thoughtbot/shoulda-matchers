@@ -133,10 +133,7 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
 
   context 'given a private method that delegates properly' do
     before do
-      define_class(:mailman) do
-        def deliver_mail
-        end
-      end
+      define_class(:mailman)
 
       define_class(:post_office) do
         def deliver_mail
@@ -154,15 +151,6 @@ describe Shoulda::Matchers::Independent::DelegateMatcher do
     it 'accepts' do
       post_office = PostOffice.new
       expect(post_office).to delegate_method(:deliver_mail).to(:mailman)
-    end
-
-    it 'produces the correct failure message if the assertion was negated' do
-      post_office = PostOffice.new
-      message = 'Expected PostOffice#deliver_mail not to delegate to PostOffice#mailman, but it did'
-
-      expect {
-        expect(post_office).not_to delegate_method(:deliver_mail).to(:mailman)
-      }.to fail_with_message(message)
     end
   end
 
