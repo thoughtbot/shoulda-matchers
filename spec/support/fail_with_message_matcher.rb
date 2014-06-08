@@ -1,4 +1,8 @@
 RSpec::Matchers.define :fail_with_message do |expected|
+  def supports_block_expectations?
+    true
+  end
+
   match do |block|
     @actual = nil
 
