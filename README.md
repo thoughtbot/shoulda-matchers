@@ -31,6 +31,13 @@ end
 require 'rspec/rails'
 require 'shoulda/matchers'
 ```
+If you're using RSpec3:
+
+```ruby 
+# rails_helper
+require 'rspec/rails'
+require 'shoulda/matchers'
+```
 
 ### Test::Unit
 
