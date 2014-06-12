@@ -25,6 +25,15 @@ describe Shoulda::Matchers::ActionController do
 
       expect(@controller).to permit(:name, :age).for(:create)
     end
+
+    it 'can be used more than once in the same test' do
+      controller_for_resource_with_strong_parameters(action: :create) do
+        params.require(:user).permit(:name)
+      end
+
+      expect(@controller).to permit(:name).for(:create)
+      expect(@controller).not_to permit(:admin).for(:create)
+    end
   end
 end
 

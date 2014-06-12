@@ -7,7 +7,7 @@ module Shoulda
       class << self
         extend Forwardable
 
-        def_delegators :world, :register_double_collection,
+        def_delegators :world, :double_collection_for,
           :with_doubles_activated
 
         def world

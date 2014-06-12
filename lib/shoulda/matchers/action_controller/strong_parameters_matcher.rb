@@ -213,7 +213,7 @@ module Shoulda
 
         def set_double_collection
           @double_collection =
-            Doublespeak.register_double_collection(::ActionController::Parameters)
+            Doublespeak.double_collection_for(::ActionController::Parameters)
 
           @double_collection.register_stub(:require).to_return { |params| params }
           @double_collection.register_proxy(:permit)

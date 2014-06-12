@@ -1,5 +1,9 @@
 # HEAD
 
+### Bug fixes
+
+* Fix `permit` so that it can be used more than once in the same test.
+
 * Revert change to `validate_uniqueness_of` made in 2.6.0 so that it no longer
   provides default values for non-primary, non-nullable columns. This approach
   was causing test failures because it makes the assumption that none of these

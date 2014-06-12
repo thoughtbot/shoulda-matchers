@@ -3,10 +3,8 @@ module Shoulda
     module Doublespeak
       # @private
       class World
-        def register_double_collection(klass)
-          double_collection = DoubleCollection.new(klass)
-          double_collections_by_class[klass] = double_collection
-          double_collection
+        def double_collection_for(klass)
+          double_collections_by_class[klass] ||= DoubleCollection.new(klass)
         end
 
         def with_doubles_activated
