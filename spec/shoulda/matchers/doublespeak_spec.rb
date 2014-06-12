@@ -2,10 +2,10 @@ require 'spec_helper'
 
 module Shoulda::Matchers
   describe Doublespeak do
-    describe '.register_double_collection' do
+    describe '.double_collection_for' do
       it 'delegates to its world' do
-        Doublespeak.world.expects(:register_double_collection).with(:klass)
-        described_class.register_double_collection(:klass)
+        Doublespeak.world.expects(:double_collection_for).with(:klass)
+        described_class.double_collection_for(:klass)
       end
     end
 

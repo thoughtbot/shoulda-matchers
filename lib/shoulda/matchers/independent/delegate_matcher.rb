@@ -164,7 +164,7 @@ module Shoulda # :nodoc:
 
         def register_subject_double_collection
           double_collection =
-            Doublespeak.register_double_collection(subject.singleton_class)
+            Doublespeak.double_collection_for(subject.singleton_class)
           double_collection.register_stub(target_method).
             to_return(target_double)
 
