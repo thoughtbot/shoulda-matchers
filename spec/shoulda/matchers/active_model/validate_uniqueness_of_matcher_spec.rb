@@ -383,6 +383,51 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
     end
   end
 
+  context 'when the validation allows blank' do
+    context 'when there is an existing entry with a blank' do
+      it 'should allow_blank' do
+        model = define_model_with_allow_blank
+        model.create!(attr: '')
+        expect(model.new).to matcher.allow_blank
+      end
+    end
+
+    it 'should create a blank and verify that it is allowed' do
+      model = define_model_with_allow_blank
+      expect(model.new).to matcher.allow_blank
+      model.all.any? { |instance| instance.attr.blank? }
+    end
+
+    def define_model_with_allow_blank
+      define_model(:example, attr: :string) do
+        attr_accessible :attr
+        validates_uniqueness_of :attr, allow_blank: true
+      end
+    end
+  end
+
+  context 'when the validation does not allow a blank' do
+    context 'when there is an existing entry with a blank' do
+      it 'should not allow_blank' do
+        model = define_model_without_allow_blank
+        model.create!(attr: '')
+        expect(model.new).not_to matcher.allow_blank
+      end
+    end
+
+    it 'should not allow_blank' do
+      model = define_model_without_allow_blank
+      expect(model.new).not_to matcher.allow_blank
+    end
+
+    def define_model_without_allow_blank
+      define_model(:example, attr: :string) do
+        attr_accessible :attr
+        validates_uniqueness_of :attr
+      end
+    end
+  end
+
   def case_sensitive_validation_with_existing_value(attr_type)
     model = define_model(:example, attr: attr_type) do
       attr_accessible :attr

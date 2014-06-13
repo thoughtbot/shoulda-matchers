@@ -11,6 +11,10 @@
   from `validate_uniqueness_of`, your best bet continues to be creating a record
   manually and calling `validate_uniqueness_of` on that instead.
 
+* Add support for `validate_uniqueness_of(:foo).allow_blank` to complement
+  [`validates_uniqueness_of :foo, allow_blank:
+true`](http://api.rubyonrails.org/classes/ActiveRecord/Validations/ClassMethods.html#method-i-validates_uniqueness_of).
+
 # 2.6.1
 
 ### Features
@@ -90,7 +94,7 @@
 * Change `validate_uniqueness_of(...)` so that it provides default values for
   non-nullable attributes.
 
-* Running `rake` now installs Appraisals before running the test suite. 
+* Running `rake` now installs Appraisals before running the test suite.
   (Additionally, we now manage Appraisals using the `appraisal` executable in
   Appraisal 1.0.0.)
 
