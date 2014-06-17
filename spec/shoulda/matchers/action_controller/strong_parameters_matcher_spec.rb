@@ -63,7 +63,7 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
       end
 
       matcher = described_class.new([:name]).in_context(self).for(:create)
-      expect(matcher.matches?(@controller)).to be_true
+      expect(matcher.matches?(@controller)).to be true
     end
 
     it 'is true for all the allowable attributes' do
@@ -72,7 +72,7 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
       end
 
       matcher = described_class.new([:name, :age]).in_context(self).for(:create)
-      expect(matcher.matches?(@controller)).to be_true
+      expect(matcher.matches?(@controller)).to be true
     end
 
     it 'is false when any attributes are not allowed' do
@@ -81,14 +81,14 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
       end
 
       matcher = described_class.new([:name, :admin]).in_context(self).for(:create)
-      expect(matcher.matches?(@controller)).to be_false
+      expect(matcher.matches?(@controller)).to be false
     end
 
     it 'is false when permit is not called' do
       controller_for_resource_with_strong_parameters(action: :create)
 
       matcher = described_class.new([:name]).in_context(self).for(:create)
-      expect(matcher.matches?(@controller)).to be_false
+      expect(matcher.matches?(@controller)).to be false
     end
 
     it 'requires an action' do
@@ -120,7 +120,7 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
       matcher = described_class.new([:name]).
         in_context(self).
         for(:show, verb: :get, params: { slug: 'foo' })
-      expect(matcher.matches?(@controller)).to be_true
+      expect(matcher.matches?(@controller)).to be true
     end
 
     it 'works with #update specifically' do
@@ -131,7 +131,7 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
       matcher = described_class.new([:name]).
         in_context(self).
         for(:update, params: { id: 1 })
-      expect(matcher.matches?(@controller)).to be_true
+      expect(matcher.matches?(@controller)).to be true
     end
 
     it 'does not raise an error when #fetch was used instead of #require (issue #495)' do
@@ -142,7 +142,7 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
       matcher = described_class.new([:eta, :diner_id]).
         in_context(self).
         for(:create)
-      expect(matcher.matches?(@controller)).to be_true
+      expect(matcher.matches?(@controller)).to be true
     end
 
     it 'tracks multiple calls to #permit' do
@@ -158,12 +158,12 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
       matcher = described_class.new(sets_of_attributes[0]).
         in_context(self).
         for(:create)
-      expect(matcher.matches?(@controller)).to be_true
+      expect(matcher.matches?(@controller)).to be true
 
       matcher = described_class.new(sets_of_attributes[1]).
         in_context(self).
         for(:create)
-      expect(matcher.matches?(@controller)).to be_true
+      expect(matcher.matches?(@controller)).to be true
     end
 
     context 'stubbing params on the controller' do
