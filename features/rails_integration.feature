@@ -66,6 +66,9 @@ Feature: integrate with Rails
     And I write to "spec/models/user_spec.rb" with:
       """
       require 'spec_helper'
+      if RSpec::Core::Version::STRING.to_i >= 3
+        require 'rails_helper'
+      end
 
       describe User do
         it { should validate_presence_of(:name) }
@@ -74,13 +77,16 @@ Feature: integrate with Rails
     When I write to "spec/controllers/examples_controller_spec.rb" with:
       """
       require 'spec_helper'
+      if RSpec::Core::Version::STRING.to_i >= 3
+        require 'rails_helper'
+      end
 
       describe ExamplesController, "show" do
         before { get :show }
         it { should respond_with(:success) }
       end
       """
-    When I successfully run `bundle exec rake spec SPEC_OPTS=-fs --trace`
+    When I successfully run `bundle exec rake spec SPEC_OPTS=-fd --trace`
     Then the output should contain "2 examples, 0 failures"
     And the output should contain "should require name to be set"
     And the output should contain "should respond with 200"
@@ -96,6 +102,9 @@ Feature: integrate with Rails
     And I write to "spec/models/user_spec.rb" with:
       """
       require 'spec_helper'
+      if RSpec::Core::Version::STRING.to_i >= 3
+        require 'rails_helper'
+      end
 
       describe User do
         it { should validate_presence_of(:name) }
@@ -104,6 +113,9 @@ Feature: integrate with Rails
     When I write to "spec/controllers/examples_controller_spec.rb" with:
       """
       require 'spec_helper'
+      if RSpec::Core::Version::STRING.to_i >= 3
+        require 'rails_helper'
+      end
 
       describe ExamplesController, "show" do
         before { get :show }
@@ -112,7 +124,7 @@ Feature: integrate with Rails
       end
       """
     When I run `bundle exec spring stop`
-    When I successfully run `bundle exec spring rspec spec -fs`
+    When I successfully run `bundle exec spring rspec spec -fd`
     Then the output should contain "3 examples, 0 failures"
     And the output should contain "should require name to be set"
     And the output should contain "should respond with 200"
@@ -124,6 +136,9 @@ Feature: integrate with Rails
     And I write to "spec/models/user_spec.rb" with:
       """
       require 'spec_helper'
+      if RSpec::Core::Version::STRING.to_i == 3
+        require 'rails_helper'
+      end
 
       describe User do
         it { should validate_presence_of(:name) }
@@ -140,6 +155,6 @@ Feature: integrate with Rails
         end
       end
       """
-    When I successfully run `bundle exec rake spec test:functionals SPEC_OPTS=-fs --trace`
+    When I successfully run `bundle exec rake spec test:functionals SPEC_OPTS=-fd --trace`
     Then the output should contain "1 example, 0 failures"
     Then the output should indicate that 1 test was run

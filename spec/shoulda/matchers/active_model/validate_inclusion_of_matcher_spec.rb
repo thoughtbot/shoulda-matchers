@@ -188,7 +188,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher do
       end
 
       it 'does not match when validation uses the default message instead of given message' do
-        pending 'does not work'
+        skip 'does not work'
 
         builder = build_object_allowing(valid_values)
 
@@ -198,7 +198,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher do
       end
 
       it 'does not match when validation uses a message but it is not same as given' do
-        pending 'does not work'
+        skip 'does not work'
 
         builder = build_object_allowing(valid_values, message: 'a different message')
 
@@ -218,7 +218,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher do
       end
 
       it 'does not match when validation uses the default message instead of given message' do
-        pending 'does not work'
+        skip 'does not work'
 
         builder = build_object_allowing(valid_values)
 
@@ -228,7 +228,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher do
       end
 
       it 'does not match when validation uses a message but it does not match regex' do
-        pending 'does not work'
+        skip 'does not work'
 
         builder = build_object_allowing(valid_values, message: 'a different message')
 

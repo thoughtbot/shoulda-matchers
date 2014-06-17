@@ -70,14 +70,16 @@ When 'I run the rspec generator' do
 end
 
 When 'I configure the application to use rspec-rails' do
-  append_to_gemfile %q(gem 'rspec-rails', '~> 2.13')
+  append_to_gemfile <<-GEMFILE
+  gem 'rspec-rails', '#{rspec_rails_version}'
+  GEMFILE
   steps %{And I install gems}
 end
 
 When 'I configure the application to use rspec-rails in test and development' do
   append_to_gemfile <<-GEMFILE
   group :test, :development do
-    gem 'rspec-rails', '~> 2.13'
+    gem 'rspec-rails', '#{rspec_rails_version}'
   end
   GEMFILE
   steps %{And I install gems}
@@ -90,7 +92,7 @@ When 'I configure the application to use shoulda-context' do
 end
 
 When 'I require shoulda-matchers following rspec-rails' do
-  insert_line_after 'spec/spec_helper.rb',
+  insert_line_after test_helper_path,
     "require 'rspec/rails'",
     "require 'shoulda/matchers'"
 end
@@ -203,6 +205,22 @@ module FileHelpers
 
   def rails_lt_4?
     Gem::Requirement.new('< 4').satisfied_by?(rails_version)
+  end
+
+  def rspec_rails_version
+    Bundler.definition.specs['rspec-rails'][0].version
+    end
+
+  def rspec_rails_gte_3?
+    Gem::Requirement.new('>= 3').satisfied_by?(rspec_rails_version)
+  end
+
+  def test_helper_path
+    if rspec_rails_gte_3?
+      'spec/rails_helper.rb'
+    else
+      'spec/spec_helper.rb'
+    end
   end
 end
 
