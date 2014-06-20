@@ -1,0 +1,13 @@
+<div id="search" class="js-search">
+  <ul>
+    <% menu_lists.each do |field| %>
+      <li>
+        <a href="<%= url_for_list(field[:type]) %>">
+          <%= field[:search_title] %>
+        </a>
+      </li>
+    <% end %>
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>

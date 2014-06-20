@@ -1,0 +1,14 @@
+<div id="menu">
+  <% unless @file && @file.filename == 'README.md' %>
+    <span class="title">
+      <%= linkify('file:README.md', 'Home') %>
+    </span> &raquo;
+  <% end %>
+  <% if @contents || @file %>
+    <span class="title"><%= @breadcrumb_title %></span>
+  <% elsif object.is_a?(CodeObjects::Base) %>
+    <%= @breadcrumb.map {|obj| "<span class='title'>" + linkify(obj, obj.name) + "</span>" }.join(" &raquo; ") %>
+    <%= @breadcrumb.size > 0 ? " &raquo; " : "" %>
+    <span class="title"><%= object.root? ? "Top Level Namespace" : object.name(true) %></span>
+  <% end %>
+</div>

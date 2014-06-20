@@ -3,7 +3,7 @@ module Shoulda
     module ActiveModel
       module NumericalityMatchers
         # @private
-        class OnlyIntegerMatcher
+        class OnlyIntegerMatcher < NumericTypeMatcher
           NON_INTEGER_VALUE = 0.1
           def initialize(attribute)
             @attribute = attribute

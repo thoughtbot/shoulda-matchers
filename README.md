@@ -131,6 +131,21 @@ gem 'shoulda-matchers'
 gem 'activemodel'
 ```
 
+## Generating documentation
+
+YARD is used to generate documentation, which can be viewed online at
+<http://thoughtbot.github.com/shoulda-matchers>. You can preview changes you
+make to the documentation locally by running
+
+    yard doc
+
+from this directory. Then, open `doc/index.html` in your browser.
+
+If you want to see a live preview as you work without having to run `yard` over
+and over again, keep this command running in a separate terminal session:
+
+    watchr yard.watchr
+
 ## Versioning
 
 shoulda-matchers follows Semantic Versioning 2.0 as defined at
