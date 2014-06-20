@@ -433,16 +433,18 @@ describe Shoulda::Matchers::ActiveModel::EnsureInclusionOfMatcher do
         end
       end
 
-      it 'prints a warning' do
-        valid_values = [true, false]
-        builder = build_object_allowing(valid_values)
-        message = 'You are using `ensure_inclusion_of` to assert that a boolean column allows boolean values and disallows non-boolean ones'
+      [[false, true], [true, false]].each do |booleans|
+        it 'prints a warning' do
+          valid_values = booleans
+          builder = build_object_allowing(valid_values)
+          message = 'You are using `ensure_inclusion_of` to assert that a boolean column allows boolean values and disallows non-boolean ones'
 
-        stderr = capture(:stderr) do
-          expect_to_match_in_array(builder, valid_values)
+          stderr = capture(:stderr) do
+            expect_to_match_in_array(builder, valid_values)
+          end
+
+          expect(stderr.gsub(/\n+/, ' ')).to include(message)
         end
-
-        expect(stderr.gsub(/\n+/, ' ')).to include(message)
       end
     end
   end

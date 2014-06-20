@@ -228,6 +228,11 @@ class IssueTest < ActiveSupport::TestCase
 end
 ```
 
+**PLEASE NOTE:** `ensure_inclusion_of` can't test much for boolean attributes,
+because ActiveRecord automatically converts non-boolean values to booleans.
+`ensure_inclusion_of` lets you call it with `.in_array([true, false])`
+but prints a warning for you to reconsider.
+
 #### ensure_exclusion_of
 
 The `ensure_exclusion_of` matcher tests usage of the `validates_exclusion_of`
