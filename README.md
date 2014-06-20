@@ -12,22 +12,16 @@ complex, and error-prone.
 
 Include the gem in your Gemfile:
 
-```ruby
-group :test do
-  gem 'shoulda-matchers'
-end
-```
-
-Note that if you're using a Rails preloader like Spring, you'll need to manually
-require shoulda-matchers in your spec_helper after you require RSpec:
-
-```ruby
-# Gemfile
+``` ruby
 group :test do
   gem 'shoulda-matchers', require: false
 end
+```
 
-# spec_helper
+Then require the gem following rspec-rails in your rails_helper (or spec_helper
+if you're using RSpec 2.x):
+
+``` ruby
 require 'rspec/rails'
 require 'shoulda/matchers'
 ```
