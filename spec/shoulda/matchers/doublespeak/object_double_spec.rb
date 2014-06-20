@@ -5,17 +5,17 @@ module Shoulda::Matchers::Doublespeak
     it 'responds to any method' do
       double = described_class.new
 
-      expect(double.respond_to?(:foo)).to be_true
-      expect(double.respond_to?(:bar)).to be_true
-      expect(double.respond_to?(:baz)).to be_true
+      expect(double.respond_to?(:foo)).to be true
+      expect(double.respond_to?(:bar)).to be true
+      expect(double.respond_to?(:baz)).to be true
     end
 
     it 'returns nil from any method call' do
       double = described_class.new
 
-      expect(double.foo).to be_nil
-      expect(double.bar).to be_nil
-      expect(double.baz).to be_nil
+      expect(double.foo).to be nil
+      expect(double.bar).to be nil
+      expect(double.baz).to be nil
     end
 
     it 'records every method call' do

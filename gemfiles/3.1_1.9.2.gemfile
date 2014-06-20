@@ -3,13 +3,14 @@
 source "https://rubygems.org"
 
 gem "shoulda-context", "~> 1.2.0"
-gem "sqlite3", :platform=>:ruby
-gem "activerecord-jdbc-adapter", :platform=>:jruby
-gem "activerecord-jdbcsqlite3-adapter", :platform=>:jruby
-gem "jdbc-sqlite3", :platform=>:jruby
-gem "jruby-openssl", :platform=>:jruby
-gem "therubyrhino", :platform=>:jruby
+gem "sqlite3", :platform => :ruby
+gem "activerecord-jdbc-adapter", :platform => :jruby
+gem "activerecord-jdbcsqlite3-adapter", :platform => :jruby
+gem "jdbc-sqlite3", :platform => :jruby
+gem "jruby-openssl", :platform => :jruby
+gem "therubyrhino", :platform => :jruby
 gem "strong_parameters"
+gem "rspec-rails", "2.99.0"
 gem "rails", "~> 3.1.8"
 gem "bcrypt-ruby", "~> 3.0.0"
 gem "jquery-rails"
@@ -18,4 +19,4 @@ gem "coffee-rails", "~> 3.1.1"
 gem "uglifier", ">= 1.0.3"
 gem "turn", "0.8.2"
 
-gemspec :path=>".././"
+gemspec :path => "../"

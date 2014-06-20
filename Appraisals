@@ -2,6 +2,7 @@ ruby_version = Gem::Version.new(RUBY_VERSION + '')
 
 rails_3 = proc do
   gem 'strong_parameters'
+  gem 'rspec-rails', '2.99.0'
 end
 
 rails_3_1 = proc do
@@ -12,6 +13,7 @@ rails_3_1 = proc do
   gem 'sass-rails', '~> 3.1.5'
   gem 'coffee-rails', '~> 3.1.1'
   gem 'uglifier', '>= 1.0.3'
+  gem 'rspec-rails', '2.99.0'
 end
 
 rails_4 = proc do
@@ -19,9 +21,9 @@ rails_4 = proc do
   gem 'coffee-rails', '~> 4.0.0'
   gem 'jquery-rails'
   gem 'turbolinks'
-  gem 'jbuilder', '~> 1.2'
   gem 'sdoc'
   gem 'activeresource', '4.0.0'
+  gem 'rspec-rails', '~> 3.0.1'
   # Test suite makes heavy use of attr_accessible
   gem 'protected_attributes'
 end
@@ -61,6 +63,7 @@ if Gem::Requirement.new('> 1.9.2').satisfied_by?(ruby_version)
   appraise '4.0.0' do
     instance_eval(&rails_4)
     gem 'rails', '4.0.0'
+    gem 'jbuilder', '~> 1.2'
     gem 'sass-rails', '~> 4.0.0'
     gem 'bcrypt-ruby', '~> 3.0.0'
   end
@@ -68,8 +71,10 @@ if Gem::Requirement.new('> 1.9.2').satisfied_by?(ruby_version)
   appraise '4.0.1' do
     instance_eval(&rails_4)
     gem 'rails', '4.0.1'
+    gem 'jbuilder', '~> 1.2'
     gem 'sass-rails', '~> 4.0.0'
     gem 'bcrypt-ruby', '~> 3.1.2'
+    gem 'rspec-rails', '2.99.0'
   end
 
   appraise '4.1' do

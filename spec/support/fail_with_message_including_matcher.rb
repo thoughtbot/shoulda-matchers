@@ -1,4 +1,8 @@
 RSpec::Matchers.define :fail_with_message_including do |expected|
+  def supports_block_expectations?
+    true
+  end
+
   match do |block|
     @actual = nil
 
@@ -11,7 +15,7 @@ RSpec::Matchers.define :fail_with_message_including do |expected|
     @actual && @actual.include?(expected)
   end
 
-  failure_message_for_should do
+  def failure_message
     msg = "Expectation should have failed with message including '#{expected}'"
 
     if @actual
@@ -23,11 +27,18 @@ RSpec::Matchers.define :fail_with_message_including do |expected|
     msg
   end
 
-  failure_message_for_should_not do
+  def failure_message_for_should
+    failure_message
+  end
+
+  def failure_message_when_negated
     msg  = "Expectation should not have failed with message including '#{expected}'"
     msg << ", but did."
 
     msg
   end
 
+  def failure_message_for_should_not
+    failure_message_when_negated
+  end
 end
