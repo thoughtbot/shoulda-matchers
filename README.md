@@ -133,9 +133,8 @@ gem 'activemodel'
 
 ## Generating documentation
 
-YARD is used to generate documentation, which can be viewed online at
-<http://thoughtbot.github.com/shoulda-matchers>. You can preview changes you
-make to the documentation locally by running
+YARD is used to generate documentation. You can preview changes you make to the
+documentation locally by running
 
     yard doc
 
