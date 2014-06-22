@@ -142,7 +142,7 @@ from this directory. Then, open `doc/index.html` in your browser.
 If you want to see a live preview as you work without having to run `yard` over
 and over again, keep this command running in a separate terminal session:
 
-    watchr yard.watchr
+    watchr docs.watchr
 
 ## Versioning
 
