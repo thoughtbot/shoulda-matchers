@@ -15,8 +15,16 @@ RSpec::Core::RakeTask.new do |t|
 end
 
 Cucumber::Rake::Task.new do |t|
+  options = []
+
+  options << '--format' << (ENV['CUCUMBER_FORMAT'] || 'progress')
+
+  if Bundler.definition.dependencies.none? { |dependency| dependency.name == 'spring' }
+    options << '--profile' << 'without_spring'
+  end
+
   t.fork = false
-  t.cucumber_opts = ['--format', (ENV['CUCUMBER_FORMAT'] || 'progress')]
+  t.cucumber_opts = options
 end
 
 task :default do

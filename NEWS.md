@@ -2,6 +2,10 @@
 
 ### Bug fixes
 
+* If you have a Rails >= 4.1 project and you are running tests using Spring,
+  matchers that depend on assertions within Rails' testing layer (e.g.
+  `render_template` and `route`) will no longer fail.
+
 * Fix `permit` so that it can be used more than once in the same test.
 
 * Revert change to `validate_uniqueness_of` made in 2.6.0 so that it no longer

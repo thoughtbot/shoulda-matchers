@@ -1,5 +1,10 @@
 ruby_version = Gem::Version.new(RUBY_VERSION + '')
 
+spring = proc do
+  gem 'spring'
+  gem 'spring-commands-rspec'
+end
+
 rails_3 = proc do
   gem 'strong_parameters'
 end
@@ -14,7 +19,18 @@ rails_3_1 = proc do
   gem 'uglifier', '>= 1.0.3'
 end
 
+rails_3_2 = proc do
+  instance_eval(&rails_3)
+  gem 'rails', '~> 3.2.13'
+  gem 'bcrypt-ruby', '~> 3.0.0'
+  gem 'jquery-rails'
+  gem 'sass-rails', '~> 3.2.3'
+  gem 'coffee-rails', '~> 3.2.1'
+  gem 'uglifier', '>= 1.0.3'
+end
+
 rails_4 = proc do
+  instance_eval(&spring)
   gem 'uglifier', '>= 1.3.0'
   gem 'coffee-rails', '~> 4.0.0'
   gem 'jquery-rails'
@@ -47,14 +63,15 @@ if Gem::Requirement.new('< 2').satisfied_by?(ruby_version)
   end
 end
 
-appraise '3.2' do
-  instance_eval(&rails_3)
-  gem 'rails', '~> 3.2.13'
-  gem 'bcrypt-ruby', '~> 3.0.0'
-  gem 'jquery-rails'
-  gem 'sass-rails', '~> 3.2.3'
-  gem 'coffee-rails', '~> 3.2.1'
-  gem 'uglifier', '>= 1.0.3'
+if Gem::Requirement.new('= 1.9.2').satisfied_by?(ruby_version)
+  appraise '3.2-1.9.2' do
+    instance_eval(&rails_3_2)
+  end
+else
+  appraise '3.2' do
+    instance_eval(&rails_3_2)
+    instance_eval(&spring)
+  end
 end
 
 if Gem::Requirement.new('> 1.9.2').satisfied_by?(ruby_version)

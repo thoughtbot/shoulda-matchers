@@ -151,6 +151,8 @@ GEM
     shoulda-context (1.2.0)
     slop (3.4.7)
     spring (1.1.2)
+    spring-commands-rspec (1.0.2)
+      spring (>= 0.9.1)
     sprockets (2.11.0)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -208,6 +210,7 @@ DEPENDENCIES
   shoulda-context (~> 1.2.0)
   shoulda-matchers!
   spring
+  spring-commands-rspec
   sqlite3
   therubyrhino
   turbolinks

@@ -32,8 +32,25 @@ When 'I generate a new rails application' do
   end
 end
 
+When /^I configure the application to use "([^\"]+)"$/ do |name|
+  append_to_gemfile "gem '#{name}'"
+  steps %{And I install gems}
+end
+
+When 'I configure the application to use Spring' do
+  if rails_lt_4?
+    append_to_gemfile "gem 'spring'"
+    steps %{And I install gems}
+  end
+end
+
 When /^I configure the application to use "([^\"]+)" from this project$/ do |name|
   append_to_gemfile "gem '#{name}', path: '#{PROJECT_ROOT}'"
+  steps %{And I install gems}
+end
+
+When /^I configure the application to use "([^\"]+)" from this project, disabling auto-require$/ do |name|
+  append_to_gemfile "gem '#{name}', path: '#{PROJECT_ROOT}', require: false"
   steps %{And I install gems}
 end
 
@@ -70,6 +87,12 @@ When 'I configure the application to use shoulda-context' do
   append_to_gemfile %q(gem 'shoulda-context', '~> 1.2.0')
   append_to_gemfile %q(gem 'pry')
   steps %{And I install gems}
+end
+
+When 'I require shoulda-matchers following rspec-rails' do
+  insert_line_after 'spec/spec_helper.rb',
+    "require 'rspec/rails'",
+    "require 'shoulda/matchers'"
 end
 
 When /^I set the "([^"]*)" environment variable to "([^"]*)"$/ do |key, value|
@@ -112,10 +135,10 @@ end
 Then /^the output should indicate that (\d+) tests? (?:was|were) run/ do |number|
   # Rails 4 has slightly different output than Rails 3 due to
   # Test::Unit::TestCase -> MiniTest
-  if rails_4?
-    steps %{Then the output should match /#{number} (tests|runs), #{number} assertions, 0 failures, 0 errors, 0 skips/}
-  else
+  if rails_lt_4?
     steps %{Then the output should contain "#{number} tests, #{number} assertions, 0 failures, 0 errors"}
+  else
+    steps %{Then the output should match /#{number} (tests|runs), #{number} assertions, 0 failures, 0 errors, 0 skips/}
   end
 end
 
@@ -125,14 +148,16 @@ Then /^the output should indicate that (\d+) unit and (\d+) functional tests? we
   total = n1.to_i + n2.to_i
   # Rails 3 runs separate test suites in separate processes, but Rails 4 does
   # not, so that's why we have to check for different things here
-  if rails_4?
-    steps %{Then the output should match /#{total} (tests|runs), #{total} assertions, 0 failures, 0 errors, 0 skips/}
-  else
+  if rails_lt_4?
     steps %{Then the output should match /#{n1} tests, #{n1} assertions, 0 failures, 0 errors.+#{n2} tests, #{n2} assertions, 0 failures, 0 errors/}
+  else
+    steps %{Then the output should match /#{total} (tests|runs), #{total} assertions, 0 failures, 0 errors, 0 skips/}
   end
 end
 
 module FileHelpers
+  RAILS_VERSION_IN_GEMFILE_PATH_REGEX = %r{/([^/]+?)(?:_.+)?\.gemfile$}
+
   def append_to(path, contents)
     in_current_dir do
       File.open(path, 'a') do |file|
@@ -154,9 +179,30 @@ module FileHelpers
     end
   end
 
-  def rails_4?
-    match = ORIGINAL_BUNDLE_VARS['BUNDLE_GEMFILE'].match(/(\d)\.\d\.(\d\.)?(\w+\.)?gemfile$/)
-    match.captures[0] == '4'
+  def insert_line_after(file_path, line, line_to_insert)
+    line += "\n"
+    line_to_insert += "\n"
+
+    in_current_dir do
+      contents = File.read(file_path)
+      index = contents.index(line) + line.length
+      contents.insert(index, line_to_insert)
+      File.open(file_path, 'w') { |f| f.write(contents) }
+    end
+  end
+
+  def rails_version_string
+    ORIGINAL_BUNDLE_VARS['BUNDLE_GEMFILE'].
+      match(RAILS_VERSION_IN_GEMFILE_PATH_REGEX).
+      captures[0]
+  end
+
+  def rails_version
+    @_rails_version ||= Gem::Version.new(rails_version_string)
+  end
+
+  def rails_lt_4?
+    Gem::Requirement.new('< 4').satisfied_by?(rails_version)
   end
 end
 

@@ -85,6 +85,38 @@ Feature: integrate with Rails
     And the output should contain "should require name to be set"
     And the output should contain "should respond with 200"
 
+  @spring
+  Scenario: A Rails application that uses RSpec, requires shoulda-matchers manually, and uses Spring to run tests
+    When I configure the application to use Spring
+    When I configure the application to use "spring-commands-rspec"
+    When I configure the application to use rspec-rails
+    And I configure the application to use "shoulda-matchers" from this project, disabling auto-require
+    And I run the rspec generator
+    And I require shoulda-matchers following rspec-rails
+    And I write to "spec/models/user_spec.rb" with:
+      """
+      require 'spec_helper'
+
+      describe User do
+        it { should validate_presence_of(:name) }
+      end
+      """
+    When I write to "spec/controllers/examples_controller_spec.rb" with:
+      """
+      require 'spec_helper'
+
+      describe ExamplesController, "show" do
+        before { get :show }
+        it { should respond_with(:success) }
+        it { should_not render_template('foo') }
+      end
+      """
+    When I run `bundle exec spring stop`
+    When I successfully run `bundle exec spring rspec spec -fs`
+    Then the output should contain "3 examples, 0 failures"
+    And the output should contain "should require name to be set"
+    And the output should contain "should respond with 200"
+
   Scenario: generate a Rails application that mixes Rspec and Test::Unit
     When I configure the application to use rspec-rails in test and development
     And I configure the application to use "shoulda-matchers" from this project in test and development
