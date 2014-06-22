@@ -25,6 +25,17 @@ describe Shoulda::Matchers::ActionController do
 
       expect(@controller).to permit(:name, :age).for(:create)
     end
+
+    it 'can be called twice before matching' do
+      controller_for_resource_with_strong_parameters(action: :create) do
+        params.require(:user).permit(:name)
+      end
+
+      permit_name = permit(:name)
+      permit_admin = permit(:admin)
+      expect(@controller).to permit_name.for(:create)
+      expect(@controller).not_to permit_admin.for(:create)
+    end
   end
 end
 

@@ -2,18 +2,19 @@ require 'spec_helper'
 
 module Shoulda::Matchers::Doublespeak
   describe World do
-    describe '#register_double_collection' do
-      it 'calls DoubleCollection.new with the given class' do
-        DoubleCollection.expects(:new).with(:klass)
+    describe '#double_collection_for' do
+      it 'calls DoubleCollection.new once with the given class' do
+        DoubleCollection.expects(:new).with(:klass).returns(:klass).once
         world = described_class.new
-        world.register_double_collection(:klass)
+        world.double_collection_for(:klass)
+        world.double_collection_for(:klass)
       end
 
-      it 'returns the newly created DoubleCollection' do
+      it 'returns the created DoubleCollection' do
         double_collection = Object.new
         DoubleCollection.stubs(:new).with(:klass).returns(double_collection)
         world = described_class.new
-        expect(world.register_double_collection(:klass)).to be double_collection
+        expect(world.double_collection_for(:klass)).to be double_collection
       end
     end
 
@@ -40,9 +41,9 @@ module Shoulda::Matchers::Doublespeak
         DoubleCollection.stubs(:new).
           with(:klass3).
           returns(double_collections[2])
-        world.register_double_collection(:klass1)
-        world.register_double_collection(:klass2)
-        world.register_double_collection(:klass3)
+        world.double_collection_for(:klass1)
+        world.double_collection_for(:klass2)
+        world.double_collection_for(:klass3)
 
         world.with_doubles_activated { block_called = true }
 
@@ -57,31 +58,12 @@ module Shoulda::Matchers::Doublespeak
         world = described_class.new
 
         DoubleCollection.stubs(:new).returns(double_collection)
-        world.register_double_collection(:klass)
+        world.double_collection_for(:klass)
 
         begin
           world.with_doubles_activated { raise 'error' }
         rescue RuntimeError
         end
-      end
-
-      it 'does not allow multiple DoubleCollections to be registered that represent the same class' do
-        double_collections = [stub, stub]
-        sequence = sequence('with_doubles_activated')
-        double_collections[0].expects(:activate).never
-        double_collections[0].expects(:deactivate).never
-        double_collections[1].expects(:activate).in_sequence(sequence)
-        double_collections[1].expects(:deactivate).in_sequence(sequence)
-
-        world = described_class.new
-
-        DoubleCollection.stubs(:new).
-          returns(double_collections[0]).then.
-          returns(double_collections[1])
-        world.register_double_collection(:klass1)
-        world.register_double_collection(:klass1)
-
-        world.with_doubles_activated { }
       end
     end
   end
