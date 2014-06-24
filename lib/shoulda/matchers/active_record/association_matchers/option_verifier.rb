@@ -6,8 +6,6 @@ module Shoulda
         class OptionVerifier
           delegate :reflection, to: :reflector
 
-          attr_reader :reflector
-
           RELATION_OPTIONS = [:conditions, :order]
 
           def initialize(reflector)
