@@ -46,7 +46,7 @@ module Shoulda
           self
         end
 
-        private
+        protected
 
         attr_reader :allow_matcher
       end

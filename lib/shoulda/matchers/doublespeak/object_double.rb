@@ -24,7 +24,7 @@ module Shoulda
           nil
         end
 
-        private
+        protected
 
         attr_reader :calls_by_method_name
       end

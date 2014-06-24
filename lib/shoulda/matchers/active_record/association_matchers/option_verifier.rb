@@ -43,7 +43,7 @@ module Shoulda
             end
           end
 
-          private
+          protected
 
           attr_reader :reflector
 

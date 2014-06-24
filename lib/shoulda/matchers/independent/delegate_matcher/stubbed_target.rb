@@ -17,7 +17,7 @@ module Shoulda
           args == received_arguments
         end
 
-        private
+        protected
 
         def stub_method(method)
           class_eval do

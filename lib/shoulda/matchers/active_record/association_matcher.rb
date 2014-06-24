@@ -855,7 +855,7 @@ module Shoulda
             submatchers_match?
         end
 
-        private
+        protected
 
         attr_reader :submatchers, :missing, :subject, :macro, :name, :options
 

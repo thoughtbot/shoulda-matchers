@@ -49,7 +49,7 @@ module Shoulda
             end
           end
 
-          private
+          protected
 
           attr_accessor :through, :name, :subject
 

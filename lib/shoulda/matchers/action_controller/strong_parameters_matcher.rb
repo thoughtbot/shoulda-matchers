@@ -206,7 +206,7 @@ module Shoulda
         end
         alias failure_message_for_should_not failure_message_when_negated
 
-        private
+        protected
 
         attr_reader :controller, :double_collection, :action, :verb,
           :request_params, :expected_permitted_params, :context

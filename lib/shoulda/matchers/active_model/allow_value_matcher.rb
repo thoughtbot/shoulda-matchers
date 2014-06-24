@@ -237,7 +237,7 @@ module Shoulda
           message_finder.allow_description(allowed_values)
         end
 
-        private
+        protected
 
         attr_accessor :values_to_match, :message_finder_factory,
           :instance, :attribute_to_set, :attribute_to_check_message_against,
