@@ -253,7 +253,7 @@ module Shoulda
         end
 
         def expectation
-          expected = "#{model_class.name} to #{description}"
+          "#{model_class.name} to #{description}"
         end
       end
     end
