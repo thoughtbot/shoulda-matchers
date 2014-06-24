@@ -38,7 +38,7 @@ module Shoulda
           end
         end
 
-        private
+        protected
 
         attr_reader :klass, :doubles_by_method_name
 

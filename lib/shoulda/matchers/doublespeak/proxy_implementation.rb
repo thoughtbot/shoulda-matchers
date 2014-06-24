@@ -22,7 +22,7 @@ module Shoulda
           double.call_original_method(object, args, block)
         end
 
-        private
+        protected
 
         attr_reader :stub_implementation
       end

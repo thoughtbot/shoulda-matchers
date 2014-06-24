@@ -180,7 +180,7 @@ module Shoulda
           "have :#{method_name} as a #{kind}_#{callback_type}"
         end
 
-        private
+        protected
 
         def callbacks
           controller_class._process_action_callbacks.select do |callback|

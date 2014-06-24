@@ -26,7 +26,7 @@ module Shoulda
           implementation.call(object, args, block)
         end
 
-        private
+        protected
 
         attr_reader :implementation
       end

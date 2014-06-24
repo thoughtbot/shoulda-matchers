@@ -68,7 +68,7 @@ module Shoulda
           failure.nil?
         end
 
-        private
+        protected
 
         attr_reader :subject
 

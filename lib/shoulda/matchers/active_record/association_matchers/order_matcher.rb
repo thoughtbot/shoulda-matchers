@@ -27,7 +27,7 @@ module Shoulda
             end
           end
 
-          private
+          protected
 
           attr_accessor :subject, :order, :name
 

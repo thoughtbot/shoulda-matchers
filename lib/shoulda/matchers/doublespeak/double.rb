@@ -46,7 +46,7 @@ module Shoulda
           end
         end
 
-        private
+        protected
 
         attr_reader :klass, :method_name, :implementation, :original_method
 
