@@ -747,7 +747,7 @@ module Shoulda
       # @private
       class AssociationMatcher
         delegate :reflection, :model_class, :associated_class, :through?,
-          :join_table, :polymorphic?, to: :reflector
+          :join_table_name, :polymorphic?, to: :reflector
 
         def initialize(macro, name)
           @macro = macro
@@ -982,10 +982,10 @@ module Shoulda
 
         def join_table_exists?
           if macro != :has_and_belongs_to_many ||
-              model_class.connection.tables.include?(join_table)
+              model_class.connection.tables.include?(join_table_name)
             true
           else
-            @missing = "join table #{join_table} doesn't exist"
+            @missing = "join table #{join_table_name} doesn't exist"
             false
           end
         end
