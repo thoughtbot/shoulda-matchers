@@ -796,7 +796,7 @@ module Shoulda
 
         def join_table(join_table)
           join_table_matcher = AssociationMatchers::JoinTableMatcher.new(join_table, name)
-          add_submatcher(join_table)
+          add_submatcher(join_table_matcher)
           self
         end
 
