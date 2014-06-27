@@ -838,11 +838,11 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
         end
 
         define_model(:relative)
-        define_model(:developer) do
+        developer = define_model(:developer) do
           has_and_belongs_to_many :relatives, join_table: :developers_relatives
         end
 
-        expect(Developer.new).to have_and_belong_to_many(:relatives).
+        expect(developer.new).to have_and_belong_to_many(:relatives).
           join_table(:developers_relatives)
       end
     end
