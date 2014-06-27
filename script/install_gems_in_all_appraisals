@@ -1,0 +1,21 @@
+#!/bin/bash
+
+SUPPORTED_VERSIONS=$(<script/SUPPORTED_VERSIONS)
+
+install-gems-for-version() {
+  local version="$1"
+
+  if [[ $version == "latest" ]]; then
+    version=""
+  fi
+
+  (export RBENV_VERSION=$version; bundle && bundle exec appraisal install)
+}
+
+for version in $SUPPORTED_VERSIONS; do
+  echo
+  echo "*** Installing gems for $version ***"
+  install-gems-for-version $version
+done
+
+install-gems-for-version latest
