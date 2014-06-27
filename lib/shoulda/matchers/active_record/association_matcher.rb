@@ -794,6 +794,12 @@ module Shoulda
           self
         end
 
+        def join_table(join_table)
+          join_table_matcher = AssociationMatchers::JoinTableMatcher.new(join_table, name)
+          add_submatcher(join_table)
+          self
+        end
+
         def conditions(conditions)
           @options[:conditions] = conditions
           self
