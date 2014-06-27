@@ -1,0 +1,14 @@
+#!/bin/bash
+
+SUPPORTED_VERSIONS=$(<script/SUPPORTED_VERSIONS)
+
+run-tests-for-version() {
+  local version="$1"
+  (export RBENV_VERSION=$version; bundle exec rake)
+}
+
+for version in $SUPPORTED_VERSIONS; do
+  echo
+  echo "*** Running tests for $version ***"
+  run-tests-for-version $version
+done
