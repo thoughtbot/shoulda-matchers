@@ -832,18 +832,18 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       end
 
       it 'accepts a valid association with a join_table' do
-        create_table :developers_relatives, id: false do |t|
+        create_table :random_name, id: false do |t|
           t.integer :developer_id
           t.integer :relative_id
         end
 
         define_model(:relative)
         developer = define_model(:developer) do
-          has_and_belongs_to_many :relatives, join_table: :developers_relatives
+          has_and_belongs_to_many :relatives, join_table: :random_name
         end
 
         expect(developer.new).to have_and_belong_to_many(:relatives).
-          join_table(:developers_relatives)
+          join_table(:random_name)
       end
     end
 
