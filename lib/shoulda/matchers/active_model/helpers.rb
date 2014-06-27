@@ -4,12 +4,23 @@ module Shoulda
       # @private
       module Helpers
         def pretty_error_messages(obj)
-          obj.errors.map do |attribute, model|
-            msg = "#{attribute} #{model}"
-            if attribute.to_sym != :base && obj.respond_to?(attribute)
-              msg << " (#{obj.__send__(attribute).inspect})"
+          obj.errors.map do |attribute, message|
+            full_message = message.dup
+            parenthetical_parts = []
+
+            unless attribute.to_sym == :base
+              parenthetical_parts << "attribute: #{attribute.to_s.inspect}"
+
+              if obj.respond_to?(attribute)
+                parenthetical_parts << "value: #{obj.__send__(attribute).inspect}"
+              end
             end
-            msg
+
+            if parenthetical_parts.any?
+              full_message << " (#{parenthetical_parts.join(', ')})"
+            end
+
+            full_message
           end
         end
 

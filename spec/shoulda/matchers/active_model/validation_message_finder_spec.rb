@@ -67,7 +67,7 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
 
       description = finder.messages_description
 
-      expected_messages = ['attr is invalid ("xyz")']
+      expected_messages = ['is invalid (attribute: "attr", value: "xyz")']
       expect(description).to eq "errors: #{expected_messages}"
     end
 
@@ -87,7 +87,7 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
       end.new
       finder = Shoulda::Matchers::ActiveModel::ValidationMessageFinder.new(instance, :attribute)
 
-      expected_messages = ['association.association_attribute is invalid']
+      expected_messages = ['is invalid (attribute: "association.association_attribute")']
       expect(finder.messages_description).to eq "errors: #{expected_messages}"
     end
 
