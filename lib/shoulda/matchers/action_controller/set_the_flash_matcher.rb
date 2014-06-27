@@ -153,6 +153,7 @@ module Shoulda
       class SetTheFlashMatcher
         def initialize
           @options = {}
+          @value = nil
         end
 
         def to(value)

@@ -39,3 +39,5 @@ RSpec.configure do |config|
   config.include Shoulda::Matchers::ActionController,
                  example_group: { file_path: /action_controller/ }
 end
+
+$VERBOSE = true

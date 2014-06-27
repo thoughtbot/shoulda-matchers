@@ -53,7 +53,10 @@ module Shoulda
           @options = options
           @message = message
           @template = options.is_a?(Hash) ? options[:partial] : options
-          @context  = context
+          @context = context
+          @controller = nil
+          @failure_message = nil
+          @failure_message_when_negated = nil
         end
 
         def matches?(controller)

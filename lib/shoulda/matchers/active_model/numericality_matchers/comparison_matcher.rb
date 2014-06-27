@@ -21,6 +21,7 @@ module Shoulda
             @operator = operator
             @message = ERROR_MESSAGES[operator]
             @comparison_combos = comparison_combos
+            @strict = false
           end
 
           def for(attribute)

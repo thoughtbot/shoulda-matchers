@@ -103,7 +103,7 @@ module Shoulda::Matchers::Doublespeak
 
     describe '#call_original_method' do
       it 'binds the stored method object to the class and calls it with the given args and block' do
-        klass = create_class(a_method: nil)
+        klass = create_class
         instance = klass.new
         actual_args = actual_block = method_called = nil
         expected_args = [:one, :two, :three]

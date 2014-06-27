@@ -39,6 +39,8 @@ module Shoulda
       class RescueFromMatcher
         def initialize(exception)
           @exception = exception
+          @expected_method = nil
+          @controller = nil
         end
 
         def with(method)

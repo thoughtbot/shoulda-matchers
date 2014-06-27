@@ -9,6 +9,7 @@ require_relative 'lib/shoulda/matchers/version'
 CURRENT_VERSION = Shoulda::Matchers::VERSION
 
 RSpec::Core::RakeTask.new do |t|
+  t.ruby_opts = '-w -r ./spec/report_warnings'
   t.pattern = "spec/**/*_spec.rb"
   t.rspec_opts = '--color --format progress'
   t.verbose = false

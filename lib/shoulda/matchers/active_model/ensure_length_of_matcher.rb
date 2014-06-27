@@ -204,6 +204,8 @@ module Shoulda
         def initialize(attribute)
           super(attribute)
           @options = {}
+          @short_message = nil
+          @long_message = nil
         end
 
         def is_at_least(length)

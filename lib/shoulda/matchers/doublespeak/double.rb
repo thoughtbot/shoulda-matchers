@@ -65,6 +65,7 @@ module Shoulda
 
         def restore_original_method
           original_method = @original_method
+          klass.__send__(:remove_method, method_name)
           klass.__send__(:define_method, method_name) do |*args, &block|
             original_method.bind(self).call(*args, &block)
           end

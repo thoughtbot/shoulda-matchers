@@ -10,6 +10,10 @@ module ClassBuilder
   def define_class(class_name, base = Object, &block)
     class_name = class_name.to_s.camelize
 
+    if Object.const_defined?(class_name)
+      Object.__send__(:remove_const, class_name)
+    end
+
     # FIXME: ActionMailer 3.2 calls `name.underscore` immediately upon
     # subclassing. Class.new.name == nil. So, Class.new(ActionMailer::Base)
     # errors out since it's trying to do `nil.underscore`. This is very ugly but

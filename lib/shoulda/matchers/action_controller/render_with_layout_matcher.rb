@@ -64,9 +64,13 @@ module Shoulda
       # @private
       class RenderWithLayoutMatcher
         def initialize(expected_layout)
-          unless expected_layout.nil?
+          if expected_layout
             @expected_layout = expected_layout.to_s
+          else
+            @expected_layout = nil
           end
+
+          @controller = nil
         end
 
         # Used to provide access to layouts recorded by

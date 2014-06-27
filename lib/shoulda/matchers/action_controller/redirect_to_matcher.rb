@@ -47,14 +47,18 @@ module Shoulda
         alias failure_message_for_should_not failure_message_when_negated
 
         def initialize(url_or_description, context, &block)
+          @url_block = nil
+          @url = nil
+          @context = context
+          @failure_message = nil
+          @failure_message_when_negated = nil
+
           if block
             @url_block = block
             @location = url_or_description
           else
-            @url = url_or_description
-            @location = @url
+            @location = @url = url_or_description
           end
-          @context = context
         end
 
         def in_context(context)

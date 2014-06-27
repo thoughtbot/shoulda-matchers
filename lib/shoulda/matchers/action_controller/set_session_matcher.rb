@@ -73,6 +73,7 @@ module Shoulda
       class SetSessionMatcher
         def initialize(key)
           @key = key.to_s
+          @value_block = nil
         end
 
         def to(value = nil, &block)
@@ -114,6 +115,10 @@ module Shoulda
 
         private
 
+        def value_or_default_value
+          defined?(@value) && @value
+        end
+
         def assigned_value?
           !assigned_value.nil?
         end
@@ -124,10 +129,10 @@ module Shoulda
 
         def assigned_correct_value?
           if assigned_value?
-            if @value.nil?
+            if value_or_default_value.nil?
               true
             else
-              assigned_value == @value
+              assigned_value == value_or_default_value
             end
           end
         end
@@ -138,8 +143,9 @@ module Shoulda
 
         def expectation
           expectation = "session variable #{@key} to be set"
-          if @value
-            expectation << " to #{@value.inspect}"
+
+          if value_or_default_value
+            expectation << " to #{value_or_default_value.inspect}"
           end
         end
 

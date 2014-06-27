@@ -241,6 +241,12 @@ EOT
         def initialize(attribute)
           super(attribute)
           @options = {}
+          @array = nil
+          @range = nil
+          @minimum = nil
+          @maximum = nil
+          @low_message = nil
+          @high_message = nil
         end
 
         def in_array(array)

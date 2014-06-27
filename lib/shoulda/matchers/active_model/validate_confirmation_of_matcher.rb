@@ -62,7 +62,7 @@ module Shoulda
         attr_reader :attribute, :confirmation_attribute
 
         def initialize(attribute)
-          @attribute = attribute
+          super(attribute)
           @confirmation_attribute = "#{attribute}_confirmation"
         end
 

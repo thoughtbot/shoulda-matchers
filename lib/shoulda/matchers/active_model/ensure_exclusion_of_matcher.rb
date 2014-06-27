@@ -91,6 +91,13 @@ module Shoulda
 
       # @private
       class EnsureExclusionOfMatcher < ValidationMatcher
+        def initialize(attribute)
+          super(attribute)
+          @array = nil
+          @range = nil
+          @expected_message = nil
+        end
+
         def in_array(array)
           @array = array
           self

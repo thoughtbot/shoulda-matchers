@@ -10,6 +10,8 @@ module Shoulda
         def initialize(attribute)
           @attribute = attribute
           @strict = false
+          @failure_message = nil
+          @failure_message_when_negated = nil
         end
 
         def on(context)
@@ -61,31 +63,33 @@ module Shoulda
         end
 
         def allow_value_matcher(value, message)
-          matcher = AllowValueMatcher.
-            new(value).
-            for(@attribute).
-            on(@context).
+          matcher = AllowValueMatcher.new(value).for(@attribute).
             with_message(message)
+
+          if defined?(@context)
+            matcher.on(@context)
+          end
 
           if strict?
             matcher.strict
-          else
-            matcher
           end
+
+          matcher
         end
 
         def disallow_value_matcher(value, message)
-          matcher = DisallowValueMatcher.
-            new(value).
-            for(@attribute).
-            on(@context).
+          matcher = DisallowValueMatcher.new(value).for(@attribute).
             with_message(message)
+
+          if defined?(@context)
+            matcher.on(@context)
+          end
 
           if strict?
             matcher.strict
-          else
-            matcher
           end
+
+          matcher
         end
 
         def strict?

@@ -15,6 +15,12 @@
   from `validate_uniqueness_of`, your best bet continues to be creating a record
   manually and calling `validate_uniqueness_of` on that instead.
 
+### Other changes
+
+* The majority of warnings that the gem produced have been removed. The gem
+  still produces warnings under Ruby 1.9.3; we will address this in a future
+  release.
+
 # 2.6.1
 
 ### Features
