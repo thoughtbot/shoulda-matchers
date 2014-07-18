@@ -842,11 +842,15 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
           has_and_belongs_to_many :relatives, join_table: :random_name
         end
 
+        matcher = have_and_belong_to_many(:relatives).join_table(:random_name)
+
         expect(developer.new).to have_and_belong_to_many(:relatives).
           join_table(:random_name)
+        expect(ActiveRecord::Base.connection.table_exists?("random_name")).
+          to be_true
+        expect(matcher.matches?(developer.new)).to be_true
       end
     end
-
 
     def having_and_belonging_to_many_relatives(options = {})
       define_model :relative
