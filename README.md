@@ -72,7 +72,7 @@ complex, and error-prone.
 
 ### Independent Matchers
 
-* **[delegate_matcher](lib/shoulda/matchers/independent/delegate_matcher.rb)**
+* **[delegate_method](lib/shoulda/matchers/independent/delegate_matcher.rb)**
   tests that an object forwards messages to other, internal objects by way of
   delegation.
 
