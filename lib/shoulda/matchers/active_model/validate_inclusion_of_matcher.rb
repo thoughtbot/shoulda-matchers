@@ -217,7 +217,14 @@ module Shoulda
       def validate_inclusion_of(attr)
         ValidateInclusionOfMatcher.new(attr)
       end
-      alias_method :ensure_inclusion_of, :validate_inclusion_of
+
+      def ensure_inclusion_of(attr)
+        Shoulda::Matchers.warn_about_deprecated_method(
+          :ensure_inclusion_of,
+          :validate_inclusion_of
+        )
+        validate_inclusion_of(attr)
+      end
 
       # @private
       class ValidateInclusionOfMatcher < ValidationMatcher
