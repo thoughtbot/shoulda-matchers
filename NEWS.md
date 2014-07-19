@@ -1,5 +1,7 @@
 # HEAD
 
+# 2.6.2
+
 ### Bug fixes
 
 * If you have a Rails >= 4.1 project and you are running tests using Spring,
