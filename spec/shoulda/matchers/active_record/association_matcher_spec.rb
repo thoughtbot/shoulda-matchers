@@ -830,6 +830,26 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
         expect(having_and_belonging_to_many_relatives).
           to have_and_belong_to_many(:relatives).validate(false)
       end
+
+      it 'accepts a valid association with a join_table' do
+        create_table :random_name, id: false do |t|
+          t.integer :developer_id
+          t.integer :relative_id
+        end
+
+        define_model(:relative)
+        developer = define_model(:developer) do
+          has_and_belongs_to_many :relatives, join_table: :random_name
+        end
+
+        matcher = have_and_belong_to_many(:relatives).join_table(:random_name)
+
+        expect(developer.new).to have_and_belong_to_many(:relatives).
+          join_table(:random_name)
+        expect(ActiveRecord::Base.connection.table_exists?("random_name")).
+          to be_true
+        expect(matcher.matches?(developer.new)).to be_true
+      end
     end
 
     def having_and_belonging_to_many_relatives(options = {})

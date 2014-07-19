@@ -24,7 +24,7 @@ module Shoulda
             reflection.options[:through]
           end
 
-          def join_table
+          def join_table_name
             join_table =
               if has_and_belongs_to_many_name_table_name
                 has_and_belongs_to_many_name_table_name

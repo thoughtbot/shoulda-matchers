@@ -68,7 +68,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
         delegate_reflection = country_model.reflect_on_association(:people)
         reflection = described_class.new(delegate_reflection)
 
-        expect(reflection.join_table).to eq 'foos'
+        expect(reflection.join_table_name).to eq 'foos'
       end
     end
 
@@ -81,7 +81,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
         delegate_reflection = country_model.reflect_on_association(:people)
         reflection = described_class.new(delegate_reflection)
 
-        expect(reflection.join_table).to eq 'countries_people'
+        expect(reflection.join_table_name).to eq 'countries_people'
       end
     end
   end
