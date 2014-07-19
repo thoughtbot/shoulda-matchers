@@ -70,6 +70,12 @@ complex, and error-prone.
 * **[set_the_flash](lib/shoulda/matchers/action_controller/set_the_flash_matcher.rb)** makes
   assertions on the `flash` hash.
 
+### Independent Matchers
+
+* **[delegate_matcher](lib/shoulda/matchers/independent/delegate_matcher.rb)**
+  tests that an object forwards messages to other, internal objects by way of
+  delegation.
+
 ## Installation
 
 ### RSpec
