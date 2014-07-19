@@ -170,6 +170,6 @@ and may be redistributed under the terms specified in the
 [fury]: http://badge.fury.io/rb/shoulda-matchers
 [travis-badge]: https://secure.travis-ci.org/thoughtbot/shoulda-matchers.png?branch=master
 [travis]: http://travis-ci.org/thoughtbot/shoulda-matchers
-[rubydocs]: http://rubydoc.info/github/thoughtbot/shoulda-matchers/master/frames
+[rubydocs]: http://thoughtbot.github.io/shoulda-matchers
 [community]: http://thoughtbot.com/community
 [contributors]: https://github.com/thoughtbot/shoulda-matchers/contributors
