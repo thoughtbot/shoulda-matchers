@@ -957,7 +957,8 @@ module Shoulda
         end
 
         def join_table_matcher
-          @join_table_matcher ||= AssociationMatchers::JoinTableMatcher.new(self)
+          @join_table_matcher ||=
+            AssociationMatchers::JoinTableMatcher.new(self, reflector)
         end
 
         def class_exists?

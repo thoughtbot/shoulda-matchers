@@ -5,7 +5,8 @@ module Shoulda
         # @private
         class ModelReflector
           delegate :associated_class, :through?, :join_table,
-            :association_relation, :polymorphic?, to: :reflection
+            :association_relation, :polymorphic?, :foreign_key,
+            :association_foreign_key, to: :reflection
 
           def initialize(subject, name)
             @subject = subject

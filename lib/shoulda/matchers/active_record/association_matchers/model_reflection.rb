@@ -45,6 +45,25 @@ module Shoulda
             end
           end
 
+          def foreign_key
+            if has_and_belongs_to_many_reflection
+              has_and_belongs_to_many_reflection.foreign_key
+            elsif reflection.respond_to?(:primary_key_name)
+              reflection.primary_key_name
+            else
+              reflection.foreign_key
+            end
+          end
+
+          def association_foreign_key
+            if has_and_belongs_to_many_reflection
+              join_model = has_and_belongs_to_many_reflection.options[:class]
+              join_model.right_reflection.foreign_key
+            else
+              reflection.association_foreign_key
+            end
+          end
+
           protected
 
           attr_reader :reflection, :subject

@@ -4,7 +4,8 @@ module Shoulda
       module AssociationMatchers
         # @private
         class JoinTableMatcher
-          attr_reader :association_matcher, :failure_message
+          attr_reader :failure_message
+
           alias :missing_option :failure_message
 
           delegate :model_class, :join_table, :associated_class,
@@ -12,8 +13,9 @@ module Shoulda
 
           delegate :connection, to: :model_class
 
-          def initialize(association_matcher)
+          def initialize(association_matcher, reflector)
             @association_matcher = association_matcher
+            @reflector = reflector
           end
 
           def matches?(subject)
@@ -39,7 +41,13 @@ module Shoulda
             end
           end
 
+          protected
+
+          attr_reader :association_matcher, :reflector
+
           private
+
+          delegate :foreign_key, :association_foreign_key, to: :reflector
 
           def missing_columns
             @missing_columns ||= expected_join_table_columns.select do |key|
@@ -48,10 +56,7 @@ module Shoulda
           end
 
           def expected_join_table_columns
-            [
-              "#{model_class.name.underscore}_id",
-              "#{associated_class.name.underscore}_id"
-            ]
+            [foreign_key, association_foreign_key]
           end
 
           def actual_join_table_columns

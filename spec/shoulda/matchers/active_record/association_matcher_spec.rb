@@ -732,6 +732,44 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       end.to fail_with_message_including('missing columns: person_id, relative_id')
     end
 
+    context 'using a custom foreign key' do
+      it 'rejects an association with a join table with incorrect columns' do
+        define_model :relative
+        define_model :person do
+          has_and_belongs_to_many :relatives,
+            foreign_key: :custom_foreign_key_id
+        end
+
+        define_model :people_relative,
+          id: false,
+          custom_foreign_key_id: :integer,
+          some_crazy_id: :integer
+
+        expect do
+          expect(Person.new).to have_and_belong_to_many(:relatives)
+        end.to fail_with_message_including('missing columns: custom_foreign_key_id, relative_id')
+      end
+    end
+
+    context 'using a custom association foreign key' do
+      it 'rejects an association with a join table with incorrect columns' do
+        define_model :relative
+        define_model :person do
+          has_and_belongs_to_many :relatives,
+            association_foreign_key: :custom_association_foreign_key_id
+        end
+
+        define_model :people_relative,
+          id: false,
+          custom_association_foreign_key_id: :integer,
+          some_crazy_id: :integer
+
+        expect do
+          expect(Person.new).to have_and_belong_to_many(:relatives)
+        end.to fail_with_message_including('missing columns: person_id, custom_association_foreign_key_id')
+      end
+    end
+
     it 'rejects an association of the wrong type' do
       define_model :relative, person_id: :integer
       define_model :person do
