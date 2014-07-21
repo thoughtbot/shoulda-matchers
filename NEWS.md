@@ -1,5 +1,11 @@
 # HEAD
 
+### Improvements
+
+* `have_and_belongs_to_many` now checks to make sure that the join table
+  contains the correct columns for the left- and right-hand side of the
+  association.
+
 # 2.6.2
 
 ### Bug fixes
