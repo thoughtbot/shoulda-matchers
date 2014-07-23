@@ -886,6 +886,48 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       end.to fail_with_message_including('missing columns: person_id, relative_id')
     end
 
+    it "rejects an association with a bad :join_table option" do
+      define_model :relative
+      join_table_name = 'people_and_their_families'
+
+      define_model :person do
+        has_and_belongs_to_many(
+          :relatives, join_table: join_table_name
+        )
+      end
+
+      create_table("people_relatives", id: false) do |t|
+        t.references :person
+        t.references :relative
+      end
+
+      expect do
+        expect(Person.new).to(
+          have_and_belong_to_many(:relatives).join_table(join_table_name)
+        )
+      end.to fail_with_message_including("#{join_table_name} doesn't exist")
+    end
+
+    it "accepts an association with a valid :join_table option" do
+      define_model :relative
+      join_table_name = 'people_and_their_families'
+
+      define_model :person do
+        has_and_belongs_to_many(
+          :relatives, join_table: join_table_name
+        )
+      end
+
+      create_table(join_table_name, id: false) do |t|
+        t.references :person
+        t.references :relative
+      end
+
+      expect(Person.new).to(
+        have_and_belong_to_many(:relatives).join_table(join_table_name)
+      )
+    end
+
     context 'using a custom foreign key' do
       it 'rejects an association with a join table with incorrect columns' do
         define_model :relative

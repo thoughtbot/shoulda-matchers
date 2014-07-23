@@ -905,6 +905,10 @@ module Shoulda
           self
         end
 
+        def join_table(join_table_name)
+          self
+        end
+
         def description
           description = "#{macro_description} #{name}"
           description += " class_name => #{options[:class_name]}" if options.key?(:class_name)
