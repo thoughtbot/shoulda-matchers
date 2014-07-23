@@ -209,6 +209,10 @@ h4 + h5 {
 
 /* Class/Module */
 
+.summary .deprecated {
+  display: none;
+}
+
 .method_details {}
   .method_details td {
     padding: 10px;
@@ -252,6 +256,28 @@ h4 + h5 {
     .method_details .source_code td.code pre .info {
       color: #93a1a1 /* Comment */
     }
+
+    .method_details .deprecated {
+      margin-bottom: 1em;
+      font-size: 1.1em;
+    }
+
+      .method_details .deprecated strong {
+        background-color: #F03434;
+        color: white;
+        text-transform: uppercase;
+        border-radius: 3px;
+        padding: 0 4px;
+      }
+
+      .method_details .deprecated .inline {
+        padding-left: 3px;
+      }
+
+      .method_details .deprecated div,
+      .method_details .deprecated p {
+        display: inline
+      }
 
 .docstring, .method_details .showSource, .method_details .source_code {
   margin-left: 1em;
