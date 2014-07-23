@@ -6,6 +6,11 @@
   contains the correct columns for the left- and right-hand side of the
   association.
 
+### Deprecations
+
+* `ensure_inclusion_of` has been renamed to `validate_inclusion_of`.
+  `ensure_inclusion_of` is deprecated and will be removed in 3.0.0.
+
 # 2.6.2
 
 ### Bug fixes
