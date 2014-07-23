@@ -88,7 +88,16 @@ module Shoulda
       def validate_exclusion_of(attr)
         ValidateExclusionOfMatcher.new(attr)
       end
-      alias_method :ensure_exclusion_of, :validate_exclusion_of
+
+      # @deprecated Use {#validate_exclusion_of} instead.
+      # @return [ValidateExclusionOfMatcher]
+      def ensure_exclusion_of(attr)
+        Shoulda::Matchers.warn_about_deprecated_method(
+          :ensure_exclusion_of,
+          :validate_exclusion_of
+        )
+        validate_exclusion_of(attr)
+      end
 
       # @private
       class ValidateExclusionOfMatcher < ValidationMatcher

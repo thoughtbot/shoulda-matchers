@@ -3,8 +3,16 @@ require 'spec_helper'
 describe Shoulda::Matchers::ActiveModel do
   describe '#ensure_exclusion_of' do
     it 'is aliased to #validate_exclusion_of' do
-      expect(method(:ensure_exclusion_of)).to eq(method(:validate_exclusion_of))
+      matchers.expects(:validate_exclusion_of).with(:attr)
+
+      silence_warnings do
+        matchers.ensure_exclusion_of(:attr)
+      end
     end
+  end
+
+  def matchers
+    @_matchers ||= Object.new.extend(described_class)
   end
 end
 
