@@ -8,7 +8,7 @@ module Shoulda
 
           alias :missing_option :failure_message
 
-          delegate :model_class, :join_table, :associated_class,
+          delegate :model_class, :join_table_name, :associated_class,
             to: :association_matcher
 
           delegate :connection, to: :model_class
@@ -24,7 +24,7 @@ module Shoulda
           end
 
           def join_table_exists?
-            if connection.tables.include?(join_table)
+            if connection.tables.include?(join_table_name)
               true
             else
               @failure_message = missing_table_message
@@ -60,16 +60,16 @@ module Shoulda
           end
 
           def actual_join_table_columns
-            connection.columns(join_table).map(&:name)
+            connection.columns(join_table_name).map(&:name)
           end
 
           def missing_table_message
-            "join table #{join_table} doesn't exist"
+            "join table #{join_table_name} doesn't exist"
           end
 
           def missing_columns_message
             missing = missing_columns.join(', ')
-            "join table #{join_table} missing #{column_label}: #{missing}"
+            "join table #{join_table_name} missing #{column_label}: #{missing}"
           end
 
           def column_label

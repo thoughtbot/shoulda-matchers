@@ -823,7 +823,7 @@ module Shoulda
       # @private
       class AssociationMatcher
         delegate :reflection, :model_class, :associated_class, :through?,
-          :join_table, :polymorphic?, to: :reflector
+          :join_table_name, :polymorphic?, to: :reflector
 
         def initialize(macro, name)
           @macro = macro

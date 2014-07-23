@@ -4,7 +4,7 @@ module Shoulda
       module AssociationMatchers
         # @private
         class ModelReflector
-          delegate :associated_class, :through?, :join_table,
+          delegate :associated_class, :through?, :join_table_name,
             :association_relation, :polymorphic?, :foreign_key,
             :association_foreign_key, to: :reflection
 
