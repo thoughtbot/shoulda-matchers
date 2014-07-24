@@ -2,7 +2,7 @@ module Shoulda
   module Matchers
     module Independent
       # @private
-      class DelegateMatcher::StubbedTarget # :nodoc:
+      class DelegateMatcher::StubbedTarget
         def initialize(method)
           @received_method = false
           @received_arguments = []

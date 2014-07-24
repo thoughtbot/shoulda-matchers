@@ -209,7 +209,7 @@ module Shoulda
           self
         end
 
-        def _after_setting_value(&callback)  # :nodoc:
+        def _after_setting_value(&callback)
           self.after_setting_value_callback = callback
         end
 
