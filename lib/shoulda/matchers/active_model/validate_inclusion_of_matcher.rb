@@ -49,7 +49,23 @@ module Shoulda
       #       should validate_inclusion_of(:state).in_range(1..5)
       #     end
       #
-      # #### Optional qualifiers
+      # #### Caveats
+      #
+      # We discourage using `validate_inclusion_of` with boolean columns. In
+      # fact, there is never a case where a boolean column will be anything but
+      # true, false, or nil, as ActiveRecord will type-cast an incoming value to
+      # one of these three values. That means there isn't any way we can refute
+      # this logic in a test. Hence, this will produce a warning:
+      #
+      #     it { should validate_inclusion_of(:imported).in_array([true, false]) }
+      #
+      # The only case where `validate_inclusion_of` *could* be appropriate is
+      # for ensuring that a boolean column accepts nil, but we recommend
+      # using `allow_value` instead, like this:
+      #
+      #     it { should allow_value(nil).for(:imported) }
+      #
+      # #### Qualifiers
       #
       # ##### with_message
       #
