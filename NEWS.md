@@ -11,6 +11,9 @@
 * `ensure_inclusion_of` has been renamed to `validate_inclusion_of`.
   `ensure_inclusion_of` is deprecated and will be removed in 3.0.0.
 
+* `ensure_exclusion_of` has been renamed to `validate_exclusion_of`.
+  `ensure_exclusion_of` is deprecated and will be removed in 3.0.0.
+
 # 2.6.2
 
 ### Bug fixes
