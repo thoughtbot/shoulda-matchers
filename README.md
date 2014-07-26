@@ -88,8 +88,8 @@ group :test do
 end
 ```
 
-Then require the gem following rspec-rails in your rails_helper (or spec_helper
-if you're using RSpec 2.x):
+Then require the gem following rspec-rails in your spec_helper (or rails_helper
+if you're using RSpec < 2):
 
 ``` ruby
 require 'rspec/rails'
