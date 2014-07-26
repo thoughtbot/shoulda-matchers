@@ -2,7 +2,8 @@
 
 ### Bug fixes
 
-* Fix `delegate_method` so that it works if the delegate method is private.
+* Fix `delegate_method` so that it does not raise an error if the method that
+  returns the delegate object is private.
 
 ### Improvements
 
