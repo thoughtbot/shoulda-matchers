@@ -15,6 +15,9 @@
 * Fix `filter_param` so that it works when `config.filter_parameters` contains
   regexes.
 
+* Fix `delegate_method` so that it can be required independent of Active
+  Support.
+
 ### Improvements
 
 * `have_and_belongs_to_many` now checks to make sure that the join table
