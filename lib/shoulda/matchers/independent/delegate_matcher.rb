@@ -230,7 +230,7 @@ module Shoulda
         end
 
         def ensure_target_method_is_present!
-          if target_method.blank?
+          if target_method.to_s.empty?
             raise TargetNotDefinedError
           end
         end
