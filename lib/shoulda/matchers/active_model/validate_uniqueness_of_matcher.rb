@@ -209,6 +209,7 @@ module Shoulda
         end
 
         def matches?(subject)
+          @original_subject = subject
           @subject = subject.class.new
           @expected_message ||= :taken
           set_scoped_attributes &&
@@ -253,13 +254,17 @@ module Shoulda
             value = 'a'
           end
 
-          @subject.class.new.tap do |instance|
+          @original_subject.tap do |instance|
             instance.__send__("#{@attribute}=", value)
-            if has_secure_password?
-              instance.password = 'password'
-              instance.password_confirmation = 'password'
-            end
+            ensure_secure_password_set(instance)
             instance.save(validate: false)
+          end
+        end
+
+        def ensure_secure_password_set(instance)
+          if has_secure_password?
+            instance.password = "password"
+            instance.password_confirmation = "password"
           end
         end
 

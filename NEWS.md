@@ -18,6 +18,12 @@
 * Fix `delegate_method` so that it can be required independent of Active
   Support.
 
+* Fix `validate_uniqueness_of`. When used against an unpersisted record whose
+  model contained a non-nullable column other than the one being validated, the
+  matcher would break. Even if the test set that column to a value beforehand,
+  the record had to be persisted in order for the matcher to work. Now this is
+  no longer the case and the record can remain unpersisted.
+
 ### Improvements
 
 * `have_and_belongs_to_many` now checks to make sure that the join table

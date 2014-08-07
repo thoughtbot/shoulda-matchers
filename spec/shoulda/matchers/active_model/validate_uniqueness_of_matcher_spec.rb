@@ -47,6 +47,26 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
         expect(Example.count).to eq 0
         expect(validating_uniqueness_with_other).to matcher
       end
+
+      context "and the table uses NOT NULL columns" do
+        let(:model_class) do
+          define_model(
+            :example,
+            attr: :string,
+            required_attr: { type: :string, options: { null: false } }
+          ) do
+            attr_accessible :attr, :required_attr
+            validates_presence_of :required_attr
+            validates_uniqueness_of :attr
+          end
+        end
+
+        it "works if the subject to sets the required attibutes" do
+          model = model_class.new(required_attr: "foo")
+          expect(Example.count).to eq 0
+          expect(model).to matcher
+        end
+      end
     end
 
     def define_model_with_other(options = {})
