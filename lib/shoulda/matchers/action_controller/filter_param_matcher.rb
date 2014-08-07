@@ -28,7 +28,7 @@ module Shoulda
       # @private
       class FilterParamMatcher
         def initialize(key)
-          @key = key.to_s
+          @key = key
         end
 
         def matches?(controller)
@@ -52,11 +52,18 @@ module Shoulda
         private
 
         def filters_key?
-          filtered_keys.include?(@key)
+          filtered_keys.any? do |filter|
+            case filter
+            when Regexp
+              filter =~ @key
+            else
+              filter == @key
+            end
+          end
         end
 
         def filtered_keys
-          Rails.application.config.filter_parameters.map(&:to_s)
+          Rails.application.config.filter_parameters
         end
       end
     end

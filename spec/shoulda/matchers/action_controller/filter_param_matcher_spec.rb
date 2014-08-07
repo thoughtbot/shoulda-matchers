@@ -7,6 +7,12 @@ describe Shoulda::Matchers::ActionController::FilterParamMatcher do
     expect(nil).to filter_param(:secret)
   end
 
+  it 'accepts filtering a parameter matching a filtered regex' do
+    filter(/(?!tip)pin(?!g)/)
+
+    expect(nil).to filter_param(:pin)
+  end
+
   it 'rejects filtering an unfiltered parameter' do
     filter(:secret)
     matcher = filter_param(:other)

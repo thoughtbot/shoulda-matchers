@@ -12,6 +12,9 @@
   session variable in question was set to nil (previously this actually did
   nothing).
 
+* Fix `filter_param` so that it works when `config.filter_parameters` contains
+  regexes.
+
 ### Improvements
 
 * `have_and_belongs_to_many` now checks to make sure that the join table
