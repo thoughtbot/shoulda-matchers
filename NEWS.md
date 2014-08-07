@@ -8,6 +8,9 @@
 * Warn when `ensure_inclusion_of` is chained with `.in_array([false, true])`
   as well as with `.in_array([true, false])`.
 
+* `validate_uniqueness_of` failed when using NOT NULL columns and an unpersisted
+  subject. Now works if the unpersisted subject sets the required attributes.
+
 ### Improvements
 
 * `have_and_belongs_to_many` now checks to make sure that the join table
