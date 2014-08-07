@@ -65,10 +65,8 @@ module Shoulda
       # To fix this, you'll need to write this instead:
       #
       #     describe Post do
-      #       it do
-      #         Post.create!(content: 'Here is the content')
-      #         should validate_uniqueness_of(:title)
-      #       end
+      #       subject { Post.new(content: 'Here is the content') }
+      #       it { should validate_uniqueness_of(:title) }
       #     end
       #
       # Or, if you're using
@@ -76,10 +74,8 @@ module Shoulda
       # `post` factory defined which automatically sets `content`, you can say:
       #
       #     describe Post do
-      #       it do
-      #         FactoryGirl.create(:post)
-      #         should validate_uniqueness_of(:title)
-      #       end
+      #       subject { FactoryGirl.build(:post) }
+      #       it { should validate_uniqueness_of(:title) }
       #     end
       #
       # #### Qualifiers
