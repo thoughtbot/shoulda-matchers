@@ -65,10 +65,8 @@ module Shoulda
       # To fix this, you'll need to write this instead:
       #
       #     describe Post do
-      #       it do
-      #         Post.create!(content: 'Here is the content')
-      #         should validate_uniqueness_of(:title)
-      #       end
+      #       subject { Post.new(content: 'Here is the content') }
+      #       it { should validate_uniqueness_of(:title) }
       #     end
       #
       # Or, if you're using
@@ -76,10 +74,8 @@ module Shoulda
       # `post` factory defined which automatically sets `content`, you can say:
       #
       #     describe Post do
-      #       it do
-      #         FactoryGirl.create(:post)
-      #         should validate_uniqueness_of(:title)
-      #       end
+      #       subject { FactoryGirl.build(:post) }
+      #       it { should validate_uniqueness_of(:title) }
       #     end
       #
       # #### Qualifiers
@@ -209,6 +205,7 @@ module Shoulda
         end
 
         def matches?(subject)
+          @original_subject = subject
           @subject = subject.class.new
           @expected_message ||= :taken
           set_scoped_attributes &&
@@ -253,13 +250,17 @@ module Shoulda
             value = 'a'
           end
 
-          @subject.class.new.tap do |instance|
+          @original_subject.tap do |instance|
             instance.__send__("#{@attribute}=", value)
-            if has_secure_password?
-              instance.password = 'password'
-              instance.password_confirmation = 'password'
-            end
+            ensure_secure_password_set(instance)
             instance.save(validate: false)
+          end
+        end
+
+        def ensure_secure_password_set(instance)
+          if has_secure_password?
+            instance.password = "password"
+            instance.password_confirmation = "password"
           end
         end
 
