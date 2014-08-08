@@ -38,28 +38,46 @@ module Shoulda
       # particular value.
       #
       #     class PostsController < ApplicationController
-      #       def show
+      #       def index
       #         session[:foo] = 'bar'
+      #       end
+      #
+      #       def show
+      #         session[:foo] = nil
       #       end
       #     end
       #
       #     # RSpec
       #     describe PostsController do
-      #       describe 'GET #show' do
-      #         before { get :show }
+      #       describe 'GET #index' do
+      #         before { get :index }
       #
       #         it { should set_session(:foo).to('bar') }
       #         it { should_not set_session(:foo).to('something else') }
+      #         it { should_not set_session(:foo).to(nil) }
+      #       end
+      #
+      #       describe 'GET #show' do
+      #         before { get :show }
+      #
+      #         it { should set_session(:foo).to(nil) }
       #       end
       #     end
       #
       #     # Test::Unit
       #     class PostsControllerTest < ActionController::TestCase
-      #       context 'GET #show' do
-      #         setup { get :show }
+      #       context 'GET #index' do
+      #         setup { get :index }
       #
       #         should set_session(:foo).to('bar')
       #         should_not set_session(:foo).to('something else')
+      #         should_not set_session(:foo).to(nil)
+      #       end
+      #
+      #       context 'GET #show' do
+      #         setup { get :show }
+      #
+      #         should set_session(:foo).to(nil)
       #       end
       #     end
       #
@@ -129,7 +147,7 @@ module Shoulda
 
         def assigned_correct_value?
           if assigned_value?
-            if value_or_default_value.nil?
+            if !defined?(@value)
               true
             else
               assigned_value == value_or_default_value

@@ -8,6 +8,10 @@
 * Warn when `ensure_inclusion_of` is chained with `.in_array([false, true])`
   as well as with `.in_array([true, false])`.
 
+* Fix `set_session` so that the `to` qualifier if given nil checks that the
+  session variable in question was set to nil (previously this actually did
+  nothing).
+
 ### Improvements
 
 * `have_and_belongs_to_many` now checks to make sure that the join table
