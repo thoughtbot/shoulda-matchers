@@ -4,10 +4,10 @@ module Shoulda
       # The `validate_uniqueness_of` matcher tests usage of the
       # `validates_uniqueness_of` validation. It first checks for an existing
       # instance of your model in the database, creating one if necessary. It
-      # then takes a new record and asserts that it fails validation if the
-      # attribute or attributes you've specified in the validation are set to
-      # values which are the same as those of the pre-existing record (thereby
-      # failing the uniqueness check).
+      # then takes a new instance of that model and asserts that it fails
+      # validation if the attribute or attributes you've specified in the
+      # validation are set to values which are the same as those of the
+      # pre-existing record (thereby failing the uniqueness check).
       #
       #     class Post < ActiveRecord::Base
       #       validates_uniqueness_of :permalink
@@ -29,8 +29,8 @@ module Shoulda
       # before, it will create an instance of your model if one doesn't already
       # exist. Sometimes this step fails, especially if you have database-level
       # restrictions on any attributes other than the one which is unique. In
-      # this case, the solution is to **create a record manually** before you
-      # call `validate_uniqueness_of`.
+      # this case, the solution is to populate these attributes with values
+      # before you call `validate_uniqueness_of`.
       #
       # For example, say you have the following migration and model:
       #
@@ -62,20 +62,28 @@ module Shoulda
       #          ActiveRecord::StatementInvalid:
       #            SQLite3::ConstraintException: posts.content may not be NULL: INSERT INTO "posts" ("title") VALUES (?)
       #
-      # To fix this, you'll need to write this instead:
+      # This happens because `validate_uniqueness_of` tries to create a new post
+      # but cannot do so because of the `content` attribute: though unrelated to
+      # this test, it nevertheless needs to be filled in. The solution is to
+      # build a custom Post object ahead of time with `content` filled in:
       #
       #     describe Post do
-      #       subject { Post.new(content: 'Here is the content') }
-      #       it { should validate_uniqueness_of(:title) }
+      #       describe "validations" do
+      #         subject { Post.new(content: 'Here is the content') }
+      #         it { should validate_uniqueness_of(:title) }
+      #       end
       #     end
       #
       # Or, if you're using
       # [FactoryGirl](http://github.com/thoughtbot/factory_girl) and you have a
-      # `post` factory defined which automatically sets `content`, you can say:
+      # `post` factory defined which automatically fills in `content`, you can
+      # say:
       #
       #     describe Post do
-      #       subject { FactoryGirl.build(:post) }
-      #       it { should validate_uniqueness_of(:title) }
+      #       describe "validations" do
+      #         subject { FactoryGirl.build(:post) }
+      #         it { should validate_uniqueness_of(:title) }
+      #       end
       #     end
       #
       # #### Qualifiers
