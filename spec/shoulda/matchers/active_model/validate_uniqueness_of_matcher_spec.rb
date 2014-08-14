@@ -48,23 +48,38 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
         expect(validating_uniqueness_with_other).to matcher
       end
 
-      context "and the table uses NOT NULL columns" do
-        let(:model_class) do
-          define_model(
-            :example,
-            attr: :string,
-            required_attr: { type: :string, options: { null: false } }
-          ) do
-            attr_accessible :attr, :required_attr
-            validates_presence_of :required_attr
-            validates_uniqueness_of :attr
+      context "and the table uses non-nullable columns, set beforehand" do
+        it "does not require the record to be persisted" do
+          model = define_model_with_non_nullable_column
+          record = model.new(required_attribute_name => "some value")
+          expect(record).to validate_uniqueness_of(unique_attribute_name)
+        end
+
+        def define_model_with_non_nullable_column
+          model = define_model(:example,
+            unique_attribute_name => :string,
+            required_attribute_name => {
+              type: :string,
+              options: { null: false }
+            }
+          )
+
+          model.tap do
+            model.attr_accessible(
+              required_attribute_name,
+              unique_attribute_name
+            )
+            model.validates_presence_of(required_attribute_name)
+            model.validates_uniqueness_of(unique_attribute_name)
           end
         end
 
-        it "works if the subject to sets the required attibutes" do
-          model = model_class.new(required_attr: "foo")
-          expect(Example.count).to eq 0
-          expect(model).to matcher
+        def required_attribute_name
+          :required_attribute_name
+        end
+
+        def unique_attribute_name
+          :unique_attribute_name
         end
       end
     end
