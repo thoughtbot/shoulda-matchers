@@ -57,6 +57,8 @@
   columns allow only specific values, which is not true. If you get an error
   from `validate_uniqueness_of`, your best bet continues to be creating a record
   manually and calling `validate_uniqueness_of` on that instead.
+* Add an `eager_load` matcher, which allows tests to verify that a block of code
+  eager loads its data.
 
 ### Other changes
 

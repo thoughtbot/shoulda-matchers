@@ -15,6 +15,7 @@ require 'shoulda/matchers/active_record/have_db_index_matcher'
 require 'shoulda/matchers/active_record/have_readonly_attribute_matcher'
 require 'shoulda/matchers/active_record/serialize_matcher'
 require 'shoulda/matchers/active_record/accept_nested_attributes_for_matcher'
+require 'shoulda/matchers/active_record/eager_load_matcher'
 
 module Shoulda
   module Matchers
