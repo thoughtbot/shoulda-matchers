@@ -57,7 +57,7 @@ module Shoulda
       #
       # ##### is_equal_to
       #
-      # Use `is_at_equal` to test usage of the `:is` option. This asserts that
+      # Use `is_equal_to` to test usage of the `:is` option. This asserts that
       # the attribute can take a string which is exactly equal to the given
       # length and cannot take a string which is shorter or longer.
       #
