@@ -5,7 +5,7 @@ module Shoulda
       # `accepts_nested_attributes_for` macro.
       #
       #     class Car < ActiveRecord::Base
-      #       accept_nested_attributes_for :doors
+      #       accepts_nested_attributes_for :doors
       #     end
       #
       #     # RSpec
@@ -26,7 +26,7 @@ module Shoulda
       # specified.
       #
       #     class Car < ActiveRecord::Base
-      #       accept_nested_attributes_for :mirrors, allow_destroy: true
+      #       accepts_nested_attributes_for :mirrors, allow_destroy: true
       #     end
       #
       #     # RSpec
@@ -48,7 +48,7 @@ module Shoulda
       # Use `limit` to assert that the `:limit` option was specified.
       #
       #     class Car < ActiveRecord::Base
-      #       accept_nested_attributes_for :windows, limit: 3
+      #       accepts_nested_attributes_for :windows, limit: 3
       #     end
       #
       #     # RSpec
@@ -71,7 +71,7 @@ module Shoulda
       # specified.
       #
       #     class Car < ActiveRecord::Base
-      #       accept_nested_attributes_for :engine, update_only: true
+      #       accepts_nested_attributes_for :engine, update_only: true
       #     end
       #
       #     # RSpec
