@@ -1,10 +1,56 @@
 module Shoulda
   module Matchers
     module ActiveRecord
-      def define_enum_for(name)
-        DefineEnumForMatcher.new(name)
+      # The `define_enum_for` matcher is used to test that the `enum` macro has
+      # been used to decorate an attribute with enum methods.
+      #
+      #     class Process < ActiveRecord::Base
+      #       enum status: [:running, :stopped, :suspended]
+      #     end
+      #
+      #     # RSpec
+      #     describe Process do
+      #       it { should define_enum_for(:status) }
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class ProcessTest < ActiveSupport::TestCase
+      #       should define_enum_for(:status)
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### with
+      #
+      # Use `with` to test that the enum has been defined with a certain set of
+      # known values.
+      #
+      #     class Process < ActiveRecord::Base
+      #       enum status: [:running, :stopped, :suspended]
+      #     end
+      #
+      #     # RSpec
+      #     describe Process do
+      #       it do
+      #         should define_enum_for(:status).
+      #           with([:running, :stopped, :suspended])
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class ProcessTest < ActiveSupport::TestCase
+      #       should define_enum_for(:status).
+      #         with([:running, :stopped, :suspended])
+      #     end
+      #
+      # @return [DefineEnumForMatcher]
+      #
+      def define_enum_for(attribute_name)
+        DefineEnumForMatcher.new(attribute_name)
       end
 
+      # @private
       class DefineEnumForMatcher
         def initialize(attribute_name)
           @attribute_name = attribute_name

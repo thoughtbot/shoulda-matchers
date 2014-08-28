@@ -35,6 +35,8 @@ complex, and error-prone.
   tests usage of the `accepts_nested_attributes_for` macro.
 * **[belong_to](lib/shoulda/matchers/active_record/association_matcher.rb)** tests
   your `belongs_to` associations.
+* **[define_enum_for](lib/shoulda/matchers/active_record/define_enum_for_matcher.rb)**
+  tests usage of the `enum` macro.
 * **[have_many](lib/shoulda/matchers/active_record/association_matcher.rb)** tests
   your `has_many` associations.
 * **[have_one](lib/shoulda/matchers/active_record/association_matcher.rb)** tests your

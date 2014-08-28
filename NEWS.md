@@ -41,6 +41,11 @@
 * `ensure_exclusion_of` has been renamed to `validate_exclusion_of`.
   `ensure_exclusion_of` is deprecated and will be removed in 3.0.0.
 
+### Features
+
+* Add new matcher `define_enum_for` to test usage of the `enum` macro introduced
+  in Rails 4.1.
+
 # 2.6.2
 
 ### Bug fixes
