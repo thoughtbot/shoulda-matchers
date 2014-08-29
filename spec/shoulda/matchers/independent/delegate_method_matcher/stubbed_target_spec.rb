@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::Matchers::Independent::DelegateMatcher::StubbedTarget do
+describe Shoulda::Matchers::Independent::DelegateMethodMatcher::StubbedTarget do
   subject(:target) { described_class.new(:stubbed_method) }
 
   describe '#has_received_method?' do

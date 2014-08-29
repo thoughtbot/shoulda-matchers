@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Shoulda::Matchers::Independent::DelegateMatcher do
+describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
   describe '#description' do
     context 'by default' do
       it 'states that it should delegate method to the right object' do

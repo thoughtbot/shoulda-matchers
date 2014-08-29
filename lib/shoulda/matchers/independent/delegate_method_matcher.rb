@@ -90,29 +90,31 @@ module Shoulda
       #     # RSpec
       #     describe Courier do
       #       it do
+      #         package = double("package")
       #         should delegate_method(:deliver).
       #           to(:post_office).
       #           as(:ship).
-      #           with_arguments(expedited: true)
+      #           with_arguments(package, expedited: true)
       #       end
       #     end
       #
       #     # Test::Unit
       #     class CourierTest < Test::Unit::TestCase
+      #       package = Object.new
       #       should delegate_method(:deliver).
       #         to(:post_office).
       #         as(:ship).
       #         with_arguments(expedited: true)
       #     end
       #
-      # @return [DelegateMatcher]
+      # @return [DelegateMethodMatcher]
       #
       def delegate_method(delegating_method)
-        DelegateMatcher.new(delegating_method)
+        DelegateMethodMatcher.new(delegating_method)
       end
 
       # @private
-      class DelegateMatcher
+      class DelegateMethodMatcher
         def initialize(delegating_method)
           @delegating_method = delegating_method
           @method_on_target = @delegating_method
@@ -281,14 +283,6 @@ module Shoulda
           end
 
           string
-        end
-
-        # @private
-        class TargetNotDefinedError < StandardError
-          def message
-            'Delegation needs a target. Use the #to method to define one, e.g.
-            `post_office.should delegate(:deliver_mail).to(:mailman)`'.squish
-          end
         end
       end
     end
