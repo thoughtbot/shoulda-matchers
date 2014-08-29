@@ -70,10 +70,12 @@ module Shoulda
       # ##### with_arguments
       #
       # Use `with_arguments` to assert that the delegate method is called with
-      # certain arguments.
+      # certain arguments. Note that this qualifier can only be used when the
+      # delegating method takes no arguments; it does not support delegating
+      # or delegate methods that take arbitrary arguments.
       #
-      # Here, when Courier#deliver calls PostOffice#ship, it adds an options
-      # hash:
+      # Here, when Courier#deliver_package calls PostOffice#deliver_package, it
+      # adds an options hash:
       #
       #     class Courier
       #       attr_reader :post_office
@@ -82,28 +84,24 @@ module Shoulda
       #         @post_office = PostOffice.new
       #       end
       #
-      #       def deliver(package)
-      #         post_office.ship(package, expedited: true)
+      #       def deliver_package
+      #         post_office.deliver_package(expedited: true)
       #       end
       #     end
       #
       #     # RSpec
       #     describe Courier do
       #       it do
-      #         package = double("package")
-      #         should delegate_method(:deliver).
+      #         should delegate_method(:deliver_package).
       #           to(:post_office).
-      #           as(:ship).
-      #           with_arguments(package, expedited: true)
+      #           with_arguments(expedited: true)
       #       end
       #     end
       #
       #     # Test::Unit
       #     class CourierTest < Test::Unit::TestCase
-      #       package = Object.new
-      #       should delegate_method(:deliver).
+      #       should delegate_method(:deliver_package).
       #         to(:post_office).
-      #         as(:ship).
       #         with_arguments(expedited: true)
       #     end
       #
