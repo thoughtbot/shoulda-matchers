@@ -61,7 +61,7 @@ complex, and error-prone.
 * **[render_template](lib/shoulda/matchers/action_controller/render_template_matcher.rb)** tests
   that an action renders a template.
 * **[render_with_layout](lib/shoulda/matchers/action_controller/render_with_layout_matcher.rb)** tests
-  that an action is rendereed with a certain layout.
+  that an action is rendered with a certain layout.
 * **[rescue_from](lib/shoulda/matchers/action_controller/rescue_from_matcher.rb)** tests usage
   of the `rescue_from` macro.
 * **[respond_with](lib/shoulda/matchers/action_controller/respond_with_matcher.rb)** tests that
