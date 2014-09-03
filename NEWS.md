@@ -1,5 +1,7 @@
 # HEAD
 
+# 2.7.0
+
 ### Deprecations
 
 * `ensure_inclusion_of` has been renamed to `validate_inclusion_of`.
