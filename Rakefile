@@ -96,7 +96,7 @@ namespace :docs do
     rewrite_index_to_inject_version(ref, version)
 
     within_gh_pages do
-      sh "git add --ignore-removal #{ref}"
+      sh "git add #{ref}"
     end
 
     if options[:latest_version]
