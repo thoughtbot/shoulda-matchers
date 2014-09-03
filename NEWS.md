@@ -33,6 +33,9 @@
   contains the correct columns for the left- and right-hand side of the
   association.
 
+* Reword failure message for `delegate_method` so that it's a little more
+  helpful.
+
 ### Deprecations
 
 * `ensure_inclusion_of` has been renamed to `validate_inclusion_of`.

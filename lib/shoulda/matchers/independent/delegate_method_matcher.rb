@@ -108,13 +108,15 @@ module Shoulda
       # @return [DelegateMethodMatcher]
       #
       def delegate_method(delegating_method)
-        DelegateMethodMatcher.new(delegating_method)
+        DelegateMethodMatcher.new(delegating_method, self)
       end
 
       # @private
       class DelegateMethodMatcher
-        def initialize(delegating_method)
+        def initialize(delegating_method, context)
           @delegating_method = delegating_method
+          @context = context
+
           @method_on_target = @delegating_method
           @target_double = Doublespeak::ObjectDouble.new
 
@@ -135,9 +137,18 @@ module Shoulda
         end
 
         def description
-          add_clarifications_to(
-            "delegate method ##{delegating_method} to :#{target_method}"
-          )
+          string = "delegate #{formatted_delegating_method_name} to " +
+            "#{formatted_target_method_name} object"
+
+          if delegated_arguments.any?
+            string << " passing arguments #{delegated_arguments.inspect}"
+          end
+
+          if method_on_target != delegating_method
+            string << " as #{formatted_method_on_target}"
+          end
+
+          string
         end
 
         def to(target_method)
@@ -156,58 +167,73 @@ module Shoulda
         end
 
         def failure_message
-          base = "Expected #{formatted_delegating_method_name} to delegate to #{formatted_target_method_name}"
-          add_clarifications_to(base)
-          base << "\nCalls on #{formatted_target_method_name}:"
-          base << formatted_calls_on_target
-          base.strip
+          "Expected #{class_under_test} to #{description}\n" +
+            "Method calls sent to " +
+            "#{formatted_target_method_name(include_module: true)}:" +
+            formatted_calls_on_target
         end
         alias failure_message_for_should failure_message
 
         def failure_message_when_negated
-          base = "Expected #{formatted_delegating_method_name} not to delegate to #{formatted_target_method_name}"
-          add_clarifications_to(base)
-          base << ', but it did'
+          "Expected #{class_under_test} not to #{description}, but it did"
         end
         alias failure_message_for_should_not failure_message_when_negated
 
         protected
 
         attr_reader \
+          :context,
           :delegated_arguments,
           :delegating_method,
           :method,
           :method_on_target,
-          :subject,
           :subject_double_collection,
           :target_double,
           :target_method
 
-        def add_clarifications_to(message)
-          if delegated_arguments.any?
-            message << " with arguments: #{delegated_arguments.inspect}"
-          end
-
-          if method_on_target != delegating_method
-            message << " as ##{method_on_target}"
-          end
-
-          message
+        def subject
+          @subject || context.subject
         end
 
-        def formatted_delegating_method_name
-          formatted_method_name_for(delegating_method)
-        end
-
-        def formatted_target_method_name
-          formatted_method_name_for(target_method)
-        end
-
-        def formatted_method_name_for(method_name)
+        def class_under_test
           if subject.is_a?(Class)
-            subject.name + '.' + method_name.to_s
+            subject
           else
-            subject.class.name + '#' + method_name.to_s
+            subject.class
+          end
+        end
+
+        def formatted_method_on_target(options = {})
+          formatted_method_name_for(method_on_target, options)
+        end
+
+        def formatted_delegating_method_name(options = {})
+          formatted_method_name_for(delegating_method, options)
+        end
+
+        def formatted_target_method_name(options = {})
+          formatted_method_name_for(target_method, options)
+        end
+
+        def formatted_method_name_for(method_name, options)
+          possible_class_under_test(options) +
+            class_or_instance_method_indicator +
+            method_name.to_s
+        end
+
+        def possible_class_under_test(options)
+          if options[:include_module]
+            class_under_test.to_s
+          else
+            ""
+          end
+        end
+
+        def class_or_instance_method_indicator
+          if subject.is_a?(Class)
+            '.'
+          else
+            '#'
           end
         end
 
@@ -279,6 +305,8 @@ module Shoulda
           else
             string << " (none)"
           end
+
+          string.rstrip!
 
           string
         end

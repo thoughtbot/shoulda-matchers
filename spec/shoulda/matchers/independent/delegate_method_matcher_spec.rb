@@ -2,31 +2,67 @@ require 'spec_helper'
 
 describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
   describe '#description' do
-    context 'by default' do
-      it 'states that it should delegate method to the right object' do
-        matcher = delegate_method(:method_name).to(:target)
+    context 'against an instance' do
+      subject { Object.new }
 
-        expect(matcher.description).
-          to eq 'delegate method #method_name to :target'
+      context 'by default' do
+        it 'states that it should delegate method to the right object' do
+          matcher = delegate_method(:method_name).to(:target)
+
+          expect(matcher.description).
+            to eq 'delegate #method_name to #target object'
+        end
+      end
+
+      context 'with #as chain' do
+        it 'states that it should delegate method to the right object and method' do
+          matcher = delegate_method(:method_name).to(:target).as(:alternate)
+          message = 'delegate #method_name to #target object as #alternate'
+
+          expect(matcher.description).to eq message
+        end
+      end
+
+      context 'with #with_argument chain' do
+        it 'states that it should delegate method to the right object with right argument' do
+          matcher = delegate_method(:method_name).to(:target).
+            with_arguments(:foo, bar: [1, 2])
+          message = 'delegate #method_name to #target object passing arguments [:foo, {:bar=>[1, 2]}]'
+
+          expect(matcher.description).to eq message
+        end
       end
     end
 
-    context 'with #as chain' do
-      it 'states that it should delegate method to the right object and method' do
-        matcher = delegate_method(:method_name).to(:target).as(:alternate)
-        message = 'delegate method #method_name to :target as #alternate'
+    context 'against a class' do
+      subject { Object }
 
-        expect(matcher.description).to eq message
+      context 'by default' do
+        it 'states that it should delegate method to the right object' do
+          matcher = delegate_method(:method_name).to(:target)
+
+          expect(matcher.description).
+            to eq 'delegate .method_name to .target object'
+        end
       end
-    end
 
-    context 'with #with_argument chain' do
-      it 'states that it should delegate method to the right object with right argument' do
-        matcher = delegate_method(:method_name).to(:target).
-          with_arguments(:foo, bar: [1, 2])
-        message = 'delegate method #method_name to :target with arguments: [:foo, {:bar=>[1, 2]}]'
+      context 'with #as chain' do
+        it 'states that it should delegate method to the right object and method' do
+          matcher = delegate_method(:method_name).to(:target).as(:alternate)
+          message = 'delegate .method_name to .target object as .alternate'
 
-        expect(matcher.description).to eq message
+          expect(matcher.description).to eq message
+        end
+      end
+
+      context 'with #with_argument chain' do
+        it 'states that it should delegate method to the right object with right argument' do
+          matcher = delegate_method(:method_name).to(:target).
+            with_arguments(:foo, bar: [1, 2])
+          message = 'delegate .method_name to .target object passing arguments [:foo, {:bar=>[1, 2]}]'
+
+          expect(matcher.description).to eq message
+        end
       end
     end
   end
@@ -80,8 +116,8 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
     it 'has a failure message that indicates which method should have been delegated' do
       post_office = PostOffice.new
       message = [
-        'Expected PostOffice#deliver_mail to delegate to PostOffice#mailman',
-        'Calls on PostOffice#mailman: (none)'
+        'Expected PostOffice to delegate #deliver_mail to #mailman object',
+        'Method calls sent to PostOffice#mailman: (none)'
       ].join("\n")
 
       expect {
@@ -91,8 +127,8 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
 
     it 'uses the proper syntax for class methods in errors' do
       message = [
-        'Expected PostOffice.deliver_mail to delegate to PostOffice.mailman',
-        'Calls on PostOffice.mailman: (none)'
+        'Expected PostOffice to delegate .deliver_mail to .mailman object',
+        'Method calls sent to PostOffice.mailman: (none)'
       ].join("\n")
 
       expect {
@@ -123,7 +159,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
 
     it 'produces the correct failure message if the assertion was negated' do
       post_office = PostOffice.new
-      message = 'Expected PostOffice#deliver_mail not to delegate to PostOffice#mailman, but it did'
+      message = 'Expected PostOffice not to delegate #deliver_mail to #mailman object, but it did'
 
       expect {
         expect(post_office).not_to delegate_method(:deliver_mail).to(:mailman)
@@ -178,7 +214,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
 
       it 'produces the correct failure message if the assertion was negated' do
         post_office = PostOffice.new
-        message = 'Expected PostOffice#deliver_mail not to delegate to PostOffice#mailman with arguments: ["221B Baker St.", {:hastily=>true}], but it did'
+        message = 'Expected PostOffice not to delegate #deliver_mail to #mailman object passing arguments ["221B Baker St.", {:hastily=>true}], but it did'
 
         expect {
           expect(post_office).
@@ -200,8 +236,8 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
       it 'has a failure message that indicates which arguments were expected' do
         post_office = PostOffice.new
         message = [
-          'Expected PostOffice#deliver_mail to delegate to PostOffice#mailman with arguments: ["123 Nowhere Ln."]',
-          'Calls on PostOffice#mailman:',
+          'Expected PostOffice to delegate #deliver_mail to #mailman object passing arguments ["123 Nowhere Ln."]',
+          'Method calls sent to PostOffice#mailman:',
           '1) deliver_mail("221B Baker St.", {:hastily=>true})'
         ].join("\n")
 
@@ -237,7 +273,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
 
       it 'produces the correct failure message if the assertion was negated' do
         post_office = PostOffice.new
-        message = 'Expected PostOffice#deliver_mail not to delegate to PostOffice#mailman as #deliver_mail_and_avoid_dogs, but it did'
+        message = 'Expected PostOffice not to delegate #deliver_mail to #mailman object as #deliver_mail_and_avoid_dogs, but it did'
 
         expect {
           expect(post_office).
@@ -258,8 +294,8 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
       it 'has a failure message that indicates which method was expected' do
         post_office = PostOffice.new
         message = [
-          'Expected PostOffice#deliver_mail to delegate to PostOffice#mailman as #watch_tv',
-          'Calls on PostOffice#mailman:',
+          'Expected PostOffice to delegate #deliver_mail to #mailman object as #watch_tv',
+          'Method calls sent to PostOffice#mailman:',
           '1) deliver_mail_and_avoid_dogs()'
         ].join("\n")
 
