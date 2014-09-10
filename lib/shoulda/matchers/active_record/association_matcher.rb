@@ -747,7 +747,7 @@ module Shoulda
       # @private
       class AssociationMatcher
         delegate :reflection, :model_class, :associated_class, :through?,
-          :join_table_name, :polymorphic?, to: :reflector
+          :polymorphic?, to: :reflector
 
         def initialize(macro, name)
           @macro = macro
@@ -825,6 +825,7 @@ module Shoulda
         end
 
         def join_table(join_table_name)
+          @options[:join_table_name] = join_table_name
           self
         end
 
@@ -963,6 +964,10 @@ module Shoulda
         def join_table_matcher
           @join_table_matcher ||=
             AssociationMatchers::JoinTableMatcher.new(self, reflector)
+        end
+
+        def join_table_name
+          options[:join_table_name] || reflector.join_table_name
         end
 
         def class_exists?
