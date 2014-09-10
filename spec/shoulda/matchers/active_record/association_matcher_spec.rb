@@ -757,7 +757,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
         expect do
           expect(Person.new).to have_and_belong_to_many(:relatives)
-        end.to fail_with_message_including('missing columns: custom_foreign_key_id, relative_id')
+        end.to fail_with_message_including('missing column: relative_id')
       end
     end
 
@@ -776,8 +776,26 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
 
         expect do
           expect(Person.new).to have_and_belong_to_many(:relatives)
-        end.to fail_with_message_including('missing columns: person_id, custom_association_foreign_key_id')
+        end.to fail_with_message_including('missing column: person_id')
       end
+
+      it 'accepts foreign keys when they are symbols' do
+        define_model :relative
+        define_model :person do
+          has_and_belongs_to_many :relatives,
+                                  foreign_key: :some_foreign_key_id,
+                                  association_foreign_key: :custom_association_foreign_key_id
+        end
+
+        define_model :people_relative,
+                     id: false,
+                     custom_association_foreign_key_id: :integer,
+                     some_foreign_key_id: :integer
+
+        expect(Person.new).to have_and_belong_to_many(:relatives)
+
+      end
+
     end
 
     it 'rejects an association of the wrong type' do

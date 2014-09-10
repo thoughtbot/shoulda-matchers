@@ -51,7 +51,7 @@ module Shoulda
 
           def missing_columns
             @missing_columns ||= expected_join_table_columns.select do |key|
-              !actual_join_table_columns.include?(key)
+              !actual_join_table_columns.include?(key.to_s)
             end
           end
 

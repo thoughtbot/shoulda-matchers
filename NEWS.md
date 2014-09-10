@@ -13,9 +13,14 @@
   exist, and the matcher fails, it does not raise an error when producing the
   failure message. ([#588])
 
+* Fix `have_and_belong_to_many` used with `join_table` so that it does not fail
+  when `foreign_key` and/or `association_foreign_key` was specified on the
+  association as a symbol instead of a string. ([#584])
+
 [#591]: https://github.com/thoughtbot/shoulda-matchers/pull/591
 [#592]: https://github.com/thoughtbot/shoulda-matchers/pull/592
 [#588]: https://github.com/thoughtbot/shoulda-matchers/pull/588
+[#584]: https://github.com/thoughtbot/shoulda-matchers/pull/584
 
 # 2.7.0
 
