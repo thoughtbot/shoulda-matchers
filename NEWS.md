@@ -72,6 +72,8 @@
 
 * Add `on` qualifier to `validate_numericality_of`. (h/t [#356], [#358])
 
+* Add `join_table` qualifier to `have_and_belong_to_many`. ([#556])
+
 [#402]: https://github.com/thoughtbot/shoulda-matchers/pull/402
 [#587]: https://github.com/thoughtbot/shoulda-matchers/pull/587
 [#662]: https://github.com/thoughtbot/shoulda-matchers/pull/662
@@ -86,6 +88,7 @@
 [#693]: https://github.com/thoughtbot/shoulda-matchers/pull/693
 [#356]: https://github.com/thoughtbot/shoulda-matchers/pull/356
 [#358]: https://github.com/thoughtbot/shoulda-matchers/pull/358
+[#556]: https://github.com/thoughtbot/shoulda-matchers/pull/556
 
 # 2.8.0
 

@@ -886,46 +886,97 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       end.to fail_with_message_including('missing columns: person_id, relative_id')
     end
 
-    it "rejects an association with a bad :join_table option" do
-      define_model :relative
-      join_table_name = 'people_and_their_families'
+    context 'when the association is declared with a :join_table option' do
+      it 'accepts when testing with the same :join_table option' do
+        join_table_name = 'people_and_their_families'
 
-      define_model :person do
-        has_and_belongs_to_many(
-          :relatives, join_table: join_table_name
-        )
+        define_model :relative
+
+        define_model :person do
+          has_and_belongs_to_many(:relatives, join_table: join_table_name)
+        end
+
+        create_table(join_table_name, id: false) do |t|
+          t.references :person
+          t.references :relative
+        end
+
+        expect(Person.new).
+          to have_and_belong_to_many(:relatives).
+          join_table(join_table_name)
       end
 
-      create_table("people_relatives", id: false) do |t|
-        t.references :person
-        t.references :relative
+      it 'accepts even when not explicitly testing with a :join_table option' do
+        join_table_name = 'people_and_their_families'
+
+        define_model :relative
+
+        define_model :person do
+          has_and_belongs_to_many(:relatives,
+            join_table: join_table_name
+          )
+        end
+
+        create_table(join_table_name, id: false) do |t|
+          t.references :person
+          t.references :relative
+        end
+
+        expect(Person.new).to have_and_belong_to_many(:relatives)
       end
 
-      expect do
-        expect(Person.new).to(
-          have_and_belong_to_many(:relatives).join_table(join_table_name)
+      it 'rejects when testing with a different :join_table option' do
+        join_table_name = 'people_and_their_families'
+
+        define_model :relative
+
+        define_model :person do
+          has_and_belongs_to_many(
+            :relatives,
+            join_table: join_table_name
+          )
+        end
+
+        create_table(join_table_name, id: false) do |t|
+          t.references :person
+          t.references :relative
+        end
+
+        assertion = lambda do
+          expect(Person.new).
+            to have_and_belong_to_many(:relatives).
+            join_table('family_tree')
+        end
+
+        expect(&assertion).to fail_with_message_including(
+         "relatives should use 'family_tree' for :join_table option"
         )
-      end.to fail_with_message_including("#{join_table_name} doesn't exist")
+      end
     end
 
-    it "accepts an association with a valid :join_table option" do
-      define_model :relative
-      join_table_name = 'people_and_their_families'
+    context 'when the association is not declared with a :join_table option' do
+      it 'rejects when testing with a :join_table option' do
+        define_model :relative
 
-      define_model :person do
-        has_and_belongs_to_many(
-          :relatives, join_table: join_table_name
+        define_model :person do
+          has_and_belongs_to_many(:relatives)
+        end
+
+        create_table('people_relatives', id: false) do |t|
+          t.references :person
+          t.references :relative
+        end
+
+        assertion = lambda do
+          expect(Person.new).
+            to have_and_belong_to_many(:relatives).
+            join_table('family_tree')
+        end
+
+        expect(&assertion).to fail_with_message_including(
+         "relatives should use 'family_tree' for :join_table option"
         )
       end
-
-      create_table(join_table_name, id: false) do |t|
-        t.references :person
-        t.references :relative
-      end
-
-      expect(Person.new).to(
-        have_and_belong_to_many(:relatives).join_table(join_table_name)
-      )
     end
 
     context 'using a custom foreign key' do

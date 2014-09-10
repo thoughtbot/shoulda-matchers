@@ -823,7 +823,9 @@ module Shoulda
       # @private
       class AssociationMatcher
         delegate :reflection, :model_class, :associated_class, :through?,
-          :join_table_name, :polymorphic?, to: :reflector
+          :polymorphic?, to: :reflector
+
+        attr_reader :name, :options
 
         def initialize(macro, name)
           @macro = macro
@@ -906,6 +908,7 @@ module Shoulda
         end
 
         def join_table(join_table_name)
+          @options[:join_table_name] = join_table_name
           self
         end
 
@@ -941,16 +944,20 @@ module Shoulda
             submatchers_match?
         end
 
-        protected
-
-        attr_reader :submatchers, :missing, :subject, :macro, :name, :options
-
-        def reflector
-          @reflector ||= AssociationMatchers::ModelReflector.new(subject, name)
+        def join_table_name
+          options[:join_table_name] || reflector.join_table_name
         end
 
         def option_verifier
           @option_verifier ||= AssociationMatchers::OptionVerifier.new(reflector)
+        end
+
+        protected
+
+        attr_reader :submatchers, :missing, :subject, :macro
+
+        def reflector
+          @reflector ||= AssociationMatchers::ModelReflector.new(subject, name)
         end
 
         def add_submatcher(matcher)
