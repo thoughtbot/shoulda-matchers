@@ -1,5 +1,51 @@
+When 'I generate a new Ruby application' do
+  steps %{
+    When I run `mkdir #{APP_NAME}`
+    And I cd to "#{APP_NAME}"
+    And I run `bundle init`
+    And I set the "BUNDLE_GEMFILE" environment variable to "Gemfile"
+    When I configure the application to use "shoulda-matchers" from this project
+  }
+end
+
+When 'I add Minitest to the project' do
+  steps %{
+    When I configure the application to use shoulda-context
+    When I configure the application to use "minitest-reporters"
+  }
+
+  step 'I write to "test/test_helper.rb" with:', <<-EOT
+require "minitest/autorun"
+require "minitest/reporters"
+require "shoulda/context"
+require "shoulda/matchers"
+
+Minitest::Reporters.use!(Minitest::Reporters::SpecReporter.new)
+  EOT
+end
+
+When 'I add Test::Unit to the project' do
+  steps %{
+    When I configure the application to use shoulda-context
+    When I configure the application to use "test-unit"
+    When I configure the application to use "turn" v0.9.0
+  }
+
+  step 'I write to "test/test_helper.rb" with:', <<-EOT
+require "test/unit"
+require "turn/autorun"
+require "shoulda/context"
+require "shoulda/matchers"
+  EOT
+end
+
 When /^I configure the application to use "([^\"]+)"$/ do |name|
   append_to_gemfile "gem '#{name}'"
+  steps %{And I install gems}
+end
+
+When /^I configure the application to use "([^\"]+)" v(.+)$/ do |name, version|
+  append_to_gemfile "gem '#{name}', '#{version}'"
   steps %{And I install gems}
 end
 

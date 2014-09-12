@@ -84,6 +84,7 @@ GEM
     metaclass (0.0.1)
     method_source (0.8.2)
     mime-types (1.25.1)
+    minitest (4.7.5)
     mocha (0.14.0)
       metaclass (~> 0.0.1)
     multi_json (1.10.1)
@@ -188,6 +189,7 @@ DEPENDENCIES
   jdbc-sqlite3
   jquery-rails
   jruby-openssl
+  minitest (~> 4.0)
   pry
   pygments.rb
   rails (~> 3.1.8)

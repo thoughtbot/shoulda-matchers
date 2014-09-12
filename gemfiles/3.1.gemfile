@@ -29,5 +29,6 @@ gem "coffee-rails", "~> 3.1.1"
 gem "uglifier", ">= 1.0.3"
 gem "rspec-rails", "2.99.0"
 gem "turn", "~> 0.8.3"
+gem "minitest", "~> 4.0"
 
 gemspec :path=>".././"
