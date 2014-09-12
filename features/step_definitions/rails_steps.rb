@@ -1,19 +1,3 @@
-PROJECT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..', '..')).freeze
-APP_NAME     = 'testapp'.freeze
-
-BUNDLE_ENV_VARS = %w(RUBYOPT BUNDLE_PATH BUNDLE_BIN_PATH BUNDLE_GEMFILE)
-ORIGINAL_BUNDLE_VARS = Hash[ENV.select{ |key,value| BUNDLE_ENV_VARS.include?(key) }]
-
-Before do
-  ENV['BUNDLE_GEMFILE'] = File.join(Dir.pwd, ENV['BUNDLE_GEMFILE']) unless ENV['BUNDLE_GEMFILE'].start_with?(Dir.pwd)
-end
-
-After do
-  ORIGINAL_BUNDLE_VARS.each_pair do |key, value|
-    ENV[key] = value
-  end
-end
-
 When 'I generate a new rails application' do
   steps %{
     When I run `bundle exec rails new #{APP_NAME} --skip-bundle`
@@ -32,26 +16,11 @@ When 'I generate a new rails application' do
   end
 end
 
-When /^I configure the application to use "([^\"]+)"$/ do |name|
-  append_to_gemfile "gem '#{name}'"
-  steps %{And I install gems}
-end
-
 When 'I configure the application to use Spring' do
   if rails_lt_4?
     append_to_gemfile "gem 'spring'"
     steps %{And I install gems}
   end
-end
-
-When /^I configure the application to use "([^\"]+)" from this project$/ do |name|
-  append_to_gemfile "gem '#{name}', path: '#{PROJECT_ROOT}'"
-  steps %{And I install gems}
-end
-
-When /^I configure the application to use "([^\"]+)" from this project, disabling auto-require$/ do |name|
-  append_to_gemfile "gem '#{name}', path: '#{PROJECT_ROOT}', require: false"
-  steps %{And I install gems}
 end
 
 When /^I configure the application to use "([^\"]+)" from this project in test and development$/ do |name|
@@ -85,12 +54,6 @@ When 'I configure the application to use rspec-rails in test and development' do
   steps %{And I install gems}
 end
 
-When 'I configure the application to use shoulda-context' do
-  append_to_gemfile %q(gem 'shoulda-context', '~> 1.2.0')
-  append_to_gemfile %q(gem 'pry')
-  steps %{And I install gems}
-end
-
 When 'I require shoulda-matchers following rspec-rails' do
   insert_line_after test_helper_path,
     "require 'rspec/rails'",
@@ -119,109 +82,3 @@ When 'I append gems from Appraisal Gemfile' do
     end
   end
 end
-
-When 'I reset Bundler environment variables' do
-  BUNDLE_ENV_VARS.each do |key|
-    ENV[key] = nil
-  end
-end
-
-When /^I comment out the gem "([^"]*)" from the Gemfile$/ do |gemname|
-  comment_out_gem_in_gemfile(gemname)
-end
-
-When /^I install gems$/ do
-  steps %{When I run `bundle install --local`}
-end
-
-Then /^the output should indicate that (\d+) tests? (?:was|were) run/ do |number|
-  # Rails 4 has slightly different output than Rails 3 due to
-  # Test::Unit::TestCase -> MiniTest
-  if rails_lt_4?
-    steps %{Then the output should contain "#{number} tests, #{number} assertions, 0 failures, 0 errors"}
-  else
-    steps %{Then the output should match /#{number} (tests|runs), #{number} assertions, 0 failures, 0 errors, 0 skips/}
-  end
-end
-
-Then /^the output should indicate that (\d+) unit and (\d+) functional tests? were run/ do |n1, n2|
-  n1 = n1.to_i
-  n2 = n2.to_i
-  total = n1.to_i + n2.to_i
-  # Rails 3 runs separate test suites in separate processes, but Rails 4 does
-  # not, so that's why we have to check for different things here
-  if rails_lt_4?
-    steps %{Then the output should match /#{n1} tests, #{n1} assertions, 0 failures, 0 errors.+#{n2} tests, #{n2} assertions, 0 failures, 0 errors/}
-  else
-    steps %{Then the output should match /#{total} (tests|runs), #{total} assertions, 0 failures, 0 errors, 0 skips/}
-  end
-end
-
-module FileHelpers
-  RAILS_VERSION_IN_GEMFILE_PATH_REGEX = %r{/([^/]+?)(?:_.+)?\.gemfile$}
-
-  def append_to(path, contents)
-    in_current_dir do
-      File.open(path, 'a') do |file|
-        file.puts
-        file.puts contents
-      end
-    end
-  end
-
-  def append_to_gemfile(contents)
-    append_to('Gemfile', contents)
-  end
-
-  def comment_out_gem_in_gemfile(gemname)
-    in_current_dir do
-      gemfile = File.read('Gemfile')
-      gemfile.sub!(/^(\s*)(gem\s*['"]#{gemname})/, "\\1# \\2")
-      File.open('Gemfile', 'w'){ |file| file.write(gemfile) }
-    end
-  end
-
-  def insert_line_after(file_path, line, line_to_insert)
-    line += "\n"
-    line_to_insert += "\n"
-
-    in_current_dir do
-      contents = File.read(file_path)
-      index = contents.index(line) + line.length
-      contents.insert(index, line_to_insert)
-      File.open(file_path, 'w') { |f| f.write(contents) }
-    end
-  end
-
-  def rails_version_string
-    ORIGINAL_BUNDLE_VARS['BUNDLE_GEMFILE'].
-      match(RAILS_VERSION_IN_GEMFILE_PATH_REGEX).
-      captures[0]
-  end
-
-  def rails_version
-    @_rails_version ||= Gem::Version.new(rails_version_string)
-  end
-
-  def rails_lt_4?
-    Gem::Requirement.new('< 4').satisfied_by?(rails_version)
-  end
-
-  def rspec_rails_version
-    Bundler.definition.specs['rspec-rails'][0].version
-    end
-
-  def rspec_rails_gte_3?
-    Gem::Requirement.new('>= 3').satisfied_by?(rspec_rails_version)
-  end
-
-  def test_helper_path
-    if rspec_rails_gte_3?
-      'spec/rails_helper.rb'
-    else
-      'spec/spec_helper.rb'
-    end
-  end
-end
-
-World(FileHelpers)
