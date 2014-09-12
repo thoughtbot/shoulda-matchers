@@ -24,6 +24,11 @@ Minitest::Reporters.use!(Minitest::Reporters::SpecReporter.new)
   EOT
 end
 
+When /I write a Minitest test to "([^"]+)" with:/ do |path, contents|
+  contents.sub!('{{MINITEST_TEST_CASE_CLASS}}', minitest_test_case_class)
+  write_file(path, contents)
+end
+
 When 'I add Test::Unit to the project' do
   steps %{
     When I configure the application to use shoulda-context
