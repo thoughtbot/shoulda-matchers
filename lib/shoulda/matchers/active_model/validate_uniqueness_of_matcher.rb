@@ -322,6 +322,8 @@ module Shoulda
                     key == previous_value
                   end
                   available_values.keys.last
+                elsif @subject.class.columns_hash[scope.to_s].type == :uuid
+                  SecureRandom.uuid
                 elsif previous_value.respond_to?(:next)
                   previous_value.next
                 elsif previous_value.respond_to?(:to_datetime)
