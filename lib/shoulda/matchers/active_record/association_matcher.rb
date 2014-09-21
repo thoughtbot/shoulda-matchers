@@ -889,13 +889,21 @@ module Shoulda
         end
 
         def missing_options
-          missing_options = [missing, failing_submatchers.map(&:missing_option)]
+          missing_options = [missing, missing_options_for_failing_submatchers]
           missing_options.flatten.compact.join(', ')
         end
 
         def failing_submatchers
           @failing_submatchers ||= submatchers.reject do |matcher|
             matcher.matches?(subject)
+          end
+        end
+
+        def missing_options_for_failing_submatchers
+          if defined?(@failing_submatchers)
+            @failing_submatchers.map(&:missing_option)
+          else
+            []
           end
         end
 

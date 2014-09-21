@@ -9,8 +9,13 @@
   another validation on the same attribute, the matcher does not fail with an
   error. ([#592])
 
+* Fix `has_many` used with `through` so that when the association does not
+  exist, and the matcher fails, it does not raise an error when producing the
+  failure message. ([#588])
+
 [#591]: https://github.com/thoughtbot/shoulda-matchers/pull/591
 [#592]: https://github.com/thoughtbot/shoulda-matchers/pull/592
+[#588]: https://github.com/thoughtbot/shoulda-matchers/pull/588
 
 # 2.7.0
 

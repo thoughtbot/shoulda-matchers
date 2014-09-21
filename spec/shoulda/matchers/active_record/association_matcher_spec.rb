@@ -325,6 +325,16 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       expect(matcher.failure_message).to match(/through relationships, but got it through conceptions/)
     end
 
+    it 'produces a failure message without exception when association is missing :through option' do
+      define_model :child
+      define_model :parent
+      matcher = have_many(:children).through(:relationships).source(:child)
+      failure_message = 'Expected Parent to have a has_many association called children (no association called children)'
+
+      matcher.matches?(Parent.new)
+      expect(matcher.failure_message).to eq failure_message
+    end
+
     it 'accepts an association with a valid :dependent option' do
       expect(having_many_children(dependent: :destroy)).
         to have_many(:children).dependent(:destroy)
