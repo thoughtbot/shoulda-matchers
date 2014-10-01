@@ -1,0 +1,27 @@
+section {
+  @include outer-container;
+}
+
+header {
+  padding-top: em(25);
+
+  .btn {
+    float: right;
+  }
+}
+
+.logo {
+  display: inline-block;
+  float: left;
+}
+
+.btn {
+  @include size (em(150) em(45));
+  border: solid 2px $brand-red;
+  border-radius: em(20);
+  color: $brand-red;
+  display: inline-block;
+  padding: em(8) em(20);
+  text-align: center;
+  text-transform: uppercase;
+}

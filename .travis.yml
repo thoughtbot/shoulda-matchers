@@ -1,0 +1,45 @@
+script: "bundle exec rake spec cucumber"
+
+install: "travis_retry bundle install"
+
+rvm:
+  - 1.9.2
+  - 1.9.3
+
+gemfile:
+  - gemfiles/3.0.gemfile
+  - gemfiles/3.1.gemfile
+  - gemfiles/3.2.gemfile
+
+matrix:
+  allow_failures:
+    - rvm: rbx-19mode
+    - rvm: jruby-19mode
+  include:
+    - rvm: 1.9.2
+      gemfile: gemfiles/3.1_1.9.2.gemfile
+    - rvm: 1.9.2
+      gemfile: gemfiles/3.2_1.9.2.gemfile
+    - rvm: 1.9.3
+      gemfile: gemfiles/4.0.0.gemfile
+    - rvm: 1.9.3
+      gemfile: gemfiles/4.0.1.gemfile
+    - rvm: 1.9.3
+      gemfile: gemfiles/4.1.gemfile
+    - rvm: 2.0.0
+      gemfile: gemfiles/3.2.gemfile
+    - rvm: 2.0.0
+      gemfile: gemfiles/4.0.0.gemfile
+    - rvm: 2.0.0
+      gemfile: gemfiles/4.0.1.gemfile
+    - rvm: 2.0.0
+      gemfile: gemfiles/4.1.gemfile
+    - rvm: rbx-19mode
+      gemfile: gemfiles/3.2.gemfile
+    - rvm: jruby-19mode
+      gemfile: gemfiles/3.2.gemfile
+  exclude:
+    - rvm: 1.9.2
+      gemfile: gemfiles/3.1.gemfile
+    - rvm: 1.9.2
+      gemfile: gemfiles/3.2.gemfile

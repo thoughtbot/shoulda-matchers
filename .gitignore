@@ -1,0 +1,13 @@
+*.rbc
+*.swo
+*.swp
+.bundle
+.gh-pages
+.svn/
+.yardoc
+coverage
+doc
+pkg
+tags
+test/*/log/*.log
+tmp

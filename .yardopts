@@ -1,0 +1,8 @@
+--no-private
+--protected
+--readme README.md
+--files lib/**/*.rb
+--markup markdown
+--hide-tag return
+--hide-tag param
+-e ./doc_config/yard/setup.rb
