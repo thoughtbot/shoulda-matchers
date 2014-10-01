@@ -1,0 +1,7 @@
+.bundle
+.gh-pages
+.yardoc
+doc
+pkg
+source
+tmp
