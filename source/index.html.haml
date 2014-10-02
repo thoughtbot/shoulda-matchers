@@ -6,7 +6,6 @@ title: Shoulda Matchers
 %nav
   .wrapper
     .logo
-      =image_tag ('shoulda-matchers-logo.png')
     .btn Github
 
 %section.main-header
@@ -22,4 +21,32 @@ title: Shoulda Matchers
 
       .browser-container
         .browser-bar
-        .browser-background
+        .browser-background-shoulda
+          .triangle-tag
+
+%section
+  %h4.benefits-header
+    With extensive matchers for the major components of Rails:
+    %span ActiveRecord
+    ,
+    %span ActiveModel
+    , and
+    %span ActionController
+
+  .benefits-wrapper
+    .wrapper
+      .benefit
+        .icon
+          .clock-icon
+        %h4 Save Time
+        %p Save time thinking about which tests to run and writing your own code.
+      .benefit
+        .icon
+          .write-icon
+        %h4 Write More Tests
+        %p Test more thoroughly by using preexisting tests developed over time that would otherwise be longer, more complex, and error-prone.
+      .benefit
+        .icon
+          .check-icon
+        %h4 More Readable Results
+        %p Get clear and readable results from the common Rails tests.
