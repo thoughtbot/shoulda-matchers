@@ -1,12 +1,13 @@
-section {
+.wrapper {
   @include outer-container;
 }
 
-header {
-  padding-top: em(25);
+nav {
+  padding: em(25) 0 em(20);
 
   .btn {
     float: right;
+    margin-top: em(15);
   }
 }
 
@@ -21,7 +22,59 @@ header {
   border-radius: em(20);
   color: $brand-red;
   display: inline-block;
-  padding: em(8) em(20);
+  font-weight: 400;
+  padding: em(10) em(20);
   text-align: center;
   text-transform: uppercase;
+
+  &:hover {
+    @include transition (all, linear, 0.2s);
+    background: $brand-red;
+    color: white;
+    cursor: pointer;
+  }
+}
+
+.main-header {
+  @include size(auto em(550));
+  background: image-url('background-header.png') no-repeat top;
+  background-size: cover;
+
+  .main-header-copy {
+    color: white;
+    padding-top: em(100);
+    text-align: center;
+
+    h1 {
+      text-shadow: 1px 1px 7px #7f7f7f;
+      font-weight: 500;
+    }
+
+    h4 {
+      font-weight: 200;
+      line-height: $base-line-height * 2;
+    }
+  }
+}
+
+.code-samples-wrapper {
+  @include position(absolute, 50% auto auto 50%);
+  padding-top: em(40);
+  margin: 0 0 0 em(-500);
+  width: em(1000);
+}
+
+.browser-container {
+  float: left;
+  padding-right: em(50);
+}
+
+.browser-bar {
+  @include size(em(442) em(26));
+  @include retina-image(browser-bar, 442px 26px, $asset-pipeline: true);
+}
+
+.browser-background {
+  @include size (442px 200px);
+  background: #494f57;
 }
