@@ -13,10 +13,17 @@ nav {
 }
 
 .logo {
-  @include size(em(301) em(79));
   @include retina-image(shoulda-matchers-logo, 301px 79px, $asset-pipeline: true);
+  @include size(em(301) em(79));
   display: inline-block;
   float: left;
+
+  &:hover {
+    @include animation-name(scale);
+    @include animation-duration(2s);
+    @include animation-timing-function(ease);
+    cursor: pointer;
+  }
 }
 
 .btn {
@@ -53,17 +60,25 @@ nav {
       text-shadow: 1px 1px 7px #107a7a;
     }
 
-    h4 {
+    h2 {
       line-height: $base-line-height * 2;
     }
   }
 }
 
 .code-samples-wrapper {
-  @include position(absolute, 50% auto auto 50%);
+  @include position(relative, 50% auto auto 50%);
   padding-top: em(40);
   margin: 0 0 0 em(-500);
   width: em(1000);
+
+  .language-ruby {
+    background: #494f57;
+    border: none;
+    box-shadow: none;
+    position: relative;
+    text-shadow: none;
+  }
 }
 
 .browser-container {
@@ -72,26 +87,28 @@ nav {
 }
 
 .browser-bar {
-  @include size(em(442) em(26));
   @include retina-image(browser-bar, 442px 26px, $asset-pipeline: true);
+  @include size(em(442) em(26));
 }
 
 .browser-background {
   @include size (442px 200px);
   background: #494f57;
+  position: absolute;
 }
 
 .browser-background-shoulda {
   @include size (442px 150px);
   background: #494f57;
+  position: absolute;
 }
 
 .triangle-tag {
+  @include position(absolute, 0 0 auto auto);
   @include size(em(109) em(109));
   @include retina-image(triangle-tag, 109px 109px, $asset-pipeline: true);
-  float: right;
+  z-index: 2;
 }
-
 
 .benefits-header {
   background: $brand-lt-gray;
@@ -100,7 +117,7 @@ nav {
 
   span {
     color: $brand-green;
-    font-weight: bold;
+    font-weight: 500;
   }
 }
 
@@ -113,10 +130,9 @@ nav {
   padding: 0 em(25);
   text-align: center;
 
-  h4 {
-    font-weight: bold;
+  h2 {
+    font-weight: 500;
     padding: em(40) 0 em(20);
-
   }
 }
 
@@ -140,4 +156,62 @@ nav {
   @include retina-image(check, 66px 53px, $asset-pipeline: true);
   @include size(em(66) em(53));
   margin: 0 auto;
+}
+
+.installation-wrapper {
+  background: $brand-lt-gray;
+  padding: em(75) 0;
+
+  li {
+    float: left;
+    padding: 0 em(75);
+  }
+
+  h4 {
+    clear: both;
+    line-height: $base-line-height * 2;
+  }
+
+  .language-ruby {
+    background: #494f57;
+    border: none;
+    box-shadow: none;
+    position: relative;
+    text-shadow: none;
+    width: em(500);
+  }
+}
+
+.installation-header {
+  font-weight: 500;
+  padding-bottom: em(50);
+  text-align: center;
+}
+
+.tabs {
+  @include position(relative, auto auto auto 50%);
+  margin-left: -350px;
+  width: 700px;
+}
+
+.installation-instructions {
+  border-top: 1px solid $light-gray;
+  margin-top: em(40);
+  padding-top: em(40);
+
+  h2 {
+    font-weight: 500;
+  }
+}
+
+footer {
+  .btn {
+    @include position(relative, auto auto auto 50%);
+    @include size(150px auto);
+    margin: 40px 0 40px  -75px;
+  }
+
+  p {
+    text-align: center;
+  }
 }

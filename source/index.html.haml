@@ -12,20 +12,36 @@ title: Shoulda Matchers
   .wrapper
     .main-header-copy
       %h1 Making tests easy on the fingers and eyes
-      %h4 Run simple one-liner tests for common Rails functionality
+      %h2 Run simple one-liner tests for common Rails functionality
 
     .code-samples-wrapper
       .browser-container
         .browser-bar
         .browser-background
+        %pre
+          %code.language-ruby
+            :preserve
+              # Write the tests yourself
+
+              group :test do
+                gem 'shoulda-matchers', require: false
+              end
 
       .browser-container
         .browser-bar
         .browser-background-shoulda
           .triangle-tag
+        %pre
+          %code.language-ruby
+            :preserve
+              # Test Using Shoulda Matchers
+
+              group :test do
+                gem 'shoulda-matchers', require: false
+              end
 
 %section
-  %h4.benefits-header
+  %h2.benefits-header
     With extensive matchers for the major components of Rails:
     %span ActiveRecord
     ,
@@ -38,15 +54,48 @@ title: Shoulda Matchers
       .benefit
         .icon
           .clock-icon
-        %h4 Save Time
+        %h2 Save Time
         %p Save time thinking about which tests to run and writing your own code.
       .benefit
         .icon
           .write-icon
-        %h4 Write More Tests
+        %h2 Write More Tests
         %p Test more thoroughly by using preexisting tests developed over time that would otherwise be longer, more complex, and error-prone.
       .benefit
         .icon
           .check-icon
-        %h4 More Readable Results
+        %h2 More Readable Results
         %p Get clear and readable results from the common Rails tests.
+
+%section.installation-wrapper
+  .wrapper
+    %h2.installation-header Installation Instructions
+    .tabs
+      %ul
+        %li.tab-header
+          RSpec
+        %li.tab-header
+          Test::Unit
+        %li.tab-header
+          Non-Rails Apps
+    .installation-instructions
+      %h2 Install for RSpec
+      %h4 Include the gem in your Gemfile:
+      %pre
+        %code.language-ruby
+          :preserve
+            group :test do
+              gem 'shoulda-matchers', require: false
+            end
+      %h4 Then require the gem following rspec-rails in your rails_helper (or spec_helper if you're using RSpec 2.x):
+      %pre
+        %code.language-ruby
+          :preserve
+            require 'rspec/rails'
+            require 'shoulda/matchers'
+
+%footer
+  .btn Github
+  %p Shoulda Matchers is maintained and funded by thoughtbot, inc. Tweet your questions or suggestions to @mcmire or @thoughtbot.
+  %br
+  %p Copyright © 2014 thoughtbot, inc. 
