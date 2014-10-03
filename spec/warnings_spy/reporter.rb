@@ -26,7 +26,8 @@ class WarningsSpy
 
     private
 
-    def_delegators :partitioner, :relevant_warning_groups, :irrelevant_warning_groups
+    def_delegators :partitioner, :relevant_warning_groups,
+      :irrelevant_warning_groups
 
     def report_relevant_warning_groups
       if relevant_warning_groups.any?

@@ -27,22 +27,41 @@ class WarningsSpy
     private
 
     def process_line(line)
-      if backtrace_line?(line) && recording?
-        current_group << line
+      if backtrace_line?(line)
+        unless recording?
+          start_of_error = find_start_of_error
+
+          if start_of_error
+            _, start_of_error_index = start_of_error
+            @current_group = current_group[start_of_error_index..-1]
+          end
+
+          @recording = true
+        end
       else
-        unless current_group.empty?
+        if recording?
           add_group(current_group)
           current_group.clear
         end
 
-        current_group << line
+        @recording = false
+      end
 
-        @recording = true
+      current_group << line
+    end
+
+    def find_start_of_error
+      current_group.each_with_index.to_a.reverse.detect do |line, _|
+        start_of_error?(line)
       end
     end
 
+    def start_of_error?(line)
+      line =~ /^.+?:\d+:in `[^']+':/
+    end
+
     def add_group(group)
-      unless group_already_added?(group)
+      unless group.empty? || group_already_added?(group)
         warning_groups << group
       end
     end
