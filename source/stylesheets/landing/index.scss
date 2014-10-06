@@ -195,12 +195,18 @@ nav {
 }
 
 .installation-instructions {
+  @include span-columns(10);
+  @include shift(1);
   border-top: 1px solid $light-gray;
-  margin-top: em(40);
+  margin-top: em(20);
   padding-top: em(40);
 
   h2 {
     font-weight: 500;
+  }
+
+  h4 {
+    padding-top: em(20);
   }
 }
 
@@ -209,6 +215,10 @@ footer {
     @include position(relative, auto auto auto 50%);
     @include size(150px auto);
     margin: 40px 0 40px  -75px;
+  }
+
+  span {
+
   }
 
   p {
