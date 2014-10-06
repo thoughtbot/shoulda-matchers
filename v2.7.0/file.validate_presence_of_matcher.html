@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: validate_presence_of_matcher
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">File: validate_presence_of_matcher</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><pre class="code ruby"><span class="k">module</span> <span class="nn">Shoulda</span>
+  <span class="k">module</span> <span class="nn">Matchers</span>
+    <span class="k">module</span> <span class="nn">ActiveModel</span>
+      <span class="c1"># The `validate_presence_of` matcher tests usage of the</span>
+      <span class="c1"># `validates_presence_of` validation.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Robot</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :arms</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_presence_of :arms</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Robot do</span>
+      <span class="c1">#       it { should validate_presence_of(:arms) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class RobotTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_presence_of(:arms)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### Caveats</span>
+      <span class="c1">#</span>
+      <span class="c1"># Under Rails 4 and greater, if your model `has_secure_password` and you</span>
+      <span class="c1"># are validating presence of the password using a record whose password</span>
+      <span class="c1"># has already been set prior to calling the matcher, you will be</span>
+      <span class="c1"># instructed to use a record whose password is empty instead.</span>
+      <span class="c1">#</span>
+      <span class="c1"># For example, given this scenario:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class User &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_secure_password validations: false</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_presence_of :password</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     describe User do</span>
+      <span class="c1">#       subject { User.new(password: &#39;123456&#39;) }</span>
+      <span class="c1">#</span>
+      <span class="c1">#       it { should validate_presence_of(:password) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># the above test will raise an error like this:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     The validation failed because your User model declares</span>
+      <span class="c1">#     `has_secure_password`, and `validate_presence_of` was called on a</span>
+      <span class="c1">#     user which has `password` already set to a value. Please use a user</span>
+      <span class="c1">#     with an empty `password` instead.</span>
+      <span class="c1">#</span>
+      <span class="c1"># This happens because `has_secure_password` itself overrides your model</span>
+      <span class="c1"># so that it is impossible to set `password` to nil. This means that it is</span>
+      <span class="c1"># impossible to test that setting `password` to nil places your model in</span>
+      <span class="c1"># an invalid state (which in turn means that the validation itself is</span>
+      <span class="c1"># unnecessary).</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### Qualifiers</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### with_message</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `with_message` if you are using a custom validation message.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Robot</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :legs</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_presence_of :legs, message: &#39;Robot has no legs&#39;</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Robot do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should validate_presence_of(:legs).</span>
+      <span class="c1">#           with_message(&#39;Robot has no legs&#39;)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class RobotTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_presence_of(:legs).</span>
+      <span class="c1">#         with_message(&#39;Robot has no legs&#39;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># @return [ValidatePresenceOfMatcher]</span>
+      <span class="c1">#</span>
+      <span class="k">def</span> <span class="nf">validate_presence_of</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+        <span class="no">ValidatePresenceOfMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="c1"># @private</span>
+      <span class="k">class</span> <span class="nc">ValidatePresenceOfMatcher</span> <span class="o">&lt;</span> <span class="no">ValidationMatcher</span>
+        <span class="k">def</span> <span class="nf">with_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+          <span class="vi">@expected_message</span> <span class="o">=</span> <span class="n">message</span> <span class="k">if</span> <span class="n">message</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">matches?</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+          <span class="k">super</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+          <span class="vi">@expected_message</span> <span class="o">||=</span> <span class="ss">:blank</span>
+
+          <span class="k">if</span> <span class="n">secure_password_being_validated?</span>
+            <span class="n">disallows_and_double_checks_value_of!</span><span class="p">(</span><span class="n">blank_value</span><span class="p">,</span> <span class="vi">@expected_message</span><span class="p">)</span>
+          <span class="k">else</span>
+            <span class="n">disallows_value_of</span><span class="p">(</span><span class="n">blank_value</span><span class="p">,</span> <span class="vi">@expected_message</span><span class="p">)</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">description</span>
+          <span class="s2">&quot;require </span><span class="si">#{</span><span class="vi">@attribute</span><span class="si">}</span><span class="s2"> to be set&quot;</span>
+        <span class="k">end</span>
+
+        <span class="kp">private</span>
+
+        <span class="k">def</span> <span class="nf">secure_password_being_validated?</span>
+          <span class="n">defined?</span><span class="p">(</span><span class="o">::</span><span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:SecurePassword</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+            <span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">ancestors</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="o">::</span><span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:SecurePassword</span><span class="o">::</span><span class="no">InstanceMethodsOnActivation</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+            <span class="vi">@attribute</span> <span class="o">==</span> <span class="ss">:password</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">disallows_and_double_checks_value_of!</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+          <span class="n">error_class</span> <span class="o">=</span> <span class="ss">Shoulda</span><span class="p">:</span><span class="ss">:Matchers</span><span class="o">::</span><span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:CouldNotSetPasswordError</span>
+
+          <span class="n">disallows_value_of</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">matcher</span><span class="o">|</span>
+            <span class="n">matcher</span><span class="o">.</span><span class="n">_after_setting_value</span> <span class="k">do</span>
+              <span class="n">actual_value</span> <span class="o">=</span> <span class="vi">@subject</span><span class="o">.</span><span class="n">__send__</span><span class="p">(</span><span class="vi">@attribute</span><span class="p">)</span>
+
+              <span class="k">if</span> <span class="o">!</span><span class="n">actual_value</span><span class="o">.</span><span class="n">nil?</span>
+                <span class="k">raise</span> <span class="n">error_class</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="p">)</span>
+              <span class="k">end</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">blank_value</span>
+          <span class="k">if</span> <span class="n">collection?</span>
+            <span class="o">[]</span>
+          <span class="k">else</span>
+            <span class="kp">nil</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">collection?</span>
+          <span class="k">if</span> <span class="n">reflection</span>
+            <span class="o">[</span><span class="ss">:has_many</span><span class="p">,</span> <span class="ss">:has_and_belongs_to_many</span><span class="o">].</span><span class="n">include?</span><span class="p">(</span><span class="n">reflection</span><span class="o">.</span><span class="n">macro</span><span class="p">)</span>
+          <span class="k">else</span>
+            <span class="kp">false</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">reflection</span>
+          <span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:reflect_on_association</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+            <span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">reflect_on_association</span><span class="p">(</span><span class="vi">@attribute</span><span class="p">)</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:27 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

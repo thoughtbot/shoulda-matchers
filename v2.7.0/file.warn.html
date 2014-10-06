@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: warn
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">File: warn</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><pre class="code ruby"><span class="k">module</span> <span class="nn">Shoulda</span>
+  <span class="k">module</span> <span class="nn">Matchers</span>
+    <span class="no">TERMINAL_MAX_WIDTH</span> <span class="o">=</span> <span class="mi">72</span>
+
+    <span class="c1"># @private</span>
+    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">warn</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+      <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;Warning from shoulda-matchers:&quot;</span>
+      <span class="n">divider</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span> <span class="o">*</span> <span class="no">TERMINAL_MAX_WIDTH</span>
+      <span class="n">wrapped_message</span> <span class="o">=</span> <span class="n">word_wrap</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="no">TERMINAL_MAX_WIDTH</span><span class="p">)</span>
+      <span class="n">full_message</span> <span class="o">=</span> <span class="o">[</span>
+        <span class="n">divider</span><span class="p">,</span>
+        <span class="o">[</span><span class="n">header</span><span class="p">,</span> <span class="n">wrapped_message</span><span class="o">.</span><span class="n">strip</span><span class="o">].</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">),</span>
+        <span class="n">divider</span>
+      <span class="o">].</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+      <span class="no">Kernel</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">full_message</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="c1"># @private</span>
+    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">warn_about_deprecated_method</span><span class="p">(</span><span class="n">old_method</span><span class="p">,</span> <span class="n">new_method</span><span class="p">)</span>
+      <span class="nb">warn</span> <span class="o">&lt;&lt;</span><span class="no">EOT</span>
+<span class="sh">#{old_method} is deprecated and will be removed in the next major</span>
+<span class="sh">release. Please use #{new_method} instead.</span>
+<span class="no">EOT</span>
+    <span class="k">end</span>
+
+    <span class="c1"># Source: &lt;https://www.ruby-forum.com/topic/57805&gt;</span>
+    <span class="c1"># @private</span>
+    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">word_wrap</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+      <span class="n">text</span><span class="o">.</span>
+        <span class="nb">gsub</span><span class="p">(</span><span class="sr">/\n+/</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span>
+        <span class="nb">gsub</span><span class="p">(</span> <span class="sr">/(\S{</span><span class="si">#{</span><span class="n">width</span><span class="si">}</span><span class="sr">})(?=\S)/</span><span class="p">,</span> <span class="s1">&#39;\1 &#39;</span> <span class="p">)</span><span class="o">.</span>
+        <span class="nb">gsub</span><span class="p">(</span> <span class="sr">/(.{1,</span><span class="si">#{</span><span class="n">width</span><span class="si">}</span><span class="sr">})(?:\s+|$)/</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">1</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:28 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

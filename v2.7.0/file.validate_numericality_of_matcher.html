@@ -1,0 +1,543 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: validate_numericality_of_matcher
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">File: validate_numericality_of_matcher</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><pre class="code ruby"><span class="k">module</span> <span class="nn">Shoulda</span>
+  <span class="k">module</span> <span class="nn">Matchers</span>
+    <span class="k">module</span> <span class="nn">ActiveModel</span>
+      <span class="c1"># The `validate_numericality_of` matcher tests usage of the</span>
+      <span class="c1"># `validates_numericality_of` validation.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :gpa</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_numericality_of :gpa</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should validate_numericality_of(:gpa) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_numericality_of(:gpa)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### Qualifiers</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### only_integer</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `only_integer` to test usage of the `:only_integer` option. This</span>
+      <span class="c1"># asserts that your attribute only allows integer numbers and disallows</span>
+      <span class="c1"># non-integer ones.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :age</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_numericality_of :age, only_integer: true</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should validate_numericality_of(:age).only_integer }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_numericality_of(:age).only_integer</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### is_less_than</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `is_less_than` to test usage of the the `:less_than` option. This</span>
+      <span class="c1"># asserts that the attribute can take a number which is less than the</span>
+      <span class="c1"># given value and cannot take a number which is greater than or equal to</span>
+      <span class="c1"># it.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :number_of_cars</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_numericality_of :number_of_cars, less_than: 2</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should validate_numericality_of(:number_of_cars).</span>
+      <span class="c1">#           is_less_than(2)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_numericality_of(:number_of_cars).</span>
+      <span class="c1">#         is_less_than(2)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### is_less_than_or_equal_to</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `is_less_than_or_equal_to` to test usage of the</span>
+      <span class="c1"># `:less_than_or_equal_to` option. This asserts that the attribute can</span>
+      <span class="c1"># take a number which is less than or equal to the given value and cannot</span>
+      <span class="c1"># take a number which is greater than it.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :birth_year</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_numericality_of :birth_year, less_than_or_equal_to: 1987</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should validate_numericality_of(:birth_year).</span>
+      <span class="c1">#           is_less_than_or_equal_to(1987)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_numericality_of(:birth_year).</span>
+      <span class="c1">#         is_less_than_or_equal_to(1987)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### is_equal_to</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `is_equal_to` to test usage of the `:equal_to` option. This asserts</span>
+      <span class="c1"># that the attribute can take a number which is equal to the given value</span>
+      <span class="c1"># and cannot take a number which is not equal.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :weight</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_numericality_of :weight, equal_to: 150</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should validate_numericality_of(:weight).is_equal_to(150) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_numericality_of(:weight).is_equal_to(150)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### is_greater_than_or_equal_to</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `is_greater_than_or_equal_to` to test usage of the</span>
+      <span class="c1"># `:greater_than_or_equal_to` option. This asserts that the attribute can</span>
+      <span class="c1"># take a number which is greater than or equal to the given value and</span>
+      <span class="c1"># cannot take a number which is less than it.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :height</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_numericality_of :height, greater_than_or_equal_to: 55</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should validate_numericality_of(:height).</span>
+      <span class="c1">#           is_greater_than_or_equal_to(55)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_numericality_of(:height).</span>
+      <span class="c1">#         is_greater_than_or_equal_to(55)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### is_greater_than</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `is_greater_than` to test usage of tthe `:greater_than` option.</span>
+      <span class="c1"># This asserts that the attribute can take a number which is greater than</span>
+      <span class="c1"># the given value and cannot take a number less than or equal to it.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :legal_age</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_numericality_of :legal_age, greater_than: 21</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should validate_numericality_of(:legal_age).</span>
+      <span class="c1">#           is_greater_than(21)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_numericality_of(:legal_age).</span>
+      <span class="c1">#         is_greater_than(21)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### even</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `even` to test usage of the `:even` option. This asserts that the</span>
+      <span class="c1"># attribute can take odd numbers and cannot take even ones.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :birth_month</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_numericality_of :birth_month, even: true</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should validate_numericality_of(:birth_month).even }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_numericality_of(:birth_month).even</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### odd</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `odd` to test usage of the `:odd` option. This asserts that the</span>
+      <span class="c1"># attribute can take a number which is odd and cannot take a number which</span>
+      <span class="c1"># is even.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :birth_day</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_numericality_of :birth_day, odd: true</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should validate_numericality_of(:birth_day).odd }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_numericality_of(:birth_day).odd</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### with_message</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `with_message` if you are using a custom validation message.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :number_of_dependents</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_numericality_of :number_of_dependents,</span>
+      <span class="c1">#         message: &#39;Number of dependents must be a number&#39;</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should validate_numericality_of(:number_of_dependents).</span>
+      <span class="c1">#           with_message(&#39;Number of dependents must be a number&#39;)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_numericality_of(:number_of_dependents).</span>
+      <span class="c1">#         with_message(&#39;Number of dependents must be a number&#39;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### allow_nil</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `allow_nil` to assert that the attribute allows nil.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Age</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :age</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_numericality_of :age, allow_nil: true</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Post do</span>
+      <span class="c1">#       it { should validate_numericality_of(:age).allow_nil }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PostTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_numericality_of(:age).allow_nil</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># @return [ValidateNumericalityOfMatcher]</span>
+      <span class="c1">#</span>
+      <span class="k">def</span> <span class="nf">validate_numericality_of</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+        <span class="no">ValidateNumericalityOfMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="c1"># @private</span>
+      <span class="k">class</span> <span class="nc">ValidateNumericalityOfMatcher</span>
+        <span class="no">NUMERIC_NAME</span> <span class="o">=</span> <span class="s1">&#39;numbers&#39;</span>
+        <span class="no">NON_NUMERIC_VALUE</span> <span class="o">=</span> <span class="s1">&#39;abcd&#39;</span>
+        <span class="no">DEFAULT_DIFF_TO_COMPARE</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="kp">attr_reader</span> <span class="ss">:diff_to_compare</span>
+
+        <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+          <span class="vi">@attribute</span> <span class="o">=</span> <span class="n">attribute</span>
+          <span class="vi">@submatchers</span> <span class="o">=</span> <span class="o">[]</span>
+          <span class="vi">@diff_to_compare</span> <span class="o">=</span> <span class="no">DEFAULT_DIFF_TO_COMPARE</span>
+          <span class="n">add_disallow_value_matcher</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">only_integer</span>
+          <span class="n">prepare_submatcher</span><span class="p">(</span>
+            <span class="ss">NumericalityMatchers</span><span class="p">:</span><span class="ss">:OnlyIntegerMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="vi">@attribute</span><span class="p">)</span>
+          <span class="p">)</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">allow_nil</span>
+          <span class="n">prepare_submatcher</span><span class="p">(</span>
+            <span class="no">AllowValueMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="kp">nil</span><span class="p">)</span>
+              <span class="o">.</span><span class="n">for</span><span class="p">(</span><span class="vi">@attribute</span><span class="p">)</span>
+              <span class="o">.</span><span class="n">with_message</span><span class="p">(</span><span class="ss">:not_a_number</span><span class="p">)</span>
+          <span class="p">)</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">odd</span>
+          <span class="n">prepare_submatcher</span><span class="p">(</span>
+            <span class="ss">NumericalityMatchers</span><span class="p">:</span><span class="ss">:OddNumberMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="vi">@attribute</span><span class="p">)</span>
+          <span class="p">)</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">even</span>
+          <span class="n">prepare_submatcher</span><span class="p">(</span>
+            <span class="ss">NumericalityMatchers</span><span class="p">:</span><span class="ss">:EvenNumberMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="vi">@attribute</span><span class="p">)</span>
+          <span class="p">)</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">is_greater_than</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+          <span class="n">prepare_submatcher</span><span class="p">(</span><span class="n">comparison_matcher_for</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="ss">:&gt;</span><span class="p">)</span><span class="o">.</span><span class="n">for</span><span class="p">(</span><span class="vi">@attribute</span><span class="p">))</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">is_greater_than_or_equal_to</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+          <span class="n">prepare_submatcher</span><span class="p">(</span><span class="n">comparison_matcher_for</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="ss">:&gt;=</span><span class="p">)</span><span class="o">.</span><span class="n">for</span><span class="p">(</span><span class="vi">@attribute</span><span class="p">))</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">is_equal_to</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+          <span class="n">prepare_submatcher</span><span class="p">(</span><span class="n">comparison_matcher_for</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="ss">:==</span><span class="p">)</span><span class="o">.</span><span class="n">for</span><span class="p">(</span><span class="vi">@attribute</span><span class="p">))</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">is_less_than</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+          <span class="n">prepare_submatcher</span><span class="p">(</span><span class="n">comparison_matcher_for</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">:</span><span class="o">&lt;</span><span class="p">)</span><span class="o">.</span><span class="n">for</span><span class="p">(</span><span class="vi">@attribute</span><span class="p">))</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">is_less_than_or_equal_to</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+          <span class="n">prepare_submatcher</span><span class="p">(</span><span class="n">comparison_matcher_for</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">:</span><span class="o">&lt;=</span><span class="p">)</span><span class="o">.</span><span class="n">for</span><span class="p">(</span><span class="vi">@attribute</span><span class="p">))</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">with_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+          <span class="vi">@submatchers</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">matcher</span><span class="o">|</span> <span class="n">matcher</span><span class="o">.</span><span class="n">with_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="p">}</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">matches?</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+          <span class="vi">@subject</span> <span class="o">=</span> <span class="n">subject</span>
+          <span class="n">submatchers_match?</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">description</span>
+          <span class="s2">&quot;only allow </span><span class="si">#{</span><span class="n">allowed_types</span><span class="si">}</span><span class="s2"> for </span><span class="si">#{</span><span class="vi">@attribute</span><span class="si">}#{</span><span class="n">comparison_descriptions</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">failure_message</span>
+          <span class="n">submatcher_failure_messages_for_should</span><span class="o">.</span><span class="n">last</span>
+        <span class="k">end</span>
+        <span class="k">alias</span> <span class="n">failure_message_for_should</span> <span class="n">failure_message</span>
+
+        <span class="k">def</span> <span class="nf">failure_message_when_negated</span>
+          <span class="n">submatcher_failure_messages_for_should_not</span><span class="o">.</span><span class="n">last</span>
+        <span class="k">end</span>
+        <span class="k">alias</span> <span class="n">failure_message_for_should_not</span> <span class="n">failure_message_when_negated</span>
+
+        <span class="kp">private</span>
+
+        <span class="k">def</span> <span class="nf">add_disallow_value_matcher</span>
+          <span class="n">disallow_value_matcher</span> <span class="o">=</span> <span class="no">DisallowValueMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="no">NON_NUMERIC_VALUE</span><span class="p">)</span><span class="o">.</span>
+            <span class="k">for</span><span class="p">(</span><span class="vi">@attribute</span><span class="p">)</span><span class="o">.</span>
+            <span class="n">with_message</span><span class="p">(</span><span class="ss">:not_a_number</span><span class="p">)</span>
+
+          <span class="n">add_submatcher</span><span class="p">(</span><span class="n">disallow_value_matcher</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">prepare_submatcher</span><span class="p">(</span><span class="n">submatcher</span><span class="p">)</span>
+          <span class="n">add_submatcher</span><span class="p">(</span><span class="n">submatcher</span><span class="p">)</span>
+          <span class="k">if</span> <span class="n">submatcher</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:diff_to_compare</span><span class="p">)</span>
+            <span class="n">update_diff_to_compare</span><span class="p">(</span><span class="n">submatcher</span><span class="p">)</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">comparison_matcher_for</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">operator</span><span class="p">)</span>
+          <span class="ss">NumericalityMatchers</span><span class="p">:</span><span class="ss">:ComparisonMatcher</span>
+            <span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">operator</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">for</span><span class="p">(</span><span class="vi">@attribute</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">add_submatcher</span><span class="p">(</span><span class="n">submatcher</span><span class="p">)</span>
+          <span class="vi">@submatchers</span> <span class="o">&lt;&lt;</span> <span class="n">submatcher</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">update_diff_to_compare</span><span class="p">(</span><span class="n">matcher</span><span class="p">)</span>
+          <span class="vi">@diff_to_compare</span> <span class="o">=</span> <span class="o">[</span><span class="vi">@diff_to_compare</span><span class="p">,</span> <span class="n">matcher</span><span class="o">.</span><span class="n">diff_to_compare</span><span class="o">].</span><span class="n">max</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">submatchers_match?</span>
+          <span class="n">failing_submatchers</span><span class="o">.</span><span class="n">empty?</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">submatcher_failure_messages_for_should</span>
+          <span class="n">failing_submatchers</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:failure_message</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">submatcher_failure_messages_for_should_not</span>
+          <span class="n">failing_submatchers</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:failure_message_when_negated</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">failing_submatchers</span>
+          <span class="vi">@failing_submatchers</span> <span class="o">||=</span> <span class="vi">@submatchers</span><span class="o">.</span><span class="n">select</span> <span class="p">{</span> <span class="o">|</span><span class="n">matcher</span><span class="o">|</span> <span class="o">!</span><span class="n">matcher</span><span class="o">.</span><span class="n">matches?</span><span class="p">(</span><span class="vi">@subject</span><span class="p">)</span> <span class="p">}</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">allowed_types</span>
+          <span class="n">allowed_array</span> <span class="o">=</span> <span class="n">submatcher_allowed_types</span>
+          <span class="n">allowed_array</span><span class="o">.</span><span class="n">empty?</span> <span class="p">?</span> <span class="no">NUMERIC_NAME</span> <span class="p">:</span> <span class="n">allowed_array</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">submatcher_allowed_types</span>
+          <span class="vi">@submatchers</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="o">[]</span><span class="p">){</span><span class="o">|</span><span class="n">m</span><span class="p">,</span> <span class="n">s</span><span class="o">|</span> <span class="n">m</span> <span class="o">&lt;&lt;</span> <span class="n">s</span><span class="o">.</span><span class="n">allowed_type</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:allowed_type</span><span class="p">);</span> <span class="n">m</span> <span class="p">}</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">comparison_descriptions</span>
+          <span class="n">description_array</span> <span class="o">=</span> <span class="n">submatcher_comparison_descriptions</span>
+          <span class="n">description_array</span><span class="o">.</span><span class="n">empty?</span> <span class="p">?</span> <span class="s1">&#39;&#39;</span> <span class="p">:</span> <span class="s1">&#39; which are &#39;</span> <span class="o">+</span> <span class="n">submatcher_comparison_descriptions</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39; and &#39;</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">submatcher_comparison_descriptions</span>
+          <span class="vi">@submatchers</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="o">[]</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">arr</span><span class="p">,</span> <span class="n">submatcher</span><span class="o">|</span>
+            <span class="k">if</span> <span class="n">submatcher</span><span class="o">.</span><span class="n">respond_to?</span> <span class="ss">:comparison_description</span>
+              <span class="n">arr</span> <span class="o">&lt;&lt;</span> <span class="n">submatcher</span><span class="o">.</span><span class="n">comparison_description</span>
+            <span class="k">end</span>
+            <span class="n">arr</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:27 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: validate_absence_of_matcher
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">File: validate_absence_of_matcher</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><pre class="code ruby"><span class="k">module</span> <span class="nn">Shoulda</span>
+  <span class="k">module</span> <span class="nn">Matchers</span>
+    <span class="k">module</span> <span class="nn">ActiveModel</span>
+      <span class="c1"># The `validate_absence_of` matcher tests the usage of the</span>
+      <span class="c1"># `validates_absence_of` validation.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Artillery</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :arms</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_absence_of :arms</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Artillery do</span>
+      <span class="c1">#       it { should validate_absence_of(:arms) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class ArtilleryTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_absence_of(:arms)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### Qualifiers</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### with_message</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `with_message` if you are using a custom validation message.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Artillery</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :arms</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_absence_of :arms,</span>
+      <span class="c1">#         message: &quot;We&#39;re fresh outta arms here, soldier!&quot;</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Artillery do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should validate_absence_of(:arms).</span>
+      <span class="c1">#           with_message(&quot;We&#39;re fresh outta arms here, soldier!&quot;)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class ArtilleryTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_absence_of(:arms).</span>
+      <span class="c1">#         with_message(&quot;We&#39;re fresh outta arms here, soldier!&quot;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># @return [ValidateAbsenceOfMatcher}</span>
+      <span class="c1">#</span>
+      <span class="k">def</span> <span class="nf">validate_absence_of</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+        <span class="no">ValidateAbsenceOfMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="c1"># @private</span>
+      <span class="k">class</span> <span class="nc">ValidateAbsenceOfMatcher</span> <span class="o">&lt;</span> <span class="no">ValidationMatcher</span>
+        <span class="k">def</span> <span class="nf">with_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+          <span class="vi">@expected_message</span> <span class="o">=</span> <span class="n">message</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">matches?</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+          <span class="k">super</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+          <span class="vi">@expected_message</span> <span class="o">||=</span> <span class="ss">:present</span>
+          <span class="n">disallows_value_of</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="vi">@expected_message</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">description</span>
+          <span class="s2">&quot;require </span><span class="si">#{</span><span class="vi">@attribute</span><span class="si">}</span><span class="s2"> to not be set&quot;</span>
+        <span class="k">end</span>
+
+        <span class="kp">private</span>
+
+        <span class="k">def</span> <span class="nf">value</span>
+          <span class="k">if</span> <span class="n">reflection</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">reflection</span><span class="o">.</span><span class="n">klass</span><span class="o">.</span><span class="n">new</span>
+            <span class="k">if</span> <span class="n">collection?</span>
+              <span class="o">[</span> <span class="n">obj</span> <span class="o">]</span>
+            <span class="k">else</span>
+              <span class="n">obj</span>
+            <span class="k">end</span>
+          <span class="k">elsif</span> <span class="o">[</span><span class="no">Fixnum</span><span class="p">,</span> <span class="nb">Float</span><span class="o">].</span><span class="n">include?</span><span class="p">(</span><span class="n">attribute_class</span><span class="p">)</span>
+            <span class="mi">1</span>
+          <span class="k">elsif</span> <span class="n">attribute_class</span> <span class="o">==</span> <span class="no">BigDecimal</span>
+            <span class="no">BigDecimal</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+          <span class="k">elsif</span> <span class="o">!</span><span class="n">attribute_class</span> <span class="o">||</span> <span class="n">attribute_class</span> <span class="o">==</span> <span class="nb">String</span>
+            <span class="s1">&#39;an arbitrary value&#39;</span>
+          <span class="k">else</span>
+            <span class="n">attribute_class</span><span class="o">.</span><span class="n">new</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">attribute_class</span>
+          <span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:columns_hash</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+            <span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">columns_hash</span><span class="o">[</span><span class="vi">@attribute</span><span class="o">.</span><span class="n">to_s</span><span class="o">].</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:klass</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+            <span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">columns_hash</span><span class="o">[</span><span class="vi">@attribute</span><span class="o">.</span><span class="n">to_s</span><span class="o">].</span><span class="n">klass</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">collection?</span>
+          <span class="k">if</span> <span class="n">reflection</span>
+            <span class="o">[</span><span class="ss">:has_many</span><span class="p">,</span> <span class="ss">:has_and_belongs_to_many</span><span class="o">].</span><span class="n">include?</span><span class="p">(</span><span class="n">reflection</span><span class="o">.</span><span class="n">macro</span><span class="p">)</span>
+          <span class="k">else</span>
+            <span class="kp">false</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">reflection</span>
+          <span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:reflect_on_association</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+            <span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">reflect_on_association</span><span class="p">(</span><span class="vi">@attribute</span><span class="p">)</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:27 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

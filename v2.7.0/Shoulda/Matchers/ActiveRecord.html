@@ -1,0 +1,1905 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>
+  Module: Shoulda::Matchers::ActiveRecord
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="../../css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../../css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../../css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../';
+  framesUrl = "../../frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="../../index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class='title'><span class='object_link'><a href="../../Shoulda.html" title="Shoulda (module)">Shoulda</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Matchers.html" title="Shoulda::Matchers (module)">Matchers</a></span></span>
+     &raquo; 
+    <span class="title">ActiveRecord</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="../../class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="../../method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="../../file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><h1>Module: Shoulda::Matchers::ActiveRecord
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+  
+    
+  
+    
+  
+  
+</dl>
+
+
+
+
+
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#accept_nested_attributes_for-instance_method" title="#accept_nested_attributes_for (instance method)">- (AcceptNestedAttributesForMatcher) <strong>accept_nested_attributes_for</strong>(name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>accept_nested_attributes_for</code> matcher tests usage of the <code>accepts_nested_attributes_for</code> macro.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#belong_to-instance_method" title="#belong_to (instance method)">- (AssociationMatcher) <strong>belong_to</strong>(name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>belong_to</code> matcher is used to ensure that a <code>belong_to</code> association exists on your model.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#define_enum_for-instance_method" title="#define_enum_for (instance method)">- (DefineEnumForMatcher) <strong>define_enum_for</strong>(attribute_name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>define_enum_for</code> matcher is used to test that the <code>enum</code> macro has been used to decorate an attribute with enum methods.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#have_and_belong_to_many-instance_method" title="#have_and_belong_to_many (instance method)">- (AssociationMatcher) <strong>have_and_belong_to_many</strong>(name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>have_and_belong_to_many</code> matcher is used to test that a <code>has_and_belongs_to_many</code> association exists on your model and that the join table exists in the database.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#have_db_column-instance_method" title="#have_db_column (instance method)">- (HaveDbColumnMatcher) <strong>have_db_column</strong>(column) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>have_db_column</code> matcher tests that the table that backs your model has a specific column.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#have_db_index-instance_method" title="#have_db_index (instance method)">- (HaveDbIndexMatcher) <strong>have_db_index</strong>(columns) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>have_db_index</code> matcher tests that the table that backs your model has a index on a specific column.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#have_many-instance_method" title="#have_many (instance method)">- (AssociationMatcher) <strong>have_many</strong>(name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>have_many</code> matcher is used to test that a <code>has_many</code> or <code>has_many :through</code> association exists on your model.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#have_one-instance_method" title="#have_one (instance method)">- (AssociationMatcher) <strong>have_one</strong>(name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>have_one</code> matcher is used to test that a <code>has_one</code> or <code>has_one :through</code> association exists on your model.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#have_readonly_attribute-instance_method" title="#have_readonly_attribute (instance method)">- (HaveReadonlyAttributeMatcher) <strong>have_readonly_attribute</strong>(value) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>have_readonly_attribute</code> matcher tests usage of the <code>attr_readonly</code> macro.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#serialize-instance_method" title="#serialize (instance method)">- (SerializeMatcher) <strong>serialize</strong>(name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>serialize</code> matcher tests usage of the <code>serialize</code> macro.</p>
+</div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="accept_nested_attributes_for-instance_method">
+  
+    - (<tt><span class='object_link'>AcceptNestedAttributesForMatcher</span></tt>) <strong>accept_nested_attributes_for</strong>(name) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>accept_nested_attributes_for</code> matcher tests usage of the
+<code>accepts_nested_attributes_for</code> macro.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Car</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">accepts_nested_attributes_for</span> <span class="ss">:doors</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Car</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">accept_nested_attributes_for</span><span class="p">(</span><span class="ss">:doors</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit (using Shoulda)</span>
+<span class="k">class</span> <span class="nc">CarTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">accept_nested_attributes_for</span><span class="p">(</span><span class="ss">:doors</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4>Qualifiers</h4>
+
+<h5>allow_destroy</h5>
+
+<p>Use <code>allow_destroy</code> to assert that the <code>:allow_destroy</code> option was
+specified.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Car</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">accepts_nested_attributes_for</span> <span class="ss">:mirrors</span><span class="p">,</span> <span class="n">allow_destroy</span><span class="p">:</span> <span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Car</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">accept_nested_attributes_for</span><span class="p">(</span><span class="ss">:mirrors</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">allow_destroy</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">CarTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">accept_nested_attributes_for</span><span class="p">(</span><span class="ss">:mirrors</span><span class="p">)</span><span class="o">.</span>
+    <span class="n">allow_destroy</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>limit</h5>
+
+<p>Use <code>limit</code> to assert that the <code>:limit</code> option was specified.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Car</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">accepts_nested_attributes_for</span> <span class="ss">:windows</span><span class="p">,</span> <span class="ss">limit</span><span class="p">:</span> <span class="mi">3</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Car</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">accept_nested_attributes_for</span><span class="p">(</span><span class="ss">:windows</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">limit</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">CarTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">accept_nested_attributes_for</span><span class="p">(</span><span class="ss">:windows</span><span class="p">)</span><span class="o">.</span>
+    <span class="n">limit</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>update_only</h5>
+
+<p>Use <code>update_only</code> to assert that the <code>:update_only</code> option was
+specified.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Car</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">accepts_nested_attributes_for</span> <span class="ss">:engine</span><span class="p">,</span> <span class="n">update_only</span><span class="p">:</span> <span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Car</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">accept_nested_attributes_for</span><span class="p">(</span><span class="ss">:engine</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">update_only</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">CarTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">accept_nested_attributes_for</span><span class="p">(</span><span class="ss">:engine</span><span class="p">)</span><span class="o">.</span>
+    <span class="n">update_only</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+93
+94
+95</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_record/accept_nested_attributes_for_matcher.rb', line 93</span>
+
+<span class="k">def</span> <span class="nf">accept_nested_attributes_for</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+  <span class="no">AcceptNestedAttributesForMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="belong_to-instance_method">
+  
+    - (<tt><span class='object_link'>AssociationMatcher</span></tt>) <strong>belong_to</strong>(name) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>belong_to</code> matcher is used to ensure that a <code>belong_to</code> association
+exists on your model.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:organization</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:organization</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:organization</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Note that polymorphic associations are automatically detected and do not
+need any qualifiers:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Comment</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:commentable</span><span class="p">,</span> <span class="ss">polymorphic</span><span class="p">:</span> <span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Comment</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:commentable</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">CommentTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:commentable</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4>Qualifiers</h4>
+
+<h5>conditions</h5>
+
+<p>Use <code>conditions</code> if your association is defined with a scope that sets
+the <code>where</code> clause.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:family</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="n">where</span><span class="p">(</span><span class="n">everyone_is_perfect</span><span class="p">:</span> <span class="kp">false</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:family</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">conditions</span><span class="p">(</span><span class="n">everyone_is_perfect</span><span class="p">:</span> <span class="kp">false</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:family</span><span class="p">)</span><span class="o">.</span>
+    <span class="n">conditions</span><span class="p">(</span><span class="n">everyone_is_perfect</span><span class="p">:</span> <span class="kp">false</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>order</h5>
+
+<p>Use <code>order</code> if your association is defined with a scope that sets the
+<code>order</code> clause.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:previous_company</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="n">order</span><span class="p">(</span><span class="s1">&#39;hired_on desc&#39;</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:previous_company</span><span class="p">)</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="s1">&#39;hired_on desc&#39;</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:previous_company</span><span class="p">)</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="s1">&#39;hired_on desc&#39;</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>class_name</h5>
+
+<p>Use <code>class_name</code> to test usage of the <code>:class_name</code> option. This
+asserts that the model you&#39;re referring to actually exists.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:ancient_city</span><span class="p">,</span> <span class="n">class_name</span><span class="p">:</span> <span class="s1">&#39;City&#39;</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:ancient_city</span><span class="p">)</span><span class="o">.</span><span class="n">class_name</span><span class="p">(</span><span class="s1">&#39;City&#39;</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:ancient_city</span><span class="p">)</span><span class="o">.</span><span class="n">class_name</span><span class="p">(</span><span class="s1">&#39;City&#39;</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>with_foreign_key</h5>
+
+<p>Use <code>with_foreign_key</code> to test usage of the <code>:foreign_key</code> option.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:great_country</span><span class="p">,</span> <span class="n">foreign_key</span><span class="p">:</span> <span class="s1">&#39;country_id&#39;</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:great_country</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">with_foreign_key</span><span class="p">(</span><span class="s1">&#39;country_id&#39;</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:great_country</span><span class="p">)</span><span class="o">.</span>
+    <span class="n">with_foreign_key</span><span class="p">(</span><span class="s1">&#39;country_id&#39;</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>dependent</h5>
+
+<p>Use <code>dependent</code> to assert that the <code>:dependent</code> option was specified.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:world</span><span class="p">,</span> <span class="ss">dependent</span><span class="p">:</span> <span class="ss">:destroy</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:world</span><span class="p">)</span><span class="o">.</span><span class="n">dependent</span><span class="p">(</span><span class="ss">:destroy</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:world</span><span class="p">)</span><span class="o">.</span><span class="n">dependent</span><span class="p">(</span><span class="ss">:destroy</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>counter_cache</h5>
+
+<p>Use <code>counter_cache</code> to assert that the <code>:counter_cache</code> option was
+specified.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:organization</span><span class="p">,</span> <span class="n">counter_cache</span><span class="p">:</span> <span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:organization</span><span class="p">)</span><span class="o">.</span><span class="n">counter_cache</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:organization</span><span class="p">)</span><span class="o">.</span><span class="n">counter_cache</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>touch</h5>
+
+<p>Use <code>touch</code> to assert that the <code>:touch</code> option was specified.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:organization</span><span class="p">,</span> <span class="ss">touch</span><span class="p">:</span> <span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:organization</span><span class="p">)</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:organization</span><span class="p">)</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4>autosave</h4>
+
+<p>Use <code>autosave</code> to assert that the <code>:autosave</code> option was specified.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Account</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:bank</span><span class="p">,</span> <span class="ss">autosave</span><span class="p">:</span> <span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Account</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:bank</span><span class="p">)</span><span class="o">.</span><span class="n">autosave</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">AccountTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:bank</span><span class="p">)</span><span class="o">.</span><span class="n">autosave</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>inverse_of</h5>
+
+<p>Use <code>inverse_of</code> to assert that the <code>:inverse_of</code> option was specified.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:organization</span><span class="p">,</span> <span class="n">inverse_of</span><span class="p">:</span> <span class="ss">:employees</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:organization</span><span class="p">)</span><span class="o">.</span><span class="n">inverse_of</span><span class="p">(</span><span class="ss">:employees</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:organization</span><span class="p">)</span><span class="o">.</span><span class="n">inverse_of</span><span class="p">(</span><span class="ss">:employees</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+218
+219
+220</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_record/association_matcher.rb', line 218</span>
+
+<span class="k">def</span> <span class="nf">belong_to</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+  <span class="no">AssociationMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:belongs_to</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="define_enum_for-instance_method">
+  
+    - (<tt><span class='object_link'>DefineEnumForMatcher</span></tt>) <strong>define_enum_for</strong>(attribute_name) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>define_enum_for</code> matcher is used to test that the <code>enum</code> macro has
+been used to decorate an attribute with enum methods.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Process</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">enum</span> <span class="ss">status</span><span class="p">:</span> <span class="o">[</span><span class="ss">:running</span><span class="p">,</span> <span class="ss">:stopped</span><span class="p">,</span> <span class="ss">:suspended</span><span class="o">]</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Process</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">define_enum_for</span><span class="p">(</span><span class="ss">:status</span><span class="p">)</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">ProcessTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">define_enum_for</span><span class="p">(</span><span class="ss">:status</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4>Qualifiers</h4>
+
+<h5>with</h5>
+
+<p>Use <code>with</code> to test that the enum has been defined with a certain set of
+known values.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Process</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">enum</span> <span class="ss">status</span><span class="p">:</span> <span class="o">[</span><span class="ss">:running</span><span class="p">,</span> <span class="ss">:stopped</span><span class="p">,</span> <span class="ss">:suspended</span><span class="o">]</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Process</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">define_enum_for</span><span class="p">(</span><span class="ss">:status</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">with</span><span class="p">(</span><span class="o">[</span><span class="ss">:running</span><span class="p">,</span> <span class="ss">:stopped</span><span class="p">,</span> <span class="ss">:suspended</span><span class="o">]</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">ProcessTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">define_enum_for</span><span class="p">(</span><span class="ss">:status</span><span class="p">)</span><span class="o">.</span>
+    <span class="n">with</span><span class="p">(</span><span class="o">[</span><span class="ss">:running</span><span class="p">,</span> <span class="ss">:stopped</span><span class="p">,</span> <span class="ss">:suspended</span><span class="o">]</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+49
+50
+51</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_record/define_enum_for_matcher.rb', line 49</span>
+
+<span class="k">def</span> <span class="nf">define_enum_for</span><span class="p">(</span><span class="n">attribute_name</span><span class="p">)</span>
+  <span class="no">DefineEnumForMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">attribute_name</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="have_and_belong_to_many-instance_method">
+  
+    - (<tt><span class='object_link'>AssociationMatcher</span></tt>) <strong>have_and_belong_to_many</strong>(name) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>have_and_belong_to_many</code> matcher is used to test that a
+<code>has_and_belongs_to_many</code> association exists on your model and that the
+join table exists in the database.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_and_belongs_to_many</span> <span class="ss">:awards</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_and_belong_to_many</span><span class="p">(</span><span class="ss">:awards</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_and_belong_to_many</span><span class="p">(</span><span class="ss">:awards</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4>Qualifiers</h4>
+
+<h5>conditions</h5>
+
+<p>Use <code>conditions</code> if your association is defined with a scope that sets
+the <code>where</code> clause.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_and_belongs_to_many</span> <span class="ss">:issues</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="n">where</span><span class="p">(</span><span class="ss">difficulty</span><span class="p">:</span> <span class="s1">&#39;hard&#39;</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">have_and_belong_to_many</span><span class="p">(</span><span class="ss">:issues</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">conditions</span><span class="p">(</span><span class="ss">difficulty</span><span class="p">:</span> <span class="s1">&#39;hard&#39;</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_and_belong_to_many</span><span class="p">(</span><span class="ss">:issues</span><span class="p">)</span><span class="o">.</span>
+    <span class="n">conditions</span><span class="p">(</span><span class="ss">difficulty</span><span class="p">:</span> <span class="s1">&#39;hard&#39;</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>order</h5>
+
+<p>Use <code>order</code> if your association is defined with a scope that sets the
+<code>order</code> clause.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_and_belongs_to_many</span> <span class="ss">:projects</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="n">order</span><span class="p">(</span><span class="s1">&#39;time_spent&#39;</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">have_and_belong_to_many</span><span class="p">(</span><span class="ss">:projects</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">order</span><span class="p">(</span><span class="s1">&#39;time_spent&#39;</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_and_belong_to_many</span><span class="p">(</span><span class="ss">:projects</span><span class="p">)</span><span class="o">.</span>
+    <span class="n">order</span><span class="p">(</span><span class="s1">&#39;time_spent&#39;</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>class_name</h5>
+
+<p>Use <code>class_name</code> to test usage of the <code>:class_name</code> option. This
+asserts that the model you&#39;re referring to actually exists.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_and_belongs_to_many</span> <span class="ss">:places_visited</span><span class="p">,</span> <span class="n">class_name</span><span class="p">:</span> <span class="s1">&#39;City&#39;</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">have_and_belong_to_many</span><span class="p">(</span><span class="ss">:places_visited</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">class_name</span><span class="p">(</span><span class="s1">&#39;City&#39;</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_and_belong_to_many</span><span class="p">(</span><span class="ss">:places_visited</span><span class="p">)</span><span class="o">.</span>
+    <span class="n">class_name</span><span class="p">(</span><span class="s1">&#39;City&#39;</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>validate</h5>
+
+<p>Use <code>validate</code> to test that the <code>:validate</code> option was specified.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_and_belongs_to_many</span> <span class="ss">:interviews</span><span class="p">,</span> <span class="ss">validate</span><span class="p">:</span> <span class="kp">false</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">have_and_belong_to_many</span><span class="p">(</span><span class="ss">:interviews</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">validate</span><span class="p">(</span><span class="kp">false</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_and_belong_to_many</span><span class="p">(</span><span class="ss">:interviews</span><span class="p">)</span><span class="o">.</span>
+    <span class="n">validate</span><span class="p">(</span><span class="kp">false</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4>autosave</h4>
+
+<p>Use <code>autosave</code> to assert that the <code>:autosave</code> option was specified.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Publisher</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_and_belongs_to_many</span> <span class="ss">:advertisers</span><span class="p">,</span> <span class="ss">autosave</span><span class="p">:</span> <span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Publisher</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_and_belong_to_many</span><span class="p">(</span><span class="ss">:advertisers</span><span class="p">)</span><span class="o">.</span><span class="n">autosave</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">AccountTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_and_belong_to_many</span><span class="p">(</span><span class="ss">:advertisers</span><span class="p">)</span><span class="o">.</span><span class="n">autosave</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+743
+744
+745</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_record/association_matcher.rb', line 743</span>
+
+<span class="k">def</span> <span class="nf">have_and_belong_to_many</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+  <span class="no">AssociationMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:has_and_belongs_to_many</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="have_db_column-instance_method">
+  
+    - (<tt><span class='object_link'>HaveDbColumnMatcher</span></tt>) <strong>have_db_column</strong>(column) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>have_db_column</code> matcher tests that the table that backs your model
+has a specific column.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">CreatePhones</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">create_table</span> <span class="ss">:phones</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:supported_ios_version</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Phone</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_db_column</span><span class="p">(</span><span class="ss">:supported_ios_version</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PhoneTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_db_column</span><span class="p">(</span><span class="ss">:supported_ios_version</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4>Qualifiers</h4>
+
+<h5>of_type</h5>
+
+<p>Use <code>of_type</code> to assert that a column is defined as a certain type.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">CreatePhones</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">create_table</span> <span class="ss">:phones</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+      <span class="n">t</span><span class="o">.</span><span class="n">decimal</span> <span class="ss">:camera_aperture</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Phone</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">have_db_column</span><span class="p">(</span><span class="ss">:camera_aperture</span><span class="p">)</span><span class="o">.</span><span class="n">of_type</span><span class="p">(</span><span class="ss">:decimal</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PhoneTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_db_column</span><span class="p">(</span><span class="ss">:camera_aperture</span><span class="p">)</span><span class="o">.</span><span class="n">of_type</span><span class="p">(</span><span class="ss">:decimal</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>with_options</h5>
+
+<p>Use <code>with_options</code> to assert that a column has been defined with
+certain options (<code>:precision</code>, <code>:limit</code>, <code>:default</code>, <code>:null</code>, <code>:scale</code>,
+or <code>:primary</code>).</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">CreatePhones</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">create_table</span> <span class="ss">:phones</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+      <span class="n">t</span><span class="o">.</span><span class="n">decimal</span> <span class="ss">:camera_aperture</span><span class="p">,</span> <span class="ss">precision</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">null</span><span class="p">:</span> <span class="kp">false</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Phone</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">have_db_column</span><span class="p">(</span><span class="ss">:camera_aperture</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">with_options</span><span class="p">(</span><span class="ss">precision</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">null</span><span class="p">:</span> <span class="kp">false</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PhoneTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_db_column</span><span class="p">(</span><span class="ss">:camera_aperture</span><span class="p">)</span><span class="o">.</span>
+    <span class="n">with_options</span><span class="p">(</span><span class="ss">precision</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">null</span><span class="p">:</span> <span class="kp">false</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+81
+82
+83</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_record/have_db_column_matcher.rb', line 81</span>
+
+<span class="k">def</span> <span class="nf">have_db_column</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+  <span class="no">HaveDbColumnMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="have_db_index-instance_method">
+  
+    - (<tt><span class='object_link'>HaveDbIndexMatcher</span></tt>) <strong>have_db_index</strong>(columns) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>have_db_index</code> matcher tests that the table that backs your model
+has a index on a specific column.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">CreateBlogs</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">create_table</span> <span class="ss">:blogs</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+      <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:user_id</span>
+    <span class="k">end</span>
+
+    <span class="n">add_index</span> <span class="ss">:blogs</span><span class="p">,</span> <span class="ss">:user_id</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Blog</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_db_index</span><span class="p">(</span><span class="ss">:user_id</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">BlogTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_db_index</span><span class="p">(</span><span class="ss">:user_id</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4>Qualifiers</h4>
+
+<h5>unique</h5>
+
+<p>Use <code>unique</code> to assert that the index is unique.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">CreateBlogs</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">create_table</span> <span class="ss">:blogs</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:name</span>
+    <span class="k">end</span>
+
+    <span class="n">add_index</span> <span class="ss">:blogs</span><span class="p">,</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">unique</span><span class="p">:</span> <span class="kp">true</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Blog</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_db_index</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">BlogTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_db_index</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Since it only ever makes since for <code>unique</code> to be <code>true</code>, you can also
+leave off the argument to save some keystrokes:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Blog</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_db_index</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">BlogTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_db_index</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+68
+69
+70</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_record/have_db_index_matcher.rb', line 68</span>
+
+<span class="k">def</span> <span class="nf">have_db_index</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+  <span class="no">HaveDbIndexMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="have_many-instance_method">
+  
+    - (<tt><span class='object_link'>AssociationMatcher</span></tt>) <strong>have_many</strong>(name) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>have_many</code> matcher is used to test that a <code>has_many</code> or <code>has_many
+:through</code> association exists on your model.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_many</span> <span class="ss">:friends</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:friends</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:friends</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4>Qualifiers</h4>
+
+<h5>conditions</h5>
+
+<p>Use <code>conditions</code> if your association is defined with a scope that sets
+the <code>where</code> clause.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_many</span> <span class="ss">:coins</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="n">where</span><span class="p">(</span><span class="ss">quality</span><span class="p">:</span> <span class="s1">&#39;mint&#39;</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:coins</span><span class="p">)</span><span class="o">.</span><span class="n">conditions</span><span class="p">(</span><span class="ss">quality</span><span class="p">:</span> <span class="s1">&#39;mint&#39;</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:coins</span><span class="p">)</span><span class="o">.</span><span class="n">conditions</span><span class="p">(</span><span class="ss">quality</span><span class="p">:</span> <span class="s1">&#39;mint&#39;</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>order</h5>
+
+<p>Use <code>order</code> if your association is defined with a scope that sets the
+<code>order</code> clause.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_many</span> <span class="ss">:shirts</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="n">order</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:shirts</span><span class="p">)</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:shirts</span><span class="p">)</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>class_name</h5>
+
+<p>Use <code>class_name</code> to test usage of the <code>:class_name</code> option. This
+asserts that the model you&#39;re referring to actually exists.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_many</span> <span class="ss">:hopes</span><span class="p">,</span> <span class="n">class_name</span><span class="p">:</span> <span class="s1">&#39;Dream&#39;</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:hopes</span><span class="p">)</span><span class="o">.</span><span class="n">class_name</span><span class="p">(</span><span class="s1">&#39;Dream&#39;</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:hopes</span><span class="p">)</span><span class="o">.</span><span class="n">class_name</span><span class="p">(</span><span class="s1">&#39;Dream&#39;</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>with_foreign_key</h5>
+
+<p>Use <code>with_foreign_key</code> to test usage of the <code>:foreign_key</code> option.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_many</span> <span class="ss">:worries</span><span class="p">,</span> <span class="n">foreign_key</span><span class="p">:</span> <span class="s1">&#39;worrier_id&#39;</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:worries</span><span class="p">)</span><span class="o">.</span><span class="n">with_foreign_key</span><span class="p">(</span><span class="s1">&#39;worrier_id&#39;</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:worries</span><span class="p">)</span><span class="o">.</span><span class="n">with_foreign_key</span><span class="p">(</span><span class="s1">&#39;worrier_id&#39;</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>dependent</h5>
+
+<p>Use <code>dependent</code> to assert that the <code>:dependent</code> option was specified.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_many</span> <span class="ss">:secret_documents</span><span class="p">,</span> <span class="ss">dependent</span><span class="p">:</span> <span class="ss">:destroy</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:secret_documents</span><span class="p">)</span><span class="o">.</span><span class="n">dependent</span><span class="p">(</span><span class="ss">:destroy</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:secret_documents</span><span class="p">)</span><span class="o">.</span><span class="n">dependent</span><span class="p">(</span><span class="ss">:destroy</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>through</h5>
+
+<p>Use <code>through</code> to test usage of the <code>:through</code> option. This asserts that
+the association you are going through actually exists.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_many</span> <span class="ss">:acquaintances</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:friends</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:acquaintances</span><span class="p">)</span><span class="o">.</span><span class="n">through</span><span class="p">(</span><span class="ss">:friends</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:acquaintances</span><span class="p">)</span><span class="o">.</span><span class="n">through</span><span class="p">(</span><span class="ss">:friends</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>source</h5>
+
+<p>Use <code>source</code> to test usage of the <code>:source</code> option on a <code>:through</code>
+association.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_many</span> <span class="ss">:job_offers</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:friends</span><span class="p">,</span> <span class="ss">source</span><span class="p">:</span> <span class="ss">:opportunities</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:job_offers</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">through</span><span class="p">(</span><span class="ss">:friends</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">source</span><span class="p">(</span><span class="ss">:opportunities</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:job_offers</span><span class="p">)</span><span class="o">.</span>
+    <span class="n">through</span><span class="p">(</span><span class="ss">:friends</span><span class="p">)</span><span class="o">.</span>
+    <span class="n">source</span><span class="p">(</span><span class="ss">:opportunities</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>validate</h5>
+
+<p>Use <code>validate</code> to assert that the <code>:validate</code> option was specified.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_many</span> <span class="ss">:ideas</span><span class="p">,</span> <span class="ss">validate</span><span class="p">:</span> <span class="kp">false</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:ideas</span><span class="p">)</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="kp">false</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:ideas</span><span class="p">)</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="kp">false</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4>autosave</h4>
+
+<p>Use <code>autosave</code> to assert that the <code>:autosave</code> option was specified.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Player</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_many</span> <span class="ss">:games</span><span class="p">,</span> <span class="ss">autosave</span><span class="p">:</span> <span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Player</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:games</span><span class="p">)</span><span class="o">.</span><span class="n">autosave</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PlayerTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:games</span><span class="p">)</span><span class="o">.</span><span class="n">autosave</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+416
+417
+418</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_record/association_matcher.rb', line 416</span>
+
+<span class="k">def</span> <span class="nf">have_many</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+  <span class="no">AssociationMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:has_many</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="have_one-instance_method">
+  
+    - (<tt><span class='object_link'>AssociationMatcher</span></tt>) <strong>have_one</strong>(name) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>have_one</code> matcher is used to test that a <code>has_one</code> or <code>has_one
+:through</code> association exists on your model.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_one</span> <span class="ss">:partner</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:partner</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:partner</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4>Qualifiers</h4>
+
+<h5>conditions</h5>
+
+<p>Use <code>conditions</code> if your association is defined with a scope that sets
+the <code>where</code> clause.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_one</span> <span class="ss">:pet</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="n">where</span><span class="p">(</span><span class="s1">&#39;weight &lt; 80&#39;</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:pet</span><span class="p">)</span><span class="o">.</span><span class="n">conditions</span><span class="p">(</span><span class="s1">&#39;weight &lt; 80&#39;</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:pet</span><span class="p">)</span><span class="o">.</span><span class="n">conditions</span><span class="p">(</span><span class="s1">&#39;weight &lt; 80&#39;</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>order</h5>
+
+<p>Use <code>order</code> if your association is defined with a scope that sets the
+<code>order</code> clause.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_one</span> <span class="ss">:focus</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="n">order</span><span class="p">(</span><span class="s1">&#39;priority desc&#39;</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:focus</span><span class="p">)</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="s1">&#39;priority desc&#39;</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:focus</span><span class="p">)</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="s1">&#39;priority desc&#39;</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>class_name</h5>
+
+<p>Use <code>class_name</code> to test usage of the <code>:class_name</code> option. This
+asserts that the model you&#39;re referring to actually exists.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_one</span> <span class="ss">:chance</span><span class="p">,</span> <span class="n">class_name</span><span class="p">:</span> <span class="s1">&#39;Opportunity&#39;</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:chance</span><span class="p">)</span><span class="o">.</span><span class="n">class_name</span><span class="p">(</span><span class="s1">&#39;Opportunity&#39;</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:chance</span><span class="p">)</span><span class="o">.</span><span class="n">class_name</span><span class="p">(</span><span class="s1">&#39;Opportunity&#39;</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>dependent</h5>
+
+<p>Use <code>dependent</code> to test that the <code>:dependent</code> option was specified.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_one</span> <span class="ss">:contract</span><span class="p">,</span> <span class="ss">dependent</span><span class="p">:</span> <span class="ss">:nullify</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:contract</span><span class="p">)</span><span class="o">.</span><span class="n">dependent</span><span class="p">(</span><span class="ss">:nullify</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:contract</span><span class="p">)</span><span class="o">.</span><span class="n">dependent</span><span class="p">(</span><span class="ss">:nullify</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>with_foreign_key</h5>
+
+<p>Use <code>with_foreign_key</code> to test usage of the <code>:foreign_key</code> option.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_one</span> <span class="ss">:job</span><span class="p">,</span> <span class="n">foreign_key</span><span class="p">:</span> <span class="s1">&#39;worker_id&#39;</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:job</span><span class="p">)</span><span class="o">.</span><span class="n">with_foreign_key</span><span class="p">(</span><span class="s1">&#39;worker_id&#39;</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:job</span><span class="p">)</span><span class="o">.</span><span class="n">with_foreign_key</span><span class="p">(</span><span class="s1">&#39;worker_id&#39;</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>through</h5>
+
+<p>Use <code>through</code> to test usage of the <code>:through</code> option. This asserts that
+the association you are going through actually exists.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_one</span> <span class="ss">:life</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:partner</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:life</span><span class="p">)</span><span class="o">.</span><span class="n">through</span><span class="p">(</span><span class="ss">:partner</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:life</span><span class="p">)</span><span class="o">.</span><span class="n">through</span><span class="p">(</span><span class="ss">:partner</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>source</h5>
+
+<p>Use <code>source</code> to test usage of the <code>:source</code> option on a <code>:through</code>
+association.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_one</span> <span class="ss">:car</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:partner</span><span class="p">,</span> <span class="ss">source</span><span class="p">:</span> <span class="ss">:vehicle</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:car</span><span class="p">)</span><span class="o">.</span><span class="n">through</span><span class="p">(</span><span class="ss">:partner</span><span class="p">)</span><span class="o">.</span><span class="n">source</span><span class="p">(</span><span class="ss">:vehicle</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:car</span><span class="p">)</span><span class="o">.</span><span class="n">through</span><span class="p">(</span><span class="ss">:partner</span><span class="p">)</span><span class="o">.</span><span class="n">source</span><span class="p">(</span><span class="ss">:vehicle</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>validate</h5>
+
+<p>Use <code>validate</code> to assert that the the <code>:validate</code> option was specified.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_one</span> <span class="ss">:parking_card</span><span class="p">,</span> <span class="ss">validate</span><span class="p">:</span> <span class="kp">false</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:parking_card</span><span class="p">)</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="kp">false</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:parking_card</span><span class="p">)</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="kp">false</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4>autosave</h4>
+
+<p>Use <code>autosave</code> to assert that the <code>:autosave</code> option was specified.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Account</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_one</span> <span class="ss">:bank</span><span class="p">,</span> <span class="ss">autosave</span><span class="p">:</span> <span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Account</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:bank</span><span class="p">)</span><span class="o">.</span><span class="n">autosave</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">AccountTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:bank</span><span class="p">)</span><span class="o">.</span><span class="n">autosave</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+608
+609
+610</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_record/association_matcher.rb', line 608</span>
+
+<span class="k">def</span> <span class="nf">have_one</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+  <span class="no">AssociationMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:has_one</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="have_readonly_attribute-instance_method">
+  
+    - (<tt><span class='object_link'>HaveReadonlyAttributeMatcher</span></tt>) <strong>have_readonly_attribute</strong>(value) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>have_readonly_attribute</code> matcher tests usage of the
+<code>attr_readonly</code> macro.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">attr_readonly</span> <span class="ss">:password</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_readonly_attribute</span><span class="p">(</span><span class="ss">:password</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">have_readonly_attribute</span><span class="p">(</span><span class="ss">:password</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+23
+24
+25</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_record/have_readonly_attribute_matcher.rb', line 23</span>
+
+<span class="k">def</span> <span class="nf">have_readonly_attribute</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+  <span class="no">HaveReadonlyAttributeMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="serialize-instance_method">
+  
+    - (<tt><span class='object_link'>SerializeMatcher</span></tt>) <strong>serialize</strong>(name) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>serialize</code> matcher tests usage of the <code>serialize</code> macro.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Product</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">serialize</span> <span class="ss">:customizations</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Product</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">serialize</span><span class="p">(</span><span class="ss">:customizations</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">ProductTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">serialize</span><span class="p">(</span><span class="ss">:customizations</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4>Qualifiers</h4>
+
+<h5>as</h5>
+
+<p>Use <code>as</code> if you are using a custom serializer class.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">ProductSpecsSerializer</span>
+  <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Product</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">serialize</span> <span class="ss">:specifications</span><span class="p">,</span> <span class="no">ProductSpecsSerializer</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Product</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">serialize</span><span class="p">(</span><span class="ss">:specifications</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">as</span><span class="p">(</span><span class="no">ProductSpecsSerializer</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">ProductTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">serialize</span><span class="p">(</span><span class="ss">:specifications</span><span class="p">)</span><span class="o">.</span>
+    <span class="n">as</span><span class="p">(</span><span class="no">ProductSpecsSerializer</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>as_instance_of</h5>
+
+<p>Use <code>as_instance_of</code> if you are using a custom serializer object.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">ProductOptionsSerializer</span>
+  <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Product</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">serialize</span> <span class="ss">:options</span><span class="p">,</span> <span class="no">ProductOptionsSerializer</span><span class="o">.</span><span class="n">new</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Product</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">serialize</span><span class="p">(</span><span class="ss">:options</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">as_instance_of</span><span class="p">(</span><span class="no">ProductOptionsSerializer</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">ProductTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">serialize</span><span class="p">(</span><span class="ss">:options</span><span class="p">)</span><span class="o">.</span>
+    <span class="n">as_instance_of</span><span class="p">(</span><span class="no">ProductOptionsSerializer</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+88
+89
+90</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_record/serialize_matcher.rb', line 88</span>
+
+<span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+  <span class="no">SerializeMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+  </div>
+
+</div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:28 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

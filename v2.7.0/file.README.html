@@ -1,0 +1,266 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: README
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+  
+    <span class="title">File: README</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><h1>shoulda-matchers <a href="http://badge.fury.io/rb/shoulda-matchers"><img src="https://badge.fury.io/rb/shoulda-matchers.png" alt="Gem Version"></a> <a href="http://travis-ci.org/thoughtbot/shoulda-matchers"><img src="https://secure.travis-ci.org/thoughtbot/shoulda-matchers.png?branch=master" alt="Build Status"></a></h1>
+
+<p><a href="http://thoughtbot.github.io/shoulda-matchers">Official Documentation</a></p>
+
+<p>shoulda-matchers provides Test::Unit- and RSpec-compatible one-liners that test
+common Rails functionality. These tests would otherwise be much longer, more
+complex, and error-prone.</p>
+
+<h3>ActiveModel Matchers</h3>
+
+<ul>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActiveModel.html#allow_mass_assignment_of-instance_method" title="Shoulda::Matchers::ActiveModel#allow_mass_assignment_of (method)">allow_mass_assignment_of</a></span></strong>
+tests usage of Rails 3&#39;s <code>attr_accessible</code> and <code>attr_protected</code> macros.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActiveModel.html#allow_value-instance_method" title="Shoulda::Matchers::ActiveModel#allow_value (method)">allow_value</a></span></strong> tests usage of
+the <code>validates_format_of</code> validation.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActiveModel.html#validate_inclusion_of-instance_method" title="Shoulda::Matchers::ActiveModel#validate_inclusion_of (method)">validate_inclusion_of</a></span></strong>
+tests usage of <code>validates_inclusion_of</code>.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActiveModel.html#validate_exclusion_of-instance_method" title="Shoulda::Matchers::ActiveModel#validate_exclusion_of (method)">validate_exclusion_of</a></span></strong>
+tests usage of <code>validates_exclusion_of</code>.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActiveModel.html#ensure_length_of-instance_method" title="Shoulda::Matchers::ActiveModel#ensure_length_of (method)">ensure_length_of</a></span></strong> tests usage
+of <code>validates_length_of</code>.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActiveModel.html#have_secure_password-instance_method" title="Shoulda::Matchers::ActiveModel#have_secure_password (method)">have_secure_password</a></span></strong> tests
+usage of <code>has_secure_password</code>.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActiveModel.html#validate_confirmation_of-instance_method" title="Shoulda::Matchers::ActiveModel#validate_confirmation_of (method)">validate_confirmation_of</a></span></strong>
+tests usage of <code>validates_confirmation_of</code>.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActiveModel.html#validate_numericality_of-instance_method" title="Shoulda::Matchers::ActiveModel#validate_numericality_of (method)">validate_numericality_of</a></span></strong>
+tests usage of <code>validates_numericality_of</code>.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActiveModel.html#validate_presence_of-instance_method" title="Shoulda::Matchers::ActiveModel#validate_presence_of (method)">validate_presence_of</a></span></strong> tests
+usage of <code>validates_presence_of</code>.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActiveModel.html#validate_uniqueness_of-instance_method" title="Shoulda::Matchers::ActiveModel#validate_uniqueness_of (method)">validate_uniqueness_of</a></span></strong> tests
+usage of <code>validates_uniqueness_of</code>.</li>
+</ul>
+
+<h3>ActiveRecord Matchers</h3>
+
+<ul>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActiveRecord.html#accept_nested_attributes_for-instance_method" title="Shoulda::Matchers::ActiveRecord#accept_nested_attributes_for (method)">accept_nested_attributes_for</a></span></strong>
+tests usage of the <code>accepts_nested_attributes_for</code> macro.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActiveRecord.html#belong_to-instance_method" title="Shoulda::Matchers::ActiveRecord#belong_to (method)">belong_to</a></span></strong> tests
+your <code>belongs_to</code> associations.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActiveRecord.html#define_enum_for-instance_method" title="Shoulda::Matchers::ActiveRecord#define_enum_for (method)">define_enum_for</a></span></strong>
+tests usage of the <code>enum</code> macro.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActiveRecord.html#have_many-instance_method" title="Shoulda::Matchers::ActiveRecord#have_many (method)">have_many</a></span></strong> tests
+your <code>has_many</code> associations.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActiveRecord.html#have_one-instance_method" title="Shoulda::Matchers::ActiveRecord#have_one (method)">have_one</a></span></strong> tests your
+<code>has_one</code> associations.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActiveRecord.html#have_and_belong_to_many-instance_method" title="Shoulda::Matchers::ActiveRecord#have_and_belong_to_many (method)">have_and_belong_to_many</a></span></strong>
+tests your <code>has_and_belongs_to_many</code> associations.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActiveRecord.html#have_db_column-instance_method" title="Shoulda::Matchers::ActiveRecord#have_db_column (method)">have_db_column</a></span></strong> tests that
+the table that backs your model has a specific column.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActiveRecord.html#have_db_index-instance_method" title="Shoulda::Matchers::ActiveRecord#have_db_index (method)">have_db_index</a></span></strong> tests that the
+table that backs your model has an index on a specific column.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActiveRecord.html#have_readonly_attribute-instance_method" title="Shoulda::Matchers::ActiveRecord#have_readonly_attribute (method)">have_readonly_attribute</a></span></strong>
+tests usage of the <code>attr_readonly</code> macro.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActiveRecord.html#serialize-instance_method" title="Shoulda::Matchers::ActiveRecord#serialize (method)">serialize</a></span></strong> tests usage of the
+<code>serialize</code> macro.</li>
+</ul>
+
+<h3>ActionController Matchers</h3>
+
+<ul>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActionController.html#filter_param-instance_method" title="Shoulda::Matchers::ActionController#filter_param (method)">filter_param</a></span></strong> tests
+parameter filtering configuration.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActionController.html#redirect_to-instance_method" title="Shoulda::Matchers::ActionController#redirect_to (method)">redirect_to</a></span></strong> tests that
+an action redirects to a certain location.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActionController.html#render_template-instance_method" title="Shoulda::Matchers::ActionController#render_template (method)">render_template</a></span></strong> tests
+that an action renders a template.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActionController.html#render_with_layout-instance_method" title="Shoulda::Matchers::ActionController#render_with_layout (method)">render_with_layout</a></span></strong> tests
+that an action is rendereed with a certain layout.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActionController.html#rescue_from-instance_method" title="Shoulda::Matchers::ActionController#rescue_from (method)">rescue_from</a></span></strong> tests usage
+of the <code>rescue_from</code> macro.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActionController.html#respond_with-instance_method" title="Shoulda::Matchers::ActionController#respond_with (method)">respond_with</a></span></strong> tests that
+an action responds with a certain status code.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActionController.html#route-instance_method" title="Shoulda::Matchers::ActionController#route (method)">route</a></span></strong> tests your routes.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActionController.html#set_session-instance_method" title="Shoulda::Matchers::ActionController#set_session (method)">set_session</a></span></strong> makes
+assertions on the <code>session</code> hash.</li>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/ActionController.html#set_the_flash-instance_method" title="Shoulda::Matchers::ActionController#set_the_flash (method)">set_the_flash</a></span></strong> makes
+assertions on the <code>flash</code> hash.</li>
+</ul>
+
+<h3>Independent Matchers</h3>
+
+<ul>
+<li><strong><span class='object_link'><a href="Shoulda/Matchers/Independent.html#delegate_method-instance_method" title="Shoulda::Matchers::Independent#delegate_method (method)">delegate_method</a></span></strong>
+tests that an object forwards messages to other, internal objects by way of
+delegation.</li>
+</ul>
+
+<h2>Installation</h2>
+
+<h3>RSpec</h3>
+
+<p>Include the gem in your Gemfile:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="n">group</span> <span class="ss">:test</span> <span class="k">do</span>
+  <span class="n">gem</span> <span class="s1">&#39;shoulda-matchers&#39;</span><span class="p">,</span> <span class="nb">require</span><span class="p">:</span> <span class="kp">false</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Then require the gem following rspec-rails in your rails_helper (or spec_helper
+if you&#39;re using RSpec 2.x):</p>
+
+<pre class="code ruby"><code class="ruby"><span class="nb">require</span> <span class="s1">&#39;rspec/rails&#39;</span>
+<span class="nb">require</span> <span class="s1">&#39;shoulda/matchers&#39;</span>
+</code></pre>
+
+<h3>Test::Unit</h3>
+
+<p>shoulda-matchers was originally a component of
+<a href="http://github.com/thoughtbot/shoulda">Shoulda</a> -- it&#39;s what provides the nice
+<code>should</code> syntax which is demonstrated below. For this reason, include it in
+your Gemfile instead:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="n">group</span> <span class="ss">:test</span> <span class="k">do</span>
+  <span class="n">gem</span> <span class="s1">&#39;shoulda&#39;</span>
+<span class="k">end</span>
+</code></pre>
+
+<h3>Non-Rails apps</h3>
+
+<p>Once it is loaded, shoulda-matchers automatically includes itself into your test
+framework. It will mix in the appropriate matchers for ActiveRecord,
+ActiveModel, and ActionController depending on the modules that are available at
+runtime. For instance, in order to use the ActiveRecord matchers, ActiveRecord
+must be available beforehand.</p>
+
+<p>If your application is on Rails, everything should &quot;just work&quot;, as
+shoulda-matchers will most likely be declared after Rails in your Gemfile. If
+your application is on another framework such as Sinatra or Padrino, you may
+have a different setup, so you will want to ensure that you are requiring
+shoulda-matchers after the components of Rails you are using. For instance,
+if you wanted to use and test against ActiveModel, you&#39;d say:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="n">gem</span> <span class="s1">&#39;activemodel&#39;</span>
+<span class="n">gem</span> <span class="s1">&#39;shoulda-matchers&#39;</span>
+</code></pre>
+
+<p>and not:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="n">gem</span> <span class="s1">&#39;shoulda-matchers&#39;</span>
+<span class="n">gem</span> <span class="s1">&#39;activemodel&#39;</span>
+</code></pre>
+
+<h2>Generating documentation</h2>
+
+<p>YARD is used to generate documentation, which can be viewed <a href="http://thoughtbot.github.io/shoulda-matchers">online</a>.
+You can preview changes you make to the documentation locally by running</p>
+
+<pre class="code ruby"><code class="ruby"><span class="n">yard</span> <span class="n">doc</span>
+</code></pre>
+
+<p>from this directory. Then, open <code>doc/index.html</code> in your browser.</p>
+
+<p>If you want to see a live preview as you work without having to run <code>yard</code> over
+and over again, keep this command running in a separate terminal session:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="n">watchr</span> <span class="n">docs</span><span class="o">.</span><span class="n">watchr</span>
+</code></pre>
+
+<h2>Versioning</h2>
+
+<p>shoulda-matchers follows Semantic Versioning 2.0 as defined at
+<a href="http://semver.org">http://semver.org</a>.</p>
+
+<h2>Credits</h2>
+
+<p>shoulda-matchers is maintained and funded by <a href="http://thoughtbot.com/community">thoughtbot</a>. Thank you
+to all the <a href="https://github.com/thoughtbot/shoulda-matchers/contributors">contributors</a>.</p>
+
+<h2>License</h2>
+
+<p>shoulda-matchers is copyright © 2006-2014 thoughtbot, inc. It is free software,
+and may be redistributed under the terms specified in the
+<a href="MIT-LICENSE">MIT-LICENSE</a> file.</p>
+</div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:27 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: model_reflector
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">File: model_reflector</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><pre class="code ruby"><span class="k">module</span> <span class="nn">Shoulda</span>
+  <span class="k">module</span> <span class="nn">Matchers</span>
+    <span class="k">module</span> <span class="nn">ActiveRecord</span>
+      <span class="k">module</span> <span class="nn">AssociationMatchers</span>
+        <span class="c1"># @private</span>
+        <span class="k">class</span> <span class="nc">ModelReflector</span>
+          <span class="n">delegate</span> <span class="ss">:associated_class</span><span class="p">,</span> <span class="ss">:through?</span><span class="p">,</span> <span class="ss">:join_table</span><span class="p">,</span>
+            <span class="ss">:association_relation</span><span class="p">,</span> <span class="ss">:polymorphic?</span><span class="p">,</span> <span class="ss">:foreign_key</span><span class="p">,</span>
+            <span class="ss">:association_foreign_key</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="ss">:reflection</span>
+
+          <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">subject</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+            <span class="vi">@subject</span> <span class="o">=</span> <span class="n">subject</span>
+            <span class="vi">@name</span> <span class="o">=</span> <span class="nb">name</span>
+          <span class="k">end</span>
+
+          <span class="k">def</span> <span class="nf">reflection</span>
+            <span class="vi">@reflection</span> <span class="o">||=</span> <span class="n">reflect_on_association</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+          <span class="k">end</span>
+
+          <span class="k">def</span> <span class="nf">reflect_on_association</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+            <span class="n">reflection</span> <span class="o">=</span> <span class="n">model_class</span><span class="o">.</span><span class="n">reflect_on_association</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">reflection</span>
+              <span class="no">ModelReflection</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">reflection</span><span class="p">)</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+
+          <span class="k">def</span> <span class="nf">model_class</span>
+            <span class="n">subject</span><span class="o">.</span><span class="n">class</span>
+          <span class="k">end</span>
+
+          <span class="k">def</span> <span class="nf">build_relation_with_clause</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">case</span> <span class="nb">name</span>
+              <span class="k">when</span> <span class="ss">:conditions</span> <span class="k">then</span> <span class="n">associated_class</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+              <span class="k">when</span> <span class="ss">:order</span>      <span class="k">then</span> <span class="n">associated_class</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+              <span class="k">else</span>                  <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s2">&quot;Unknown clause &#39;</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+
+          <span class="k">def</span> <span class="nf">extract_relation_clause_from</span><span class="p">(</span><span class="n">relation</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+            <span class="k">case</span> <span class="nb">name</span>
+            <span class="k">when</span> <span class="ss">:conditions</span>
+              <span class="n">relation</span><span class="o">.</span><span class="n">where_values_hash</span>
+            <span class="k">when</span> <span class="ss">:order</span>
+              <span class="n">relation</span><span class="o">.</span><span class="n">order_values</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">value</span><span class="o">|</span> <span class="n">value_as_sql</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="p">}</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">)</span>
+            <span class="k">else</span>
+              <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s2">&quot;Unknown clause &#39;</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+
+          <span class="kp">protected</span>
+
+          <span class="kp">attr_reader</span> <span class="ss">:subject</span><span class="p">,</span> <span class="ss">:name</span>
+
+          <span class="k">def</span> <span class="nf">value_as_sql</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:to_sql</span><span class="p">)</span>
+              <span class="n">value</span><span class="o">.</span><span class="n">to_sql</span>
+            <span class="k">else</span>
+              <span class="n">value</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:27 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

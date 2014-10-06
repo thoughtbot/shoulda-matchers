@@ -1,0 +1,471 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: validate_uniqueness_of_matcher
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">File: validate_uniqueness_of_matcher</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><pre class="code ruby"><span class="k">module</span> <span class="nn">Shoulda</span>
+  <span class="k">module</span> <span class="nn">Matchers</span>
+    <span class="k">module</span> <span class="nn">ActiveModel</span>
+      <span class="c1"># The `validate_uniqueness_of` matcher tests usage of the</span>
+      <span class="c1"># `validates_uniqueness_of` validation. It first checks for an existing</span>
+      <span class="c1"># instance of your model in the database, creating one if necessary. It</span>
+      <span class="c1"># then takes a new instance of that model and asserts that it fails</span>
+      <span class="c1"># validation if the attribute or attributes you&#39;ve specified in the</span>
+      <span class="c1"># validation are set to values which are the same as those of the</span>
+      <span class="c1"># pre-existing record (thereby failing the uniqueness check).</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Post &lt; ActiveRecord::Base</span>
+      <span class="c1">#       validates_uniqueness_of :permalink</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Post do</span>
+      <span class="c1">#       it { should validate_uniqueness_of(:permalink) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PostTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_uniqueness_of(:permalink)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### Caveat</span>
+      <span class="c1">#</span>
+      <span class="c1"># This matcher works a bit differently than other matchers. As noted</span>
+      <span class="c1"># before, it will create an instance of your model if one doesn&#39;t already</span>
+      <span class="c1"># exist. Sometimes this step fails, especially if you have database-level</span>
+      <span class="c1"># restrictions on any attributes other than the one which is unique. In</span>
+      <span class="c1"># this case, the solution is to populate these attributes with values</span>
+      <span class="c1"># before you call `validate_uniqueness_of`.</span>
+      <span class="c1">#</span>
+      <span class="c1"># For example, say you have the following migration and model:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class CreatePosts &lt; ActiveRecord::Migration</span>
+      <span class="c1">#       def change</span>
+      <span class="c1">#         create_table :posts do |t|</span>
+      <span class="c1">#           t.string :title</span>
+      <span class="c1">#           t.text :content, null: false</span>
+      <span class="c1">#         end</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Post &lt; ActiveRecord::Base</span>
+      <span class="c1">#       validates :title, uniqueness: true</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># You may be tempted to test the model like this:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     describe Post do</span>
+      <span class="c1">#       it { should validate_uniqueness_of(:title) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># However, running this test will fail with something like:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     Failures:</span>
+      <span class="c1">#</span>
+      <span class="c1">#       1) Post should require case sensitive unique value for title</span>
+      <span class="c1">#          Failure/Error: it { should validate_uniqueness_of(:title) }</span>
+      <span class="c1">#          ActiveRecord::StatementInvalid:</span>
+      <span class="c1">#            SQLite3::ConstraintException: posts.content may not be NULL: INSERT INTO &quot;posts&quot; (&quot;title&quot;) VALUES (?)</span>
+      <span class="c1">#</span>
+      <span class="c1"># This happens because `validate_uniqueness_of` tries to create a new post</span>
+      <span class="c1"># but cannot do so because of the `content` attribute: though unrelated to</span>
+      <span class="c1"># this test, it nevertheless needs to be filled in. The solution is to</span>
+      <span class="c1"># build a custom Post object ahead of time with `content` filled in:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     describe Post do</span>
+      <span class="c1">#       describe &quot;validations&quot; do</span>
+      <span class="c1">#         subject { Post.new(content: &#39;Here is the content&#39;) }</span>
+      <span class="c1">#         it { should validate_uniqueness_of(:title) }</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># Or, if you&#39;re using</span>
+      <span class="c1"># [FactoryGirl](http://github.com/thoughtbot/factory_girl) and you have a</span>
+      <span class="c1"># `post` factory defined which automatically fills in `content`, you can</span>
+      <span class="c1"># say:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     describe Post do</span>
+      <span class="c1">#       describe &quot;validations&quot; do</span>
+      <span class="c1">#         subject { FactoryGirl.build(:post) }</span>
+      <span class="c1">#         it { should validate_uniqueness_of(:title) }</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### Qualifiers</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### with_message</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `with_message` if you are using a custom validation message.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Post &lt; ActiveRecord::Base</span>
+      <span class="c1">#       validates_uniqueness_of :title, message: &#39;Please choose another title&#39;</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Post do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should validate_uniqueness_of(:title).</span>
+      <span class="c1">#           with_message(&#39;Please choose another title&#39;)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PostTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_uniqueness_of(:title).</span>
+      <span class="c1">#         with_message(&#39;Please choose another title&#39;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### scoped_to</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `scoped_to` to test usage of the `:scope` option. This asserts that</span>
+      <span class="c1"># a new record fails validation if not only the primary attribute is not</span>
+      <span class="c1"># unique, but the scoped attributes are not unique either.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Post &lt; ActiveRecord::Base</span>
+      <span class="c1">#       validates_uniqueness_of :slug, scope: :user_id</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Post do</span>
+      <span class="c1">#       it { should validate_uniqueness_of(:slug).scoped_to(:journal_id) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PostTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_uniqueness_of(:slug).scoped_to(:journal_id)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### case_insensitive</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `case_insensitive` to test usage of the `:case_sensitive` option</span>
+      <span class="c1"># with a false value. This asserts that the uniquable attributes fail</span>
+      <span class="c1"># validation even if their values are a different case than corresponding</span>
+      <span class="c1"># attributes in the pre-existing record.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Post &lt; ActiveRecord::Base</span>
+      <span class="c1">#       validates_uniqueness_of :key, case_sensitive: false</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Post do</span>
+      <span class="c1">#       it { should validate_uniqueness_of(:key).case_insensitive }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PostTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_uniqueness_of(:key).case_insensitive</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### allow_nil</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `allow_nil` to assert that the attribute allows nil.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Post &lt; ActiveRecord::Base</span>
+      <span class="c1">#       validates_uniqueness_of :author_id, allow_nil: true</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Post do</span>
+      <span class="c1">#       it { should validate_uniqueness_of(:author_id).allow_nil }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PostTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_uniqueness_of(:author_id).allow_nil</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># @return [ValidateUniquenessOfMatcher]</span>
+      <span class="c1">#</span>
+      <span class="k">def</span> <span class="nf">validate_uniqueness_of</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+        <span class="no">ValidateUniquenessOfMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="c1"># @private</span>
+      <span class="k">class</span> <span class="nc">ValidateUniquenessOfMatcher</span> <span class="o">&lt;</span> <span class="no">ValidationMatcher</span>
+        <span class="kp">include</span> <span class="no">Helpers</span>
+
+        <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+          <span class="k">super</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+          <span class="vi">@options</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">scoped_to</span><span class="p">(</span><span class="o">*</span><span class="n">scopes</span><span class="p">)</span>
+          <span class="vi">@options</span><span class="o">[</span><span class="ss">:scopes</span><span class="o">]</span> <span class="o">=</span> <span class="o">[*</span><span class="n">scopes</span><span class="o">].</span><span class="n">flatten</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">with_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+          <span class="vi">@expected_message</span> <span class="o">=</span> <span class="n">message</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">case_insensitive</span>
+          <span class="vi">@options</span><span class="o">[</span><span class="ss">:case_insensitive</span><span class="o">]</span> <span class="o">=</span> <span class="kp">true</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">allow_nil</span>
+          <span class="vi">@options</span><span class="o">[</span><span class="ss">:allow_nil</span><span class="o">]</span> <span class="o">=</span> <span class="kp">true</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">description</span>
+          <span class="n">result</span> <span class="o">=</span> <span class="s2">&quot;require &quot;</span>
+          <span class="n">result</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;case sensitive &quot;</span> <span class="k">unless</span> <span class="vi">@options</span><span class="o">[</span><span class="ss">:case_insensitive</span><span class="o">]</span>
+          <span class="n">result</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;unique value for </span><span class="si">#{</span><span class="vi">@attribute</span><span class="si">}</span><span class="s2">&quot;</span>
+          <span class="n">result</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot; scoped to </span><span class="si">#{</span><span class="vi">@options</span><span class="o">[</span><span class="ss">:scopes</span><span class="o">].</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="vi">@options</span><span class="o">[</span><span class="ss">:scopes</span><span class="o">].</span><span class="n">present?</span>
+          <span class="n">result</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">matches?</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+          <span class="vi">@original_subject</span> <span class="o">=</span> <span class="n">subject</span>
+          <span class="vi">@subject</span> <span class="o">=</span> <span class="n">subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">new</span>
+          <span class="vi">@expected_message</span> <span class="o">||=</span> <span class="ss">:taken</span>
+          <span class="n">set_scoped_attributes</span> <span class="o">&amp;&amp;</span>
+            <span class="n">validate_everything_except_duplicate_nils?</span> <span class="o">&amp;&amp;</span>
+            <span class="n">validate_after_scope_change?</span> <span class="o">&amp;&amp;</span>
+            <span class="n">allows_nil?</span>
+        <span class="k">end</span>
+
+        <span class="kp">private</span>
+
+        <span class="k">def</span> <span class="nf">allows_nil?</span>
+          <span class="k">if</span> <span class="vi">@options</span><span class="o">[</span><span class="ss">:allow_nil</span><span class="o">]</span>
+            <span class="n">ensure_nil_record_in_database</span>
+            <span class="n">allows_value_of</span><span class="p">(</span><span class="kp">nil</span><span class="p">,</span> <span class="vi">@expected_message</span><span class="p">)</span>
+          <span class="k">else</span>
+            <span class="kp">true</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">existing_record</span>
+          <span class="vi">@existing_record</span> <span class="o">||=</span> <span class="n">first_instance</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">first_instance</span>
+          <span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">first</span> <span class="o">||</span> <span class="n">create_record_in_database</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">ensure_nil_record_in_database</span>
+          <span class="k">unless</span> <span class="n">existing_record_is_nil?</span>
+            <span class="n">create_record_in_database</span><span class="p">(</span><span class="n">nil_value</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">existing_record_is_nil?</span>
+          <span class="vi">@existing_record</span><span class="o">.</span><span class="n">present?</span> <span class="o">&amp;&amp;</span> <span class="n">existing_value</span><span class="o">.</span><span class="n">nil?</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">create_record_in_database</span><span class="p">(</span><span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+          <span class="k">if</span> <span class="n">options</span><span class="o">[</span><span class="ss">:nil_value</span><span class="o">]</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="kp">nil</span>
+          <span class="k">else</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;a&#39;</span>
+          <span class="k">end</span>
+
+          <span class="vi">@original_subject</span><span class="o">.</span><span class="n">tap</span> <span class="k">do</span> <span class="o">|</span><span class="n">instance</span><span class="o">|</span>
+            <span class="n">instance</span><span class="o">.</span><span class="n">__send__</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">#{</span><span class="vi">@attribute</span><span class="si">}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="n">ensure_secure_password_set</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+            <span class="n">instance</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="ss">validate</span><span class="p">:</span> <span class="kp">false</span><span class="p">)</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">ensure_secure_password_set</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+          <span class="k">if</span> <span class="n">has_secure_password?</span>
+            <span class="n">instance</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="s2">&quot;password&quot;</span>
+            <span class="n">instance</span><span class="o">.</span><span class="n">password_confirmation</span> <span class="o">=</span> <span class="s2">&quot;password&quot;</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">has_secure_password?</span>
+          <span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">ancestors</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:to_s</span><span class="p">)</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="s1">&#39;ActiveModel::SecurePassword::InstanceMethodsOnActivation&#39;</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">set_scoped_attributes</span>
+          <span class="k">if</span> <span class="vi">@options</span><span class="o">[</span><span class="ss">:scopes</span><span class="o">].</span><span class="n">present?</span>
+            <span class="vi">@options</span><span class="o">[</span><span class="ss">:scopes</span><span class="o">].</span><span class="n">all?</span> <span class="k">do</span> <span class="o">|</span><span class="n">scope</span><span class="o">|</span>
+              <span class="n">setter</span> <span class="o">=</span> <span class="ss">:&quot;</span><span class="si">#{</span><span class="n">scope</span><span class="si">}</span><span class="ss">=&quot;</span>
+              <span class="k">if</span> <span class="vi">@subject</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="n">setter</span><span class="p">)</span>
+                <span class="vi">@subject</span><span class="o">.</span><span class="n">__send__</span><span class="p">(</span><span class="n">setter</span><span class="p">,</span> <span class="n">existing_record</span><span class="o">.</span><span class="n">__send__</span><span class="p">(</span><span class="n">scope</span><span class="p">))</span>
+                <span class="kp">true</span>
+              <span class="k">else</span>
+                <span class="vi">@failure_message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">class_name</span><span class="si">}</span><span class="s2"> doesn&#39;t seem to have a </span><span class="si">#{</span><span class="n">scope</span><span class="si">}</span><span class="s2"> attribute.&quot;</span>
+                <span class="kp">false</span>
+              <span class="k">end</span>
+            <span class="k">end</span>
+          <span class="k">else</span>
+            <span class="kp">true</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">validate_everything_except_duplicate_nils?</span>
+          <span class="k">if</span> <span class="vi">@options</span><span class="o">[</span><span class="ss">:allow_nil</span><span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="n">existing_value</span><span class="o">.</span><span class="n">nil?</span>
+            <span class="n">create_record_without_nil</span>
+          <span class="k">end</span>
+
+          <span class="n">disallows_value_of</span><span class="p">(</span><span class="n">existing_value</span><span class="p">,</span> <span class="vi">@expected_message</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">create_record_without_nil</span>
+          <span class="vi">@existing_record</span> <span class="o">=</span> <span class="n">create_record_in_database</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">validate_after_scope_change?</span>
+          <span class="k">if</span> <span class="vi">@options</span><span class="o">[</span><span class="ss">:scopes</span><span class="o">].</span><span class="n">blank?</span>
+            <span class="kp">true</span>
+          <span class="k">else</span>
+            <span class="n">all_records</span> <span class="o">=</span> <span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">all</span>
+            <span class="vi">@options</span><span class="o">[</span><span class="ss">:scopes</span><span class="o">].</span><span class="n">all?</span> <span class="k">do</span> <span class="o">|</span><span class="n">scope</span><span class="o">|</span>
+              <span class="n">previous_value</span> <span class="o">=</span> <span class="n">all_records</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scope</span><span class="p">)</span><span class="o">.</span><span class="n">max</span>
+
+              <span class="c1"># Assume the scope is a foreign key if the field is nil</span>
+              <span class="n">previous_value</span> <span class="o">||=</span> <span class="n">correct_type_for_column</span><span class="p">(</span><span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">columns_hash</span><span class="o">[</span><span class="n">scope</span><span class="o">.</span><span class="n">to_s</span><span class="o">]</span><span class="p">)</span>
+
+              <span class="n">next_value</span> <span class="o">=</span>
+                <span class="k">if</span> <span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:defined_enums</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="vi">@subject</span><span class="o">.</span><span class="n">defined_enums</span><span class="o">[</span><span class="n">scope</span><span class="o">.</span><span class="n">to_s</span><span class="o">]</span>
+                  <span class="n">available_values</span> <span class="o">=</span> <span class="vi">@subject</span><span class="o">.</span><span class="n">defined_enums</span><span class="o">[</span><span class="n">scope</span><span class="o">.</span><span class="n">to_s</span><span class="o">].</span><span class="n">reject</span> <span class="k">do</span> <span class="o">|</span><span class="n">key</span><span class="p">,</span> <span class="n">_</span><span class="o">|</span>
+                    <span class="n">key</span> <span class="o">==</span> <span class="n">previous_value</span>
+                  <span class="k">end</span>
+                  <span class="n">available_values</span><span class="o">.</span><span class="n">keys</span><span class="o">.</span><span class="n">last</span>
+                <span class="k">elsif</span> <span class="n">previous_value</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:next</span><span class="p">)</span>
+                  <span class="n">previous_value</span><span class="o">.</span><span class="n">next</span>
+                <span class="k">elsif</span> <span class="n">previous_value</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:to_datetime</span><span class="p">)</span>
+                  <span class="n">previous_value</span><span class="o">.</span><span class="n">to_datetime</span><span class="o">.</span><span class="n">next</span>
+                <span class="k">else</span>
+                  <span class="n">previous_value</span><span class="o">.</span><span class="n">to_s</span><span class="o">.</span><span class="n">next</span>
+                <span class="k">end</span>
+
+              <span class="vi">@subject</span><span class="o">.</span><span class="n">__send__</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">#{</span><span class="n">scope</span><span class="si">}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">next_value</span><span class="p">)</span>
+
+              <span class="k">if</span> <span class="n">allows_value_of</span><span class="p">(</span><span class="n">existing_value</span><span class="p">,</span> <span class="vi">@expected_message</span><span class="p">)</span>
+                <span class="vi">@subject</span><span class="o">.</span><span class="n">__send__</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">#{</span><span class="n">scope</span><span class="si">}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">previous_value</span><span class="p">)</span>
+
+                <span class="vi">@failure_message_when_negated</span> <span class="o">&lt;&lt;</span>
+                  <span class="s2">&quot; (with different value of </span><span class="si">#{</span><span class="n">scope</span><span class="si">}</span><span class="s2">)&quot;</span>
+                <span class="kp">true</span>
+              <span class="k">else</span>
+                <span class="vi">@failure_message</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot; (with different value of </span><span class="si">#{</span><span class="n">scope</span><span class="si">}</span><span class="s2">)&quot;</span>
+                <span class="kp">false</span>
+              <span class="k">end</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">correct_type_for_column</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+          <span class="k">if</span> <span class="n">column</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="ss">:string</span>
+            <span class="s1">&#39;0&#39;</span>
+          <span class="k">elsif</span> <span class="n">column</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="ss">:datetime</span>
+            <span class="no">DateTime</span><span class="o">.</span><span class="n">now</span>
+          <span class="k">elsif</span> <span class="n">column</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="ss">:uuid</span>
+            <span class="no">SecureRandom</span><span class="o">.</span><span class="n">uuid</span>
+          <span class="k">else</span>
+            <span class="mi">0</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">class_name</span>
+          <span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">existing_value</span>
+          <span class="n">value</span> <span class="o">=</span> <span class="n">existing_record</span><span class="o">.</span><span class="n">__send__</span><span class="p">(</span><span class="vi">@attribute</span><span class="p">)</span>
+          <span class="k">if</span> <span class="vi">@options</span><span class="o">[</span><span class="ss">:case_insensitive</span><span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="n">value</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:swapcase!</span><span class="p">)</span>
+            <span class="n">value</span><span class="o">.</span><span class="n">swapcase!</span>
+          <span class="k">end</span>
+          <span class="n">value</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:27 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

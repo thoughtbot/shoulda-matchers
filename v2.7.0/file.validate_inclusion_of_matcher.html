@@ -1,0 +1,589 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: validate_inclusion_of_matcher
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">File: validate_inclusion_of_matcher</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><pre class="code ruby"><span class="nb">require</span> <span class="s1">&#39;bigdecimal&#39;</span>
+
+<span class="k">module</span> <span class="nn">Shoulda</span>
+  <span class="k">module</span> <span class="nn">Matchers</span>
+    <span class="k">module</span> <span class="nn">ActiveModel</span>
+      <span class="c1"># The `validate_inclusion_of` matcher tests usage of the</span>
+      <span class="c1"># `validates_inclusion_of` validation, asserting that an attribute can</span>
+      <span class="c1"># take a whitelist of values and cannot take values outside of this list.</span>
+      <span class="c1">#</span>
+      <span class="c1"># If your whitelist is an array of values, use `in_array`:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Issue</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :state</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_inclusion_of :state, in: %w(open resolved unresolved)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Issue do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should validate_inclusion_of(:state).</span>
+      <span class="c1">#           in_array(%w(open resolved unresolved))</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class IssueTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_inclusion_of(:state).</span>
+      <span class="c1">#         in_array(%w(open resolved unresolved))</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># If your whitelist is a range of values, use `in_range`:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Issue</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :priority</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_inclusion_of :priority, in: 1..5</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Issue do</span>
+      <span class="c1">#       it { should validate_inclusion_of(:state).in_range(1..5) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class IssueTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_inclusion_of(:state).in_range(1..5)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### Caveats</span>
+      <span class="c1">#</span>
+      <span class="c1"># We discourage using `validate_inclusion_of` with boolean columns. In</span>
+      <span class="c1"># fact, there is never a case where a boolean column will be anything but</span>
+      <span class="c1"># true, false, or nil, as ActiveRecord will type-cast an incoming value to</span>
+      <span class="c1"># one of these three values. That means there isn&#39;t any way we can refute</span>
+      <span class="c1"># this logic in a test. Hence, this will produce a warning:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     it { should validate_inclusion_of(:imported).in_array([true, false]) }</span>
+      <span class="c1">#</span>
+      <span class="c1"># The only case where `validate_inclusion_of` *could* be appropriate is</span>
+      <span class="c1"># for ensuring that a boolean column accepts nil, but we recommend</span>
+      <span class="c1"># using `allow_value` instead, like this:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     it { should allow_value(nil).for(:imported) }</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### Qualifiers</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### with_message</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `with_message` if you are using a custom validation message.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Issue</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :severity</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_inclusion_of :severity,</span>
+      <span class="c1">#         in: %w(low medium high),</span>
+      <span class="c1">#         message: &#39;Severity must be low, medium, or high&#39;</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Issue do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should validate_inclusion_of(:severity).</span>
+      <span class="c1">#           in_array(%w(low medium high)).</span>
+      <span class="c1">#           with_message(&#39;Severity must be low, medium, or high&#39;)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class IssueTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_inclusion_of(:severity).</span>
+      <span class="c1">#         in_array(%w(low medium high)).</span>
+      <span class="c1">#         with_message(&#39;Severity must be low, medium, or high&#39;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### with_low_message</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `with_low_message` if you have a custom validation message for when</span>
+      <span class="c1"># a given value is too low.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :age</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validate :age_must_be_valid</span>
+      <span class="c1">#</span>
+      <span class="c1">#       private</span>
+      <span class="c1">#</span>
+      <span class="c1">#       def age_must_be_valid</span>
+      <span class="c1">#         if age &lt; 65</span>
+      <span class="c1">#           self.errors.add :age, &#39;You do not receive any benefits&#39;</span>
+      <span class="c1">#         end</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should validate_inclusion_of(:age).</span>
+      <span class="c1">#           in_range(0..65).</span>
+      <span class="c1">#           with_low_message(&#39;You do not receive any benefits&#39;)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_inclusion_of(:age).</span>
+      <span class="c1">#         in_range(0..65).</span>
+      <span class="c1">#         with_low_message(&#39;You do not receive any benefits&#39;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### with_high_message</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `with_high_message` if you have a custom validation message for</span>
+      <span class="c1"># when a given value is too high.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :age</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validate :age_must_be_valid</span>
+      <span class="c1">#</span>
+      <span class="c1">#       private</span>
+      <span class="c1">#</span>
+      <span class="c1">#       def age_must_be_valid</span>
+      <span class="c1">#         if age &gt; 21</span>
+      <span class="c1">#           self.errors.add :age, &quot;You&#39;re too old for this stuff&quot;</span>
+      <span class="c1">#         end</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should validate_inclusion_of(:age).</span>
+      <span class="c1">#           in_range(0..21).</span>
+      <span class="c1">#           with_high_message(&quot;You&#39;re too old for this stuff&quot;)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_inclusion_of(:age).</span>
+      <span class="c1">#         in_range(0..21).</span>
+      <span class="c1">#         with_high_message(&quot;You&#39;re too old for this stuff&quot;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### allow_nil</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `allow_nil` to assert that the attribute allows nil.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Issue</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :state</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_presence_of :state</span>
+      <span class="c1">#       validates_inclusion_of :state,</span>
+      <span class="c1">#         in: %w(open resolved unresolved),</span>
+      <span class="c1">#         allow_nil: true</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Issue do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should validate_inclusion_of(:state).</span>
+      <span class="c1">#           in_array(%w(open resolved unresolved)).</span>
+      <span class="c1">#           allow_nil</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class IssueTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_inclusion_of(:state).</span>
+      <span class="c1">#         in_array(%w(open resolved unresolved)).</span>
+      <span class="c1">#         allow_nil</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### allow_blank</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `allow_blank` to assert that the attribute allows blank.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Issue</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :state</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_presence_of :state</span>
+      <span class="c1">#       validates_inclusion_of :state,</span>
+      <span class="c1">#         in: %w(open resolved unresolved),</span>
+      <span class="c1">#         allow_blank: true</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Issue do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should validate_inclusion_of(:state).</span>
+      <span class="c1">#           in_array(%w(open resolved unresolved)).</span>
+      <span class="c1">#           allow_blank</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class IssueTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_inclusion_of(:state).</span>
+      <span class="c1">#         in_array(%w(open resolved unresolved)).</span>
+      <span class="c1">#         allow_blank</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># @return [ValidateInclusionOfMatcher]</span>
+      <span class="c1">#</span>
+      <span class="k">def</span> <span class="nf">validate_inclusion_of</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+        <span class="no">ValidateInclusionOfMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="c1"># @deprecated Use {#validate_inclusion_of} instead.</span>
+      <span class="c1"># @return [ValidateInclusionOfMatcher]</span>
+      <span class="k">def</span> <span class="nf">ensure_inclusion_of</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+        <span class="ss">Shoulda</span><span class="p">:</span><span class="ss">:Matchers</span><span class="o">.</span><span class="n">warn_about_deprecated_method</span><span class="p">(</span>
+          <span class="ss">:ensure_inclusion_of</span><span class="p">,</span>
+          <span class="ss">:validate_inclusion_of</span>
+        <span class="p">)</span>
+        <span class="n">validate_inclusion_of</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="c1"># @private</span>
+      <span class="k">class</span> <span class="nc">ValidateInclusionOfMatcher</span> <span class="o">&lt;</span> <span class="no">ValidationMatcher</span>
+        <span class="no">ARBITRARY_OUTSIDE_STRING</span> <span class="o">=</span> <span class="s1">&#39;shouldamatchersteststring&#39;</span>
+        <span class="no">ARBITRARY_OUTSIDE_FIXNUM</span> <span class="o">=</span> <span class="mi">123456789</span>
+        <span class="no">ARBITRARY_OUTSIDE_DECIMAL</span> <span class="o">=</span> <span class="no">BigDecimal</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;0.123456789&#39;</span><span class="p">)</span>
+        <span class="no">BOOLEAN_ALLOWS_BOOLEAN_MESSAGE</span> <span class="o">=</span> <span class="o">&lt;&lt;</span><span class="no">EOT</span>
+<span class="sh">You are using `validate_inclusion_of` to assert that a boolean column allows</span>
+<span class="sh">boolean values and disallows non-boolean ones. Be aware that it is not possible</span>
+<span class="sh">to fully test this, as boolean columns will automatically convert non-boolean</span>
+<span class="sh">values to boolean ones. Hence, you should consider removing this test.</span>
+<span class="no">EOT</span>
+        <span class="no">BOOLEAN_ALLOWS_NIL_MESSAGE</span> <span class="o">=</span> <span class="o">&lt;&lt;</span><span class="no">EOT</span>
+<span class="sh">You are using `validate_inclusion_of` to assert that a boolean column allows nil.</span>
+<span class="sh">Be aware that it is not possible to fully test this, as anything other than</span>
+<span class="sh">true, false or nil will be converted to false. Hence, you should consider</span>
+<span class="sh">removing this test.</span>
+<span class="no">EOT</span>
+
+        <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+          <span class="k">super</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+          <span class="vi">@options</span> <span class="o">=</span> <span class="p">{}</span>
+          <span class="vi">@array</span> <span class="o">=</span> <span class="kp">nil</span>
+          <span class="vi">@range</span> <span class="o">=</span> <span class="kp">nil</span>
+          <span class="vi">@minimum</span> <span class="o">=</span> <span class="kp">nil</span>
+          <span class="vi">@maximum</span> <span class="o">=</span> <span class="kp">nil</span>
+          <span class="vi">@low_message</span> <span class="o">=</span> <span class="kp">nil</span>
+          <span class="vi">@high_message</span> <span class="o">=</span> <span class="kp">nil</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">in_array</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+          <span class="vi">@array</span> <span class="o">=</span> <span class="n">array</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">in_range</span><span class="p">(</span><span class="n">range</span><span class="p">)</span>
+          <span class="vi">@range</span> <span class="o">=</span> <span class="n">range</span>
+          <span class="vi">@minimum</span> <span class="o">=</span> <span class="n">range</span><span class="o">.</span><span class="n">first</span>
+          <span class="vi">@maximum</span> <span class="o">=</span> <span class="n">range</span><span class="o">.</span><span class="n">max</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">allow_blank</span><span class="p">(</span><span class="n">allow_blank</span> <span class="o">=</span> <span class="kp">true</span><span class="p">)</span>
+          <span class="vi">@options</span><span class="o">[</span><span class="ss">:allow_blank</span><span class="o">]</span> <span class="o">=</span> <span class="n">allow_blank</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">allow_nil</span><span class="p">(</span><span class="n">allow_nil</span> <span class="o">=</span> <span class="kp">true</span><span class="p">)</span>
+          <span class="vi">@options</span><span class="o">[</span><span class="ss">:allow_nil</span><span class="o">]</span> <span class="o">=</span> <span class="n">allow_nil</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">with_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+          <span class="k">if</span> <span class="n">message</span>
+            <span class="vi">@low_message</span> <span class="o">=</span> <span class="n">message</span>
+            <span class="vi">@high_message</span> <span class="o">=</span> <span class="n">message</span>
+          <span class="k">end</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">with_low_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+          <span class="vi">@low_message</span> <span class="o">=</span> <span class="n">message</span> <span class="k">if</span> <span class="n">message</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">with_high_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+          <span class="vi">@high_message</span> <span class="o">=</span> <span class="n">message</span> <span class="k">if</span> <span class="n">message</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">description</span>
+          <span class="s2">&quot;ensure inclusion of </span><span class="si">#{</span><span class="vi">@attribute</span><span class="si">}</span><span class="s2"> in </span><span class="si">#{</span><span class="n">inspect_message</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">matches?</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+          <span class="k">super</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+
+          <span class="k">if</span> <span class="vi">@range</span>
+            <span class="vi">@low_message</span>  <span class="o">||=</span> <span class="ss">:inclusion</span>
+            <span class="vi">@high_message</span> <span class="o">||=</span> <span class="ss">:inclusion</span>
+            <span class="n">matches_for_range?</span>
+          <span class="k">elsif</span> <span class="vi">@array</span>
+            <span class="k">if</span> <span class="n">matches_for_array?</span>
+              <span class="kp">true</span>
+            <span class="k">else</span>
+              <span class="vi">@failure_message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="vi">@array</span><span class="si">}</span><span class="s2"> doesn&#39;t match array in validation&quot;</span>
+              <span class="kp">false</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="kp">private</span>
+
+        <span class="k">def</span> <span class="nf">matches_for_range?</span>
+          <span class="n">disallows_lower_value</span> <span class="o">&amp;&amp;</span>
+            <span class="n">allows_minimum_value</span> <span class="o">&amp;&amp;</span>
+            <span class="n">disallows_higher_value</span> <span class="o">&amp;&amp;</span>
+            <span class="n">allows_maximum_value</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">matches_for_array?</span>
+          <span class="n">allows_all_values_in_array?</span> <span class="o">&amp;&amp;</span>
+            <span class="n">allows_blank_value?</span> <span class="o">&amp;&amp;</span>
+            <span class="n">allows_nil_value?</span> <span class="o">&amp;&amp;</span>
+            <span class="n">disallows_value_outside_of_array?</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">allows_blank_value?</span>
+          <span class="k">if</span> <span class="vi">@options</span><span class="o">.</span><span class="n">key?</span><span class="p">(</span><span class="ss">:allow_blank</span><span class="p">)</span>
+            <span class="n">blank_values</span> <span class="o">=</span> <span class="o">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\f</span><span class="s2">&quot;</span><span class="o">]</span>
+            <span class="vi">@options</span><span class="o">[</span><span class="ss">:allow_blank</span><span class="o">]</span> <span class="o">==</span> <span class="n">blank_values</span><span class="o">.</span><span class="n">all?</span> <span class="p">{</span> <span class="o">|</span><span class="n">value</span><span class="o">|</span> <span class="n">allows_value_of</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="p">}</span>
+          <span class="k">else</span>
+            <span class="kp">true</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">allows_nil_value?</span>
+          <span class="k">if</span> <span class="vi">@options</span><span class="o">.</span><span class="n">key?</span><span class="p">(</span><span class="ss">:allow_nil</span><span class="p">)</span>
+            <span class="vi">@options</span><span class="o">[</span><span class="ss">:allow_nil</span><span class="o">]</span> <span class="o">==</span> <span class="n">allows_value_of</span><span class="p">(</span><span class="kp">nil</span><span class="p">)</span>
+          <span class="k">else</span>
+            <span class="kp">true</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">inspect_message</span>
+          <span class="vi">@range</span><span class="o">.</span><span class="n">nil?</span> <span class="p">?</span> <span class="vi">@array</span><span class="o">.</span><span class="n">inspect</span> <span class="p">:</span> <span class="vi">@range</span><span class="o">.</span><span class="n">inspect</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">allows_all_values_in_array?</span>
+          <span class="vi">@array</span><span class="o">.</span><span class="n">all?</span> <span class="k">do</span> <span class="o">|</span><span class="n">value</span><span class="o">|</span>
+            <span class="n">allows_value_of</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="vi">@low_message</span><span class="p">)</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">disallows_lower_value</span>
+          <span class="vi">@minimum</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">disallows_value_of</span><span class="p">(</span><span class="vi">@minimum</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="vi">@low_message</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">disallows_higher_value</span>
+          <span class="n">disallows_value_of</span><span class="p">(</span><span class="vi">@maximum</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="vi">@high_message</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">allows_minimum_value</span>
+          <span class="n">allows_value_of</span><span class="p">(</span><span class="vi">@minimum</span><span class="p">,</span> <span class="vi">@low_message</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">allows_maximum_value</span>
+          <span class="n">allows_value_of</span><span class="p">(</span><span class="vi">@maximum</span><span class="p">,</span> <span class="vi">@high_message</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">disallows_value_outside_of_array?</span>
+          <span class="k">if</span> <span class="n">attribute_type</span> <span class="o">==</span> <span class="ss">:boolean</span>
+            <span class="k">case</span> <span class="vi">@array</span>
+            <span class="k">when</span> <span class="o">[</span><span class="kp">false</span><span class="p">,</span> <span class="kp">true</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="kp">true</span><span class="p">,</span> <span class="kp">false</span><span class="o">]</span>
+              <span class="ss">Shoulda</span><span class="p">:</span><span class="ss">:Matchers</span><span class="o">.</span><span class="n">warn</span> <span class="no">BOOLEAN_ALLOWS_BOOLEAN_MESSAGE</span>
+              <span class="k">return</span> <span class="kp">true</span>
+            <span class="k">when</span> <span class="o">[</span><span class="kp">nil</span><span class="o">]</span>
+              <span class="k">if</span> <span class="n">attribute_column</span><span class="o">.</span><span class="n">null</span>
+                <span class="ss">Shoulda</span><span class="p">:</span><span class="ss">:Matchers</span><span class="o">.</span><span class="n">warn</span> <span class="no">BOOLEAN_ALLOWS_NIL_MESSAGE</span>
+                <span class="k">return</span> <span class="kp">true</span>
+              <span class="k">else</span>
+                <span class="k">raise</span> <span class="no">NonNullableBooleanError</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="vi">@attribute</span><span class="p">)</span>
+              <span class="k">end</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+
+          <span class="o">!</span><span class="n">allows_value_of</span><span class="p">(</span><span class="o">*</span><span class="n">values_outside_of_array</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">values_outside_of_array</span>
+          <span class="k">if</span> <span class="o">!</span><span class="p">(</span><span class="vi">@array</span> <span class="o">&amp;</span> <span class="n">outside_values</span><span class="p">)</span><span class="o">.</span><span class="n">empty?</span>
+            <span class="k">raise</span> <span class="no">CouldNotDetermineValueOutsideOfArray</span>
+          <span class="k">else</span>
+            <span class="n">outside_values</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">outside_values</span>
+          <span class="k">case</span> <span class="n">attribute_type</span>
+          <span class="k">when</span> <span class="ss">:boolean</span>
+            <span class="n">boolean_outside_values</span>
+          <span class="k">when</span> <span class="ss">:fixnum</span>
+            <span class="o">[</span><span class="no">ARBITRARY_OUTSIDE_FIXNUM</span><span class="o">]</span>
+          <span class="k">when</span> <span class="ss">:decimal</span>
+            <span class="o">[</span><span class="no">ARBITRARY_OUTSIDE_DECIMAL</span><span class="o">]</span>
+          <span class="k">else</span>
+            <span class="o">[</span><span class="no">ARBITRARY_OUTSIDE_STRING</span><span class="o">]</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">boolean_outside_values</span>
+          <span class="n">values</span> <span class="o">=</span> <span class="o">[]</span>
+
+          <span class="n">values</span> <span class="o">&lt;&lt;</span> <span class="k">case</span> <span class="vi">@array</span>
+            <span class="k">when</span> <span class="o">[</span><span class="kp">true</span><span class="o">]</span>  <span class="k">then</span> <span class="kp">false</span>
+            <span class="k">when</span> <span class="o">[</span><span class="kp">false</span><span class="o">]</span> <span class="k">then</span> <span class="kp">true</span>
+            <span class="k">else</span>              <span class="k">raise</span> <span class="no">CouldNotDetermineValueOutsideOfArray</span>
+          <span class="k">end</span>
+
+          <span class="k">if</span> <span class="n">attribute_allows_nil?</span>
+            <span class="n">values</span> <span class="o">&lt;&lt;</span> <span class="kp">nil</span>
+          <span class="k">end</span>
+
+          <span class="n">values</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">attribute_type</span>
+          <span class="k">if</span> <span class="n">attribute_column</span>
+            <span class="n">column_type_to_attribute_type</span><span class="p">(</span><span class="n">attribute_column</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+          <span class="k">else</span>
+            <span class="n">value_to_attribute_type</span><span class="p">(</span><span class="vi">@subject</span><span class="o">.</span><span class="n">__send__</span><span class="p">(</span><span class="vi">@attribute</span><span class="p">))</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">attribute_allows_nil?</span>
+          <span class="k">if</span> <span class="n">attribute_column</span>
+            <span class="n">attribute_column</span><span class="o">.</span><span class="n">null</span>
+          <span class="k">else</span>
+            <span class="kp">true</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">attribute_column</span>
+          <span class="k">if</span> <span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:columns_hash</span><span class="p">)</span>
+            <span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">columns_hash</span><span class="o">[</span><span class="vi">@attribute</span><span class="o">.</span><span class="n">to_s</span><span class="o">]</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">column_type_to_attribute_type</span><span class="p">(</span><span class="n">type</span><span class="p">)</span>
+          <span class="k">case</span> <span class="n">type</span>
+            <span class="k">when</span> <span class="ss">:boolean</span><span class="p">,</span> <span class="ss">:decimal</span> <span class="k">then</span> <span class="n">type</span>
+            <span class="k">when</span> <span class="ss">:integer</span><span class="p">,</span> <span class="ss">:float</span> <span class="k">then</span> <span class="ss">:fixnum</span>
+            <span class="k">else</span> <span class="ss">:default</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">value_to_attribute_type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+          <span class="k">case</span> <span class="n">value</span>
+            <span class="k">when</span> <span class="kp">true</span><span class="p">,</span> <span class="kp">false</span> <span class="k">then</span> <span class="ss">:boolean</span>
+            <span class="k">when</span> <span class="no">BigDecimal</span> <span class="k">then</span> <span class="ss">:decimal</span>
+            <span class="k">when</span> <span class="no">Fixnum</span> <span class="k">then</span> <span class="ss">:fixnum</span>
+            <span class="k">else</span> <span class="ss">:default</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:27 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

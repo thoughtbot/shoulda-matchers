@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: helpers
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">File: helpers</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><pre class="code ruby"><span class="k">module</span> <span class="nn">Shoulda</span>
+  <span class="k">module</span> <span class="nn">Matchers</span>
+    <span class="k">module</span> <span class="nn">ActiveModel</span>
+      <span class="c1"># @private</span>
+      <span class="k">module</span> <span class="nn">Helpers</span>
+        <span class="k">def</span> <span class="nf">pretty_error_messages</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+          <span class="n">obj</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">attribute</span><span class="p">,</span> <span class="n">message</span><span class="o">|</span>
+            <span class="n">full_message</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">dup</span>
+            <span class="n">parenthetical_parts</span> <span class="o">=</span> <span class="o">[]</span>
+
+            <span class="k">unless</span> <span class="n">attribute</span><span class="o">.</span><span class="n">to_sym</span> <span class="o">==</span> <span class="ss">:base</span>
+              <span class="n">parenthetical_parts</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;attribute: </span><span class="si">#{</span><span class="n">attribute</span><span class="o">.</span><span class="n">to_s</span><span class="o">.</span><span class="n">inspect</span><span class="si">}</span><span class="s2">&quot;</span>
+
+              <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+                <span class="n">parenthetical_parts</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;value: </span><span class="si">#{</span><span class="n">obj</span><span class="o">.</span><span class="n">__send__</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span><span class="o">.</span><span class="n">inspect</span><span class="si">}</span><span class="s2">&quot;</span>
+              <span class="k">end</span>
+            <span class="k">end</span>
+
+            <span class="k">if</span> <span class="n">parenthetical_parts</span><span class="o">.</span><span class="n">any?</span>
+              <span class="n">full_message</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot; (</span><span class="si">#{</span><span class="n">parenthetical_parts</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="k">end</span>
+
+            <span class="n">full_message</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="c1"># Helper method that determines the default error message used by Active</span>
+        <span class="c1"># Record.  Works for both existing Rails 2.1 and Rails 2.2 with the newly</span>
+        <span class="c1"># introduced I18n module used for localization. Use with Rails 3.0 and</span>
+        <span class="c1"># up will delegate to ActiveModel::Errors.generate_error if a model</span>
+        <span class="c1"># instance is given.</span>
+        <span class="c1">#</span>
+        <span class="c1">#   default_error_message(:blank)</span>
+        <span class="c1">#   default_error_message(:too_short, count: 5)</span>
+        <span class="c1">#   default_error_message(:too_long, count: 60)</span>
+        <span class="c1">#   default_error_message(:blank, model_name: &#39;user&#39;, attribute: &#39;name&#39;)</span>
+        <span class="c1">#   default_error_message(:blank, instance: #&lt;Model&gt;, attribute: &#39;name&#39;)</span>
+        <span class="k">def</span> <span class="nf">default_error_message</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+          <span class="n">model_name</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="ss">:model_name</span><span class="p">)</span>
+          <span class="n">attribute</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="ss">:attribute</span><span class="p">)</span>
+          <span class="n">instance</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="ss">:instance</span><span class="p">)</span>
+
+          <span class="k">if</span> <span class="n">instance</span> <span class="o">&amp;&amp;</span> <span class="n">instance</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:generate_message</span><span class="p">)</span>
+            <span class="n">instance</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">generate_message</span><span class="p">(</span><span class="n">attribute</span><span class="o">.</span><span class="n">to_sym</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+          <span class="k">else</span>
+            <span class="n">default_translation</span> <span class="o">=</span> <span class="o">[</span> <span class="ss">:&quot;activerecord.errors.models.</span><span class="si">#{</span><span class="n">model_name</span><span class="si">}</span><span class="ss">.</span><span class="si">#{</span><span class="n">key</span><span class="si">}</span><span class="ss">&quot;</span><span class="p">,</span>
+                                    <span class="ss">:&quot;activerecord.errors.messages.</span><span class="si">#{</span><span class="n">key</span><span class="si">}</span><span class="ss">&quot;</span><span class="p">,</span>
+                                    <span class="ss">:&quot;errors.attributes.</span><span class="si">#{</span><span class="n">attribute</span><span class="si">}</span><span class="ss">.</span><span class="si">#{</span><span class="n">key</span><span class="si">}</span><span class="ss">&quot;</span><span class="p">,</span>
+                                    <span class="ss">:&quot;errors.messages.</span><span class="si">#{</span><span class="n">key</span><span class="si">}</span><span class="ss">&quot;</span> <span class="o">]</span>
+            <span class="no">I18n</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="ss">:&quot;activerecord.errors.models.</span><span class="si">#{</span><span class="n">model_name</span><span class="si">}</span><span class="ss">.attributes.</span><span class="si">#{</span><span class="n">attribute</span><span class="si">}</span><span class="ss">.</span><span class="si">#{</span><span class="n">key</span><span class="si">}</span><span class="ss">&quot;</span><span class="p">,</span>
+              <span class="p">{</span> <span class="ss">default</span><span class="p">:</span> <span class="n">default_translation</span> <span class="p">}</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">options</span><span class="p">))</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:27 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: exception_message_finder
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">File: exception_message_finder</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><pre class="code ruby"><span class="k">module</span> <span class="nn">Shoulda</span>
+  <span class="k">module</span> <span class="nn">Matchers</span>
+    <span class="k">module</span> <span class="nn">ActiveModel</span>
+      <span class="c1"># @private</span>
+      <span class="k">class</span> <span class="nc">ExceptionMessageFinder</span>
+        <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kp">nil</span><span class="p">)</span>
+          <span class="vi">@instance</span> <span class="o">=</span> <span class="n">instance</span>
+          <span class="vi">@attribute</span> <span class="o">=</span> <span class="n">attribute</span>
+          <span class="vi">@context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">allow_description</span><span class="p">(</span><span class="n">allowed_values</span><span class="p">)</span>
+          <span class="s2">&quot;doesn&#39;t raise when </span><span class="si">#{</span><span class="vi">@attribute</span><span class="si">}</span><span class="s2"> is set to </span><span class="si">#{</span><span class="n">allowed_values</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">messages_description</span>
+          <span class="k">if</span> <span class="n">has_messages?</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">join</span>
+          <span class="k">else</span>
+            <span class="s1">&#39;no exception&#39;</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">has_messages?</span>
+          <span class="n">messages</span><span class="o">.</span><span class="n">any?</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">messages</span>
+          <span class="vi">@messages</span> <span class="o">||=</span> <span class="n">validate_and_rescue</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">source_description</span>
+          <span class="s1">&#39;exception&#39;</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">expected_message_from</span><span class="p">(</span><span class="n">attribute_message</span><span class="p">)</span>
+          <span class="s2">&quot;</span><span class="si">#{</span><span class="n">human_attribute_name</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="n">attribute_message</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">end</span>
+
+        <span class="kp">private</span>
+
+        <span class="k">def</span> <span class="nf">validate_and_rescue</span>
+          <span class="vi">@instance</span><span class="o">.</span><span class="n">valid?</span><span class="p">(</span><span class="vi">@context</span><span class="p">)</span>
+          <span class="o">[]</span>
+        <span class="k">rescue</span> <span class="o">::</span><span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:StrictValidationFailed</span> <span class="o">=&gt;</span> <span class="n">exception</span>
+          <span class="o">[</span><span class="n">exception</span><span class="o">.</span><span class="n">message</span><span class="o">]</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">human_attribute_name</span>
+          <span class="vi">@instance</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">human_attribute_name</span><span class="p">(</span><span class="vi">@attribute</span><span class="p">)</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:27 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

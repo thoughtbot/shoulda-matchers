@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: define_enum_for_matcher
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">File: define_enum_for_matcher</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><pre class="code ruby"><span class="k">module</span> <span class="nn">Shoulda</span>
+  <span class="k">module</span> <span class="nn">Matchers</span>
+    <span class="k">module</span> <span class="nn">ActiveRecord</span>
+      <span class="c1"># The `define_enum_for` matcher is used to test that the `enum` macro has</span>
+      <span class="c1"># been used to decorate an attribute with enum methods.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Process &lt; ActiveRecord::Base</span>
+      <span class="c1">#       enum status: [:running, :stopped, :suspended]</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Process do</span>
+      <span class="c1">#       it { should define_enum_for(:status) }</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class ProcessTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should define_enum_for(:status)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### Qualifiers</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### with</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `with` to test that the enum has been defined with a certain set of</span>
+      <span class="c1"># known values.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Process &lt; ActiveRecord::Base</span>
+      <span class="c1">#       enum status: [:running, :stopped, :suspended]</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Process do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should define_enum_for(:status).</span>
+      <span class="c1">#           with([:running, :stopped, :suspended])</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class ProcessTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should define_enum_for(:status).</span>
+      <span class="c1">#         with([:running, :stopped, :suspended])</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># @return [DefineEnumForMatcher]</span>
+      <span class="c1">#</span>
+      <span class="k">def</span> <span class="nf">define_enum_for</span><span class="p">(</span><span class="n">attribute_name</span><span class="p">)</span>
+        <span class="no">DefineEnumForMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">attribute_name</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="c1"># @private</span>
+      <span class="k">class</span> <span class="nc">DefineEnumForMatcher</span>
+        <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">attribute_name</span><span class="p">)</span>
+          <span class="vi">@attribute_name</span> <span class="o">=</span> <span class="n">attribute_name</span>
+          <span class="vi">@options</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">with</span><span class="p">(</span><span class="n">expected_enum_values</span><span class="p">)</span>
+          <span class="n">options</span><span class="o">[</span><span class="ss">:expected_enum_values</span><span class="o">]</span> <span class="o">=</span> <span class="n">expected_enum_values</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">matches?</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+          <span class="vi">@model</span> <span class="o">=</span> <span class="n">subject</span>
+          <span class="n">enum_defined?</span> <span class="o">&amp;&amp;</span> <span class="n">enum_values_match?</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">failure_message</span>
+          <span class="s2">&quot;Expected </span><span class="si">#{</span><span class="n">expectation</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">end</span>
+        <span class="k">alias</span> <span class="ss">:failure_message_for_should</span> <span class="ss">:failure_message</span>
+
+        <span class="k">def</span> <span class="nf">failure_message_when_negated</span>
+          <span class="s2">&quot;Did not expect </span><span class="si">#{</span><span class="n">expectation</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">end</span>
+        <span class="k">alias</span> <span class="ss">:failure_message_for_should_not</span> <span class="ss">:failure_message_when_negated</span>
+
+        <span class="k">def</span> <span class="nf">description</span>
+          <span class="n">desc</span> <span class="o">=</span> <span class="s2">&quot;define :</span><span class="si">#{</span><span class="n">attribute_name</span><span class="si">}</span><span class="s2"> as an enum&quot;</span>
+
+          <span class="k">if</span> <span class="n">options</span><span class="o">[</span><span class="ss">:expected_enum_values</span><span class="o">]</span>
+            <span class="n">desc</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot; with </span><span class="si">#{</span><span class="n">options</span><span class="o">[</span><span class="ss">:expected_enum_values</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+          <span class="k">end</span>
+
+          <span class="n">desc</span>
+        <span class="k">end</span>
+
+        <span class="kp">protected</span>
+
+        <span class="kp">attr_reader</span> <span class="ss">:model</span><span class="p">,</span> <span class="ss">:attribute_name</span><span class="p">,</span> <span class="ss">:options</span>
+
+        <span class="k">def</span> <span class="nf">expectation</span>
+          <span class="s2">&quot;</span><span class="si">#{</span><span class="n">model</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> to </span><span class="si">#{</span><span class="n">description</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">expected_enum_values</span>
+          <span class="n">hashify</span><span class="p">(</span><span class="n">options</span><span class="o">[</span><span class="ss">:expected_enum_values</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">with_indifferent_access</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">enum_method</span>
+          <span class="n">attribute_name</span><span class="o">.</span><span class="n">to_s</span><span class="o">.</span><span class="n">pluralize</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">actual_enum_values</span>
+          <span class="n">model</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enum_method</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">enum_defined?</span>
+          <span class="n">model</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="n">enum_method</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">enum_values_match?</span>
+          <span class="n">expected_enum_values</span><span class="o">.</span><span class="n">empty?</span> <span class="o">||</span> <span class="n">actual_enum_values</span> <span class="o">==</span> <span class="n">expected_enum_values</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">hashify</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+          <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">nil?</span>
+            <span class="k">return</span> <span class="p">{}</span>
+          <span class="k">end</span>
+
+          <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="nb">Array</span><span class="p">)</span>
+            <span class="n">new_value</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="n">value</span><span class="o">.</span><span class="n">each_with_index</span> <span class="k">do</span> <span class="o">|</span><span class="n">v</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span>
+              <span class="n">new_value</span><span class="o">[</span><span class="n">v</span><span class="o">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="k">end</span>
+
+            <span class="n">new_value</span>
+          <span class="k">else</span>
+            <span class="n">value</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:28 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: double_collection
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">File: double_collection</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><pre class="code ruby"><span class="k">module</span> <span class="nn">Shoulda</span>
+  <span class="k">module</span> <span class="nn">Matchers</span>
+    <span class="k">module</span> <span class="nn">Doublespeak</span>
+      <span class="c1"># @private</span>
+      <span class="k">class</span> <span class="nc">DoubleCollection</span>
+        <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
+          <span class="vi">@klass</span> <span class="o">=</span> <span class="n">klass</span>
+          <span class="vi">@doubles_by_method_name</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">register_stub</span><span class="p">(</span><span class="n">method_name</span><span class="p">)</span>
+          <span class="n">register_double</span><span class="p">(</span><span class="n">method_name</span><span class="p">,</span> <span class="ss">:stub</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">register_proxy</span><span class="p">(</span><span class="n">method_name</span><span class="p">)</span>
+          <span class="n">register_double</span><span class="p">(</span><span class="n">method_name</span><span class="p">,</span> <span class="ss">:proxy</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">activate</span>
+          <span class="n">doubles_by_method_name</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">method_name</span><span class="p">,</span> <span class="n">double</span><span class="o">|</span>
+            <span class="n">double</span><span class="o">.</span><span class="n">activate</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">deactivate</span>
+          <span class="n">doubles_by_method_name</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">method_name</span><span class="p">,</span> <span class="n">double</span><span class="o">|</span>
+            <span class="n">double</span><span class="o">.</span><span class="n">deactivate</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">calls_to</span><span class="p">(</span><span class="n">method_name</span><span class="p">)</span>
+          <span class="n">double</span> <span class="o">=</span> <span class="n">doubles_by_method_name</span><span class="o">[</span><span class="n">method_name</span><span class="o">]</span>
+
+          <span class="k">if</span> <span class="n">double</span>
+            <span class="n">double</span><span class="o">.</span><span class="n">calls</span>
+          <span class="k">else</span>
+            <span class="o">[]</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="kp">protected</span>
+
+        <span class="kp">attr_reader</span> <span class="ss">:klass</span><span class="p">,</span> <span class="ss">:doubles_by_method_name</span>
+
+        <span class="k">def</span> <span class="nf">register_double</span><span class="p">(</span><span class="n">method_name</span><span class="p">,</span> <span class="n">implementation_type</span><span class="p">)</span>
+          <span class="n">implementation</span> <span class="o">=</span>
+            <span class="no">DoubleImplementationRegistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">implementation_type</span><span class="p">)</span>
+          <span class="n">double</span> <span class="o">=</span> <span class="no">Double</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">implementation</span><span class="p">)</span>
+          <span class="n">doubles_by_method_name</span><span class="o">[</span><span class="n">method_name</span><span class="o">]</span> <span class="o">=</span> <span class="n">double</span>
+          <span class="n">double</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:28 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

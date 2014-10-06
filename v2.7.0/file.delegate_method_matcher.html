@@ -1,0 +1,412 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: delegate_method_matcher
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">File: delegate_method_matcher</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><pre class="code ruby"><span class="k">module</span> <span class="nn">Shoulda</span>
+  <span class="k">module</span> <span class="nn">Matchers</span>
+    <span class="k">module</span> <span class="nn">Independent</span>
+      <span class="c1"># The `delegate_method` matcher tests that an object forwards messages</span>
+      <span class="c1"># to other, internal objects by way of delegation.</span>
+      <span class="c1">#</span>
+      <span class="c1"># In this example, we test that Courier forwards a call to #deliver onto</span>
+      <span class="c1"># its PostOffice instance:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     require &#39;forwardable&#39;</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Courier</span>
+      <span class="c1">#       extend Forwardable</span>
+      <span class="c1">#</span>
+      <span class="c1">#       attr_reader :post_office</span>
+      <span class="c1">#</span>
+      <span class="c1">#       def_delegators :post_office, :deliver</span>
+      <span class="c1">#</span>
+      <span class="c1">#       def initialize</span>
+      <span class="c1">#         @post_office = PostOffice.new</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Courier do</span>
+      <span class="c1">#       it { should delegate_method(:deliver).to(:post_office) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class CourierTest &lt; Test::Unit::TestCase</span>
+      <span class="c1">#       should delegate_method(:deliver).to(:post_office)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># To employ some terminology, we would say that Courier&#39;s #deliver method</span>
+      <span class="c1"># is the delegating method, PostOffice is the delegate object, and</span>
+      <span class="c1"># PostOffice#deliver is the delegate method.</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### Qualifiers</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### as</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `as` if the name of the delegate method is different from the name</span>
+      <span class="c1"># of the delegating method.</span>
+      <span class="c1">#</span>
+      <span class="c1"># Here, Courier has a #deliver method, but instead of calling #deliver on</span>
+      <span class="c1"># the PostOffice, it calls #ship:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Courier</span>
+      <span class="c1">#       attr_reader :post_office</span>
+      <span class="c1">#</span>
+      <span class="c1">#       def initialize</span>
+      <span class="c1">#         @post_office = PostOffice.new</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#</span>
+      <span class="c1">#       def deliver(package)</span>
+      <span class="c1">#         post_office.ship(package)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Courier do</span>
+      <span class="c1">#       it { should delegate_method(:deliver).to(:post_office).as(:ship) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class CourierTest &lt; Test::Unit::TestCase</span>
+      <span class="c1">#       should delegate_method(:deliver).to(:post_office).as(:ship)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### with_arguments</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `with_arguments` to assert that the delegate method is called with</span>
+      <span class="c1"># certain arguments. Note that this qualifier can only be used when the</span>
+      <span class="c1"># delegating method takes no arguments; it does not support delegating</span>
+      <span class="c1"># or delegate methods that take arbitrary arguments.</span>
+      <span class="c1">#</span>
+      <span class="c1"># Here, when Courier#deliver_package calls PostOffice#deliver_package, it</span>
+      <span class="c1"># adds an options hash:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Courier</span>
+      <span class="c1">#       attr_reader :post_office</span>
+      <span class="c1">#</span>
+      <span class="c1">#       def initialize</span>
+      <span class="c1">#         @post_office = PostOffice.new</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#</span>
+      <span class="c1">#       def deliver_package</span>
+      <span class="c1">#         post_office.deliver_package(expedited: true)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Courier do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should delegate_method(:deliver_package).</span>
+      <span class="c1">#           to(:post_office).</span>
+      <span class="c1">#           with_arguments(expedited: true)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class CourierTest &lt; Test::Unit::TestCase</span>
+      <span class="c1">#       should delegate_method(:deliver_package).</span>
+      <span class="c1">#         to(:post_office).</span>
+      <span class="c1">#         with_arguments(expedited: true)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># @return [DelegateMethodMatcher]</span>
+      <span class="c1">#</span>
+      <span class="k">def</span> <span class="nf">delegate_method</span><span class="p">(</span><span class="n">delegating_method</span><span class="p">)</span>
+        <span class="no">DelegateMethodMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">delegating_method</span><span class="p">,</span> <span class="nb">self</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="c1"># @private</span>
+      <span class="k">class</span> <span class="nc">DelegateMethodMatcher</span>
+        <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">delegating_method</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+          <span class="vi">@delegating_method</span> <span class="o">=</span> <span class="n">delegating_method</span>
+          <span class="vi">@context</span> <span class="o">=</span> <span class="n">context</span>
+
+          <span class="vi">@method_on_target</span> <span class="o">=</span> <span class="vi">@delegating_method</span>
+          <span class="vi">@target_double</span> <span class="o">=</span> <span class="ss">Doublespeak</span><span class="p">:</span><span class="ss">:ObjectDouble</span><span class="o">.</span><span class="n">new</span>
+
+          <span class="vi">@delegated_arguments</span> <span class="o">=</span> <span class="o">[]</span>
+          <span class="vi">@target_method</span> <span class="o">=</span> <span class="kp">nil</span>
+          <span class="vi">@subject</span> <span class="o">=</span> <span class="kp">nil</span>
+          <span class="vi">@subject_double_collection</span> <span class="o">=</span> <span class="kp">nil</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">matches?</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+          <span class="vi">@subject</span> <span class="o">=</span> <span class="n">subject</span>
+
+          <span class="n">ensure_target_method_is_present!</span>
+
+          <span class="n">subject_has_delegating_method?</span> <span class="o">&amp;&amp;</span>
+            <span class="n">subject_has_target_method?</span> <span class="o">&amp;&amp;</span>
+            <span class="n">subject_delegates_to_target_correctly?</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">description</span>
+          <span class="n">string</span> <span class="o">=</span> <span class="s2">&quot;delegate </span><span class="si">#{</span><span class="n">formatted_delegating_method_name</span><span class="si">}</span><span class="s2"> to &quot;</span> <span class="o">+</span>
+            <span class="s2">&quot;</span><span class="si">#{</span><span class="n">formatted_target_method_name</span><span class="si">}</span><span class="s2"> object&quot;</span>
+
+          <span class="k">if</span> <span class="n">delegated_arguments</span><span class="o">.</span><span class="n">any?</span>
+            <span class="n">string</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot; passing arguments </span><span class="si">#{</span><span class="n">delegated_arguments</span><span class="o">.</span><span class="n">inspect</span><span class="si">}</span><span class="s2">&quot;</span>
+          <span class="k">end</span>
+
+          <span class="k">if</span> <span class="n">method_on_target</span> <span class="o">!=</span> <span class="n">delegating_method</span>
+            <span class="n">string</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot; as </span><span class="si">#{</span><span class="n">formatted_method_on_target</span><span class="si">}</span><span class="s2">&quot;</span>
+          <span class="k">end</span>
+
+          <span class="n">string</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">to</span><span class="p">(</span><span class="n">target_method</span><span class="p">)</span>
+          <span class="vi">@target_method</span> <span class="o">=</span> <span class="n">target_method</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">as</span><span class="p">(</span><span class="n">method_on_target</span><span class="p">)</span>
+          <span class="vi">@method_on_target</span> <span class="o">=</span> <span class="n">method_on_target</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">with_arguments</span><span class="p">(</span><span class="o">*</span><span class="n">arguments</span><span class="p">)</span>
+          <span class="vi">@delegated_arguments</span> <span class="o">=</span> <span class="n">arguments</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">failure_message</span>
+          <span class="s2">&quot;Expected </span><span class="si">#{</span><span class="n">class_under_test</span><span class="si">}</span><span class="s2"> to </span><span class="si">#{</span><span class="n">description</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
+            <span class="s2">&quot;Method calls sent to &quot;</span> <span class="o">+</span>
+            <span class="s2">&quot;</span><span class="si">#{</span><span class="n">formatted_target_method_name</span><span class="p">(</span><span class="n">include_module</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span><span class="si">}</span><span class="s2">:&quot;</span> <span class="o">+</span>
+            <span class="n">formatted_calls_on_target</span>
+        <span class="k">end</span>
+        <span class="k">alias</span> <span class="n">failure_message_for_should</span> <span class="n">failure_message</span>
+
+        <span class="k">def</span> <span class="nf">failure_message_when_negated</span>
+          <span class="s2">&quot;Expected </span><span class="si">#{</span><span class="n">class_under_test</span><span class="si">}</span><span class="s2"> not to </span><span class="si">#{</span><span class="n">description</span><span class="si">}</span><span class="s2">, but it did&quot;</span>
+        <span class="k">end</span>
+        <span class="k">alias</span> <span class="n">failure_message_for_should_not</span> <span class="n">failure_message_when_negated</span>
+
+        <span class="kp">protected</span>
+
+        <span class="kp">attr_reader</span> <span class="p">\</span>
+          <span class="ss">:context</span><span class="p">,</span>
+          <span class="ss">:delegated_arguments</span><span class="p">,</span>
+          <span class="ss">:delegating_method</span><span class="p">,</span>
+          <span class="ss">:method</span><span class="p">,</span>
+          <span class="ss">:method_on_target</span><span class="p">,</span>
+          <span class="ss">:subject_double_collection</span><span class="p">,</span>
+          <span class="ss">:target_double</span><span class="p">,</span>
+          <span class="ss">:target_method</span>
+
+        <span class="k">def</span> <span class="nf">subject</span>
+          <span class="vi">@subject</span> <span class="o">||</span> <span class="n">context</span><span class="o">.</span><span class="n">subject</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">class_under_test</span>
+          <span class="k">if</span> <span class="n">subject</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="no">Class</span><span class="p">)</span>
+            <span class="n">subject</span>
+          <span class="k">else</span>
+            <span class="n">subject</span><span class="o">.</span><span class="n">class</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">formatted_method_on_target</span><span class="p">(</span><span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+          <span class="n">formatted_method_name_for</span><span class="p">(</span><span class="n">method_on_target</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">formatted_delegating_method_name</span><span class="p">(</span><span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+          <span class="n">formatted_method_name_for</span><span class="p">(</span><span class="n">delegating_method</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">formatted_target_method_name</span><span class="p">(</span><span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+          <span class="n">formatted_method_name_for</span><span class="p">(</span><span class="n">target_method</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">formatted_method_name_for</span><span class="p">(</span><span class="n">method_name</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+          <span class="n">possible_class_under_test</span><span class="p">(</span><span class="n">options</span><span class="p">)</span> <span class="o">+</span>
+            <span class="n">class_or_instance_method_indicator</span> <span class="o">+</span>
+            <span class="n">method_name</span><span class="o">.</span><span class="n">to_s</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">possible_class_under_test</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+          <span class="k">if</span> <span class="n">options</span><span class="o">[</span><span class="ss">:include_module</span><span class="o">]</span>
+            <span class="n">class_under_test</span><span class="o">.</span><span class="n">to_s</span>
+          <span class="k">else</span>
+            <span class="s2">&quot;&quot;</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">class_or_instance_method_indicator</span>
+          <span class="k">if</span> <span class="n">subject</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="no">Class</span><span class="p">)</span>
+            <span class="s1">&#39;.&#39;</span>
+          <span class="k">else</span>
+            <span class="s1">&#39;#&#39;</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">target_received_method?</span>
+          <span class="n">calls_to_method_on_target</span><span class="o">.</span><span class="n">any?</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">target_received_method_with_delegated_arguments?</span>
+          <span class="n">calls_to_method_on_target</span><span class="o">.</span><span class="n">any?</span> <span class="k">do</span> <span class="o">|</span><span class="n">call</span><span class="o">|</span>
+            <span class="n">call</span><span class="o">.</span><span class="n">args</span> <span class="o">==</span> <span class="n">delegated_arguments</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">subject_has_delegating_method?</span>
+          <span class="n">subject</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="n">delegating_method</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">subject_has_target_method?</span>
+          <span class="n">subject</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="n">target_method</span><span class="p">,</span> <span class="kp">true</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">ensure_target_method_is_present!</span>
+          <span class="k">if</span> <span class="n">target_method</span><span class="o">.</span><span class="n">to_s</span><span class="o">.</span><span class="n">empty?</span>
+            <span class="k">raise</span> <span class="no">TargetNotDefinedError</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">subject_delegates_to_target_correctly?</span>
+          <span class="n">register_subject_double_collection</span>
+
+          <span class="no">Doublespeak</span><span class="o">.</span><span class="n">with_doubles_activated</span> <span class="k">do</span>
+            <span class="n">subject</span><span class="o">.</span><span class="n">public_send</span><span class="p">(</span><span class="n">delegating_method</span><span class="p">,</span> <span class="o">*</span><span class="n">delegated_arguments</span><span class="p">)</span>
+          <span class="k">end</span>
+
+          <span class="k">if</span> <span class="n">delegated_arguments</span><span class="o">.</span><span class="n">any?</span>
+            <span class="n">target_received_method_with_delegated_arguments?</span>
+          <span class="k">else</span>
+            <span class="n">target_received_method?</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">register_subject_double_collection</span>
+          <span class="n">double_collection</span> <span class="o">=</span>
+            <span class="no">Doublespeak</span><span class="o">.</span><span class="n">double_collection_for</span><span class="p">(</span><span class="n">subject</span><span class="o">.</span><span class="n">singleton_class</span><span class="p">)</span>
+          <span class="n">double_collection</span><span class="o">.</span><span class="n">register_stub</span><span class="p">(</span><span class="n">target_method</span><span class="p">)</span><span class="o">.</span>
+            <span class="n">to_return</span><span class="p">(</span><span class="n">target_double</span><span class="p">)</span>
+
+          <span class="vi">@subject_double_collection</span> <span class="o">=</span> <span class="n">double_collection</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">calls_to_method_on_target</span>
+          <span class="n">target_double</span><span class="o">.</span><span class="n">calls_to</span><span class="p">(</span><span class="n">method_on_target</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">calls_on_target</span>
+          <span class="n">target_double</span><span class="o">.</span><span class="n">calls</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">formatted_calls_on_target</span>
+          <span class="n">string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+          <span class="k">if</span> <span class="n">calls_on_target</span><span class="o">.</span><span class="n">any?</span>
+            <span class="n">string</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">calls_on_target</span><span class="o">.</span><span class="n">each_with_index</span> <span class="k">do</span> <span class="o">|</span><span class="n">call</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span>
+              <span class="nb">name</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">method_name</span>
+              <span class="n">args</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">arg</span><span class="o">|</span> <span class="n">arg</span><span class="o">.</span><span class="n">inspect</span> <span class="p">}</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">)</span>
+              <span class="n">string</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">) </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">(</span><span class="si">#{</span><span class="n">args</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">end</span>
+          <span class="k">else</span>
+            <span class="n">string</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot; (none)&quot;</span>
+          <span class="k">end</span>
+
+          <span class="n">string</span><span class="o">.</span><span class="n">rstrip!</span>
+
+          <span class="n">string</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:28 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

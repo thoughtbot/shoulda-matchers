@@ -1,0 +1,373 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: strong_parameters_matcher
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">File: strong_parameters_matcher</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><pre class="code ruby"><span class="nb">require</span> <span class="s1">&#39;delegate&#39;</span>
+
+<span class="k">begin</span>
+  <span class="nb">require</span> <span class="s1">&#39;strong_parameters&#39;</span>
+<span class="k">rescue</span> <span class="no">LoadError</span>
+<span class="k">end</span>
+
+<span class="nb">require</span> <span class="s1">&#39;active_support/hash_with_indifferent_access&#39;</span>
+
+<span class="k">module</span> <span class="nn">Shoulda</span>
+  <span class="k">module</span> <span class="nn">Matchers</span>
+    <span class="k">module</span> <span class="nn">ActionController</span>
+      <span class="c1"># The `permit` matcher tests that an action in your controller receives a</span>
+      <span class="c1"># whitelist of parameters using Rails&#39; Strong Parameters feature</span>
+      <span class="c1"># (specifically that `permit` was called with the correct arguments).</span>
+      <span class="c1">#</span>
+      <span class="c1"># Here&#39;s an example:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class UsersController &lt; ApplicationController</span>
+      <span class="c1">#       def create</span>
+      <span class="c1">#         user = User.create(user_params)</span>
+      <span class="c1">#         # ...</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#</span>
+      <span class="c1">#       private</span>
+      <span class="c1">#</span>
+      <span class="c1">#       def user_params</span>
+      <span class="c1">#         params.require(:user).permit(</span>
+      <span class="c1">#           :first_name,</span>
+      <span class="c1">#           :last_name,</span>
+      <span class="c1">#           :email,</span>
+      <span class="c1">#           :password</span>
+      <span class="c1">#         )</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe UsersController do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should permit(:first_name, :last_name, :email, :password).</span>
+      <span class="c1">#           for(:create)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class UsersControllerTest &lt; ActionController::TestCase</span>
+      <span class="c1">#       should permit(:first_name, :last_name, :email, :password).</span>
+      <span class="c1">#         for(:create)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># If your action requires query parameters in order to work, then you&#39;ll</span>
+      <span class="c1"># need to supply them:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class UsersController &lt; ApplicationController</span>
+      <span class="c1">#       def update</span>
+      <span class="c1">#         user = User.find(params[:id])</span>
+      <span class="c1">#</span>
+      <span class="c1">#         if user.update_attributes(user_params)</span>
+      <span class="c1">#           # ...</span>
+      <span class="c1">#         else</span>
+      <span class="c1">#           # ...</span>
+      <span class="c1">#         end</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#</span>
+      <span class="c1">#       private</span>
+      <span class="c1">#</span>
+      <span class="c1">#       def user_params</span>
+      <span class="c1">#         params.require(:user).permit(</span>
+      <span class="c1">#           :first_name,</span>
+      <span class="c1">#           :last_name,</span>
+      <span class="c1">#           :email,</span>
+      <span class="c1">#           :password</span>
+      <span class="c1">#         )</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe UsersController do</span>
+      <span class="c1">#       before do</span>
+      <span class="c1">#         create(:user, id: 1)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should permit(:first_name, :last_name, :email, :password).</span>
+      <span class="c1">#           for(:update, params: { id: 1 })</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class UsersControllerTest &lt; ActionController::TestCase</span>
+      <span class="c1">#       setup do</span>
+      <span class="c1">#         create(:user, id: 1)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#</span>
+      <span class="c1">#       should permit(:first_name, :last_name, :email, :password).</span>
+      <span class="c1">#         for(:update, params: { id: 1 })</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># Finally, if you have an action that isn&#39;t one of the seven resourceful</span>
+      <span class="c1"># actions, then you&#39;ll need to provide the HTTP verb that it responds to:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     Rails.application.routes.draw do</span>
+      <span class="c1">#       resources :users do</span>
+      <span class="c1">#         member do</span>
+      <span class="c1">#           put :toggle</span>
+      <span class="c1">#         end</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class UsersController &lt; ApplicationController</span>
+      <span class="c1">#       def toggle</span>
+      <span class="c1">#         user = User.find(params[:id])</span>
+      <span class="c1">#</span>
+      <span class="c1">#         if user.update_attributes(user_params)</span>
+      <span class="c1">#           # ...</span>
+      <span class="c1">#         else</span>
+      <span class="c1">#           # ...</span>
+      <span class="c1">#         end</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#</span>
+      <span class="c1">#       private</span>
+      <span class="c1">#</span>
+      <span class="c1">#       def user_params</span>
+      <span class="c1">#         params.require(:user).permit(:activated)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe UsersController do</span>
+      <span class="c1">#       before do</span>
+      <span class="c1">#         create(:user, id: 1)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should permit(:activated).for(:toggle,</span>
+      <span class="c1">#           params: { id: 1 },</span>
+      <span class="c1">#           verb: :put</span>
+      <span class="c1">#         )</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class UsersControllerTest &lt; ActionController::TestCase</span>
+      <span class="c1">#       setup do</span>
+      <span class="c1">#         create(:user, id: 1)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#</span>
+      <span class="c1">#       should permit(:activated).for(:toggle,</span>
+      <span class="c1">#         params: { id: 1 },</span>
+      <span class="c1">#         verb: :put</span>
+      <span class="c1">#       )</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># @return [StrongParametersMatcher]</span>
+      <span class="c1">#</span>
+      <span class="k">def</span> <span class="nf">permit</span><span class="p">(</span><span class="o">*</span><span class="n">params</span><span class="p">)</span>
+        <span class="no">StrongParametersMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">in_context</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="c1"># @private</span>
+      <span class="k">class</span> <span class="nc">StrongParametersMatcher</span>
+        <span class="kp">attr_writer</span> <span class="ss">:stubbed_params</span>
+
+        <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">expected_permitted_params</span><span class="p">)</span>
+          <span class="vi">@action</span> <span class="o">=</span> <span class="kp">nil</span>
+          <span class="vi">@verb</span> <span class="o">=</span> <span class="kp">nil</span>
+          <span class="vi">@request_params</span> <span class="o">=</span> <span class="p">{}</span>
+          <span class="vi">@expected_permitted_params</span> <span class="o">=</span> <span class="n">expected_permitted_params</span>
+          <span class="n">set_double_collection</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">for</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+          <span class="vi">@action</span> <span class="o">=</span> <span class="n">action</span>
+          <span class="vi">@verb</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="ss">:verb</span><span class="p">,</span> <span class="n">default_verb</span><span class="p">)</span>
+          <span class="vi">@request_params</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="ss">:params</span><span class="p">,</span> <span class="p">{})</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">in_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+          <span class="vi">@context</span> <span class="o">=</span> <span class="n">context</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">description</span>
+          <span class="s2">&quot;permit </span><span class="si">#{</span><span class="n">verb</span><span class="o">.</span><span class="n">upcase</span><span class="si">}</span><span class="s2"> #</span><span class="si">#{</span><span class="n">action</span><span class="si">}</span><span class="s2"> to receive parameters </span><span class="si">#{</span><span class="n">param_names_as_sentence</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">matches?</span><span class="p">(</span><span class="n">controller</span><span class="p">)</span>
+          <span class="vi">@controller</span> <span class="o">=</span> <span class="n">controller</span>
+          <span class="n">ensure_action_and_verb_present!</span>
+
+          <span class="no">Doublespeak</span><span class="o">.</span><span class="n">with_doubles_activated</span> <span class="k">do</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">__send__</span><span class="p">(</span><span class="n">verb</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">request_params</span><span class="p">)</span>
+          <span class="k">end</span>
+
+          <span class="n">unpermitted_params</span><span class="o">.</span><span class="n">empty?</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">failure_message</span>
+          <span class="s2">&quot;Expected controller to permit </span><span class="si">#{</span><span class="n">unpermitted_params</span><span class="o">.</span><span class="n">to_sentence</span><span class="si">}</span><span class="s2">, but it did not.&quot;</span>
+        <span class="k">end</span>
+        <span class="k">alias</span> <span class="n">failure_message_for_should</span> <span class="n">failure_message</span>
+
+        <span class="k">def</span> <span class="nf">failure_message_when_negated</span>
+          <span class="s2">&quot;Expected controller not to permit </span><span class="si">#{</span><span class="n">verified_permitted_params</span><span class="o">.</span><span class="n">to_sentence</span><span class="si">}</span><span class="s2">, but it did.&quot;</span>
+        <span class="k">end</span>
+        <span class="k">alias</span> <span class="n">failure_message_for_should_not</span> <span class="n">failure_message_when_negated</span>
+
+        <span class="kp">protected</span>
+
+        <span class="kp">attr_reader</span> <span class="ss">:controller</span><span class="p">,</span> <span class="ss">:double_collection</span><span class="p">,</span> <span class="ss">:action</span><span class="p">,</span> <span class="ss">:verb</span><span class="p">,</span>
+          <span class="ss">:request_params</span><span class="p">,</span> <span class="ss">:expected_permitted_params</span><span class="p">,</span> <span class="ss">:context</span>
+
+        <span class="k">def</span> <span class="nf">set_double_collection</span>
+          <span class="vi">@double_collection</span> <span class="o">=</span>
+            <span class="no">Doublespeak</span><span class="o">.</span><span class="n">double_collection_for</span><span class="p">(</span><span class="o">::</span><span class="ss">ActionController</span><span class="p">:</span><span class="ss">:Parameters</span><span class="p">)</span>
+
+          <span class="vi">@double_collection</span><span class="o">.</span><span class="n">register_stub</span><span class="p">(</span><span class="ss">:require</span><span class="p">)</span><span class="o">.</span><span class="n">to_return</span> <span class="p">{</span> <span class="o">|</span><span class="n">params</span><span class="o">|</span> <span class="n">params</span> <span class="p">}</span>
+          <span class="vi">@double_collection</span><span class="o">.</span><span class="n">register_proxy</span><span class="p">(</span><span class="ss">:permit</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">actual_permitted_params</span>
+          <span class="n">double_collection</span><span class="o">.</span><span class="n">calls_to</span><span class="p">(</span><span class="ss">:permit</span><span class="p">)</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="o">[]</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">all_param_names</span><span class="p">,</span> <span class="n">call</span><span class="o">|</span>
+            <span class="n">all_param_names</span> <span class="o">+</span> <span class="n">call</span><span class="o">.</span><span class="n">args</span>
+          <span class="k">end</span><span class="o">.</span><span class="n">flatten</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">permit_called?</span>
+          <span class="n">actual_permitted_params</span><span class="o">.</span><span class="n">any?</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">unpermitted_params</span>
+          <span class="n">expected_permitted_params</span> <span class="o">-</span> <span class="n">actual_permitted_params</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">verified_permitted_params</span>
+          <span class="n">expected_permitted_params</span> <span class="o">&amp;</span> <span class="n">actual_permitted_params</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">ensure_action_and_verb_present!</span>
+          <span class="k">if</span> <span class="n">action</span><span class="o">.</span><span class="n">blank?</span>
+            <span class="k">raise</span> <span class="no">ActionNotDefinedError</span>
+          <span class="k">end</span>
+
+          <span class="k">if</span> <span class="n">verb</span><span class="o">.</span><span class="n">blank?</span>
+            <span class="k">raise</span> <span class="no">VerbNotDefinedError</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">default_verb</span>
+          <span class="k">case</span> <span class="n">action</span>
+            <span class="k">when</span> <span class="ss">:create</span> <span class="k">then</span> <span class="ss">:post</span>
+            <span class="k">when</span> <span class="ss">:update</span> <span class="k">then</span> <span class="no">RailsShim</span><span class="o">.</span><span class="n">verb_for_update</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">param_names_as_sentence</span>
+          <span class="n">expected_permitted_params</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:inspect</span><span class="p">)</span><span class="o">.</span><span class="n">to_sentence</span>
+        <span class="k">end</span>
+
+        <span class="c1"># @private</span>
+        <span class="k">class</span> <span class="nc">ActionNotDefinedError</span> <span class="o">&lt;</span> <span class="no">StandardError</span>
+          <span class="k">def</span> <span class="nf">message</span>
+            <span class="s1">&#39;You must specify the controller action using the #for method.&#39;</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="c1"># @private</span>
+        <span class="k">class</span> <span class="nc">VerbNotDefinedError</span> <span class="o">&lt;</span> <span class="no">StandardError</span>
+          <span class="k">def</span> <span class="nf">message</span>
+            <span class="s1">&#39;You must specify an HTTP verb when using a non-RESTful action. For example: for(:authorize, verb: :post)&#39;</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:27 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

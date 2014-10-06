@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: join_table_matcher
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">File: join_table_matcher</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><pre class="code ruby"><span class="k">module</span> <span class="nn">Shoulda</span>
+  <span class="k">module</span> <span class="nn">Matchers</span>
+    <span class="k">module</span> <span class="nn">ActiveRecord</span>
+      <span class="k">module</span> <span class="nn">AssociationMatchers</span>
+        <span class="c1"># @private</span>
+        <span class="k">class</span> <span class="nc">JoinTableMatcher</span>
+          <span class="kp">attr_reader</span> <span class="ss">:failure_message</span>
+
+          <span class="k">alias</span> <span class="ss">:missing_option</span> <span class="ss">:failure_message</span>
+
+          <span class="n">delegate</span> <span class="ss">:model_class</span><span class="p">,</span> <span class="ss">:join_table</span><span class="p">,</span> <span class="ss">:associated_class</span><span class="p">,</span>
+            <span class="ss">to</span><span class="p">:</span> <span class="ss">:association_matcher</span>
+
+          <span class="n">delegate</span> <span class="ss">:connection</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="ss">:model_class</span>
+
+          <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">association_matcher</span><span class="p">,</span> <span class="n">reflector</span><span class="p">)</span>
+            <span class="vi">@association_matcher</span> <span class="o">=</span> <span class="n">association_matcher</span>
+            <span class="vi">@reflector</span> <span class="o">=</span> <span class="n">reflector</span>
+          <span class="k">end</span>
+
+          <span class="k">def</span> <span class="nf">matches?</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+            <span class="n">join_table_exists?</span> <span class="o">&amp;&amp;</span>
+              <span class="n">join_table_has_correct_columns?</span>
+          <span class="k">end</span>
+
+          <span class="k">def</span> <span class="nf">join_table_exists?</span>
+            <span class="k">if</span> <span class="n">connection</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">join_table</span><span class="p">)</span>
+              <span class="kp">true</span>
+            <span class="k">else</span>
+              <span class="vi">@failure_message</span> <span class="o">=</span> <span class="n">missing_table_message</span>
+              <span class="kp">false</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+
+          <span class="k">def</span> <span class="nf">join_table_has_correct_columns?</span>
+            <span class="k">if</span> <span class="n">missing_columns</span><span class="o">.</span><span class="n">empty?</span>
+              <span class="kp">true</span>
+            <span class="k">else</span>
+              <span class="vi">@failure_message</span> <span class="o">=</span> <span class="n">missing_columns_message</span>
+              <span class="kp">false</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+
+          <span class="kp">protected</span>
+
+          <span class="kp">attr_reader</span> <span class="ss">:association_matcher</span><span class="p">,</span> <span class="ss">:reflector</span>
+
+          <span class="kp">private</span>
+
+          <span class="n">delegate</span> <span class="ss">:foreign_key</span><span class="p">,</span> <span class="ss">:association_foreign_key</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="ss">:reflector</span>
+
+          <span class="k">def</span> <span class="nf">missing_columns</span>
+            <span class="vi">@missing_columns</span> <span class="o">||=</span> <span class="n">expected_join_table_columns</span><span class="o">.</span><span class="n">select</span> <span class="k">do</span> <span class="o">|</span><span class="n">key</span><span class="o">|</span>
+              <span class="o">!</span><span class="n">actual_join_table_columns</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+
+          <span class="k">def</span> <span class="nf">expected_join_table_columns</span>
+            <span class="o">[</span><span class="n">foreign_key</span><span class="p">,</span> <span class="n">association_foreign_key</span><span class="o">]</span>
+          <span class="k">end</span>
+
+          <span class="k">def</span> <span class="nf">actual_join_table_columns</span>
+            <span class="n">connection</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="n">join_table</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:name</span><span class="p">)</span>
+          <span class="k">end</span>
+
+          <span class="k">def</span> <span class="nf">missing_table_message</span>
+            <span class="s2">&quot;join table </span><span class="si">#{</span><span class="n">join_table</span><span class="si">}</span><span class="s2"> doesn&#39;t exist&quot;</span>
+          <span class="k">end</span>
+
+          <span class="k">def</span> <span class="nf">missing_columns_message</span>
+            <span class="n">missing</span> <span class="o">=</span> <span class="n">missing_columns</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">)</span>
+            <span class="s2">&quot;join table </span><span class="si">#{</span><span class="n">join_table</span><span class="si">}</span><span class="s2"> missing </span><span class="si">#{</span><span class="n">column_label</span><span class="si">}</span><span class="s2">: </span><span class="si">#{</span><span class="n">missing</span><span class="si">}</span><span class="s2">&quot;</span>
+          <span class="k">end</span>
+
+          <span class="k">def</span> <span class="nf">column_label</span>
+            <span class="k">if</span> <span class="n">missing_columns</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">1</span>
+              <span class="s1">&#39;columns&#39;</span>
+            <span class="k">else</span>
+              <span class="s1">&#39;column&#39;</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:27 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

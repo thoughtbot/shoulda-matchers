@@ -1,0 +1,441 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: allow_value_matcher
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">File: allow_value_matcher</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><pre class="code ruby"><span class="k">module</span> <span class="nn">Shoulda</span>
+  <span class="k">module</span> <span class="nn">Matchers</span>
+    <span class="k">module</span> <span class="nn">ActiveModel</span>
+      <span class="c1"># The `allow_value` matcher is used to test that an attribute of a model</span>
+      <span class="c1"># can or cannot be set to a particular value or values. It is most</span>
+      <span class="c1"># commonly used in conjunction with the `validates_format_of` validation.</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### should</span>
+      <span class="c1">#</span>
+      <span class="c1"># In the positive form, `allow_value` asserts that an attribute can be</span>
+      <span class="c1"># set to one or more values, succeeding if none of the values cause the</span>
+      <span class="c1"># record to be invalid:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class UserProfile</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :website_url</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_format_of :website_url, with: URI.regexp</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe UserProfile do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should allow_value(&#39;http://foo.com&#39;, &#39;http://bar.com/baz&#39;).</span>
+      <span class="c1">#           for(:website_url)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class UserProfileTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should allow_value(&#39;http://foo.com&#39;, &#39;http://bar.com/baz&#39;).</span>
+      <span class="c1">#         for(:website_url)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### should_not</span>
+      <span class="c1">#</span>
+      <span class="c1"># In the negative form, `allow_value` asserts that an attribute cannot be</span>
+      <span class="c1"># set to one or more values, succeeding if the *first* value causes the</span>
+      <span class="c1"># record to be invalid.</span>
+      <span class="c1">#</span>
+      <span class="c1"># **This can be surprising** so in this case if you need to check that</span>
+      <span class="c1"># *all* of the values are invalid, use separate assertions:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class UserProfile</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :website_url</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_format_of :website_url, with: URI.regexp</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     describe UserProfile do</span>
+      <span class="c1">#       # One assertion: &#39;buz&#39; and &#39;bar&#39; will not be tested</span>
+      <span class="c1">#       it { should_not allow_value(&#39;fiz&#39;, &#39;buz&#39;, &#39;bar&#39;).for(:website_url) }</span>
+      <span class="c1">#</span>
+      <span class="c1">#       # Three assertions, all tested separately</span>
+      <span class="c1">#       it { should_not allow_value(&#39;fiz&#39;).for(:website_url) }</span>
+      <span class="c1">#       it { should_not allow_value(&#39;buz&#39;).for(:website_url) }</span>
+      <span class="c1">#       it { should_not allow_value(&#39;bar&#39;).for(:website_url) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### Qualifiers</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### on</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `on` if your validation applies only under a certain context.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class UserProfile</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :birthday_as_string</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_format_of :birthday_as_string,</span>
+      <span class="c1">#         with: /^(\d+)-(\d+)-(\d+)$/,</span>
+      <span class="c1">#         on: :create</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe UserProfile do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should allow_value(&#39;2013-01-01&#39;).</span>
+      <span class="c1">#           for(:birthday_as_string).</span>
+      <span class="c1">#           on(:create)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class UserProfileTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should allow_value(&#39;2013-01-01&#39;).</span>
+      <span class="c1">#         for(:birthday_as_string).</span>
+      <span class="c1">#         on(:create)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### with_message</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `with_message` if you are using a custom validation message.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class UserProfile</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :state</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_format_of :state,</span>
+      <span class="c1">#         with: /^(open|closed)$/,</span>
+      <span class="c1">#         message: &#39;State must be open or closed&#39;</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe UserProfile do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should allow_value(&#39;open&#39;, &#39;closed&#39;).</span>
+      <span class="c1">#           for(:state).</span>
+      <span class="c1">#           with_message(&#39;State must be open or closed&#39;)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class UserProfileTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should allow_value(&#39;open&#39;, &#39;closed&#39;).</span>
+      <span class="c1">#         for(:state).</span>
+      <span class="c1">#         with_message(&#39;State must be open or closed&#39;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `with_message` with the `:against` option if the attribute the</span>
+      <span class="c1"># validation message is stored under is different from the attribute</span>
+      <span class="c1"># being validated.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class UserProfile</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :sports_team</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validate :sports_team_must_be_valid</span>
+      <span class="c1">#</span>
+      <span class="c1">#       private</span>
+      <span class="c1">#</span>
+      <span class="c1">#       def sports_team_must_be_valid</span>
+      <span class="c1">#         if sports_team !~ /^(Broncos|Titans)$/i</span>
+      <span class="c1">#           self.errors.add :chosen_sports_team,</span>
+      <span class="c1">#             &#39;Must be either a Broncos fan or a Titans fan&#39;</span>
+      <span class="c1">#         end</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe UserProfile do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should allow_value(&#39;Broncos&#39;, &#39;Titans&#39;).</span>
+      <span class="c1">#           for(:sports_team).</span>
+      <span class="c1">#           with_message(&#39;Must be either a Broncos or Titans fan&#39;,</span>
+      <span class="c1">#             against: :chosen_sports_team</span>
+      <span class="c1">#           )</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class UserProfileTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should allow_value(&#39;Broncos&#39;, &#39;Titans&#39;).</span>
+      <span class="c1">#         for(:sports_team).</span>
+      <span class="c1">#         with_message(&#39;Must be either a Broncos or Titans fan&#39;,</span>
+      <span class="c1">#           against: :chosen_sports_team</span>
+      <span class="c1">#         )</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># @return [AllowValueMatcher]</span>
+      <span class="c1">#</span>
+      <span class="k">def</span> <span class="nf">allow_value</span><span class="p">(</span><span class="o">*</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">empty?</span>
+          <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s1">&#39;need at least one argument&#39;</span>
+        <span class="k">else</span>
+          <span class="no">AllowValueMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">*</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+
+      <span class="c1"># @private</span>
+      <span class="k">class</span> <span class="nc">AllowValueMatcher</span>
+        <span class="kp">include</span> <span class="no">Helpers</span>
+
+        <span class="kp">attr_accessor</span> <span class="ss">:attribute_with_message</span>
+        <span class="kp">attr_accessor</span> <span class="ss">:options</span>
+
+        <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="o">*</span><span class="n">values</span><span class="p">)</span>
+          <span class="nb">self</span><span class="o">.</span><span class="n">values_to_match</span> <span class="o">=</span> <span class="n">values</span>
+          <span class="nb">self</span><span class="o">.</span><span class="n">message_finder_factory</span> <span class="o">=</span> <span class="no">ValidationMessageFinder</span>
+          <span class="nb">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+          <span class="nb">self</span><span class="o">.</span><span class="n">after_setting_value_callback</span> <span class="o">=</span> <span class="o">-&gt;</span> <span class="p">{}</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">for</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+          <span class="nb">self</span><span class="o">.</span><span class="n">attribute_to_set</span> <span class="o">=</span> <span class="n">attribute</span>
+          <span class="nb">self</span><span class="o">.</span><span class="n">attribute_to_check_message_against</span> <span class="o">=</span> <span class="n">attribute</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">on</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+          <span class="vi">@context</span> <span class="o">=</span> <span class="n">context</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">with_message</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{})</span>
+          <span class="nb">self</span><span class="o">.</span><span class="n">options</span><span class="o">[</span><span class="ss">:expected_message</span><span class="o">]</span> <span class="o">=</span> <span class="n">message</span>
+          <span class="nb">self</span><span class="o">.</span><span class="n">options</span><span class="o">[</span><span class="ss">:expected_message_values</span><span class="o">]</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="ss">:values</span><span class="p">,</span> <span class="p">{})</span>
+
+          <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">key?</span><span class="p">(</span><span class="ss">:against</span><span class="p">)</span>
+            <span class="nb">self</span><span class="o">.</span><span class="n">attribute_to_check_message_against</span> <span class="o">=</span> <span class="n">options</span><span class="o">[</span><span class="ss">:against</span><span class="o">]</span>
+          <span class="k">end</span>
+
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">strict</span>
+          <span class="nb">self</span><span class="o">.</span><span class="n">message_finder_factory</span> <span class="o">=</span> <span class="no">ExceptionMessageFinder</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">_after_setting_value</span><span class="p">(</span><span class="o">&amp;</span><span class="n">callback</span><span class="p">)</span>
+          <span class="nb">self</span><span class="o">.</span><span class="n">after_setting_value_callback</span> <span class="o">=</span> <span class="n">callback</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">matches?</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+          <span class="nb">self</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="n">instance</span>
+
+          <span class="n">values_to_match</span><span class="o">.</span><span class="n">none?</span> <span class="k">do</span> <span class="o">|</span><span class="n">value</span><span class="o">|</span>
+            <span class="nb">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="n">set_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">errors_match?</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">failure_message</span>
+          <span class="s2">&quot;Did not expect </span><span class="si">#{</span><span class="n">expectation</span><span class="si">}</span><span class="s2">, got error: </span><span class="si">#{</span><span class="n">matched_error</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">end</span>
+        <span class="k">alias</span> <span class="n">failure_message_for_should</span> <span class="n">failure_message</span>
+
+        <span class="k">def</span> <span class="nf">failure_message_when_negated</span>
+          <span class="s2">&quot;Expected </span><span class="si">#{</span><span class="n">expectation</span><span class="si">}</span><span class="s2">, got </span><span class="si">#{</span><span class="n">error_description</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">end</span>
+        <span class="k">alias</span> <span class="n">failure_message_for_should_not</span> <span class="n">failure_message_when_negated</span>
+
+        <span class="k">def</span> <span class="nf">description</span>
+          <span class="n">message_finder</span><span class="o">.</span><span class="n">allow_description</span><span class="p">(</span><span class="n">allowed_values</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="kp">protected</span>
+
+        <span class="kp">attr_accessor</span> <span class="ss">:values_to_match</span><span class="p">,</span> <span class="ss">:message_finder_factory</span><span class="p">,</span>
+          <span class="ss">:instance</span><span class="p">,</span> <span class="ss">:attribute_to_set</span><span class="p">,</span> <span class="ss">:attribute_to_check_message_against</span><span class="p">,</span>
+          <span class="ss">:context</span><span class="p">,</span> <span class="ss">:value</span><span class="p">,</span> <span class="ss">:matched_error</span><span class="p">,</span> <span class="ss">:after_setting_value_callback</span>
+
+        <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+          <span class="n">instance</span><span class="o">.</span><span class="n">__send__</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">#{</span><span class="n">attribute_to_set</span><span class="si">}</span><span class="s2">=&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+          <span class="n">after_setting_value_callback</span><span class="o">.</span><span class="n">call</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">errors_match?</span>
+          <span class="n">has_messages?</span> <span class="o">&amp;&amp;</span> <span class="n">errors_for_attribute_match?</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">has_messages?</span>
+          <span class="n">message_finder</span><span class="o">.</span><span class="n">has_messages?</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">errors_for_attribute_match?</span>
+          <span class="k">if</span> <span class="n">expected_message</span>
+            <span class="nb">self</span><span class="o">.</span><span class="n">matched_error</span> <span class="o">=</span> <span class="n">errors_match_regexp?</span> <span class="o">||</span> <span class="n">errors_match_string?</span>
+          <span class="k">else</span>
+            <span class="n">errors_for_attribute</span><span class="o">.</span><span class="n">compact</span><span class="o">.</span><span class="n">any?</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">errors_for_attribute</span>
+          <span class="n">message_finder</span><span class="o">.</span><span class="n">messages</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">errors_match_regexp?</span>
+          <span class="k">if</span> <span class="no">Regexp</span> <span class="o">===</span> <span class="n">expected_message</span>
+            <span class="n">errors_for_attribute</span><span class="o">.</span><span class="n">detect</span> <span class="p">{</span> <span class="o">|</span><span class="n">e</span><span class="o">|</span> <span class="n">e</span> <span class="o">=~</span> <span class="n">expected_message</span> <span class="p">}</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">errors_match_string?</span>
+          <span class="k">if</span> <span class="n">errors_for_attribute</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">expected_message</span><span class="p">)</span>
+            <span class="n">expected_message</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">expectation</span>
+          <span class="n">includes_expected_message</span> <span class="o">=</span> <span class="n">expected_message</span> <span class="p">?</span> <span class="s2">&quot;to include </span><span class="si">#{</span><span class="n">expected_message</span><span class="o">.</span><span class="n">inspect</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">:</span> <span class="s1">&#39;&#39;</span>
+          <span class="o">[</span><span class="n">error_source</span><span class="p">,</span> <span class="n">includes_expected_message</span><span class="p">,</span> <span class="s2">&quot;when </span><span class="si">#{</span><span class="n">attribute_to_set</span><span class="si">}</span><span class="s2"> is set to </span><span class="si">#{</span><span class="n">value</span><span class="o">.</span><span class="n">inspect</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">].</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">error_source</span>
+          <span class="n">message_finder</span><span class="o">.</span><span class="n">source_description</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">error_description</span>
+          <span class="n">message_finder</span><span class="o">.</span><span class="n">messages_description</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">allowed_values</span>
+          <span class="k">if</span> <span class="n">values_to_match</span><span class="o">.</span><span class="n">length</span> <span class="o">&gt;</span> <span class="mi">1</span>
+            <span class="s2">&quot;any of [</span><span class="si">#{</span><span class="n">values_to_match</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:inspect</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">]&quot;</span>
+          <span class="k">else</span>
+            <span class="n">values_to_match</span><span class="o">.</span><span class="n">first</span><span class="o">.</span><span class="n">inspect</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">expected_message</span>
+          <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">key?</span><span class="p">(</span><span class="ss">:expected_message</span><span class="p">)</span>
+            <span class="k">if</span> <span class="no">Symbol</span> <span class="o">===</span> <span class="n">options</span><span class="o">[</span><span class="ss">:expected_message</span><span class="o">]</span>
+              <span class="n">default_expected_message</span>
+            <span class="k">else</span>
+              <span class="n">options</span><span class="o">[</span><span class="ss">:expected_message</span><span class="o">]</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">default_expected_message</span>
+          <span class="n">message_finder</span><span class="o">.</span><span class="n">expected_message_from</span><span class="p">(</span><span class="n">default_attribute_message</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">default_attribute_message</span>
+          <span class="n">default_error_message</span><span class="p">(</span>
+            <span class="n">options</span><span class="o">[</span><span class="ss">:expected_message</span><span class="o">]</span><span class="p">,</span>
+            <span class="n">default_attribute_message_values</span>
+          <span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">default_attribute_message_values</span>
+          <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">model_name</span><span class="p">:</span> <span class="n">model_name</span><span class="p">,</span>
+            <span class="ss">instance</span><span class="p">:</span> <span class="n">instance</span><span class="p">,</span>
+            <span class="ss">attribute</span><span class="p">:</span> <span class="n">attribute_to_set</span><span class="p">,</span>
+          <span class="p">}</span>
+
+          <span class="n">defaults</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">options</span><span class="o">[</span><span class="ss">:expected_message_values</span><span class="o">]</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">model_name</span>
+          <span class="n">instance</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">to_s</span><span class="o">.</span><span class="n">underscore</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">message_finder</span>
+          <span class="n">message_finder_factory</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">attribute_to_check_message_against</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:27 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

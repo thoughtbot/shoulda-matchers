@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: comparison_matcher
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">File: comparison_matcher</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><pre class="code ruby"><span class="k">module</span> <span class="nn">Shoulda</span>
+  <span class="k">module</span> <span class="nn">Matchers</span>
+    <span class="k">module</span> <span class="nn">ActiveModel</span>
+      <span class="k">module</span> <span class="nn">NumericalityMatchers</span>
+        <span class="c1"># @private</span>
+        <span class="k">class</span> <span class="nc">ComparisonMatcher</span> <span class="o">&lt;</span> <span class="no">ValidationMatcher</span>
+          <span class="no">ERROR_MESSAGES</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="ss">:&gt;</span> <span class="o">=&gt;</span> <span class="ss">:greater_than</span><span class="p">,</span>
+            <span class="ss">:&gt;=</span> <span class="o">=&gt;</span> <span class="ss">:greater_than_or_equal_to</span><span class="p">,</span>
+            <span class="p">:</span><span class="o">&lt;</span> <span class="o">=&gt;</span> <span class="ss">:less_than</span><span class="p">,</span>
+            <span class="p">:</span><span class="o">&lt;=</span> <span class="o">=&gt;</span> <span class="ss">:less_than_or_equal_to</span><span class="p">,</span>
+            <span class="ss">:==</span> <span class="o">=&gt;</span> <span class="ss">:equal_to</span>
+          <span class="p">}</span>
+
+          <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">numericality_matcher</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">operator</span><span class="p">)</span>
+            <span class="k">unless</span> <span class="n">numericality_matcher</span><span class="o">.</span><span class="n">respond_to?</span> <span class="ss">:diff_to_compare</span>
+              <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s1">&#39;numericality_matcher is invalid&#39;</span>
+            <span class="k">end</span>
+            <span class="vi">@numericality_matcher</span> <span class="o">=</span> <span class="n">numericality_matcher</span>
+            <span class="vi">@value</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="vi">@operator</span> <span class="o">=</span> <span class="n">operator</span>
+            <span class="vi">@message</span> <span class="o">=</span> <span class="no">ERROR_MESSAGES</span><span class="o">[</span><span class="n">operator</span><span class="o">]</span>
+            <span class="vi">@comparison_combos</span> <span class="o">=</span> <span class="n">comparison_combos</span>
+            <span class="vi">@strict</span> <span class="o">=</span> <span class="kp">false</span>
+          <span class="k">end</span>
+
+          <span class="k">def</span> <span class="nf">for</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+            <span class="vi">@attribute</span> <span class="o">=</span> <span class="n">attribute</span>
+            <span class="nb">self</span>
+          <span class="k">end</span>
+
+          <span class="k">def</span> <span class="nf">matches?</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+            <span class="vi">@subject</span> <span class="o">=</span> <span class="n">subject</span>
+            <span class="n">all_bounds_correct?</span>
+          <span class="k">end</span>
+
+          <span class="k">def</span> <span class="nf">with_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+            <span class="vi">@message</span> <span class="o">=</span> <span class="n">message</span>
+          <span class="k">end</span>
+
+          <span class="k">def</span> <span class="nf">comparison_description</span>
+            <span class="s2">&quot;</span><span class="si">#{</span><span class="n">expectation</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="vi">@value</span><span class="si">}</span><span class="s2">&quot;</span>
+          <span class="k">end</span>
+
+          <span class="kp">private</span>
+
+          <span class="k">def</span> <span class="nf">comparison_combos</span>
+            <span class="n">allow</span> <span class="o">=</span> <span class="ss">:allows_value_of</span>
+            <span class="n">disallow</span> <span class="o">=</span> <span class="ss">:disallows_value_of</span>
+            <span class="n">checker_types</span> <span class="o">=</span>
+              <span class="k">case</span> <span class="vi">@operator</span>
+                <span class="k">when</span> <span class="ss">:&gt;</span> <span class="k">then</span> <span class="o">[</span><span class="n">allow</span><span class="p">,</span> <span class="n">disallow</span><span class="p">,</span> <span class="n">disallow</span><span class="o">]</span>
+                <span class="k">when</span> <span class="ss">:&gt;=</span> <span class="k">then</span> <span class="o">[</span><span class="n">allow</span><span class="p">,</span> <span class="n">allow</span><span class="p">,</span> <span class="n">disallow</span><span class="o">]</span>
+                <span class="k">when</span> <span class="ss">:==</span> <span class="k">then</span> <span class="o">[</span><span class="n">disallow</span><span class="p">,</span> <span class="n">allow</span><span class="p">,</span> <span class="n">disallow</span><span class="o">]</span>
+                <span class="k">when</span> <span class="p">:</span><span class="o">&lt;</span> <span class="k">then</span> <span class="o">[</span><span class="n">disallow</span><span class="p">,</span> <span class="n">disallow</span><span class="p">,</span> <span class="n">allow</span><span class="o">]</span>
+                <span class="k">when</span> <span class="p">:</span><span class="o">&lt;=</span> <span class="k">then</span> <span class="o">[</span><span class="n">disallow</span><span class="p">,</span> <span class="n">allow</span><span class="p">,</span> <span class="n">allow</span><span class="o">]</span>
+              <span class="k">end</span>
+            <span class="n">diffs_to_compare</span><span class="o">.</span><span class="n">zip</span><span class="p">(</span><span class="n">checker_types</span><span class="p">)</span>
+          <span class="k">end</span>
+
+          <span class="k">def</span> <span class="nf">diffs_to_compare</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="vi">@numericality_matcher</span><span class="o">.</span><span class="n">diff_to_compare</span>
+            <span class="o">[</span><span class="n">diff</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">diff</span><span class="o">]</span>
+          <span class="k">end</span>
+
+          <span class="k">def</span> <span class="nf">expectation</span>
+            <span class="k">case</span> <span class="vi">@operator</span>
+              <span class="k">when</span> <span class="ss">:&gt;</span> <span class="k">then</span> <span class="s2">&quot;greater than&quot;</span>
+              <span class="k">when</span> <span class="ss">:&gt;=</span> <span class="k">then</span> <span class="s2">&quot;greater than or equal to&quot;</span>
+              <span class="k">when</span> <span class="ss">:==</span> <span class="k">then</span> <span class="s2">&quot;equal to&quot;</span>
+              <span class="k">when</span> <span class="p">:</span><span class="o">&lt;</span> <span class="k">then</span> <span class="s2">&quot;less than&quot;</span>
+              <span class="k">when</span> <span class="p">:</span><span class="o">&lt;=</span> <span class="k">then</span> <span class="s2">&quot;less than or equal to&quot;</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+
+          <span class="k">def</span> <span class="nf">all_bounds_correct?</span>
+            <span class="vi">@comparison_combos</span><span class="o">.</span><span class="n">all?</span> <span class="k">do</span> <span class="o">|</span><span class="n">diff</span><span class="p">,</span> <span class="n">checker_type</span><span class="o">|</span>
+              <span class="nb">__send__</span><span class="p">(</span><span class="n">checker_type</span><span class="p">,</span> <span class="vi">@value</span> <span class="o">+</span> <span class="n">diff</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">matcher</span><span class="o">|</span>
+                <span class="n">matcher</span><span class="o">.</span><span class="n">with_message</span><span class="p">(</span><span class="vi">@message</span><span class="p">,</span> <span class="ss">values</span><span class="p">:</span> <span class="p">{</span> <span class="ss">count</span><span class="p">:</span> <span class="vi">@value</span> <span class="p">})</span>
+              <span class="k">end</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:27 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

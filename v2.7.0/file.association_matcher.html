@@ -1,0 +1,1149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: association_matcher
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">File: association_matcher</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><pre class="code ruby"><span class="nb">require</span> <span class="s1">&#39;active_support/core_ext/module/delegation&#39;</span>
+
+<span class="k">module</span> <span class="nn">Shoulda</span>
+  <span class="k">module</span> <span class="nn">Matchers</span>
+    <span class="k">module</span> <span class="nn">ActiveRecord</span>
+      <span class="c1"># The `belong_to` matcher is used to ensure that a `belong_to` association</span>
+      <span class="c1"># exists on your model.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       belongs_to :organization</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should belong_to(:organization) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should belong_to(:organization)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># Note that polymorphic associations are automatically detected and do not</span>
+      <span class="c1"># need any qualifiers:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Comment &lt; ActiveRecord::Base</span>
+      <span class="c1">#       belongs_to :commentable, polymorphic: true</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Comment do</span>
+      <span class="c1">#       it { should belong_to(:commentable) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class CommentTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should belong_to(:commentable)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### Qualifiers</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### conditions</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `conditions` if your association is defined with a scope that sets</span>
+      <span class="c1"># the `where` clause.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       belongs_to :family, -&gt; { where(everyone_is_perfect: false) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should belong_to(:family).</span>
+      <span class="c1">#           conditions(everyone_is_perfect: false)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should belong_to(:family).</span>
+      <span class="c1">#         conditions(everyone_is_perfect: false)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### order</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `order` if your association is defined with a scope that sets the</span>
+      <span class="c1"># `order` clause.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       belongs_to :previous_company, -&gt; { order(&#39;hired_on desc&#39;) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should belong_to(:previous_company).order(&#39;hired_on desc&#39;) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should belong_to(:previous_company).order(&#39;hired_on desc&#39;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### class_name</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `class_name` to test usage of the `:class_name` option. This</span>
+      <span class="c1"># asserts that the model you&#39;re referring to actually exists.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       belongs_to :ancient_city, class_name: &#39;City&#39;</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should belong_to(:ancient_city).class_name(&#39;City&#39;) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should belong_to(:ancient_city).class_name(&#39;City&#39;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### with_foreign_key</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `with_foreign_key` to test usage of the `:foreign_key` option.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       belongs_to :great_country, foreign_key: &#39;country_id&#39;</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should belong_to(:great_country).</span>
+      <span class="c1">#           with_foreign_key(&#39;country_id&#39;)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should belong_to(:great_country).</span>
+      <span class="c1">#         with_foreign_key(&#39;country_id&#39;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### dependent</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `dependent` to assert that the `:dependent` option was specified.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       belongs_to :world, dependent: :destroy</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should belong_to(:world).dependent(:destroy) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should belong_to(:world).dependent(:destroy)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### counter_cache</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `counter_cache` to assert that the `:counter_cache` option was</span>
+      <span class="c1"># specified.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       belongs_to :organization, counter_cache: true</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should belong_to(:organization).counter_cache(true) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should belong_to(:organization).counter_cache(true)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### touch</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `touch` to assert that the `:touch` option was specified.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       belongs_to :organization, touch: true</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should belong_to(:organization).touch(true) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should belong_to(:organization).touch(true)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### autosave</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `autosave` to assert that the `:autosave` option was specified.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Account &lt; ActiveRecord::Base</span>
+      <span class="c1">#       belongs_to :bank, autosave: true</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Account do</span>
+      <span class="c1">#       it { should belong_to(:bank).autosave(true) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class AccountTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should belong_to(:bank).autosave(true)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### inverse_of</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `inverse_of` to assert that the `:inverse_of` option was specified.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       belongs_to :organization, inverse_of: :employees</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person</span>
+      <span class="c1">#       it { should belong_to(:organization).inverse_of(:employees) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should belong_to(:organization).inverse_of(:employees)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># @return [AssociationMatcher]</span>
+      <span class="c1">#</span>
+      <span class="k">def</span> <span class="nf">belong_to</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+        <span class="no">AssociationMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:belongs_to</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="c1"># The `have_many` matcher is used to test that a `has_many` or `has_many</span>
+      <span class="c1"># :through` association exists on your model.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_many :friends</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should have_many(:friends) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_many(:friends)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### Qualifiers</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### conditions</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `conditions` if your association is defined with a scope that sets</span>
+      <span class="c1"># the `where` clause.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_many :coins, -&gt; { where(quality: &#39;mint&#39;) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should have_many(:coins).conditions(quality: &#39;mint&#39;) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_many(:coins).conditions(quality: &#39;mint&#39;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### order</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `order` if your association is defined with a scope that sets the</span>
+      <span class="c1"># `order` clause.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_many :shirts, -&gt; { order(&#39;color&#39;) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should have_many(:shirts).order(&#39;color&#39;) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_many(:shirts).order(&#39;color&#39;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### class_name</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `class_name` to test usage of the `:class_name` option. This</span>
+      <span class="c1"># asserts that the model you&#39;re referring to actually exists.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_many :hopes, class_name: &#39;Dream&#39;</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should have_many(:hopes).class_name(&#39;Dream&#39;) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_many(:hopes).class_name(&#39;Dream&#39;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### with_foreign_key</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `with_foreign_key` to test usage of the `:foreign_key` option.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_many :worries, foreign_key: &#39;worrier_id&#39;</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should have_many(:worries).with_foreign_key(&#39;worrier_id&#39;) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_many(:worries).with_foreign_key(&#39;worrier_id&#39;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### dependent</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `dependent` to assert that the `:dependent` option was specified.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_many :secret_documents, dependent: :destroy</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should have_many(:secret_documents).dependent(:destroy) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_many(:secret_documents).dependent(:destroy)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### through</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `through` to test usage of the `:through` option. This asserts that</span>
+      <span class="c1"># the association you are going through actually exists.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_many :acquaintances, through: :friends</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should have_many(:acquaintances).through(:friends) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_many(:acquaintances).through(:friends)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### source</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `source` to test usage of the `:source` option on a `:through`</span>
+      <span class="c1"># association.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_many :job_offers, through: :friends, source: :opportunities</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should have_many(:job_offers).</span>
+      <span class="c1">#           through(:friends).</span>
+      <span class="c1">#           source(:opportunities)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_many(:job_offers).</span>
+      <span class="c1">#         through(:friends).</span>
+      <span class="c1">#         source(:opportunities)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### validate</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `validate` to assert that the `:validate` option was specified.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_many :ideas, validate: false</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should have_many(:ideas).validate(false) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_many(:ideas).validate(false)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### autosave</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `autosave` to assert that the `:autosave` option was specified.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Player &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_many :games, autosave: true</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Player do</span>
+      <span class="c1">#       it { should have_many(:games).autosave(true) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PlayerTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_many(:games).autosave(true)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># @return [AssociationMatcher]</span>
+      <span class="c1">#</span>
+      <span class="k">def</span> <span class="nf">have_many</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+        <span class="no">AssociationMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:has_many</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="c1"># The `have_one` matcher is used to test that a `has_one` or `has_one</span>
+      <span class="c1"># :through` association exists on your model.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_one :partner</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should have_one(:partner) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_one(:partner)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### Qualifiers</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### conditions</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `conditions` if your association is defined with a scope that sets</span>
+      <span class="c1"># the `where` clause.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_one :pet, -&gt; { where(&#39;weight &lt; 80&#39;) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should have_one(:pet).conditions(&#39;weight &lt; 80&#39;) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_one(:pet).conditions(&#39;weight &lt; 80&#39;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### order</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `order` if your association is defined with a scope that sets the</span>
+      <span class="c1"># `order` clause.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_one :focus, -&gt; { order(&#39;priority desc&#39;) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should have_one(:focus).order(&#39;priority desc&#39;) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_one(:focus).order(&#39;priority desc&#39;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### class_name</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `class_name` to test usage of the `:class_name` option. This</span>
+      <span class="c1"># asserts that the model you&#39;re referring to actually exists.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_one :chance, class_name: &#39;Opportunity&#39;</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should have_one(:chance).class_name(&#39;Opportunity&#39;) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_one(:chance).class_name(&#39;Opportunity&#39;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### dependent</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `dependent` to test that the `:dependent` option was specified.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_one :contract, dependent: :nullify</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should have_one(:contract).dependent(:nullify) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_one(:contract).dependent(:nullify)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### with_foreign_key</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `with_foreign_key` to test usage of the `:foreign_key` option.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_one :job, foreign_key: &#39;worker_id&#39;</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should have_one(:job).with_foreign_key(&#39;worker_id&#39;) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_one(:job).with_foreign_key(&#39;worker_id&#39;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### through</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `through` to test usage of the `:through` option. This asserts that</span>
+      <span class="c1"># the association you are going through actually exists.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_one :life, through: :partner</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should have_one(:life).through(:partner) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_one(:life).through(:partner)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### source</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `source` to test usage of the `:source` option on a `:through`</span>
+      <span class="c1"># association.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_one :car, through: :partner, source: :vehicle</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should have_one(:car).through(:partner).source(:vehicle) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_one(:car).through(:partner).source(:vehicle)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### validate</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `validate` to assert that the the `:validate` option was specified.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_one :parking_card, validate: false</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should have_one(:parking_card).validate(false) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_one(:parking_card).validate(false)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### autosave</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `autosave` to assert that the `:autosave` option was specified.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Account &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_one :bank, autosave: true</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Account do</span>
+      <span class="c1">#       it { should have_one(:bank).autosave(true) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class AccountTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_one(:bank).autosave(true)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># @return [AssociationMatcher]</span>
+      <span class="c1">#</span>
+      <span class="k">def</span> <span class="nf">have_one</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+        <span class="no">AssociationMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:has_one</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="c1"># The `have_and_belong_to_many` matcher is used to test that a</span>
+      <span class="c1"># `has_and_belongs_to_many` association exists on your model and that the</span>
+      <span class="c1"># join table exists in the database.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_and_belongs_to_many :awards</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it { should have_and_belong_to_many(:awards) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_and_belong_to_many(:awards)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### Qualifiers</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### conditions</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `conditions` if your association is defined with a scope that sets</span>
+      <span class="c1"># the `where` clause.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_and_belongs_to_many :issues, -&gt; { where(difficulty: &#39;hard&#39;) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should have_and_belong_to_many(:issues).</span>
+      <span class="c1">#           conditions(difficulty: &#39;hard&#39;)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_and_belong_to_many(:issues).</span>
+      <span class="c1">#         conditions(difficulty: &#39;hard&#39;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### order</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `order` if your association is defined with a scope that sets the</span>
+      <span class="c1"># `order` clause.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_and_belongs_to_many :projects, -&gt; { order(&#39;time_spent&#39;) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should have_and_belong_to_many(:projects).</span>
+      <span class="c1">#           order(&#39;time_spent&#39;)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_and_belong_to_many(:projects).</span>
+      <span class="c1">#         order(&#39;time_spent&#39;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### class_name</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `class_name` to test usage of the `:class_name` option. This</span>
+      <span class="c1"># asserts that the model you&#39;re referring to actually exists.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_and_belongs_to_many :places_visited, class_name: &#39;City&#39;</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should have_and_belong_to_many(:places_visited).</span>
+      <span class="c1">#           class_name(&#39;City&#39;)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_and_belong_to_many(:places_visited).</span>
+      <span class="c1">#         class_name(&#39;City&#39;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### validate</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `validate` to test that the `:validate` option was specified.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Person &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_and_belongs_to_many :interviews, validate: false</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Person do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should have_and_belong_to_many(:interviews).</span>
+      <span class="c1">#           validate(false)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PersonTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_and_belong_to_many(:interviews).</span>
+      <span class="c1">#         validate(false)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### autosave</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `autosave` to assert that the `:autosave` option was specified.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Publisher &lt; ActiveRecord::Base</span>
+      <span class="c1">#       has_and_belongs_to_many :advertisers, autosave: true</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Publisher do</span>
+      <span class="c1">#       it { should have_and_belong_to_many(:advertisers).autosave(true) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class AccountTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should have_and_belong_to_many(:advertisers).autosave(true)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># @return [AssociationMatcher]</span>
+      <span class="c1">#</span>
+      <span class="k">def</span> <span class="nf">have_and_belong_to_many</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+        <span class="no">AssociationMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:has_and_belongs_to_many</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="c1"># @private</span>
+      <span class="k">class</span> <span class="nc">AssociationMatcher</span>
+        <span class="n">delegate</span> <span class="ss">:reflection</span><span class="p">,</span> <span class="ss">:model_class</span><span class="p">,</span> <span class="ss">:associated_class</span><span class="p">,</span> <span class="ss">:through?</span><span class="p">,</span>
+          <span class="ss">:join_table</span><span class="p">,</span> <span class="ss">:polymorphic?</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="ss">:reflector</span>
+
+        <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">macro</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+          <span class="vi">@macro</span> <span class="o">=</span> <span class="n">macro</span>
+          <span class="vi">@name</span> <span class="o">=</span> <span class="nb">name</span>
+          <span class="vi">@options</span> <span class="o">=</span> <span class="p">{}</span>
+          <span class="vi">@submatchers</span> <span class="o">=</span> <span class="o">[]</span>
+          <span class="vi">@missing</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">through</span><span class="p">(</span><span class="n">through</span><span class="p">)</span>
+          <span class="n">through_matcher</span> <span class="o">=</span> <span class="ss">AssociationMatchers</span><span class="p">:</span><span class="ss">:ThroughMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">through</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+          <span class="n">add_submatcher</span><span class="p">(</span><span class="n">through_matcher</span><span class="p">)</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">dependent</span><span class="p">(</span><span class="n">dependent</span><span class="p">)</span>
+          <span class="n">dependent_matcher</span> <span class="o">=</span> <span class="ss">AssociationMatchers</span><span class="p">:</span><span class="ss">:DependentMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">dependent</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+          <span class="n">add_submatcher</span><span class="p">(</span><span class="n">dependent_matcher</span><span class="p">)</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+          <span class="n">order_matcher</span> <span class="o">=</span> <span class="ss">AssociationMatchers</span><span class="p">:</span><span class="ss">:OrderMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+          <span class="n">add_submatcher</span><span class="p">(</span><span class="n">order_matcher</span><span class="p">)</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">counter_cache</span><span class="p">(</span><span class="n">counter_cache</span> <span class="o">=</span> <span class="kp">true</span><span class="p">)</span>
+          <span class="n">counter_cache_matcher</span> <span class="o">=</span> <span class="ss">AssociationMatchers</span><span class="p">:</span><span class="ss">:CounterCacheMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">counter_cache</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+          <span class="n">add_submatcher</span><span class="p">(</span><span class="n">counter_cache_matcher</span><span class="p">)</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">inverse_of</span><span class="p">(</span><span class="n">inverse_of</span><span class="p">)</span>
+          <span class="n">inverse_of_matcher</span> <span class="o">=</span>
+            <span class="ss">AssociationMatchers</span><span class="p">:</span><span class="ss">:InverseOfMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">inverse_of</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+          <span class="n">add_submatcher</span><span class="p">(</span><span class="n">inverse_of_matcher</span><span class="p">)</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">source</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+          <span class="n">source_matcher</span> <span class="o">=</span> <span class="ss">AssociationMatchers</span><span class="p">:</span><span class="ss">:SourceMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+          <span class="n">add_submatcher</span><span class="p">(</span><span class="n">source_matcher</span><span class="p">)</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">conditions</span><span class="p">(</span><span class="n">conditions</span><span class="p">)</span>
+          <span class="vi">@options</span><span class="o">[</span><span class="ss">:conditions</span><span class="o">]</span> <span class="o">=</span> <span class="n">conditions</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">autosave</span><span class="p">(</span><span class="n">autosave</span><span class="p">)</span>
+          <span class="vi">@options</span><span class="o">[</span><span class="ss">:autosave</span><span class="o">]</span> <span class="o">=</span> <span class="n">autosave</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">class_name</span><span class="p">(</span><span class="n">class_name</span><span class="p">)</span>
+          <span class="vi">@options</span><span class="o">[</span><span class="ss">:class_name</span><span class="o">]</span> <span class="o">=</span> <span class="n">class_name</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">with_foreign_key</span><span class="p">(</span><span class="n">foreign_key</span><span class="p">)</span>
+          <span class="vi">@options</span><span class="o">[</span><span class="ss">:foreign_key</span><span class="o">]</span> <span class="o">=</span> <span class="n">foreign_key</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="n">validate</span> <span class="o">=</span> <span class="kp">true</span><span class="p">)</span>
+          <span class="vi">@options</span><span class="o">[</span><span class="ss">:validate</span><span class="o">]</span> <span class="o">=</span> <span class="n">validate</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">touch</span><span class="p">(</span><span class="n">touch</span> <span class="o">=</span> <span class="kp">true</span><span class="p">)</span>
+          <span class="vi">@options</span><span class="o">[</span><span class="ss">:touch</span><span class="o">]</span> <span class="o">=</span> <span class="n">touch</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">description</span>
+          <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">macro_description</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">&quot;</span>
+          <span class="n">description</span> <span class="o">+=</span> <span class="s2">&quot; class_name =&gt; </span><span class="si">#{</span><span class="n">options</span><span class="o">[</span><span class="ss">:class_name</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">key?</span><span class="p">(</span><span class="ss">:class_name</span><span class="p">)</span>
+          <span class="o">[</span><span class="n">description</span><span class="p">,</span> <span class="n">submatchers</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:description</span><span class="p">)</span><span class="o">].</span><span class="n">flatten</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">failure_message</span>
+          <span class="s2">&quot;Expected </span><span class="si">#{</span><span class="n">expectation</span><span class="si">}</span><span class="s2"> (</span><span class="si">#{</span><span class="n">missing_options</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="k">end</span>
+        <span class="k">alias</span> <span class="n">failure_message_for_should</span> <span class="n">failure_message</span>
+
+        <span class="k">def</span> <span class="nf">failure_message_when_negated</span>
+          <span class="s2">&quot;Did not expect </span><span class="si">#{</span><span class="n">expectation</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">end</span>
+        <span class="k">alias</span> <span class="n">failure_message_for_should_not</span> <span class="n">failure_message_when_negated</span>
+
+        <span class="k">def</span> <span class="nf">matches?</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+          <span class="vi">@subject</span> <span class="o">=</span> <span class="n">subject</span>
+          <span class="n">association_exists?</span> <span class="o">&amp;&amp;</span>
+            <span class="n">macro_correct?</span> <span class="o">&amp;&amp;</span>
+            <span class="p">(</span><span class="n">polymorphic?</span> <span class="o">||</span> <span class="n">class_exists?</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+            <span class="n">foreign_key_exists?</span> <span class="o">&amp;&amp;</span>
+            <span class="n">class_name_correct?</span> <span class="o">&amp;&amp;</span>
+            <span class="n">join_table_correct?</span> <span class="o">&amp;&amp;</span>
+            <span class="n">autosave_correct?</span> <span class="o">&amp;&amp;</span>
+            <span class="n">conditions_correct?</span> <span class="o">&amp;&amp;</span>
+            <span class="n">validate_correct?</span> <span class="o">&amp;&amp;</span>
+            <span class="n">touch_correct?</span> <span class="o">&amp;&amp;</span>
+            <span class="n">submatchers_match?</span>
+        <span class="k">end</span>
+
+        <span class="kp">protected</span>
+
+        <span class="kp">attr_reader</span> <span class="ss">:submatchers</span><span class="p">,</span> <span class="ss">:missing</span><span class="p">,</span> <span class="ss">:subject</span><span class="p">,</span> <span class="ss">:macro</span><span class="p">,</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:options</span>
+
+        <span class="k">def</span> <span class="nf">reflector</span>
+          <span class="vi">@reflector</span> <span class="o">||=</span> <span class="ss">AssociationMatchers</span><span class="p">:</span><span class="ss">:ModelReflector</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">subject</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">option_verifier</span>
+          <span class="vi">@option_verifier</span> <span class="o">||=</span> <span class="ss">AssociationMatchers</span><span class="p">:</span><span class="ss">:OptionVerifier</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">reflector</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">add_submatcher</span><span class="p">(</span><span class="n">matcher</span><span class="p">)</span>
+          <span class="vi">@submatchers</span> <span class="o">&lt;&lt;</span> <span class="n">matcher</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">macro_description</span>
+          <span class="k">case</span> <span class="n">macro</span><span class="o">.</span><span class="n">to_s</span>
+          <span class="k">when</span> <span class="s1">&#39;belongs_to&#39;</span>
+            <span class="s1">&#39;belong to&#39;</span>
+          <span class="k">when</span> <span class="s1">&#39;has_many&#39;</span>
+            <span class="s1">&#39;have many&#39;</span>
+          <span class="k">when</span> <span class="s1">&#39;has_one&#39;</span>
+            <span class="s1">&#39;have one&#39;</span>
+          <span class="k">when</span> <span class="s1">&#39;has_and_belongs_to_many&#39;</span>
+            <span class="s1">&#39;have and belong to many&#39;</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">expectation</span>
+          <span class="s2">&quot;</span><span class="si">#{</span><span class="n">model_class</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> to have a </span><span class="si">#{</span><span class="n">macro</span><span class="si">}</span><span class="s2"> association called </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">missing_options</span>
+          <span class="n">missing_options</span> <span class="o">=</span> <span class="o">[</span><span class="n">missing</span><span class="p">,</span> <span class="n">failing_submatchers</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:missing_option</span><span class="p">)</span><span class="o">]</span>
+          <span class="n">missing_options</span><span class="o">.</span><span class="n">flatten</span><span class="o">.</span><span class="n">compact</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">failing_submatchers</span>
+          <span class="vi">@failing_submatchers</span> <span class="o">||=</span> <span class="n">submatchers</span><span class="o">.</span><span class="n">reject</span> <span class="k">do</span> <span class="o">|</span><span class="n">matcher</span><span class="o">|</span>
+            <span class="n">matcher</span><span class="o">.</span><span class="n">matches?</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">association_exists?</span>
+          <span class="k">if</span> <span class="n">reflection</span><span class="o">.</span><span class="n">nil?</span>
+            <span class="vi">@missing</span> <span class="o">=</span> <span class="s2">&quot;no association called </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="kp">false</span>
+          <span class="k">else</span>
+            <span class="kp">true</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">macro_correct?</span>
+          <span class="k">if</span> <span class="n">reflection</span><span class="o">.</span><span class="n">macro</span> <span class="o">==</span> <span class="n">macro</span>
+            <span class="kp">true</span>
+          <span class="k">elsif</span> <span class="n">reflection</span><span class="o">.</span><span class="n">macro</span> <span class="o">==</span> <span class="ss">:has_many</span>
+            <span class="n">macro</span> <span class="o">==</span> <span class="ss">:has_and_belongs_to_many</span> <span class="o">&amp;&amp;</span>
+              <span class="n">reflection</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="vi">@name</span>
+          <span class="k">else</span>
+            <span class="vi">@missing</span> <span class="o">=</span> <span class="s2">&quot;actual association type was </span><span class="si">#{</span><span class="n">reflection</span><span class="o">.</span><span class="n">macro</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="kp">false</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">foreign_key_exists?</span>
+          <span class="o">!</span><span class="p">(</span><span class="n">belongs_foreign_key_missing?</span> <span class="o">||</span> <span class="n">has_foreign_key_missing?</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">belongs_foreign_key_missing?</span>
+          <span class="n">macro</span> <span class="o">==</span> <span class="ss">:belongs_to</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">class_has_foreign_key?</span><span class="p">(</span><span class="n">model_class</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">has_foreign_key_missing?</span>
+          <span class="o">[</span><span class="ss">:has_many</span><span class="p">,</span> <span class="ss">:has_one</span><span class="o">].</span><span class="n">include?</span><span class="p">(</span><span class="n">macro</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+            <span class="o">!</span><span class="n">through?</span> <span class="o">&amp;&amp;</span>
+            <span class="o">!</span><span class="n">class_has_foreign_key?</span><span class="p">(</span><span class="n">associated_class</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">class_name_correct?</span>
+          <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">key?</span><span class="p">(</span><span class="ss">:class_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">option_verifier</span><span class="o">.</span><span class="n">correct_for_string?</span><span class="p">(</span><span class="ss">:class_name</span><span class="p">,</span> <span class="n">options</span><span class="o">[</span><span class="ss">:class_name</span><span class="o">]</span><span class="p">)</span>
+              <span class="kp">true</span>
+            <span class="k">else</span>
+              <span class="vi">@missing</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2"> should resolve to </span><span class="si">#{</span><span class="n">options</span><span class="o">[</span><span class="ss">:class_name</span><span class="o">]</span><span class="si">}</span><span class="s2"> for class_name&quot;</span>
+              <span class="kp">false</span>
+            <span class="k">end</span>
+          <span class="k">else</span>
+            <span class="kp">true</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">join_table_correct?</span>
+          <span class="k">if</span> <span class="n">macro</span> <span class="o">!=</span> <span class="ss">:has_and_belongs_to_many</span> <span class="o">||</span> <span class="n">join_table_matcher</span><span class="o">.</span><span class="n">matches?</span><span class="p">(</span><span class="vi">@subject</span><span class="p">)</span>
+            <span class="kp">true</span>
+          <span class="k">else</span>
+            <span class="vi">@missing</span> <span class="o">=</span> <span class="n">join_table_matcher</span><span class="o">.</span><span class="n">failure_message</span>
+            <span class="kp">false</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">join_table_matcher</span>
+          <span class="vi">@join_table_matcher</span> <span class="o">||=</span>
+            <span class="ss">AssociationMatchers</span><span class="p">:</span><span class="ss">:JoinTableMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">reflector</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">class_exists?</span>
+          <span class="n">associated_class</span>
+          <span class="kp">true</span>
+        <span class="k">rescue</span> <span class="no">NameError</span>
+          <span class="vi">@missing</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">reflection</span><span class="o">.</span><span class="n">class_name</span><span class="si">}</span><span class="s2"> does not exist&quot;</span>
+          <span class="kp">false</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">autosave_correct?</span>
+          <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">key?</span><span class="p">(</span><span class="ss">:autosave</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">option_verifier</span><span class="o">.</span><span class="n">correct_for_boolean?</span><span class="p">(</span><span class="ss">:autosave</span><span class="p">,</span> <span class="n">options</span><span class="o">[</span><span class="ss">:autosave</span><span class="o">]</span><span class="p">)</span>
+              <span class="kp">true</span>
+            <span class="k">else</span>
+              <span class="vi">@missing</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2"> should have autosave set to </span><span class="si">#{</span><span class="n">options</span><span class="o">[</span><span class="ss">:autosave</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+              <span class="kp">false</span>
+            <span class="k">end</span>
+          <span class="k">else</span>
+            <span class="kp">true</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">conditions_correct?</span>
+          <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">key?</span><span class="p">(</span><span class="ss">:conditions</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">option_verifier</span><span class="o">.</span><span class="n">correct_for_relation_clause?</span><span class="p">(</span><span class="ss">:conditions</span><span class="p">,</span> <span class="n">options</span><span class="o">[</span><span class="ss">:conditions</span><span class="o">]</span><span class="p">)</span>
+              <span class="kp">true</span>
+            <span class="k">else</span>
+              <span class="vi">@missing</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2"> should have the following conditions: </span><span class="si">#{</span><span class="n">options</span><span class="o">[</span><span class="ss">:conditions</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+              <span class="kp">false</span>
+            <span class="k">end</span>
+          <span class="k">else</span>
+            <span class="kp">true</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">validate_correct?</span>
+          <span class="k">if</span> <span class="n">option_verifier</span><span class="o">.</span><span class="n">correct_for_boolean?</span><span class="p">(</span><span class="ss">:validate</span><span class="p">,</span> <span class="n">options</span><span class="o">[</span><span class="ss">:validate</span><span class="o">]</span><span class="p">)</span>
+            <span class="kp">true</span>
+          <span class="k">else</span>
+            <span class="vi">@missing</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2"> should have validate: </span><span class="si">#{</span><span class="n">options</span><span class="o">[</span><span class="ss">:validate</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="kp">false</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">touch_correct?</span>
+          <span class="k">if</span> <span class="n">option_verifier</span><span class="o">.</span><span class="n">correct_for_boolean?</span><span class="p">(</span><span class="ss">:touch</span><span class="p">,</span> <span class="n">options</span><span class="o">[</span><span class="ss">:touch</span><span class="o">]</span><span class="p">)</span>
+            <span class="kp">true</span>
+          <span class="k">else</span>
+            <span class="vi">@missing</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2"> should have touch: </span><span class="si">#{</span><span class="n">options</span><span class="o">[</span><span class="ss">:touch</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="kp">false</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">class_has_foreign_key?</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
+          <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">key?</span><span class="p">(</span><span class="ss">:foreign_key</span><span class="p">)</span>
+            <span class="n">option_verifier</span><span class="o">.</span><span class="n">correct_for_string?</span><span class="p">(</span><span class="ss">:foreign_key</span><span class="p">,</span> <span class="n">options</span><span class="o">[</span><span class="ss">:foreign_key</span><span class="o">]</span><span class="p">)</span>
+          <span class="k">else</span>
+            <span class="k">if</span> <span class="n">klass</span><span class="o">.</span><span class="n">column_names</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">foreign_key</span><span class="p">)</span>
+              <span class="kp">true</span>
+            <span class="k">else</span>
+              <span class="vi">@missing</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">klass</span><span class="si">}</span><span class="s2"> does not have a </span><span class="si">#{</span><span class="n">foreign_key</span><span class="si">}</span><span class="s2"> foreign key.&quot;</span>
+              <span class="kp">false</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">foreign_key</span>
+          <span class="k">if</span> <span class="n">foreign_key_reflection</span>
+            <span class="k">if</span> <span class="n">foreign_key_reflection</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:foreign_key</span><span class="p">)</span>
+              <span class="n">foreign_key_reflection</span><span class="o">.</span><span class="n">foreign_key</span><span class="o">.</span><span class="n">to_s</span>
+            <span class="k">else</span>
+              <span class="n">foreign_key_reflection</span><span class="o">.</span><span class="n">primary_key_name</span><span class="o">.</span><span class="n">to_s</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">foreign_key_reflection</span>
+          <span class="k">if</span> <span class="o">[</span><span class="ss">:has_one</span><span class="p">,</span> <span class="ss">:has_many</span><span class="o">].</span><span class="n">include?</span><span class="p">(</span><span class="n">macro</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">reflection</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="ss">:inverse_of</span><span class="p">)</span>
+            <span class="n">associated_class</span><span class="o">.</span><span class="n">reflect_on_association</span><span class="p">(</span><span class="n">reflection</span><span class="o">.</span><span class="n">options</span><span class="o">[</span><span class="ss">:inverse_of</span><span class="o">]</span><span class="p">)</span>
+          <span class="k">else</span>
+            <span class="n">reflection</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">submatchers_match?</span>
+          <span class="n">failing_submatchers</span><span class="o">.</span><span class="n">empty?</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:27 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

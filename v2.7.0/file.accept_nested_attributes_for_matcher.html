@@ -1,0 +1,312 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: accept_nested_attributes_for_matcher
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">File: accept_nested_attributes_for_matcher</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><pre class="code ruby"><span class="k">module</span> <span class="nn">Shoulda</span>
+  <span class="k">module</span> <span class="nn">Matchers</span>
+    <span class="k">module</span> <span class="nn">ActiveRecord</span>
+      <span class="c1"># The `accept_nested_attributes_for` matcher tests usage of the</span>
+      <span class="c1"># `accepts_nested_attributes_for` macro.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Car &lt; ActiveRecord::Base</span>
+      <span class="c1">#       accepts_nested_attributes_for :doors</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Car do</span>
+      <span class="c1">#       it { should accept_nested_attributes_for(:doors) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit (using Shoulda)</span>
+      <span class="c1">#     class CarTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should accept_nested_attributes_for(:doors)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### Qualifiers</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### allow_destroy</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `allow_destroy` to assert that the `:allow_destroy` option was</span>
+      <span class="c1"># specified.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Car &lt; ActiveRecord::Base</span>
+      <span class="c1">#       accepts_nested_attributes_for :mirrors, allow_destroy: true</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Car do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should accept_nested_attributes_for(:mirrors).</span>
+      <span class="c1">#           allow_destroy(true)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class CarTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should accept_nested_attributes_for(:mirrors).</span>
+      <span class="c1">#         allow_destroy(true)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### limit</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `limit` to assert that the `:limit` option was specified.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Car &lt; ActiveRecord::Base</span>
+      <span class="c1">#       accepts_nested_attributes_for :windows, limit: 3</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Car do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should accept_nested_attributes_for(:windows).</span>
+      <span class="c1">#           limit(3)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class CarTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should accept_nested_attributes_for(:windows).</span>
+      <span class="c1">#         limit(3)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### update_only</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `update_only` to assert that the `:update_only` option was</span>
+      <span class="c1"># specified.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Car &lt; ActiveRecord::Base</span>
+      <span class="c1">#       accepts_nested_attributes_for :engine, update_only: true</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Car do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should accept_nested_attributes_for(:engine).</span>
+      <span class="c1">#           update_only(true)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class CarTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should accept_nested_attributes_for(:engine).</span>
+      <span class="c1">#         update_only(true)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># @return [AcceptNestedAttributesForMatcher]</span>
+      <span class="c1">#</span>
+      <span class="k">def</span> <span class="nf">accept_nested_attributes_for</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+        <span class="no">AcceptNestedAttributesForMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="c1"># @private</span>
+      <span class="k">class</span> <span class="nc">AcceptNestedAttributesForMatcher</span>
+        <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+          <span class="vi">@name</span> <span class="o">=</span> <span class="nb">name</span>
+          <span class="vi">@options</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">allow_destroy</span><span class="p">(</span><span class="n">allow_destroy</span><span class="p">)</span>
+          <span class="vi">@options</span><span class="o">[</span><span class="ss">:allow_destroy</span><span class="o">]</span> <span class="o">=</span> <span class="n">allow_destroy</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">limit</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
+          <span class="vi">@options</span><span class="o">[</span><span class="ss">:limit</span><span class="o">]</span> <span class="o">=</span> <span class="n">limit</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">update_only</span><span class="p">(</span><span class="n">update_only</span><span class="p">)</span>
+          <span class="vi">@options</span><span class="o">[</span><span class="ss">:update_only</span><span class="o">]</span> <span class="o">=</span> <span class="n">update_only</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">matches?</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+          <span class="vi">@subject</span> <span class="o">=</span> <span class="n">subject</span>
+          <span class="n">exists?</span> <span class="o">&amp;&amp;</span>
+            <span class="n">allow_destroy_correct?</span> <span class="o">&amp;&amp;</span>
+            <span class="n">limit_correct?</span> <span class="o">&amp;&amp;</span>
+            <span class="n">update_only_correct?</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">failure_message</span>
+          <span class="s2">&quot;Expected </span><span class="si">#{</span><span class="n">expectation</span><span class="si">}</span><span class="s2"> (</span><span class="si">#{</span><span class="vi">@problem</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="k">end</span>
+        <span class="k">alias</span> <span class="n">failure_message_for_should</span> <span class="n">failure_message</span>
+
+        <span class="k">def</span> <span class="nf">failure_message_when_negated</span>
+          <span class="s2">&quot;Did not expect </span><span class="si">#{</span><span class="n">expectation</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">end</span>
+        <span class="k">alias</span> <span class="n">failure_message_for_should_not</span> <span class="n">failure_message_when_negated</span>
+
+        <span class="k">def</span> <span class="nf">description</span>
+          <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;accepts_nested_attributes_for :</span><span class="si">#{</span><span class="vi">@name</span><span class="si">}</span><span class="s2">&quot;</span>
+          <span class="k">if</span> <span class="vi">@options</span><span class="o">.</span><span class="n">key?</span><span class="p">(</span><span class="ss">:allow_destroy</span><span class="p">)</span>
+            <span class="n">description</span> <span class="o">+=</span> <span class="s2">&quot; allow_destroy =&gt; </span><span class="si">#{</span><span class="vi">@options</span><span class="o">[</span><span class="ss">:allow_destroy</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+          <span class="k">end</span>
+          <span class="k">if</span> <span class="vi">@options</span><span class="o">.</span><span class="n">key?</span><span class="p">(</span><span class="ss">:limit</span><span class="p">)</span>
+            <span class="n">description</span> <span class="o">+=</span> <span class="s2">&quot; limit =&gt; </span><span class="si">#{</span><span class="vi">@options</span><span class="o">[</span><span class="ss">:limit</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+          <span class="k">end</span>
+          <span class="k">if</span> <span class="vi">@options</span><span class="o">.</span><span class="n">key?</span><span class="p">(</span><span class="ss">:update_only</span><span class="p">)</span>
+            <span class="n">description</span> <span class="o">+=</span> <span class="s2">&quot; update_only =&gt; </span><span class="si">#{</span><span class="vi">@options</span><span class="o">[</span><span class="ss">:update_only</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+          <span class="k">end</span>
+          <span class="n">description</span>
+        <span class="k">end</span>
+
+        <span class="kp">protected</span>
+
+        <span class="k">def</span> <span class="nf">exists?</span>
+          <span class="k">if</span> <span class="n">config</span>
+            <span class="kp">true</span>
+          <span class="k">else</span>
+            <span class="vi">@problem</span> <span class="o">=</span> <span class="s1">&#39;is not declared&#39;</span>
+            <span class="kp">false</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">allow_destroy_correct?</span>
+          <span class="n">failure_message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">should_or_should_not</span><span class="p">(</span><span class="vi">@options</span><span class="o">[</span><span class="ss">:allow_destroy</span><span class="o">]</span><span class="p">)</span><span class="si">}</span><span class="s2"> allow destroy&quot;</span>
+          <span class="n">verify_option_is_correct</span><span class="p">(</span><span class="ss">:allow_destroy</span><span class="p">,</span> <span class="n">failure_message</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">limit_correct?</span>
+          <span class="n">failure_message</span> <span class="o">=</span> <span class="s2">&quot;limit should be </span><span class="si">#{</span><span class="vi">@options</span><span class="o">[</span><span class="ss">:limit</span><span class="o">]</span><span class="si">}</span><span class="s2">, got </span><span class="si">#{</span><span class="n">config</span><span class="o">[</span><span class="ss">:limit</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+          <span class="n">verify_option_is_correct</span><span class="p">(</span><span class="ss">:limit</span><span class="p">,</span> <span class="n">failure_message</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">update_only_correct?</span>
+          <span class="n">failure_message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">should_or_should_not</span><span class="p">(</span><span class="vi">@options</span><span class="o">[</span><span class="ss">:update_only</span><span class="o">]</span><span class="p">)</span><span class="si">}</span><span class="s2"> be update only&quot;</span>
+          <span class="n">verify_option_is_correct</span><span class="p">(</span><span class="ss">:update_only</span><span class="p">,</span> <span class="n">failure_message</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">verify_option_is_correct</span><span class="p">(</span><span class="n">option</span><span class="p">,</span> <span class="n">failure_message</span><span class="p">)</span>
+          <span class="k">if</span> <span class="vi">@options</span><span class="o">.</span><span class="n">key?</span><span class="p">(</span><span class="n">option</span><span class="p">)</span>
+            <span class="k">if</span> <span class="vi">@options</span><span class="o">[</span><span class="n">option</span><span class="o">]</span> <span class="o">==</span> <span class="n">config</span><span class="o">[</span><span class="n">option</span><span class="o">]</span>
+              <span class="kp">true</span>
+            <span class="k">else</span>
+              <span class="vi">@problem</span> <span class="o">=</span> <span class="n">failure_message</span>
+              <span class="kp">false</span>
+            <span class="k">end</span>
+          <span class="k">else</span>
+            <span class="kp">true</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">config</span>
+          <span class="n">model_config</span><span class="o">[</span><span class="vi">@name</span><span class="o">]</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">model_config</span>
+          <span class="n">model_class</span><span class="o">.</span><span class="n">nested_attributes_options</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">model_class</span>
+          <span class="vi">@subject</span><span class="o">.</span><span class="n">class</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">expectation</span>
+          <span class="s2">&quot;</span><span class="si">#{</span><span class="n">model_class</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> to accept nested attributes for </span><span class="si">#{</span><span class="vi">@name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">should_or_should_not</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+          <span class="k">if</span> <span class="n">value</span>
+            <span class="s1">&#39;should&#39;</span>
+          <span class="k">else</span>
+            <span class="s1">&#39;should not&#39;</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:27 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

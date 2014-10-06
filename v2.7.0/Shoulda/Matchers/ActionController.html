@@ -1,0 +1,1977 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>
+  Module: Shoulda::Matchers::ActionController
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="../../css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../../css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../../css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../';
+  framesUrl = "../../frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="../../index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class='title'><span class='object_link'><a href="../../Shoulda.html" title="Shoulda (module)">Shoulda</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Matchers.html" title="Shoulda::Matchers (module)">Matchers</a></span></span>
+     &raquo; 
+    <span class="title">ActionController</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="../../class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="../../method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="../../file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><h1>Module: Shoulda::Matchers::ActionController
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+  
+    
+  
+    
+  
+  
+</dl>
+
+
+
+
+
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#filter_param-instance_method" title="#filter_param (instance method)">- (FilterParamMatcher) <strong>filter_param</strong>(key) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>filter_param</code> matcher is used to test parameter filtering configuration.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#permit-instance_method" title="#permit (instance method)">- (StrongParametersMatcher) <strong>permit</strong>(*params) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>permit</code> matcher tests that an action in your controller receives a whitelist of parameters using Rails&#39; Strong Parameters feature (specifically that <code>permit</code> was called with the correct arguments).</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#redirect_to-instance_method" title="#redirect_to (instance method)">- (RedirectToMatcher) <strong>redirect_to</strong>(url_or_description, &amp;block) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>redirect_to</code> matcher tests that an action redirects to a certain location.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#render_template-instance_method" title="#render_template (instance method)">- (RenderTemplateMatcher) <strong>render_template</strong>(options = {}, message = nil) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>render_template</code> matcher tests that an action renders a template or partial.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#render_with_layout-instance_method" title="#render_with_layout (instance method)">- (RenderWithLayoutMatcher) <strong>render_with_layout</strong>(expected_layout = nil) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>render_with_layout</code> matcher asserts that an action is rendered with a particular layout.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#rescue_from-instance_method" title="#rescue_from (instance method)">- (RescueFromMatcher) <strong>rescue_from</strong>(exception) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>rescue_from</code> matcher tests usage of the <code>rescue_from</code> macro.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#respond_with-instance_method" title="#respond_with (instance method)">- (RespondWithMatcher) <strong>respond_with</strong>(status) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>respond_with</code> matcher tests that an action responds with a certain status code.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#route-instance_method" title="#route (instance method)">- (RouteMatcher) <strong>route</strong>(method, path) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>route</code> matcher tests that a route resolves to a controller, action, and params; and that the controller, action, and params generates the same route.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_session-instance_method" title="#set_session (instance method)">- (SetSessionMatcher) <strong>set_session</strong>(key) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>set_session</code> matcher is used to make assertions about the <code>session</code> hash.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_the_flash-instance_method" title="#set_the_flash (instance method)">- (SetTheFlashMatcher) <strong>set_the_flash</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>set_the_flash</code> matcher is used to make assertions about the <code>flash</code> hash.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#use_after_action-instance_method" title="#use_after_action (instance method)">- (CallbackMatcher) <strong>use_after_action</strong>(callback) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>use_after_action</code> matcher is used to test that an after_action callback is defined within your controller.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#use_after_filter-instance_method" title="#use_after_filter (instance method)">- (CallbackMatcher) <strong>use_after_filter</strong>(callback) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>use_after_filter</code> matcher is used to test that an after_filter callback is defined within your controller.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#use_around_action-instance_method" title="#use_around_action (instance method)">- (CallbackMatcher) <strong>use_around_action</strong>(callback) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>use_around_action</code> matcher is used to test that an around_action callback is defined within your controller.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#use_around_filter-instance_method" title="#use_around_filter (instance method)">- (CallbackMatcher) <strong>use_around_filter</strong>(callback) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>use_around_filter</code> matcher is used to test that an around_filter callback is defined within your controller.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#use_before_action-instance_method" title="#use_before_action (instance method)">- (CallbackMatcher) <strong>use_before_action</strong>(callback) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>use_before_action</code> matcher is used to test that a before_action callback is defined within your controller.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#use_before_filter-instance_method" title="#use_before_filter (instance method)">- (CallbackMatcher) <strong>use_before_filter</strong>(callback) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>use_before_filter</code> matcher is used to test that a before_filter callback is defined within your controller.</p>
+</div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="filter_param-instance_method">
+  
+    - (<tt><span class='object_link'>FilterParamMatcher</span></tt>) <strong>filter_param</strong>(key) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>filter_param</code> matcher is used to test parameter filtering
+configuration. Specifically, it asserts that the given parameter is
+present in <code>config.filter_parameters</code>.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">MyApplication</span> <span class="o">&lt;</span> <span class="ss">Rails</span><span class="p">:</span><span class="ss">:Application</span>
+  <span class="n">config</span><span class="o">.</span><span class="n">filter_parameters</span> <span class="o">&lt;&lt;</span> <span class="ss">:secret_key</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">ApplicationController</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">filter_param</span><span class="p">(</span><span class="ss">:secret_key</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">ApplicationControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">filter_param</span><span class="p">(</span><span class="ss">:secret_key</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+24
+25
+26</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/action_controller/filter_param_matcher.rb', line 24</span>
+
+<span class="k">def</span> <span class="nf">filter_param</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+  <span class="no">FilterParamMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="permit-instance_method">
+  
+    - (<tt><span class='object_link'>StrongParametersMatcher</span></tt>) <strong>permit</strong>(*params) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>permit</code> matcher tests that an action in your controller receives a
+whitelist of parameters using Rails&#39; Strong Parameters feature
+(specifically that <code>permit</code> was called with the correct arguments).</p>
+
+<p>Here&#39;s an example:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">user_params</span><span class="p">)</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">user_params</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span><span class="o">.</span><span class="n">permit</span><span class="p">(</span>
+      <span class="ss">:first_name</span><span class="p">,</span>
+      <span class="ss">:last_name</span><span class="p">,</span>
+      <span class="ss">:email</span><span class="p">,</span>
+      <span class="ss">:password</span>
+    <span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">UsersController</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">permit</span><span class="p">(</span><span class="ss">:first_name</span><span class="p">,</span> <span class="ss">:last_name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:password</span><span class="p">)</span><span class="o">.</span>
+      <span class="k">for</span><span class="p">(</span><span class="ss">:create</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">UsersControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">permit</span><span class="p">(</span><span class="ss">:first_name</span><span class="p">,</span> <span class="ss">:last_name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:password</span><span class="p">)</span><span class="o">.</span>
+    <span class="k">for</span><span class="p">(</span><span class="ss">:create</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>If your action requires query parameters in order to work, then you&#39;ll
+need to supply them:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">update</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">update_attributes</span><span class="p">(</span><span class="n">user_params</span><span class="p">)</span>
+      <span class="c1"># ...</span>
+    <span class="k">else</span>
+      <span class="c1"># ...</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">user_params</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span><span class="o">.</span><span class="n">permit</span><span class="p">(</span>
+      <span class="ss">:first_name</span><span class="p">,</span>
+      <span class="ss">:last_name</span><span class="p">,</span>
+      <span class="ss">:email</span><span class="p">,</span>
+      <span class="ss">:password</span>
+    <span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">UsersController</span> <span class="k">do</span>
+  <span class="n">before</span> <span class="k">do</span>
+    <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">permit</span><span class="p">(</span><span class="ss">:first_name</span><span class="p">,</span> <span class="ss">:last_name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:password</span><span class="p">)</span><span class="o">.</span>
+      <span class="k">for</span><span class="p">(</span><span class="ss">:update</span><span class="p">,</span> <span class="ss">params</span><span class="p">:</span> <span class="p">{</span> <span class="nb">id</span><span class="p">:</span> <span class="mi">1</span> <span class="p">})</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">UsersControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">setup</span> <span class="k">do</span>
+    <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="n">should</span> <span class="n">permit</span><span class="p">(</span><span class="ss">:first_name</span><span class="p">,</span> <span class="ss">:last_name</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:password</span><span class="p">)</span><span class="o">.</span>
+    <span class="k">for</span><span class="p">(</span><span class="ss">:update</span><span class="p">,</span> <span class="ss">params</span><span class="p">:</span> <span class="p">{</span> <span class="nb">id</span><span class="p">:</span> <span class="mi">1</span> <span class="p">})</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Finally, if you have an action that isn&#39;t one of the seven resourceful
+actions, then you&#39;ll need to provide the HTTP verb that it responds to:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+  <span class="n">resources</span> <span class="ss">:users</span> <span class="k">do</span>
+    <span class="n">member</span> <span class="k">do</span>
+      <span class="n">put</span> <span class="ss">:toggle</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">toggle</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">update_attributes</span><span class="p">(</span><span class="n">user_params</span><span class="p">)</span>
+      <span class="c1"># ...</span>
+    <span class="k">else</span>
+      <span class="c1"># ...</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">user_params</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span><span class="o">.</span><span class="n">permit</span><span class="p">(</span><span class="ss">:activated</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">UsersController</span> <span class="k">do</span>
+  <span class="n">before</span> <span class="k">do</span>
+    <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">permit</span><span class="p">(</span><span class="ss">:activated</span><span class="p">)</span><span class="o">.</span><span class="n">for</span><span class="p">(</span><span class="ss">:toggle</span><span class="p">,</span>
+      <span class="ss">params</span><span class="p">:</span> <span class="p">{</span> <span class="nb">id</span><span class="p">:</span> <span class="mi">1</span> <span class="p">},</span>
+      <span class="ss">verb</span><span class="p">:</span> <span class="ss">:put</span>
+    <span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">UsersControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">setup</span> <span class="k">do</span>
+    <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="n">should</span> <span class="n">permit</span><span class="p">(</span><span class="ss">:activated</span><span class="p">)</span><span class="o">.</span><span class="n">for</span><span class="p">(</span><span class="ss">:toggle</span><span class="p">,</span>
+    <span class="ss">params</span><span class="p">:</span> <span class="p">{</span> <span class="nb">id</span><span class="p">:</span> <span class="mi">1</span> <span class="p">},</span>
+    <span class="ss">verb</span><span class="p">:</span> <span class="ss">:put</span>
+  <span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+156
+157
+158</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/action_controller/strong_parameters_matcher.rb', line 156</span>
+
+<span class="k">def</span> <span class="nf">permit</span><span class="p">(</span><span class="o">*</span><span class="n">params</span><span class="p">)</span>
+  <span class="no">StrongParametersMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">in_context</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="redirect_to-instance_method">
+  
+    - (<tt><span class='object_link'>RedirectToMatcher</span></tt>) <strong>redirect_to</strong>(url_or_description, &amp;block) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>redirect_to</code> matcher tests that an action redirects to a certain
+location. In a test suite using RSpec, it is very similar to
+rspec-rails&#39;s <code>redirect_to</code> matcher. In a test suite using Test::Unit /
+Shoulda, it provides a more expressive syntax over
+<code>assert_redirected_to</code>.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="n">redirect_to</span> <span class="ss">:index</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">PostsController</span> <span class="k">do</span>
+  <span class="n">describe</span> <span class="s1">&#39;GET #show&#39;</span> <span class="k">do</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:show</span> <span class="p">}</span>
+
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">redirect_to</span><span class="p">(</span><span class="n">posts_path</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">redirect_to</span><span class="p">(</span><span class="ss">action</span><span class="p">:</span> <span class="ss">:index</span><span class="p">)</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PostsControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">context</span> <span class="s1">&#39;GET #show&#39;</span> <span class="k">do</span>
+    <span class="n">setup</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:show</span> <span class="p">}</span>
+
+    <span class="n">should</span> <span class="n">redirect_to</span> <span class="p">{</span> <span class="n">posts_path</span> <span class="p">}</span>
+    <span class="n">should</span> <span class="n">redirect_to</span><span class="p">(</span><span class="ss">action</span><span class="p">:</span> <span class="ss">:index</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+38
+39
+40</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/action_controller/redirect_to_matcher.rb', line 38</span>
+
+<span class="k">def</span> <span class="nf">redirect_to</span><span class="p">(</span><span class="n">url_or_description</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+  <span class="no">RedirectToMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">url_or_description</span><span class="p">,</span> <span class="nb">self</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="render_template-instance_method">
+  
+    - (<tt><span class='object_link'>RenderTemplateMatcher</span></tt>) <strong>render_template</strong>(options = {}, message = nil) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>render_template</code> matcher tests that an action renders a template
+or partial. In RSpec, it is very similar to rspec-rails&#39;s
+<code>render_template</code> matcher. In Test::Unit, it provides a more expressive
+syntax over <code>assert_template</code>.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">show</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># app/views/posts/show.html.erb</span>
+<span class="o">&lt;%=</span> <span class="n">render</span> <span class="s1">&#39;sidebar&#39;</span> <span class="o">%&gt;</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">PostsController</span> <span class="k">do</span>
+  <span class="n">describe</span> <span class="s1">&#39;GET #show&#39;</span> <span class="k">do</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:show</span> <span class="p">}</span>
+
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;show&#39;</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">render_template</span><span class="p">(</span><span class="ss">partial</span><span class="p">:</span> <span class="s1">&#39;sidebar&#39;</span><span class="p">)</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PostsControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">context</span> <span class="s1">&#39;GET #show&#39;</span> <span class="k">do</span>
+    <span class="n">setup</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:show</span> <span class="p">}</span>
+
+    <span class="n">should</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;show&#39;</span><span class="p">)</span>
+    <span class="n">should</span> <span class="n">render_template</span><span class="p">(</span><span class="ss">partial</span><span class="p">:</span> <span class="s1">&#39;sidebar&#39;</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+41
+42
+43</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/action_controller/render_template_matcher.rb', line 41</span>
+
+<span class="k">def</span> <span class="nf">render_template</span><span class="p">(</span><span class="n">options</span> <span class="o">=</span> <span class="p">{},</span> <span class="n">message</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+  <span class="no">RenderTemplateMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="nb">self</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="render_with_layout-instance_method">
+  
+    - (<tt><span class='object_link'>RenderWithLayoutMatcher</span></tt>) <strong>render_with_layout</strong>(expected_layout = nil) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>render_with_layout</code> matcher asserts that an action is rendered with
+a particular layout.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="n">render</span> <span class="ss">layout</span><span class="p">:</span> <span class="s1">&#39;posts&#39;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">PostsController</span> <span class="k">do</span>
+  <span class="n">describe</span> <span class="s1">&#39;GET #show&#39;</span> <span class="k">do</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:show</span> <span class="p">}</span>
+
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">render_with_layout</span><span class="p">(</span><span class="s1">&#39;posts&#39;</span><span class="p">)</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PostsControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">context</span> <span class="s1">&#39;GET #show&#39;</span> <span class="k">do</span>
+    <span class="n">setup</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:show</span> <span class="p">}</span>
+
+    <span class="n">should</span> <span class="n">render_with_layout</span><span class="p">(</span><span class="s1">&#39;posts&#39;</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>It can also be used to assert that the action is not rendered with a
+layout at all:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">sidebar</span>
+    <span class="n">render</span> <span class="ss">layout</span><span class="p">:</span> <span class="kp">false</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">PostsController</span> <span class="k">do</span>
+  <span class="n">describe</span> <span class="s1">&#39;GET #sidebar&#39;</span> <span class="k">do</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:sidebar</span> <span class="p">}</span>
+
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">render_with_layout</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PostsControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">context</span> <span class="s1">&#39;GET #sidebar&#39;</span> <span class="k">do</span>
+    <span class="n">setup</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:sidebar</span> <span class="p">}</span>
+
+    <span class="n">should_not</span> <span class="n">render_with_layout</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+60
+61
+62</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/action_controller/render_with_layout_matcher.rb', line 60</span>
+
+<span class="k">def</span> <span class="nf">render_with_layout</span><span class="p">(</span><span class="n">expected_layout</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+  <span class="no">RenderWithLayoutMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">expected_layout</span><span class="p">)</span><span class="o">.</span><span class="n">in_context</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="rescue_from-instance_method">
+  
+    - (<tt><span class='object_link'>RescueFromMatcher</span></tt>) <strong>rescue_from</strong>(exception) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>rescue_from</code> matcher tests usage of the <code>rescue_from</code> macro. It
+asserts that an exception and method are present in the list of
+exception handlers, and that the handler method exists.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">rescue_from</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:RecordNotFound</span><span class="p">,</span> <span class="ss">with</span><span class="p">:</span> <span class="ss">:handle_not_found</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">handle_not_found</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">ApplicationController</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">rescue_from</span><span class="p">(</span><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:RecordNotFound</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">with</span><span class="p">(</span><span class="ss">:handle_not_found</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">ApplicationControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">rescue_from</span><span class="p">(</span><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:RecordNotFound</span><span class="p">)</span><span class="o">.</span>
+    <span class="n">with</span><span class="p">(</span><span class="ss">:handle_not_found</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+34
+35
+36</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/action_controller/rescue_from_matcher.rb', line 34</span>
+
+<span class="k">def</span> <span class="nf">rescue_from</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span>
+  <span class="no">RescueFromMatcher</span><span class="o">.</span><span class="n">new</span> <span class="n">exception</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="respond_with-instance_method">
+  
+    - (<tt><span class='object_link'>RespondWithMatcher</span></tt>) <strong>respond_with</strong>(status) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>respond_with</code> matcher tests that an action responds with a certain
+status code.</p>
+
+<p>You can specify that the status should be a number:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">index</span>
+    <span class="n">render</span> <span class="ss">status</span><span class="p">:</span> <span class="mi">403</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">PostsController</span> <span class="k">do</span>
+  <span class="n">describe</span> <span class="s1">&#39;GET #index&#39;</span> <span class="k">do</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:index</span> <span class="p">}</span>
+
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">respond_with</span><span class="p">(</span><span class="mi">403</span><span class="p">)</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PostsControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">context</span> <span class="s1">&#39;GET #index&#39;</span> <span class="k">do</span>
+    <span class="n">setup</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:index</span> <span class="p">}</span>
+
+    <span class="n">should</span> <span class="n">respond_with</span><span class="p">(</span><span class="mi">403</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>You can specify that the status should be within a range of numbers:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">destroy</span>
+    <span class="n">render</span> <span class="ss">status</span><span class="p">:</span> <span class="mi">508</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">PostsController</span> <span class="k">do</span>
+  <span class="n">describe</span> <span class="s1">&#39;DELETE #destroy&#39;</span> <span class="k">do</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="n">delete</span> <span class="ss">:destroy</span> <span class="p">}</span>
+
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">respond_with</span><span class="p">(</span><span class="mi">500</span><span class="o">.</span><span class="n">.</span><span class="mi">600</span><span class="p">)</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PostsControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">context</span> <span class="s1">&#39;DELETE #destroy&#39;</span> <span class="k">do</span>
+    <span class="n">setup</span> <span class="p">{</span> <span class="n">delete</span> <span class="ss">:destroy</span> <span class="p">}</span>
+
+    <span class="n">should</span> <span class="n">respond_with</span><span class="p">(</span><span class="mi">500</span><span class="o">.</span><span class="n">.</span><span class="mi">600</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Finally, you can specify that the status should be a symbol:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="n">render</span> <span class="ss">status</span><span class="p">:</span> <span class="ss">:locked</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">PostsController</span> <span class="k">do</span>
+  <span class="n">describe</span> <span class="s1">&#39;GET #show&#39;</span> <span class="k">do</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:show</span> <span class="p">}</span>
+
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">respond_with</span><span class="p">(</span><span class="ss">:locked</span><span class="p">)</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PostsControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">context</span> <span class="s1">&#39;GET #show&#39;</span> <span class="k">do</span>
+    <span class="n">setup</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:show</span> <span class="p">}</span>
+
+    <span class="n">should</span> <span class="n">respond_with</span><span class="p">(</span><span class="ss">:locked</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+87
+88
+89</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/action_controller/respond_with_matcher.rb', line 87</span>
+
+<span class="k">def</span> <span class="nf">respond_with</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+  <span class="no">RespondWithMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="route-instance_method">
+  
+    - (<tt><span class='object_link'>RouteMatcher</span></tt>) <strong>route</strong>(method, path) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>route</code> matcher tests that a route resolves to a controller,
+action, and params; and that the controller, action, and params
+generates the same route. For an RSpec suite, this is like using a
+combination of <code>route_to</code> and <code>be_routable</code>. For a Test::Unit suite, it
+provides a more expressive syntax over <code>assert_routing</code>.</p>
+
+<p>You can use this matcher either in a controller test case or in a
+routing test case. For instance, given these routes:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="ss">My</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+  <span class="n">get</span> <span class="s1">&#39;/posts&#39;</span><span class="p">,</span> <span class="ss">controller</span><span class="p">:</span> <span class="s1">&#39;posts&#39;</span><span class="p">,</span> <span class="ss">action</span><span class="p">:</span> <span class="s1">&#39;index&#39;</span>
+  <span class="n">get</span> <span class="s1">&#39;/posts/:id&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;posts#show&#39;</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>You could choose to write tests for these routes alongside other tests
+for PostsController:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">PostsController</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">route</span><span class="p">(</span><span class="ss">:get</span><span class="p">,</span> <span class="s1">&#39;/posts&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="ss">action</span><span class="p">:</span> <span class="ss">:index</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">route</span><span class="p">(</span><span class="ss">:get</span><span class="p">,</span> <span class="s1">&#39;/posts/1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="ss">action</span><span class="p">:</span> <span class="ss">:show</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PostsControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">route</span><span class="p">(</span><span class="ss">:get</span><span class="p">,</span> <span class="s1">&#39;/posts&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="ss">action</span><span class="p">:</span> <span class="s1">&#39;index&#39;</span><span class="p">)</span>
+  <span class="n">should</span> <span class="n">route</span><span class="p">(</span><span class="ss">:get</span><span class="p">,</span> <span class="s1">&#39;/posts/1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="ss">action</span><span class="p">:</span> <span class="ss">:show</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Or you could place the tests along with other route tests:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="s1">&#39;Routing&#39;</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">route</span><span class="p">(</span><span class="ss">:get</span><span class="p">,</span> <span class="s1">&#39;/posts&#39;</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">to</span><span class="p">(</span><span class="ss">controller</span><span class="p">:</span> <span class="ss">:posts</span><span class="p">,</span> <span class="ss">action</span><span class="p">:</span> <span class="ss">:index</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">route</span><span class="p">(</span><span class="ss">:get</span><span class="p">,</span> <span class="s1">&#39;/posts/1&#39;</span><span class="p">)</span><span class="o">.</span>
+      <span class="n">to</span><span class="p">(</span><span class="s1">&#39;posts#show&#39;</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">RoutesTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:IntegrationTest</span>
+  <span class="n">should</span> <span class="n">route</span><span class="p">(</span><span class="ss">:get</span><span class="p">,</span> <span class="s1">&#39;/posts&#39;</span><span class="p">)</span><span class="o">.</span>
+    <span class="n">to</span><span class="p">(</span><span class="ss">controller</span><span class="p">:</span> <span class="ss">:posts</span><span class="p">,</span> <span class="ss">action</span><span class="p">:</span> <span class="ss">:index</span><span class="p">)</span>
+
+  <span class="n">should</span> <span class="n">route</span><span class="p">(</span><span class="ss">:get</span><span class="p">,</span> <span class="s1">&#39;/posts/1&#39;</span><span class="p">)</span><span class="o">.</span>
+    <span class="n">to</span><span class="p">(</span><span class="s1">&#39;posts#show&#39;</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Notice that in the former case, as we are inside of a test case for
+PostsController, we do not have to specify that the routes resolve to
+this controller. In the latter case we specify this using the
+<code>controller</code> key passed to the <code>to</code> qualifier.</p>
+
+<h4>Qualifiers</h4>
+
+<h5>to</h5>
+
+<p>Use <code>to</code> to specify the action (along with the controller, if needed)
+that the route resolves to.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="c1"># Three ways of saying the same thing (using the example above)</span>
+<span class="n">route</span><span class="p">(</span><span class="ss">:get</span><span class="p">,</span> <span class="s1">&#39;/posts&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="ss">action</span><span class="p">:</span> <span class="n">index</span><span class="p">)</span>
+<span class="n">route</span><span class="p">(</span><span class="ss">:get</span><span class="p">,</span> <span class="s1">&#39;/posts&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="ss">controller</span><span class="p">:</span> <span class="ss">:posts</span><span class="p">,</span> <span class="ss">action</span><span class="p">:</span> <span class="n">index</span><span class="p">)</span>
+<span class="n">route</span><span class="p">(</span><span class="ss">:get</span><span class="p">,</span> <span class="s1">&#39;/posts&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;posts#index&#39;</span><span class="p">)</span>
+</code></pre>
+
+<p>If there are parameters in your route, then specify those too:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="n">route</span><span class="p">(</span><span class="ss">:get</span><span class="p">,</span> <span class="s1">&#39;/posts/1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;posts#show&#39;</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+84
+85
+86</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/action_controller/route_matcher.rb', line 84</span>
+
+<span class="k">def</span> <span class="nf">route</span><span class="p">(</span><span class="nb">method</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+  <span class="no">RouteMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">method</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="nb">self</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_session-instance_method">
+  
+    - (<tt><span class='object_link'>SetSessionMatcher</span></tt>) <strong>set_session</strong>(key) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>set_session</code> matcher is used to make assertions about the
+<code>session</code> hash.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="n">session</span><span class="o">[</span><span class="ss">:foo</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;bar&#39;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">PostsController</span> <span class="k">do</span>
+  <span class="n">describe</span> <span class="s1">&#39;GET #show&#39;</span> <span class="k">do</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:show</span> <span class="p">}</span>
+
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">set_session</span><span class="p">(</span><span class="ss">:foo</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">set_session</span><span class="p">(</span><span class="ss">:baz</span><span class="p">)</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PostsControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">context</span> <span class="s1">&#39;GET #show&#39;</span> <span class="k">do</span>
+    <span class="n">setup</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:show</span> <span class="p">}</span>
+
+    <span class="n">should</span> <span class="n">set_session</span><span class="p">(</span><span class="ss">:foo</span><span class="p">)</span>
+    <span class="n">should_not</span> <span class="n">set_session</span><span class="p">(</span><span class="ss">:baz</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4>Qualifiers</h4>
+
+<h5>to</h5>
+
+<p>Use <code>to</code> to assert that the key in the session hash was set to a
+particular value.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">index</span>
+    <span class="n">session</span><span class="o">[</span><span class="ss">:foo</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;bar&#39;</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="n">session</span><span class="o">[</span><span class="ss">:foo</span><span class="o">]</span> <span class="o">=</span> <span class="kp">nil</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">PostsController</span> <span class="k">do</span>
+  <span class="n">describe</span> <span class="s1">&#39;GET #index&#39;</span> <span class="k">do</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:index</span> <span class="p">}</span>
+
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">set_session</span><span class="p">(</span><span class="ss">:foo</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">set_session</span><span class="p">(</span><span class="ss">:foo</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;something else&#39;</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">set_session</span><span class="p">(</span><span class="ss">:foo</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="kp">nil</span><span class="p">)</span> <span class="p">}</span>
+  <span class="k">end</span>
+
+  <span class="n">describe</span> <span class="s1">&#39;GET #show&#39;</span> <span class="k">do</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:show</span> <span class="p">}</span>
+
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">set_session</span><span class="p">(</span><span class="ss">:foo</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="kp">nil</span><span class="p">)</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PostsControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">context</span> <span class="s1">&#39;GET #index&#39;</span> <span class="k">do</span>
+    <span class="n">setup</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:index</span> <span class="p">}</span>
+
+    <span class="n">should</span> <span class="n">set_session</span><span class="p">(</span><span class="ss">:foo</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">)</span>
+    <span class="n">should_not</span> <span class="n">set_session</span><span class="p">(</span><span class="ss">:foo</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;something else&#39;</span><span class="p">)</span>
+    <span class="n">should_not</span> <span class="n">set_session</span><span class="p">(</span><span class="ss">:foo</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="kp">nil</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="n">context</span> <span class="s1">&#39;GET #show&#39;</span> <span class="k">do</span>
+    <span class="n">setup</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:show</span> <span class="p">}</span>
+
+    <span class="n">should</span> <span class="n">set_session</span><span class="p">(</span><span class="ss">:foo</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="kp">nil</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+86
+87
+88</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/action_controller/set_session_matcher.rb', line 86</span>
+
+<span class="k">def</span> <span class="nf">set_session</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+  <span class="no">SetSessionMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_the_flash-instance_method">
+  
+    - (<tt><span class='object_link'>SetTheFlashMatcher</span></tt>) <strong>set_the_flash</strong> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>set_the_flash</code> matcher is used to make assertions about the
+<code>flash</code> hash.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">index</span>
+    <span class="n">flash</span><span class="o">[</span><span class="ss">:foo</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;A candy bar&#39;</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">destroy</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">PostsController</span> <span class="k">do</span>
+  <span class="n">describe</span> <span class="s1">&#39;GET #index&#39;</span> <span class="k">do</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:index</span> <span class="p">}</span>
+
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">set_the_flash</span> <span class="p">}</span>
+  <span class="k">end</span>
+
+  <span class="n">describe</span> <span class="s1">&#39;DELETE #destroy&#39;</span> <span class="k">do</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="n">delete</span> <span class="ss">:destroy</span> <span class="p">}</span>
+
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">set_the_flash</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PostsControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">context</span> <span class="s1">&#39;GET #index&#39;</span> <span class="k">do</span>
+    <span class="n">setup</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:index</span> <span class="p">}</span>
+
+    <span class="n">should</span> <span class="n">set_the_flash</span>
+  <span class="k">end</span>
+
+  <span class="n">context</span> <span class="s1">&#39;DELETE #destroy&#39;</span> <span class="k">do</span>
+    <span class="n">setup</span> <span class="p">{</span> <span class="n">delete</span> <span class="ss">:destroy</span> <span class="p">}</span>
+
+    <span class="n">should_not</span> <span class="n">set_the_flash</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4>Qualifiers</h4>
+
+<h5>[]</h5>
+
+<p>Use <code>[]</code> to narrow the scope of the matcher to a particular key.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">index</span>
+    <span class="n">flash</span><span class="o">[</span><span class="ss">:foo</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;A candy bar&#39;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">PostsController</span> <span class="k">do</span>
+  <span class="n">describe</span> <span class="s1">&#39;GET #index&#39;</span> <span class="k">do</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:index</span> <span class="p">}</span>
+
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">set_the_flash</span><span class="o">[</span><span class="ss">:foo</span><span class="o">]</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">set_the_flash</span><span class="o">[</span><span class="ss">:bar</span><span class="o">]</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PostsControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">context</span> <span class="s1">&#39;GET #index&#39;</span> <span class="k">do</span>
+    <span class="n">setup</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:show</span> <span class="p">}</span>
+
+    <span class="n">should</span> <span class="n">set_the_flash</span><span class="o">[</span><span class="ss">:foo</span><span class="o">]</span>
+    <span class="n">should_not</span> <span class="n">set_the_flash</span><span class="o">[</span><span class="ss">:bar</span><span class="o">]</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>to</h5>
+
+<p>Use <code>to</code> to assert that some key was set to a particular value, or that
+some key matches a particular regex.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">index</span>
+    <span class="n">flash</span><span class="o">[</span><span class="ss">:foo</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;A candy bar&#39;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">PostsController</span> <span class="k">do</span>
+  <span class="n">describe</span> <span class="s1">&#39;GET #index&#39;</span> <span class="k">do</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:index</span> <span class="p">}</span>
+
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">set_the_flash</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;A candy bar&#39;</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">set_the_flash</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="sr">/bar/</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">set_the_flash</span><span class="o">[</span><span class="ss">:foo</span><span class="o">].</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">set_the_flash</span><span class="o">[</span><span class="ss">:foo</span><span class="o">].</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;something else&#39;</span><span class="p">)</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PostsControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">context</span> <span class="s1">&#39;GET #index&#39;</span> <span class="k">do</span>
+    <span class="n">setup</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:show</span> <span class="p">}</span>
+
+    <span class="n">should</span> <span class="n">set_the_flash</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;A candy bar&#39;</span><span class="p">)</span>
+    <span class="n">should</span> <span class="n">set_the_flash</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="sr">/bar/</span><span class="p">)</span>
+    <span class="n">should</span> <span class="n">set_the_flash</span><span class="o">[</span><span class="ss">:foo</span><span class="o">].</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">)</span>
+    <span class="n">should_not</span> <span class="n">set_the_flash</span><span class="o">[</span><span class="ss">:foo</span><span class="o">].</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;something else&#39;</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5>now</h5>
+
+<p>Use <code>now</code> to change the scope of the matcher to use the &quot;now&quot; hash
+instead of the usual &quot;future&quot; hash.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="n">flash</span><span class="o">.</span><span class="n">now</span><span class="o">[</span><span class="ss">:foo</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;bar&#39;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">PostsController</span> <span class="k">do</span>
+  <span class="n">describe</span> <span class="s1">&#39;GET #show&#39;</span> <span class="k">do</span>
+    <span class="n">before</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:show</span> <span class="p">}</span>
+
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">set_the_flash</span><span class="o">.</span><span class="n">now</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">set_the_flash</span><span class="o">[</span><span class="ss">:foo</span><span class="o">].</span><span class="n">now</span> <span class="p">}</span>
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">set_the_flash</span><span class="o">[</span><span class="ss">:foo</span><span class="o">].</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">now</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">PostsControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">context</span> <span class="s1">&#39;GET #index&#39;</span> <span class="k">do</span>
+    <span class="n">setup</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:show</span> <span class="p">}</span>
+
+    <span class="n">should</span> <span class="n">set_the_flash</span><span class="o">.</span><span class="n">now</span>
+    <span class="n">should</span> <span class="n">set_the_flash</span><span class="o">[</span><span class="ss">:foo</span><span class="o">].</span><span class="n">now</span>
+    <span class="n">should</span> <span class="n">set_the_flash</span><span class="o">[</span><span class="ss">:foo</span><span class="o">].</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">now</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+148
+149
+150</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/action_controller/set_the_flash_matcher.rb', line 148</span>
+
+<span class="k">def</span> <span class="nf">set_the_flash</span>
+  <span class="no">SetTheFlashMatcher</span><span class="o">.</span><span class="n">new</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="use_after_action-instance_method">
+  
+    - (<tt><span class='object_link'>CallbackMatcher</span></tt>) <strong>use_after_action</strong>(callback) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>use_after_action</code> matcher is used to test that an after_action
+callback is defined within your controller.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">IssuesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">after_action</span> <span class="ss">:log_activity</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">IssuesController</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">use_after_action</span><span class="p">(</span><span class="ss">:log_activity</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">use_after_action</span><span class="p">(</span><span class="ss">:destroy_user</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">IssuesControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">use_after_action</span><span class="p">(</span><span class="ss">:log_activity</span><span class="p">)</span>
+  <span class="n">should_not</span> <span class="n">use_after_action</span><span class="p">(</span><span class="ss">:destroy_user</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+100
+101
+102</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/action_controller/callback_matcher.rb', line 100</span>
+
+<span class="k">def</span> <span class="nf">use_after_action</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+  <span class="no">CallbackMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="ss">:after</span><span class="p">,</span> <span class="ss">:action</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="use_after_filter-instance_method">
+  
+    - (<tt><span class='object_link'>CallbackMatcher</span></tt>) <strong>use_after_filter</strong>(callback) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>use_after_filter</code> matcher is used to test that an after_filter
+callback is defined within your controller.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">IssuesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">after_filter</span> <span class="ss">:log_activity</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">IssuesController</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">use_after_filter</span><span class="p">(</span><span class="ss">:log_activity</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">use_after_filter</span><span class="p">(</span><span class="ss">:destroy_user</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">IssuesControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">use_after_filter</span><span class="p">(</span><span class="ss">:log_activity</span><span class="p">)</span>
+  <span class="n">should_not</span> <span class="n">use_after_filter</span><span class="p">(</span><span class="ss">:destroy_user</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+50
+51
+52</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/action_controller/callback_matcher.rb', line 50</span>
+
+<span class="k">def</span> <span class="nf">use_after_filter</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+  <span class="no">CallbackMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="ss">:after</span><span class="p">,</span> <span class="ss">:filter</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="use_around_action-instance_method">
+  
+    - (<tt><span class='object_link'>CallbackMatcher</span></tt>) <strong>use_around_action</strong>(callback) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>use_around_action</code> matcher is used to test that an around_action
+callback is defined within your controller.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">ChangesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">around_action</span> <span class="ss">:wrap_in_transaction</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">ChangesController</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">use_around_action</span><span class="p">(</span><span class="ss">:wrap_in_transaction</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">use_around_action</span><span class="p">(</span><span class="ss">:save_view_context</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">ChangesControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">use_around_action</span><span class="p">(</span><span class="ss">:wrap_in_transaction</span><span class="p">)</span>
+  <span class="n">should_not</span> <span class="n">use_around_action</span><span class="p">(</span><span class="ss">:save_view_context</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+150
+151
+152</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/action_controller/callback_matcher.rb', line 150</span>
+
+<span class="k">def</span> <span class="nf">use_around_action</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+  <span class="no">CallbackMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="ss">:around</span><span class="p">,</span> <span class="ss">:action</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="use_around_filter-instance_method">
+  
+    - (<tt><span class='object_link'>CallbackMatcher</span></tt>) <strong>use_around_filter</strong>(callback) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>use_around_filter</code> matcher is used to test that an around_filter
+callback is defined within your controller.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">ChangesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">around_filter</span> <span class="ss">:wrap_in_transaction</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">ChangesController</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">use_around_filter</span><span class="p">(</span><span class="ss">:wrap_in_transaction</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">use_around_filter</span><span class="p">(</span><span class="ss">:save_view_context</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">ChangesControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">use_around_filter</span><span class="p">(</span><span class="ss">:wrap_in_transaction</span><span class="p">)</span>
+  <span class="n">should_not</span> <span class="n">use_around_filter</span><span class="p">(</span><span class="ss">:save_view_context</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+125
+126
+127</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/action_controller/callback_matcher.rb', line 125</span>
+
+<span class="k">def</span> <span class="nf">use_around_filter</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+  <span class="no">CallbackMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="ss">:around</span><span class="p">,</span> <span class="ss">:filter</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="use_before_action-instance_method">
+  
+    - (<tt><span class='object_link'>CallbackMatcher</span></tt>) <strong>use_before_action</strong>(callback) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>use_before_action</code> matcher is used to test that a before_action
+callback is defined within your controller.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">before_action</span> <span class="ss">:authenticate_user!</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">UsersController</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">use_before_action</span><span class="p">(</span><span class="ss">:authenticate_user!</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">use_before_action</span><span class="p">(</span><span class="ss">:prevent_ssl</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">UsersControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">use_before_action</span><span class="p">(</span><span class="ss">:authenticate_user!</span><span class="p">)</span>
+  <span class="n">should_not</span> <span class="n">use_before_action</span><span class="p">(</span><span class="ss">:prevent_ssl</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+75
+76
+77</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/action_controller/callback_matcher.rb', line 75</span>
+
+<span class="k">def</span> <span class="nf">use_before_action</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+  <span class="no">CallbackMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="ss">:before</span><span class="p">,</span> <span class="ss">:action</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="use_before_filter-instance_method">
+  
+    - (<tt><span class='object_link'>CallbackMatcher</span></tt>) <strong>use_before_filter</strong>(callback) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>use_before_filter</code> matcher is used to test that a before_filter
+callback is defined within your controller.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">before_filter</span> <span class="ss">:authenticate_user!</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">UsersController</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">use_before_filter</span><span class="p">(</span><span class="ss">:authenticate_user!</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">use_before_filter</span><span class="p">(</span><span class="ss">:prevent_ssl</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Test::Unit</span>
+<span class="k">class</span> <span class="nc">UsersControllerTest</span> <span class="o">&lt;</span> <span class="ss">ActionController</span><span class="p">:</span><span class="ss">:TestCase</span>
+  <span class="n">should</span> <span class="n">use_before_filter</span><span class="p">(</span><span class="ss">:authenticate_user!</span><span class="p">)</span>
+  <span class="n">should_not</span> <span class="n">use_before_filter</span><span class="p">(</span><span class="ss">:prevent_ssl</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+25
+26
+27</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/action_controller/callback_matcher.rb', line 25</span>
+
+<span class="k">def</span> <span class="nf">use_before_filter</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+  <span class="no">CallbackMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="ss">:before</span><span class="p">,</span> <span class="ss">:filter</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+  </div>
+
+</div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:29 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

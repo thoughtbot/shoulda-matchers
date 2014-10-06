@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: validate_exclusion_of_matcher
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">File: validate_exclusion_of_matcher</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><pre class="code ruby"><span class="k">module</span> <span class="nn">Shoulda</span>
+  <span class="k">module</span> <span class="nn">Matchers</span>
+    <span class="k">module</span> <span class="nn">ActiveModel</span>
+      <span class="c1"># The `validate_exclusion_of` matcher tests usage of the</span>
+      <span class="c1"># `validates_exclusion_of` validation, asserting that an attribute cannot</span>
+      <span class="c1"># take a blacklist of values, and inversely, can take values outside of</span>
+      <span class="c1"># this list.</span>
+      <span class="c1">#</span>
+      <span class="c1"># If your blacklist is an array of values, use `in_array`:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Game</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :supported_os</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_exclusion_of :supported_os, in: [&#39;Mac&#39;, &#39;Linux&#39;]</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Game do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should validate_exclusion_of(:supported_os).</span>
+      <span class="c1">#           in_array([&#39;Mac&#39;, &#39;Linux&#39;])</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class GameTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_exclusion_of(:supported_os).</span>
+      <span class="c1">#         in_array([&#39;Mac&#39;, &#39;Linux&#39;])</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># If your blacklist is a range of values, use `in_rnage`:</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Game</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :supported_os</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_exclusion_of :supported_os, in: [&#39;Mac&#39;, &#39;Linux&#39;]</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Game do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should validate_exclusion_of(:floors_with_enemies).</span>
+      <span class="c1">#           in_range(5..8)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class GameTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_exclusion_of(:floors_with_enemies).</span>
+      <span class="c1">#         in_range(5..8)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### Qualifiers</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### with_message</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `with_message` if you are using a custom validation message.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Game</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       attr_accessor :weapon</span>
+      <span class="c1">#</span>
+      <span class="c1">#       validates_exclusion_of :weapon,</span>
+      <span class="c1">#         in: [&#39;pistol&#39;, &#39;paintball gun&#39;, &#39;stick&#39;],</span>
+      <span class="c1">#         message: &#39;You chose a puny weapon&#39;</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Game do</span>
+      <span class="c1">#       it do</span>
+      <span class="c1">#         should validate_exclusion_of(:weapon).</span>
+      <span class="c1">#           in_array([&#39;pistol&#39;, &#39;paintball gun&#39;, &#39;stick&#39;]).</span>
+      <span class="c1">#           with_message(&#39;You chose a puny weapon&#39;)</span>
+      <span class="c1">#       end</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class GameTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should validate_exclusion_of(:weapon).</span>
+      <span class="c1">#         in_array([&#39;pistol&#39;, &#39;paintball gun&#39;, &#39;stick&#39;]).</span>
+      <span class="c1">#         with_message(&#39;You chose a puny weapon&#39;)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># @return [ValidateExclusionOfMatcher]</span>
+      <span class="c1">#</span>
+      <span class="k">def</span> <span class="nf">validate_exclusion_of</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+        <span class="no">ValidateExclusionOfMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="c1"># @deprecated Use {#validate_exclusion_of} instead.</span>
+      <span class="c1"># @return [ValidateExclusionOfMatcher]</span>
+      <span class="k">def</span> <span class="nf">ensure_exclusion_of</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+        <span class="ss">Shoulda</span><span class="p">:</span><span class="ss">:Matchers</span><span class="o">.</span><span class="n">warn_about_deprecated_method</span><span class="p">(</span>
+          <span class="ss">:ensure_exclusion_of</span><span class="p">,</span>
+          <span class="ss">:validate_exclusion_of</span>
+        <span class="p">)</span>
+        <span class="n">validate_exclusion_of</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="c1"># @private</span>
+      <span class="k">class</span> <span class="nc">ValidateExclusionOfMatcher</span> <span class="o">&lt;</span> <span class="no">ValidationMatcher</span>
+        <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+          <span class="k">super</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+          <span class="vi">@array</span> <span class="o">=</span> <span class="kp">nil</span>
+          <span class="vi">@range</span> <span class="o">=</span> <span class="kp">nil</span>
+          <span class="vi">@expected_message</span> <span class="o">=</span> <span class="kp">nil</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">in_array</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+          <span class="vi">@array</span> <span class="o">=</span> <span class="n">array</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">in_range</span><span class="p">(</span><span class="n">range</span><span class="p">)</span>
+          <span class="vi">@range</span> <span class="o">=</span> <span class="n">range</span>
+          <span class="vi">@minimum</span> <span class="o">=</span> <span class="n">range</span><span class="o">.</span><span class="n">first</span>
+          <span class="vi">@maximum</span> <span class="o">=</span> <span class="n">range</span><span class="o">.</span><span class="n">max</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">with_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+          <span class="vi">@expected_message</span> <span class="o">=</span> <span class="n">message</span> <span class="k">if</span> <span class="n">message</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">description</span>
+          <span class="s2">&quot;ensure exclusion of </span><span class="si">#{</span><span class="vi">@attribute</span><span class="si">}</span><span class="s2"> in </span><span class="si">#{</span><span class="n">inspect_message</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">matches?</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+          <span class="k">super</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+
+          <span class="k">if</span> <span class="vi">@range</span>
+            <span class="n">allows_lower_value</span> <span class="o">&amp;&amp;</span>
+              <span class="n">disallows_minimum_value</span> <span class="o">&amp;&amp;</span>
+              <span class="n">allows_higher_value</span> <span class="o">&amp;&amp;</span>
+              <span class="n">disallows_maximum_value</span>
+          <span class="k">elsif</span> <span class="vi">@array</span>
+            <span class="n">disallows_all_values_in_array?</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="kp">private</span>
+
+        <span class="k">def</span> <span class="nf">disallows_all_values_in_array?</span>
+          <span class="vi">@array</span><span class="o">.</span><span class="n">all?</span> <span class="k">do</span> <span class="o">|</span><span class="n">value</span><span class="o">|</span>
+            <span class="n">disallows_value_of</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">expected_message</span><span class="p">)</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">allows_lower_value</span>
+          <span class="vi">@minimum</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">allows_value_of</span><span class="p">(</span><span class="vi">@minimum</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">expected_message</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">allows_higher_value</span>
+          <span class="n">allows_value_of</span><span class="p">(</span><span class="vi">@maximum</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">expected_message</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">disallows_minimum_value</span>
+          <span class="n">disallows_value_of</span><span class="p">(</span><span class="vi">@minimum</span><span class="p">,</span> <span class="n">expected_message</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">disallows_maximum_value</span>
+          <span class="n">disallows_value_of</span><span class="p">(</span><span class="vi">@maximum</span><span class="p">,</span> <span class="n">expected_message</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">expected_message</span>
+          <span class="vi">@expected_message</span> <span class="o">||</span> <span class="ss">:exclusion</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">inspect_message</span>
+          <span class="k">if</span> <span class="vi">@range</span>
+            <span class="vi">@range</span><span class="o">.</span><span class="n">inspect</span>
+          <span class="k">else</span>
+            <span class="vi">@array</span><span class="o">.</span><span class="n">inspect</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:27 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

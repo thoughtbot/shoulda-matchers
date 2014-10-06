@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: rails_shim
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">File: rails_shim</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><pre class="code ruby"><span class="k">module</span> <span class="nn">Shoulda</span>
+  <span class="k">module</span> <span class="nn">Matchers</span>
+    <span class="c1"># @private</span>
+    <span class="k">class</span> <span class="nc">RailsShim</span>
+      <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">layouts_ivar</span>
+        <span class="k">if</span> <span class="n">action_pack_major_version</span> <span class="o">&gt;=</span> <span class="mi">4</span>
+          <span class="s1">&#39;@_layouts&#39;</span>
+        <span class="k">else</span>
+          <span class="s1">&#39;@layouts&#39;</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+
+      <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">flashes_ivar</span>
+        <span class="k">if</span> <span class="n">action_pack_major_version</span> <span class="o">&gt;=</span> <span class="mi">4</span>
+          <span class="ss">:@flashes</span>
+        <span class="k">else</span>
+          <span class="ss">:@used</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+
+      <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">clean_scope</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">active_record_major_version</span> <span class="o">==</span> <span class="mi">4</span>
+          <span class="n">klass</span><span class="o">.</span><span class="n">all</span>
+        <span class="k">else</span>
+          <span class="n">klass</span><span class="o">.</span><span class="n">scoped</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+
+      <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">validates_confirmation_of_error_attribute</span><span class="p">(</span><span class="n">matcher</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">active_model_major_version</span> <span class="o">==</span> <span class="mi">4</span>
+          <span class="n">matcher</span><span class="o">.</span><span class="n">confirmation_attribute</span>
+        <span class="k">else</span>
+          <span class="n">matcher</span><span class="o">.</span><span class="n">attribute</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+
+      <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">verb_for_update</span>
+        <span class="k">if</span> <span class="n">action_pack_gte_4_1?</span>
+          <span class="ss">:patch</span>
+        <span class="k">else</span>
+          <span class="ss">:put</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+
+      <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">active_record_major_version</span>
+        <span class="o">::</span><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:VERSION</span><span class="o">::</span><span class="no">MAJOR</span>
+      <span class="k">end</span>
+
+      <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">active_model_major_version</span>
+        <span class="o">::</span><span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:VERSION</span><span class="o">::</span><span class="no">MAJOR</span>
+      <span class="k">end</span>
+
+      <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">action_pack_major_version</span>
+        <span class="o">::</span><span class="ss">ActionPack</span><span class="p">:</span><span class="ss">:VERSION</span><span class="o">::</span><span class="no">MAJOR</span>
+      <span class="k">end</span>
+
+      <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">action_pack_gte_4_1?</span>
+        <span class="ss">Gem</span><span class="p">:</span><span class="ss">:Requirement</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;&gt;= 4.1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">satisfied_by?</span><span class="p">(</span><span class="n">action_pack_version</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">action_pack_version</span>
+        <span class="ss">Gem</span><span class="p">:</span><span class="ss">:Version</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">::</span><span class="ss">ActionPack</span><span class="p">:</span><span class="ss">:VERSION</span><span class="o">::</span><span class="no">STRING</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:28 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>

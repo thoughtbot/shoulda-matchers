@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: allow_mass_assignment_of_matcher
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">File: allow_mass_assignment_of_matcher</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><pre class="code ruby"><span class="k">module</span> <span class="nn">Shoulda</span>
+  <span class="k">module</span> <span class="nn">Matchers</span>
+    <span class="k">module</span> <span class="nn">ActiveModel</span>
+      <span class="c1"># The `allow_mass_assignment_of` matcher tests usage of Rails 3&#39;s</span>
+      <span class="c1"># `attr_accessible` and `attr_protected` macros, asserting that an</span>
+      <span class="c1"># attribute in your model is contained in either the whitelist or</span>
+      <span class="c1"># blacklist and thus can or cannot be set via mass assignment.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Post</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       include ActiveModel::MassAssignmentSecurity</span>
+      <span class="c1">#       attr_accessor :title</span>
+      <span class="c1">#</span>
+      <span class="c1">#       attr_accessible :title</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class User</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       include ActiveModel::MassAssignmentSecurity</span>
+      <span class="c1">#       attr_accessor :encrypted_password</span>
+      <span class="c1">#</span>
+      <span class="c1">#       attr_protected :encrypted_password</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Post do</span>
+      <span class="c1">#       it { should allow_mass_assignment_of(:title) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     describe User do</span>
+      <span class="c1">#       it { should_not allow_mass_assignment_of(:encrypted_password) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PostTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should allow_mass_assignment_of(:title)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class UserTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should_not allow_mass_assignment_of(:encrypted_password)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># #### Optional qualifiers</span>
+      <span class="c1">#</span>
+      <span class="c1"># ##### as</span>
+      <span class="c1">#</span>
+      <span class="c1"># Use `as` if your mass-assignment rules apply only under a certain role</span>
+      <span class="c1"># *(Rails &gt;= 3.1 only)*.</span>
+      <span class="c1">#</span>
+      <span class="c1">#     class Post</span>
+      <span class="c1">#       include ActiveModel::Model</span>
+      <span class="c1">#       include ActiveModel::MassAssignmentSecurity</span>
+      <span class="c1">#       attr_accessor :title</span>
+      <span class="c1">#</span>
+      <span class="c1">#       attr_accessible :title, as: :admin</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # RSpec</span>
+      <span class="c1">#     describe Post do</span>
+      <span class="c1">#       it { should allow_mass_assignment_of(:title).as(:admin) }</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1">#     # Test::Unit</span>
+      <span class="c1">#     class PostTest &lt; ActiveSupport::TestCase</span>
+      <span class="c1">#       should allow_mass_assignment_of(:title).as(:admin)</span>
+      <span class="c1">#     end</span>
+      <span class="c1">#</span>
+      <span class="c1"># @return [AllowMassAssignmentOfMatcher]</span>
+      <span class="c1">#</span>
+      <span class="k">def</span> <span class="nf">allow_mass_assignment_of</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="no">AllowMassAssignmentOfMatcher</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="c1"># @private</span>
+      <span class="k">class</span> <span class="nc">AllowMassAssignmentOfMatcher</span>
+        <span class="kp">attr_reader</span> <span class="ss">:failure_message</span><span class="p">,</span> <span class="ss">:failure_message_when_negated</span>
+
+        <span class="k">alias</span> <span class="n">failure_message_for_should</span> <span class="n">failure_message</span>
+        <span class="k">alias</span> <span class="n">failure_message_for_should_not</span> <span class="n">failure_message_when_negated</span>
+
+        <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+          <span class="vi">@attribute</span> <span class="o">=</span> <span class="n">attribute</span><span class="o">.</span><span class="n">to_s</span>
+          <span class="vi">@options</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">as</span><span class="p">(</span><span class="n">role</span><span class="p">)</span>
+          <span class="k">if</span> <span class="n">active_model_less_than_3_1?</span>
+            <span class="k">raise</span> <span class="s1">&#39;You can specify role only in Rails 3.1 or greater&#39;</span>
+          <span class="k">end</span>
+          <span class="vi">@options</span><span class="o">[</span><span class="ss">:role</span><span class="o">]</span> <span class="o">=</span> <span class="n">role</span>
+          <span class="nb">self</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">matches?</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+          <span class="vi">@subject</span> <span class="o">=</span> <span class="n">subject</span>
+          <span class="k">if</span> <span class="n">attr_mass_assignable?</span>
+            <span class="k">if</span> <span class="n">whitelisting?</span>
+              <span class="vi">@failure_message_when_negated</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="vi">@attribute</span><span class="si">}</span><span class="s2"> was made accessible&quot;</span>
+            <span class="k">else</span>
+              <span class="k">if</span> <span class="n">protected_attributes</span><span class="o">.</span><span class="n">empty?</span>
+                <span class="vi">@failure_message_when_negated</span> <span class="o">=</span> <span class="s1">&#39;no attributes were protected&#39;</span>
+              <span class="k">else</span>
+                <span class="vi">@failure_message_when_negated</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">class_name</span><span class="si">}</span><span class="s2"> is protecting &quot;</span> <span class="o">&lt;&lt;</span>
+                  <span class="s2">&quot;</span><span class="si">#{</span><span class="n">protected_attributes</span><span class="o">.</span><span class="n">to_a</span><span class="o">.</span><span class="n">to_sentence</span><span class="si">}</span><span class="s2">, &quot;</span> <span class="o">&lt;&lt;</span>
+                  <span class="s2">&quot;but not </span><span class="si">#{</span><span class="vi">@attribute</span><span class="si">}</span><span class="s2">.&quot;</span>
+              <span class="k">end</span>
+            <span class="k">end</span>
+            <span class="kp">true</span>
+          <span class="k">else</span>
+            <span class="k">if</span> <span class="n">whitelisting?</span>
+              <span class="vi">@failure_message</span> <span class="o">=</span> <span class="s2">&quot;Expected </span><span class="si">#{</span><span class="vi">@attribute</span><span class="si">}</span><span class="s2"> to be accessible&quot;</span>
+            <span class="k">else</span>
+              <span class="vi">@failure_message</span> <span class="o">=</span> <span class="s2">&quot;Did not expect </span><span class="si">#{</span><span class="vi">@attribute</span><span class="si">}</span><span class="s2"> to be protected&quot;</span>
+            <span class="k">end</span>
+            <span class="kp">false</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">description</span>
+          <span class="o">[</span><span class="n">base_description</span><span class="p">,</span> <span class="n">role_description</span><span class="o">].</span><span class="n">compact</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="kp">private</span>
+
+        <span class="k">def</span> <span class="nf">base_description</span>
+          <span class="s2">&quot;allow mass assignment of </span><span class="si">#{</span><span class="vi">@attribute</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">role_description</span>
+          <span class="k">if</span> <span class="n">role</span> <span class="o">!=</span> <span class="ss">:default</span>
+            <span class="s2">&quot;as </span><span class="si">#{</span><span class="n">role</span><span class="si">}</span><span class="s2">&quot;</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">role</span>
+          <span class="vi">@options</span><span class="o">[</span><span class="ss">:role</span><span class="o">]</span> <span class="o">||</span> <span class="ss">:default</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">protected_attributes</span>
+          <span class="vi">@protected_attributes</span> <span class="o">||=</span> <span class="p">(</span><span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">protected_attributes</span> <span class="o">||</span> <span class="o">[]</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">accessible_attributes</span>
+          <span class="vi">@accessible_attributes</span> <span class="o">||=</span> <span class="p">(</span><span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">accessible_attributes</span> <span class="o">||</span> <span class="o">[]</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">whitelisting?</span>
+          <span class="n">authorizer</span><span class="o">.</span><span class="n">kind_of?</span><span class="p">(</span><span class="o">::</span><span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:MassAssignmentSecurity</span><span class="o">::</span><span class="no">WhiteList</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">attr_mass_assignable?</span>
+          <span class="o">!</span><span class="n">authorizer</span><span class="o">.</span><span class="n">deny?</span><span class="p">(</span><span class="vi">@attribute</span><span class="p">)</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">authorizer</span>
+          <span class="k">if</span> <span class="n">active_model_less_than_3_1?</span>
+            <span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">active_authorizer</span>
+          <span class="k">else</span>
+            <span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">active_authorizer</span><span class="o">[</span><span class="n">role</span><span class="o">]</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">class_name</span>
+          <span class="vi">@subject</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">end</span>
+
+        <span class="k">def</span> <span class="nf">active_model_less_than_3_1?</span>
+          <span class="o">::</span><span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:VERSION</span><span class="o">::</span><span class="no">STRING</span><span class="o">.</span><span class="n">to_f</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="o">.</span><span class="mi">1</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div></div>
+
+      <div id="footer">
+  Generated on Mon Oct  6 17:06:27 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.3 (ruby-2.1.1).
+</div>
+
+    </div>
+
+  </body>
+</html>
