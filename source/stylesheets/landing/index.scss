@@ -162,20 +162,11 @@ nav {
   background: $brand-lt-gray;
   padding: em(75) 0;
 
-  li {
-    float: left;
-    padding: 0 em(75);
-  }
-
-  h4 {
-    clear: both;
-    line-height: $base-line-height * 2;
-  }
-
   .language-ruby {
     background: #494f57;
     border: none;
     box-shadow: none;
+    margin: em(20) 0 em(20) 0;
     position: relative;
     text-shadow: none;
     width: em(500);
@@ -184,7 +175,7 @@ nav {
 
 .installation-header {
   font-weight: 500;
-  padding-bottom: em(50);
+  padding-bottom: em(35);
   text-align: center;
 }
 
@@ -195,18 +186,98 @@ nav {
 }
 
 .installation-instructions {
-  @include span-columns(10);
-  @include shift(1);
-  border-top: 1px solid $light-gray;
-  margin-top: em(20);
-  padding-top: em(40);
+  margin-top: em(30);
 
   h2 {
     font-weight: 500;
+    padding-bottom: em(10);
+  }
+}
+
+.accordion-tabs-minimal {
+  $tab-border-color: $base-border-color;
+  $tab-border: 1px solid $tab-border-color;
+  $tab-content-background: $secondary-background-color;
+  $tab-active-background: $tab-content-background;
+  $tab-inactive-color: $secondary-background-color;
+  $tab-inactive-hover-color: darken($light-gray, 5);
+  $tab-mode: $medium-screen;
+
+  @include media($tab-mode) {
+    border: none;
   }
 
-  h4 {
-    padding-top: em(20);
+  li.tab-header-and-content {
+    @include media($tab-mode) {
+      display: inline;
+    }
+
+    &:first-child a.tab-link {
+      border-top-left-radius: $base-border-radius;
+      border-top-right-radius: $base-border-radius;
+      border-top: 0;
+    }
+
+    &:last-child a.tab-link {
+      border-bottom-left-radius: $base-border-radius;
+      border-bottom-right-radius: $base-border-radius;
+
+      @include media($tab-mode) {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+    }
+  }
+
+  li.tab-header-and-content a.tab-link {
+    background-color: $tab-inactive-color;
+    border-top: $tab-border;
+    color: $dark-gray;
+    display: block;
+    font-weight: 400;
+    padding: $base-spacing/2 $gutter;
+
+    @include media($tab-mode) {
+      @include inline-block;
+      border-top: 0;
+      border-top-right-radius: $base-border-radius;
+      border-top-left-radius: $base-border-radius;
+    }
+
+    &:hover {
+      color: $base-link-color;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &.is-active {
+      background-color: $tab-active-background;
+      border-bottom: 0;
+
+      @include media($tab-mode) {
+        background-color: $tab-active-background;
+        border: $tab-border;
+        border-bottom: 1px solid $tab-active-background;
+        margin-bottom: -1px;
+      }
+    }
+  }
+
+  li.tab-header-and-content .tab-content {
+    padding: $base-spacing $gutter;
+    background: $tab-content-background;
+    display: none;
+    overflow: hidden;
+    width: 100%;
+
+    @include media($tab-mode) {
+      border-top: $tab-border;
+      float: left;
+      left: 0;
+      padding: $base-spacing/2 $gutter/2;
+    }
   }
 }
 
@@ -217,11 +288,11 @@ footer {
     margin: 40px 0 40px  -75px;
   }
 
-  span {
-
-  }
-
   p {
     text-align: center;
+  }
+
+  a {
+    display: inline;
   }
 }

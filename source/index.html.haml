@@ -6,7 +6,7 @@ title: Shoulda Matchers
 %nav
   .wrapper
     .logo
-    .btn Github
+    %a.btn(href="https://github.com/thoughtbot/shoulda-matchers") Github
 
 %section.main-header
   .wrapper
@@ -68,38 +68,77 @@ title: Shoulda Matchers
         %p Get clear and readable results from the common Rails tests.
 
 %section.installation-wrapper
-  .wrapper
-    %h2.installation-header Installation Instructions
-    .tabs
-      %ul
-        %li.tab-header
-          RSpec
-        %li.tab-header
-          Test::Unit
-        %li.tab-header
-          Non-Rails Apps
-    .installation-instructions
-      %h2 Install for RSpec
-      %h4 Include the gem in your Gemfile:
-      %pre
-        %code.language-ruby
-          :preserve
-            group :test do
-              gem 'shoulda-matchers', require: false
-            end
-      %h4 Then require the gem following rspec-rails in your rails_helper (or spec_helper if you're using RSpec 2.x):
-      %pre
-        %code.language-ruby
-          :preserve
-            require 'rspec/rails'
-            require 'shoulda/matchers'
+  %h2.installation-header Installation Instructions
+  %ul.accordion-tabs-minimal.wrapper
+    %li.tab-header-and-content
+      %a.tab-link.is-active(href="#")
+        RSpec
+      .tab-content
+        .installation-instructions
+          %h2 Install for RSpec
+          %h4 Include the gem in your Gemfile:
+          %pre.code-sample
+            %code.language-ruby
+              :preserve
+                group :test do
+                  gem 'shoulda-matchers', require: false
+                end
+          %h4 Then require the gem following rspec-rails in your rails_helper (or spec_helper if you're using RSpec 2.x):
+          %pre.code-sample
+            %code.language-ruby
+              :preserve
+                require 'rspec/rails'
+                require 'shoulda/matchers'
+
+    %li.tab-header-and-content
+      %a.tab-link(href="#")
+        Test::Unit
+      .tab-content
+        .installation-instructions
+          %h2 Install for Test::Unit
+          %h4 shoulda-matchers was originally a component of Shoulda -- it's what provides the nice should syntax which is demonstrated below. For this reason, include it in your Gemfile instead:
+          %pre.code-sample
+            %code.language-ruby
+              :preserve
+                group :test do
+                  gem 'shoulda'
+                end
+
+    %li.tab-header-and-content
+      %a.tab-link(href="#")
+        Non-Rails Apps
+      .tab-content
+        .installation-instructions
+          %h2 Install for Non-Rails Apps
+          %h4
+            Once it is loaded, shoulda-matchers automatically includes itself
+            into your test framework. It will mix in the appropriate matchers for
+            ActiveRecord, ActiveModel, and ActionController depending on the
+            modules that are available at runtime. For instance, in order to use
+            the ActiveRecord matchers, ActiveRecord must be available beforehand.
+          %br
+          %h4
+            If your application is on Rails, everything should "just work", as
+            shoulda-matchers will most likely be declared after Rails in your
+            Gemfile. If your application is on another framework such as Sinatra
+            or Padrino, you may have a different setup, so you will want to ensure
+            that you are requiring shoulda-matchers after the components of Rails
+            you are using. For instance, if you wanted to use and test against
+            ActiveModel, you'd say:
+
+          %pre.code-sample
+            %code.language-ruby
+              :preserve
+                gem 'activemodel'
+                gem 'shoulda-matchers'
+          %h4 And not
+          %pre.code-sample
+            %code.language-ruby
+              :preserve
+                gem 'shoulda-matchers'
+                gem 'activemodel'
 
 %footer
-  .btn Github
-  %p Shoulda Matchers is maintained and funded by thoughtbot, inc. Tweet your questions or suggestions to
-  %span
-    %a @mcmire
-    or
-    %a @thoughtbot.
-  %br
+  %a.btn(href="https://github.com/thoughtbot/shoulda-matchers") Github
+  %p Shoulda Matchers is maintained and funded by thoughtbot, inc. Tweet your questions or suggestions to <a href='https://twitter.com/mcmire'>@mcmire</a> or <a href='https://twitter.com/thoughtbot'>@thoughtbot</a>
   %p Copyright © 2014 thoughtbot, inc.
