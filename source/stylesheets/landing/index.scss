@@ -17,13 +17,6 @@ nav {
   @include size(em(301) em(79));
   display: inline-block;
   float: left;
-
-  &:hover {
-    @include animation-name(scale);
-    @include animation-duration(2s);
-    @include animation-timing-function(ease);
-    cursor: pointer;
-  }
 }
 
 .btn {
@@ -141,6 +134,14 @@ nav {
 }
 
 .clock-icon {
+  &:hover {
+    @include animation-name(scale);
+    @include animation-duration(2s);
+    @include animation-timing-function(ease);
+    @include animation-iteration-count(infinite);
+    cursor: pointer;
+  }
+
   @include retina-image(clock, 69px 69px, $asset-pipeline: true);
   @include size(em(69) em(69));
   margin: 0 auto;
