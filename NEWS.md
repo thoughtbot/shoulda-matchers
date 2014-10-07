@@ -27,11 +27,14 @@
 * Tweak `allow_value` failure message so that it reads a bit nicer when listing
   existing errors.
 
+* Add ability to test `:primary_key` option on associations. ([#597])
+
 [#591]: https://github.com/thoughtbot/shoulda-matchers/pull/591
 [#592]: https://github.com/thoughtbot/shoulda-matchers/pull/592
 [#588]: https://github.com/thoughtbot/shoulda-matchers/pull/588
 [#584]: https://github.com/thoughtbot/shoulda-matchers/pull/584
 [#593]: https://github.com/thoughtbot/shoulda-matchers/pull/593
+[#597]: https://github.com/thoughtbot/shoulda-matchers/pull/597
 
 # 2.7.0
 

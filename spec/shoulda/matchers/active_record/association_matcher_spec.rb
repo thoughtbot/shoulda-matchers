@@ -29,6 +29,22 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       expect(Child.new).to belong_to(:parent)
     end
 
+    it 'accepts an association using an existing custom primary key' do
+      define_model :parent
+      define_model :child, parent_id: :integer, custom_primary_key: :integer do
+        belongs_to :parent, primary_key: :custom_primary_key
+      end
+      expect(Child.new).to belong_to(:parent).with_primary_key(:custom_primary_key)
+    end
+
+    it 'rejects an association with a bad :primary_key option' do
+      matcher = belong_to(:parent).with_primary_key(:custom_primary_key)
+
+      expect(belonging_to_parent).not_to matcher
+
+      expect(matcher.failure_message).to match(/Child does not have a custom_primary_key primary key/)
+    end
+
     it 'accepts a polymorphic association' do
       define_model :child, parent_type: :string, parent_id: :integer do
         belongs_to :parent, polymorphic: true
@@ -288,6 +304,22 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       expect(Parent.new).not_to have_many(:children)
     end
 
+    it 'accepts an association using an existing custom primary key' do
+      define_model :child, parent_id: :integer
+      define_model :parent, custom_primary_key: :integer do
+        has_many :children, primary_key: :custom_primary_key
+      end
+      expect(Parent.new).to have_many(:children).with_primary_key(:custom_primary_key)
+    end
+
+    it 'rejects an association with a bad :primary_key option' do
+      matcher = have_many(:children).with_primary_key(:custom_primary_key)
+
+      expect(having_many_children).not_to matcher
+
+      expect(matcher.failure_message).to match(/Parent does not have a custom_primary_key primary key/)
+    end
+
     it 'rejects an association with a bad :as option' do
       define_model :child, caretaker_type: :string,
         caretaker_id: :integer
@@ -535,6 +567,22 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
         has_one :detail, foreign_key: :detailed_person_id
       end
       expect(Person.new).to have_one(:detail).with_foreign_key(:detailed_person_id)
+    end
+
+    it 'accepts an association using an existing custom primary key' do
+      define_model :detail, person_id: :integer
+      define_model :person, custom_primary_key: :integer do
+        has_one :detail, primary_key: :custom_primary_key
+      end
+      expect(Person.new).to have_one(:detail).with_primary_key(:custom_primary_key)
+    end
+
+    it 'rejects an association with a bad :primary_key option' do
+      matcher = have_one(:detail).with_primary_key(:custom_primary_key)
+
+      expect(having_one_detail).not_to matcher
+
+      expect(matcher.failure_message).to match(/Person does not have a custom_primary_key primary key/)
     end
 
     it 'rejects an association with a bad :as option' do

@@ -100,6 +100,28 @@ module Shoulda
       #       should belong_to(:ancient_city).class_name('City')
       #     end
       #
+      # ##### with_primary_key
+      #
+      # Use `with_primary_key` to test usage of the `:primary_key` option.
+      #
+      #     class Person < ActiveRecord::Base
+      #       belongs_to :great_country, primary_key: 'country_id'
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it do
+      #         should belong_to(:great_country).
+      #           with_primary_key('country_id')
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should belong_to(:great_country).
+      #         with_primary_key('country_id')
+      #     end
+      #
       # ##### with_foreign_key
       #
       # Use `with_foreign_key` to test usage of the `:foreign_key` option.
@@ -293,6 +315,24 @@ module Shoulda
       #     # Test::Unit
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_many(:hopes).class_name('Dream')
+      #     end
+      #
+      # ##### with_primary_key
+      #
+      # Use `with_primary_key` to test usage of the `:primary_key` option.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_many :worries, primary_key: 'worrier_id'
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should have_many(:worries).with_primaryu_key('worrier_id') }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_many(:worries).with_primary_key('worrier_id')
       #     end
       #
       # ##### with_foreign_key
@@ -509,6 +549,24 @@ module Shoulda
       #     # Test::Unit
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_one(:contract).dependent(:nullify)
+      #     end
+      #
+      # ##### with_primary_key
+      #
+      # Use `with_primary_key` to test usage of the `:primary_key` option.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_one :job, primary_key: 'worker_id'
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should have_one(:job).with_primary_key('worker_id') }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_one(:job).with_primary_key('worker_id')
       #     end
       #
       # ##### with_foreign_key
@@ -814,6 +872,11 @@ module Shoulda
           self
         end
 
+        def with_primary_key(primary_key)
+          @options[:primary_key] = primary_key
+          self
+        end
+
         def validate(validate = true)
           @options[:validate] = validate
           self
@@ -846,6 +909,7 @@ module Shoulda
             macro_correct? &&
             (polymorphic? || class_exists?) &&
             foreign_key_exists? &&
+            primary_key_exists? &&
             class_name_correct? &&
             join_table_correct? &&
             autosave_correct? &&
@@ -928,8 +992,17 @@ module Shoulda
           end
         end
 
+        def macro_supports_primary_key?
+          macro == :belongs_to || 
+            ([:has_many, :has_one].include?(macro) && !through?)
+        end
+
         def foreign_key_exists?
           !(belongs_foreign_key_missing? || has_foreign_key_missing?)
+        end
+
+        def primary_key_exists?
+          !macro_supports_primary_key? || primary_key_correct?(model_class)
         end
 
         def belongs_foreign_key_missing?
@@ -1031,6 +1104,19 @@ module Shoulda
               @missing = "#{klass} does not have a #{foreign_key} foreign key."
               false
             end
+          end
+        end
+
+        def primary_key_correct?(klass)
+          if options.key?(:primary_key)
+            if option_verifier.correct_for_string?(:primary_key, options[:primary_key])
+              true
+            else
+              @missing = "#{klass} does not have a #{options[:primary_key]} primary key"
+              false
+            end
+          else
+            true
           end
         end
 
