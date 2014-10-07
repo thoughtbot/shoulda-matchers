@@ -3,7 +3,7 @@
 }
 
 nav {
-  padding: em(25) 0 em(20);
+  padding: em(15) 0 em(15);
   background: $brand-lt-gray;
 
   .btn {
@@ -13,14 +13,15 @@ nav {
 }
 
 .logo {
-  @include retina-image(shoulda-matchers-logo, 301px 79px, $asset-pipeline: true);
   @include size(em(301) em(79));
+  background: image-url("shoulda-matchers-logo.svg");
   display: inline-block;
   float: left;
 }
 
 .btn {
   @include size (em(150) em(45));
+  @include transition (all, linear, 0.3s);
   border: solid 2px $brand-red;
   border-radius: em(20);
   color: $brand-red;
@@ -31,7 +32,6 @@ nav {
   text-transform: uppercase;
 
   &:hover {
-    @include transition (all, linear, 0.2s);
     background: $brand-red;
     color: white;
     cursor: pointer;
@@ -99,12 +99,13 @@ nav {
 .triangle-tag {
   @include position(absolute, 0 0 auto auto);
   @include size(em(109) em(109));
-  @include retina-image(triangle-tag, 109px 109px, $asset-pipeline: true);
+  background: image-url("triangle-tag.svg");
   z-index: 2;
 }
 
 .benefits-header {
   background: $brand-lt-gray;
+  border-bottom: solid 1px #e3e2dd;
   padding: em(40);
   text-align: center;
 
@@ -130,37 +131,42 @@ nav {
 }
 
 .icon {
-  height: em(70);
+  @include size(em(90) em(90));
+  @include animation(reveal 3s);
+  margin: 0 auto;
 }
 
 .clock-icon {
-  &:hover {
-    @include animation-name(scale);
-    @include animation-duration(2s);
-    @include animation-timing-function(ease);
-    @include animation-iteration-count(infinite);
-    cursor: pointer;
-  }
+  @include size(em(79) em(79));
+  background: image-url("clock-icon.svg");
 
-  @include retina-image(clock, 69px 69px, $asset-pipeline: true);
-  @include size(em(69) em(69));
-  margin: 0 auto;
+  &.animated {
+    @include animation(reveal 1s);
+  }
 }
 
 .write-icon {
-  @include retina-image(write, 62px 78px, $asset-pipeline: true);
-  @include size(em(62) em(78));
-  margin: 0 auto;
+  @include size(em(79) em(79));
+  background: image-url("write-icon.svg");
+
+  &.animated {
+    @include animation(reveal 1s);
+  }
 }
 
 .check-icon {
-  @include retina-image(check, 66px 53px, $asset-pipeline: true);
-  @include size(em(66) em(53));
-  margin: 0 auto;
+  @include size(em(79) em(79));
+  background: image-url("check-icon.svg");
+
+  &.animated {
+    @include animation(reveal 1s);
+  }
 }
 
 .installation-wrapper {
   background: $brand-lt-gray;
+  border-bottom: solid 1px #e3e2dd;
+  border-top: solid 1px #e3e2dd;
   padding: em(75) 0;
 
   .language-ruby {
