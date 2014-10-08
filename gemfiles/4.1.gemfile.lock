@@ -37,6 +37,7 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
+    ansi (1.4.3)
     appraisal (1.0.0.beta2)
       bundler
       rake
@@ -87,7 +88,12 @@ GEM
     metaclass (0.0.2)
     method_source (0.8.2)
     mime-types (1.25.1)
-    minitest (5.4.0)
+    minitest (5.4.2)
+    minitest-reporters (1.0.5)
+      ansi
+      builder
+      minitest (>= 5.0)
+      ruby-progressbar
     mocha (0.14.0)
       metaclass (~> 0.0.1)
     multi_json (1.10.1)
@@ -143,6 +149,7 @@ GEM
       rspec-mocks (~> 3.0.0)
       rspec-support (~> 3.0.0)
     rspec-support (3.0.3)
+    ruby-progressbar (1.5.1)
     sass (3.2.19)
     sass-rails (4.0.3)
       railties (>= 4.0.0, < 5.0)
@@ -202,6 +209,7 @@ DEPENDENCIES
   jdbc-sqlite3
   jquery-rails
   jruby-openssl
+  minitest-reporters
   protected_attributes (~> 1.0.6)
   pry
   pygments.rb

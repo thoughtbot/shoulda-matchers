@@ -42,6 +42,7 @@ rails_4 = proc do
   gem 'rspec-rails', '~> 3.0.1'
   # Test suite makes heavy use of attr_accessible
   gem 'protected_attributes'
+  gem 'minitest-reporters'
 end
 
 #---
@@ -56,11 +57,13 @@ if Gem::Requirement.new('< 2').satisfied_by?(ruby_version)
     appraise '3.1-1.9.2' do
       instance_eval(&rails_3_1)
       gem 'turn', '0.8.2'
+      gem 'minitest', '~> 4.0'
     end
   else
     appraise '3.1' do
       instance_eval(&rails_3_1)
       gem 'turn', '~> 0.8.3'
+      gem 'minitest', '~> 4.0'
     end
   end
 end
