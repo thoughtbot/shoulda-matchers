@@ -1,9 +1,10 @@
 require 'shoulda/matchers/assertion_error'
 require 'shoulda/matchers/doublespeak'
 require 'shoulda/matchers/error'
+require 'shoulda/matchers/matcher_context'
 require 'shoulda/matchers/rails_shim'
-require 'shoulda/matchers/warn'
 require 'shoulda/matchers/version'
+require 'shoulda/matchers/warn'
 
 require 'shoulda/matchers/independent'
 

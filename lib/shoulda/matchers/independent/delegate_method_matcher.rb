@@ -108,14 +108,13 @@ module Shoulda
       # @return [DelegateMethodMatcher]
       #
       def delegate_method(delegating_method)
-        DelegateMethodMatcher.new(delegating_method, self)
+        DelegateMethodMatcher.new(delegating_method).in_context(self)
       end
 
       # @private
       class DelegateMethodMatcher
-        def initialize(delegating_method, context)
+        def initialize(delegating_method)
           @delegating_method = delegating_method
-          @context = context
 
           @method_on_target = @delegating_method
           @target_double = Doublespeak::ObjectDouble.new
@@ -124,6 +123,11 @@ module Shoulda
           @target_method = nil
           @subject = nil
           @subject_double_collection = nil
+        end
+
+        def in_context(context)
+          @context = MatcherContext.new(context)
+          self
         end
 
         def matches?(subject)
@@ -192,11 +196,19 @@ module Shoulda
           :target_method
 
         def subject
-          @subject || context.subject
+          @subject
+        end
+
+        def subject_is_a_class?
+          if @subject
+            @subject.is_a?(Class)
+          else
+            context.subject_is_a_class?
+          end
         end
 
         def class_under_test
-          if subject.is_a?(Class)
+          if subject_is_a_class?
             subject
           else
             subject.class
@@ -230,7 +242,7 @@ module Shoulda
         end
 
         def class_or_instance_method_indicator
-          if subject.is_a?(Class)
+          if subject_is_a_class?
             '.'
           else
             '#'

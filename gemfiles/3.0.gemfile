@@ -22,6 +22,8 @@ gem "jruby-openssl", :platform=>:jruby
 gem "therubyrhino", :platform=>:jruby
 gem "strong_parameters"
 gem "rspec-rails", "2.99.0"
+gem "minitest", "~> 4.0"
+gem "minitest-reporters"
 gem "rails", "~> 3.0.17"
 
 gemspec :path=>".././"
