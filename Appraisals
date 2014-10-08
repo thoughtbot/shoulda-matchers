@@ -8,6 +8,8 @@ end
 rails_3 = proc do
   gem 'strong_parameters'
   gem 'rspec-rails', '2.99.0'
+  gem 'minitest', '~> 4.0'
+  gem 'minitest-reporters'
 end
 
 rails_3_1 = proc do
@@ -19,6 +21,8 @@ rails_3_1 = proc do
   gem 'coffee-rails', '~> 3.1.1'
   gem 'uglifier', '>= 1.0.3'
   gem 'rspec-rails', '2.99.0'
+  gem 'minitest', '~> 4.0'
+  gem 'minitest-reporters'
 end
 
 rails_3_2 = proc do
@@ -29,6 +33,8 @@ rails_3_2 = proc do
   gem 'sass-rails', '~> 3.2.3'
   gem 'coffee-rails', '~> 3.2.1'
   gem 'uglifier', '>= 1.0.3'
+  gem 'minitest', '~> 4.0'
+  gem 'minitest-reporters'
 end
 
 rails_4 = proc do
@@ -57,13 +63,11 @@ if Gem::Requirement.new('< 2').satisfied_by?(ruby_version)
     appraise '3.1-1.9.2' do
       instance_eval(&rails_3_1)
       gem 'turn', '0.8.2'
-      gem 'minitest', '~> 4.0'
     end
   else
     appraise '3.1' do
       instance_eval(&rails_3_1)
       gem 'turn', '~> 0.8.3'
-      gem 'minitest', '~> 4.0'
     end
   end
 end
