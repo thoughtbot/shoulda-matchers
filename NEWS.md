@@ -1,5 +1,7 @@
 # HEAD
 
+* `have_and_belong_to_many` will now pass if the foreign keys have been defined as symbols
+
 # 2.7.0
 
 ### Deprecations
