@@ -46,7 +46,8 @@ module ModelBuilder
 
   def define_model(name, columns = {}, &block)
     class_name = name.to_s.pluralize.classify
-    table_name = class_name.tableize
+    table_name = class_name.tableize.gsub('/', '_')
+
     table_block = lambda do |table|
       columns.each do |name, specification|
         if specification.is_a?(Hash)
@@ -64,7 +65,13 @@ module ModelBuilder
       create_table(table_name, &table_block)
     end
 
-    define_model_class(class_name, &block)
+    define_model_class(class_name).tap do |model|
+      if block
+        model.class_eval(&block)
+      end
+
+      model.table_name = table_name
+    end
   end
 
   def drop_created_tables
