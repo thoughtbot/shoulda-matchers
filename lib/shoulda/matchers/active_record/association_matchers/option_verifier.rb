@@ -35,7 +35,7 @@ module Shoulda
               method_name = "actual_value_for_#{name}"
               if respond_to?(method_name, true)
                 __send__(method_name)
-              else
+              elsif reflection.present?
                 reflection.options[name]
               end
             end
