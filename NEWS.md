@@ -2,7 +2,15 @@
 
 ### Bug fixes
 
-* Fix `delegate_method` so that it works again with shoulda-context.
+* Fix `delegate_method` so that it works again with shoulda-context. ([#591])
+
+* Fix `validate_uniqueness_of` when used with `scoped_to` so that when one of
+  the scope attributes is a polymorphic `*_type` attribute and the model has
+  another validation on the same attribute, the matcher does not fail with an
+  error. ([#592])
+
+[#591]: https://github.com/thoughtbot/shoulda-matchers/pull/591
+[#592]: https://github.com/thoughtbot/shoulda-matchers/pull/592
 
 # 2.7.0
 
