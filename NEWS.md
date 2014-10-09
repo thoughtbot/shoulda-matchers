@@ -1,5 +1,9 @@
 # HEAD
 
+### Bug fixes
+
+* Fix `delegate_method` so that it works again with shoulda-context.
+
 # 2.7.0
 
 ### Deprecations
