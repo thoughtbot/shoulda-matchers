@@ -188,8 +188,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher do
       end
 
       it 'does not match when validation uses the default message instead of given message' do
-        skip 'does not work'
-
         builder = build_object_allowing(valid_values)
 
         expect_not_to_match_on_values(builder, valid_values) do |matcher|
@@ -198,8 +196,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher do
       end
 
       it 'does not match when validation uses a message but it is not same as given' do
-        skip 'does not work'
-
         builder = build_object_allowing(valid_values, message: 'a different message')
 
         expect_not_to_match_on_values(builder, valid_values) do |matcher|
@@ -218,8 +214,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher do
       end
 
       it 'does not match when validation uses the default message instead of given message' do
-        skip 'does not work'
-
         builder = build_object_allowing(valid_values)
 
         expect_not_to_match_on_values(builder, valid_values) do |matcher|
@@ -228,8 +222,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher do
       end
 
       it 'does not match when validation uses a message but it does not match regex' do
-        skip 'does not work'
-
         builder = build_object_allowing(valid_values, message: 'a different message')
 
         expect_not_to_match_on_values(builder, valid_values) do |matcher|

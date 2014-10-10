@@ -31,6 +31,9 @@
   referenced is namespaced, the matcher will correctly resolve the class before
   checking it against the association's `class_name`. ([#537])
 
+* Fix `validate_inclusion_of` used with `with_message` so that it fails if given
+  a message that does not match the message on the validation. ([#598])
+
 ### Features
 
 * Add ability to test `:primary_key` option on associations. ([#597])
@@ -47,6 +50,7 @@
 [#593]: https://github.com/thoughtbot/shoulda-matchers/pull/593
 [#597]: https://github.com/thoughtbot/shoulda-matchers/pull/597
 [#537]: https://github.com/thoughtbot/shoulda-matchers/pull/537
+[#598]: https://github.com/thoughtbot/shoulda-matchers/pull/598
 
 # 2.7.0
 

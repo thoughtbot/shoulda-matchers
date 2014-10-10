@@ -409,7 +409,9 @@ EOT
             end
           end
 
-          !allows_value_of(*values_outside_of_array)
+          !values_outside_of_array.any? do |value|
+            allows_value_of(value, @low_message)
+          end
         end
 
         def values_outside_of_array
