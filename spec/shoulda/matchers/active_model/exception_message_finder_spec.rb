@@ -64,7 +64,7 @@ describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
 
         description = finder.messages_description
 
-        expect(description).to eq 'Attr is invalid'
+        expect(description).to eq ': "Attr is invalid"'
       end
 
       it 'describes errors when there are none' do
@@ -72,7 +72,7 @@ describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
 
         description = finder.messages_description
 
-        expect(description).to eq 'no exception'
+        expect(description).to eq ' no exception'
       end
     end
 

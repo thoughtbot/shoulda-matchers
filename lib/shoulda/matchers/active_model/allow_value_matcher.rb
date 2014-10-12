@@ -224,12 +224,12 @@ module Shoulda
         end
 
         def failure_message
-          "Did not expect #{expectation}, got error: #{matched_error}"
+          "Did not expect #{expectation},\ngot error: #{matched_error}"
         end
         alias failure_message_for_should failure_message
 
         def failure_message_when_negated
-          "Expected #{expectation}, got #{error_description}"
+          "Expected #{expectation},\ngot#{error_description}"
         end
         alias failure_message_for_should_not failure_message_when_negated
 

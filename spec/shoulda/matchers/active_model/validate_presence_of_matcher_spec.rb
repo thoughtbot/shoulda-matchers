@@ -33,7 +33,7 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
     end
 
     it 'provides the correct failure message' do
-      message = %{Expected errors to include "can't be blank" when attr is set to nil, got no errors}
+      message = %{Expected errors to include "can't be blank" when attr is set to nil,\ngot no errors}
 
       expect { expect(active_model).to matcher }.to fail_with_message(message)
     end

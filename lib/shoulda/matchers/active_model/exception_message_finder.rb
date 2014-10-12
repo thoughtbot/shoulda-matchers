@@ -15,9 +15,9 @@ module Shoulda
 
         def messages_description
           if has_messages?
-            messages.join
+            ": #{messages.join.inspect}"
           else
-            'no exception'
+            ' no exception'
           end
         end
 

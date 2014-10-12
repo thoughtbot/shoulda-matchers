@@ -67,8 +67,9 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
 
       description = finder.messages_description
 
-      expected_messages = ['is invalid (attribute: "attr", value: "xyz")']
-      expect(description).to eq "errors: #{expected_messages}"
+      expect(description).to eq(
+        %{ errors:\n* "is invalid" (attribute: attr, value: "xyz")}
+      )
     end
 
     it 'describes errors when there are none' do
@@ -76,7 +77,7 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
 
       description = finder.messages_description
 
-      expect(description).to eq 'no errors'
+      expect(description).to eq ' no errors'
     end
 
     it 'should not fetch attribute values for errors that were copied from an autosaved belongs_to association' do
@@ -87,8 +88,9 @@ describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
       end.new
       finder = Shoulda::Matchers::ActiveModel::ValidationMessageFinder.new(instance, :attribute)
 
-      expected_messages = ['is invalid (attribute: "association.association_attribute")']
-      expect(finder.messages_description).to eq "errors: #{expected_messages}"
+      expect(finder.messages_description).to eq(
+        %{ errors:\n* "is invalid" (attribute: association.association_attribute)}
+      )
     end
 
   end

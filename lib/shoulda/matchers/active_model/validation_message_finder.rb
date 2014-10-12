@@ -29,9 +29,9 @@ module Shoulda
 
         def messages_description
           if errors.empty?
-            'no errors'
+            ' no errors'
           else
-            "errors: #{pretty_error_messages(validated_instance)}"
+            " errors:\n#{pretty_error_messages(validated_instance)}"
           end
         end
 

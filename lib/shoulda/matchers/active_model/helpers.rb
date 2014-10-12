@@ -5,11 +5,11 @@ module Shoulda
       module Helpers
         def pretty_error_messages(obj)
           obj.errors.map do |attribute, message|
-            full_message = message.dup
+            full_message = message.dup.inspect
             parenthetical_parts = []
 
             unless attribute.to_sym == :base
-              parenthetical_parts << "attribute: #{attribute.to_s.inspect}"
+              parenthetical_parts << "attribute: #{attribute}"
 
               if obj.respond_to?(attribute)
                 parenthetical_parts << "value: #{obj.__send__(attribute).inspect}"
@@ -20,8 +20,8 @@ module Shoulda
               full_message << " (#{parenthetical_parts.join(', ')})"
             end
 
-            full_message
-          end
+            "* " + full_message
+          end.join("\n")
         end
 
         # Helper method that determines the default error message used by Active

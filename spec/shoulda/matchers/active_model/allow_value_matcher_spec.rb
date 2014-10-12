@@ -194,8 +194,10 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
 
         matcher.matches?(validating_format(with: /abc/, strict: true))
 
-        expect(matcher.failure_message_when_negated).to eq 'Expected exception to include /abc/ ' +
-          'when attr is set to "xyz", got Attr is invalid'
+        expect(matcher.failure_message_when_negated).to eq(
+          %{Expected exception to include /abc/ when attr is set to "xyz",\n} +
+          %{got: "Attr is invalid"}
+        )
       end
     end
   end
