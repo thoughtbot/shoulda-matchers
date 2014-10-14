@@ -1,17 +1,13 @@
 module ClassBuilder
-  def self.included(example_group)
-    example_group.class_eval do
-      after do
-        teardown_defined_constants
-      end
-    end
-  end
-
   def self.parse_constant_name(name)
     namespace = Shoulda::Matchers::Util.deconstantize(name)
     qualified_namespace = (namespace.presence || 'Object').constantize
     name_without_namespace = name.to_s.demodulize
     [qualified_namespace, name_without_namespace]
+  end
+
+  def self.teardown_defined_constants
+    ActiveSupport::Dependencies.clear
   end
 
   def define_module(module_name, &block)
@@ -65,12 +61,9 @@ module ClassBuilder
       end
     end
   end
-
-  def teardown_defined_constants
-    ActiveSupport::Dependencies.clear
-  end
 end
 
 RSpec.configure do |config|
   config.include ClassBuilder
+  config.after { ClassBuilder.teardown_defined_constants }
 end

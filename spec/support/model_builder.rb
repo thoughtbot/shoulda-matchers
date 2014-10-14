@@ -1,15 +1,18 @@
-module ModelBuilder
-  def self.included(example_group)
-    example_group.class_eval do
-      before do
-        @created_tables ||= []
-      end
+require_relative 'class_builder'
 
-      after do
-        drop_created_tables
-        ActiveSupport::Dependencies.clear
-      end
+module ModelBuilder
+  include ClassBuilder
+
+  def self.drop_created_tables
+    connection = ActiveRecord::Base.connection
+
+    created_tables.each do |table_name|
+      connection.execute("DROP TABLE IF EXISTS #{table_name}")
     end
+  end
+
+  def self.created_tables
+    @_created_tables ||= []
   end
 
   def create_table(table_name, options = {}, &block)
@@ -18,7 +21,7 @@ module ModelBuilder
     begin
       connection.execute("DROP TABLE IF EXISTS #{table_name}")
       connection.create_table(table_name, options, &block)
-      @created_tables << table_name
+      ModelBuilder.created_tables << table_name
       connection
     rescue Exception => e
       connection.execute("DROP TABLE IF EXISTS #{table_name}")
@@ -73,16 +76,16 @@ module ModelBuilder
       model.table_name = table_name
     end
   end
-
-  def drop_created_tables
-    connection = ActiveRecord::Base.connection
-
-    @created_tables.each do |table_name|
-      connection.execute("DROP TABLE IF EXISTS #{table_name}")
-    end
-  end
 end
 
 RSpec.configure do |config|
   config.include ModelBuilder
+
+  config.before do
+    ModelBuilder.created_tables.clear
+  end
+
+  config.after do
+    ModelBuilder.drop_created_tables
+  end
 end
