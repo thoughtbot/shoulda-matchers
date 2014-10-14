@@ -14,31 +14,45 @@ title: Shoulda Matchers
       %h1 Making tests easy on the fingers and eyes
       %h2 Run simple one-liner tests for common Rails functionality
 
-    .code-samples-wrapper
       .browser-container
         .browser-bar
-        .browser-background
+        .code-background
         %pre
           %code.language-ruby
             :preserve
               # Write the tests yourself
 
-              group :test do
-                gem 'shoulda-matchers', require: false
+              class User < ActiveRecord::Base
+                validates_uniqueness_of :username,
+                  scope: :account_id,
+                  message: 'must be unique within an account',
+                  case_insensitive: false
               end
 
-      .browser-container
-        .browser-bar
-        .browser-background-shoulda
-          .triangle-tag
-        %pre
-          %code.language-ruby
-            :preserve
-              # Test Using Shoulda Matchers
+              describe User do
+                it 'is not valid if its username is the same as another user within the same account' do
+                  _existing_user = FactoryGirl.create(:user,
+                    username: 'johnsmith',
+                    account_id: 1
+                  )
+                  user = FactoryGirl.build(:user,
+                    username: 'johnsmith',
+                    account_id: 1
+                  )
+                  expect(user).not_to be_valid
+                end
 
-              group :test do
-                gem 'shoulda-matchers', require: false
-              end
+                it 'is valid if its username is the same as another user within the same account, but for different case' do
+                  _existing_user = FactoryGirl.create(:user,
+                    username: 'johnsmith',
+                    account_id: 1
+                  )
+                  user = FactoryGirl.build(:user,
+                    username: 'JohnSmith',
+                    account_id: 1
+                  )
+                  expect(user).to be_valid
+                end
 
 %section
   %h2.benefits-header
@@ -52,18 +66,15 @@ title: Shoulda Matchers
   .benefits-wrapper
     .wrapper
       .benefit
-        .icon
-          .clock-icon.animate
+        =image_tag 'clock-icon.svg', class: "icon animate"
         %h2 Save Time
         %p Reduce the time writing long, complex, and error-prone tests
       .benefit
-        .icon
-          .write-icon.animate
+        =image_tag 'write-icon.svg', class: "icon animate"
         %h2 Write More Tests
         %p Test thoroughly by using over 30 preexisting tests, developed over time
       .benefit
-        .icon
-          .check-icon.animate
+        =image_tag 'check-icon.svg', class: "icon animate"
         %h2 More Readable Results
         %p Get clear, readable, and actionable results from shoulda matchers tests
 

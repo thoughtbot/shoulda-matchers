@@ -3,17 +3,17 @@
 }
 
 nav {
-  padding: em(15) 0 em(15);
   background: $brand-lt-gray;
+  padding: em(15) 0 em(15);
 
   .btn {
     float: right;
-    margin-top: em(15);
+    margin-top: em(10);
   }
 }
 
 .logo {
-  @include size(em(301) em(79));
+  @include size(em(250) em(65));
   background: image-url("shoulda-matchers-logo.svg");
   display: inline-block;
   float: left;
@@ -39,13 +39,13 @@ nav {
 }
 
 .main-header {
-  @include size(auto em(550));
+  @include size(auto em(600));
   background: image-url('background-header.png') no-repeat top;
   background-size: cover;
 
   .main-header-copy {
     color: white;
-    padding-top: em(75);
+    padding-top: em(60);
     text-align: center;
 
     h1 {
@@ -55,58 +55,36 @@ nav {
 
     h2 {
       line-height: $base-line-height * 2;
+      padding-bottom: em(10);
     }
   }
 }
 
-.code-samples-wrapper {
-  @include position(relative, 50% auto auto 50%);
-  padding-top: em(40);
-  margin: 0 0 0 em(-500);
-  width: em(1000);
-
-  .language-ruby {
-    background: #494f57;
-    border: none;
-    box-shadow: none;
-    position: relative;
-    text-shadow: none;
-  }
+.browser-bar {
+  @include size (em(1050) em(34));
+  background: image-url("browser-bar.svg");
 }
 
 .browser-container {
-  float: left;
-  padding-right: em(50);
-}
+  padding-left: em(20);
 
-.browser-bar {
-  @include retina-image(browser-bar, 442px 26px, $asset-pipeline: true);
-  @include size(em(442) em(26));
-}
-
-.browser-background {
-  @include size (442px 200px);
-  background: #494f57;
-  position: absolute;
-}
-
-.browser-background-shoulda {
-  @include size (442px 150px);
-  background: #494f57;
-  position: absolute;
-}
-
-.triangle-tag {
-  @include position(absolute, 0 0 auto auto);
-  @include size(em(109) em(109));
-  background: image-url("triangle-tag.svg");
-  z-index: 2;
+  .language-ruby {
+    @include size (em(1120) em(420));
+    background: #494f57;
+    border: none;
+    border-radius: 0 0 em(5) em(5);
+    box-shadow: none;
+    font-size: em(15);
+    overflow: scroll;
+    margin: initial;
+    text-shadow: none;
+  }
 }
 
 .benefits-header {
   background: $brand-lt-gray;
   border-bottom: solid 1px #e3e2dd;
-  padding: em(40);
+  padding: em(65) 0 em(45) 0;
   text-align: center;
 
   span {
@@ -131,35 +109,11 @@ nav {
 }
 
 .icon {
-  @include size(em(90) em(90));
-  @include animation(reveal 3s);
+  @include size(em(79) em(79));
   margin: 0 auto;
-}
-
-.clock-icon {
-  @include size(em(79) em(79));
-  background: image-url("clock-icon.svg");
 
   &.animated {
-    @include animation(reveal 1s);
-  }
-}
-
-.write-icon {
-  @include size(em(79) em(79));
-  background: image-url("write-icon.svg");
-
-  &.animated {
-    @include animation(reveal 1s);
-  }
-}
-
-.check-icon {
-  @include size(em(79) em(79));
-  background: image-url("check-icon.svg");
-
-  &.animated {
-    @include animation(reveal 1s);
+    @include animation(reveal 3s);
   }
 }
 
@@ -172,6 +126,7 @@ nav {
   .language-ruby {
     background: #494f57;
     border: none;
+    border-radius: none;
     box-shadow: none;
     margin: em(20) 0 em(20) 0;
     position: relative;
@@ -297,9 +252,5 @@ footer {
 
   p {
     text-align: center;
-  }
-
-  a {
-    display: inline;
   }
 }
