@@ -60,13 +60,13 @@ nav {
   }
 }
 
+.browser-container {
+  padding-left: em(20);
+
 .browser-bar {
   @include size (em(1050) em(34));
   background: image-url("browser-bar.svg");
 }
-
-.browser-container {
-  padding-left: em(20);
 
   .language-ruby {
     @include size (em(1120) em(420));
@@ -206,10 +206,6 @@ nav {
       border-top-left-radius: $base-border-radius;
     }
 
-    &:hover {
-      color: $base-link-color;
-    }
-
     &:focus {
       outline: none;
     }
@@ -217,6 +213,7 @@ nav {
     &.is-active {
       background-color: $tab-active-background;
       border-bottom: 0;
+      font-weight: 500;
 
       @include media($tab-mode) {
         background-color: $tab-active-background;
