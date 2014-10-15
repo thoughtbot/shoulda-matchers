@@ -9,6 +9,10 @@ nav {
   .btn {
     float: right;
     margin-top: em(10);
+
+    @include media($mobile-screen) {
+      display: none;
+    }
   }
 }
 
@@ -43,6 +47,10 @@ nav {
   background: image-url('background-header.png') no-repeat top;
   background-size: cover;
 
+  @include media($small-screen) {
+    @include size(auto em(300));
+  }
+
   .main-header-copy {
     color: white;
     padding-top: em(60);
@@ -75,6 +83,10 @@ nav {
   @include media($medium-screen) {
     @include size (em(900) em(28));
   }
+
+  @include media($small-screen) {
+    display: none;
+  }
 }
 
 .tool-tip {
@@ -89,6 +101,10 @@ nav {
 
   @include media ($medium-screen) {
     margin-right: em(50);
+  }
+
+  @include media($small-screen) {
+    display: none;
   }
 
   p {
@@ -113,6 +129,10 @@ nav {
     @include media($medium-screen) {
       @include size (em(932) em(350));
     }
+
+    @include media($small-screen) {
+      display: none;
+    }
   }
 }
 
@@ -125,6 +145,10 @@ nav {
   span {
     color: $brand-green;
     font-weight: 500;
+  }
+
+  @include media($small-screen) {
+    padding: em(30);
   }
 }
 
