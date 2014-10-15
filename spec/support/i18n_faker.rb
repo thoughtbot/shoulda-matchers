@@ -1,7 +1,10 @@
 module I18nFaker
-  def stub_translation(key, message)
-    yml =  key.split('.').reverse.inject(message) { |a, n| { n => a } }
-    I18n.backend.store_translations(:en, yml)
+  extend self
+
+  def stub_translation(key_or_keys, message)
+    keys = [key_or_keys].flatten.join('.').split('.')
+    tree = keys.reverse.inject(message) { |data, key| { key => data } }
+    I18n.backend.store_translations(:en, tree)
   end
 end
 

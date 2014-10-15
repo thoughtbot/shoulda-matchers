@@ -89,22 +89,29 @@ module Shoulda
         def disallows_different_value
           set_confirmation('some value')
           disallows_value_of('different value') do |matcher|
-            matcher.with_message(@message, against: error_attribute)
+            qualify_matcher(matcher)
           end
         end
 
         def allows_same_value
           set_confirmation('same value')
           allows_value_of('same value') do |matcher|
-            matcher.with_message(@message, against: error_attribute)
+            qualify_matcher(matcher)
           end
         end
 
         def allows_missing_confirmation
           set_confirmation(nil)
           allows_value_of('any value') do |matcher|
-            matcher.with_message(@message, against: error_attribute)
+            qualify_matcher(matcher)
           end
+        end
+
+        def qualify_matcher(matcher)
+          matcher.with_message(@message,
+            against: error_attribute,
+            values: { attribute: attribute }
+          )
         end
 
         def set_confirmation(val)

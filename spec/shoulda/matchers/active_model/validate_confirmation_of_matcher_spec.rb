@@ -52,4 +52,12 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher do
         with_message(/wrong/)
     end
   end
+
+  context 'when the validation specifies a message via i18n' do
+    it 'passes' do
+      builder = builder_for_record_validating_confirmation_with_18n_message
+      expect(builder.record).
+        to validate_confirmation_of(builder.attribute_to_confirm)
+    end
+  end
 end

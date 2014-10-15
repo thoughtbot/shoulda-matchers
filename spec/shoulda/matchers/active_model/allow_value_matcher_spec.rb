@@ -91,25 +91,50 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
   context 'when the attribute being validated is different than the attribute that receives the validation error' do
     include Helpers::AllowValueMatcherHelpers
 
-    it 'passes given a valid value' do
-      builder = builder_for_record_with_different_validation_error_attribute
-      expect(builder.record).
-        to allow_value(builder.valid_value).
-        for(builder.attribute_to_validate).
-        with_message(builder.message,
-          against: builder.attribute_that_receives_error
-        )
+    context 'when the validation error message was provided directly' do
+      it 'passes given a valid value' do
+        builder = builder_for_record_with_different_error_attribute
+        expect(builder.record).
+          to allow_value(builder.valid_value).
+          for(builder.attribute_to_validate).
+          with_message(builder.message,
+            against: builder.attribute_that_receives_error
+          )
+      end
+
+      it 'fails given an invalid value' do
+        builder = builder_for_record_with_different_error_attribute
+        invalid_value = "#{builder.valid_value} (invalid)"
+        expect(builder.record).
+          not_to allow_value(invalid_value).
+          for(builder.attribute_to_validate).
+          with_message(builder.message,
+            against: builder.attribute_that_receives_error
+          )
+      end
     end
 
-    it 'fails given an invalid value' do
-      builder = builder_for_record_with_different_validation_error_attribute
-      invalid_value = "#{builder.valid_value} (invalid)"
-      expect(builder.record).
-        not_to allow_value(invalid_value).
-        for(builder.attribute_to_validate).
-        with_message(builder.message,
-          against: builder.attribute_that_receives_error
-        )
+    context 'when the validation error message was provided via i18n' do
+      it 'passes given a valid value' do
+        builder = builder_for_record_with_different_error_attribute_using_i18n
+        expect(builder.record).
+          to allow_value(builder.valid_value).
+          for(builder.attribute_to_validate).
+          with_message(builder.validation_message_key,
+            against: builder.attribute_that_receives_error
+          )
+      end
+
+      it 'fails given an invalid value' do
+        builder = builder_for_record_with_different_error_attribute_using_i18n
+        invalid_value = "#{builder.valid_value} (invalid)"
+        expect(builder.record).
+          not_to allow_value(invalid_value).
+          for(builder.attribute_to_validate).
+          with_message(builder.validation_message_key,
+            against: builder.attribute_that_receives_error
+          )
+      end
     end
   end
 

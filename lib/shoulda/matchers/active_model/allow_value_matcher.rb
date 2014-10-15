@@ -326,7 +326,7 @@ module Shoulda
           defaults = {
             model_name: model_name,
             instance: instance,
-            attribute: attribute_to_set,
+            attribute: attribute_to_check_message_against,
           }
 
           defaults.merge(options[:expected_message_values])

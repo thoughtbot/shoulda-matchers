@@ -2,11 +2,16 @@ require_relative '../model_builder'
 
 module Helpers
   module AllowValueMatcherHelpers
-    def builder_for_record_with_different_validation_error_attribute(options = {})
-      RecordWithDifferentValidationErrorAttributeBuilder.new(options)
+    def builder_for_record_with_different_error_attribute(options = {})
+      RecordWithDifferentErrorAttributeBuilder.new(options)
     end
 
-    class RecordWithDifferentValidationErrorAttributeBuilder
+    def builder_for_record_with_different_error_attribute_using_i18n(options = {})
+      builder = builder_for_record_with_different_error_attribute(options)
+      RecordBuilderWithI18nValidationMessage.new(builder)
+    end
+
+    class RecordWithDifferentErrorAttributeBuilder
       include ModelBuilder
 
       def initialize(options)
@@ -23,6 +28,10 @@ module Helpers
 
       def message
         options[:message]
+      end
+
+      def message=(message)
+        options[:message] = message
       end
 
       def model
