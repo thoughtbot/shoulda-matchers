@@ -4,7 +4,7 @@
 
 nav {
   background: $brand-lt-gray;
-  padding: em(15) 0 em(15);
+  padding: em(15);
 
   .btn {
     float: right;
@@ -51,25 +51,55 @@ nav {
     h1 {
       font-weight: 500;
       text-shadow: 1px 1px 7px #107a7a;
+
+      @include media($small-medium-screen) {
+        font-size: $base-font-size * 2.75;
+      }
     }
 
     h2 {
-      line-height: $base-line-height * 2;
-      padding-bottom: em(10);
+      padding: em(15);
     }
   }
 }
 
 .browser-container {
   padding-left: em(20);
+  position: relative;
 
 .browser-bar {
   @include size (em(1050) em(34));
   background: image-url("browser-bar.svg");
+  background-repeat: no-repeat;
+
+  @include media($medium-screen) {
+    @include size (em(900) em(28));
+  }
+}
+
+.tool-tip {
+  @include position(absolute, em(60) em(-15) null null);
+  @include size(em(280) em(105));
+  background: $brand-lt-gray;
+  border-radius: em(5);
+  box-shadow: -1px 3px 10px -1px rgba(0,0,0,0.70);;
+  font-size: em(18);
+  padding: em(15);
+  z-index: 5;
+
+  @include media ($medium-screen) {
+    margin-right: em(50);
+  }
+
+  p {
+    color: $brand-med-gray;
+    text-align: initial;
+  }
 }
 
   .language-ruby {
     @include size (em(1120) em(420));
+    @include box-sizing(border-box);
     background: #494f57;
     border: none;
     border-radius: 0 0 em(5) em(5);
@@ -78,6 +108,11 @@ nav {
     overflow: scroll;
     margin: initial;
     text-shadow: none;
+    z-index: 2;
+
+    @include media($medium-screen) {
+      @include size (em(932) em(350));
+    }
   }
 }
 
@@ -95,12 +130,22 @@ nav {
 
 .benefits-wrapper {
   padding: em(75) 0;
+
+  @include media($small-screen) {
+    padding-top:initial;
+    padding-bottom: em(25);
+  }
 }
 
 .benefit {
   @include span-columns(4);
   padding: 0 em(25);
   text-align: center;
+
+  @include media($small-screen) {
+    @include span-columns(8);
+    padding-top: em(50);
+  }
 
   h2 {
     font-weight: 500;
@@ -132,6 +177,10 @@ nav {
     position: relative;
     text-shadow: none;
     width: em(500);
+
+    @include media($mobile-screen) {
+      width: em(350);
+    }
   }
 }
 
