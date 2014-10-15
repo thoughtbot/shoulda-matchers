@@ -12,16 +12,16 @@ complex, and error-prone.
   tests usage of Rails 3's `attr_accessible` and `attr_protected` macros.
 * **[allow_value](lib/shoulda/matchers/active_model/allow_value_matcher.rb)** tests usage of
   the `validates_format_of` validation.
-* **[validate_inclusion_of](lib/shoulda/matchers/active_model/validate_inclusion_of_matcher.rb)**
-  tests usage of `validates_inclusion_of`.
-* **[validate_exclusion_of](lib/shoulda/matchers/active_model/validate_exclusion_of_matcher.rb)**
-  tests usage of `validates_exclusion_of`.
 * **[ensure_length_of](lib/shoulda/matchers/active_model/ensure_length_of_matcher.rb)** tests usage
   of `validates_length_of`.
 * **[have_secure_password](lib/shoulda/matchers/active_model/have_secure_password_matcher.rb)** tests
   usage of `has_secure_password`.
 * **[validate_confirmation_of](lib/shoulda/matchers/active_model/validate_confirmation_of_matcher.rb)**
   tests usage of `validates_confirmation_of`.
+* **[validate_exclusion_of](lib/shoulda/matchers/active_model/validate_exclusion_of_matcher.rb)**
+  tests usage of `validates_exclusion_of`.
+* **[validate_inclusion_of](lib/shoulda/matchers/active_model/validate_inclusion_of_matcher.rb)**
+  tests usage of `validates_inclusion_of`.
 * **[validate_numericality_of](lib/shoulda/matchers/active_model/validate_numericality_of_matcher.rb)**
   tests usage of `validates_numericality_of`.
 * **[validate_presence_of](lib/shoulda/matchers/active_model/validate_presence_of_matcher.rb)** tests
@@ -37,12 +37,12 @@ complex, and error-prone.
   your `belongs_to` associations.
 * **[define_enum_for](lib/shoulda/matchers/active_record/define_enum_for_matcher.rb)**
   tests usage of the `enum` macro.
+* **[have_and_belong_to_many](lib/shoulda/matchers/active_record/association_matcher.rb)**
+  tests your `has_and_belongs_to_many` associations.
 * **[have_many](lib/shoulda/matchers/active_record/association_matcher.rb)** tests
   your `has_many` associations.
 * **[have_one](lib/shoulda/matchers/active_record/association_matcher.rb)** tests your
   `has_one` associations.
-* **[have_and_belong_to_many](lib/shoulda/matchers/active_record/association_matcher.rb)**
-  tests your `has_and_belongs_to_many` associations.
 * **[have_db_column](lib/shoulda/matchers/active_record/have_db_column_matcher.rb)** tests that
   the table that backs your model has a specific column.
 * **[have_db_index](lib/shoulda/matchers/active_record/have_db_index_matcher.rb)** tests that the
