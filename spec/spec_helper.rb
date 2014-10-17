@@ -37,6 +37,10 @@ RSpec.configure do |config|
 
   config.mock_with :mocha
   config.include Shoulda::Matchers::ActionController, type: :controller
+
+  if config.respond_to?(:infer_spec_type_from_file_location!)
+    config.infer_spec_type_from_file_location!
+  end
 end
 
 $VERBOSE = true
