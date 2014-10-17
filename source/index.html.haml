@@ -5,14 +5,14 @@ title: Shoulda Matchers
 %nav
   .wrapper
     .logo
-    %a.btn(href="https://github.com/thoughtbot/shoulda-matchers") Github
-
+    %a.btn-github(href="https://github.com/thoughtbot/shoulda-matchers") Github
+    %a.btn-docs(href="#") Docs
 %section.main-header
   .wrapper
     .main-header-copy
       %h1 Simple One-Liner Tests for Rails
 
-    .browser-container
+    .browser-container.animate
       .browser-bar
         .browser-button
         .browser-button
@@ -24,10 +24,8 @@ title: Shoulda Matchers
 
       .browser-background
         %pre
-          %code.language-ruby-one
+          %code.language-ruby.animation-one
             :preserve
-              # Write the tests yourself
-
               describe User do
                 it 'is not valid if its username is the same as another user within the same account' do
                   _existing_user = FactoryGirl.create(:user,
@@ -52,6 +50,21 @@ title: Shoulda Matchers
                   )
                   expect(user).to be_valid
                 end
+
+          %code.language-ruby.animation-two
+            :preserve
+              describe User do
+                context 'validations' do
+                  before { FactoryGirl.build(:user) }
+
+                  it do
+                    should validate_uniqueness_of(:username).
+                      scoped_to(:account_id).
+                      with_message('must be unique within an account').
+                      case_insensitive
+                  end
+                end
+              end
 
 %section
   %h2.benefits-header
@@ -149,6 +162,7 @@ title: Shoulda Matchers
                 gem 'activemodel'
 
 %footer
-  %a.btn(href="https://github.com/thoughtbot/shoulda-matchers") Github
+  %a.btn-github(href="https://github.com/thoughtbot/shoulda-matchers") Github
+  %a.btn-docs(href="#") Docs
   %p Shoulda Matchers is maintained and funded by thoughtbot, inc. Tweet your questions or suggestions to <a href='https://twitter.com/mcmire'>@mcmire</a> or <a href='https://twitter.com/thoughtbot'>@thoughtbot</a>
   %p Copyright © 2014 thoughtbot, inc.

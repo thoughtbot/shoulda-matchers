@@ -31,17 +31,34 @@ nav {
 .btn {
   @include size (em(150) em(45));
   @include transition (all, linear, 0.3s);
-  border: solid 2px $brand-red;
   border-radius: em(20);
-  color: $brand-red;
   display: inline-block;
   font-weight: 400;
   padding: em(10) em(20);
+  margin-left: em(10);
   text-align: center;
   text-transform: uppercase;
+}
+
+.btn-github {
+  @extend .btn;
+  border: solid 2px $brand-red;
+  color: $brand-red;
 
   &:hover {
     background: $brand-red;
+    color: white;
+    cursor: pointer;
+  }
+}
+
+.btn-docs {
+  @extend .btn;
+  border: solid 2px $brand-green;
+  color: $brand-green;
+
+  &:hover {
+    background: $brand-green;
     color: white;
     cursor: pointer;
   }
@@ -70,7 +87,6 @@ nav {
 }
 
 .browser-container {
-  padding: 0 em(20);
   position: relative;
 }
 
@@ -94,7 +110,6 @@ nav {
 }
 
 .tool-tip {
-  @include animation(bounceIn 0.7s .5s 1 none, bounceOut 0.9s 3.5s 1 forwards);
   @include position(absolute, em(50) em(-15) null null);
   @include size(em(280) em(55));
   background: #e3e2dd;
@@ -119,12 +134,12 @@ nav {
 }
 
 .tool-tip-one {
-  @include animation(bounceIn 0.7s .5s 1 none, bounceOut 0.9s 3.5s 1 forwards);
   @extend .tool-tip;
+  @include animation(bounceIn 0.7s .3s 1 none, bounceOut 0.9s 3.2s 1 forwards);
 }
 
 .tool-tip-two {
-  @include animation(bounceIn 0.7s .5s 1 none, bounceOut 0.9s 3.5s 1 forwards);
+  @include animation(bounceIn 0.7s 4.5s 1 backwards, bounceOut 0.9s 6.8s 1 forwards);
   @extend .tool-tip;
 }
 
@@ -134,14 +149,12 @@ nav {
   border-radius: 0 0 em(5) em(5);
 
   .language-ruby {
-    @include animation(fadeIn 0.9s .5s 1 backwards, fadeOut 0.9s 3s 1 forwards);
-    @include size (100% em(420));
-    @include box-sizing(border-box);
+    @include size (70% em(420,15));
+    @include position(absolute, em(24,15) null null em(24,15));
     background: #494f57;
     border: none;
     box-shadow: none;
     font-size: em(15);
-    margin: initial;
     text-shadow: none;
     z-index: 2;
 
@@ -150,15 +163,14 @@ nav {
     }
   }
 
-  .language-ruby-one {
-    @extend .language-ruby;
+  .animation-one {
+    @include animation(fadeIn 0.9s .3s 1 backwards, fadeOut 0.9s 3.2s 1 forwards);
   }
 
-  .language-ruby-two {
-    @extend .language-ruby;
+  .animation-two {
+    @include animation(fadeIn 0.9s 4.5s 1 backwards, fadeOut 0.9s 7s 1 forwards);
   }
 }
-
 
 .benefits-header {
   background: $brand-lt-gray;
