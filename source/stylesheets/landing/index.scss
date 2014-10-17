@@ -94,9 +94,9 @@ nav {
 }
 
 .tool-tip {
+  @include animation(bounceIn 0.7s .5s 1 none, bounceOut 0.9s 3.5s 1 forwards);
   @include position(absolute, em(50) em(-15) null null);
   @include size(em(280) em(55));
-  @include animation(bounceIn 0.7s .7s 1, bounceOut 0.9s 2.5s 1);
   background: #e3e2dd;
   border-radius: em(5);
   box-shadow: -1px 3px 6px -1px rgba(0,0,0,0.70);;
@@ -118,14 +118,23 @@ nav {
   }
 }
 
+.tool-tip-one {
+  @include animation(bounceIn 0.7s .5s 1 none, bounceOut 0.9s 3.5s 1 forwards);
+  @extend .tool-tip;
+}
+
+.tool-tip-two {
+  @include animation(bounceIn 0.7s .5s 1 none, bounceOut 0.9s 3.5s 1 forwards);
+  @extend .tool-tip;
+}
+
 .browser-background {
   @include size (100% em(420));
   background: #494f57;
   border-radius: 0 0 em(5) em(5);
 
-
   .language-ruby {
-    @include animation(fadeIn 0.9s .5s 1, fadeOut 0.9s 3s 1);
+    @include animation(fadeIn 0.9s .5s 1 backwards, fadeOut 0.9s 3s 1 forwards);
     @include size (100% em(420));
     @include box-sizing(border-box);
     background: #494f57;
@@ -140,7 +149,16 @@ nav {
       display: none;
     }
   }
+
+  .language-ruby-one {
+    @extend .language-ruby;
+  }
+
+  .language-ruby-two {
+    @extend .language-ruby;
+  }
 }
+
 
 .benefits-header {
   background: $brand-lt-gray;
