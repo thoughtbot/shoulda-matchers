@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 shared_examples 'a numerical type submatcher' do
   it 'implements the allowed_type method' do
     expect(subject).to respond_to(:allowed_type).with(0).arguments
