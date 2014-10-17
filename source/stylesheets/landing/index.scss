@@ -3,14 +3,14 @@
 }
 
 nav {
+  @include size(100% em(90));
   background: $brand-lt-gray;
-  padding: em(15);
 
   .btn {
     float: right;
-    margin-top: em(10);
+    margin-top: em(23);
 
-    @include media($mobile-screen) {
+    @include media($small-medium-screen) {
       display: none;
     }
   }
@@ -21,6 +21,11 @@ nav {
   background: image-url("shoulda-matchers-logo.svg");
   display: inline-block;
   float: left;
+  margin: em(13) 0 0;
+
+  @include media($mobile-screen) {
+    padding-left: em(10);
+  }
 }
 
 .btn {
@@ -66,40 +71,47 @@ nav {
     }
 
     h2 {
-      padding: em(15);
+      padding: em(15) em(15) em(25);
     }
   }
 }
 
 .browser-container {
-  padding-left: em(20);
+  padding: 0 em(20);
   position: relative;
+}
 
 .browser-bar {
-  @include size (em(1050) em(34));
-  background: image-url("browser-bar.svg");
+  @include size (100% em(32));
+  background: #d8d8d8;
   background-repeat: no-repeat;
-
-  @include media($medium-screen) {
-    @include size (em(900) em(28));
-  }
+  border-radius: em(4) em(4) 0 0;
 
   @include media($small-screen) {
     display: none;
   }
 }
 
+.browser-button {
+  @include size (em(15));
+  background: #ccc;
+  border-radius: 50%;
+  float: left;
+  margin: em(9) 0 0 em(8);
+}
+
 .tool-tip {
-  @include position(absolute, em(60) em(-15) null null);
-  @include size(em(280) em(105));
-  background: $brand-lt-gray;
+  @include position(absolute, em(50) em(-15) null null);
+  @include size(em(280) em(55));
+  @include animation(slideLeft 0.9s .5s 1, bounceOut 0.9s 2.5s 1);
+  background: #e3e2dd;
   border-radius: em(5);
-  box-shadow: -1px 3px 10px -1px rgba(0,0,0,0.70);;
-  font-size: em(18);
+  box-shadow: -1px 3px 6px -1px rgba(0,0,0,0.70);;
+  font-size: em(22);
   padding: em(15);
   z-index: 5;
 
-  @include media ($medium-screen) {
+  @include media ($medium-large-screen) {
     margin-right: em(50);
   }
 
@@ -113,22 +125,23 @@ nav {
   }
 }
 
+.browser-background {
+  @include size (100% em(420));
+  background: #494f57;
+  border-radius: 0 0 em(5) em(5);
+
+
   .language-ruby {
-    @include size (em(1120) em(420));
+    @include animation(fadeIn 0.9s .5s 1, fadeOut 0.9s 3s 1);
+    @include size (100% em(420));
     @include box-sizing(border-box);
     background: #494f57;
     border: none;
-    border-radius: 0 0 em(5) em(5);
     box-shadow: none;
     font-size: em(15);
-    overflow: scroll;
     margin: initial;
     text-shadow: none;
     z-index: 2;
-
-    @include media($medium-screen) {
-      @include size (em(932) em(350));
-    }
 
     @include media($small-screen) {
       display: none;
@@ -182,7 +195,7 @@ nav {
   margin: 0 auto;
 
   &.animated {
-    @include animation(reveal 3s);
+    @include animation(reveal 2s);
   }
 }
 
