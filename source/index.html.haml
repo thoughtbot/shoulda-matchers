@@ -10,46 +10,45 @@ title: Shoulda Matchers
 %section.main-header
   .wrapper
     .main-header-copy
-      %h1 Making tests easy on the fingers and eyes
-      %h2 Run simple one-liner tests for common Rails functionality
+      %h1 Simple One-Liner Tests for Rails
 
-      .browser-container
-        .browser-bar
-          .browser-button
-          .browser-button
-          .browser-button
-        .tool-tip
-          %p Your test <b>without</b> Shoulda Matchers.
-        .browser-background
-          %pre
-            %code.language-ruby
-              :preserve
-                # Write the tests yourself
+    .browser-container
+      .browser-bar
+        .browser-button
+        .browser-button
+        .browser-button
+      .tool-tip
+        %p Your test <b>without</b> Shoulda Matchers.
+      .browser-background
+        %pre
+          %code.language-ruby
+            :preserve
+              # Write the tests yourself
 
-                describe User do
-                  it 'is not valid if its username is the same as another user within the same account' do
-                    _existing_user = FactoryGirl.create(:user,
-                      username: 'johnsmith',
-                      account_id: 1
-                    )
-                    user = FactoryGirl.build(:user,
-                      username: 'johnsmith',
-                      account_id: 1
-                    )
-                    expect(user).not_to be_valid
-                  end
+              describe User do
+                it 'is not valid if its username is the same as another user within the same account' do
+                  _existing_user = FactoryGirl.create(:user,
+                    username: 'johnsmith',
+                    account_id: 1
+                  )
+                  user = FactoryGirl.build(:user,
+                    username: 'johnsmith',
+                    account_id: 1
+                  )
+                  expect(user).not_to be_valid
+                end
 
-                  it 'is valid if its username is the same as another user within the same account, but for different case' do
-                    _existing_user = FactoryGirl.create(:user,
-                      username: 'johnsmith',
-                      account_id: 1
-                    )
-                    user = FactoryGirl.build(:user,
-                      username: 'JohnSmith',
-                      account_id: 1
-                    )
-                    expect(user).to be_valid
-                  end
+                it 'is valid if its username is the same as another user within the same account, but for different case' do
+                  _existing_user = FactoryGirl.create(:user,
+                    username: 'johnsmith',
+                    account_id: 1
+                  )
+                  user = FactoryGirl.build(:user,
+                    username: 'JohnSmith',
+                    account_id: 1
+                  )
+                  expect(user).to be_valid
+                end
 
 %section
   %h2.benefits-header

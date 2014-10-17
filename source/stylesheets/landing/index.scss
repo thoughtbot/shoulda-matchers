@@ -56,22 +56,15 @@ nav {
     @include size(auto em(300));
   }
 
-  .main-header-copy {
+  h1 {
+    font-weight: 500;
+    text-shadow: 1px 1px 7px #107a7a;
     color: white;
-    padding-top: em(60);
     text-align: center;
+    padding: 60px 15px 50px;
 
-    h1 {
-      font-weight: 500;
-      text-shadow: 1px 1px 7px #107a7a;
-
-      @include media($small-medium-screen) {
-        font-size: $base-font-size * 2.75;
-      }
-    }
-
-    h2 {
-      padding: em(15) em(15) em(25);
+    @include media($small-medium-screen) {
+      font-size: $base-font-size * 2.75;
     }
   }
 }
@@ -103,7 +96,7 @@ nav {
 .tool-tip {
   @include position(absolute, em(50) em(-15) null null);
   @include size(em(280) em(55));
-  @include animation(slideLeft 0.9s .5s 1, bounceOut 0.9s 2.5s 1);
+  @include animation(bounceIn 0.7s .7s 1, bounceOut 0.9s 2.5s 1);
   background: #e3e2dd;
   border-radius: em(5);
   box-shadow: -1px 3px 6px -1px rgba(0,0,0,0.70);;
