@@ -3,12 +3,12 @@
 }
 
 nav {
-  @include size(100% em(90));
+  @include size(100% em(110));
   background: $brand-lt-gray;
 
   .btn {
     float: right;
-    margin-top: em(23);
+    margin-top: em(35);
 
     @include media($small-medium-screen) {
       display: none;
@@ -21,7 +21,7 @@ nav {
   background: image-url("shoulda-matchers-logo.svg");
   display: inline-block;
   float: left;
-  margin: em(13) 0 0;
+  margin-top: em(25);
 
   @include media($mobile-screen) {
     padding-left: em(10);
@@ -110,13 +110,13 @@ nav {
 }
 
 .tool-tip {
-  @include position(absolute, em(50) em(-15) null null);
+  @include position(absolute, em(50) em(-25) null null);
   @include size(em(280) em(55));
   background: #e3e2dd;
   border-radius: em(5);
   box-shadow: -1px 3px 6px -1px rgba(0,0,0,0.70);;
   font-size: em(22);
-  padding: em(15);
+  padding: em(13) em(17) em(17);
   z-index: 5;
 
   @include media ($medium-large-screen) {
@@ -135,26 +135,27 @@ nav {
 
 .tool-tip-one {
   @extend .tool-tip;
-  @include animation(bounceIn 0.7s .3s 1 none, bounceOut 0.9s 3.2s 1 forwards);
+  @include animation(bounceIn 0.7s .3s 1 none, bounceOut 0.9s 3s 1 forwards);
 }
 
 .tool-tip-two {
-  @include animation(bounceIn 0.7s 4.5s 1 backwards, bounceOut 0.9s 6.8s 1 forwards);
+  @include animation(bounceIn 0.7s 4.3s 1 backwards, bounceOut 0.9s 6.6s 1 forwards);
   @extend .tool-tip;
 }
 
 .browser-background {
-  @include size (100% em(420));
+  @include size (100% em(450));
   background: #494f57;
   border-radius: 0 0 em(5) em(5);
 
   .language-ruby {
-    @include size (70% em(420,15));
+    @include size (70% em(450,15));
     @include position(absolute, em(24,15) null null em(24,15));
     background: #494f57;
     border: none;
     box-shadow: none;
     font-size: em(15);
+    overflow: hidden;
     text-shadow: none;
     z-index: 2;
 
@@ -168,14 +169,14 @@ nav {
   }
 
   .animation-two {
-    @include animation(fadeIn 0.9s 4.5s 1 backwards, fadeOut 0.9s 7s 1 forwards);
+    @include animation(fadeIn 0.9s 4.3s 1 backwards, fadeOut 0.9s 7s 1 forwards);
   }
 }
 
 .benefits-header {
   background: $brand-lt-gray;
   border-bottom: solid 1px #e3e2dd;
-  padding: em(65) 0 em(45) 0;
+  padding: em(75) 0 em(35) 0;
   text-align: center;
 
   span {
@@ -350,10 +351,15 @@ nav {
 }
 
 footer {
-  .btn {
+
+  .footer-buttons {
     @include position(relative, auto auto auto 50%);
-    @include size(150px auto);
-    margin: 40px 0 40px  -75px;
+    @include size(350px auto);
+    margin: 40px 0 40px  -175px;
+  }
+
+  .btn {
+
   }
 
   p {

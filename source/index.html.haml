@@ -18,7 +18,7 @@ title: Shoulda Matchers
         .browser-button
         .browser-button
       .tool-tip-one
-        %p Your test <b>without</b> Shoulda Matchers.
+        %p Test <b>without</b> Shoulda Matchers.
       .tool-tip-two
         %p Test <b>with</b> Shoulda Matchers.
 
@@ -84,11 +84,11 @@ title: Shoulda Matchers
       .benefit
         =image_tag 'write-icon.svg', class: "icon animate"
         %h2 Write More Tests
-        %p Test thoroughly by using over 30 preexisting tests, developed over time
+        %p Test thoroughly by using over 30 preexisting matchers, developed over time
       .benefit
         =image_tag 'check-icon.svg', class: "icon animate"
         %h2 More Readable Results
-        %p Get clear, readable, and actionable results from the tests you run
+        %p Get clear, readable, and actionable messages from the tests you run
 
 %section.installation-wrapper
   %h2.installation-header Installation Instructions
@@ -162,7 +162,8 @@ title: Shoulda Matchers
                 gem 'activemodel'
 
 %footer
-  %a.btn-github(href="https://github.com/thoughtbot/shoulda-matchers") Github
-  %a.btn-docs(href="#") Docs
+  .footer-buttons
+    %a.btn-github(href="https://github.com/thoughtbot/shoulda-matchers") Github
+    %a.btn-docs(href="#") Docs
   %p Shoulda Matchers is maintained and funded by thoughtbot, inc. Tweet your questions or suggestions to <a href='https://twitter.com/mcmire'>@mcmire</a> or <a href='https://twitter.com/thoughtbot'>@thoughtbot</a>
   %p Copyright © 2014 thoughtbot, inc.
