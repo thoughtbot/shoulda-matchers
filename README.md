@@ -1,4 +1,4 @@
-# shoulda-matchers [![Gem Version][fury-badge]][fury] [![Build Status][travis-badge]][travis]
+# shoulda-matchers [![Gem Version][version-badge]][rubygems] [![Build Status][travis-badge]][travis] ![Downloads][downloads-badge]
 
 [Official Documentation][rubydocs]
 
@@ -168,10 +168,11 @@ shoulda-matchers is copyright © 2006-2014 thoughtbot, inc. It is free software,
 and may be redistributed under the terms specified in the
 [MIT-LICENSE](MIT-LICENSE) file.
 
-[fury-badge]: https://badge.fury.io/rb/shoulda-matchers.png
-[fury]: http://badge.fury.io/rb/shoulda-matchers
-[travis-badge]: https://secure.travis-ci.org/thoughtbot/shoulda-matchers.png?branch=master
+[version-badge]: http://img.shields.io/gem/v/shoulda-matchers.svg
+[rubygems]: http://rubygems.org/gems/shoulda-matchers
+[travis-badge]: http://img.shields.io/travis/thoughtbot/shoulda-matchers/master.svg
 [travis]: http://travis-ci.org/thoughtbot/shoulda-matchers
+[downloads-badge]: http://img.shields.io/gem/dtv/shoulda-matchers.svg
 [rubydocs]: http://thoughtbot.github.io/shoulda-matchers
 [community]: http://thoughtbot.com/community
 [contributors]: https://github.com/thoughtbot/shoulda-matchers/contributors
