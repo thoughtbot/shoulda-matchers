@@ -17,10 +17,21 @@
   when `foreign_key` and/or `association_foreign_key` was specified on the
   association as a symbol instead of a string. ([#584])
 
+* Fix `allow_value` when an i18n translation key is passed to `with_message` and
+  the `:against` option is used to specify an alternate attribute. A bug here
+  also happened to affect `validate_confirmation_of` when an i18n translation
+  key is passed to `with_message`. ([#593])
+
+### Improvements
+
+* Tweak `allow_value` failure message so that it reads a bit nicer when listing
+  existing errors.
+
 [#591]: https://github.com/thoughtbot/shoulda-matchers/pull/591
 [#592]: https://github.com/thoughtbot/shoulda-matchers/pull/592
 [#588]: https://github.com/thoughtbot/shoulda-matchers/pull/588
 [#584]: https://github.com/thoughtbot/shoulda-matchers/pull/584
+[#593]: https://github.com/thoughtbot/shoulda-matchers/pull/593
 
 # 2.7.0
 
