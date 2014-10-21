@@ -100,10 +100,10 @@ require 'shoulda/matchers'
 
 ### Test::Unit
 
-shoulda-matchers was originally a component of
-[Shoulda](http://github.com/thoughtbot/shoulda) -- it's what provides the nice
-`should` syntax which is demonstrated below. For this reason, include it in
-your Gemfile instead:
+shoulda-matchers was originally a component of [Shoulda][shoulda], a meta-gem
+that also provides `should` and `context` syntax via
+[shoulda-context][shoulda-context]. For this reason you'll want to include this
+gem in your Gemfile instead:
 
 ```ruby
 group :test do
@@ -117,14 +117,14 @@ Once it is loaded, shoulda-matchers automatically includes itself into your test
 framework. It will mix in the appropriate matchers for ActiveRecord,
 ActiveModel, and ActionController depending on the modules that are available at
 runtime. For instance, in order to use the ActiveRecord matchers, ActiveRecord
-must be available beforehand.
+must be present beforehand.
 
-If your application is on Rails, everything should "just work", as
+If your application is written against Rails, everything should "just work", as
 shoulda-matchers will most likely be declared after Rails in your Gemfile. If
-your application is on another framework such as Sinatra or Padrino, you may
-have a different setup, so you will want to ensure that you are requiring
-shoulda-matchers after the components of Rails you are using. For instance,
-if you wanted to use and test against ActiveModel, you'd say:
+your application is written against another framework such as Sinatra or
+Padrino, you may have a different setup, so you will want to ensure that you are
+requiring shoulda-matchers after the components of Rails you are using. For
+instance, if you wanted to use and test against ActiveModel, you'd say:
 
 ```ruby
 gem 'activemodel'
@@ -175,3 +175,5 @@ and may be redistributed under the terms specified in the
 [rubydocs]: http://thoughtbot.github.io/shoulda-matchers
 [community]: http://thoughtbot.com/community
 [contributors]: https://github.com/thoughtbot/shoulda-matchers/contributors
+[shoulda]: http://github.com/thoughtbot/shoulda
+[shoulda-context]: http://github.com/thoughtbot/shoulda-context
