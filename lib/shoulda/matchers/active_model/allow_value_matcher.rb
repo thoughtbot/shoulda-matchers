@@ -281,8 +281,21 @@ module Shoulda
         end
 
         def expectation
-          includes_expected_message = expected_message ? "to include #{expected_message.inspect}" : ''
-          [error_source, includes_expected_message, "when #{attribute_to_set} is set to #{value.inspect}"].join(' ')
+          parts = [
+            error_source,
+            includes_expected_message,
+            "when #{attribute_to_set} is set to #{value.inspect}"
+          ]
+
+          parts.join(' ').squeeze(' ')
+        end
+
+        def includes_expected_message
+          if expected_message
+            "to include #{expected_message.inspect}"
+          else
+            ''
+          end
         end
 
         def error_source
