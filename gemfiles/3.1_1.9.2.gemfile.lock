@@ -36,7 +36,7 @@ GEM
     activesupport (3.1.11)
       multi_json (~> 1.0)
     ansi (1.4.3)
-    appraisal (1.0.0.beta2)
+    appraisal (1.0.0)
       bundler
       rake
       thor (>= 0.14.0)
@@ -188,7 +188,7 @@ PLATFORMS
 DEPENDENCIES
   activerecord-jdbc-adapter
   activerecord-jdbcsqlite3-adapter
-  appraisal (~> 1.0.0.beta2)
+  appraisal (~> 1.0)
   aruba
   bcrypt-ruby (~> 3.0.0)
   bourne (~> 1.3)
