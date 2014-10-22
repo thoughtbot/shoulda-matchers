@@ -41,7 +41,7 @@ class WarningsSpy
     reader.read
     partitioner.partition
     reporter.report
-    #fail_build_if_there_are_any_warnings
+    fail_build_if_there_are_any_warnings
   end
 
   def fail_build_if_there_are_any_warnings
