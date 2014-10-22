@@ -49,11 +49,11 @@ module UnitTests
       table_name = class_name.tableize.gsub('/', '_')
 
       table_block = lambda do |table|
-        columns.each do |name, specification|
+        columns.each do |column_name, specification|
           if specification.is_a?(Hash)
-            table.column name, specification[:type], specification[:options]
+            table.column column_name, specification[:type], specification[:options]
           else
-            table.column name, specification
+            table.column column_name, specification
           end
         end
       end
