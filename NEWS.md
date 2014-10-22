@@ -1,3 +1,15 @@
+# 3.0.0
+
+### Backward-incompatible changes
+
+* The negative form of `allow_value` has been changed so that instead of
+  asserting that any of the given values is an invalid value (allowing good
+  values to pass through), assert that *all* values are invalid values (allowing
+  good values not to pass through). This means that this test which formerly
+  passed will now fail:
+
+      expect(record).not_to allow_value('good value', *bad_values)
+
 # 2.8.0
 
 ### Deprecations

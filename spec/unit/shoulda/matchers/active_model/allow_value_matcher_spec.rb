@@ -165,24 +165,29 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
           less_than_or_equal_to: 50000
       end.new
     end
+
     bad_values = [nil, '', 'abc', '0', '50001', '123456', []]
 
-    it 'allows a good value' do
+    it 'matches given a good value' do
       expect(model).to allow_value('12345').for(:attr)
     end
 
-    bad_values.each do |bad_value|
-      it "rejects a bad value (#{bad_value.inspect})" do
+    it 'does not match given a bad value' do
+      bad_values.each do |bad_value|
         expect(model).not_to allow_value(bad_value).for(:attr)
       end
     end
 
-    it "rejects several bad values (#{bad_values.map(&:inspect).join(', ')})" do
+    it 'does not match given multiple bad values' do
       expect(model).not_to allow_value(*bad_values).for(:attr)
     end
 
-    it "rejects a mix of both good and bad values" do
-      expect(model).not_to allow_value('12345', *bad_values).for(:attr)
+    it "does not match given good values along with bad values" do
+      message = %{Expected errors when attr is set to "12345",\ngot no errors}
+
+      expect {
+        expect(model).not_to allow_value('12345', *bad_values).for(:attr)
+      }.to fail_with_message(message)
     end
   end
 

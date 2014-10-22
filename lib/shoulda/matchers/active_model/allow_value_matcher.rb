@@ -215,14 +215,12 @@ module Shoulda
 
         def matches?(instance)
           self.instance = instance
-          validator.record = instance
+          values_to_match.all? { |value| value_matches?(value) }
+        end
 
-          values_to_match.none? do |value|
-            validator.reset
-            self.value = value
-            set_attribute(value)
-            errors_match? || any_range_error_occurred?
-          end
+        def does_not_match?(instance)
+          self.instance = instance
+          values_to_match.all? { |value| !value_matches?(value) }
         end
 
         def failure_message
@@ -241,13 +239,24 @@ module Shoulda
 
         protected
 
-        attr_reader :attribute_to_check_message_against
-        attr_accessor :values_to_match, :instance, :attribute_to_set, :value,
+        attr_reader :instance, :attribute_to_check_message_against
+        attr_accessor :values_to_match, :attribute_to_set, :value,
           :matched_error, :after_setting_value_callback, :validator
+
+        def instance=(instance)
+          @instance = instance
+          validator.record = instance
+        end
 
         def attribute_to_check_message_against=(attribute)
           @attribute_to_check_message_against = attribute
           validator.attribute = attribute
+        end
+
+        def value_matches?(value)
+          self.value = value
+          set_attribute(value)
+          !(errors_match? || any_range_error_occurred?)
         end
 
         def set_attribute(value)
