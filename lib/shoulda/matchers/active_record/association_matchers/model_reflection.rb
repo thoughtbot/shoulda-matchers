@@ -28,20 +28,21 @@ module Shoulda
             join_table =
               if has_and_belongs_to_many_name_table_name
                 has_and_belongs_to_many_name_table_name
-              elsif reflection.respond_to?(:join_table)
-                reflection.join_table
               else
-                reflection.options[:join_table]
+                reflection.join_table
               end
 
             join_table.to_s
           end
 
           def association_relation
-            if reflection.respond_to?(:scope)
-              convert_scope_to_relation(reflection.scope)
+            relation = associated_class.all
+
+            if reflection.scope
+              # Source: AR::Associations::AssociationScope#eval_scope
+              relation.instance_exec(subject, &reflection.scope)
             else
-              convert_options_to_relation(reflection.options)
+              relation
             end
           end
 
@@ -68,37 +69,7 @@ module Shoulda
 
           attr_reader :reflection, :subject
 
-          def convert_scope_to_relation(scope)
-            relation = associated_class.all
-
-            if scope
-              # Source: AR::Associations::AssociationScope#eval_scope
-              relation.instance_exec(subject, &scope)
-            else
-              relation
-            end
-          end
-
-          def convert_options_to_relation(options)
-            relation = associated_class.scoped
-            relation = extend_relation_with(relation, :where, options[:conditions])
-            relation = extend_relation_with(relation, :includes, options[:include])
-            relation = extend_relation_with(relation, :order, options[:order])
-            relation = extend_relation_with(relation, :group, options[:group])
-            relation = extend_relation_with(relation, :having, options[:having])
-            relation = extend_relation_with(relation, :limit, options[:limit])
-            relation = extend_relation_with(relation, :offset, options[:offset])
-            relation = extend_relation_with(relation, :select, options[:select])
-            relation
-          end
-
-          def extend_relation_with(relation, method_name, value)
-            if value
-              relation.__send__(method_name, value)
-            else
-              relation
-            end
-          end
+          private
 
           def has_and_belongs_to_many_name
             reflection.options[:through]

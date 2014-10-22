@@ -34,8 +34,7 @@ module UnitTests
     end
 
     def attribute_that_receives_error
-      Shoulda::Matchers::RailsShim.
-        validates_confirmation_of_error_attribute(self)
+      confirmation_attribute
     end
 
     protected

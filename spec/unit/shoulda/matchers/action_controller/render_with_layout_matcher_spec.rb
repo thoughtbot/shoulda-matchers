@@ -52,11 +52,7 @@ describe Shoulda::Matchers::ActionController::RenderWithLayoutMatcher, type: :co
     def set_layout_in_context(context, layout)
       layouts = Hash.new(0)
       layouts[layout] = 1
-      context.instance_variable_set(layouts_ivar, layouts)
-    end
-
-    def layouts_ivar
-      Shoulda::Matchers::RailsShim.layouts_ivar
+      context.instance_variable_set('@_layouts', layouts)
     end
 
     def controller_without_layout

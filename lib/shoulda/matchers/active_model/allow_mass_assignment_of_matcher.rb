@@ -84,9 +84,6 @@ module Shoulda
         end
 
         def as(role)
-          if active_model_less_than_3_1?
-            raise 'You can specify role only in Rails 3.1 or greater'
-          end
           @options[:role] = role
           self
         end
@@ -153,19 +150,11 @@ module Shoulda
         end
 
         def authorizer
-          if active_model_less_than_3_1?
-            @subject.class.active_authorizer
-          else
-            @subject.class.active_authorizer[role]
-          end
+          @subject.class.active_authorizer[role]
         end
 
         def class_name
           @subject.class.name
-        end
-
-        def active_model_less_than_3_1?
-          ::ActiveModel::VERSION::STRING.to_f < 3.1
         end
       end
     end

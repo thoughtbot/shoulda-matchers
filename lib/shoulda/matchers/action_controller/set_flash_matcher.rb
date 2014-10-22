@@ -249,9 +249,8 @@ module Shoulda
         end
 
         def copy_flashes(original_flash, new_flash)
-          flashes_ivar = Shoulda::Matchers::RailsShim.flashes_ivar
-          flashes = original_flash.instance_variable_get(flashes_ivar).dup
-          new_flash.instance_variable_set(flashes_ivar, flashes)
+          flashes = original_flash.instance_variable_get('@flashes').dup
+          new_flash.instance_variable_set('@flashes', flashes)
         end
 
         def copy_discard_if_necessary(original_flash, new_flash)

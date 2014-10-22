@@ -125,7 +125,7 @@ module Shoulda
 
         def recorded_layouts
           if @context
-            @context.instance_variable_get(Shoulda::Matchers::RailsShim.layouts_ivar)
+            @context.instance_variable_get('@_layouts')
           else
             {}
           end

@@ -109,7 +109,7 @@ module Shoulda
 
         def qualify_matcher(matcher)
           matcher.with_message(@message,
-            against: error_attribute,
+            against: confirmation_attribute,
             values: { attribute: attribute }
           )
         end
@@ -119,10 +119,6 @@ module Shoulda
           if @subject.respond_to?(setter)
             @subject.__send__(setter, val)
           end
-        end
-
-        def error_attribute
-          RailsShim.validates_confirmation_of_error_attribute(self)
         end
       end
     end
