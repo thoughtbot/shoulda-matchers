@@ -9,7 +9,7 @@ describe 'shoulda-matchers has independent matchers' do
         add_minitest_to_project
         add_shoulda_context_to_project(manually: true)
         add_shoulda_matchers_to_project(
-          test_frameworks: [:n_unit],
+          test_frameworks: [:minitest],
           manually: true
         )
       end

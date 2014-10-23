@@ -1,3 +1,5 @@
+require_relative 'gem_helpers'
+
 module AcceptanceTests
   module RspecHelpers
     include GemHelpers

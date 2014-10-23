@@ -34,10 +34,13 @@ describe 'shoulda-matchers integrates with Rails' do
     configure_routes_with_single_wildcard_route
   end
 
-  specify 'in a project that uses Test::Unit' do
+  specify 'in a project that uses the default test framework' do
     updating_bundle do
       add_gems_for_n_unit
-      add_shoulda_matchers_to_project
+      add_shoulda_matchers_to_project(
+        test_frameworks: [default_test_framework],
+        library: :rails
+      )
     end
 
     run_tests_for_n_unit
@@ -46,7 +49,10 @@ describe 'shoulda-matchers integrates with Rails' do
   specify 'in a project that uses RSpec' do
     updating_bundle do
       add_gems_for_rspec
-      add_shoulda_matchers_to_project(test_frameworks: [:rspec])
+      add_shoulda_matchers_to_project(
+        test_frameworks: [:rspec],
+        library: :rails
+      )
     end
 
     run_tests_for_rspec
@@ -62,6 +68,7 @@ describe 'shoulda-matchers integrates with Rails' do
       add_gems_for_rspec
       add_shoulda_matchers_to_project(
         test_frameworks: [:rspec],
+        library: :rails,
         manually: true
       )
     end
@@ -75,7 +82,10 @@ describe 'shoulda-matchers integrates with Rails' do
     updating_bundle do
       add_gems_for_n_unit
       add_gems_for_rspec
-      add_shoulda_matchers_to_project
+      add_shoulda_matchers_to_project(
+        test_frameworks: [:rspec, nil],
+        library: :rails
+      )
     end
 
     run_tests_for_n_unit

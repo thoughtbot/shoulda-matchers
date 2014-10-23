@@ -21,23 +21,7 @@ module AcceptanceTests
     end
 
     def add_shoulda_matchers_to_project(options = {})
-      gem_options = { path: fs.root_directory }
-
-      if options[:manually]
-        gem_options[:require] = false
-      end
-
-      add_gem 'shoulda-matchers', gem_options
-
-      if options[:manually]
-        if options[:test_frameworks].include?(:rspec)
-          append_to_file spec_helper_file_path, "require 'shoulda/matchers'"
-        end
-
-        if options[:test_frameworks].include?(:n_unit)
-          append_to_file 'test/test_helper.rb', "require 'shoulda/matchers'"
-        end
-      end
+      AddsShouldaMatchersToProject.call(options)
     end
 
     def add_minitest_to_project

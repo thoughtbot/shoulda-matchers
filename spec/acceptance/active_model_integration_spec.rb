@@ -4,7 +4,10 @@ describe 'shoulda-matchers integrates with an ActiveModel project' do
   specify 'and loads without errors' do
     create_active_model_project
 
-    add_shoulda_matchers_to_project
+    add_shoulda_matchers_to_project(
+      test_frameworks: [:rspec],
+      library: :active_model
+    )
 
     write_file 'load_dependencies.rb', <<-FILE
       require 'active_model'

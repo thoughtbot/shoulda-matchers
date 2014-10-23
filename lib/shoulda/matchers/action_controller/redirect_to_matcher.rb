@@ -82,7 +82,7 @@ module Shoulda
             @context.__send__(:assert_redirected_to, url)
             @failure_message_when_negated = "Didn't expect to redirect to #{url}"
             true
-          rescue Shoulda::Matchers::AssertionError => error
+          rescue Shoulda::Matchers.assertion_exception_class => error
             @failure_message = error.message
             false
           end

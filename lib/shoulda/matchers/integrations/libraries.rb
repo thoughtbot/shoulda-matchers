@@ -1,0 +1,5 @@
+require 'shoulda/matchers/integrations/libraries/action_controller'
+require 'shoulda/matchers/integrations/libraries/active_model'
+require 'shoulda/matchers/integrations/libraries/active_record'
+require 'shoulda/matchers/integrations/libraries/missing_library'
+require 'shoulda/matchers/integrations/libraries/rails'

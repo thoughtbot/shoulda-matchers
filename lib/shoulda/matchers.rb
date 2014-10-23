@@ -1,28 +1,22 @@
-require 'shoulda/matchers/assertion_error'
+require 'shoulda/matchers/configuration'
 require 'shoulda/matchers/doublespeak'
 require 'shoulda/matchers/error'
+require 'shoulda/matchers/independent'
+require 'shoulda/matchers/integrations'
 require 'shoulda/matchers/matcher_context'
 require 'shoulda/matchers/rails_shim'
 require 'shoulda/matchers/util'
 require 'shoulda/matchers/version'
 require 'shoulda/matchers/warn'
 
-require 'shoulda/matchers/independent'
+require 'shoulda/matchers/action_controller'
+require 'shoulda/matchers/active_model'
+require 'shoulda/matchers/active_record'
 
-if defined?(ActiveModel)
-  require 'shoulda/matchers/active_model'
+module Shoulda
+  module Matchers
+    class << self
+      attr_accessor :assertion_exception_class
+    end
+  end
 end
-
-if defined?(ActiveRecord)
-  require 'shoulda/matchers/active_record'
-end
-
-if defined?(ActionController)
-  require 'shoulda/matchers/action_controller'
-end
-
-if defined?(RSpec)
-  require 'shoulda/matchers/integrations/rspec'
-end
-
-require 'shoulda/matchers/integrations/test_unit'

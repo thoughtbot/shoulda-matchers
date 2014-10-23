@@ -135,7 +135,7 @@ module Shoulda
           rescue ::ActionController::RoutingError => error
             @failure_message = error.message
             false
-          rescue Shoulda::Matchers::AssertionError => error
+          rescue Shoulda::Matchers.assertion_exception_class => error
             @failure_message = error.message
             false
           end
