@@ -1,7 +1,6 @@
 require 'bundler/setup'
 require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
-require 'cucumber/rake/task'
 require 'appraisal'
 require 'erb'
 require_relative 'lib/shoulda/matchers/version'
@@ -22,23 +21,10 @@ RSpec::Core::RakeTask.new('spec:acceptance') do |t|
   t.verbose = false
 end
 
-Cucumber::Rake::Task.new do |t|
-  options = []
-
-  options << '--format' << (ENV['CUCUMBER_FORMAT'] || 'progress')
-
-  if Bundler.definition.dependencies.none? { |dependency| dependency.name == 'spring' }
-    options << '--profile' << 'without_spring'
-  end
-
-  t.fork = false
-  t.cucumber_opts = options
-end
-
 task :default do
   if ENV['BUNDLE_GEMFILE'] =~ /gemfiles/
     sh 'rake spec:unit'
-    Rake::Task['cucumber'].invoke
+    sh 'rake spec:acceptance'
   else
     Rake::Task['appraise'].invoke
   end
