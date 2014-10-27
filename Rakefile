@@ -15,6 +15,13 @@ RSpec::Core::RakeTask.new('spec:unit') do |t|
   t.verbose = false
 end
 
+RSpec::Core::RakeTask.new('spec:acceptance') do |t|
+  t.ruby_opts = '-w -r ./spec/report_warnings'
+  t.pattern = "spec/acceptance/**/*_spec.rb"
+  t.rspec_opts = '--color --format progress'
+  t.verbose = false
+end
+
 Cucumber::Rake::Task.new do |t|
   options = []
 
