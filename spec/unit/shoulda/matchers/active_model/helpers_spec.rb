@@ -1,5 +1,5 @@
 # encoding: UTF-8
-require 'spec_helper'
+require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::Helpers do
   include Shoulda::Matchers::ActiveModel

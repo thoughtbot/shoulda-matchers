@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidationMessageFinder do
   context '#allow_description' do

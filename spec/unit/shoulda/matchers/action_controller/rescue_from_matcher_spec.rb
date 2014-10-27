@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActionController::RescueFromMatcher do
   context 'a controller that rescues from RuntimeError' do

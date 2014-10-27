@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'unit_spec_helper'
 
 describe Shoulda::Matchers::Independent::DelegateMethodMatcher::StubbedTarget do
   subject(:target) { described_class.new(:stubbed_method) }

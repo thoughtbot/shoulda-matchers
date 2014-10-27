@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::EnsureLengthOfMatcher do
   context 'an attribute with a non-zero minimum length validation' do

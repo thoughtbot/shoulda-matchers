@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActionController::RespondWithMatcher do
   statuses = { success: 200, redirect: 301, missing: 404, error: 500,

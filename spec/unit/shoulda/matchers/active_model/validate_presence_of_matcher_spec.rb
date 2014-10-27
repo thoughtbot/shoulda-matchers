@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
   context 'a model with a presence validation' do

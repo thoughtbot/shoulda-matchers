@@ -1,6 +1,6 @@
 require 'delegate'
 
-module Helpers
+module UnitTests
   class RecordBuilderWithI18nValidationMessage < SimpleDelegator
     def initialize(builder, options = {})
       super(builder)

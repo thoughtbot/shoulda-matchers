@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'unit_spec_helper'
 
 module Shoulda::Matchers::Doublespeak
   describe StubImplementation do

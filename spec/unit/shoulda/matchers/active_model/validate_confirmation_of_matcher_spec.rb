@@ -1,7 +1,7 @@
-require 'spec_helper'
+require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher do
-  include Helpers::ConfirmationMatcherHelpers
+  include UnitTests::ConfirmationMatcherHelpers
 
   context '#description' do
     it 'states that the confirmation must match its base attribute' do

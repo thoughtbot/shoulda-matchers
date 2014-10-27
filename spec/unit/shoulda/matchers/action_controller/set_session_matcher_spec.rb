@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActionController::SetSessionMatcher do
   context 'a controller that sets a session variable' do

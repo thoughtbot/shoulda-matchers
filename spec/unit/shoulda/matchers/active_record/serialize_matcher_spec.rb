@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveRecord::SerializeMatcher do
   it 'accepts when the attribute is serialized' do

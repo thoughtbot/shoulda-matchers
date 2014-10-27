@@ -8,9 +8,9 @@ require_relative 'lib/shoulda/matchers/version'
 
 CURRENT_VERSION = Shoulda::Matchers::VERSION
 
-RSpec::Core::RakeTask.new do |t|
+RSpec::Core::RakeTask.new('spec:unit') do |t|
   t.ruby_opts = '-w -r ./spec/report_warnings'
-  t.pattern = "spec/**/*_spec.rb"
+  t.pattern = "spec/unit/**/*_spec.rb"
   t.rspec_opts = '--color --format progress'
   t.verbose = false
 end
@@ -30,7 +30,7 @@ end
 
 task :default do
   if ENV['BUNDLE_GEMFILE'] =~ /gemfiles/
-    Rake::Task['spec'].invoke
+    sh 'rake spec:unit'
     Rake::Task['cucumber'].invoke
   else
     Rake::Task['appraise'].invoke

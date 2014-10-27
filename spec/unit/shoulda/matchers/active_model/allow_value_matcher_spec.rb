@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
   context "#description" do
@@ -89,7 +89,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
   end
 
   context 'when the attribute being validated is different than the attribute that receives the validation error' do
-    include Helpers::AllowValueMatcherHelpers
+    include UnitTests::AllowValueMatcherHelpers
 
     context 'when the validation error message was provided directly' do
       it 'passes given a valid value' do

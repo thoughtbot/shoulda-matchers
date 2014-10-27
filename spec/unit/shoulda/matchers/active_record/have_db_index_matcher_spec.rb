@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher do
   context 'have_db_index' do

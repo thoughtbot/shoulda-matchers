@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection do
   it 'delegates other methods to the given Reflection object' do

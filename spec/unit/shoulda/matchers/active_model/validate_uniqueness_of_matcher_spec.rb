@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
   context 'a model without a a uniqueness validation' do

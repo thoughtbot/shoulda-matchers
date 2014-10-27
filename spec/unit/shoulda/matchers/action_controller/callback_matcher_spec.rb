@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActionController::CallbackMatcher do
   shared_examples 'CallbackMatcher' do |kind, callback_type|

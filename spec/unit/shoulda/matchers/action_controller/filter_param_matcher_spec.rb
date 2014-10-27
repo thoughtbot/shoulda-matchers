@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActionController::FilterParamMatcher do
   it 'accepts filtering a filtered parameter' do

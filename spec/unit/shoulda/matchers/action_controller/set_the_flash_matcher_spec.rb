@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActionController::SetTheFlashMatcher do
   it 'fails with unmatchable #to' do

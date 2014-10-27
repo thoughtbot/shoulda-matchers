@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OnlyIntegerMatcher do
   subject { described_class.new(:attr) }

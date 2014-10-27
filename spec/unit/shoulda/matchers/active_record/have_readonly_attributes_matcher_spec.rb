@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveRecord::HaveReadonlyAttributeMatcher do
   context 'a read-only attribute' do

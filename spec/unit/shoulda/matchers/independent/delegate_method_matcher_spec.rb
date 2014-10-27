@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'unit_spec_helper'
 
 describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
   describe '#description' do
