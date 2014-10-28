@@ -33,6 +33,10 @@
 [#584]: https://github.com/thoughtbot/shoulda-matchers/pull/584
 [#593]: https://github.com/thoughtbot/shoulda-matchers/pull/593
 
+### Improvements
+
+* Consistently alphabetize all matchers in ActiveModel Matchers and ActiveRecord Matchers in README.md.
+
 # 2.7.0
 
 ### Deprecations
