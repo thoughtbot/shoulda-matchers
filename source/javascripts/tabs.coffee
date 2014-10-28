@@ -1,20 +1,39 @@
 $(document).ready ->
-  $('.accordion-tabs-minimal').each (index) ->
-    $(this).children('li')
-      .first()
-        .children('a')
-          .addClass('is-active')
-          .next()
-            .addClass('is-open')
-            .show()
+  tabSetSelector = '.accordion-tabs-minimal'
+  tabSelector = '.tab-link'
+  tabContentSelector = '.tab-content'
+  tabActiveClass = 'is-active'
+  tabContentOpenClass = 'is-open'
+  tabSets = $(tabSetSelector)
 
-  $('.accordion-tabs-minimal').on 'click', 'li > a', (event) ->
-    unless $(this).hasClass('is-active')
-      event.preventDefault()
-      accordionTabs = $(this).closest('.accordion-tabs-minimal')
-      accordionTabs.find('.is-open').removeClass('is-open').hide()
-      $(this).next().toggleClass('is-open').toggle()
-      accordionTabs.find('.is-active').removeClass('is-active')
-      $(this).addClass('is-active')
-    else
-      event.preventDefault()
+  selectFirstTab = ->
+    firstItem = $(this).children('li').first()
+    firstItem.find(tabSelector).addClass(tabActiveClass)
+    firstItem.find(tabContentSelector).addClass(tabContentOpenClass).show()
+
+  isTabActive = (tab) ->
+    tab.hasClass(tabActiveClass)
+
+  selectTab = (tabSet, tab) ->
+    tabSet.find(tabSelector).removeClass(tabActiveClass)
+    tab.addClass(tabActiveClass)
+
+  switchContent = (tabSet, content) ->
+    tabSet.find(tabContentSelector)
+      .removeClass(tabContentOpenClass)
+      .hide()
+    content.addClass(tabContentOpenClass).show()
+
+  respondToTabBeingClicked = (event) ->
+    event.preventDefault()
+
+    tab = $(this)
+    tabSet = tab.parents(tabSetSelector)
+    content = tab.next(tabContentSelector)
+
+    unless isTabActive(tab)
+      selectTab(tabSet, tab)
+      switchContent(tabSet, content)
+
+  tabSets.each(selectFirstTab)
+  tabSets.on('click', tabSelector, respondToTabBeingClicked)

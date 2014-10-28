@@ -1,15 +1,14 @@
-$ ->
+$(document).ready ->
   if $('.animate').length > 0
-    animate_icon = ->
-      $('.animate').each (i, el) ->
-        $el = $(el)
-        if $el.visible(true, true)
-          $el.addClass('animated')
+    animateElementsInView = ->
+      $('.animate').each ->
+        element = $(this)
+        if element.visible(true, true)
+          element.addClass('animated')
         else
-          $el.removeClass('animated')
+          element.removeClass('animated')
 
-    animate_icon()
+    animateElementsInView()
 
-    $(window).scroll (event) ->
-      animate_icon()
+    $(window).scroll(animateElementsInView)
 
