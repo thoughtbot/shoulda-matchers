@@ -133,14 +133,71 @@ nav {
   }
 }
 
-.tool-tip-one {
-  @extend .tool-tip;
-  @include animation(bounceIn 0.7s .3s 1 none, bounceOut 0.9s 3s 1 forwards);
-}
+.presentation {
+  &.paused {
+    .animatable {
+      @include animation-play-state(paused);
+    }
 
-.tool-tip-two {
-  @include animation(bounceIn 0.7s 4.3s 1 backwards, bounceOut 0.9s 6.6s 1 forwards);
-  @extend .tool-tip;
+    .tool-tip {
+      @include transform(scale3d(0, 0, 0));
+    }
+
+    .animation {
+      opacity: 0;
+    }
+  }
+
+  &.running {
+    .tool-tip {
+      @include transform(inherit);
+    }
+
+    .animation {
+      opacity: inherit;
+    }
+
+    $slide-one-start: 0s;
+    $slide-duration: 2.5s;
+    $slide-fade-offset: 0.3s;
+    $slide-pause: 1s;
+    $tooltip-in-duration: 0.7s;
+    $tooltip-out-duration: 0.9s;
+    $fade-duration: 0.9s;
+
+    $slide-one-start: 0s;
+    $slide-one-end: $slide-one-start + $slide-duration;
+    $slide-two-start: $slide-one-end + $fade-duration + $slide-pause;
+    $slide-two-end: $slide-two-start + $slide-duration;
+
+    .tool-tip-one {
+      @include animation(
+        bounceIn $tooltip-in-duration $slide-one-start 1 backwards,
+        bounceOut $tooltip-out-duration $slide-one-end 1 forwards
+      );
+    }
+
+    .animation-one {
+      @include animation(
+        fadeIn $fade-duration $slide-one-start 1 backwards,
+        fadeOut $fade-duration ($slide-one-end + $slide-fade-offset) 1 forwards
+      );
+    }
+
+    .tool-tip-two {
+      @include animation(
+        bounceIn $tooltip-in-duration $slide-two-start 1 backwards,
+        bounceOut $tooltip-out-duration $slide-two-end 1 forwards
+      );
+    }
+
+    .animation-two {
+      @include animation(
+        fadeIn $fade-duration $slide-two-start 1 backwards,
+        fadeOut $fade-duration ($slide-two-end + $slide-fade-offset) 1 forwards
+      );
+    }
+  }
 }
 
 .browser-background {
@@ -162,14 +219,6 @@ nav {
     @include media($small-screen) {
       display: none;
     }
-  }
-
-  .animation-one {
-    @include animation(fadeIn 0.9s .3s 1 backwards, fadeOut 0.9s 3.2s 1 forwards);
-  }
-
-  .animation-two {
-    @include animation(fadeIn 0.9s 4.3s 1 backwards, fadeOut 0.9s 7s 1 forwards);
   }
 }
 
