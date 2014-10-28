@@ -202,7 +202,7 @@ nav {
   border-radius: 0 0 em(5) em(5);
 
   .language-ruby {
-    @include size (70% em(350,15));
+    @include size (70% em(450,15));
     @include position(absolute, em(24,15) null null em(24,15));
     background: #494f57;
     border: none;
