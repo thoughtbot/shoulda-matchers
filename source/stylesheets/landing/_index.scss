@@ -10,7 +10,7 @@ nav {
     float: right;
     margin-top: em(35);
 
-    @include media($small-medium-screen) {
+    @include media($mobile-screen) {
       display: none;
     }
   }
@@ -69,10 +69,6 @@ nav {
   background: image-url('background-header.png') no-repeat top;
   background-size: cover;
 
-  @include media($small-screen) {
-    @include size(auto em(300));
-  }
-
   h1 {
     font-weight: 500;
     text-shadow: 1px 1px 7px #107a7a;
@@ -87,6 +83,7 @@ nav {
 }
 
 .browser-container {
+  padding: 0 em(15);
   position: relative;
 }
 
@@ -95,10 +92,6 @@ nav {
   background: #d8d8d8;
   background-repeat: no-repeat;
   border-radius: em(4) em(4) 0 0;
-
-  @include media($small-screen) {
-    display: none;
-  }
 }
 
 .browser-button {
@@ -123,8 +116,11 @@ nav {
     margin-right: em(50);
   }
 
-  @include media($small-screen) {
-    display: none;
+  @include media($mobile-screen) {
+    @include position(absolute, em(35) em(-25) null null);
+    @include size(em(280) em(45));
+    font-size: em(18);
+    padding: em(11) em(17) em(17);
   }
 
   p {
@@ -206,7 +202,7 @@ nav {
   border-radius: 0 0 em(5) em(5);
 
   .language-ruby {
-    @include size (70% em(450,15));
+    @include size (70% em(350,15));
     @include position(absolute, em(24,15) null null em(24,15));
     background: #494f57;
     border: none;
@@ -215,10 +211,6 @@ nav {
     overflow: hidden;
     text-shadow: none;
     z-index: 2;
-
-    @include media($small-screen) {
-      display: none;
-    }
   }
 }
 
@@ -231,10 +223,6 @@ nav {
   span {
     color: $brand-green;
     font-weight: 500;
-  }
-
-  @include media($small-screen) {
-    padding: em(30);
   }
 }
 
@@ -289,7 +277,7 @@ nav {
     width: em(500);
 
     @include media($mobile-screen) {
-      width: em(350);
+      width: em(320);
     }
   }
 }
@@ -405,10 +393,6 @@ footer {
     @include position(relative, auto auto auto 50%);
     @include size(350px auto);
     margin: 40px 0 40px  -175px;
-  }
-
-  .btn {
-
   }
 
   p {
