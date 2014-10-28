@@ -742,6 +742,73 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       end.to fail_with_message_including('missing columns: person_id, relative_id')
     end
 
+    context "declaring the association with a :join_table option" do
+
+      it "rejects an association with a bad :join_table option" do
+        define_model :relative
+
+        define_model :person do
+          has_and_belongs_to_many(
+            :relatives,
+            join_table: "people_and_their_families"
+          )
+        end
+
+        create_table("people_and_their_families", id: false) do |t|
+          t.references :person
+          t.references :relative
+        end
+
+        expect do
+          expect(Person.new).to(
+            have_and_belong_to_many(:relatives).join_table("family_tree")
+          )
+        end.to fail_with_message_including(
+         "relatives should use 'family_tree' for :join_table option"
+        )
+      end
+
+      it "rejects an association with a missing :join_table option" do
+        define_model :relative
+
+        define_model :person do
+          has_and_belongs_to_many(:relatives)
+        end
+
+        create_table("people_relatives", id: false) do |t|
+          t.references :person
+          t.references :relative
+        end
+
+        expect do
+          expect(Person.new).to(
+            have_and_belong_to_many(:relatives).join_table("family_tree")
+          )
+        end.to fail_with_message_including(
+         "relatives should use 'family_tree' for :join_table option"
+        )
+      end
+
+
+      it "accepts an association with a valid :join_table option" do
+        define_model :relative
+        join_table_name = 'people_and_their_families'
+
+        define_model :person do
+          has_and_belongs_to_many(:relatives, join_table: join_table_name)
+        end
+
+        create_table(join_table_name, id: false) do |t|
+          t.references :person
+          t.references :relative
+        end
+
+        expect(Person.new).to(
+          have_and_belong_to_many(:relatives).join_table(join_table_name)
+        )
+      end
+    end
+
     context 'using a custom foreign key' do
       it 'rejects an association with a join table with incorrect columns' do
         define_model :relative

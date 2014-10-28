@@ -24,8 +24,8 @@ module Shoulda
             reflection.options[:through]
           end
 
-          def join_table
-            join_table =
+          def join_table_name
+            join_table_name =
               if has_and_belongs_to_many_name_table_name
                 has_and_belongs_to_many_name_table_name
               elsif reflection.respond_to?(:join_table)
@@ -34,7 +34,7 @@ module Shoulda
                 reflection.options[:join_table]
               end
 
-            join_table.to_s
+            join_table_name.to_s
           end
 
           def association_relation

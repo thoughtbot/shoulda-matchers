@@ -54,7 +54,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
     end
   end
 
-  describe '#join_table' do
+  describe '#join_table_name' do
     context 'when the association was defined with a :join_table option' do
       it 'returns the value of the option' do
         create_table :foos, id: false do |t|
@@ -68,7 +68,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
         delegate_reflection = country_model.reflect_on_association(:people)
         reflection = described_class.new(delegate_reflection)
 
-        expect(reflection.join_table).to eq 'foos'
+        expect(reflection.join_table_name).to eq 'foos'
       end
     end
 
@@ -81,7 +81,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
         delegate_reflection = country_model.reflect_on_association(:people)
         reflection = described_class.new(delegate_reflection)
 
-        expect(reflection.join_table).to eq 'countries_people'
+        expect(reflection.join_table_name).to eq 'countries_people'
       end
     end
   end
