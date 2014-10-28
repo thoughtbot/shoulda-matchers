@@ -34,8 +34,8 @@ nav {
   border-radius: em(20);
   display: inline-block;
   font-weight: 400;
-  padding: em(10) em(20);
   margin-left: em(10);
+  padding: em(10) em(20);
   text-align: center;
   text-transform: uppercase;
 }
@@ -70,9 +70,9 @@ nav {
   background-size: cover;
 
   h1 {
+    color: white;
     font-weight: 500;
     text-shadow: 1px 1px 7px #107a7a;
-    color: white;
     text-align: center;
     padding: 60px 15px 50px;
 
@@ -230,7 +230,7 @@ nav {
   padding: em(75) 0;
 
   @include media($small-screen) {
-    padding-top:initial;
+    padding-top: initial;
     padding-bottom: em(25);
   }
 }
