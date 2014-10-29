@@ -1,6 +1,6 @@
 language: ruby
 cache: bundler
-script: "bundle exec rake spec cucumber"
+script: "bundle exec rake"
 install: "travis_retry bundle install"
 rvm:
   - 1.9.2
