@@ -3,12 +3,12 @@
 }
 
 nav {
-  @include size(100% em(110));
+  @include size(100% em(100));
   background: $brand-lt-gray;
 
   .btn {
     float: right;
-    margin-top: em(35);
+    margin-top: em(30);
 
     @include media($mobile-screen) {
       display: none;
@@ -18,10 +18,10 @@ nav {
 
 .logo {
   @include size(em(250) em(65));
-  background: image-url("shoulda-matchers-logo.svg");
+  background: image-url("shoulda-matchers-logo.svg") no-repeat;
   display: inline-block;
   float: left;
-  margin-top: em(25);
+  margin-top: em(15);
 
   @include media($mobile-screen) {
     padding-left: em(10);
@@ -74,21 +74,36 @@ nav {
     font-weight: 500;
     text-shadow: 1px 1px 7px #107a7a;
     text-align: center;
-    padding: 60px 15px 50px;
+    padding: 50px 15px 40px;
 
     @include media($small-medium-screen) {
       font-size: $base-font-size * 2.75;
     }
   }
+
+  h4 {
+    @include span-columns(6);
+    color: white;
+    float: left;
+    font-weight: 500;
+    padding-bottom: em(15);
+    position: relative;
+    text-align: center;
+
+    &:last-of-type {
+      margin-right: 0;
+    }
+  }
 }
 
 .browser-container {
+  @include span-columns(6);
   padding: 0 em(15);
   position: relative;
 }
 
 .browser-bar {
-  @include size (100% em(32));
+  @include size (em(525) em(32));
   background: #d8d8d8;
   background-repeat: no-repeat;
   border-radius: em(4) em(4) 0 0;
@@ -102,14 +117,31 @@ nav {
   margin: em(9) 0 0 em(8);
 }
 
+.emogi {
+  @include position(absolute, em(-30) em(-36) null null);
+  z-index: 5;
+}
+
+.emogi-thumb {
+  @extend .emogi;
+  @include size(em(85) em(85));
+  background: image-url("emogi-thumb.svg") no-repeat;
+}
+
+.emogi-poop {
+  @extend .emogi;
+  @include size(em(100) em(100));
+  background: image-url("emogi-poop.svg") no-repeat;
+}
+
 .tool-tip {
   @include position(absolute, em(50) em(-25) null null);
-  @include size(em(280) em(55));
+  @include size(em(260) em(45));
   background: #e3e2dd;
   border-radius: em(5);
   box-shadow: -1px 3px 6px -1px rgba(0,0,0,0.70);;
   font-size: em(22);
-  padding: em(13) em(17) em(17);
+  padding: em(8) em(17) em(17);
   z-index: 5;
 
   @include media ($medium-large-screen) {
@@ -129,85 +161,22 @@ nav {
   }
 }
 
-.presentation {
-  &.paused {
-    .animatable {
-      @include animation-play-state(paused);
-    }
-
-    .tool-tip {
-      @include transform(scale3d(0, 0, 0));
-    }
-
-    .animation {
-      opacity: 0;
-    }
-  }
-
-  &.running {
-    .tool-tip {
-      @include transform(inherit);
-    }
-
-    .animation {
-      opacity: inherit;
-    }
-
-    $slide-one-start: 0s;
-    $slide-duration: 2.5s;
-    $slide-fade-offset: 0.3s;
-    $slide-pause: 1s;
-    $tooltip-in-duration: 0.7s;
-    $tooltip-out-duration: 0.9s;
-    $fade-duration: 0.9s;
-
-    $slide-one-start: 0s;
-    $slide-one-end: $slide-one-start + $slide-duration;
-    $slide-two-start: $slide-one-end + $fade-duration + $slide-pause;
-    $slide-two-end: $slide-two-start + $slide-duration;
-
-    .tool-tip-one {
-      @include animation(
-        bounceIn $tooltip-in-duration $slide-one-start 1 backwards,
-        bounceOut $tooltip-out-duration $slide-one-end 1 forwards
-      );
-    }
-
-    .animation-one {
-      @include animation(
-        fadeIn $fade-duration $slide-one-start 1 backwards,
-        fadeOut $fade-duration ($slide-one-end + $slide-fade-offset) 1 forwards
-      );
-    }
-
-    .tool-tip-two {
-      @include animation(
-        bounceIn $tooltip-in-duration $slide-two-start 1 backwards,
-        bounceOut $tooltip-out-duration $slide-two-end 1 forwards
-      );
-    }
-
-    .animation-two {
-      @include animation(
-        fadeIn $fade-duration $slide-two-start 1 backwards,
-        fadeOut $fade-duration ($slide-two-end + $slide-fade-offset) 1 forwards
-      );
-    }
-  }
+.animation {
+  @include animation(fadeIn 0.5s .55s 1 backwards);
 }
 
 .browser-background {
-  @include size (100% em(450));
+  @include size (em(525) em(405));
   background: #494f57;
   border-radius: 0 0 em(5) em(5);
 
   .language-ruby {
-    @include size (70% em(450,15));
-    @include position(absolute, em(24,15) null null em(24,15));
+    @include size (em(515) em(423,15));
+    @include position(absolute, em(27,15) null null em(24,15));
     background: #494f57;
     border: none;
     box-shadow: none;
-    font-size: em(15);
+    font-size: em(14.25);
     overflow: hidden;
     text-shadow: none;
     z-index: 2;
@@ -217,7 +186,7 @@ nav {
 .benefits-header {
   background: $brand-lt-gray;
   border-bottom: solid 1px #e3e2dd;
-  padding: em(75) 0 em(35) 0;
+  padding: em(60) 0 em(25) 0;
   text-align: center;
 
   span {

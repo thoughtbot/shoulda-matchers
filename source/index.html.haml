@@ -11,20 +11,18 @@ title: Shoulda Matchers
   .wrapper
     .main-header-copy
       %h1 Simple One-Liner Tests for Rails
+    %h4 Without Shoulda
+    %h4.header-two With Shoulda
 
-    .browser-container.presentation.paused
+    .browser-container.presentation.browser-one
       .browser-bar
         .browser-button
         .browser-button
         .browser-button
-      .animatable.tool-tip.tool-tip-one
-        %p Test <b>without</b> Shoulda Matchers.
-      .animatable.tool-tip.tool-tip-two
-        %p Test <b>with</b> Shoulda Matchers.
-
+        .emogi-poop
       .browser-background
         %pre
-          %code.language-ruby.animatable.animation.animation-one
+          %code.language-ruby.animation
             :preserve
               describe User do
                 it 'is not valid if its username is the same as another user within the same account' do
@@ -51,7 +49,15 @@ title: Shoulda Matchers
                   expect(user).to be_valid
                 end
 
-          %code.language-ruby.animatable.animation.animation-two
+    .browser-container.presentation.browser-two
+      .browser-bar
+        .browser-button
+        .browser-button
+        .browser-button
+        .emogi-thumb
+      .browser-background
+        %pre
+          %code.language-ruby.animation
             :preserve
               describe User do
                 context 'validations' do
