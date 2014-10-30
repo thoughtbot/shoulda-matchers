@@ -14,15 +14,15 @@ title: Shoulda Matchers
     %h4 Without Shoulda
     %h4.header-two With Shoulda
 
-    .browser-container.presentation.browser-one
+    .browser-container.browser-one.animation
       .browser-bar
         .browser-button
         .browser-button
         .browser-button
-        .emogi-poop
+        .emoji-poop
       .browser-background
         %pre
-          %code.language-ruby.animation
+          %code.language-ruby
             :preserve
               describe User do
                 it 'is not valid if its username is the same as another user within the same account' do
@@ -49,15 +49,15 @@ title: Shoulda Matchers
                   expect(user).to be_valid
                 end
 
-    .browser-container.presentation.browser-two
+    .browser-container.browser-two.animation
       .browser-bar
         .browser-button
         .browser-button
         .browser-button
-        .emogi-thumb
+        .emoji-thumb
       .browser-background
         %pre
-          %code.language-ruby.animation
+          %code.language-ruby
             :preserve
               describe User do
                 context 'validations' do

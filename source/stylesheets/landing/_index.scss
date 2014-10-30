@@ -117,21 +117,21 @@ nav {
   margin: em(9) 0 0 em(8);
 }
 
-.emogi {
+.emoji {
   @include position(absolute, em(-30) em(-36) null null);
   z-index: 5;
 }
 
-.emogi-thumb {
-  @extend .emogi;
+.emoji-thumb {
+  @extend .emoji;
   @include size(em(85) em(85));
-  background: image-url("emogi-thumb.svg") no-repeat;
+  background: image-url("emoji-thumb.svg") no-repeat;
 }
 
-.emogi-poop {
-  @extend .emogi;
+.emoji-poop {
+  @extend .emoji;
   @include size(em(100) em(100));
-  background: image-url("emogi-poop.svg") no-repeat;
+  background: image-url("emoji-poop.svg") no-repeat;
 }
 
 .tool-tip {
@@ -162,18 +162,19 @@ nav {
 }
 
 .animation {
-  @include animation(fadeIn 0.5s .55s 1 backwards);
+  @include animation(fadeIn .80s .80s 1 backwards);
 }
 
 .browser-background {
   @include size (em(525) em(405));
+  //@include animation(fadeIn .3s 0s 1 backwards);
   background: #494f57;
   border-radius: 0 0 em(5) em(5);
 
   .language-ruby {
     @include size (em(515) em(423,15));
     @include position(absolute, em(27,15) null null em(24,15));
-    background: #494f57;
+    background: inherit;
     border: none;
     box-shadow: none;
     font-size: em(14.25);
