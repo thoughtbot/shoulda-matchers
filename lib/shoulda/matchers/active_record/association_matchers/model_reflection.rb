@@ -48,10 +48,10 @@ module Shoulda
           def foreign_key
             if has_and_belongs_to_many_reflection
               has_and_belongs_to_many_reflection.foreign_key
-            elsif reflection.respond_to?(:primary_key_name)
-              reflection.primary_key_name
-            else
+            elsif reflection.respond_to?(:foreign_key)
               reflection.foreign_key
+            else
+              reflection.primary_key_name
             end
           end
 
