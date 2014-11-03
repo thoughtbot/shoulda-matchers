@@ -1,3 +1,8 @@
+code {
+  font-family: Consolas, Monaco, 'Andale Mono', monospace;
+  font-size: em(12);
+}
+
 .wrapper {
   @include outer-container;
   padding-left: flex-gutter(4);
@@ -41,7 +46,8 @@ nav {
 }
 
 .btn {
-  @include size (em(150) em(45));
+  min-width: em(150);
+  height: em(45);
   @include transition (all, linear, 0.3s);
   border-radius: em(20);
   display: inline-block;
@@ -85,11 +91,14 @@ nav {
     @include size(auto em(950));
   }
 
-  h1 {
+  .subheader {
     color: white;
     font-weight: 500;
     text-shadow: 1px 1px 7px #107a7a;
     text-align: center;
+  }
+
+  h1 {
     padding: 50px 15px 40px;
 
     @include media($small-medium-screen) {
@@ -112,10 +121,7 @@ nav {
   position: relative;
 
   h4 {
-    color: white;
-    font-weight: 500;
     padding-bottom: em(15);
-    text-align: center;
   }
 }
 
@@ -251,9 +257,10 @@ nav {
 
 .section-header {
   font-weight: 500;
-  padding: em(55) 0;
+  padding: em(35) 0;
   text-align: center;
-  text-transform: uppercase;
+  /*text-transform: uppercase;*/
+  font-variant: small-caps;
 }
 
 .tabs {
@@ -295,10 +302,12 @@ nav {
   }
 
   .vertical-tab {
+    font-size: em(18);
+
     @include media($vertical-tab-mode) {
       border-bottom: $tab-border;
       display: block;
-      font-weight: bold;
+      font-weight: 500;
       margin-right: -1px;
       padding: $base-spacing/2 $gutter/2;
 
@@ -323,7 +332,8 @@ nav {
 
     @include media($vertical-tab-mode) {
       @include inline-block;
-      @include size(80% $vertical-tabs-height);
+      width: 80%;
+      min-height: $vertical-tabs-height;
       background-color: $tab-content-background;
     }
   }
@@ -391,15 +401,16 @@ nav {
 footer {
   background: $brand-lt-gray;
   padding-bottom: em(20);
+  text-align: center;
+  overflow: hidden;
 
   .section-header {
     font-weight: 300;
     padding-bottom: em(20, 14);
   }
 
-  text-align: center;
   .footer-buttons {
-    margin: em(10) auto em(50);
+    margin: em(35) auto;
   }
 
   p {
