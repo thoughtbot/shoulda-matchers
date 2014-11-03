@@ -1,6 +1,17 @@
-code {
-  font-family: Consolas, Monaco, 'Andale Mono', monospace;
+%code {
+  font-family: 'droid-sans-mono';
   font-size: em(12);
+  white-space: pre-wrap;
+}
+
+body {
+  code {
+    @extend %code;
+  }
+
+  pre .language-ruby {
+    @extend %code;
+  }
 }
 
 .wrapper {
@@ -186,7 +197,7 @@ nav {
     background: none;;
     border: none;
     box-shadow: none;
-    font-size: em(14.25);
+    font-size: em(14.75);
     overflow: hidden;
     text-shadow: none;
     z-index: 2;
