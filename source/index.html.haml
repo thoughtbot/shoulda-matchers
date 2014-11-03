@@ -5,148 +5,103 @@ title: Shoulda Matchers
 %nav
   .wrapper
     .logo
-    %a.btn-github(href="https://github.com/thoughtbot/shoulda-matchers") Github
-    %a.btn-docs(href="http://shoulda.io/docs") Docs
+    %a.btn-github(href="https://github.com/thoughtbot/shoulda-matchers" target="_blank") Github
+    %a.btn-docs(href="http://shoulda.io/docs" target="_blank") Docs
 %section.main-header
   .wrapper
     .main-header-copy
       %h1 Simple One-Liner Tests for Rails
-    %h4 Without Shoulda
-    %h4.header-two With Shoulda
+    .browser-wrapper
+      .browser-container.animation
+        %h4 Without Shoulda
+        .browser-bar
+          .browser-button
+          .browser-button
+          .browser-button
+          .emoji-poop
+        .browser-background
+          %pre
+            %code.language-ruby
+              :preserve
+                describe User do
+                  it 'is not valid if its username is the same as another user within the same account' do
+                    _existing_user = FactoryGirl.create(:user,
+                      username: 'johnsmith',
+                      account_id: 1
+                    )
+                    user = FactoryGirl.build(:user,
+                      username: 'johnsmith',
+                      account_id: 1
+                    )
+                    expect(user).not_to be_valid
+                  end
 
-    .browser-container.browser-one.animation
-      .browser-bar
-        .browser-button
-        .browser-button
-        .browser-button
-        .emoji-poop
-      .browser-background
-        %pre
-          %code.language-ruby
-            :preserve
-              describe User do
-                it 'is not valid if its username is the same as another user within the same account' do
-                  _existing_user = FactoryGirl.create(:user,
-                    username: 'johnsmith',
-                    account_id: 1
-                  )
-                  user = FactoryGirl.build(:user,
-                    username: 'johnsmith',
-                    account_id: 1
-                  )
-                  expect(user).not_to be_valid
-                end
+                  it 'is valid if its username is the same as another user within the same account, but for different case' do
+                    _existing_user = FactoryGirl.create(:user,
+                      username: 'johnsmith',
+                      account_id: 1
+                    )
+                    user = FactoryGirl.build(:user,
+                      username: 'JohnSmith',
+                      account_id: 1
+                    )
+                    expect(user).to be_valid
+                  end
+    .browser-wrapper
+      .browser-container.animation
+        %h4 Without Shoulda
+        .browser-bar
+          .browser-button
+          .browser-button
+          .browser-button
+          .emoji-thumb
+        .browser-background
+          %pre
+            %code.language-ruby
+              :preserve
+                describe User do
+                  context 'validations' do
+                    before { FactoryGirl.build(:user) }
 
-                it 'is valid if its username is the same as another user within the same account, but for different case' do
-                  _existing_user = FactoryGirl.create(:user,
-                    username: 'johnsmith',
-                    account_id: 1
-                  )
-                  user = FactoryGirl.build(:user,
-                    username: 'JohnSmith',
-                    account_id: 1
-                  )
-                  expect(user).to be_valid
-                end
-
-    .browser-container.browser-two.animation
-      .browser-bar
-        .browser-button
-        .browser-button
-        .browser-button
-        .emoji-thumb
-      .browser-background
-        %pre
-          %code.language-ruby
-            :preserve
-              describe User do
-                context 'validations' do
-                  before { FactoryGirl.build(:user) }
-
-                  it do
-                    should validate_uniqueness_of(:username).
-                      scoped_to(:account_id).
-                      with_message('must be unique within an account').
-                      case_insensitive
+                    it do
+                      should validate_uniqueness_of(:username).
+                        scoped_to(:account_id).
+                        with_message('must be unique within an account').
+                        case_insensitive
+                    end
                   end
                 end
-              end
 
-%section
-  %h2.benefits-header
-    With extensive matchers for the major components of Rails:
-    %span ActiveRecord
-    ,
-    %span ActiveModel
-    , and
-    %span ActionController
+%section.benefits
+  .wrapper
+    .benefit
+      =image_tag 'clock-icon.svg', class: "icon animate"
+      %h4 Save Time
+      %p Spend less time writing long, complex, and error-prone tests
+    .benefit
+      =image_tag 'write-icon.svg', class: "icon animate"
+      %h4 Write More Tests
+      %p Test thoroughly by using over 30 preexisting matchers, developed over time
+    .benefit
+      =image_tag 'check-icon.svg', class: "icon animate"
+      %h4 More Readable Results
+      %p Get clear, readable, and actionable messages from the tests you run
 
-  .benefits-wrapper
-    .wrapper
-      .benefit
-        =image_tag 'clock-icon.svg', class: "icon animate"
-        %h2 Save Time
-        %p Spend less time writing long, complex, and error-prone tests
-      .benefit
-        =image_tag 'write-icon.svg', class: "icon animate"
-        %h2 Write More Tests
-        %p Test thoroughly by using over 30 preexisting matchers, developed over time
-      .benefit
-        =image_tag 'check-icon.svg', class: "icon animate"
-        %h2 More Readable Results
-        %p Get clear, readable, and actionable messages from the tests you run
-
-%section.installation-wrapper
-  %h2.installation-header Installation Instructions
-  %ul.accordion-tabs-minimal.wrapper
-    %li.tab-header-and-content
-      %a.tab-link.is-active(href="#")
-        RSpec
-      .tab-content
-        .installation-instructions
-          %h2 Install for RSpec
-          %h4 Include the gem in your Gemfile:
-          %pre.code-sample
-            %code.language-ruby
-              :preserve
-                group :test do
-                  gem 'shoulda-matchers', require: false
-                end
-          %h4 Then require the gem following rspec-rails in your rails_helper (or spec_helper if you're using RSpec 2.x):
-          %pre.code-sample
-            %code.language-ruby
-              :preserve
-                require 'rspec/rails'
-                require 'shoulda/matchers'
-
-    %li.tab-header-and-content
-      %a.tab-link(href="#")
-        Test::Unit
-      .tab-content
-        .installation-instructions
-          %h2 Install for Test::Unit
-          %h4 shoulda-matchers was originally a component of Shoulda -- it's what provides the nice should syntax which is demonstrated below. For this reason, include it in your Gemfile instead:
-          %pre.code-sample
-            %code.language-ruby
-              :preserve
-                group :test do
-                  gem 'shoulda'
-                end
-
-    %li.tab-header-and-content
-      %a.tab-link(href="#")
-        Non-Rails Apps
-      .tab-content
-        .installation-instructions
-          %h2 Install for Non-Rails Apps
-          %h4
-            Once it is loaded, shoulda-matchers automatically includes itself
-            into your test framework. It will mix in the appropriate matchers for
-            ActiveRecord, ActiveModel, and ActionController depending on the
-            modules that are available at runtime. For instance, in order to use
-            the ActiveRecord matchers, ActiveRecord must be available beforehand.
-          %br
-          %h4
+%section.examples-wrapper
+  .wrapper
+    %h2.section-header
+      Extensive matchers for ActiveRecord, ActiveModel, and Action Controller</span>
+    .vertical-tabs-container
+      .vertical-tabs
+        %a.js-vertical-tab.vertical-tab.is-active{:href => "#", :rel => "tab1"} ActiveRecord
+        %a.js-vertical-tab.vertical-tab{:href => "#", :rel => "tab2"} ActiveModel
+        %a.js-vertical-tab.vertical-tab{:href => "#", :rel => "tab3"} ActiveController
+        %a.js-vertical-tab.vertical-tab{:href => "#", :rel => "tab4"} Independent Matcher
+      .vertical-tab-content-container
+        %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading.is-active{:href => "", :rel => "tab1"} Item 1
+        #tab1.js-vertical-tab-content.vertical-tab-content
+          %p Active Record Example:
+          %p
             If your application is on Rails, everything should "just work", as
             shoulda-matchers will most likely be declared after Rails in your
             Gemfile. If your application is on another framework such as Sinatra
@@ -160,16 +115,73 @@ title: Shoulda Matchers
               :preserve
                 gem 'activemodel'
                 gem 'shoulda-matchers'
-          %h4 And not
+          %p And not
           %pre.code-sample
             %code.language-ruby
               :preserve
                 gem 'shoulda-matchers'
                 gem 'activemodel'
 
+        %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "", :rel => "tab2"} Item 2
+        #tab2.js-vertical-tab-content.vertical-tab-content
+          %p Ut laoreet augue et neque pretium non sagittis nibh pulvinar. Etiam ornare tincidunt orci quis ultrices. Pellentesque ac sapien ac purus gravida ullamcorper. Duis rhoncus sodales lacus, vitae adipiscing tellus pharetra sed. Praesent bibendum.
+        %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "", :rel => "tab3"} Item 3
+        #tab3.js-vertical-tab-content.vertical-tab-content
+          %p Donec mattis mauris gravida metus laoreet non rutrum sem viverra. Aenean nibh libero, viverra vel vestibulum in, porttitor ut sapien. Phasellus tempor lorem id justo ornare tincidunt. Nulla faucibus, purus eu placerat fermentum, velit mi iaculis nunc, bibendum tincidunt ipsum justo eu mauris. Nulla facilisi. Vestibulum vel lectus ac purus tempus suscipit nec sit amet eros. Nullam fringilla, enim eu lobortis dapibus, quam magna tincidunt nibh, sit amet imperdiet dolor justo congue turpis.
+        %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "", :rel => "tab4"} Item 4
+        #tab4.js-vertical-tab-content.vertical-tab-content
+          %p Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Phasellus dui urna, mollis vel suscipit in, pharetra at ligula. Pellentesque a est vel est fermentum pellentesque sed sit amet dolor. Nunc in dapibus nibh. Aliquam erat volutpat. Phasellus vel dui sed nibh iaculis convallis id sit amet urna. Proin nec tellus quis justo consequat accumsan. Vivamus turpis enim, auctor eget placerat eget, aliquam ut sapien.
+
+%section.wrapper
+
+  %h2.section-header List of Shoulda Matchers
+
+  .list-wrapper
+    %h4 ActiveRecord
+    %li allow_mass_assignment_of
+    %li allow_value
+    %li validate_inclusion_of
+    %li validate_exclusion_of
+    %li ensure_length_of
+    %li have_secure_password
+    %li validate_confirmation_of
+    %li validate_numericality_of
+    %li validate_presence_of
+    %li validate_uniqueness_of
+
+  .list-wrapper
+    %h4 ActiveModel
+    %li accept_nested_attributes_for
+    %li belong_to
+    %li define_enum_for
+    %li have_many
+    %li have_one
+    %li have_and_belong_to_many
+    %li have_db_column
+    %li have_db_index
+    %li have_readonly_attribute
+    %li serialize
+
+  .list-wrapper
+    %h4 ActionController
+    %li filter_param
+    %li redirect_to
+    %li render_template
+    %li render_with_layout
+    %li rescue_from
+    %li respond_with
+    %li route
+    %li set_session
+    %li set_the_flash
+
+  .list-wrapper
+    %h4 Independent Matchers
+    %li delegate_method
+
 %footer
-  .footer-buttons
-    %a.btn-github(href="https://github.com/thoughtbot/shoulda-matchers") Github
-    %a.btn-docs(href="http://shoulda.io/docs") Docs
-  %p Shoulda Matchers is maintained and funded by thoughtbot, inc. Tweet your questions or suggestions to <a href='https://twitter.com/mcmire'>@mcmire</a> or <a href='https://twitter.com/thoughtbot'>@thoughtbot</a>
-  %p Copyright © 2014 thoughtbot, inc.
+  .wrapper
+    %h2.section-header Get full installation instructions on GitHub
+    .footer-buttons
+      %a.btn-github(href="https://github.com/thoughtbot/shoulda-matchers" target="_blank") Github
+    %p Shoulda Matchers is maintained and funded by thoughtbot, inc. Tweet your questions or suggestions to <a href='https://twitter.com/mcmire'>@mcmire</a> or <a href='https://twitter.com/thoughtbot'>@thoughtbot</a>
+    %p Copyright © 2014 thoughtbot, inc.

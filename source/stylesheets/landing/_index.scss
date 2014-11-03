@@ -1,5 +1,17 @@
 .wrapper {
   @include outer-container;
+  padding-left: flex-gutter(4);
+  padding-right: flex-gutter(4);
+
+  @include media($medium-screen-up) {
+    padding-left: flex-gutter(8);
+    padding-right: flex-gutter(8);
+  }
+
+  @include media($large-screen-up) {
+    padding-left: flex-gutter(12);
+    padding-right: flex-gutter(12);
+  }
 }
 
 nav {
@@ -65,9 +77,13 @@ nav {
 }
 
 .main-header {
-  @include size(auto em(600));
+  @include size(auto em(720));
   background: image-url('background-header.png') no-repeat top;
   background-size: cover;
+
+  @include media($medium-large-screen) {
+    @include size(auto em(950));
+  }
 
   h1 {
     color: white;
@@ -80,33 +96,36 @@ nav {
       font-size: $base-font-size * 2.75;
     }
   }
+}
 
-  h4 {
-    @include span-columns(6);
-    color: white;
-    float: left;
-    font-weight: 500;
-    padding-bottom: em(15);
-    position: relative;
-    text-align: center;
+.browser-wrapper {
+  @include span-columns(6);
 
-    &:last-of-type {
-      margin-right: 0;
-    }
+  @include media($medium-large-screen) {
+    @include span-columns(12);
+    padding: 0 em(30) em(60);
   }
 }
 
 .browser-container {
-  @include span-columns(6);
   padding: 0 em(15);
   position: relative;
+
+  h4 {
+    color: white;
+    font-weight: 500;
+    padding-bottom: em(15);
+    text-align: center;
+  }
 }
 
 .browser-bar {
-  @include size (em(525) em(32));
+  @include size (auto em(32));
+  @include fill-parent;
   background: #d8d8d8;
   background-repeat: no-repeat;
   border-radius: em(4) em(4) 0 0;
+  clear: both;
 }
 
 .browser-button {
@@ -118,46 +137,29 @@ nav {
 }
 
 .emoji {
-  @include position(absolute, em(-30) em(-36) null null);
+  @include position(absolute, em(22) em(-20) null null);
   z-index: 5;
 }
 
 .emoji-thumb {
   @extend .emoji;
-  @include size(em(85) em(85));
+  @include size(em(75));
+  @include transition(all .2s ease-in-out);
   background: image-url("emoji-thumb.svg") no-repeat;
+
+  &:hover {
+    @include size(em(80));
+  }
 }
 
 .emoji-poop {
   @extend .emoji;
-  @include size(em(100) em(100));
+  @include size(em(90));
+  @include transition(all .2s ease-in-out);
   background: image-url("emoji-poop.svg") no-repeat;
-}
 
-.tool-tip {
-  @include position(absolute, em(50) em(-25) null null);
-  @include size(em(260) em(45));
-  background: #e3e2dd;
-  border-radius: em(5);
-  box-shadow: -1px 3px 6px -1px rgba(0,0,0,0.70);;
-  font-size: em(22);
-  padding: em(8) em(17) em(17);
-  z-index: 5;
-
-  @include media ($medium-large-screen) {
-    margin-right: em(50);
-  }
-
-  @include media($mobile-screen) {
-    @include position(absolute, em(35) em(-25) null null);
-    @include size(em(280) em(45));
-    font-size: em(18);
-    padding: em(11) em(17) em(17);
-  }
-
-  p {
-    color: $brand-med-gray;
-    text-align: initial;
+  &:hover {
+    @include size(em(95));
   }
 }
 
@@ -166,37 +168,32 @@ nav {
 }
 
 .browser-background {
-  @include size (em(525) em(405));
-  //@include animation(fadeIn .3s 0s 1 backwards);
+  @include fill-parent;
+  @include size (auto em(405));
   background: #494f57;
   border-radius: 0 0 em(5) em(5);
+  overflow: hidden;
+  position: relative;
 
   .language-ruby {
-    @include size (em(515) em(423,15));
-    @include position(absolute, em(27,15) null null em(24,15));
-    background: inherit;
+    @include fill-parent;
+    background: none;;
     border: none;
     box-shadow: none;
     font-size: em(14.25);
     overflow: hidden;
     text-shadow: none;
     z-index: 2;
+
+    @include media($large-screen-up) {
+      @include size (em(515) em(423,15));
+      @include position(absolute, em(5) null null em(24,15));
+    }
   }
 }
 
-.benefits-header {
-  background: $brand-lt-gray;
-  border-bottom: solid 1px #e3e2dd;
-  padding: em(60) 0 em(25) 0;
-  text-align: center;
-
-  span {
-    font-weight: 500;
-  }
-}
-
-.benefits-wrapper {
-  padding: em(75) 0;
+.benefits {
+  padding: em(70);
 
   @include media($small-screen) {
     padding-top: initial;
@@ -214,26 +211,26 @@ nav {
     padding-top: em(50);
   }
 
-  h2 {
+  h4 {
     font-weight: 500;
-    padding: em(40) 0 em(20);
+    padding: em(25) 0 em(12);
   }
 }
 
 .icon {
-  @include size(em(79) em(79));
+  @include size(em(70) em(70));
   margin: 0 auto;
 
   &.animated {
-    @include animation(reveal 2s);
+    @include animation(fadeIn 2s);
   }
 }
 
-.installation-wrapper {
+.examples-wrapper {
   background: $brand-lt-gray;
   border-bottom: solid 1px #e3e2dd;
   border-top: solid 1px #e3e2dd;
-  padding: em(75) 0;
+  padding-bottom: em(40);
 
   .language-ruby {
     background: #494f57;
@@ -244,6 +241,7 @@ nav {
     position: relative;
     text-shadow: none;
     width: em(500);
+    white-space: normal;
 
     @include media($mobile-screen) {
       width: em(320);
@@ -251,10 +249,11 @@ nav {
   }
 }
 
-.installation-header {
+.section-header {
   font-weight: 500;
-  padding-bottom: em(35);
+  padding: em(55) 0;
   text-align: center;
+  text-transform: uppercase;
 }
 
 .tabs {
@@ -263,105 +262,144 @@ nav {
   width: 700px;
 }
 
-.installation-instructions {
-  margin-top: em(30);
-
-  h2 {
-    font-weight: 500;
-    padding-bottom: em(10);
-  }
-}
-
-.accordion-tabs-minimal {
+.vertical-tabs-container { // small screens: accordion
   $tab-border-color: $base-border-color;
   $tab-border: 1px solid $tab-border-color;
-  $tab-content-background: $secondary-background-color;
-  $tab-active-background: $tab-content-background;
-  $tab-inactive-color: $secondary-background-color;
-  $tab-inactive-hover-color: darken($light-gray, 5);
-  $tab-mode: $medium-screen;
+  $tab-border-radius: $base-border-radius;
+  $tab-content-background: white;
+  $tab-active-color: $tab-content-background;
+  $tab-inactive-color: $brand-lt-gray;
+  $vertical-tabs-height: em(300);
+  $vertical-tab-mode: $medium-screen;
 
-  @include media($tab-mode) {
-    border: none;
+  @include clearfix;
+  border-radius: $tab-border-radius;
+  border: $tab-border;
+  margin-bottom: $base-spacing;
+  overflow: hidden;
+
+  a {
+    color: $brand-med-gray;
   }
 
-  li.tab-header-and-content {
-    @include media($tab-mode) {
+  .vertical-tabs {
+    display: none;
+
+    @include media($vertical-tab-mode) {
+      background-color: $tab-inactive-color;
       display: inline;
+      float: left;
+      height: $vertical-tabs-height;
+      width: 20%;
     }
+  }
 
-    &:first-child a.tab-link {
-      border-top-left-radius: $base-border-radius;
-      border-top-right-radius: $base-border-radius;
-      border-top: 0;
-    }
+  .vertical-tab {
+    @include media($vertical-tab-mode) {
+      border-bottom: $tab-border;
+      display: block;
+      font-weight: bold;
+      margin-right: -1px;
+      padding: $base-spacing/2 $gutter/2;
 
-    &:last-child a.tab-link {
-      border-bottom-left-radius: $base-border-radius;
-      border-bottom-right-radius: $base-border-radius;
-
-      @include media($tab-mode) {
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
+      &.is-active {
+        background-color: $tab-content-background;
+        margin-right: -1px;
       }
     }
   }
 
-  li.tab-header-and-content a.tab-link {
-    background-color: $tab-inactive-color;
-    border-top: $tab-border;
-    color: $dark-gray;
+  .vertical-tab:focus {
+    outline: none;
+  }
+
+  .vertical-tab-content-container {
     display: block;
-    font-weight: 400;
-    padding: $base-spacing/2 $gutter;
+    margin: 0 auto;
 
-    @include media($tab-mode) {
-      @include inline-block;
-      border-top: 0;
-      border-top-right-radius: $base-border-radius;
-      border-top-left-radius: $base-border-radius;
-    }
-
-    &:focus {
+    & a:focus {
       outline: none;
     }
 
-    &.is-active {
-      background-color: $tab-active-background;
-      border-bottom: 0;
-      font-weight: 500;
-
-      @include media($tab-mode) {
-        background-color: $tab-active-background;
-        border: $tab-border;
-        border-bottom: 1px solid $tab-active-background;
-        margin-bottom: -1px;
-      }
+    @include media($vertical-tab-mode) {
+      @include inline-block;
+      @include size(80% $vertical-tabs-height);
+      background-color: $tab-content-background;
     }
   }
 
-  li.tab-header-and-content .tab-content {
+  .vertical-tab-content {
+    background-color: white;
     padding: $base-spacing $gutter;
-    background: $tab-content-background;
-    display: none;
-    overflow: hidden;
-    width: 100%;
 
-    @include media($tab-mode) {
-      border-top: $tab-border;
-      float: left;
-      left: 0;
-      padding: $base-spacing/2 $gutter/2;
+    @include media($vertical-tab-mode) {
+      border: none;
+      display: none;
     }
+  }
+
+  .vertical-tab-accordion-heading {
+    background-color: $tab-inactive-color;
+    border-top: $tab-border;
+    cursor: pointer;
+    display: block;
+    font-weight: bold;
+    padding: $base-spacing/2 $gutter/2;
+
+    &:hover {
+      color: $base-accent-color;
+    }
+
+    &:first-child {
+      border-top: none;
+    }
+
+    &.is-active {
+      background: $tab-active-color;
+      border-bottom: none;
+    }
+
+    @include media($vertical-tab-mode) {
+      display: none;
+    }
+  }
+}
+// Based on code by Jett Miller jettmiller.net
+
+.list-wrapper {
+  @include span-columns(3);
+  padding-bottom: em(50, 14);
+
+  h4 {
+    padding-bottom: em(10);
+  }
+
+  @include media($medium-large-screen) {
+    @include span-columns(6);
+    @include omega;
+  }
+
+  @include media($small-screen) {
+    @include shift(0);
+  }
+
+  @include media($mobile-screen) {
+    @include span-columns(4 of 4);
   }
 }
 
 footer {
+  background: $brand-lt-gray;
+  padding-bottom: em(20);
 
+  .section-header {
+    font-weight: 300;
+    padding-bottom: em(20, 14);
+  }
+
+  text-align: center;
   .footer-buttons {
-    @include position(relative, auto auto auto 50%);
-    @include size(350px auto);
-    margin: 40px 0 40px  -175px;
+    margin: em(10) auto em(50);
   }
 
   p {
