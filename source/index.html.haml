@@ -91,250 +91,256 @@ title: Shoulda Matchers
   .wrapper
     %h2.section-header
       Extensive matchers for ActiveRecord, ActiveModel, and ActionController
-    .vertical-tabs-container
+    .vertical-tabs-container.js-vertical-tabs-container
       .vertical-tabs
-        %a.js-vertical-tab.vertical-tab.is-active{:href => "#", :rel => "tab1"} ActiveRecord validation matchers
-        %a.js-vertical-tab.vertical-tab{:href => "#", :rel => "tab2"} ActiveRecord association matchers
-        %a.js-vertical-tab.vertical-tab{:href => "#", :rel => "tab3"} ActiveModel validation matchers
-        %a.js-vertical-tab.vertical-tab{:href => "#", :rel => "tab4"} Other ActiveModel matchers
-        %a.js-vertical-tab.vertical-tab{:href => "#", :rel => "tab5"} ActionController matchers
-        %a.js-vertical-tab.vertical-tab{:href => "#", :rel => "tab6"} Independent matchers
+        %a.js-vertical-tab.vertical-tab.is-active{:href => "#tab1"} ActiveRecord validation matchers
+        %a.js-vertical-tab.vertical-tab{:href => "#tab2"} ActiveRecord association matchers
+        %a.js-vertical-tab.vertical-tab{:href => "#tab3"} ActiveModel validation matchers
+        %a.js-vertical-tab.vertical-tab{:href => "#tab4"} Other ActiveModel matchers
+        %a.js-vertical-tab.vertical-tab{:href => "#tab5"} ActionController matchers
+        %a.js-vertical-tab.vertical-tab{:href => "#tab6"} Independent matchers
       .vertical-tab-content-container
-        %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading.is-active{:href => "", :rel => "tab1"}
-          ActiveRecord validation matchers
-        #tab1.js-vertical-tab-content.vertical-tab-content
-          %p
-            Example:
-            %code validate_uniqueness_of
-            matcher
-          .code-sample
-            .filename Post model
-            %pre
-              %code.language-ruby
-                :preserve
-                  class Post &lt; ActiveRecord::Base
-                    validates_uniqueness_of :slug,
-                      scope: :user_id,
-                      message: 'duplicate slug within same user_id',
-                      case_insensitive: true
-                  end
-          .code-sample
-            .filename Test using RSpec
-            %pre
-              %code.language-ruby
-                :preserve
-                  describe Post do
-                    context 'validations' do
-                      subject { FactoryGirl.build(:post) }
+        #tab1.vertical-tab-accordion
+          %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading.is-active{:href => "#tab1"}
+            ActiveRecord validation matchers
+          .js-vertical-tab-content.vertical-tab-content.is-active
+            %p
+              Example:
+              %code validate_uniqueness_of
+              matcher
+            .code-sample
+              .filename Post model
+              %pre
+                %code.language-ruby
+                  :preserve
+                    class Post &lt; ActiveRecord::Base
+                      validates_uniqueness_of :slug,
+                        scope: :user_id,
+                        message: 'duplicate slug within same user_id',
+                        case_insensitive: true
+                    end
+            .code-sample
+              .filename Test using RSpec
+              %pre
+                %code.language-ruby
+                  :preserve
+                    describe Post do
+                      context 'validations' do
+                        subject { FactoryGirl.build(:post) }
 
-                      it do
+                        it do
+                          should validate_uniqueness_of(:slug).
+                            scoped_to(:user_id).
+                            with_message('duplicate slug within same user_id').
+                            case_insensitive
+                        end
+                      end
+                    end
+            .code-sample
+              .filename Test using Shoulda Context
+              %pre
+                %code.language-ruby
+                  :preserve
+                    class PostTest &lt; ActiveSupport::TestCase
+                      context 'validations' do
+                        subject { FactoryGirl.build(:post) }
+
                         should validate_uniqueness_of(:slug).
                           scoped_to(:user_id).
                           with_message('duplicate slug within same user_id').
                           case_insensitive
                       end
                     end
-                  end
-          .code-sample
-            .filename Test using Shoulda Context
-            %pre
-              %code.language-ruby
-                :preserve
-                  class PostTest &lt; ActiveSupport::TestCase
-                    context 'validations' do
-                      subject { FactoryGirl.build(:post) }
-
-                      should validate_uniqueness_of(:slug).
-                        scoped_to(:user_id).
-                        with_message('duplicate slug within same user_id').
-                        case_insensitive
+        #tab2.vertical-tab-accordion
+          %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "#tab2"}
+            ActiveRecord association matchers
+          .js-vertical-tab-content.vertical-tab-content
+            %p
+              Example:
+              %code have_many
+              matcher
+            .code-sample
+              .filename Post model
+              %pre
+                %code.language-ruby
+                  :preserve
+                    class Person &lt; ActiveRecord::Base
+                      has_many :acquaintances,
+                        through: :friends,
+                        class_name: 'Person'
                     end
-                  end
-        %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "", :rel => "tab2"}
-          ActiveRecord association matchers
-        #tab2.js-vertical-tab-content.vertical-tab-content
-          %p
-            Example:
-            %code have_many
-            matcher
-          .code-sample
-            .filename Post model
-            %pre
-              %code.language-ruby
-                :preserve
-                  class Person &lt; ActiveRecord::Base
-                    has_many :acquaintances,
-                      through: :friends,
-                      class_name: 'Person'
-                  end
-          .code-sample
-            .filename Test using RSpec
-            %pre
-              %code.language-ruby
-                :preserve
-                  describe Person do
-                    it do
+            .code-sample
+              .filename Test using RSpec
+              %pre
+                %code.language-ruby
+                  :preserve
+                    describe Person do
+                      it do
+                        should have_many(:acquaintances).
+                          through(:friends).
+                          class_name('Person')
+                      end
+                    end
+            .code-sample
+              .filename Test using Shoulda Context
+              %pre
+                %code.language-ruby
+                  :preserve
+                    require 'test_helper'
+
+                    class PersonTest &lt; ActiveSupport::TestCase
                       should have_many(:acquaintances).
                         through(:friends).
                         class_name('Person')
                     end
-                  end
-          .code-sample
-            .filename Test using Shoulda Context
-            %pre
-              %code.language-ruby
-                :preserve
-                  require 'test_helper'
+        #tab3.vertical-tab-accordion
+          %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "#tab3"}
+            ActiveModel validation matchers
+          .js-vertical-tab-content.vertical-tab-content
+            %p
+              Example:
+              %code validate_presence_of
+              matcher
+            .code-sample
+              .filename Post model
+              %pre
+                %code.language-ruby
+                  :preserve
+                    class Robot
+                      include ActiveModel::Model
+                      attr_accessor :arms
 
-                  class PersonTest &lt; ActiveSupport::TestCase
-                    should have_many(:acquaintances).
-                      through(:friends).
-                      class_name('Person')
-                  end
-        %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "", :rel => "tab3"}
-          ActiveModel validation matchers
-        #tab3.js-vertical-tab-content.vertical-tab-content
-          %p
-            Example:
-            %code validate_presence_of
-            matcher
-          .code-sample
-            .filename Post model
-            %pre
-              %code.language-ruby
-                :preserve
-                  class Robot
-                    include ActiveModel::Model
-                    attr_accessor :arms
-
-                    validate :arms, presence: true
-                  end
-          .code-sample
-            .filename Test using RSpec
-            %pre
-              %code.language-ruby
-                :preserve
-                  describe Robot do
-                    it { should validate_presence_of(:arms) }
-                  end
-          .code-sample
-            .filename Test using Shoulda Context
-            %pre
-              %code.language-ruby
-                :preserve
-                  class RobotTest &lt; ActiveSupport::TestCase
-                    should validate_presence_of(:arms)
-                  end
-        %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "", :rel => "tab4"}
-          Other ActiveModel matchers
-        #tab4.js-vertical-tab-content.vertical-tab-content
-          %p
-            Example:
-            %code have_secure_password
-            matcher
-          .code-sample
-            .filename Post model
-            %pre
-              %code.language-ruby
-                :preserve
-                  class User
-                    include ActiveModel::Model
-                    include ActiveModel::SecurePassword
-                    attr_accessor :password
-
-                    has_secure_password
-                  end
-          .code-sample
-            .filename Test using RSpec
-            %pre
-              %code.language-ruby
-                :preserve
-                  describe User do
-                    it { should have_secure_password }
-                  end
-          .code-sample
-            .filename Test using Shoulda Context
-            %pre
-              %code.language-ruby
-                :preserve
-                  class UserTest &lt; ActiveSupport::TestCase
-                    should have_secure_password
-                  end
-        %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "", :rel => "tab5"}
-          ActionController matchers
-        #tab5.js-vertical-tab-content.vertical-tab-content
-          %p
-            Example:
-            %code route
-            matcher
-          .code-sample
-            .filename Routes
-            %pre
-              %code.language-ruby
-                :preserve
-                    My::Application.routes.draw do
-                      get '/posts', controller: 'posts', action: 'index'
-                      get '/posts/:id' => 'posts#show'
+                      validate :arms, presence: true
                     end
-          .code-sample
-            .filename Test using RSpec
-            %pre
-              %code.language-ruby
-                :preserve
-                  describe 'Routes' do
-                    it { should route(:get, '/posts').to('posts#index') }
-                    it { should route(:get, '/posts/1').to('posts#show', id: 1) }
-                  end
-          .code-sample
-            .filename Test using Shoulda Context
-            %pre
-              %code.language-ruby
-                :preserve
-                  class RoutesTest &lt; ActionController::IntegrationTest
-                    should route(:get, '/posts').to('posts#index')
-                    should route(:get, '/posts/1').to('posts#show', id: 1)
-                  end
-        %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "", :rel => "tab6"}
-          Independent matchers
-        #tab6.js-vertical-tab-content.vertical-tab-content
-          %p
-            Example:
-            %code delegate_method
-            matcher
-          .code-sample
-            .filename app/models/courier.rb
-            %pre
-              %code.language-ruby
-                :preserve
-                  require 'forwardable'
-
-                  class Courier
-                    extend Forwardable
-
-                    attr_reader :post_office
-
-                    def_delegators :post_office, :deliver
-
-                    def initialize
-                      @post_office = PostOffice.new
+            .code-sample
+              .filename Test using RSpec
+              %pre
+                %code.language-ruby
+                  :preserve
+                    describe Robot do
+                      it { should validate_presence_of(:arms) }
                     end
-                  end
-          .code-sample
-            .filename Test using RSpec
-            %pre
-              %code.language-ruby
-                :preserve
-                  describe Courier do
-                    it { should delegate_method(:deliver).to(:post_office) }
-                  end
-          .code-sample
-            .filename Test using Shoulda Context
-            %pre
-              %code.language-ruby
-                :preserve
-                  class CourierTest &lt; Minitest::Test
-                    should delegate_method(:deliver).to(:post_office)
-                  end
+            .code-sample
+              .filename Test using Shoulda Context
+              %pre
+                %code.language-ruby
+                  :preserve
+                    class RobotTest &lt; ActiveSupport::TestCase
+                      should validate_presence_of(:arms)
+                    end
+        #tab4.vertical-tab-accordion
+          %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "#tab4"}
+            Other ActiveModel matchers
+          .js-vertical-tab-content.vertical-tab-content
+            %p
+              Example:
+              %code have_secure_password
+              matcher
+            .code-sample
+              .filename Post model
+              %pre
+                %code.language-ruby
+                  :preserve
+                    class User
+                      include ActiveModel::Model
+                      include ActiveModel::SecurePassword
+                      attr_accessor :password
+
+                      has_secure_password
+                    end
+            .code-sample
+              .filename Test using RSpec
+              %pre
+                %code.language-ruby
+                  :preserve
+                    describe User do
+                      it { should have_secure_password }
+                    end
+            .code-sample
+              .filename Test using Shoulda Context
+              %pre
+                %code.language-ruby
+                  :preserve
+                    class UserTest &lt; ActiveSupport::TestCase
+                      should have_secure_password
+                    end
+        #tab5.vertical-tab-accordion
+          %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "#tab5"}
+            ActionController matchers
+          .js-vertical-tab-content.vertical-tab-content
+            %p
+              Example:
+              %code route
+              matcher
+            .code-sample
+              .filename Routes
+              %pre
+                %code.language-ruby
+                  :preserve
+                      My::Application.routes.draw do
+                        get '/posts', controller: 'posts', action: 'index'
+                        get '/posts/:id' => 'posts#show'
+                      end
+            .code-sample
+              .filename Test using RSpec
+              %pre
+                %code.language-ruby
+                  :preserve
+                    describe 'Routes' do
+                      it { should route(:get, '/posts').to('posts#index') }
+                      it { should route(:get, '/posts/1').to('posts#show', id: 1) }
+                    end
+            .code-sample
+              .filename Test using Shoulda Context
+              %pre
+                %code.language-ruby
+                  :preserve
+                    class RoutesTest &lt; ActionController::IntegrationTest
+                      should route(:get, '/posts').to('posts#index')
+                      should route(:get, '/posts/1').to('posts#show', id: 1)
+                    end
+        #tab6.vertical-tab-accordion
+          %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "#tab6"}
+            Independent matchers
+          .js-vertical-tab-content.vertical-tab-content
+            %p
+              Example:
+              %code delegate_method
+              matcher
+            .code-sample
+              .filename app/models/courier.rb
+              %pre
+                %code.language-ruby
+                  :preserve
+                    require 'forwardable'
+
+                    class Courier
+                      extend Forwardable
+
+                      attr_reader :post_office
+
+                      def_delegators :post_office, :deliver
+
+                      def initialize
+                        @post_office = PostOffice.new
+                      end
+                    end
+            .code-sample
+              .filename Test using RSpec
+              %pre
+                %code.language-ruby
+                  :preserve
+                    describe Courier do
+                      it { should delegate_method(:deliver).to(:post_office) }
+                    end
+            .code-sample
+              .filename Test using Shoulda Context
+              %pre
+                %code.language-ruby
+                  :preserve
+                    class CourierTest &lt; Minitest::Test
+                      should delegate_method(:deliver).to(:post_office)
+                    end
 
 %section.wrapper
 

@@ -359,12 +359,22 @@ nav {
     background-color: white;
     padding: 0 $gutter;
     overflow: hidden;
+    display: none;
 
     @include media($vertical-tab-mode) {
       padding-top: $base-spacing;
       border: none;
-      display: none;
       overflow: inherit;
+    }
+
+    &.is-active {
+      display: block;
+    }
+  }
+
+  .vertical-tab-accordion:first-child {
+    .vertical-tab-accordion-heading {
+      border-top: none;
     }
   }
 
@@ -379,10 +389,6 @@ nav {
 
     &:hover {
       color: $base-accent-color;
-    }
-
-    &:first-child {
-      border-top: none;
     }
 
     &.is-active {
