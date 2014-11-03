@@ -187,7 +187,7 @@ nav {
 
     @include media($large-screen-up) {
       @include size (em(515) em(423,15));
-      @include position(absolute, em(5) null null em(24,15));
+      @include position(absolute, em(5) null null em(10,15));
     }
   }
 }
