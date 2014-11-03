@@ -47,6 +47,7 @@ title: Shoulda Matchers
                     )
                     expect(user).to be_valid
                   end
+                end
     .browser-wrapper
       .browser-container.animation
         %h4.subheader With Shoulda
@@ -66,7 +67,6 @@ title: Shoulda Matchers
                     it do
                       should validate_uniqueness_of(:username).
                         scoped_to(:account_id).
-                        with_message('must be unique within an account').
                         case_insensitive
                     end
                   end
