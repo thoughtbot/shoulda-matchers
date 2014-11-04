@@ -71,6 +71,7 @@ nav {
 
 .btn-github {
   @extend .btn;
+  background: white;
   border: solid 2px $brand-red;
   color: $brand-red;
 
