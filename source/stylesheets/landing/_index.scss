@@ -258,12 +258,15 @@ nav {
   }
 
   .filename {
-    background: #37B6B8;
+    background: #d8d8d8;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    color: white;
     padding: 0.3em 1em;
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.3);
+    text-shadow: -1px -1px rgba(255, 255, 255, 0.6);
+  }
+
+  pre.language-ruby {
+    box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.2);
   }
 
   .language-ruby {
@@ -271,8 +274,8 @@ nav {
     border: none;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
-    margin: 0;
     box-shadow: none;
+    margin: 0;
     position: relative;
     text-shadow: none;
     font-size: em(14.5);
@@ -287,7 +290,6 @@ nav {
   font-weight: 500;
   padding: em(35) 0;
   text-align: center;
-  /*text-transform: uppercase;*/
   font-variant: small-caps;
 }
 
@@ -341,6 +343,8 @@ nav {
 
       &.is-active {
         background-color: $tab-content-background;
+        border-bottom-color: transparent;
+        box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
         margin-right: -1px;
       }
     }
