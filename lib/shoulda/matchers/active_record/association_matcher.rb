@@ -327,7 +327,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should have_many(:worries).with_primaryu_key('worrier_id') }
+      #       it { should have_many(:worries).with_primary_key('worrier_id') }
       #     end
       #
       #     # Test::Unit
