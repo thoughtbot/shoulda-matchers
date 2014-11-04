@@ -27,12 +27,14 @@
   also happened to affect `validate_confirmation_of` when an i18n translation
   key is passed to `with_message`. ([#593])
 
+### Features
+
+* Add ability to test `:primary_key` option on associations. ([#597])
+
 ### Improvements
 
 * Tweak `allow_value` failure message so that it reads a bit nicer when listing
   existing errors.
-
-* Add ability to test `:primary_key` option on associations. ([#597])
 
 [#591]: https://github.com/thoughtbot/shoulda-matchers/pull/591
 [#592]: https://github.com/thoughtbot/shoulda-matchers/pull/592
@@ -78,6 +80,11 @@
 * Fix `validate_absence_of`: it required that a string be passed as the
   attribute name rather than a symbol (which is the usual and documented usage).
 
+### Features
+
+* Add new matcher `define_enum_for` to test usage of the `enum` macro introduced
+  in Rails 4.1.
+
 ### Improvements
 
 * `have_and_belongs_to_many` now checks to make sure that the join table
@@ -86,11 +93,6 @@
 
 * Reword failure message for `delegate_method` so that it's a little more
   helpful.
-
-### Features
-
-* Add new matcher `define_enum_for` to test usage of the `enum` macro introduced
-  in Rails 4.1.
 
 # 2.6.2
 
@@ -109,19 +111,13 @@
   from `validate_uniqueness_of`, your best bet continues to be creating a record
   manually and calling `validate_uniqueness_of` on that instead.
 
-### Other changes
+### Improvements
 
 * The majority of warnings that the gem produced have been removed. The gem
   still produces warnings under Ruby 1.9.3; we will address this in a future
   release.
 
 # 2.6.1
-
-### Features
-
-* Teach `with_message` qualifier on `allow_value` to accept a hash of i18n
-  interpolation values:
-  `allow_value('foo').for(:attr).with_message(:greater_than, values: { count: 20 })`.
 
 ### Bug fixes
 
@@ -163,6 +159,12 @@
   returning it to its original implementation after the match ends.
 
 * Fix `validate_uniqueness_of` to work with Rails 4.1 enum columns.
+
+### Features
+
+* Teach `with_message` qualifier on `allow_value` to accept a hash of i18n
+  interpolation values:
+  `allow_value('foo').for(:attr).with_message(:greater_than, values: { count: 20 })`.
 
 # 2.6.0
 
