@@ -1,9 +1,9 @@
 module Shoulda
   module Matchers
     module ActiveModel
-      # The `ensure_length_of` matcher tests usage of the `validates_length_of`
-      # matcher. Note that this matcher is intended to be used against string
-      # columns and not integer columns.
+      # The `validate_length_of` matcher tests usage of the
+      # `validates_length_of` matcher. Note that this matcher is intended to be
+      # used against string columns and not integer columns.
       #
       # #### Qualifiers
       #
@@ -23,13 +23,13 @@ module Shoulda
       #     # RSpec
       #
       #     describe User do
-      #       it { should ensure_length_of(:bio).is_at_least(15) }
+      #       it { should validate_length_of(:bio).is_at_least(15) }
       #     end
       #
       #     # Test::Unit
       #
       #     class UserTest < ActiveSupport::TestCase
-      #       should ensure_length_of(:bio).is_at_least(15)
+      #       should validate_length_of(:bio).is_at_least(15)
       #     end
       #
       # ##### is_at_most
@@ -47,12 +47,12 @@ module Shoulda
       #
       #     # RSpec
       #     describe User do
-      #       it { should ensure_length_of(:status_update).is_at_most(140) }
+      #       it { should validate_length_of(:status_update).is_at_most(140) }
       #     end
       #
       #     # Test::Unit
       #     class UserTest < ActiveSupport::TestCase
-      #       should ensure_length_of(:status_update).is_at_most(140)
+      #       should validate_length_of(:status_update).is_at_most(140)
       #     end
       #
       # ##### is_equal_to
@@ -70,12 +70,12 @@ module Shoulda
       #
       #     # RSpec
       #     describe User do
-      #       it { should ensure_length_of(:favorite_superhero).is_equal_to(6) }
+      #       it { should validate_length_of(:favorite_superhero).is_equal_to(6) }
       #     end
       #
       #     # Test::Unit
       #     class UserTest < ActiveSupport::TestCase
-      #       should ensure_length_of(:favorite_superhero).is_equal_to(6)
+      #       should validate_length_of(:favorite_superhero).is_equal_to(6)
       #     end
       #
       # ##### is_at_least + is_at_most
@@ -93,14 +93,14 @@ module Shoulda
       #     # RSpec
       #     describe User do
       #       it do
-      #         should ensure_length_of(:password).
+      #         should validate_length_of(:password).
       #           is_at_least(5).is_at_most(30)
       #       end
       #     end
       #
       #     # Test::Unit
       #     class UserTest < ActiveSupport::TestCase
-      #       should ensure_length_of(:password).
+      #       should validate_length_of(:password).
       #         is_at_least(5).is_at_most(30)
       #     end
       #
@@ -120,7 +120,7 @@ module Shoulda
       #     # RSpec
       #     describe User do
       #       it do
-      #         should ensure_length_of(:password).
+      #         should validate_length_of(:password).
       #           is_at_least(10).
       #           with_message("Password isn't long enough")
       #       end
@@ -128,7 +128,7 @@ module Shoulda
       #
       #     # Test::Unit
       #     class UserTest < ActiveSupport::TestCase
-      #       should ensure_length_of(:password).
+      #       should validate_length_of(:password).
       #         is_at_least(10).
       #         with_message("Password isn't long enough")
       #     end
@@ -149,7 +149,7 @@ module Shoulda
       #     # RSpec
       #     describe User do
       #       it do
-      #         should ensure_length_of(:secret_key).
+      #         should validate_length_of(:secret_key).
       #           is_at_least(15).
       #           with_short_message('Secret key must be more than 15 characters')
       #       end
@@ -157,7 +157,7 @@ module Shoulda
       #
       #     # Test::Unit
       #     class UserTest < ActiveSupport::TestCase
-      #       should ensure_length_of(:secret_key).
+      #       should validate_length_of(:secret_key).
       #         is_at_least(15).
       #         with_short_message('Secret key must be more than 15 characters')
       #     end
@@ -178,7 +178,7 @@ module Shoulda
       #     # RSpec
       #     describe User do
       #       it do
-      #         should ensure_length_of(:secret_key).
+      #         should validate_length_of(:secret_key).
       #           is_at_most(100).
       #           with_long_message('Secret key must be less than 100 characters')
       #       end
@@ -186,19 +186,29 @@ module Shoulda
       #
       #     # Test::Unit
       #     class UserTest < ActiveSupport::TestCase
-      #       should ensure_length_of(:secret_key).
+      #       should validate_length_of(:secret_key).
       #         is_at_most(100).
       #         with_long_message('Secret key must be less than 100 characters')
       #     end
       #
-      # @return [EnsureLengthOfMatcher]
+      # @return [ValidateLengthOfMatcher]
       #
+      def validate_length_of(attr)
+        ValidateLengthOfMatcher.new(attr)
+      end
+
+      # @deprecated Use {#validate_length_of} instead.
+      # @return [ValidateLengthOfMatcher]
       def ensure_length_of(attr)
-        EnsureLengthOfMatcher.new(attr)
+        Shoulda::Matchers.warn_about_deprecated_method(
+          :ensure_length_of,
+          :validate_length_of
+        )
+        validate_length_of(attr)
       end
 
       # @private
-      class EnsureLengthOfMatcher < ValidationMatcher
+      class ValidateLengthOfMatcher < ValidationMatcher
         include Helpers
 
         def initialize(attribute)

@@ -1,75 +1,92 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveModel::EnsureLengthOfMatcher do
+describe Shoulda::Matchers::ActiveModel do
+  describe '#ensure_length_of' do
+    it 'is aliased to #validate_length_of' do
+      matchers.expects(:validate_length_of).with(:attr)
+
+      silence_warnings do
+        matchers.ensure_length_of(:attr)
+      end
+    end
+  end
+
+  def matchers
+    @_matchers ||= Object.new.extend(described_class)
+  end
+end
+
+describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher do
   context 'an attribute with a non-zero minimum length validation' do
     it 'accepts ensuring the correct minimum length' do
       expect(validating_length(minimum: 4)).
-        to ensure_length_of(:attr).is_at_least(4)
+        to validate_length_of(:attr).is_at_least(4)
     end
 
     it 'rejects ensuring a lower minimum length with any message' do
       expect(validating_length(minimum: 4)).
-        not_to ensure_length_of(:attr).is_at_least(3).with_short_message(/.*/)
+        not_to validate_length_of(:attr).is_at_least(3).with_short_message(/.*/)
     end
 
     it 'rejects ensuring a higher minimum length with any message' do
       expect(validating_length(minimum: 4)).
-        not_to ensure_length_of(:attr).is_at_least(5).with_short_message(/.*/)
+        not_to validate_length_of(:attr).is_at_least(5).with_short_message(/.*/)
     end
 
     it 'does not override the default message with a blank' do
       expect(validating_length(minimum: 4)).
-        to ensure_length_of(:attr).is_at_least(4).with_short_message(nil)
+        to validate_length_of(:attr).is_at_least(4).with_short_message(nil)
     end
   end
 
   context 'an attribute with a minimum length validation of 0' do
     it 'accepts ensuring the correct minimum length' do
       expect(validating_length(minimum: 0)).
-        to ensure_length_of(:attr).is_at_least(0)
+        to validate_length_of(:attr).is_at_least(0)
     end
   end
 
   context 'an attribute with a maximum length' do
     it 'accepts ensuring the correct maximum length' do
       expect(validating_length(maximum: 4)).
-        to ensure_length_of(:attr).is_at_most(4)
+        to validate_length_of(:attr).is_at_most(4)
     end
 
     it 'rejects ensuring a lower maximum length with any message' do
       expect(validating_length(maximum: 4)).
-        not_to ensure_length_of(:attr).is_at_most(3).with_long_message(/.*/)
+        not_to validate_length_of(:attr).is_at_most(3).with_long_message(/.*/)
     end
 
     it 'rejects ensuring a higher maximum length with any message' do
       expect(validating_length(maximum: 4)).
-        not_to ensure_length_of(:attr).is_at_most(5).with_long_message(/.*/)
+        not_to validate_length_of(:attr).is_at_most(5).with_long_message(/.*/)
     end
 
     it 'does not override the default message with a blank' do
       expect(validating_length(maximum: 4)).
-        to ensure_length_of(:attr).is_at_most(4).with_long_message(nil)
+        to validate_length_of(:attr).is_at_most(4).with_long_message(nil)
     end
   end
 
   context 'an attribute with a required exact length' do
     it 'accepts ensuring the correct length' do
-      expect(validating_length(is: 4)).to ensure_length_of(:attr).is_equal_to(4)
+      expect(validating_length(is: 4)).
+        to validate_length_of(:attr).is_equal_to(4)
     end
 
     it 'rejects ensuring a lower maximum length with any message' do
       expect(validating_length(is: 4)).
-        not_to ensure_length_of(:attr).is_equal_to(3).with_message(/.*/)
+        not_to validate_length_of(:attr).is_equal_to(3).with_message(/.*/)
     end
 
     it 'rejects ensuring a higher maximum length with any message' do
       expect(validating_length(is: 4)).
-        not_to ensure_length_of(:attr).is_equal_to(5).with_message(/.*/)
+        not_to validate_length_of(:attr).is_equal_to(5).with_message(/.*/)
     end
 
     it 'does not override the default message with a blank' do
       expect(validating_length(is: 4)).
-        to ensure_length_of(:attr).is_equal_to(4).with_message(nil)
+        to validate_length_of(:attr).is_equal_to(4).with_message(nil)
     end
   end
 
@@ -80,35 +97,35 @@ describe Shoulda::Matchers::ActiveModel::EnsureLengthOfMatcher do
         validates_numericality_of :attr
       end.new
 
-      expect(model).to ensure_length_of(:attr).is_equal_to(4)
+      expect(model).to validate_length_of(:attr).is_equal_to(4)
     end
   end
 
   context 'an attribute with a custom minimum length validation' do
     it 'accepts ensuring the correct minimum length' do
       expect(validating_length(minimum: 4, too_short: 'foobar')).
-        to ensure_length_of(:attr).is_at_least(4).with_short_message(/foo/)
+        to validate_length_of(:attr).is_at_least(4).with_short_message(/foo/)
     end
   end
 
   context 'an attribute with a custom maximum length validation' do
     it 'accepts ensuring the correct minimum length' do
       expect(validating_length(maximum: 4, too_long: 'foobar')).
-        to ensure_length_of(:attr).is_at_most(4).with_long_message(/foo/)
+        to validate_length_of(:attr).is_at_most(4).with_long_message(/foo/)
     end
   end
 
   context 'an attribute with a custom equal validation' do
     it 'accepts ensuring the correct exact length' do
       expect(validating_length(is: 4, message: 'foobar')).
-        to ensure_length_of(:attr).is_equal_to(4).with_message(/foo/)
+        to validate_length_of(:attr).is_equal_to(4).with_message(/foo/)
     end
   end
 
   context 'an attribute without a length validation' do
     it 'rejects ensuring a minimum length' do
       expect(define_model(:example, attr: :string).new).
-        not_to ensure_length_of(:attr).is_at_least(1)
+        not_to validate_length_of(:attr).is_at_least(1)
     end
   end
 
@@ -124,7 +141,8 @@ describe Shoulda::Matchers::ActiveModel::EnsureLengthOfMatcher do
 
       it "does not raise an exception" do
         expect {
-          expect(validating_length(maximum: 4)).to ensure_length_of(:attr).is_at_most(4)
+          expect(validating_length(maximum: 4)).
+            to validate_length_of(:attr).is_at_most(4)
         }.to_not raise_exception
       end
     end
@@ -138,7 +156,7 @@ describe Shoulda::Matchers::ActiveModel::EnsureLengthOfMatcher do
 
       it "does not raise an exception" do
         expect {
-          expect(validating_length(minimum: 4)).to ensure_length_of(:attr).is_at_least(4)
+          expect(validating_length(minimum: 4)).to validate_length_of(:attr).is_at_least(4)
         }.to_not raise_exception
       end
     end
@@ -152,7 +170,8 @@ describe Shoulda::Matchers::ActiveModel::EnsureLengthOfMatcher do
 
       it "does not raise an exception" do
         expect {
-          expect(validating_length(is: 4)).to ensure_length_of(:attr).is_equal_to(4)
+          expect(validating_length(is: 4)).
+            to validate_length_of(:attr).is_equal_to(4)
         }.to_not raise_exception
       end
     end

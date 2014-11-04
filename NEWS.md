@@ -1,5 +1,10 @@
 # HEAD
 
+### Deprecations
+
+* `ensure_length_of` has been renamed to `validate_length_of`.
+  `ensure_length_of` is deprecated and will be removed in 3.0.0.
+
 ### Bug fixes
 
 * Fix `delegate_method` so that it works again with shoulda-context. ([#591])
