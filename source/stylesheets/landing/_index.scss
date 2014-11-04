@@ -49,7 +49,7 @@ nav {
   background: image-url("shoulda-matchers-logo.svg") no-repeat;
   display: inline-block;
   float: left;
-  margin-top: em(15);
+  margin-top: em(19);
 
   @include media($mobile-screen) {
     padding-left: em(10);
