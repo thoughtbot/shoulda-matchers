@@ -277,27 +277,34 @@ title: Shoulda Matchers
               %pre
                 %code.language-ruby
                   :preserve
-                      My::Application.routes.draw do
-                        get '/posts', controller: 'posts', action: 'index'
-                        get '/posts/:id' => 'posts#show'
+                    class ApplicationController &lt; ActionController::Base
+                      rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
+
+                      private
+
+                      def render_not_found
+                        # ...
                       end
+                    end
             .code-sample
               .filename Test using RSpec
               %pre
                 %code.language-ruby
                   :preserve
-                    describe 'Routes' do
-                      it { should route(:get, '/posts').to('posts#index') }
-                      it { should route(:get, '/posts/1').to('posts#show', id: 1) }
+                    describe ApplicationController do
+                      it do
+                        should rescue_from(ActiveRecord::RecordNotFound).
+                          with(:render_not_found)
+                      end
                     end
             .code-sample
               .filename Test using Shoulda Context
               %pre
                 %code.language-ruby
                   :preserve
-                    class RoutesTest &lt; ActionController::IntegrationTest
-                      should route(:get, '/posts').to('posts#index')
-                      should route(:get, '/posts/1').to('posts#show', id: 1)
+                    class ApplicationControllerTest &lt; ActionController::TestCase
+                      should rescue_from(ActiveRecord::RecordNotFound).
+                        with(:render_not_found)
                     end
         #tab6.vertical-tab-accordion
           %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "#tab6"}
