@@ -24,6 +24,10 @@ module Shoulda
             correct_for?(:hash, name, expected_value)
           end
 
+          def correct_for_constant?(name, expected_unresolved_value)
+            correct_for?(:constant, name, expected_unresolved_value)
+          end
+
           def correct_for_relation_clause?(name, expected_value)
             correct_for?(:relation_clause, name, expected_value)
           end
@@ -50,7 +54,7 @@ module Shoulda
             if expected_value.nil?
               true
             else
-              expected_value = type_cast(type, expected_value_for(name, expected_value))
+              expected_value = type_cast(type, expected_value_for(type, name, expected_value))
               actual_value = type_cast(type, actual_value_for(name))
               expected_value == actual_value
             end
@@ -65,9 +69,11 @@ module Shoulda
             end
           end
 
-          def expected_value_for(name, value)
+          def expected_value_for(type, name, value)
             if RELATION_OPTIONS.include?(name)
               expected_value_for_relation_clause(name, value)
+            elsif type == :constant
+              expected_value_for_constant(value)
             else
               value
             end
@@ -76,6 +82,20 @@ module Shoulda
           def expected_value_for_relation_clause(name, value)
             relation = reflector.build_relation_with_clause(name, value)
             reflector.extract_relation_clause_from(relation, name)
+          end
+
+          def expected_value_for_constant(name)
+            namespace = Shoulda::Matchers::Util.deconstantize(
+              reflector.model_class.to_s
+            )
+
+            ["#{namespace}::#{name}", name].each do |path|
+              constant = Shoulda::Matchers::Util.safe_constantize(path)
+
+              if constant
+                return constant
+              end
+            end
           end
 
           def actual_value_for_relation_clause(name)

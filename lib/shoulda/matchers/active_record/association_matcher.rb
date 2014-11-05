@@ -1017,7 +1017,7 @@ module Shoulda
 
         def class_name_correct?
           if options.key?(:class_name)
-            if option_verifier.correct_for_string?(:class_name, options[:class_name])
+            if option_verifier.correct_for_constant?(:class_name, options[:class_name])
               true
             else
               @missing = "#{name} should resolve to #{options[:class_name]} for class_name"

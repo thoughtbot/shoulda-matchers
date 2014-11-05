@@ -146,6 +146,31 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       }.to fail_with_message(message)
     end
 
+    it 'accepts an association with a namespaced class name' do
+      define_module 'Models'
+      define_model 'Models::Organization'
+      user_model = define_model 'Models::User', organization_id: :integer do
+        belongs_to :organization, class_name: 'Organization'
+      end
+
+      expect(user_model.new).
+        to belong_to(:organization).
+        class_name('Organization')
+    end
+
+    it 'resolves class_name within the context of the namespace before the global namespace' do
+      define_module 'Models'
+      define_model 'Organization'
+      define_model 'Models::Organization'
+      user_model = define_model 'Models::User', organization_id: :integer do
+        belongs_to :organization, class_name: 'Organization'
+      end
+
+      expect(user_model.new).
+        to belong_to(:organization).
+        class_name('Organization')
+    end
+
     it 'accepts an association with a matching :autosave option' do
       define_model :parent, adopter: :boolean
       define_model :child, parent_id: :integer do
@@ -456,6 +481,31 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       }.to fail_with_message(message)
     end
 
+    it 'accepts an association with a namespaced class name' do
+      define_module 'Models'
+      define_model 'Models::Friend', user_id: :integer
+      friend_model = define_model 'Models::User' do
+        has_many :friends, class_name: 'Friend'
+      end
+
+      expect(friend_model.new).
+        to have_many(:friends).
+        class_name('Friend')
+    end
+
+    it 'resolves class_name within the context of the namespace before the global namespace' do
+      define_module 'Models'
+      define_model 'Friend'
+      define_model 'Models::Friend', user_id: :integer
+      friend_model = define_model 'Models::User' do
+        has_many :friends, class_name: 'Friend'
+      end
+
+      expect(friend_model.new).
+        to have_many(:friends).
+        class_name('Friend')
+    end
+
     it 'accepts an association with a matching :autosave option' do
       define_model :child, parent_id: :integer
       define_model :parent do
@@ -642,26 +692,6 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
       expect(having_one_detail).to have_one(:detail).class_name('Detail')
     end
 
-    it 'accepts an association with a matching :autosave option' do
-      define_model :detail, person_id: :integer, disabled: :boolean
-      define_model :person do
-        has_one :detail, autosave: true
-      end
-      expect(Person.new).to have_one(:detail).autosave(true)
-    end
-
-    it 'rejects an association with a non-matching :autosave option with the correct message' do
-      define_model :detail, person_id: :integer, disabled: :boolean
-      define_model :person do
-        has_one :detail, autosave: false
-      end
-
-      message = 'Expected Person to have a has_one association called detail (detail should have autosave set to true)'
-      expect {
-        expect(Person.new).to have_one(:detail).autosave(true)
-      }.to fail_with_message(message)
-    end
-
     it 'accepts an association with a valid :class_name option' do
       define_model :person_detail, person_id: :integer
       define_model :person do
@@ -689,6 +719,52 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
         expect(having_one_non_existent(:person, :detail, class_name: 'Detail2')).to have_one(:detail)
       }.to fail_with_message(message)
     end
+
+    it 'accepts an association with a namespaced class name' do
+      define_module 'Models'
+      define_model 'Models::Account', user_id: :integer
+      user_model = define_model 'Models::User' do
+        has_one :account, class_name: 'Account'
+      end
+
+      expect(user_model.new).
+        to have_one(:account).
+        class_name('Account')
+    end
+
+    it 'resolves class_name within the context of the namespace before the global namespace' do
+      define_module 'Models'
+      define_model 'Account'
+      define_model 'Models::Account', user_id: :integer
+      user_model = define_model 'Models::User' do
+        has_one :account, class_name: 'Account'
+      end
+
+      expect(user_model.new).
+        to have_one(:account).
+        class_name('Account')
+    end
+
+    it 'accepts an association with a matching :autosave option' do
+      define_model :detail, person_id: :integer, disabled: :boolean
+      define_model :person do
+        has_one :detail, autosave: true
+      end
+      expect(Person.new).to have_one(:detail).autosave(true)
+    end
+
+    it 'rejects an association with a non-matching :autosave option with the correct message' do
+      define_model :detail, person_id: :integer, disabled: :boolean
+      define_model :person do
+        has_one :detail, autosave: false
+      end
+
+      message = 'Expected Person to have a has_one association called detail (detail should have autosave set to true)'
+      expect {
+        expect(Person.new).to have_one(:detail).autosave(true)
+      }.to fail_with_message(message)
+    end
+
 
     it 'accepts an association with a through' do
       define_model :detail
@@ -915,6 +991,45 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
         expect(having_and_belonging_to_many_non_existent_class(:person, :relatives, class_name: 'Relative2')).
           to have_and_belong_to_many(:relatives)
       }.to fail_with_message(message)
+    end
+
+    it 'accepts an association with a namespaced class name' do
+      possible_join_table_names = [:groups_users, :models_groups_users, :groups_models_users]
+      possible_join_table_names.each do |join_table_name|
+        create_table join_table_name, id: false do |t|
+          t.integer :group_id
+          t.integer :user_id
+        end
+      end
+      define_module 'Models'
+      define_model 'Models::Group'
+      user_model = define_model 'Models::User' do
+        has_and_belongs_to_many :groups, class_name: 'Group'
+      end
+
+      expect(user_model.new).
+        to have_and_belong_to_many(:groups).
+        class_name('Group')
+    end
+
+    it 'resolves class_name within the context of the namespace before the global namespace' do
+      possible_join_table_names = [:groups_users, :models_groups_users, :groups_models_users]
+      possible_join_table_names.each do |join_table_name|
+        create_table join_table_name, id: false do |t|
+          t.integer :group_id
+          t.integer :user_id
+        end
+      end
+      define_module 'Models'
+      define_model 'Group'
+      define_model 'Models::Group'
+      user_model = define_model 'Models::User' do
+        has_and_belongs_to_many :groups, class_name: 'Group'
+      end
+
+      expect(user_model.new).
+        to have_and_belong_to_many(:groups).
+        class_name('Group')
     end
 
     it 'accepts an association with a matching :autosave option' do
