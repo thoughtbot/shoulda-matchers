@@ -154,7 +154,7 @@ nav {
 }
 
 .emoji {
-  @include position(absolute, em(22) em(-20) null null);
+  @include position(absolute, em(25) em(-5) null null);
   z-index: 5;
 }
 
@@ -169,14 +169,14 @@ nav {
   }
 }
 
-.emoji-poop {
+.emoji-thumb-down {
   @extend .emoji;
-  @include size(em(90));
+  @include size(em(70));
   @include transition(all .2s ease-in-out);
-  background: image-url("emoji-poop.svg") no-repeat;
+  background: image-url("emoji-thumb-down.svg") no-repeat;
 
   &:hover {
-    @include size(em(95));
+    @include size(em(75));
   }
 }
 
