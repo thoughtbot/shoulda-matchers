@@ -6,7 +6,7 @@ module AcceptanceTests
       bundle_version_of('rspec-rails')
     end
 
-    def add_spec(path, content)
+    def add_rspec_file(path, content)
       content = "require '#{spec_helper_require_path}'\n#{content}"
       write_file path, content
     end

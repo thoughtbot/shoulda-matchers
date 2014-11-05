@@ -46,7 +46,7 @@ describe 'shoulda-matchers integrates with Rails' do
   specify 'in a project that uses RSpec' do
     updating_bundle do
       add_gems_for_rspec
-      add_shoulda_matchers_to_project
+      add_shoulda_matchers_to_project(test_frameworks: [:rspec])
     end
 
     run_tests_for_rspec
@@ -60,7 +60,10 @@ describe 'shoulda-matchers integrates with Rails' do
     updating_bundle do
       add_spring_to_project
       add_gems_for_rspec
-      add_shoulda_matchers_to_project(manually: true)
+      add_shoulda_matchers_to_project(
+        test_frameworks: [:rspec],
+        manually: true
+      )
     end
 
     run_command_within_bundle!('spring stop')
@@ -116,13 +119,13 @@ describe 'shoulda-matchers integrates with Rails' do
   end
 
   def run_tests_for_rspec
-    add_spec 'spec/models/user_spec.rb', <<-FILE
+    add_rspec_file 'spec/models/user_spec.rb', <<-FILE
       describe User do
         it { should validate_presence_of(:name) }
       end
     FILE
 
-    add_spec 'spec/controllers/examples_controller_spec.rb', <<-FILE
+    add_rspec_file 'spec/controllers/examples_controller_spec.rb', <<-FILE
       describe ExamplesController, "show" do
         before { get :show }
 

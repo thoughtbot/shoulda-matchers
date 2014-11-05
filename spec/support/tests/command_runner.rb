@@ -143,7 +143,8 @@ Output:
 
     def run
       Dir.chdir(directory) do
-        system(env, *command, options)
+        pid = spawn(env, *command, options)
+        Process.waitpid(pid)
       end
 
       @status = $?

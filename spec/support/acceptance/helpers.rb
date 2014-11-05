@@ -15,10 +15,6 @@ module AcceptanceTests
       example_group.before do
         fs.clean
       end
-
-      # example_group.around do |example|
-        # Bundler.with_clean_env { example.run }
-      # end
     end
 
     include ActiveModelHelpers

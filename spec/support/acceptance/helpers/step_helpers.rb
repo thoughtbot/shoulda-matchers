@@ -30,27 +30,39 @@ module AcceptanceTests
       add_gem 'shoulda-matchers', gem_options
 
       if options[:manually]
-        append_to_file spec_helper_file_path,
-          "require 'shoulda/matchers'",
-          following: "require 'rspec/rails'"
+        if options[:test_frameworks].include?(:rspec)
+          append_to_file spec_helper_file_path, "require 'shoulda/matchers'"
+        end
+
+        if options[:test_frameworks].include?(:n_unit)
+          append_to_file 'test/test_helper.rb', "require 'shoulda/matchers'"
+        end
       end
     end
 
     def add_minitest_to_project
-      add_gem 'shoulda-context'
       add_gem 'minitest-reporters'
-      write_file 'test/test_helper.rb', <<-FILE
+
+      append_to_file 'test/test_helper.rb', <<-FILE
         require 'minitest/autorun'
         require 'minitest/reporters'
-        require 'shoulda/context'
-        require 'shoulda/matchers'
 
         Minitest::Reporters.use!(Minitest::Reporters::SpecReporter.new)
       FILE
     end
 
-    def write_minitest_test(path, &block)
-      contents = block.call(minitest_test_case_superclass)
+    def add_shoulda_context_to_project(options = {})
+      add_gem 'shoulda-context'
+
+      if options[:manually]
+        append_to_file 'test/test_helper.rb', <<-FILE
+          require 'shoulda/context'
+        FILE
+      end
+    end
+
+    def write_minitest_test(path)
+      contents = yield minitest_test_case_superclass
       write_file(path, contents)
     end
 
@@ -73,11 +85,6 @@ module AcceptanceTests
         bundle.remove_gem 'turn'
         bundle.remove_gem 'coffee-rails'
         bundle.remove_gem 'uglifier'
-
-        # if ruby_version >= '1.9.3'
-          # bundle.add_gem 'rake', '~> 0.9'
-          # run_command! 'bundle update rake --local'
-        # end
       end
     end
 

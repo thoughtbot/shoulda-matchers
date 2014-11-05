@@ -4,7 +4,15 @@ describe 'shoulda-matchers has independent matchers' do
   context 'specifically delegate_method' do
     specify 'and integrates with a Ruby application that uses Minitest' do
       create_generic_bundler_project
-      add_minitest_to_project
+
+      updating_bundle do
+        add_minitest_to_project
+        add_shoulda_context_to_project(manually: true)
+        add_shoulda_matchers_to_project(
+          test_frameworks: [:n_unit],
+          manually: true
+        )
+      end
 
       write_file 'lib/post_office.rb', <<-FILE
         class PostOffice

@@ -19,6 +19,14 @@ module Tests
       PROJECT_DIRECTORY
     end
 
+    def wrap(path)
+      if path.is_a?(Pathname)
+        path
+      else
+        find_in_project(path)
+      end
+    end
+
     def within_project(&block)
       Dir.chdir(project_directory, &block)
     end
@@ -46,33 +54,18 @@ module Tests
     end
 
     def write(path, content)
-      pathname = find_in_project(path)
-      pathname.dirname.mkpath
+      pathname = wrap(path)
+      create_parents_of(pathname)
       pathname.open('w') { |f| f.write(content) }
     end
 
-    def append_to_file(path, content, options = {})
-      if options[:following]
-        append_to_file_following(path, content, options[:following])
-      else
-        open(path, 'a') { |f| f.puts(content + "\n") }
-      end
+    def create_parents_of(path)
+      wrap(path).dirname.mkpath
     end
 
-    def append_to_file_following(path, content_to_add, insertion_point)
-      content_to_add = content_to_add + "\n"
-
-      file_content = read(path)
-      file_lines = file_content.split("\n")
-      insertion_index = file_lines.find_index(insertion_point)
-
-      if insertion_index.nil?
-        raise "Cannot find #{insertion_point.inspect} in #{path}"
-      end
-
-      file_lines.insert(insertion_index + 1, content_to_add)
-      new_file_content = file_lines.join("\n")
-      write(path, new_file_content)
+    def append_to_file(path, content, options = {})
+      create_parents_of(path)
+      open(path, 'a') { |f| f.puts(content + "\n") }
     end
 
     def remove_from_file(path, pattern)
