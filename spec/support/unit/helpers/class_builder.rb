@@ -60,18 +60,10 @@ module UnitTests
         if block_given?
           constant.class_eval(&block)
         end
-
-        if constant.respond_to?(:reset_column_information)
-          constant.reset_column_information
-        end
       end
     end
 
     private
-
-    def teardown_defined_constants
-      ActiveSupport::Dependencies.clear
-    end
 
     def teardown_defined_constants
       ActiveSupport::Dependencies.clear
