@@ -1098,7 +1098,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
     args = []
     options = {}
     if Shoulda::Matchers::RailsShim.active_record_major_version == 4
-      args << lambda { where(conditions) }
+      args << proc { where(conditions) }
     else
       options[:conditions] = conditions
     end
@@ -1110,7 +1110,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
     args = []
     options = {}
     if Shoulda::Matchers::RailsShim.active_record_major_version == 4
-      args << lambda { order(order) }
+      args << proc { order(order) }
     else
       options[:order] = order
     end
