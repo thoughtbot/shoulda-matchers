@@ -34,6 +34,8 @@ Dir[ File.join(File.expand_path('../support/unit/**/*.rb', __FILE__)) ].sort.eac
 end
 
 RSpec.configure do |config|
+  config.order = :random
+
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
