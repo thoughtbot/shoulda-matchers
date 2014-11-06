@@ -16,7 +16,7 @@ complex, and error-prone.
   tests usage of `validates_inclusion_of`.
 * **[validate_exclusion_of](lib/shoulda/matchers/active_model/validate_exclusion_of_matcher.rb)**
   tests usage of `validates_exclusion_of`.
-* **[ensure_length_of](lib/shoulda/matchers/active_model/ensure_length_of_matcher.rb)** tests usage
+* **[validate_length_of](lib/shoulda/matchers/active_model/validate_length_of_matcher.rb)** tests usage
   of `validates_length_of`.
 * **[have_secure_password](lib/shoulda/matchers/active_model/have_secure_password_matcher.rb)** tests
   usage of `has_secure_password`.
