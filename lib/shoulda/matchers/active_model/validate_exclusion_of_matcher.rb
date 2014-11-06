@@ -29,7 +29,7 @@ module Shoulda
       #         in_array(['Mac', 'Linux'])
       #     end
       #
-      # If your blacklist is a range of values, use `in_rnage`:
+      # If your blacklist is a range of values, use `in_range`:
       #
       #     class Game
       #       include ActiveModel::Model
