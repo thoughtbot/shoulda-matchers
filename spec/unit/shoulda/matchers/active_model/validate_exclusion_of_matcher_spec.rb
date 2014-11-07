@@ -3,10 +3,11 @@ require 'unit_spec_helper'
 describe Shoulda::Matchers::ActiveModel do
   describe '#ensure_exclusion_of' do
     it 'is aliased to #validate_exclusion_of' do
-      matchers.expects(:validate_exclusion_of).with(:attr)
+      allow(matchers).to receive(:validate_exclusion_of)
 
       silence_warnings do
         matchers.ensure_exclusion_of(:attr)
+        expect(matchers).to have_received(:validate_exclusion_of).with(:attr)
       end
     end
   end

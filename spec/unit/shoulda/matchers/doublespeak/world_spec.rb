@@ -4,16 +4,23 @@ module Shoulda::Matchers::Doublespeak
   describe World do
     describe '#double_collection_for' do
       it 'calls DoubleCollection.new once with the given class' do
-        DoubleCollection.expects(:new).with(:klass).returns(:klass).once
+        allow(DoubleCollection).to receive(:new).and_return(:klass)
         world = described_class.new
+
         world.double_collection_for(:klass)
         world.double_collection_for(:klass)
+
+        expect(DoubleCollection).to have_received(:new).with(:klass).once
       end
 
       it 'returns the created DoubleCollection' do
-        double_collection = Object.new
-        DoubleCollection.stubs(:new).with(:klass).returns(double_collection)
+        double_collection = build_double_collection
+        allow(DoubleCollection).
+          to receive(:new).
+          with(:klass).
+          and_return(double_collection)
         world = described_class.new
+
         expect(world.double_collection_for(:klass)).to be double_collection
       end
     end
@@ -21,50 +28,50 @@ module Shoulda::Matchers::Doublespeak
     describe '#with_doubles_activated' do
       it 'installs all doubles, yields the block, then uninstalls them all' do
         block_called = false
-
-        double_collections = Array.new(3) do
-          stub.tap do |double_collection|
-            sequence = sequence('with_doubles_activated')
-            double_collection.expects(:activate).in_sequence(sequence)
-            double_collection.expects(:deactivate).in_sequence(sequence)
-          end
+        double_collections = Array.new(3) { build_double_collection }
+        double_collections.each do |double_collection|
+          allow(double_collection).to receive(:activate).ordered
         end
-
+        double_collections.each do |double_collection|
+          allow(double_collection).to receive(:deactivate).ordered
+        end
+        klasses = Array.new(3) { |i| "Klass #{i}" }
         world = described_class.new
-
-        DoubleCollection.stubs(:new).
-          with(:klass1).
-          returns(double_collections[0])
-        DoubleCollection.stubs(:new).
-          with(:klass2).
-          returns(double_collections[1])
-        DoubleCollection.stubs(:new).
-          with(:klass3).
-          returns(double_collections[2])
-        world.double_collection_for(:klass1)
-        world.double_collection_for(:klass2)
-        world.double_collection_for(:klass3)
+        double_collections.zip(klasses).each do |double_collection, klass|
+          allow(DoubleCollection).
+            to receive(:new).
+            with(klass).
+            and_return(double_collection)
+          world.double_collection_for(klass)
+        end
 
         world.with_doubles_activated { block_called = true }
 
         expect(block_called).to eq true
+
+        double_collections.each do |double_collection|
+          expect(double_collection).to have_received(:activate)
+          expect(double_collection).to have_received(:deactivate)
+        end
       end
 
       it 'still makes sure to uninstall all doubles even if the block raises an error' do
-        double_collection = stub()
-        double_collection.stubs(:activate)
-        double_collection.expects(:deactivate)
-
+        double_collection = build_double_collection
+        allow(DoubleCollection).to receive(:new).and_return(double_collection)
         world = described_class.new
-
-        DoubleCollection.stubs(:new).returns(double_collection)
         world.double_collection_for(:klass)
 
         begin
           world.with_doubles_activated { raise 'error' }
         rescue RuntimeError
         end
+
+        expect(double_collection).to have_received(:deactivate)
       end
+    end
+
+    def build_double_collection
+      double('double_collection', activate: nil, deactivate: nil)
     end
   end
 end

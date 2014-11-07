@@ -65,10 +65,13 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher do
   end
 
   it 'allows an IndexDefinition to have a truthy value for unique' do
-    index_definition = stub('ActiveRecord::ConnectionAdapters::IndexDefinition',
-      unique: 7, name: :age)
+    index_definition = double(
+      'ActiveRecord::ConnectionAdapters::IndexDefinition',
+      unique: 7,
+      name: :age
+    )
     matcher = have_db_index(:age).unique(true)
-    matcher.stubs(matched_index: index_definition)
+    allow(matcher).to receive(:matched_index).and_return(index_definition)
 
     expect(with_index_on(:age)).to matcher
   end

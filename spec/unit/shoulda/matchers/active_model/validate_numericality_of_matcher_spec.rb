@@ -278,7 +278,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
         def set_attr!; self.attr = 5 end
       end.new
 
-      subject.stubs(:set_attr!)
+      allow(subject).to receive(:set_attr!)
       expect(subject).to matcher.odd
     end
   end

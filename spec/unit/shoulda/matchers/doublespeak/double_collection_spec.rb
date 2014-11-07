@@ -4,31 +4,53 @@ module Shoulda::Matchers::Doublespeak
   describe DoubleCollection do
     describe '#register_stub' do
       it 'calls DoubleImplementationRegistry.find correctly' do
+        allow(DoubleImplementationRegistry).to receive(:find)
         double_collection = described_class.new(:klass)
-        DoubleImplementationRegistry.expects(:find).with(:stub)
+
         double_collection.register_stub(:a_method)
+
+        expect(DoubleImplementationRegistry).to have_received(:find).with(:stub)
       end
 
       it 'calls Double.new correctly' do
-        DoubleImplementationRegistry.stubs(:find).returns(:implementation)
+        allow(DoubleImplementationRegistry).
+          to receive(:find).
+          and_return(:implementation)
+        allow(Double).to receive(:new)
         double_collection = described_class.new(:klass)
-        Double.expects(:new).with(:klass, :a_method, :implementation)
+
         double_collection.register_stub(:a_method)
+
+        expect(Double).
+          to have_received(:new).
+          with(:klass, :a_method, :implementation)
       end
     end
 
     describe '#register_proxy' do
       it 'calls DoubleImplementationRegistry.find correctly' do
+        allow(DoubleImplementationRegistry).to receive(:find)
         double_collection = described_class.new(:klass)
-        DoubleImplementationRegistry.expects(:find).with(:proxy)
+
         double_collection.register_proxy(:a_method)
+
+        expect(DoubleImplementationRegistry).
+          to have_received(:find).
+          with(:proxy)
       end
 
       it 'calls Double.new correctly' do
-        DoubleImplementationRegistry.stubs(:find).returns(:implementation)
+        allow(DoubleImplementationRegistry).
+          to receive(:find).
+          and_return(:implementation)
+        allow(Double).to receive(:new)
         double_collection = described_class.new(:klass)
-        Double.expects(:new).with(:klass, :a_method, :implementation)
+
         double_collection.register_proxy(:a_method)
+
+        expect(Double).
+          to have_received(:new).
+          with(:klass, :a_method, :implementation)
       end
     end
 

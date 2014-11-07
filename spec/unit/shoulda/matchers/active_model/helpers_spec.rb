@@ -153,6 +153,10 @@ describe Shoulda::Matchers::ActiveModel::Helpers do
     message = options.delete(:message)
     type = options.delete(:type)
 
-    ActiveModel::Errors.any_instance.expects(:generate_message).with(attribute, type, {}).at_least_once.returns(message)
+    expect_any_instance_of(ActiveModel::Errors).
+      to receive(:generate_message).
+      with(attribute, type, {}).
+      at_least(1).
+      and_return(message)
   end
 end

@@ -6,7 +6,8 @@ module Shoulda::Matchers::Doublespeak
       it 'tells its implementation to call the given block' do
         sent_block = -> { }
         actual_block = nil
-        implementation = stub
+        implementation = build_implementation
+        implementation.singleton_class.__send__(:undef_method, :returns)
         implementation.singleton_class.__send__(:define_method, :returns) do |&block|
           actual_block = block
         end
@@ -16,16 +17,18 @@ module Shoulda::Matchers::Doublespeak
       end
 
       it 'tells its implementation to return the given value' do
-        implementation = mock()
-        implementation.expects(:returns).with(:implementation)
+        implementation = build_implementation
         double = described_class.new(:klass, :a_method, implementation)
         double.to_return(:implementation)
+
+        expect(implementation).to have_received(:returns).with(:implementation)
       end
 
       it 'prefers a block over a non-block' do
         sent_block = -> { }
         actual_block = nil
-        implementation = stub
+        implementation = build_implementation
+        implementation.singleton_class.__send__(:undef_method, :returns)
         implementation.singleton_class.__send__(:define_method, :returns) do |&block|
           actual_block = block
         end
@@ -37,22 +40,25 @@ module Shoulda::Matchers::Doublespeak
 
     describe '#activate' do
       it 'replaces the method with an implementation' do
-        implementation = stub
+        implementation = build_implementation
         klass = create_class(a_method: 42)
         instance = klass.new
         double = described_class.new(klass, :a_method, implementation)
         args = [:any, :args]
         block = -> {}
-        implementation.expects(:call).with(double, instance, args, block)
 
         double.activate
         instance.a_method(*args, &block)
+
+        expect(implementation).
+          to have_received(:call).
+          with(double, instance, args, block)
       end
     end
 
     describe '#deactivate' do
       it 'restores the original method after being doubled' do
-        implementation = stub(call: nil)
+        implementation = build_implementation
         klass = create_class(a_method: 42)
         instance = klass.new
         double = described_class.new(klass, :a_method, implementation)
@@ -63,7 +69,7 @@ module Shoulda::Matchers::Doublespeak
       end
 
       it 'still restores the original method if #activate was called twice' do
-        implementation = stub(call: nil)
+        implementation = build_implementation
         klass = create_class(a_method: 42)
         instance = klass.new
         double = described_class.new(klass, :a_method, implementation)
@@ -75,7 +81,7 @@ module Shoulda::Matchers::Doublespeak
       end
 
       it 'does nothing if the method has not been doubled' do
-        implementation = stub(call: nil)
+        implementation = build_implementation
         klass = create_class(a_method: 42)
         instance = klass.new
         double = described_class.new(klass, :a_method, implementation)
@@ -139,6 +145,10 @@ module Shoulda::Matchers::Doublespeak
           klass.__send__(:define_method, name) { |*args| value }
         end
       end
+    end
+
+    def build_implementation
+      double('implementation', returns: nil, call: nil)
     end
   end
 end

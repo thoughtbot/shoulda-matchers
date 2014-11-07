@@ -82,7 +82,7 @@ module Shoulda::Matchers::Doublespeak
     end
 
     def build_double
-      stub(record_call: nil)
+      double('double', record_call: nil)
     end
   end
 end

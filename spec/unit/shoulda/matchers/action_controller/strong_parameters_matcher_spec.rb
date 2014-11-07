@@ -261,11 +261,12 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
     context 'when given :create' do
       it 'POSTs to the controller' do
         controller = ActionController::Base.new
-        context = mock()
-        context.expects(:post).with(:create, {})
+        context = build_context
         matcher = described_class.new([:name]).in_context(context).for(:create)
 
         matcher.matches?(controller)
+
+        expect(context).to have_received(:post).with(:create, {})
       end
     end
 
@@ -273,20 +274,22 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
       if rails_gte_4_1?
         it 'PATCHes to the controller' do
           controller = ActionController::Base.new
-          context = mock()
-          context.expects(:patch).with(:update, {})
+          context = build_context
           matcher = described_class.new([:name]).in_context(context).for(:update)
 
           matcher.matches?(controller)
+
+          expect(context).to have_received(:patch).with(:update, {})
         end
       else
         it 'PUTs to the controller' do
           controller = ActionController::Base.new
-          context = mock()
-          context.expects(:put).with(:update, {})
+          context = build_context
           matcher = described_class.new([:name]).in_context(context).for(:update)
 
           matcher.matches?(controller)
+
+          expect(context).to have_received(:put).with(:update, {})
         end
       end
     end
@@ -294,13 +297,14 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
     context 'when given a custom action and verb' do
       it 'calls the action with the verb' do
         controller = ActionController::Base.new
-        context = mock()
-        context.expects(:delete).with(:hide, {})
+        context = build_context
         matcher = described_class.new([:name]).
           in_context(context).
           for(:hide, verb: :delete)
 
         matcher.matches?(controller)
+
+        expect(context).to have_received(:delete).with(:hide, {})
       end
     end
   end
@@ -317,6 +321,10 @@ describe Shoulda::Matchers::ActionController::StrongParametersMatcher do
     define_routes do
       get 'examples', to: 'examples#create'
     end
+  end
+
+  def build_context
+    double('context', post: nil, put: nil, patch: nil, delete: nil)
   end
 
   class SimulatedError < StandardError; end

@@ -22,7 +22,6 @@ monkey_patch_minitest_to_do_nothing
 ENV['BUNDLE_GEMFILE'] ||= app.gemfile_path
 ENV['RAILS_ENV'] = 'test'
 
-require 'bourne'
 require 'shoulda-matchers'
 require 'rspec/rails'
 
@@ -40,11 +39,12 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
+  config.mock_with :rspec
+
   if config.respond_to?(:infer_spec_type_from_file_location!)
     config.infer_spec_type_from_file_location!
   end
 
-  config.mock_with :mocha
   config.include Shoulda::Matchers::ActionController, type: :controller
 
   UnitTests::ActiveModelHelpers.configure_example_group(config)
