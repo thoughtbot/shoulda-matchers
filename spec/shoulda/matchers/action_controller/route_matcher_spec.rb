@@ -66,18 +66,19 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
 
       define_controller('Examples').new
     end
+  end
 
-    def route_examples_to_examples_1
+  context 'given a controller with a nested route' do
+    Example = Module.new
+    it 'accepts non-string parameters' do
+      controller = define_controller('Example::Commons').new
+
       define_routes do
-        get 'examples/:id', to: 'examples/commons#example'
+        get 'examples/:id', to: 'example/commons#example'
       end
 
-      define_controller('Examples').new
-    end
-
-    it 'accepts a non-string parameter when only controllers is nested' do
-      expect(route_examples_to_examples_1).to route(:get, '/examples/1').
-        to(controller: 'examples/commons', action: :example, id: 1)
+      expect(controller).to route(:get, '/examples/1').
+        to(controller: 'example/commons', action: :example, id: 1)
     end
   end
 end
