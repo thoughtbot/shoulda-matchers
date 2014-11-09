@@ -79,6 +79,9 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
 
       expect(controller).to route(:get, '/examples/1').
         to(controller: 'example/commons', action: :example, id: 1)
+
+      expect(controller).to route(:get, '/examples/1').
+        to('example/commons#example', id: 1)
     end
   end
 end
