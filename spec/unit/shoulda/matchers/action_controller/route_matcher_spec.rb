@@ -1,6 +1,80 @@
 require 'unit_spec_helper'
 
 describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller do
+  shared_examples_for 'a controller with a defined route' do
+    context 'when controller and action are specified as explicit options' do
+      it 'accepts' do
+        expect(controller_with_defined_routes).
+          to route(:get, "/#{controller_name}").
+          to(action: 'index')
+      end
+
+      it 'accepts a symbol controller' do
+        expect(controller_with_defined_routes).
+          to route(:get, "/#{controller_name}").
+          to(controller: controller_name.to_sym, action: 'index')
+      end
+
+      it 'accepts a symbol action' do
+        expect(controller_with_defined_routes).
+          to route(:get, "/#{controller_name}").
+          to(action: :index)
+      end
+
+      it 'rejects an undefined route' do
+        expect(controller_with_defined_routes).
+          not_to route(:get, '/non_existent_route').
+          to(action: 'non_existent')
+      end
+
+      it 'rejects a route for another controller' do
+        define_controller_with_defined_routes
+        other_controller = define_controller('Other').new
+        expect(other_controller).
+          not_to route(:get, "/#{controller_name}").
+          to(action: 'index')
+      end
+
+      context 'when route has parameters' do
+        it 'accepts a non-string parameter' do
+          expect(controller_with_defined_routes).
+            to route(:get, "/#{controller_name}/1").
+            to(action: 'show', id: 1)
+        end
+
+        it 'rejects a route for different parameters' do
+          expect(controller_with_defined_routes).
+            not_to route(:get, "/#{controller_name}/1").
+            to(action: 'show', some: 'other', params: 'here')
+        end
+      end
+    end
+
+    context 'when controller and action are specified as a joined string' do
+      it 'accepts' do
+        expect(controller_with_defined_routes).
+          to route(:get, "/#{controller_name}").
+          to("#{controller_name}#index")
+      end
+    end
+
+    def controller_with_defined_routes
+      @_controller_with_defined_routes ||= begin
+        _controller_name = controller_name
+
+        define_routes do
+          get "/#{_controller_name}", to: "#{_controller_name}#index"
+          get "/#{_controller_name}/:id", to: "#{_controller_name}#show"
+        end
+
+        controller
+      end
+    end
+
+    alias_method :define_controller_with_defined_routes,
+      :controller_with_defined_routes
+  end
+
   context 'given a controller with a defined glob url' do
     it 'accepts glob route' do
       controller = define_controller('Examples').new
@@ -14,57 +88,15 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
     end
   end
 
-  context 'given a controller with a defined route' do
-
-    it 'accepts routing the correct path to the correct parameters' do
-      expect(route_examples_to_examples).to route(:get, '/examples/1').
-        to(action: 'example', id: '1')
-    end
-
-    it 'accepts a symbol controller' do
-      route_examples_to_examples
-      expect(Object.new).to route(:get, '/examples/1').
-        to(controller: :examples, action: 'example', id: '1')
-    end
-
-    it 'accepts a symbol action' do
-      expect(route_examples_to_examples).to route(:get, '/examples/1').
-        to(action: :example, id: '1')
-    end
-
-    it 'accepts a non-string parameter' do
-      expect(route_examples_to_examples).to route(:get, '/examples/1').
-        to(action: 'example', id: 1)
-    end
-
-    it 'rejects an undefined route' do
-      expect(route_examples_to_examples).
-        not_to route(:get, '/bad_route').to(var: 'value')
-    end
-
-    it 'rejects a route for another controller' do
-      route_examples_to_examples
-      other = define_controller('Other').new
-      expect(other).not_to route(:get, '/examples/1').
-        to(action: 'example', id: '1')
-    end
-
-    it 'rejects a route for different parameters' do
-      expect(route_examples_to_examples).not_to route(:get, '/examples/1').
-        to(action: 'other', id: '1')
-    end
-
-    it "accepts a string as first parameter" do
-      expect(route_examples_to_examples).to route(:get, '/examples/1').
-        to("examples#example", id: '1')
-    end
-
-    def route_examples_to_examples
-      define_routes do
-        get 'examples/:id', to: 'examples#example'
+  context 'given a controller that is not namespaced' do
+    it_behaves_like 'a controller with a defined route' do
+      def controller
+        define_controller(controller_name).new
       end
 
-      define_controller('Examples').new
+      def controller_name
+        'examples'
+      end
     end
   end
 end
