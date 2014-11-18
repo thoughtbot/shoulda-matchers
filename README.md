@@ -10,67 +10,68 @@ complex, and error-prone.
 
 * **[allow_mass_assignment_of](lib/shoulda/matchers/active_model/allow_mass_assignment_of_matcher.rb)**
   tests usage of Rails 3's `attr_accessible` and `attr_protected` macros.
-* **[allow_value](lib/shoulda/matchers/active_model/allow_value_matcher.rb)** tests usage of
-  the `validates_format_of` validation.
-* **[validate_inclusion_of](lib/shoulda/matchers/active_model/validate_inclusion_of_matcher.rb)**
-  tests usage of `validates_inclusion_of`.
-* **[validate_exclusion_of](lib/shoulda/matchers/active_model/validate_exclusion_of_matcher.rb)**
-  tests usage of `validates_exclusion_of`.
-* **[validate_length_of](lib/shoulda/matchers/active_model/validate_length_of_matcher.rb)** tests usage
-  of `validates_length_of`.
-* **[have_secure_password](lib/shoulda/matchers/active_model/have_secure_password_matcher.rb)** tests
-  usage of `has_secure_password`.
+* **[allow_value](lib/shoulda/matchers/active_model/allow_value_matcher.rb)**
+  tests usage of the `validates_format_of` validation.
+* **[have_secure_password](lib/shoulda/matchers/active_model/have_secure_password_matcher.rb)**
+  tests usage of `has_secure_password`.
 * **[validate_confirmation_of](lib/shoulda/matchers/active_model/validate_confirmation_of_matcher.rb)**
   tests usage of `validates_confirmation_of`.
+* **[validate_exclusion_of](lib/shoulda/matchers/active_model/validate_exclusion_of_matcher.rb)**
+  tests usage of `validates_exclusion_of`.
+* **[validate_inclusion_of](lib/shoulda/matchers/active_model/validate_inclusion_of_matcher.rb)**
+  tests usage of `validates_inclusion_of`.
+* **[validate_length_of](lib/shoulda/matchers/active_model/validate_length_of_matcher.rb)**
+  tests usage of `validates_length_of`.
 * **[validate_numericality_of](lib/shoulda/matchers/active_model/validate_numericality_of_matcher.rb)**
   tests usage of `validates_numericality_of`.
-* **[validate_presence_of](lib/shoulda/matchers/active_model/validate_presence_of_matcher.rb)** tests
-  usage of `validates_presence_of`.
-* **[validate_uniqueness_of](lib/shoulda/matchers/active_model/validate_uniqueness_of_matcher.rb)** tests
-  usage of `validates_uniqueness_of`.
+* **[validate_presence_of](lib/shoulda/matchers/active_model/validate_presence_of_matcher.rb)**
+  tests usage of `validates_presence_of`.
+* **[validate_uniqueness_of](lib/shoulda/matchers/active_model/validate_uniqueness_of_matcher.rb)**
+  tests usage of `validates_uniqueness_of`.
 
 ### ActiveRecord Matchers
 
 * **[accept_nested_attributes_for](lib/shoulda/matchers/active_record/accept_nested_attributes_for_matcher.rb)**
   tests usage of the `accepts_nested_attributes_for` macro.
-* **[belong_to](lib/shoulda/matchers/active_record/association_matcher.rb)** tests
-  your `belongs_to` associations.
+* **[belong_to](lib/shoulda/matchers/active_record/association_matcher.rb)**
+  tests your `belongs_to` associations.
 * **[define_enum_for](lib/shoulda/matchers/active_record/define_enum_for_matcher.rb)**
   tests usage of the `enum` macro.
-* **[have_many](lib/shoulda/matchers/active_record/association_matcher.rb)** tests
-  your `has_many` associations.
-* **[have_one](lib/shoulda/matchers/active_record/association_matcher.rb)** tests your
-  `has_one` associations.
 * **[have_and_belong_to_many](lib/shoulda/matchers/active_record/association_matcher.rb)**
   tests your `has_and_belongs_to_many` associations.
-* **[have_db_column](lib/shoulda/matchers/active_record/have_db_column_matcher.rb)** tests that
-  the table that backs your model has a specific column.
-* **[have_db_index](lib/shoulda/matchers/active_record/have_db_index_matcher.rb)** tests that the
-  table that backs your model has an index on a specific column.
+* **[have_db_column](lib/shoulda/matchers/active_record/have_db_column_matcher.rb)**
+  tests that the table that backs your model has a specific column.
+* **[have_db_index](lib/shoulda/matchers/active_record/have_db_index_matcher.rb)**
+  tests that the table that backs your model has an index on a specific column.
+* **[have_many](lib/shoulda/matchers/active_record/association_matcher.rb)**
+  tests your `has_many` associations.
+* **[have_one](lib/shoulda/matchers/active_record/association_matcher.rb)**
+  tests your `has_one` associations.
 * **[have_readonly_attribute](lib/shoulda/matchers/active_record/have_readonly_attribute_matcher.rb)**
   tests usage of the `attr_readonly` macro.
-* **[serialize](lib/shoulda/matchers/active_record/serialize_matcher.rb)** tests usage of the
-  `serialize` macro.
+* **[serialize](lib/shoulda/matchers/active_record/serialize_matcher.rb)** tests
+  usage of the `serialize` macro.
 
 ### ActionController Matchers
 
-* **[filter_param](lib/shoulda/matchers/action_controller/filter_param_matcher.rb)** tests
-  parameter filtering configuration.
-* **[redirect_to](lib/shoulda/matchers/action_controller/redirect_to_matcher.rb)** tests that
-  an action redirects to a certain location.
-* **[render_template](lib/shoulda/matchers/action_controller/render_template_matcher.rb)** tests
-  that an action renders a template.
-* **[render_with_layout](lib/shoulda/matchers/action_controller/render_with_layout_matcher.rb)** tests
-  that an action is rendered with a certain layout.
-* **[rescue_from](lib/shoulda/matchers/action_controller/rescue_from_matcher.rb)** tests usage
-  of the `rescue_from` macro.
-* **[respond_with](lib/shoulda/matchers/action_controller/respond_with_matcher.rb)** tests that
-  an action responds with a certain status code.
-* **[route](lib/shoulda/matchers/action_controller/route_matcher.rb)** tests your routes.
-* **[set_session](lib/shoulda/matchers/action_controller/set_session_matcher.rb)** makes
-  assertions on the `session` hash.
-* **[set_the_flash](lib/shoulda/matchers/action_controller/set_the_flash_matcher.rb)** makes
-  assertions on the `flash` hash.
+* **[filter_param](lib/shoulda/matchers/action_controller/filter_param_matcher.rb)**
+  tests parameter filtering configuration.
+* **[redirect_to](lib/shoulda/matchers/action_controller/redirect_to_matcher.rb)**
+  tests that an action redirects to a certain location.
+* **[render_template](lib/shoulda/matchers/action_controller/render_template_matcher.rb)**
+  tests that an action renders a template.
+* **[render_with_layout](lib/shoulda/matchers/action_controller/render_with_layout_matcher.rb)**
+  tests that an action is rendered with a certain layout.
+* **[rescue_from](lib/shoulda/matchers/action_controller/rescue_from_matcher.rb)**
+  tests usage of the `rescue_from` macro.
+* **[respond_with](lib/shoulda/matchers/action_controller/respond_with_matcher.rb)**
+  tests that an action responds with a certain status code.
+* **[route](lib/shoulda/matchers/action_controller/route_matcher.rb)** tests
+  your routes.
+* **[set_session](lib/shoulda/matchers/action_controller/set_session_matcher.rb)**
+  makes assertions on the `session` hash.
+* **[set_the_flash](lib/shoulda/matchers/action_controller/set_the_flash_matcher.rb)**
+  makes assertions on the `flash` hash.
 
 ### Independent Matchers
 
