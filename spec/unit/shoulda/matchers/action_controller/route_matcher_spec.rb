@@ -107,4 +107,19 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
       end
     end
   end
+
+  context 'given a controller that is namespaced' do
+    it_behaves_like 'a controller with a defined route' do
+      def controller
+        @_controller ||= begin
+          define_module('Admin')
+          define_controller('Admin::Examples').new
+        end
+      end
+
+      def controller_name
+        'admin/examples'
+      end
+    end
+  end
 end
