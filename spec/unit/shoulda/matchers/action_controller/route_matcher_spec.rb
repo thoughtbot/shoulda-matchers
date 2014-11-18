@@ -56,6 +56,14 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
           to route(:get, "/#{controller_name}").
           to("#{controller_name}#index")
       end
+
+      context 'when route has parameters' do
+        it 'accepts a non-string parameter' do
+          expect(controller_with_defined_routes).
+            to route(:get, "/#{controller_name}/1").
+            to("#{controller_name}#show", id: 1)
+        end
+      end
     end
 
     def controller_with_defined_routes

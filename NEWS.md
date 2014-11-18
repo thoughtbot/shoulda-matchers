@@ -34,6 +34,10 @@
 * Fix `validate_inclusion_of` used with `with_message` so that it fails if given
   a message that does not match the message on the validation. ([#598])
 
+* Fix `route` matcher so that when controller and action are specified in hash
+  notation (e.g. `posts#show`), route parameters such as `id` do not need to be
+  specified as a string but may be specified as a number as well ([#602]).
+
 ### Features
 
 * Add ability to test `:primary_key` option on associations. ([#597])
@@ -51,6 +55,7 @@
 [#597]: https://github.com/thoughtbot/shoulda-matchers/pull/597
 [#537]: https://github.com/thoughtbot/shoulda-matchers/pull/537
 [#598]: https://github.com/thoughtbot/shoulda-matchers/pull/598
+[#602]: https://github.com/thoughtbot/shoulda-matchers/pull/602
 
 # 2.7.0
 

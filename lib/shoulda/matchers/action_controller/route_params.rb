@@ -24,14 +24,19 @@ module Shoulda
         end
 
         def extract_params_from_string
-          params = args[1] || {}
           controller, action = args[0].split('#')
-          params.merge!(controller: controller, action: action)
+          params = (args[1] || {}).merge(controller: controller, action: action)
+          stringify_values(params)
         end
 
         def stringify_params
-          args[0].each do |key, value|
-            args[0][key] = stringify(value)
+          stringify_values(args[0])
+        end
+
+        def stringify_values(hash)
+          hash.inject({}) do |hash_copy, (key, value)|
+            hash_copy[key] = stringify(value)
+            hash_copy
           end
         end
 
