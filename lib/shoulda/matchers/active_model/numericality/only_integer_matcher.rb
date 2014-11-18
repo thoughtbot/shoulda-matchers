@@ -1,7 +1,7 @@
 module Shoulda
   module Matchers
     module ActiveModel
-      module NumericalityMatchers
+      module Numericality
         # @private
         class OnlyIntegerMatcher < NumericTypeMatcher
           NON_INTEGER_VALUE = 0.1

@@ -1,20 +1,20 @@
 module Shoulda
   module Matchers
     module ActiveModel
-      module NumericalityMatchers
+      module Numericality
         # @private
-        class EvenNumberMatcher < NumericTypeMatcher
-          NON_EVEN_NUMBER_VALUE = 1
+        class OddNumberMatcher < NumericTypeMatcher
+          NON_ODD_NUMBER_VALUE  = 2
 
           def initialize(attribute, options = {})
             @attribute = attribute
-            @disallow_value_matcher = DisallowValueMatcher.new(NON_EVEN_NUMBER_VALUE).
+            @disallow_value_matcher = DisallowValueMatcher.new(NON_ODD_NUMBER_VALUE).
                 for(@attribute).
-                with_message(:even)
+                with_message(:odd)
           end
 
           def allowed_type
-            'even numbers'
+            'odd numbers'
           end
 
           def diff_to_compare

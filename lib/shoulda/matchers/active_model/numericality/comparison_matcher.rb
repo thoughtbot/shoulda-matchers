@@ -1,7 +1,7 @@
 module Shoulda
   module Matchers
     module ActiveModel
-      module NumericalityMatchers
+      module Numericality
         # @private
         class ComparisonMatcher < ValidationMatcher
           ERROR_MESSAGES = {
