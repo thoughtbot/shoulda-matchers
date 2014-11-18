@@ -10,6 +10,9 @@
 
       expect(record).not_to allow_value('good value', *bad_values)
 
+* `ensure_inclusion_of`, `ensure_exclusion_of`, and `ensure_length_of` have been
+  removed in favor of their `validate_*` counterparts.
+
 # 2.8.0
 
 ### Deprecations

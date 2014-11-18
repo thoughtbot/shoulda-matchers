@@ -197,16 +197,6 @@ module Shoulda
         ValidateLengthOfMatcher.new(attr)
       end
 
-      # @deprecated Use {#validate_length_of} instead.
-      # @return [ValidateLengthOfMatcher]
-      def ensure_length_of(attr)
-        Shoulda::Matchers.warn_about_deprecated_method(
-          :ensure_length_of,
-          :validate_length_of
-        )
-        validate_length_of(attr)
-      end
-
       # @private
       class ValidateLengthOfMatcher < ValidationMatcher
         include Helpers

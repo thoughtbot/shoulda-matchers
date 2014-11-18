@@ -1,22 +1,5 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveModel, type: :model do
-  describe '#ensure_length_of' do
-    it 'is aliased to #validate_length_of' do
-      allow(matchers).to receive(:validate_length_of)
-
-      silence_warnings do
-        matchers.ensure_length_of(:attr)
-        expect(matchers).to have_received(:validate_length_of).with(:attr)
-      end
-    end
-  end
-
-  def matchers
-    @_matchers ||= Object.new.extend(described_class)
-  end
-end
-
 describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher, type: :model do
   context 'an attribute with a non-zero minimum length validation' do
     it 'accepts ensuring the correct minimum length' do

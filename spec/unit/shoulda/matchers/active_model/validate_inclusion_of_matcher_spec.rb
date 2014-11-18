@@ -1,22 +1,5 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveModel, type: :model do
-  describe '#ensure_inclusion_of' do
-    it 'is aliased to #validate_inclusion_of' do
-      allow(matchers).to receive(:validate_inclusion_of)
-
-      silence_warnings do
-        matchers.ensure_inclusion_of(:attr)
-        expect(matchers).to have_received(:validate_inclusion_of)
-      end
-    end
-  end
-
-  def matchers
-    @_matchers ||= Object.new.extend(described_class)
-  end
-end
-
 describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :model do
   shared_context 'for a generic attribute' do
     def self.testing_values_of_option(option_name, &block)
