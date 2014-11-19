@@ -23,7 +23,7 @@ module UnitTests
         msg = "Expectation should have failed with message '#{expected}'"
 
         if @actual
-          msg << ", actually failed with '#{@actual}'"
+          msg << ",\nactually failed with '#{@actual}'"
         else
           msg << ", but did not fail."
         end
