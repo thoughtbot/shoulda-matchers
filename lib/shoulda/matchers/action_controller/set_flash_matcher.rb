@@ -149,16 +149,6 @@ module Shoulda
         SetFlashMatcher.new
       end
 
-      # @deprecated Use {#set_flash} instead.
-      # @return [SetFlashMatcher]
-      def set_the_flash
-        Shoulda::Matchers.warn_about_deprecated_method(
-          :set_the_flash,
-          :set_flash
-        )
-        set_flash
-      end
-
       # @private
       class SetFlashMatcher
         def initialize

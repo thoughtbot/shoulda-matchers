@@ -13,6 +13,8 @@
 * `ensure_inclusion_of`, `ensure_exclusion_of`, and `ensure_length_of` have been
   removed in favor of their `validate_*` counterparts.
 
+* `set_the_flash` has been removed in favor of `set_flash`.
+
 # 2.8.0
 
 ### Deprecations
