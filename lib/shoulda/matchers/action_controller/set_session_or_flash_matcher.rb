@@ -84,7 +84,7 @@ module Shoulda
           if key_set?
             string << " #{store.name}[#{key.inspect}]"
           else
-            string << " any #{store.name} key"
+            string << " any key in #{store.name}"
           end
 
           if expected_value_set?

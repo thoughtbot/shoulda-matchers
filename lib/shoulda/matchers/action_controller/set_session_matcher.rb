@@ -1,3 +1,5 @@
+require 'forwardable'
+
 module Shoulda
   module Matchers
     module ActionController
@@ -112,132 +114,49 @@ module Shoulda
       #
       # @return [SetSessionMatcher]
       #
-      def set_session(key = nil)
-        SetSessionMatcher.new(key)
+      def set_session
+        SetSessionMatcher.new.in_context(self)
       end
 
       # @private
       class SetSessionMatcher
-        def initialize(key)
-          if key
-            Shoulda::Matchers.warn <<EOT
-Passing a key to set_session is deprecated.
-Please use the hash syntax instead (e.g., `set_session[:foo]`, not `set_session(:foo)`).
-EOT
-            self[key]
-          end
+        extend Forwardable
 
-          @value_block = nil
-        end
+        def_delegators :underlying_matcher,
+          :description,
+          :matches?,
+          :failure_message,
+          :failure_message_when_negated
+        alias_method \
+          :failure_message_for_should,
+          :failure_message
+        alias_method \
+          :failure_message_for_should_not,
+          :failure_message_when_negated
 
-        def [](key)
-          @key = key.to_s
-          self
-        end
-
-        def to(value = nil, &block)
-          @value = value
-          @value_block = block
-          self
-        end
-
-        def matches?(controller)
-          @controller = controller
-
-          if @value_block
-            @value = @context.instance_eval(&@value_block)
-          end
-
-          if nil_value_expected_but_actual_value_unset?
-            Shoulda::Matchers.warn <<EOT
-Using `should set_session[...].to(nil)` to assert that a variable is unset is deprecated.
-Please use `should_not set_session[...]` instead.
-EOT
-          end
-
-          if key_specified? && value_specified?
-            @value === session[@key]
-          elsif key_specified?
-            session.key?(@key)
-          elsif value_specified?
-            session.values.any? { |value| @value === value }
-          else
-            session_present?
-          end
-        end
-
-        def failure_message
-          "Expected #{expectation}, but #{result}"
-        end
-        alias failure_message_for_should failure_message
-
-        def failure_message_when_negated
-          "Didn't expect #{expectation}, but it was"
-        end
-        alias failure_message_for_should_not failure_message_when_negated
-
-        def description
-          "should #{expectation}"
+        def initialize
+          store = SessionStore.new
+          @underlying_matcher = SetSessionOrFlashMatcher.new(store)
         end
 
         def in_context(context)
-          @context = context
+          underlying_matcher.in_context(context)
           self
         end
 
-        private
-
-        def key_specified?
-          defined?(@key)
+        def [](key)
+          underlying_matcher[key]
+          self
         end
 
-        def value_specified?
-          defined?(@value)
+        def to(expected_value = nil, &block)
+          underlying_matcher.to(expected_value, &block)
+          self
         end
 
-        def value_or_default_value
-          defined?(@value) && @value
-        end
+        protected
 
-        def nil_value_expected_but_actual_value_unset?
-          value_specified? && @value.nil? && !session.key?(@key)
-        end
-
-        def session_present?
-          !session.empty?
-        end
-
-        def expectation
-          expectation = ""
-
-          if key_specified?
-            expectation << "session variable #{@key.inspect}"
-          else
-            expectation << "any session variable"
-          end
-
-          expectation << " to be"
-
-          if value_specified? && !@value.nil?
-            expectation << " #{@value.inspect}"
-          else
-            expectation << " set"
-          end
-
-          expectation
-        end
-
-        def result
-          if session_present?
-            "the session was #{session.inspect}"
-          else
-            'no session variables were set'
-          end
-        end
-
-        def session
-          @controller.session
-        end
+        attr_reader :underlying_matcher
       end
     end
   end

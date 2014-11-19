@@ -1,3 +1,5 @@
+require 'forwardable'
+
 module Shoulda
   module Matchers
     module ActionController
@@ -146,151 +148,54 @@ module Shoulda
       # @return [SetFlashMatcher]
       #
       def set_flash
-        SetFlashMatcher.new
+        SetFlashMatcher.new.in_context(self)
       end
 
       # @private
       class SetFlashMatcher
-        def initialize
-          @options = {}
-          @value = nil
-        end
+        extend Forwardable
 
-        def to(value)
-          if !value.is_a?(String) && !value.is_a?(Regexp)
-            raise "cannot match against #{value.inspect}"
-          end
-          @value = value
-          self
+        def_delegators :underlying_matcher,
+          :description,
+          :matches?,
+          :failure_message,
+          :failure_message_when_negated
+        alias_method \
+          :failure_message_for_should,
+          :failure_message
+        alias_method \
+          :failure_message_for_should_not,
+          :failure_message_when_negated
+
+        def initialize
+          store = FlashStore.future
+          @underlying_matcher = SetSessionOrFlashMatcher.new(store)
         end
 
         def now
-          @options[:now] = true
+          store = FlashStore.now
+          @underlying_matcher = SetSessionOrFlashMatcher.new(store)
+          self
+        end
+
+        def in_context(context)
+          underlying_matcher.in_context(context)
           self
         end
 
         def [](key)
-          @options[:key] = key
+          underlying_matcher[key]
           self
         end
 
-        def matches?(controller)
-          @controller = controller
-          sets_the_flash? && string_value_matches? && regexp_value_matches?
+        def to(expected_value = nil, &block)
+          underlying_matcher.to(expected_value, &block)
+          self
         end
 
-        def description
-          description = "set the #{expected_flash_invocation}"
-          description << " to #{@value.inspect}" unless @value.nil?
-          description
-        end
+        protected
 
-        def failure_message
-          "Expected #{expectation}"
-        end
-        alias failure_message_for_should failure_message
-
-        def failure_message_when_negated
-          "Did not expect #{expectation}"
-        end
-        alias failure_message_for_should_not failure_message_when_negated
-
-        private
-
-        def sets_the_flash?
-          flash_values.any?
-        end
-
-        def string_value_matches?
-          if @value.is_a?(String)
-            flash_values.any? {|value| value == @value }
-          else
-            true
-          end
-        end
-
-        def regexp_value_matches?
-          if @value.is_a?(Regexp)
-            flash_values.any? {|value| value =~ @value }
-          else
-            true
-          end
-        end
-
-        def flash_values
-          if @options.key?(:key)
-            flash_hash = HashWithIndifferentAccess.new(flash.to_hash)
-            [flash_hash[@options[:key]]]
-          else
-            flash.to_hash.values
-          end
-        end
-
-        def flash
-          @flash ||= copy_of_flash_from_controller
-        end
-
-        def copy_of_flash_from_controller
-          @controller.flash.dup.tap do |flash|
-            copy_flashes(@controller.flash, flash)
-            copy_discard_if_necessary(@controller.flash, flash)
-            sweep_flash_if_necessary(flash)
-          end
-        end
-
-        def copy_flashes(original_flash, new_flash)
-          flashes = original_flash.instance_variable_get('@flashes').dup
-          new_flash.instance_variable_set('@flashes', flashes)
-        end
-
-        def copy_discard_if_necessary(original_flash, new_flash)
-          discard_ivar = :@discard
-          if original_flash.instance_variable_defined?(discard_ivar)
-            discard = original_flash.instance_variable_get(discard_ivar).dup
-            new_flash.instance_variable_set(discard_ivar, discard)
-          end
-        end
-
-        def sweep_flash_if_necessary(flash)
-          unless @options[:now]
-            flash.sweep
-          end
-        end
-
-        def expectation
-          expectation = "the #{expected_flash_invocation} to be set"
-          expectation << " to #{@value.inspect}" unless @value.nil?
-          expectation << ", but #{flash_description}"
-          expectation
-        end
-
-        def flash_description
-          if flash.blank?
-            'no flash was set'
-          else
-            "was #{flash.inspect}"
-          end
-        end
-
-        def expected_flash_invocation
-          "flash#{pretty_now}#{pretty_key}"
-        end
-
-        def pretty_now
-          if @options[:now]
-            '.now'
-          else
-            ''
-          end
-        end
-
-        def pretty_key
-          if @options[:key]
-            "[:#{@options[:key]}]"
-          else
-            ''
-          end
-        end
+        attr_reader :underlying_matcher
       end
     end
   end

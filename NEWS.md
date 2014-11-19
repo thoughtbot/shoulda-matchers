@@ -13,7 +13,13 @@
 * `ensure_inclusion_of`, `ensure_exclusion_of`, and `ensure_length_of` have been
   removed in favor of their `validate_*` counterparts.
 
-* `set_the_flash` has been removed in favor of `set_flash`.
+* `set_the_flash` and `set_session` have been changed to more closely align with
+  each other:
+  * `set_the_flash` has been removed in favor of `set_flash`.
+  * `set_session('foo')` is no longer valid syntax, please use
+    `set_session['foo']` instead.
+  * `set_session['key'].to(nil)` will no longer pass when the key in question
+    has not been set yet.
 
 # 2.8.0
 
