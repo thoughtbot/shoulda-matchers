@@ -286,160 +286,132 @@ module Shoulda
 
         attr_reader :diff_to_compare
 
+        delegate :failure_message, :failure_message_when_negated,
+          :failure_message_for_should, :failure_message_for_should_not,
+          to: :submatchers
+
         def initialize(attribute)
           @attribute = attribute
-          @submatchers = []
+          @submatchers = MatcherCollection.new
           @diff_to_compare = DEFAULT_DIFF_TO_COMPARE
           add_disallow_value_matcher
+
+          submatchers.configure do |matcher|
+            matcher.for(attribute)
+          end
         end
 
         def only_integer
-          prepare_submatcher(
-            NumericalityMatchers::OnlyIntegerMatcher.new(@attribute)
-          )
+          add_submatcher(Numericality::OnlyIntegerMatcher)
           self
         end
 
         def allow_nil
-          prepare_submatcher(
-            AllowValueMatcher.new(nil)
-              .for(@attribute)
-              .with_message(:not_a_number)
-          )
+          add_submatcher(AllowValueMatcher, nil) do |matcher|
+            matcher.with_message(:not_a_number)
+          end
           self
         end
 
         def odd
-          prepare_submatcher(
-            NumericalityMatchers::OddNumberMatcher.new(@attribute)
-          )
+          add_submatcher(Numericality::OddNumberMatcher)
           self
         end
 
         def even
-          prepare_submatcher(
-            NumericalityMatchers::EvenNumberMatcher.new(@attribute)
-          )
+          add_submatcher(Numericality::EvenNumberMatcher)
           self
         end
 
         def is_greater_than(value)
-          prepare_submatcher(comparison_matcher_for(value, :>).for(@attribute))
+          add_comparison_submatcher(value, :>)
           self
         end
 
         def is_greater_than_or_equal_to(value)
-          prepare_submatcher(comparison_matcher_for(value, :>=).for(@attribute))
+          add_comparison_submatcher(value, :>=)
           self
         end
 
         def is_equal_to(value)
-          prepare_submatcher(comparison_matcher_for(value, :==).for(@attribute))
+          add_comparison_submatcher(value, :==)
           self
         end
 
         def is_less_than(value)
-          prepare_submatcher(comparison_matcher_for(value, :<).for(@attribute))
+          add_comparison_submatcher(value, :<)
           self
         end
 
         def is_less_than_or_equal_to(value)
-          prepare_submatcher(comparison_matcher_for(value, :<=).for(@attribute))
+          add_comparison_submatcher(value, :<=)
           self
         end
 
         def with_message(message)
-          @submatchers.each { |matcher| matcher.with_message(message) }
+          submatchers.configure { |matcher| matcher.with_message(message) }
           self
         end
 
         def matches?(subject)
           @subject = subject
-          submatchers_match?
+          submatchers.matches?(subject)
         end
 
         def description
-          "only allow #{allowed_types} for #{@attribute}#{comparison_descriptions}"
+          "only allow #{allowed_types} for #{attribute}#{comparison_descriptions}"
         end
 
-        def failure_message
-          submatcher_failure_messages_for_should.last
-        end
-        alias failure_message_for_should failure_message
+        protected
 
-        def failure_message_when_negated
-          submatcher_failure_messages_for_should_not.last
-        end
-        alias failure_message_for_should_not failure_message_when_negated
+        attr_reader :attribute
 
         private
 
-        def add_disallow_value_matcher
-          disallow_value_matcher = DisallowValueMatcher.new(NON_NUMERIC_VALUE).
-            for(@attribute).
-            with_message(:not_a_number)
-
-          add_submatcher(disallow_value_matcher)
+        def add_submatcher(klass, *args, &block)
+          submatchers.add(klass, *args, &block)
         end
 
-        def prepare_submatcher(submatcher)
-          add_submatcher(submatcher)
-          if submatcher.respond_to?(:diff_to_compare)
-            update_diff_to_compare(submatcher)
+        def add_disallow_value_matcher
+          add_submatcher(DisallowValueMatcher, NON_NUMERIC_VALUE) do |matcher|
+            matcher.with_message(:not_a_number)
           end
         end
 
-        def comparison_matcher_for(value, operator)
-          NumericalityMatchers::ComparisonMatcher
-            .new(self, value, operator)
-            .for(@attribute)
+        def add_comparison_submatcher(value, operator)
+          add_submatcher(Numericality::ComparisonMatcher, self, value, operator)
         end
 
-        def add_submatcher(submatcher)
-          @submatchers << submatcher
+        def diff_to_compare
+          possible_diff_to_compares.max
         end
 
-        def update_diff_to_compare(matcher)
-          @diff_to_compare = [@diff_to_compare, matcher.diff_to_compare].max
-        end
-
-        def submatchers_match?
-          failing_submatchers.empty?
-        end
-
-        def submatcher_failure_messages_for_should
-          failing_submatchers.map(&:failure_message)
-        end
-
-        def submatcher_failure_messages_for_should_not
-          failing_submatchers.map(&:failure_message_when_negated)
-        end
-
-        def failing_submatchers
-          @failing_submatchers ||= @submatchers.select { |matcher| !matcher.matches?(@subject) }
+        def possible_diff_to_compares
+          [DEFAULT_DIFF_TO_COMPARE] + submatchers.invoke(:diff_to_compare)
         end
 
         def allowed_types
-          allowed_array = submatcher_allowed_types
-          allowed_array.empty? ? NUMERIC_NAME : allowed_array.join(', ')
+          if submatcher_allowed_types.empty?
+            NUMERIC_NAME
+          else
+            submatcher_allowed_types.join(', ')
+          end
         end
 
         def submatcher_allowed_types
-          @submatchers.inject([]){|m, s| m << s.allowed_type if s.respond_to?(:allowed_type); m }
+          submatchers.invoke(:allowed_type)
         end
 
         def comparison_descriptions
-          description_array = submatcher_comparison_descriptions
-          description_array.empty? ? '' : ' which are ' + submatcher_comparison_descriptions.join(' and ')
+          if submatcher_comparison_descriptions.empty?
+            ''
+          else
+            ' which are ' + submatcher_comparison_descriptions.join(' and ')
+          end
         end
 
         def submatcher_comparison_descriptions
-          @submatchers.inject([]) do |arr, submatcher|
-            if submatcher.respond_to? :comparison_description
-              arr << submatcher.comparison_description
-            end
-            arr
-          end
+          submatchers.invoke(:comparison_description)
         end
       end
     end

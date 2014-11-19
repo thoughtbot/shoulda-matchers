@@ -3,7 +3,7 @@ module Shoulda
     module ActiveModel
       module Numericality
         # @private
-        class ComparisonMatcher < ValidationMatcher
+        class ComparisonMatcher
           ERROR_MESSAGES = {
             :> => :greater_than,
             :>= => :greater_than_or_equal_to,
@@ -13,15 +13,19 @@ module Shoulda
           }
 
           def initialize(numericality_matcher, value, operator)
-            unless numericality_matcher.respond_to? :diff_to_compare
-              raise ArgumentError, 'numericality_matcher is invalid'
-            end
             @numericality_matcher = numericality_matcher
             @value = value
             @operator = operator
             @message = ERROR_MESSAGES[operator]
-            @comparison_combos = comparison_combos
-            @strict = false
+            @submatchers = MatcherCollection.new.tap do |submatchers|
+              submatchers.configure do |matcher|
+                matcher.with_message(message, values: { count: value })
+              end
+
+              comparison_combos.each do |diff, matcher_class|
+                submatchers.add(matcher_class, value + diff)
+              end
+            end
           end
 
           def for(attribute)
@@ -29,55 +33,65 @@ module Shoulda
             self
           end
 
-          def matches?(subject)
-            @subject = subject
-            all_bounds_correct?
+          def on(context)
+            submatchers.invoke(:on, context)
+          end
+
+          def strict
+            submatchers.invoke(:strict)
           end
 
           def with_message(message)
-            @message = message
+            submatchers.invoke(:with_message, message)
+          end
+
+          def matches?(subject)
+            submatchers.matches?(subject)
           end
 
           def comparison_description
-            "#{expectation} #{@value}"
+            "#{expectation} #{value}"
           end
+
+          protected
+
+          attr_reader :numericality_matcher, :value, :operator, :message,
+            :submatchers, :subject
 
           private
 
+          delegate :diff_to_compare, to: :numericality_matcher
+
           def comparison_combos
-            allow = :allows_value_of
-            disallow = :disallows_value_of
-            checker_types =
-              case @operator
-                when :> then [allow, disallow, disallow]
-                when :>= then [allow, allow, disallow]
-                when :== then [disallow, allow, disallow]
-                when :< then [disallow, disallow, allow]
-                when :<= then [disallow, allow, allow]
-              end
             diffs_to_compare.zip(checker_types)
           end
 
           def diffs_to_compare
-            diff = @numericality_matcher.diff_to_compare
-            [diff, 0, -diff]
+            [diff_to_compare, 0, -diff_to_compare]
           end
 
-          def expectation
-            case @operator
-              when :> then "greater than"
-              when :>= then "greater than or equal to"
-              when :== then "equal to"
-              when :< then "less than"
-              when :<= then "less than or equal to"
+          def checker_types
+            case operator
+            when :>
+              [:allows_value_of, :disallows_value_of, :disallows_value_of]
+            when :>=
+              [:allows_value_of, :allows_value_of, :disallows_value_of]
+            when :==
+              [:disallows_value_of, :allows_value_of, :disallows_value_of]
+            when :<
+              [:disallows_value_of, :disallows_value_of, :allows_value_of]
+            when :<=
+              [:disallows_value_of, :allows_value_of, :allows_value_of]
             end
           end
 
-          def all_bounds_correct?
-            @comparison_combos.all? do |diff, checker_type|
-              __send__(checker_type, @value + diff) do |matcher|
-                matcher.with_message(@message, values: { count: @value })
-              end
+          def expectation
+            case operator
+              when :> then 'greater than'
+              when :>= then 'greater than or equal to'
+              when :== then 'equal to'
+              when :< then 'less than'
+              when :<= then 'less than or equal to'
             end
           end
         end
