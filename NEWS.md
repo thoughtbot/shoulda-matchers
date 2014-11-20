@@ -36,13 +36,13 @@
 
 * Fix `route` matcher so that when controller and action are specified in hash
   notation (e.g. `posts#show`), route parameters such as `id` do not need to be
-  specified as a string but may be specified as a number as well ([#602]).
+  specified as a string but may be specified as a number as well. ([#602])
 
 ### Features
 
 * Add ability to test `:primary_key` option on associations. ([#597])
 * Add `allow_blank` qualifier to `validate_uniqueness_of` to complement
-  the `allow_blank` option.
+  the `allow_blank` option. ([#543])
 
 ### Improvements
 
@@ -58,6 +58,7 @@
 [#537]: https://github.com/thoughtbot/shoulda-matchers/pull/537
 [#598]: https://github.com/thoughtbot/shoulda-matchers/pull/598
 [#602]: https://github.com/thoughtbot/shoulda-matchers/pull/602
+[#543]: https://github.com/thoughtbot/shoulda-matchers/pull/543
 
 # 2.7.0
 
