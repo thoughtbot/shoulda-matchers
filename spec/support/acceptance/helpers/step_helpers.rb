@@ -45,8 +45,8 @@ module AcceptanceTests
       end
     end
 
-    def write_minitest_test(path)
-      contents = yield minitest_test_case_superclass
+    def write_n_unit_test(path)
+      contents = yield n_unit_test_case_superclass
       write_file(path, contents)
     end
 

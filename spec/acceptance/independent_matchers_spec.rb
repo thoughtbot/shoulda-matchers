@@ -2,14 +2,14 @@ require 'acceptance_spec_helper'
 
 describe 'shoulda-matchers has independent matchers' do
   context 'specifically delegate_method' do
-    specify 'and integrates with a Ruby application that uses Minitest' do
+    specify 'and integrates with a Ruby application that uses the default test framework' do
       create_generic_bundler_project
 
       updating_bundle do
         add_minitest_to_project
         add_shoulda_context_to_project(manually: true)
         add_shoulda_matchers_to_project(
-          test_frameworks: [:minitest],
+          test_frameworks: [default_test_framework],
           manually: true
         )
       end
@@ -35,11 +35,11 @@ describe 'shoulda-matchers has independent matchers' do
         end
       FILE
 
-      write_minitest_test 'test/courier_test.rb' do |test_case_superclass|
+      write_n_unit_test 'test/courier_test.rb' do |test_case_superclass|
         <<-FILE
-          require "test_helper"
-          require "courier"
-          require "post_office"
+          require 'test_helper'
+          require 'courier'
+          require 'post_office'
 
           class CourierTest < #{test_case_superclass}
             subject { Courier.new(post_office) }
