@@ -28,14 +28,14 @@ class WarningsSpy
     def process_line(line)
       if start_of_group?(line)
         add_group(current_group)
-        current_group.clear
+        @current_group = []
       end
 
       current_group << line
     end
 
     def start_of_group?(line)
-      line =~ /^\W/
+      line =~ /^\S/
     end
 
     def add_group(group)

@@ -13,9 +13,7 @@ class WarningsSpy
 
     def partition
       @relevant_warning_groups, @irrelevant_warning_groups =
-        warning_groups.partition do |group|
-          group.any? { |line| line.include?(search_text) }
-        end
+        warning_groups.partition { |group| relevant_warnings?(group) }
     end
 
     protected
@@ -25,5 +23,14 @@ class WarningsSpy
     private
 
     def_delegators :reader, :warning_groups
+
+    def relevant_warnings?(group)
+      first_line = group[0]
+      first_line.start_with?("#{project_root}/lib")
+    end
+
+    def project_root
+      File.expand_path('../../..')
+    end
   end
 end
