@@ -418,6 +418,81 @@ describe Shoulda::Matchers::ActiveModel::ValidateUniquenessOfMatcher do
     end
   end
 
+  context 'when the validation allows blank' do
+    context 'when there is an existing record with a blank value' do
+      it 'accepts' do
+        model = model_allowing_blank
+        model.create!(attribute_name => '')
+        expect(model.new).to matcher.allow_blank
+      end
+    end
+
+    context 'when there is not an an existing record with a blank value' do
+      it 'still accepts' do
+        expect(record_allowing_blank).to matcher.allow_blank
+      end
+
+      it 'automatically creates a record' do
+        model = model_allowing_blank
+        matcher.allow_blank.matches?(model.new)
+
+        record_created = model.all.any? do |instance|
+          instance.__send__(attribute_name).blank?
+        end
+
+        expect(record_created).to be true
+      end
+    end
+
+    def attribute_name
+      :attr
+    end
+
+    def model_allowing_blank
+      _attribute_name = attribute_name
+
+      define_model(:example, attribute_name => :string) do
+        attr_accessible _attribute_name
+        validates_uniqueness_of _attribute_name, allow_blank: true
+      end
+    end
+
+    def record_allowing_blank
+      model_allowing_blank.new
+    end
+  end
+
+  context 'when the validation does not allow blank' do
+    context 'when there is an existing entry with a blank value' do
+      it 'rejects' do
+        model = model_disallowing_blank
+        model.create!(attribute_name => '')
+        expect(model.new).not_to matcher.allow_blank
+      end
+    end
+
+    it 'should not allow_blank' do
+      expect(record_disallowing_blank).not_to matcher.allow_blank
+    end
+
+    def attribute_name
+      :attr
+    end
+
+    def model_disallowing_blank
+      _attribute_name = attribute_name
+
+      define_model(:example, attribute_name => :string) do
+        attr_accessible _attribute_name
+        validates_uniqueness_of _attribute_name, allow_blank: false
+      end
+    end
+
+    def record_disallowing_blank
+      model_disallowing_blank.new
+    end
+  end
+
   context "when testing that a polymorphic *_type column is one of the validation scopes" do
     it "sets that column to a meaningful value that works with other validations on the same column" do
       user_model = define_model :user

@@ -41,6 +41,8 @@
 ### Features
 
 * Add ability to test `:primary_key` option on associations. ([#597])
+* Add `allow_blank` qualifier to `validate_uniqueness_of` to complement
+  the `allow_blank` option.
 
 ### Improvements
 
@@ -124,8 +126,6 @@
   columns allow only specific values, which is not true. If you get an error
   from `validate_uniqueness_of`, your best bet continues to be creating a record
   manually and calling `validate_uniqueness_of` on that instead.
-
-### Improvements
 
 * The majority of warnings that the gem produced have been removed. The gem
   still produces warnings under Ruby 1.9.3; we will address this in a future
