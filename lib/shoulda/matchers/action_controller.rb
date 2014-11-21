@@ -1,6 +1,6 @@
 require 'shoulda/matchers/action_controller/filter_param_matcher'
 require 'shoulda/matchers/action_controller/route_params'
-require 'shoulda/matchers/action_controller/set_the_flash_matcher'
+require 'shoulda/matchers/action_controller/set_flash_matcher'
 require 'shoulda/matchers/action_controller/render_with_layout_matcher'
 require 'shoulda/matchers/action_controller/respond_with_matcher'
 require 'shoulda/matchers/action_controller/set_session_matcher'

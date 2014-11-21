@@ -1,7 +1,7 @@
 module Shoulda
   module Matchers
     module ActionController
-      # The `set_the_flash` matcher is used to make assertions about the
+      # The `set_flash` matcher is used to make assertions about the
       # `flash` hash.
       #
       #     class PostsController < ApplicationController
@@ -18,13 +18,13 @@ module Shoulda
       #       describe 'GET #index' do
       #         before { get :index }
       #
-      #         it { should set_the_flash }
+      #         it { should set_flash }
       #       end
       #
       #       describe 'DELETE #destroy' do
       #         before { delete :destroy }
       #
-      #         it { should_not set_the_flash }
+      #         it { should_not set_flash }
       #       end
       #     end
       #
@@ -33,13 +33,13 @@ module Shoulda
       #       context 'GET #index' do
       #         setup { get :index }
       #
-      #         should set_the_flash
+      #         should set_flash
       #       end
       #
       #       context 'DELETE #destroy' do
       #         setup { delete :destroy }
       #
-      #         should_not set_the_flash
+      #         should_not set_flash
       #       end
       #     end
       #
@@ -60,8 +60,8 @@ module Shoulda
       #       describe 'GET #index' do
       #         before { get :index }
       #
-      #         it { should set_the_flash[:foo] }
-      #         it { should_not set_the_flash[:bar] }
+      #         it { should set_flash[:foo] }
+      #         it { should_not set_flash[:bar] }
       #       end
       #     end
       #
@@ -70,8 +70,8 @@ module Shoulda
       #       context 'GET #index' do
       #         setup { get :show }
       #
-      #         should set_the_flash[:foo]
-      #         should_not set_the_flash[:bar]
+      #         should set_flash[:foo]
+      #         should_not set_flash[:bar]
       #       end
       #     end
       #
@@ -91,10 +91,10 @@ module Shoulda
       #       describe 'GET #index' do
       #         before { get :index }
       #
-      #         it { should set_the_flash.to('A candy bar') }
-      #         it { should set_the_flash.to(/bar/) }
-      #         it { should set_the_flash[:foo].to('bar') }
-      #         it { should_not set_the_flash[:foo].to('something else') }
+      #         it { should set_flash.to('A candy bar') }
+      #         it { should set_flash.to(/bar/) }
+      #         it { should set_flash[:foo].to('bar') }
+      #         it { should_not set_flash[:foo].to('something else') }
       #       end
       #     end
       #
@@ -103,10 +103,10 @@ module Shoulda
       #       context 'GET #index' do
       #         setup { get :show }
       #
-      #         should set_the_flash.to('A candy bar')
-      #         should set_the_flash.to(/bar/)
-      #         should set_the_flash[:foo].to('bar')
-      #         should_not set_the_flash[:foo].to('something else')
+      #         should set_flash.to('A candy bar')
+      #         should set_flash.to(/bar/)
+      #         should set_flash[:foo].to('bar')
+      #         should_not set_flash[:foo].to('something else')
       #       end
       #     end
       #
@@ -126,9 +126,9 @@ module Shoulda
       #       describe 'GET #show' do
       #         before { get :show }
       #
-      #         it { should set_the_flash.now }
-      #         it { should set_the_flash[:foo].now }
-      #         it { should set_the_flash[:foo].to('bar').now }
+      #         it { should set_flash.now }
+      #         it { should set_flash[:foo].now }
+      #         it { should set_flash[:foo].to('bar').now }
       #       end
       #     end
       #
@@ -137,20 +137,28 @@ module Shoulda
       #       context 'GET #index' do
       #         setup { get :show }
       #
-      #         should set_the_flash.now
-      #         should set_the_flash[:foo].now
-      #         should set_the_flash[:foo].to('bar').now
+      #         should set_flash.now
+      #         should set_flash[:foo].now
+      #         should set_flash[:foo].to('bar').now
       #       end
       #     end
       #
-      # @return [SetTheFlashMatcher]
+      # @return [SetFlashMatcher]
       #
+      def set_flash
+        SetFlashMatcher.new
+      end
+
       def set_the_flash
-        SetTheFlashMatcher.new
+        Shoulda::Matchers.warn_about_deprecated_method(
+          :set_the_flash,
+          :set_flash
+        )
+        set_flash
       end
 
       # @private
-      class SetTheFlashMatcher
+      class SetFlashMatcher
         def initialize
           @options = {}
           @value = nil
