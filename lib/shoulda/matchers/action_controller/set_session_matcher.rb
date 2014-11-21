@@ -5,45 +5,11 @@ module Shoulda
       # `session` hash.
       #
       #     class PostsController < ApplicationController
-      #       def show
-      #         session[:foo] = 'bar'
-      #       end
-      #     end
-      #
-      #     # RSpec
-      #     describe PostsController do
-      #       describe 'GET #show' do
-      #         before { get :show }
-      #
-      #         it { should set_session(:foo) }
-      #         it { should_not set_session(:baz) }
-      #       end
-      #     end
-      #
-      #     # Test::Unit
-      #     class PostsControllerTest < ActionController::TestCase
-      #       context 'GET #show' do
-      #         setup { get :show }
-      #
-      #         should set_session(:foo)
-      #         should_not set_session(:baz)
-      #       end
-      #     end
-      #
-      # #### Qualifiers
-      #
-      # ##### to
-      #
-      # Use `to` to assert that the key in the session hash was set to a
-      # particular value.
-      #
-      #     class PostsController < ApplicationController
       #       def index
-      #         session[:foo] = 'bar'
+      #         session[:foo] = 'A candy bar'
       #       end
       #
-      #       def show
-      #         session[:foo] = nil
+      #       def destroy
       #       end
       #     end
       #
@@ -52,15 +18,13 @@ module Shoulda
       #       describe 'GET #index' do
       #         before { get :index }
       #
-      #         it { should set_session(:foo).to('bar') }
-      #         it { should_not set_session(:foo).to('something else') }
-      #         it { should_not set_session(:foo).to(nil) }
+      #         it { should set_session }
       #       end
       #
-      #       describe 'GET #show' do
-      #         before { get :show }
+      #       describe 'DELETE #destroy' do
+      #         before { delete :destroy }
       #
-      #         it { should set_session(:foo).to(nil) }
+      #         it { should_not set_session }
       #       end
       #     end
       #
@@ -69,29 +33,106 @@ module Shoulda
       #       context 'GET #index' do
       #         setup { get :index }
       #
-      #         should set_session(:foo).to('bar')
-      #         should_not set_session(:foo).to('something else')
-      #         should_not set_session(:foo).to(nil)
+      #         should set_session
       #       end
       #
-      #       context 'GET #show' do
+      #       context 'DELETE #destroy' do
+      #         setup { delete :destroy }
+      #
+      #         should_not set_session
+      #       end
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### []
+      #
+      # Use `[]` to narrow the scope of the matcher to a particular key.
+      #
+      #     class PostsController < ApplicationController
+      #       def index
+      #         session[:foo] = 'A candy bar'
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe PostsController do
+      #       describe 'GET #index' do
+      #         before { get :index }
+      #
+      #         it { should set_session[:foo] }
+      #         it { should_not set_session[:bar] }
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PostsControllerTest < ActionController::TestCase
+      #       context 'GET #index' do
       #         setup { get :show }
       #
-      #         should set_session(:foo).to(nil)
+      #         should set_session[:foo]
+      #         should_not set_session[:bar]
+      #       end
+      #     end
+      #
+      # ##### to
+      #
+      # Use `to` to assert that some key was set to a particular value, or that
+      # some key matches a particular regex.
+      #
+      #     class PostsController < ApplicationController
+      #       def index
+      #         session[:foo] = 'A candy bar'
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe PostsController do
+      #       describe 'GET #index' do
+      #         before { get :index }
+      #
+      #         it { should set_session.to('A candy bar') }
+      #         it { should set_session.to(/bar/) }
+      #         it { should set_session[:foo].to('bar') }
+      #         it { should_not set_session[:foo].to('something else') }
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PostsControllerTest < ActionController::TestCase
+      #       context 'GET #index' do
+      #         setup { get :show }
+      #
+      #         should set_session.to('A candy bar')
+      #         should set_session.to(/bar/)
+      #         should set_session[:foo].to('bar')
+      #         should_not set_session[:foo].to('something else')
       #       end
       #     end
       #
       # @return [SetSessionMatcher]
       #
-      def set_session(key)
+      def set_session(key = nil)
         SetSessionMatcher.new(key)
       end
 
       # @private
       class SetSessionMatcher
         def initialize(key)
-          @key = key.to_s
+          if key
+            Shoulda::Matchers.warn <<EOT
+Passing a key to set_session is deprecated.
+Please use the hash syntax instead (e.g., `set_session[:foo]`, not `set_session(:foo)`).
+EOT
+            self[key]
+          end
+
           @value_block = nil
+        end
+
+        def [](key)
+          @key = key.to_s
+          self
         end
 
         def to(value = nil, &block)
@@ -102,10 +143,27 @@ module Shoulda
 
         def matches?(controller)
           @controller = controller
+
           if @value_block
             @value = @context.instance_eval(&@value_block)
           end
-          assigned_correct_value? || cleared_value?
+
+          if nil_value_expected_but_actual_value_unset?
+            Shoulda::Matchers.warn <<EOT
+Using `should set_session[...].to(nil)` to assert that a variable is unset is deprecated.
+Please use `should_not set_session[...]` instead.
+EOT
+          end
+
+          if key_specified? && value_specified?
+            @value === session[@key]
+          elsif key_specified?
+            session.key?(@key)
+          elsif value_specified?
+            session.values.any? { |value| @value === value }
+          else
+            session_present?
+          end
         end
 
         def failure_message
@@ -114,16 +172,12 @@ module Shoulda
         alias failure_message_for_should failure_message
 
         def failure_message_when_negated
-          "Didn't expect #{expectation}, but #{result}"
+          "Didn't expect #{expectation}, but it was"
         end
         alias failure_message_for_should_not failure_message_when_negated
 
         def description
-          description = "set session variable #{@key.inspect}"
-          if @value
-            description << " to #{@value.inspect}"
-          end
-          description
+          "should #{expectation}"
         end
 
         def in_context(context)
@@ -133,54 +187,56 @@ module Shoulda
 
         private
 
+        def key_specified?
+          defined?(@key)
+        end
+
+        def value_specified?
+          defined?(@value)
+        end
+
         def value_or_default_value
           defined?(@value) && @value
         end
 
-        def assigned_value?
-          !assigned_value.nil?
+        def nil_value_expected_but_actual_value_unset?
+          value_specified? && @value.nil? && !session.key?(@key)
         end
 
-        def cleared_value?
-          defined?(@value) && @value.nil? && assigned_value.nil?
-        end
-
-        def assigned_correct_value?
-          if assigned_value?
-            if !defined?(@value)
-              true
-            else
-              assigned_value == value_or_default_value
-            end
-          end
-        end
-
-        def assigned_value
-          session[@key]
+        def session_present?
+          !session.empty?
         end
 
         def expectation
-          expectation = "session variable #{@key} to be set"
+          expectation = ""
 
-          if value_or_default_value
-            expectation << " to #{value_or_default_value.inspect}"
+          if key_specified?
+            expectation << "session variable #{@key.inspect}"
+          else
+            expectation << "any session variable"
           end
+
+          expectation << " to be"
+
+          if value_specified? && !@value.nil?
+            expectation << " #{@value.inspect}"
+          else
+            expectation << " set"
+          end
+
+          expectation
         end
 
         def result
-          if session.empty?
-            'no session variables were set'
-          else
+          if session_present?
             "the session was #{session.inspect}"
+          else
+            'no session variables were set'
           end
         end
 
         def session
-          if @controller.request.respond_to?(:session)
-            @controller.request.session.to_hash
-          else
-            @controller.response.session.data
-          end
+          @controller.session
         end
       end
     end

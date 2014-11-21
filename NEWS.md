@@ -8,6 +8,14 @@
 * `set_the_flash` has been renamed to `set_flash`. `set_the_flash` is
   deprecated and will be removed in 3.0.0.
 
+* `set_session(:foo)` is deprecated in favor of `set_session[:foo]`.
+  `set_session(:foo)` will be invalid syntax in 3.0.0.
+
+* Using `should set_session[:key].to(nil)` to assert that that a value has not
+  been set is deprecated. Please use `should_not set_session[:key]` instead.
+  In 3.0.0, `should set_session[:key].to(nil)` will only pass if the value is
+  truly nil.
+
 ### Bug fixes
 
 * Fix `delegate_method` so that it works again with shoulda-context. ([#591])
@@ -44,8 +52,17 @@
 ### Features
 
 * Add ability to test `:primary_key` option on associations. ([#597])
+
 * Add `allow_blank` qualifier to `validate_uniqueness_of` to complement
   the `allow_blank` option. ([#543])
+
+* Change `set_session` so that #[] and #to qualifiers are optional, similar to
+  `set_flash`. That is, you can now say `should set_session` to assert that any
+  flash value has been set, or `should set_session.to('value')` to assert that
+  any value in the session is 'value'.
+
+* Change `set_session` so that its #to qualifier supports regexps, similar to
+  `set_flash`.
 
 ### Improvements
 
