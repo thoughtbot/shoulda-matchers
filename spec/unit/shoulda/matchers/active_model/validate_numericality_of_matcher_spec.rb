@@ -66,6 +66,26 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
     end
   end
 
+  context "with the strict option" do
+    it "allows strict values for that attribute" do
+      expect(validating_numericality(strict: true)).to matcher.strict
+    end
+
+    it "rejects when model does not enforce strict" do
+      expect(validating_numericality).to_not matcher.strict
+    end
+
+    it "rejects with the ActiveRecord :not_a_number exception" do
+      the_matcher = matcher.strict
+      failure_message =
+        "Expected exception to include \"Attr is not a number\" when attr is set to \"abcd\""
+
+      expect do
+        expect(validating_numericality).to the_matcher
+      end.to fail_with_message_including(failure_message)
+    end
+  end
+
   context 'with the only_integer option' do
     it 'allows integer values for that attribute' do
       expect(validating_numericality(only_integer: true)).to matcher.only_integer
@@ -200,17 +220,24 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
         expect(validating_numericality(even: true, greater_than: 18))
           .to matcher.even.is_greater_than(18)
       end
+
       it do
         expect(validating_numericality(odd: true, less_than_or_equal_to: 99))
           .to matcher.odd.is_less_than_or_equal_to(99)
       end
 
       it do
+        expect(validating_numericality(strict: true, greater_than: 99))
+          .to matcher.is_greater_than(99).strict
+      end
+
+      it do
         expect(validating_numericality(
                  only_integer: true,
                  greater_than: 18,
-                 less_than: 99)
-        ).to matcher.only_integer.is_greater_than(18).is_less_than(99)
+                 less_than: 99,
+                 strict: true)
+              ).to matcher.only_integer.is_greater_than(18).is_less_than(99).strict
       end
     end
 

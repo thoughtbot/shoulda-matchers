@@ -19,6 +19,10 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
 
   context 'is_greater_than' do
     it do
+      expect(instance_with_validations(greater_than: 1, strict: true)).to matcher.is_greater_than(1).strict
+    end
+
+    it do
       expect(instance_with_validations(greater_than: 2))
         .to matcher.is_greater_than(2)
     end
@@ -39,6 +43,11 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
   end
 
   context 'greater_than_or_equal_to' do
+    it do
+      expect(instance_with_validations(greater_than_or_equal_to: 2, strict: true))
+        .to matcher.is_greater_than_or_equal_to(2).strict
+    end
+
     it do
       expect(instance_with_validations(greater_than_or_equal_to: 2))
         .to matcher.is_greater_than_or_equal_to(2)
@@ -62,6 +71,11 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
 
   context 'less_than' do
     it do
+      expect(instance_with_validations(less_than: 2, strict: true))
+        .to matcher.is_less_than(2).strict
+    end
+
+    it do
       expect(instance_with_validations(less_than: 2))
         .to matcher.is_less_than(2)
     end
@@ -84,6 +98,11 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
 
   context 'less_than_or_equal_to' do
     it do
+      expect(instance_with_validations(less_than_or_equal_to: 2, strict: true))
+        .to matcher.is_less_than_or_equal_to(2).strict
+    end
+
+    it do
       expect(instance_with_validations(less_than_or_equal_to: 2))
         .to matcher.is_less_than_or_equal_to(2)
     end
@@ -105,6 +124,11 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
   end
 
   context 'is_equal_to' do
+    it do
+      expect(instance_with_validations(equal_to: 0, strict: true))
+        .to matcher.is_equal_to(0).strict
+    end
+
     it do
       expect(instance_with_validations(equal_to: 0))
         .to matcher.is_equal_to(0)

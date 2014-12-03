@@ -14,6 +14,12 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::EvenNumberMatcher
     it { expect(subject.diff_to_compare).to eq 2 }
   end
 
+  describe '#strict' do
+    it 'sets the strict matcher' do
+      expect(validating_even_number(strict: true)).to subject.strict
+    end
+  end
+
   context 'when the model has an even validation' do
     it 'matches' do
       match = subject

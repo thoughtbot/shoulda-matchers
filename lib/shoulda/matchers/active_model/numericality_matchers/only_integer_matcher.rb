@@ -19,6 +19,11 @@ module Shoulda
           def diff_to_compare
             1
           end
+
+          def strict
+            @disallow_value_matcher.strict
+            self
+          end
         end
       end
     end

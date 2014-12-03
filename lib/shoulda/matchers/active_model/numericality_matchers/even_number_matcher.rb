@@ -20,6 +20,11 @@ module Shoulda
           def diff_to_compare
             2
           end
+
+          def strict
+            @disallow_value_matcher.strict
+            self
+          end
         end
       end
     end

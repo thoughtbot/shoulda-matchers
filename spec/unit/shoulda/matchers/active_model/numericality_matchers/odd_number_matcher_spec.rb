@@ -14,6 +14,12 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OddNumberMatcher 
     it { expect(subject.diff_to_compare).to eq 2 }
   end
 
+  describe '#strict' do
+    it 'allows strict' do
+      expect(validating_odd_number(strict: true)).to subject.strict
+    end
+  end
+
   context 'when the model has an odd validation' do
     it 'matches' do
       match = subject
