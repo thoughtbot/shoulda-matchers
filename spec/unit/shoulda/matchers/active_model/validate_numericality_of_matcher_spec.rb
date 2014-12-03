@@ -433,6 +433,27 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
     end
   end
 
+  context 'qualified with strict' do
+    context 'and validating strictly' do
+      it 'accepts' do
+        record = build_record_validating_numericality(strict: true)
+        expect(record).to validate_numericality.strict
+      end
+    end
+
+    context 'and not validating strictly' do
+      it 'rejects since ActiveModel::StrictValidationFailed is never raised' do
+        record = build_record_validating_numericality(attribute_name: :attr)
+        assertion = lambda do
+          expect(record).to validate_numericality_of(:attr).strict
+        end
+        expect(&assertion).to fail_with_message_including(
+          'Expected exception to include "Attr is not a number"'
+        )
+      end
+    end
+  end
+
   context 'with combinations of qualifiers together' do
     all_qualifier_combinations.each do |combination|
       if combination.size > 1
@@ -717,6 +738,24 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
         )
       end
     end
+
+    context 'qualified with strict' do
+      it 'describes that it relies upon a strict validation' do
+        matcher = validate_numericality_of(:attr).strict
+        expect(matcher.description).to eq(
+          'only allow numbers for attr, strictly'
+        )
+      end
+
+      context 'and qualified with a comparison qualifier' do
+        it 'places the comparison description after "strictly"' do
+          matcher = validate_numericality_of(:attr).is_less_than(18).strict
+          expect(matcher.description).to eq(
+            'only allow numbers for attr, strictly, which are less than 18'
+          )
+        end
+      end
+    end
   end
 
   def build_validation_options(args)
@@ -739,6 +778,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
   end
 
   def define_model_validating_numericality(options = {})
+    attribute_name = options.fetch(:attribute_name) { self.attribute_name }
     define_model 'Example', attribute_name => :string do |model|
       model.validates_numericality_of(attribute_name, options)
     end

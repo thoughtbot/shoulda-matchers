@@ -17,6 +17,11 @@ module Shoulda
             self
           end
 
+          def strict
+            @disallow_value_matcher.strict
+            self
+          end
+
           def allowed_type
             raise NotImplementedError
           end

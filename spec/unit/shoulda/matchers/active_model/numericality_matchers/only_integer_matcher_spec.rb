@@ -45,6 +45,25 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OnlyIntegerMatche
     end
   end
 
+  context 'asserting strict validation when validating strictly' do
+    it 'accepts' do
+      expect(validating_only_integer(strict: true)).to subject.strict
+    end
+  end
+
+  context 'asserting non-strict validation when validating strictly' do
+    it 'rejects' do
+      pending 'This needs to be fixed'
+      expect(validating_only_integer(strict: true)).not_to subject
+    end
+  end
+
+  context 'asserting strict validation when not validating strictly' do
+    it 'rejects' do
+      expect(validating_only_integer).not_to subject.strict
+    end
+  end
+
   def validating_only_integer(options = {})
     define_model :example, attr: :string do
       validates_numericality_of :attr, { only_integer: true }.merge(options)

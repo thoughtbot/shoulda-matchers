@@ -45,6 +45,24 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::EvenNumberMatcher
     end
   end
 
+  context 'asserting strict validation when validating strictly' do
+    it 'accepts' do
+      expect(validating_even_number(strict: true)).to subject.strict
+    end
+  end
+
+  context 'asserting non-strict validation when validating strictly' do
+    it 'rejects' do
+      pending 'This needs to be fixed'
+      expect(validating_even_number(strict: true)).not_to subject
+    end
+  end
+
+  context 'asserting strict validation when not validating strictly' do
+    it 'rejects' do
+      expect(validating_even_number).not_to subject.strict
+    end
+  end
 
   def validating_even_number(options = {})
     define_model :example, attr: :string do

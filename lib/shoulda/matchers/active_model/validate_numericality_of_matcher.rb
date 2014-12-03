@@ -314,7 +314,14 @@ module Shoulda
           @attribute = attribute
           @submatchers = []
           @diff_to_compare = DEFAULT_DIFF_TO_COMPARE
+          @strict = false
           add_disallow_value_matcher
+        end
+
+        def strict
+          @submatchers.each(&:strict)
+          @strict = true
+          self
         end
 
         def only_integer
@@ -383,7 +390,18 @@ module Shoulda
         end
 
         def description
-          "only allow #{allowed_types} for #{@attribute}#{comparison_descriptions}"
+          description_parts = ["only allow #{allowed_types} for #{@attribute}"]
+
+          if comparison_descriptions.present?
+            description_parts << comparison_descriptions
+          end
+
+          if @strict
+            description_parts.insert(1, 'strictly')
+            description_parts.join(', ')
+          else
+            description_parts.join(' ')
+          end
         end
 
         def failure_message
@@ -455,7 +473,7 @@ module Shoulda
 
         def comparison_descriptions
           description_array = submatcher_comparison_descriptions
-          description_array.empty? ? '' : ' which are ' + submatcher_comparison_descriptions.join(' and ')
+          description_array.empty? ? '' : 'which are ' + submatcher_comparison_descriptions.join(' and ')
         end
 
         def submatcher_comparison_descriptions

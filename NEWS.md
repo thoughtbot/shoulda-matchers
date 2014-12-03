@@ -65,6 +65,8 @@
   `params` hash. Although we don't require you to use this qualifier, we do
   recommend it, as it's a more precise check. ([#675])
 
+* Add `strict` qualifier to `validate_numericality_of`. ([#620])
+
 [#402]: https://github.com/thoughtbot/shoulda-matchers/pull/402
 [#587]: https://github.com/thoughtbot/shoulda-matchers/pull/587
 [#662]: https://github.com/thoughtbot/shoulda-matchers/pull/662
@@ -75,6 +77,7 @@
 [#648]: https://github.com/thoughtbot/shoulda-matchers/pull/648
 [#675]: https://github.com/thoughtbot/shoulda-matchers/pull/675
 [#677]: https://github.com/thoughtbot/shoulda-matchers/pull/677
+[#620]: https://github.com/thoughtbot/shoulda-matchers/pull/620
 
 # 2.8.0
 

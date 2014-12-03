@@ -5,6 +5,40 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
 
   it_behaves_like 'a numerical submatcher'
 
+  shared_examples_for 'strict qualifier' do
+    def validation_qualifier
+      matcher_qualifier.to_s.gsub(/^is_/, '').to_sym
+    end
+
+    context 'asserting strict validation when validating strictly' do
+      it 'accepts' do
+        record = instance_with_validations(
+          validation_qualifier => 1,
+          strict: true
+        )
+        expect(record).to matcher.__send__(matcher_qualifier, 1).strict
+      end
+    end
+
+    context 'asserting non-strict validation when validating strictly' do
+      it 'rejects' do
+        pending 'This needs to be fixed'
+        record = instance_with_validations(
+          validation_qualifier => 1,
+          strict: true
+        )
+        expect(record).not_to matcher.__send__(matcher_qualifier, 1)
+      end
+    end
+
+    context 'asserting strict validation when not validating strictly' do
+      it 'rejects' do
+        record = instance_with_validations(validation_qualifier => 1)
+        expect(record).not_to matcher.__send__(matcher_qualifier, 1).strict
+      end
+    end
+  end
+
   context 'when initialized without correct numerical matcher' do
     it 'raises an argument error' do
       fake_matcher = matcher
@@ -18,6 +52,12 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
   end
 
   context 'is_greater_than' do
+    include_examples 'strict qualifier' do
+      def matcher_qualifier
+        :is_greater_than
+      end
+    end
+
     it do
       expect(instance_with_validations(greater_than: 2))
         .to matcher.is_greater_than(2)
@@ -38,7 +78,13 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
     end
   end
 
-  context 'greater_than_or_equal_to' do
+  context 'is_greater_than_or_equal_to' do
+    include_examples 'strict qualifier' do
+      def matcher_qualifier
+        :is_greater_than_or_equal_to
+      end
+    end
+
     it do
       expect(instance_with_validations(greater_than_or_equal_to: 2))
         .to matcher.is_greater_than_or_equal_to(2)
@@ -60,7 +106,13 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
     end
   end
 
-  context 'less_than' do
+  context 'is_less_than' do
+    include_examples 'strict qualifier' do
+      def matcher_qualifier
+        :is_less_than
+      end
+    end
+
     it do
       expect(instance_with_validations(less_than: 2))
         .to matcher.is_less_than(2)
@@ -82,7 +134,13 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
     end
   end
 
-  context 'less_than_or_equal_to' do
+  context 'is_less_than_or_equal_to' do
+    include_examples 'strict qualifier' do
+      def matcher_qualifier
+        :is_less_than_or_equal_to
+      end
+    end
+
     it do
       expect(instance_with_validations(less_than_or_equal_to: 2))
         .to matcher.is_less_than_or_equal_to(2)
@@ -105,6 +163,12 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
   end
 
   context 'is_equal_to' do
+    include_examples 'strict qualifier' do
+      def matcher_qualifier
+        :is_equal_to
+      end
+    end
+
     it do
       expect(instance_with_validations(equal_to: 0))
         .to matcher.is_equal_to(0)
@@ -150,17 +214,25 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
     end
   end
 
+  def model_with_validations(options = {})
+    define_model :example, attribute_name => :string do |model|
+      model.validates_numericality_of(attribute_name, options)
+      model.attr_accessible(attribute_name)
+    end
+  end
+
   def instance_with_validations(options = {})
-    define_model :example, attr: :string do
-      validates_numericality_of :attr, options
-      attr_accessible :attr
-    end.new
+    model_with_validations(options).new(attribute_name => '1')
   end
 
   def instance_without_validations
-    define_model :example, attr: :string do
-      attr_accessible :attr
+    define_model :example, attribute_name => :string do |model|
+      model.attr_accessible(attribute_name)
     end.new
+  end
+
+  def attribute_name
+    :attr
   end
 
   def matcher
