@@ -170,6 +170,15 @@ module Shoulda
           self
         end
 
+        def with_prefix(prefix_string=nil)
+          if prefix_string
+            @delegating_method = :"#{ prefix_string }_#{ method_on_target }"
+          else
+            @delegating_method = :"#{ target_method }_#{ method_on_target }"
+          end
+          self
+        end
+
         def failure_message
           "Expected #{class_under_test} to #{description}\n" +
             "Method calls sent to " +
