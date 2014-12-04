@@ -57,6 +57,27 @@ module Shoulda
       #
       # #### Qualifiers
       #
+      # ##### on
+      #
+      # Use `on` if your validation applies only under a certain context.
+      #
+      #     class Robot
+      #       include ActiveModel::Model
+      #       attr_accessor :arms
+      #
+      #       validates_presence_of :arms, on: :create
+      #     end
+      #
+      #     # RSpec
+      #     describe Robot do
+      #       it { should validate_presence_of(:arms).on(:create) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class RobotTest < ActiveSupport::TestCase
+      #       should validate_presence_of(:arms).on(:create)
+      #     end
+      #
       # ##### with_message
       #
       # Use `with_message` if you are using a custom validation message.
