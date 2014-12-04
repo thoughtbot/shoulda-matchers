@@ -70,7 +70,7 @@ complex, and error-prone.
   your routes.
 * **[set_session](lib/shoulda/matchers/action_controller/set_session_matcher.rb)**
   makes assertions on the `session` hash.
-* **[set_the_flash](lib/shoulda/matchers/action_controller/set_the_flash_matcher.rb)**
+* **[set_flash](lib/shoulda/matchers/action_controller/set_flash_matcher.rb)**
   makes assertions on the `flash` hash.
 
 ### Independent Matchers
