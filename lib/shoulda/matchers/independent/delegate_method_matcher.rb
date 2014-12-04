@@ -31,9 +31,24 @@ module Shoulda
       #       should delegate_method(:deliver).to(:post_office)
       #     end
       #
+      # You can also use `delegate_method` with Rails's `delegate` macro:
+      #
+      #     class Courier
+      #       attr_reader :post_office
+      #       delegate :deliver, to: :post_office
+      #
+      #       def initialize
+      #         @post_office = PostOffice.new
+      #       end
+      #     end
+      #
+      #     describe Courier do
+      #       it { should delegate_method(:deliver).to(:post_office) }
+      #     end
+      #
       # To employ some terminology, we would say that Courier's #deliver method
-      # is the delegating method, PostOffice is the delegate object, and
-      # PostOffice#deliver is the delegate method.
+      # is the *delegating method*, PostOffice is the *delegate object*, and
+      # PostOffice#deliver is the *delegate method*.
       #
       # #### Qualifiers
       #
@@ -65,6 +80,31 @@ module Shoulda
       #     # Test::Unit
       #     class CourierTest < Test::Unit::TestCase
       #       should delegate_method(:deliver).to(:post_office).as(:ship)
+      #     end
+      #
+      # ##### with_prefix
+      #
+      # Use `with_prefix` when using Rails's `delegate` helper along with the
+      # `:prefix` option.
+      #
+      #     class Page < ActiveRecord::Base
+      #       belongs_to :site
+      #       delegate :name, to: :site, prefix: true
+      #       delegate :title, to: :site, prefix: :root
+      #     end
+      #
+      #     # RSpec
+      #     describe Page do
+      #       it { should delegate_method(:name).to(:site).with_prefix }
+      #       it { should delegate_method(:name).to(:site).with_prefix(true) }
+      #       it { should delegate_method(:title).to(:site).with_prefix(:root) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PageTest < Test::Unit::TestCase
+      #       should delegate_method(:name).to(:site).with_prefix
+      #       should delegate_method(:name).to(:site).with_prefix(true)
+      #       should delegate_method(:title).to(:site).with_prefix(:root)
       #     end
       #
       # ##### with_arguments
@@ -168,6 +208,20 @@ module Shoulda
         def with_arguments(*arguments)
           @delegated_arguments = arguments
           self
+        end
+
+        def with_prefix(prefix = nil)
+          @delegating_method =
+            :"#{build_delegating_method_prefix(prefix)}_#{delegate_method}"
+            delegate_method
+          self
+        end
+
+        def build_delegating_method_prefix(prefix)
+          case prefix
+            when true, nil then delegate_object_reader_method
+            else prefix
+          end
         end
 
         def failure_message

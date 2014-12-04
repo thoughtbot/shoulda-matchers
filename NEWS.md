@@ -64,6 +64,9 @@
 * Change `set_session` so that its #to qualifier supports regexps, similar to
   `set_flash`.
 
+* Add `with_prefix` qualifier to `delegate_method` to correspond to the `prefix`
+  option for Rails's `delegate` macro. [#622]
+
 ### Improvements
 
 * Tweak `allow_value` failure message so that it reads a bit nicer when listing
@@ -79,6 +82,7 @@
 [#598]: https://github.com/thoughtbot/shoulda-matchers/pull/598
 [#602]: https://github.com/thoughtbot/shoulda-matchers/pull/602
 [#543]: https://github.com/thoughtbot/shoulda-matchers/pull/543
+[#622]: https://github.com/thoughtbot/shoulda-matchers/pull/622
 
 # 2.7.0
 

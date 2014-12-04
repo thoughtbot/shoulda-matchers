@@ -32,6 +32,76 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
           expect(matcher.description).to eq message
         end
       end
+
+      context 'qualified with #with_prefix' do
+        context 'without arguments' do
+          before do
+            define_model('Country') do
+              def hello; 'hello' end
+            end
+          end
+
+          context "when the subject's delegating method also has a prefix" do
+            it 'produces the correct description' do
+              define_class('Person') do
+                delegate :hello, to: :country, prefix: true
+
+                def country
+                  Country.new
+                end
+              end
+
+              matcher = delegate_method(:hello).to(:country).with_prefix
+              expect(matcher.description).
+                to eq('delegate #country_hello to #country object as #hello')
+            end
+          end
+        end
+
+        context 'as true' do
+          before do
+            define_model('Country') do
+              def hello; 'hello' end
+            end
+          end
+
+          context "when the subject's delegating method also has a prefix" do
+            it 'produces the correct description' do
+              define_class('Person') do
+                delegate :hello, to: :country, prefix: true
+
+                def country
+                  Country.new
+                end
+              end
+
+              matcher = delegate_method(:hello).to(:country).with_prefix(true)
+              expect(matcher.description).
+                to eq('delegate #country_hello to #country object as #hello')
+            end
+          end
+        end
+
+        context 'as a symbol/string' do
+          it 'should delegate as (prefix_supplied)_(method_on_target)' do
+            define_model('Country') do
+              def hello; 'hello' end
+            end
+
+            define_class('Person') do
+              delegate :hello, to: :country, prefix: 'county'
+
+              def country
+                Country.new
+              end
+            end
+
+            matcher = delegate_method(:hello).to(:country).with_prefix('county')
+            expect(matcher.description).
+              to eq('delegate #county_hello to #country object as #hello')
+          end
+        end
+      end
     end
 
     context 'when the subject is a class' do
@@ -293,6 +363,154 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
           expect(post_office).to delegate_method(:deliver_mail).
             to(:mailman).as(:watch_tv)
         }.to fail_with_message(message)
+      end
+    end
+  end
+
+  context 'qualified with #with_prefix' do
+    context 'without arguments' do
+      before do
+        define_model('Country') do
+          def hello; 'hello' end
+        end
+      end
+
+      context "when the subject's delegating method also has a prefix" do
+        it 'accepts' do
+          define_class('Person') do
+            delegate :hello, to: :country, prefix: true
+
+            def country
+              Country.new
+            end
+          end
+
+          person = Person.new
+          expect(person).to delegate_method(:hello). to(:country).with_prefix
+        end
+      end
+
+      context "when the subject's delegating method does not have a prefix" do
+        it 'rejects with the correct failure message' do
+          define_class('Person') do
+            delegate :hello, to: :country
+
+            def country
+              Country.new
+            end
+          end
+
+          message = [
+            'Expected Person to delegate #country_hello to #country object as #hello',
+            'Method calls sent to Person#country: (none)'
+          ].join("\n")
+
+          person = Person.new
+
+          expect {
+            expect(person).to delegate_method(:hello). to(:country).with_prefix
+          }.to fail_with_message(message)
+        end
+      end
+    end
+
+    context 'as true' do
+      before do
+        define_model('Country') do
+          def hello; 'hello' end
+        end
+      end
+
+      context "when the subject's delegating method also has a prefix" do
+        it 'accepts' do
+          define_class('Person') do
+            delegate :hello, to: :country, prefix: true
+
+            def country
+              Country.new
+            end
+          end
+
+          person = Person.new
+          expect(person).
+            to delegate_method(:hello).
+            to(:country).with_prefix(true)
+        end
+      end
+
+      context "when the subject's delegating method does not have a prefix" do
+        it 'rejects with the correct failure message' do
+          define_class('Person') do
+            delegate :hello, to: :country
+
+            def country
+              Country.new
+            end
+          end
+
+          message = [
+            'Expected Person to delegate #country_hello to #country object as #hello',
+            'Method calls sent to Person#country: (none)'
+          ].join("\n")
+
+          person = Person.new
+
+          expect {
+            expect(person).
+              to delegate_method(:hello).
+              to(:country).with_prefix(true)
+          }.to fail_with_message(message)
+        end
+      end
+    end
+
+    context 'as a symbol/string' do
+      before do
+        define_model('Country') do
+          def hello; 'hello' end
+        end
+      end
+
+      context "when the subject's delegating method has the same prefix" do
+        it 'accepts' do
+          define_class('Person') do
+            delegate :hello, to: :country, prefix: 'county'
+
+            def country
+              Country.new
+            end
+          end
+
+          person = Person.new
+          expect(person).
+            to delegate_method(:hello).
+            to(:country).with_prefix('county')
+        end
+      end
+
+      context "when the subject's delegating method has a different prefix" do
+        it 'rejects with the correct failure message' do
+          define_class('Person') do
+            delegate :hello, to: :country, prefix: 'something_else'
+
+            def country
+              Country.new
+            end
+          end
+
+          message = [
+            'Expected Person to delegate #county_hello to #country object as #hello',
+            'Method calls sent to Person#country: (none)'
+          ].join("\n")
+
+          person = Person.new
+
+          expect {
+            expect(person).
+              to delegate_method(:hello).
+              to(:country).with_prefix('county')
+          }.to fail_with_message(message)
+        end
       end
     end
   end
