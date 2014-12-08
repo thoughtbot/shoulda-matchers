@@ -105,6 +105,35 @@ module Shoulda
       #         with_arguments(expedited: true)
       #     end
       #
+      # ##### with_prefix
+      # Use `with_prefix` to assert that the delegation is done via the
+      # different name as specified in the code.
+      #
+      #     class Page < ActiveRecord::Base
+      #       belongs_to :site
+      #       delegate :name, to: :site, prefix: true
+      #     end
+      #
+      #     class Site < ActiveRecord::Base
+      #       has_many :pages
+      #     end
+      #
+      #     # RSpec
+      #     describe Page do
+      #       it do
+      #         should delegate_method(:name).
+      #           to(:site).
+      #           with_prefix
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PageTest < Test::Unit::TestCase
+      #       should delegate_method(:name).
+      #         to(:site).
+      #         with_prefix
+      #     end
+      #
       # @return [DelegateMethodMatcher]
       #
       def delegate_method(delegating_method)
@@ -170,7 +199,7 @@ module Shoulda
           self
         end
 
-        def with_prefix(prefix_string=nil)
+        def with_prefix(prefix_string = nil)
           if prefix_string
             @delegating_method = :"#{ prefix_string }_#{ method_on_target }"
           else

@@ -35,11 +35,11 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
 
       context 'with #prefix option' do
         context 'when no prefix is provided' do
-          it 'should abc' do
+          it 'should delegate as (target_method)_(method_on_target)' do
             define_model(:country) do
               def hello; 'hello' end
             end
-            person_model = define_model(:person, country_id: :integer) do
+            define_model(:person, country_id: :integer) do
               belongs_to :country
               delegate :hello, to: :country, prefix: true
             end
@@ -48,11 +48,11 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
           end
         end
         context 'when prefix is supplied' do
-          it 'should abc' do
+          it 'should delegate as (prefix_supplied)_(method_on_target)' do
             define_model(:country) do
               def hello; 'hello' end
             end
-            person_model = define_model(:person, country_id: :integer) do
+            define_model(:person, country_id: :integer) do
               belongs_to :country
               delegate :hello, to: :country, prefix: 'county'
             end
