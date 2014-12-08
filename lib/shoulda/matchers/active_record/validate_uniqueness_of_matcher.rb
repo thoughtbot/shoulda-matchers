@@ -1,6 +1,6 @@
 module Shoulda
   module Matchers
-    module ActiveModel
+    module ActiveRecord
       # The `validate_uniqueness_of` matcher tests usage of the
       # `validates_uniqueness_of` validation. It first checks for an existing
       # instance of your model in the database, creating one if necessary. It
@@ -196,8 +196,8 @@ module Shoulda
       end
 
       # @private
-      class ValidateUniquenessOfMatcher < ValidationMatcher
-        include Helpers
+      class ValidateUniquenessOfMatcher < ActiveModel::ValidationMatcher
+        include ActiveModel::Helpers
 
         def initialize(attribute)
           super(attribute)

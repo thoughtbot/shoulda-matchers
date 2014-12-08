@@ -1,6 +1,6 @@
 module Shoulda
   module Matchers
-    module ActiveModel
+    module ActiveRecord
       module Uniqueness
         # @private
         class Namespace

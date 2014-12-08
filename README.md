@@ -26,8 +26,6 @@ complex, and error-prone.
   tests usage of `validates_numericality_of`.
 * **[validate_presence_of](lib/shoulda/matchers/active_model/validate_presence_of_matcher.rb)**
   tests usage of `validates_presence_of`.
-* **[validate_uniqueness_of](lib/shoulda/matchers/active_model/validate_uniqueness_of_matcher.rb)**
-  tests usage of `validates_uniqueness_of`.
 
 ### ActiveRecord Matchers
 
@@ -51,6 +49,8 @@ complex, and error-prone.
   tests usage of the `attr_readonly` macro.
 * **[serialize](lib/shoulda/matchers/active_record/serialize_matcher.rb)** tests
   usage of the `serialize` macro.
+* **[validate_uniqueness_of](lib/shoulda/matchers/active_record/validate_uniqueness_of_matcher.rb)**
+  tests usage of `validates_uniqueness_of`.
 
 ### ActionController Matchers
 
