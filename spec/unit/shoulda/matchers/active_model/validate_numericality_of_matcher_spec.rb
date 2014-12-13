@@ -1,6 +1,10 @@
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
+  subject { described_class.new(:attribute) }
+
+  it_behaves_like 'a matcher'
+  it_behaves_like 'a validation matcher'
 
   context 'with a model with a numericality validation' do
     it 'accepts' do

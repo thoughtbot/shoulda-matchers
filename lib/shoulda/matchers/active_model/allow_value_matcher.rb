@@ -244,6 +244,10 @@ module Shoulda
           :context, :value, :matched_error, :after_setting_value_callback
 
         def set_value(value)
+          if attribute_to_set.nil?
+            raise "No attribute has been set!"
+          end
+
           instance.__send__("#{attribute_to_set}=", value)
           after_setting_value_callback.call
         end

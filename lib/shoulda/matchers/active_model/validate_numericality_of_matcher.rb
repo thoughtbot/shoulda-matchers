@@ -288,38 +288,35 @@ module Shoulda
 
         delegate :failure_message, :failure_message_when_negated,
           :failure_message_for_should, :failure_message_for_should_not,
-          to: :submatchers
+          to: :matcher_collection
 
         def initialize(attribute)
           @attribute = attribute
-          @submatchers = MatcherCollection.new
+          @matcher_collection = MatcherCollection.new
           @diff_to_compare = DEFAULT_DIFF_TO_COMPARE
           add_disallow_value_matcher
-
-          submatchers.configure do |matcher|
-            matcher.for(attribute)
-          end
         end
 
         def only_integer
-          add_submatcher(Numericality::OnlyIntegerMatcher)
+          add_submatcher(Numericality::OnlyIntegerMatcher, attribute)
           self
         end
 
         def allow_nil
           add_submatcher(AllowValueMatcher, nil) do |matcher|
+            matcher.for(attribute)
             matcher.with_message(:not_a_number)
           end
           self
         end
 
         def odd
-          add_submatcher(Numericality::OddNumberMatcher)
+          add_submatcher(Numericality::OddNumberMatcher, attribute)
           self
         end
 
         def even
-          add_submatcher(Numericality::EvenNumberMatcher)
+          add_submatcher(Numericality::EvenNumberMatcher, attribute)
           self
         end
 
@@ -349,13 +346,13 @@ module Shoulda
         end
 
         def with_message(message)
-          submatchers.configure { |matcher| matcher.with_message(message) }
+          matcher_collection.configure(:with_message, message)
           self
         end
 
         def matches?(subject)
           @subject = subject
-          submatchers.matches?(subject)
+          matcher_collection.matches?(subject)
         end
 
         def description
@@ -364,22 +361,25 @@ module Shoulda
 
         protected
 
-        attr_reader :attribute
+        attr_reader :attribute, :matcher_collection
 
         private
 
         def add_submatcher(klass, *args, &block)
-          submatchers.add(klass, *args, &block)
+          matcher_collection.add(klass, *args, &block)
         end
 
         def add_disallow_value_matcher
           add_submatcher(DisallowValueMatcher, NON_NUMERIC_VALUE) do |matcher|
+            matcher.for(attribute)
             matcher.with_message(:not_a_number)
           end
         end
 
         def add_comparison_submatcher(value, operator)
-          add_submatcher(Numericality::ComparisonMatcher, self, value, operator)
+          add_submatcher(Numericality::ComparisonMatcher, self, value, operator) do |matcher|
+            matcher.for(attribute)
+          end
         end
 
         def diff_to_compare
@@ -387,7 +387,7 @@ module Shoulda
         end
 
         def possible_diff_to_compares
-          [DEFAULT_DIFF_TO_COMPARE] + submatchers.invoke(:diff_to_compare)
+          [DEFAULT_DIFF_TO_COMPARE] + matcher_collection.invoke(:diff_to_compare)
         end
 
         def allowed_types
@@ -399,7 +399,7 @@ module Shoulda
         end
 
         def submatcher_allowed_types
-          submatchers.invoke(:allowed_type)
+          matcher_collection.invoke(:allowed_type)
         end
 
         def comparison_descriptions
@@ -411,7 +411,7 @@ module Shoulda
         end
 
         def submatcher_comparison_descriptions
-          submatchers.invoke(:comparison_description)
+          matcher_collection.invoke(:comparison_description)
         end
       end
     end
