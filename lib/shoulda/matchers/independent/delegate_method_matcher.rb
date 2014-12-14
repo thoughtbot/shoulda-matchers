@@ -116,11 +116,11 @@ module Shoulda
         def initialize(delegating_method)
           @delegating_method = delegating_method
 
-          @method_on_target = @delegating_method
-          @target_double = Doublespeak::ObjectDouble.new
+          @delegate_method = @delegating_method
+          @delegate_object = Doublespeak::ObjectDouble.new
 
           @delegated_arguments = []
-          @target_method = nil
+          @delegate_object_reader_method = nil
           @subject = nil
           @subject_double_collection = nil
         end
@@ -133,35 +133,35 @@ module Shoulda
         def matches?(subject)
           @subject = subject
 
-          ensure_target_method_is_present!
+          ensure_delegate_object_has_been_specified!
 
           subject_has_delegating_method? &&
-            subject_has_target_method? &&
-            subject_delegates_to_target_correctly?
+            subject_has_delegate_object_reader_method? &&
+            subject_delegates_to_delegate_object_correctly?
         end
 
         def description
           string = "delegate #{formatted_delegating_method_name} to " +
-            "#{formatted_target_method_name} object"
+            "#{formatted_delegate_object_reader_method_name} object"
 
           if delegated_arguments.any?
             string << " passing arguments #{delegated_arguments.inspect}"
           end
 
-          if method_on_target != delegating_method
-            string << " as #{formatted_method_on_target}"
+          if delegate_method != delegating_method
+            string << " as #{formatted_delegate_method}"
           end
 
           string
         end
 
-        def to(target_method)
-          @target_method = target_method
+        def to(delegate_object_reader_method)
+          @delegate_object_reader_method = delegate_object_reader_method
           self
         end
 
-        def as(method_on_target)
-          @method_on_target = method_on_target
+        def as(delegate_method)
+          @delegate_method = delegate_method
           self
         end
 
@@ -173,8 +173,8 @@ module Shoulda
         def failure_message
           "Expected #{class_under_test} to #{description}\n" +
             "Method calls sent to " +
-            "#{formatted_target_method_name(include_module: true)}:" +
-            formatted_calls_on_target
+            "#{formatted_delegate_object_reader_method_name(include_module: true)}:" +
+            formatted_calls_on_delegate_object
         end
         alias failure_message_for_should failure_message
 
@@ -190,10 +190,10 @@ module Shoulda
           :delegated_arguments,
           :delegating_method,
           :method,
-          :method_on_target,
+          :delegate_method,
           :subject_double_collection,
-          :target_double,
-          :target_method
+          :delegate_object,
+          :delegate_object_reader_method
 
         def subject
           @subject
@@ -215,16 +215,16 @@ module Shoulda
           end
         end
 
-        def formatted_method_on_target(options = {})
-          formatted_method_name_for(method_on_target, options)
+        def formatted_delegate_method(options = {})
+          formatted_method_name_for(delegate_method, options)
         end
 
         def formatted_delegating_method_name(options = {})
           formatted_method_name_for(delegating_method, options)
         end
 
-        def formatted_target_method_name(options = {})
-          formatted_method_name_for(target_method, options)
+        def formatted_delegate_object_reader_method_name(options = {})
+          formatted_method_name_for(delegate_object_reader_method, options)
         end
 
         def formatted_method_name_for(method_name, options)
@@ -249,12 +249,12 @@ module Shoulda
           end
         end
 
-        def target_received_method?
-          calls_to_method_on_target.any?
+        def delegate_object_received_call?
+          calls_to_delegate_method.any?
         end
 
-        def target_received_method_with_delegated_arguments?
-          calls_to_method_on_target.any? do |call|
+        def delegate_object_received_call_with_delegated_arguments?
+          calls_to_delegate_method.any? do |call|
             call.args == delegated_arguments
           end
         end
@@ -263,17 +263,17 @@ module Shoulda
           subject.respond_to?(delegating_method)
         end
 
-        def subject_has_target_method?
-          subject.respond_to?(target_method, true)
+        def subject_has_delegate_object_reader_method?
+          subject.respond_to?(delegate_object_reader_method, true)
         end
 
-        def ensure_target_method_is_present!
-          if target_method.to_s.empty?
-            raise TargetNotDefinedError
+        def ensure_delegate_object_has_been_specified!
+          if delegate_object_reader_method.to_s.empty?
+            raise DelegateObjectNotSpecified
           end
         end
 
-        def subject_delegates_to_target_correctly?
+        def subject_delegates_to_delegate_object_correctly?
           register_subject_double_collection
 
           Doublespeak.with_doubles_activated do
@@ -281,35 +281,35 @@ module Shoulda
           end
 
           if delegated_arguments.any?
-            target_received_method_with_delegated_arguments?
+            delegate_object_received_call_with_delegated_arguments?
           else
-            target_received_method?
+            delegate_object_received_call?
           end
         end
 
         def register_subject_double_collection
           double_collection =
             Doublespeak.double_collection_for(subject.singleton_class)
-          double_collection.register_stub(target_method).
-            to_return(target_double)
+          double_collection.register_stub(delegate_object_reader_method).
+            to_return(delegate_object)
 
           @subject_double_collection = double_collection
         end
 
-        def calls_to_method_on_target
-          target_double.calls_to(method_on_target)
+        def calls_to_delegate_method
+          delegate_object.calls_to(delegate_method)
         end
 
-        def calls_on_target
-          target_double.calls
+        def calls_on_delegate_object
+          delegate_object.calls
         end
 
-        def formatted_calls_on_target
+        def formatted_calls_on_delegate_object
           string = ""
 
-          if calls_on_target.any?
+          if calls_on_delegate_object.any?
             string << "\n"
-            calls_on_target.each_with_index do |call, i|
+            calls_on_delegate_object.each_with_index do |call, i|
               name = call.method_name
               args = call.args.map { |arg| arg.inspect }.join(', ')
               string << "#{i+1}) #{name}(#{args})\n"

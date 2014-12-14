@@ -3,7 +3,7 @@ module Shoulda
     module Independent
       class DelegateMethodMatcher
         # @private
-        class TargetNotDefinedError < StandardError
+        class DelegateObjectNotSpecified < StandardError
           def message
             'Delegation needs a target. Use the #to method to define one, e.g.
             `post_office.should delegate(:deliver_mail).to(:mailman)`'.squish

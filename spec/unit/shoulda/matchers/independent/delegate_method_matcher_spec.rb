@@ -7,17 +7,17 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
 
       context 'by default' do
         it 'states that it should delegate method to the right object' do
-          matcher = delegate_method(:method_name).to(:target)
+          matcher = delegate_method(:method_name).to(:delegate)
 
           expect(matcher.description).
-            to eq 'delegate #method_name to #target object'
+            to eq 'delegate #method_name to #delegate object'
         end
       end
 
       context 'with #as chain' do
         it 'states that it should delegate method to the right object and method' do
-          matcher = delegate_method(:method_name).to(:target).as(:alternate)
-          message = 'delegate #method_name to #target object as #alternate'
+          matcher = delegate_method(:method_name).to(:delegate).as(:alternate)
+          message = 'delegate #method_name to #delegate object as #alternate'
 
           expect(matcher.description).to eq message
         end
@@ -25,9 +25,9 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
 
       context 'with #with_argument chain' do
         it 'states that it should delegate method to the right object with right argument' do
-          matcher = delegate_method(:method_name).to(:target).
+          matcher = delegate_method(:method_name).to(:delegate).
             with_arguments(:foo, bar: [1, 2])
-          message = 'delegate #method_name to #target object passing arguments [:foo, {:bar=>[1, 2]}]'
+          message = 'delegate #method_name to #delegate object passing arguments [:foo, {:bar=>[1, 2]}]'
 
           expect(matcher.description).to eq message
         end
@@ -39,17 +39,17 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
 
       context 'by default' do
         it 'states that it should delegate method to the right object' do
-          matcher = delegate_method(:method_name).to(:target)
+          matcher = delegate_method(:method_name).to(:delegate)
 
           expect(matcher.description).
-            to eq 'delegate .method_name to .target object'
+            to eq 'delegate .method_name to .delegate object'
         end
       end
 
       context 'with #as chain' do
         it 'states that it should delegate method to the right object and method' do
-          matcher = delegate_method(:method_name).to(:target).as(:alternate)
-          message = 'delegate .method_name to .target object as .alternate'
+          matcher = delegate_method(:method_name).to(:delegate).as(:alternate)
+          message = 'delegate .method_name to .delegate object as .alternate'
 
           expect(matcher.description).to eq message
         end
@@ -57,9 +57,9 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
 
       context 'with #with_argument chain' do
         it 'states that it should delegate method to the right object with right argument' do
-          matcher = delegate_method(:method_name).to(:target).
+          matcher = delegate_method(:method_name).to(:delegate).
             with_arguments(:foo, bar: [1, 2])
-          message = 'delegate .method_name to .target object passing arguments [:foo, {:bar=>[1, 2]}]'
+          message = 'delegate .method_name to .delegate object passing arguments [:foo, {:bar=>[1, 2]}]'
 
           expect(matcher.description).to eq message
         end
@@ -67,10 +67,10 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
     end
   end
 
-  it 'raises an error if the target method was never specified before matching' do
+  it 'raises an error if the delegate object was never specified before matching' do
     expect {
       expect(Object.new).to delegate_method(:name)
-    }.to raise_error described_class::TargetNotDefinedError
+    }.to raise_error described_class::DelegateObjectNotSpecified
   end
 
   context 'stubbing an instance delegating method' do
