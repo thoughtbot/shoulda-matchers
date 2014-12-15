@@ -32,6 +32,35 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
           expect(matcher.description).to eq message
         end
       end
+
+      context 'with #prefix option' do
+        context 'when no prefix is provided' do
+          it 'should delegate as (target_method)_(method_on_target)' do
+            define_model(:country) do
+              def hello; 'hello' end
+            end
+            define_model(:person, country_id: :integer) do
+              belongs_to :country
+              delegate :hello, to: :country, prefix: true
+            end
+            matcher = delegate_method(:hello).to(:country).with_prefix
+            expect(matcher.description).to eq('delegate #country_hello to #country object as #hello')
+          end
+        end
+        context 'when prefix is supplied' do
+          it 'should delegate as (prefix_supplied)_(method_on_target)' do
+            define_model(:country) do
+              def hello; 'hello' end
+            end
+            define_model(:person, country_id: :integer) do
+              belongs_to :country
+              delegate :hello, to: :country, prefix: 'county'
+            end
+            matcher = delegate_method(:hello).to(:country).with_prefix('county')
+            expect(matcher.description).to eq('delegate #county_hello to #country object as #hello')
+          end
+        end
+      end
     end
 
     context 'when the subject is a class' do
