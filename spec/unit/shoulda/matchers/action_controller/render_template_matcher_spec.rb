@@ -1,8 +1,6 @@
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActionController::RenderTemplateMatcher, type: :controller do
-  include ActionController::TemplateAssertions
-
   context 'a controller that renders a template' do
     it 'accepts rendering that template' do
       expect(controller_with_show).to render_template(:show)

@@ -22,8 +22,8 @@ monkey_patch_minitest_to_do_nothing
 ENV['BUNDLE_GEMFILE'] ||= app.gemfile_path
 ENV['RAILS_ENV'] = 'test'
 
-require 'shoulda-matchers'
 require 'rspec/rails'
+require 'shoulda-matchers'
 
 PROJECT_ROOT = File.expand_path('../..', __FILE__)
 $LOAD_PATH << File.join(PROJECT_ROOT, 'lib')

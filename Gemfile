@@ -1,7 +1,5 @@
 source 'https://rubygems.org'
 
-gemspec
-
 gem 'appraisal', '~> 1.0'
 gem 'aruba'
 gem 'bourne', '~> 1.3'

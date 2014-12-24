@@ -1,9 +1,3 @@
-PATH
-  remote: ../
-  specs:
-    shoulda-matchers (2.7.0)
-      activesupport (>= 3.0.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -170,7 +164,6 @@ DEPENDENCIES
   redcarpet
   rspec-rails (= 2.99.0)
   shoulda-context (~> 1.2.0)
-  shoulda-matchers!
   sqlite3
   strong_parameters
   therubyrhino

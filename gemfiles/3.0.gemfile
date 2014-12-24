@@ -24,5 +24,3 @@ gem "therubyrhino", :platform => :jruby
 gem "strong_parameters"
 gem "minitest", "~> 4.0"
 gem "minitest-reporters"
-
-gemspec :path => "../"
