@@ -111,4 +111,15 @@ if Gem::Requirement.new('> 1.9.2').satisfied_by?(ruby_version)
     gem 'protected_attributes', "~> 1.0.6"
     gem 'spring'
   end
+
+  appraise '4.2' do
+    instance_eval(&rails_4)
+    gem 'rails', '~> 4.2.0'
+    gem 'jbuilder', '~> 2.0'
+    gem 'sass-rails', '~> 5.0'
+    gem 'sdoc', '~> 0.4.0'
+    gem 'bcrypt', '~> 3.1.7'
+    gem 'protected_attributes', "~> 1.0.6"
+    gem 'spring'
+  end
 end
