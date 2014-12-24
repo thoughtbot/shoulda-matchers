@@ -62,4 +62,5 @@ RSpec.configure do |config|
   config.include UnitTests::Matchers
 end
 
+ActiveSupport::Deprecation.behavior = :stderr
 $VERBOSE = true
