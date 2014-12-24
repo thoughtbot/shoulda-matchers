@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher do
+describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :model do
   context 'a model without a a uniqueness validation' do
     it 'rejects' do
       model = define_model(:example, attr: :string) { attr_accessible :attr } .new

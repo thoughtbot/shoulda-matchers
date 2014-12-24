@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder do
+describe Shoulda::Matchers::ActiveModel::ExceptionMessageFinder, type: :model do
   if active_model_3_2?
     context '#allow_description' do
       it 'describes its attribute' do

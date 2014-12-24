@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActionController do
+describe Shoulda::Matchers::ActionController, type: :controller do
   describe '#permit' do
     it 'matches when the sent parameter is allowed' do
       controller_for_resource_with_strong_parameters(action: :create) do

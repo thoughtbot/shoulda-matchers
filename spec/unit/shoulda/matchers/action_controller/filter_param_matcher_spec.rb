@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActionController::FilterParamMatcher do
+describe Shoulda::Matchers::ActionController::FilterParamMatcher, type: :controller do
   it 'accepts filtering a filtered parameter' do
     filter(:secret)
 

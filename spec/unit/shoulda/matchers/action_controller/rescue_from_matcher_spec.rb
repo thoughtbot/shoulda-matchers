@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActionController::RescueFromMatcher do
+describe Shoulda::Matchers::ActionController::RescueFromMatcher, type: :controller do
   context 'a controller that rescues from RuntimeError' do
     it 'asserts controller is setup with rescue_from' do
       expect(controller_with_rescue_from).to rescue_from RuntimeError

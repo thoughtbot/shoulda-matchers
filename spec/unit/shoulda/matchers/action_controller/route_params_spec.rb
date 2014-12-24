@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActionController::RouteParams do
+describe Shoulda::Matchers::ActionController::RouteParams, type: :controller do
   describe "#normalize" do
     context "when the route parameters is a hash" do
       it "stringifies the values in the hash" do

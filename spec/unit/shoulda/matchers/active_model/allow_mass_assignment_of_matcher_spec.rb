@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher do
+describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher, type: :model do
   context '#description' do
     context 'without a role' do
       it 'includes the attribute name' do

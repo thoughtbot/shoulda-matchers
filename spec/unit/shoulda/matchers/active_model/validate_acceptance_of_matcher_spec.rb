@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveModel::ValidateAcceptanceOfMatcher do
+describe Shoulda::Matchers::ActiveModel::ValidateAcceptanceOfMatcher, type: :model do
   context 'a model with an acceptance validation' do
     it 'accepts when the attributes match' do
       expect(validating_acceptance).to matcher

@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveRecord::AcceptNestedAttributesForMatcher do
+describe Shoulda::Matchers::ActiveRecord::AcceptNestedAttributesForMatcher, type: :model do
   it 'accepts an existing declaration' do
     expect(accepting_children).to accept_nested_attributes_for(:children)
   end

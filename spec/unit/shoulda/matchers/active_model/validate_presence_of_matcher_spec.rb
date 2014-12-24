@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher do
+describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model do
   context 'a model with a presence validation' do
     it 'accepts' do
       expect(validating_presence).to matcher

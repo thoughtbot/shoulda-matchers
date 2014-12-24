@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActionController, '#set_session' do
+describe Shoulda::Matchers::ActionController, '#set_session', type: :controller do
   context 'passing an argument to the initializer' do
     it 'is deprecated in favor of using #[]' do
       expectation = proc { set_session(:foo) }

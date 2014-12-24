@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveRecord::HaveReadonlyAttributeMatcher do
+describe Shoulda::Matchers::ActiveRecord::HaveReadonlyAttributeMatcher, type: :model do
   context 'a read-only attribute' do
     it 'accepts' do
       expect(with_readonly_attr).to have_readonly_attribute(:attr)

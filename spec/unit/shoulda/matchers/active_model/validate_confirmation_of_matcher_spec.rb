@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher do
+describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :model do
   include UnitTests::ConfirmationMatcherHelpers
 
   context '#description' do

@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveModel::AllowValueMatcher do
+describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
   context "#description" do
     it 'describes itself with multiple values' do
       matcher = allow_value('foo', 'bar').for(:baz)

@@ -45,8 +45,6 @@ RSpec.configure do |config|
     config.infer_spec_type_from_file_location!
   end
 
-  config.include Shoulda::Matchers::ActionController, type: :controller
-
   UnitTests::ActiveModelHelpers.configure_example_group(config)
   UnitTests::ActiveModelVersions.configure_example_group(config)
   UnitTests::ActiveResourceBuilder.configure_example_group(config)

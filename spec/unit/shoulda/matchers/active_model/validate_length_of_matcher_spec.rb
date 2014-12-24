@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveModel do
+describe Shoulda::Matchers::ActiveModel, type: :model do
   describe '#ensure_length_of' do
     it 'is aliased to #validate_length_of' do
       allow(matchers).to receive(:validate_length_of)
@@ -17,7 +17,7 @@ describe Shoulda::Matchers::ActiveModel do
   end
 end
 
-describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher do
+describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher, type: :model do
   context 'an attribute with a non-zero minimum length validation' do
     it 'accepts ensuring the correct minimum length' do
       expect(validating_length(minimum: 4)).

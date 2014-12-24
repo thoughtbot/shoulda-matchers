@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveRecord::SerializeMatcher do
+describe Shoulda::Matchers::ActiveRecord::SerializeMatcher, type: :model do
   it 'accepts when the attribute is serialized' do
     expect(with_serialized_attr).to serialize(:attr)
   end

@@ -1,6 +1,6 @@
 require "unit_spec_helper"
 
-describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher do
+describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
   if active_record_supports_enum?
     describe "with only the attribute name specified" do
       it "accepts a record where the attribute is defined as an enum" do

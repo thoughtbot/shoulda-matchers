@@ -1,7 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher do
-
+describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :model do
   context 'with a model with a numericality validation' do
     it 'accepts' do
       expect(validating_numericality).to matcher

@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveRecord::HaveDbColumnMatcher do
+describe Shoulda::Matchers::ActiveRecord::HaveDbColumnMatcher, type: :model do
   it 'accepts an existing database column' do
     expect(model(nickname: :string)).to have_db_column(:nickname)
   end

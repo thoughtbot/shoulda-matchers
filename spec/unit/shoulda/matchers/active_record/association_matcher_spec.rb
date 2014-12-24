@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveRecord::AssociationMatcher do
+describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
   context 'belong_to' do
     it 'accepts a good association with the default foreign key' do
       expect(belonging_to_parent).to belong_to(:parent)

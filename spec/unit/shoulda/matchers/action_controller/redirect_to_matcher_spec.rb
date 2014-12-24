@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActionController::RedirectToMatcher do
+describe Shoulda::Matchers::ActionController::RedirectToMatcher, type: :controller do
   context 'a controller that redirects' do
     it 'accepts redirecting to that url' do
       expect(controller_redirecting_to('/some/url')).to redirect_to('/some/url')

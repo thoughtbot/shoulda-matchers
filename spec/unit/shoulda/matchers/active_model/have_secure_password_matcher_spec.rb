@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveModel::HaveSecurePasswordMatcher do
+describe Shoulda::Matchers::ActiveModel::HaveSecurePasswordMatcher, type: :model do
   if active_model_3_1?
     it 'matches when the subject configures has_secure_password with default options' do
       working_model = define_model(:example, password_digest: :string) { has_secure_password }

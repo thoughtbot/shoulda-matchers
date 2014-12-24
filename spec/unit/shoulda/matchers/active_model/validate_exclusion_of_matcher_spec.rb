@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveModel do
+describe Shoulda::Matchers::ActiveModel, type: :model do
   describe '#ensure_exclusion_of' do
     it 'is aliased to #validate_exclusion_of' do
       allow(matchers).to receive(:validate_exclusion_of)
@@ -17,7 +17,7 @@ describe Shoulda::Matchers::ActiveModel do
   end
 end
 
-describe Shoulda::Matchers::ActiveModel::ValidateExclusionOfMatcher do
+describe Shoulda::Matchers::ActiveModel::ValidateExclusionOfMatcher, type: :model do
   context 'an attribute which must be excluded from a range' do
     it 'accepts ensuring the correct range' do
       expect(validating_exclusion(in: 2..5)).

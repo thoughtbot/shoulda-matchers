@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActionController do
+describe Shoulda::Matchers::ActionController, type: :controller do
   describe '#set_the_flash' do
     it 'is deprecated in favor of #set_flash' do
       expect { set_the_flash }.to deprecate(:set_the_flash, :set_flash)

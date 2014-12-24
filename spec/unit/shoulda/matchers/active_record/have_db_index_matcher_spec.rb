@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher do
+describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher, type: :model do
   context 'have_db_index' do
     it 'accepts an existing index' do
       expect(with_index_on(:age)).to have_db_index(:age)
