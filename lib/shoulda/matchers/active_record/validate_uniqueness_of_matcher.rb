@@ -374,7 +374,7 @@ module Shoulda
               # Assume the scope is a foreign key if the field is nil
               previous_value ||= correct_type_for_column(@subject.class.columns_hash[scope.to_s])
 
-              next_value = set_next_value(scope, previous_value)
+              next_value = next_value_for(scope, previous_value)
 
               @subject.__send__("#{scope}=", next_value)
 
@@ -404,9 +404,9 @@ module Shoulda
           end
         end
 
-        def set_next_value(scope, previous_value)
+        def next_value_for(scope, previous_value)
           if @subject.class.respond_to?(:defined_enums) && @subject.defined_enums[scope.to_s]
-            available_values = set_available_values(scope, previous_value)
+            available_values = available_enum_values_for(scope, previous_value)
             available_values.keys.last
           elsif scope.to_s =~ /_type$/ && model_class?(previous_value)
             Uniqueness::TestModels.create(previous_value).to_s
@@ -419,7 +419,7 @@ module Shoulda
           end
         end
 
-        def set_available_values(scope, previous_value)
+        def available_enum_values_for(scope, previous_value)
           @subject.defined_enums[scope.to_s].reject do |key, _|
             key == previous_value
           end
