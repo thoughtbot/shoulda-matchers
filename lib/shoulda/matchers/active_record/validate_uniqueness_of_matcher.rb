@@ -406,9 +406,7 @@ module Shoulda
 
         def set_next_value(scope, previous_value)
           if @subject.class.respond_to?(:defined_enums) && @subject.defined_enums[scope.to_s]
-            available_values = @subject.defined_enums[scope.to_s].reject do |key, _|
-              key == previous_value
-            end
+            available_values = set_available_values(scope, previous_value)
             available_values.keys.last
           elsif scope.to_s =~ /_type$/ && model_class?(previous_value)
             Uniqueness::TestModels.create(previous_value).to_s
@@ -418,6 +416,12 @@ module Shoulda
             previous_value.to_datetime.next
           else
             previous_value.to_s.next
+          end
+        end
+
+        def set_available_values(scope, previous_value)
+          @subject.defined_enums[scope.to_s].reject do |key, _|
+            key == previous_value
           end
         end
 
