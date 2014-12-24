@@ -41,15 +41,18 @@ describe Shoulda::Matchers::ActionController::RenderWithLayoutMatcher, type: :co
 
   context 'given a context with layouts' do
     it 'accepts that layout in that context' do
-      set_in_context_layout('happy')
+      context = Object.new
+      set_layout_in_context(context, 'happy')
 
-      expect(controller_without_layout).to render_with_layout('happy').in_context(self)
+      expect(controller_without_layout).
+        to render_with_layout('happy').
+        in_context(context)
     end
 
-    def set_in_context_layout(layout)
+    def set_layout_in_context(context, layout)
       layouts = Hash.new(0)
       layouts[layout] = 1
-      self.instance_variable_set(layouts_ivar, layouts)
+      context.instance_variable_set(layouts_ivar, layouts)
     end
 
     def layouts_ivar

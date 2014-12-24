@@ -37,6 +37,6 @@ describe Shoulda::Matchers::ActionController::RedirectToMatcher, type: :controll
   it 'provides the correct description when provided a block' do
     matcher = redirect_to('somewhere else') { '/some/other/url' }
 
-    expect(matcher.description).to eq 'redirect to somewhere else'
+    expect(matcher.description).to eq 'redirect to "somewhere else"'
   end
 end

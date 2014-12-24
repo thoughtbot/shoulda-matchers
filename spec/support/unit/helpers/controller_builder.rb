@@ -16,10 +16,7 @@ module UnitTests
     end
 
     def define_routes(&block)
-      @routes = $test_app.draw_routes(&block)
-      class << self
-        include ActionDispatch::Assertions
-      end
+      self.routes = $test_app.draw_routes(&block)
     end
 
     def build_fake_response(opts = {}, &block)
@@ -40,19 +37,15 @@ module UnitTests
       create_view("examples/#{partial}.html.erb", 'partial')
 
       setup_rails_controller_test(controller_class)
+      self.class.render_views(true)
+
       get action
 
-      @controller
+      controller
     end
 
     def setup_rails_controller_test(controller_class)
       @controller = controller_class.new
-      @request = ::ActionController::TestRequest.new
-      @response = ::ActionController::TestResponse.new
-
-      class << self
-        include ActionController::TestCase::Behavior
-      end
     end
 
     def create_view(path, contents)

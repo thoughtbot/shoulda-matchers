@@ -72,7 +72,7 @@ module Shoulda
         end
 
         def description
-          "redirect to #{@location}"
+          "redirect to #{@location.inspect}"
         end
 
         private

@@ -45,6 +45,10 @@ RSpec.configure do |config|
     config.infer_spec_type_from_file_location!
   end
 
+  config.before(:all, type: :controller) do
+    self.class.controller(ApplicationController) { }
+  end
+
   UnitTests::ActiveModelHelpers.configure_example_group(config)
   UnitTests::ActiveModelVersions.configure_example_group(config)
   UnitTests::ActiveResourceBuilder.configure_example_group(config)
