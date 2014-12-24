@@ -42,6 +42,29 @@ module Shoulda
         end
       end
 
+      def self.type_cast_default_for(model, column)
+        if model.respond_to?(:column_defaults)
+          # Rails 4.2
+          model.column_defaults[column.name]
+        else
+          column.default
+        end
+      end
+
+      def self.serialized_attributes_for(model)
+        if defined?(::ActiveRecord::Type::Serialized)
+          # Rails 5+
+          model.columns.select do |column|
+            column.cast_type.is_a?(::ActiveRecord::Type::Serialized)
+          end.inject({}) do |hash, column|
+            hash[column.name.to_s] = column.cast_type.coder
+            hash
+          end
+        else
+          model.serialized_attributes
+        end
+      end
+
       def self.active_record_major_version
         ::ActiveRecord::VERSION::MAJOR
       end

@@ -78,14 +78,12 @@ module UnitTests
     private
 
     def clear_column_caches
-      # Rails 3.1 - 4.0
-      if ActiveRecord::Base.connection_pool.respond_to?(:clear_cache!)
-        ActiveRecord::Base.connection_pool.clear_cache!
-      end
-
       # Rails 4.x
       if ActiveRecord::Base.connection.respond_to?(:schema_cache)
         ActiveRecord::Base.connection.schema_cache.clear!
+      # Rails 3.1 - 4.0
+      elsif ActiveRecord::Base.connection_pool.respond_to?(:clear_cache!)
+        ActiveRecord::Base.connection_pool.clear_cache!
       end
     end
 

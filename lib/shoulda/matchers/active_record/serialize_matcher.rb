@@ -130,7 +130,7 @@ module Shoulda
         protected
 
         def serialization_valid?
-          if model_class.serialized_attributes.keys.include?(@name)
+          if attribute_is_serialized?
             true
           else
             @missing = "no serialized attribute called :#{@name}"
@@ -140,7 +140,7 @@ module Shoulda
 
         def class_valid?
           if @options[:type]
-            klass = model_class.serialized_attributes[@name]
+            klass = serialization_coder
             if klass == @options[:type]
               true
             else
@@ -162,7 +162,7 @@ module Shoulda
 
         def instance_class_valid?
           if @options.key?(:instance_type)
-            if model_class.serialized_attributes[@name].class == @options[:instance_type]
+            if serialization_coder.is_a?(@options[:instance_type])
               true
             else
               @missing = ":#{@name} should be an instance of #{@options[:type]}"
@@ -182,6 +182,22 @@ module Shoulda
           expectation += " with a type of #{@options[:type]}" if @options[:type]
           expectation += " with an instance of #{@options[:instance_type]}" if @options[:instance_type]
           expectation
+        end
+
+        def attribute_is_serialized?
+          serialized_attributes.include?(@name)
+        end
+
+        def serialization_coder
+          serialized_attributes[@name]
+        end
+
+        def serialized_attributes
+          Shoulda::Matchers::RailsShim.serialized_attributes_for(model)
+        end
+
+        def model
+          @subject.class
         end
       end
     end

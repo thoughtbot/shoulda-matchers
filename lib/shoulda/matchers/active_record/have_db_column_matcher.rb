@@ -189,11 +189,11 @@ module Shoulda
         def correct_default?
           return true unless @options.key?(:default)
 
-          if matched_column.default.to_s == @options[:default].to_s
+          if matched_column.type_cast_default.to_s == @options[:default].to_s
             true
           else
             @missing = "#{model_class} has a db column named #{@column} " <<
-                       "of default #{matched_column.default}, " <<
+                       "of default #{matched_column.type_cast_default}, " <<
                        "not #{@options[:default]}."
             false
           end
@@ -227,7 +227,7 @@ module Shoulda
         def correct_primary?
           return true unless @options.key?(:primary)
 
-          if matched_column.primary == @options[:primary]
+          if matched_column.primary? == @options[:primary]
             true
           else
             @missing = "#{model_class} has a db column named #{@column} "
@@ -241,7 +241,10 @@ module Shoulda
         end
 
         def matched_column
-          model_class.columns.detect { |each| each.name == @column.to_s }
+          @_matched_column ||= begin
+            column = model_class.columns.detect { |each| each.name == @column.to_s }
+            DecoratedColumn.new(model_class, column)
+          end
         end
 
         def model_class
@@ -252,8 +255,31 @@ module Shoulda
           matched_column.scale
         end
 
+        def actual_primary?
+          model_class.primary_key == matched_column.name
+        end
+
         def expectation
           "#{model_class.name} to #{description}"
+        end
+
+        class DecoratedColumn < SimpleDelegator
+          def initialize(model, column)
+            @model = model
+            super(column)
+          end
+
+          def type_cast_default
+            Shoulda::Matchers::RailsShim.type_cast_default_for(model, self)
+          end
+
+          def primary?
+            model.primary_key == name
+          end
+
+          protected
+
+          attr_reader :model
         end
       end
     end

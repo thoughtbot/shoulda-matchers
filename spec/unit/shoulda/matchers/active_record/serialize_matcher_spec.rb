@@ -39,7 +39,7 @@ describe Shoulda::Matchers::ActiveRecord::SerializeMatcher, type: :model do
     end
   end
 
-  context 'an attribute that is serialized as a specific type' do
+  context 'an attribute that will end up being serialized as YAML' do
     it 'accepts when the types match' do
       expect(with_serialized_attr(Hash)).to serialize(:attr).as(Hash)
     end
