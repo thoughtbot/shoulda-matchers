@@ -437,7 +437,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       it 'matches' do
         valid_values = [true, false]
         builder = build_object_allowing(valid_values)
-        capture(:stderr) do
+        silence_stderr do
           expect_to_match_in_array(builder, valid_values)
         end
       end
@@ -469,7 +469,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
           it 'matches' do
             valid_values = [nil]
             builder = build_object_allowing(valid_values)
-            capture(:stderr) do
+            silence_stderr do
               expect_to_match_in_array(builder, valid_values)
             end
           end
