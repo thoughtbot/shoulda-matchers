@@ -67,7 +67,7 @@ module AcceptanceTests
     end
 
     def run_n_unit_tests(*paths)
-      run_command 'ruby -I lib -I test', *paths
+      run_command_within_bundle 'ruby -I lib -I test', *paths
     end
 
     def run_n_unit_test_suite

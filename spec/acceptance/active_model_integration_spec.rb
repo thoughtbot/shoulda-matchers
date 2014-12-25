@@ -14,7 +14,7 @@ describe 'shoulda-matchers integrates with an ActiveModel project' do
       puts "Loaded all dependencies without errors"
     FILE
 
-    result = run_command('bundle exec ruby load_dependencies.rb')
+    result = run_command_within_bundle('ruby load_dependencies.rb')
     expect(result).to have_output('Loaded all dependencies without errors')
   end
 end
