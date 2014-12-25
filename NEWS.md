@@ -65,9 +65,10 @@
   `set_flash`.
 
 * Add `with_prefix` qualifier to `delegate_method` to correspond to the `prefix`
-  option for Rails's `delegate` macro. [#622]
+  option for Rails's `delegate` macro. ([#622])
 
-* Add support for Rails 4.2.
+* Add support for Rails 4.2, especially fixing `serialize` matcher to remove
+  warning about `serialized_attributes` being deprecated. ([#627])
 
 ### Improvements
 
@@ -85,6 +86,7 @@
 [#602]: https://github.com/thoughtbot/shoulda-matchers/pull/602
 [#543]: https://github.com/thoughtbot/shoulda-matchers/pull/543
 [#622]: https://github.com/thoughtbot/shoulda-matchers/pull/622
+[#627]: https://github.com/thoughtbot/shoulda-matchers/pull/627
 
 # 2.7.0
 
