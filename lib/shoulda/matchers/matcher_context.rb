@@ -1,5 +1,6 @@
 module Shoulda
   module Matchers
+    # @private
     class MatcherContext
       def initialize(context)
         @context = context

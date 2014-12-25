@@ -263,6 +263,7 @@ module Shoulda
           "#{model_class.name} to #{description}"
         end
 
+        # @private
         class DecoratedColumn < SimpleDelegator
           def initialize(model, column)
             @model = model

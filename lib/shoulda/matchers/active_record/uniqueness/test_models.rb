@@ -3,6 +3,7 @@ require 'thread'
 module Shoulda
   module Matchers
     module ActiveRecord
+      # @private
       module Uniqueness
         # @private
         module TestModels
