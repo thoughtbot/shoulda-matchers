@@ -67,6 +67,8 @@
 * Add `with_prefix` qualifier to `delegate_method` to correspond to the `prefix`
   option for Rails's `delegate` macro. [#622]
 
+* Add support for Rails 4.2.
+
 ### Improvements
 
 * Tweak `allow_value` failure message so that it reads a bit nicer when listing
