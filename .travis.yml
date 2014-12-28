@@ -10,6 +10,7 @@ branches:
 rvm:
   - 2.0.0
   - 2.1.4
+  - 2.2.0
   - rbx-19mode
   - jruby-19mode
 

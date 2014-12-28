@@ -184,9 +184,9 @@ DEPENDENCIES
   rails (~> 4.1.0)
   rake (~> 10.0)
   redcarpet
-  rspec-core (~> 3.0)
-  rspec-expectations (~> 3.0)
-  rspec-rails (~> 3.0)
+  rspec-core (>= 3.2.0, < 4)
+  rspec-expectations (>= 3.2.0, < 4)
+  rspec-rails (>= 3.2.0, < 4)
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
   shoulda-context (~> 1.2.0)

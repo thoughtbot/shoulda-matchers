@@ -42,7 +42,7 @@ DEPENDENCIES
   pygments.rb
   rake (~> 10.0)
   redcarpet
-  rspec-core (~> 3.0)
-  rspec-expectations (~> 3.0)
+  rspec-core (>= 3.2.0, < 4)
+  rspec-expectations (>= 3.2.0, < 4)
   watchr
   yard
