@@ -1,5 +1,16 @@
 require 'unit_spec_helper'
 
+def each_dependent_option(rails_version)
+  case rails_version
+  when /\A3/
+    [:destroy, :delete, :nullify, :restrict]
+  when /\A4/
+    [:destroy, :delete, :nullify, :restrict_with_exception, :restrict_with_error]
+  end.each do |option|
+    yield option
+  end
+end
+
 describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
   context 'belong_to' do
     it 'accepts a good association with the default foreign key' do
@@ -645,9 +656,29 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       expect(Person.new).not_to have_one(:detail)
     end
 
-    it 'accepts an association with a valid :dependent option' do
-      expect(having_one_detail(dependent: :destroy)).
-        to have_one(:detail).dependent(:destroy)
+    each_dependent_option(Rails.version) do |option|
+      it 'accepts an association with a valid :dependent option' do
+        expect(having_one_detail(dependent: option)).
+        to have_one(:detail).dependent(option)
+      end
+    end
+
+    it 'accepts any dependent option if true' do
+      each_dependent_option(Rails.version) do |option|
+        expect(having_one_detail(dependent: option)).
+          to have_one(:detail).dependent(true)
+      end
+    end
+
+    it 'rejects any dependent options if false' do
+      each_dependent_option(Rails.version) do |option|
+        expect(having_one_detail(dependent: option)).
+          to_not have_one(:detail).dependent(false)
+      end
+    end
+
+    it 'accepts a nil dependent option if false' do
+      expect(having_one_detail).to have_one(:detail).dependent(false)
     end
 
     it 'rejects an association with a bad :dependent option' do

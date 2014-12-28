@@ -11,3 +11,4 @@ pkg
 tags
 test/*/log/*.log
 tmp
+.ruby-version
