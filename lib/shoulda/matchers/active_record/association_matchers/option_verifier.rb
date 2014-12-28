@@ -32,6 +32,20 @@ module Shoulda
             correct_for?(:relation_clause, name, expected_value)
           end
 
+          def correct_for?(*args)
+            expected_value, name, type = args.reverse
+            if expected_value.nil?
+              true
+            else
+              expected_value = type_cast(
+                type,
+                expected_value_for(type, name, expected_value)
+              )
+              actual_value = type_cast(type, actual_value_for(name))
+              expected_value == actual_value
+            end
+          end
+
           def actual_value_for(name)
             if RELATION_OPTIONS.include?(name)
               actual_value_for_relation_clause(name)
@@ -48,17 +62,6 @@ module Shoulda
           protected
 
           attr_reader :reflector
-
-          def correct_for?(*args)
-            expected_value, name, type = args.reverse
-            if expected_value.nil?
-              true
-            else
-              expected_value = type_cast(type, expected_value_for(type, name, expected_value))
-              actual_value = type_cast(type, actual_value_for(name))
-              expected_value == actual_value
-            end
-          end
 
           def type_cast(type, value)
             case type

@@ -70,6 +70,11 @@
 * Add support for Rails 4.2, especially fixing `serialize` matcher to remove
   warning about `serialized_attributes` being deprecated. ([#627])
 
+* Update `dependent` qualifier on association matchers to support `:destroy`,
+  `:delete`, `:nullify`, `:restrict`, `:restrict_with_exception`, and
+  `:restrict_with_error`. You can also pass `true` or `false` to assert that
+  the association has (or has not) been declared with *any* dependent option.
+
 ### Improvements
 
 * Tweak `allow_value` failure message so that it reads a bit nicer when listing
@@ -87,6 +92,7 @@
 [#543]: https://github.com/thoughtbot/shoulda-matchers/pull/543
 [#622]: https://github.com/thoughtbot/shoulda-matchers/pull/622
 [#627]: https://github.com/thoughtbot/shoulda-matchers/pull/627
+[#631]: https://github.com/thoughtbot/shoulda-matchers/pull/631
 
 # 2.7.0
 
