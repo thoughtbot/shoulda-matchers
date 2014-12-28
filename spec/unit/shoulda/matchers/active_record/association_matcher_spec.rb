@@ -646,8 +646,28 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
     end
 
     it 'accepts an association with a valid :dependent option' do
-      expect(having_one_detail(dependent: :destroy)).
-        to have_one(:detail).dependent(:destroy)
+      dependent_options.each do |option|
+        expect(having_one_detail(dependent: option)).
+          to have_one(:detail).dependent(option)
+      end
+    end
+
+    it 'accepts any dependent option if true' do
+      dependent_options.each do |option|
+        expect(having_one_detail(dependent: option)).
+          to have_one(:detail).dependent(true)
+      end
+    end
+
+    it 'rejects any dependent options if false' do
+      dependent_options.each do |option|
+        expect(having_one_detail(dependent: option)).
+          to_not have_one(:detail).dependent(false)
+      end
+    end
+
+    it 'accepts a nil dependent option if false' do
+      expect(having_one_detail).to have_one(:detail).dependent(false)
     end
 
     it 'rejects an association with a bad :dependent option' do
@@ -1116,5 +1136,14 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
     end
     args << options
     model.__send__(macro, name, *args)
+  end
+
+  def dependent_options
+    case Rails.version
+    when /\A3/
+      [:destroy, :delete, :nullify, :restrict]
+    when /\A4/
+      [:destroy, :delete, :nullify, :restrict_with_exception, :restrict_with_error]
+    end
   end
 end

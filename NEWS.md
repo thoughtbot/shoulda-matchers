@@ -1,3 +1,15 @@
+# HEAD
+
+### Features
+
+* Update `dependent` qualifier on association matchers to support `:destroy`,
+  `:delete`, `:nullify`, `:restrict`, `:restrict_with_exception`, and
+  `:restrict_with_error`. You can also pass `true` or `false` to assert that
+  the association has (or has not) been declared with *any* dependent option.
+  ([#631])
+
+[#631]: https://github.com/thoughtbot/shoulda-matchers/pull/631
+
 # 2.8.0.rc1
 
 ### Deprecations
