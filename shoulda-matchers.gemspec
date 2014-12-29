@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.name        = "shoulda-matchers"
   s.version     = Shoulda::Matchers::VERSION.dup
   s.authors     = ["Tammer Saleh", "Joe Ferris", "Ryan McGeary", "Dan Croak",
-                   "Matt Jankowski", "Stafford Brunk"]
+                   "Matt Jankowski", "Stafford Brunk", "Elliot Winkler"]
   s.date        = Time.now.strftime("%Y-%m-%d")
   s.email       = "support@thoughtbot.com"
   s.homepage    = "http://thoughtbot.com/community/"
