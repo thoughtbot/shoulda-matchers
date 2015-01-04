@@ -1,0 +1,5 @@
+StringLiterals:
+  EnforcedStyle: single_quotes
+
+AlignParameters:
+  EnforcedStyle: with_fixed_indentation
