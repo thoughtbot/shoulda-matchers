@@ -34,14 +34,14 @@ module Shoulda
             @option_verifier ||= OptionVerifier.new(subject)
           end
 
-          def correct_for?(dependent=dependent)
+          def correct_for?(dependent)
             case dependent
             when true, false then option_verifier.correct_for_boolean?(:dependent, dependent)
             else option_verifier.correct_for_string?(:dependent, dependent)
             end
           end
 
-          def missing_option_for(name=name, dependent=dependent)
+          def missing_option_for(name, dependent)
             "#{name} should have #{dependent == true ? "a" : dependent} dependency"
           end
 
