@@ -1,0 +1,15 @@
+#!/bin/bash
+
+SUPPORTED_VERSIONS=$(<script/SUPPORTED_VERSIONS)
+gem="$1"
+
+update-gem-for-version() {
+  local version="$1"
+  (export RBENV_VERSION=$version; bundle update "$gem" && bundle exec appraisal update "$gem")
+}
+
+for version in $SUPPORTED_VERSIONS; do
+  echo
+  echo "*** Updating $gem for $version ***"
+  update-gem-for-version $version
+done
