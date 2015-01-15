@@ -2,6 +2,31 @@ require "unit_spec_helper"
 
 describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
   if active_record_supports_enum?
+    context 'if the attribute is given in plural form accidentally' do
+      it 'rejects' do
+        record = record_with_array_values
+        plural_enum_attribute = enum_attribute.to_s.pluralize
+        message = "Expected #{record.class} to define :#{plural_enum_attribute} as an enum"
+        assertion = -> {
+          expect(record).to define_enum_for(plural_enum_attribute)
+        }
+        expect(&assertion).to fail_with_message(message)
+      end
+    end
+
+    context 'if a method to hold enum values exists on the model but was not created via the enum macro' do
+      it 'rejects' do
+        model = define_model :example do
+          def self.statuses; end
+        end
+        message = "Expected #{model} to define :statuses as an enum"
+        assertion = -> {
+          expect(model.new).to define_enum_for(:statuses)
+        }
+        expect(&assertion).to fail_with_message(message)
+      end
+    end
+
     describe "with only the attribute name specified" do
       it "accepts a record where the attribute is defined as an enum" do
         expect(record_with_array_values).to define_enum_for(enum_attribute)

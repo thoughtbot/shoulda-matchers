@@ -99,16 +99,12 @@ module Shoulda
           hashify(options[:expected_enum_values]).with_indifferent_access
         end
 
-        def enum_method
-          attribute_name.to_s.pluralize
-        end
-
         def actual_enum_values
-          model.class.send(enum_method)
+          model.class.send(attribute_name.to_s.pluralize)
         end
 
         def enum_defined?
-          model.class.respond_to?(enum_method)
+          model.defined_enums.include?(attribute_name.to_s)
         end
 
         def enum_values_match?

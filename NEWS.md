@@ -31,6 +31,14 @@
     attributes is a UUID column that ends in an "f", the matcher is able to
     generate a proper "next" value without erroring.
 
+* Fix `define_enum_for` so that it actually tests that the attribute is present
+  in the list of defined enums, as you could fool it by merely defining a class
+  method that was the pluralized version of the attribute name. In the same
+  vein, passing a pluralized version of the attribute name to `define_enum_for`
+  would erroneously pass, and now it fails. ([#641])
+
+[#641]: https://github.com/thoughtbot/shoulda-matchers/pull/641
+
 # 2.8.0
 
 ### Deprecations
