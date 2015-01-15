@@ -4,11 +4,11 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
   if active_record_supports_enum?
     it "rejects a record when checking for enum's plural attribute name" do
       message = "Expected #{record_with_array_values.class} to define :#{enum_attribute.to_s.pluralize} as an enum"
-      
+
       expect do
-        expect(record_with_array_values).to define_enum_for(enum_attribute.to_s.pluralize)  
+        expect(record_with_array_values).to define_enum_for(enum_attribute.to_s.pluralize)
       end.to fail_with_message(message)
-    end      
+    end
 
     describe "with only the attribute name specified" do
       it "accepts a record where the attribute is defined as an enum" do
