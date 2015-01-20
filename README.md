@@ -72,6 +72,15 @@ complex, and error-prone.
   makes assertions on the `session` hash.
 * **[set_flash](lib/shoulda/matchers/action_controller/set_flash_matcher.rb)**
   makes assertions on the `flash` hash.
+* **[use_after_action](lib/shoulda/matchers/action_controller/use_after_action.rb)**
+  tests that a `after_action` callback is defined in your controller. (Aliased
+  as *use_after_filter*.)
+* **[use_around_action](lib/shoulda/matchers/action_controller/use_around_action.rb)**
+  tests that a `around_action` callback is defined in your controller. (Aliased
+  as *use_around_filter*.)
+* **[use_before_action](lib/shoulda/matchers/action_controller/use_before_action.rb)**
+  tests that a `before_action` callback is defined in your controller. (Aliased
+  as *use_before_filter*.)
 
 ### Independent Matchers
 
