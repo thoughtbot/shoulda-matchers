@@ -18,11 +18,10 @@ module Shoulda
 
           def matches?(subject)
             self.subject = ModelReflector.new(subject, name)
-
-            if option_verifier.correct_for_string?(:dependent, dependent)
+            if correct_for?(dependent)
               true
             else
-              self.missing_option = "#{name} should have #{dependent} dependency"
+              self.missing_option = missing_option_for(name, dependent)
               false
             end
           end
@@ -34,6 +33,18 @@ module Shoulda
           def option_verifier
             @option_verifier ||= OptionVerifier.new(subject)
           end
+
+          def correct_for?(dependent)
+            case dependent
+            when true, false then option_verifier.correct_for_boolean?(:dependent, dependent)
+            else option_verifier.correct_for_string?(:dependent, dependent)
+            end
+          end
+
+          def missing_option_for(name, dependent)
+            "#{name} should have #{dependent == true ? "a" : dependent} dependency"
+          end
+
         end
       end
     end

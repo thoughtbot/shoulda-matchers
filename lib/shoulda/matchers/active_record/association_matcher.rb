@@ -162,6 +162,12 @@ module Shoulda
       #       should belong_to(:world).dependent(:destroy)
       #     end
       #
+      # To test that any :dependent option was specified, pass true.
+      #     # RSpec
+      #     describe Person do
+      #       it { should belong_to(:world).dependent(true) }
+      #     end
+      #
       # ##### counter_cache
       #
       # Use `counter_cache` to assert that the `:counter_cache` option was
@@ -993,7 +999,7 @@ module Shoulda
         end
 
         def macro_supports_primary_key?
-          macro == :belongs_to || 
+          macro == :belongs_to ||
             ([:has_many, :has_one].include?(macro) && !through?)
         end
 
