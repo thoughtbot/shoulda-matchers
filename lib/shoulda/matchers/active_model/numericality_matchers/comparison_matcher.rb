@@ -100,16 +100,16 @@ module Shoulda
 
           def assertions
             case @operator
-              when :>
-                [false, false, true]
-              when :>=
-                [false, true, true]
-              when :==
-                [false, true, false]
-              when :<
-                [true, false, false]
-              when :<=
-                [true, true, false]
+            when :>
+              [false, false, true]
+            when :>=
+              [false, true, true]
+            when :==
+              [false, true, false]
+            when :<
+              [true, false, false]
+            when :<=
+              [true, true, false]
             end
           end
 

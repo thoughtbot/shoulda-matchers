@@ -227,4 +227,78 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
       end
     end
   end
+
+  if active_record_can_raise_range_error?
+    context 'when the value is outside of the range of the column' do
+      context 'not qualified with strict' do
+        it 'rejects, failing with the correct message' do
+          attribute_options = { type: :integer, options: { limit: 2 } }
+          record = define_model(:example, attr: attribute_options).new
+          assertion = -> { expect(record).to allow_value(100000).for(:attr) }
+          message = <<-MESSAGE.strip_heredoc.strip
+            Did not expect errors when attr is set to 100000,
+            got RangeError: "100000 is out of range for ActiveRecord::Type::Integer with limit 2"
+          MESSAGE
+          expect(&assertion).to fail_with_message(message)
+        end
+
+        context 'qualified with a message' do
+          it 'ignores any specified message, failing with the correct message' do
+            attribute_options = { type: :integer, options: { limit: 2 } }
+            record = define_model(:example, attr: attribute_options).new
+            assertion = -> do
+              expect(record).
+                to allow_value(100000).
+                for(:attr).
+                with_message('some message')
+            end
+            message = <<-MESSAGE.strip_heredoc.strip
+              Did not expect errors to include "some message" when attr is set to 100000,
+              got RangeError: "100000 is out of range for ActiveRecord::Type::Integer with limit 2"
+            MESSAGE
+            expect(&assertion).to fail_with_message(message)
+          end
+        end
+      end
+
+      if active_model_supports_strict?
+        context 'qualified with strict' do
+          it 'rejects, failing with the correct message' do
+            attribute_options = { type: :integer, options: { limit: 2 } }
+            record = define_model(:example, attr: attribute_options).new
+            assertion = -> do
+              expect(record).
+                to allow_value(100000).
+                for(:attr).
+                strict
+            end
+            message = <<-MESSAGE.strip_heredoc.strip
+              Did not expect an exception to have been raised when attr is set to 100000,
+              got RangeError: "100000 is out of range for ActiveRecord::Type::Integer with limit 2"
+            MESSAGE
+            expect(&assertion).to fail_with_message(message)
+          end
+
+          context 'qualified with a message' do
+            it 'ignores any specified message' do
+              attribute_options = { type: :integer, options: { limit: 2 } }
+              record = define_model(:example, attr: attribute_options).new
+              assertion = -> do
+                expect(record).
+                  to allow_value(100000).
+                  for(:attr).
+                  with_message('some message').
+                  strict
+              end
+              message = <<-MESSAGE.strip_heredoc.strip
+                Did not expect exception to include "some message" when attr is set to 100000,
+                got RangeError: "100000 is out of range for ActiveRecord::Type::Integer with limit 2"
+              MESSAGE
+              expect(&assertion).to fail_with_message(message)
+            end
+          end
+        end
+      end
+    end
+  end
 end

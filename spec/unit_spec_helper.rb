@@ -58,6 +58,8 @@ RSpec.configure do |config|
   UnitTests::MailerBuilder.configure_example_group(config)
   UnitTests::ModelBuilder.configure_example_group(config)
   UnitTests::RailsVersions.configure_example_group(config)
+  UnitTests::ActiveRecordVersions.configure_example_group(config)
+  UnitTests::ActiveModelVersions.configure_example_group(config)
 
   config.include UnitTests::Matchers
 end

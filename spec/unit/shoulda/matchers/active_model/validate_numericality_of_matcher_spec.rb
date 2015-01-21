@@ -123,6 +123,72 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
     end
   end
 
+  context 'qualified with less_than_or_equal_to' do
+    it 'does not raise an error if the given value is right at the allowed max value for the column' do
+      record = record_with_integer_column_of_limit(:attr, 2, less_than_or_equal_to: 32767)
+      assertion = -> {
+        expect(record).to validate_numericality_of(:attr).is_less_than_or_equal_to(32767)
+      }
+      expect(&assertion).not_to raise_error
+    end
+  end
+
+  context 'qualified with less_than' do
+    it 'does not raise an error if the given value is right at the allowed max value for the column' do
+      record = record_with_integer_column_of_limit(:attr, 2, less_than: 32767)
+      assertion = -> {
+        expect(record).to validate_numericality_of(:attr).is_less_than(32767)
+      }
+      expect(&assertion).not_to raise_error
+    end
+  end
+
+  context 'qualified with equal_to' do
+    it 'does not raise an error if the given value is right at the allowed min value for the column' do
+      record = record_with_integer_column_of_limit(:attr, 2, equal_to: -32768)
+      assertion = -> {
+        expect(record).to validate_numericality_of(:attr).is_equal_to(-32768)
+      }
+      expect(&assertion).not_to raise_error
+    end
+
+    it 'does not raise an error if the given value is right at the allowed max value for the column' do
+      record = record_with_integer_column_of_limit(:attr, 2, equal_to: 32767)
+      assertion = -> {
+        expect(record).to validate_numericality_of(:attr).is_equal_to(32767)
+      }
+      expect(&assertion).not_to raise_error
+    end
+  end
+
+  context 'qualified with greater_than_or_equal to' do
+    it 'does not raise an error if the given value is right at the allowed min value for the column' do
+      record = record_with_integer_column_of_limit(:attr, 2,
+        greater_than_or_equal_to: -32768
+      )
+      assertion = -> {
+        expect(record).
+          to validate_numericality_of(:attr).
+          is_greater_than_or_equal_to(-32768)
+      }
+      expect(&assertion).not_to raise_error
+    end
+  end
+
+  context 'qualified with greater_than' do
+    it 'does not raise an error if the given value is right at the allowed min value for the column' do
+      record = record_with_integer_column_of_limit(:attr, 2,
+        greater_than: -32768
+      )
+      assertion = -> {
+        expect(record).
+          to validate_numericality_of(:attr).
+          is_greater_than(-32768)
+      }
+      expect(&assertion).not_to raise_error
+    end
+  end
+
   context 'with multiple options together' do
     context 'the success cases' do
       it do
@@ -348,5 +414,12 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
 
   def matcher
     validate_numericality_of(:attr)
+  end
+
+  def record_with_integer_column_of_limit(attribute, limit, validation_options = {})
+    column_options = { type: :integer, options: { limit: limit } }
+    define_model :example, attribute => column_options do
+      validates_numericality_of attribute, validation_options
+    end.new
   end
 end

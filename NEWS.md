@@ -8,7 +8,17 @@
   the association has (or has not) been declared with *any* dependent option.
   ([#631])
 
+* Fix `allow_value`, `validate_numericality_of` and `validate_inclusion_of` so
+  that they handle RangeErrors emitted from ActiveRecord 4.2. These exceptions
+  arise whenever we attempt to set an attribute using a value that lies outside
+  the range of the column (assuming the column is an integer). RangeError is now
+  treated specially, failing the test instead of bubbling up as an error.
+  ([#634], [#637], [#642])
+
 [#631]: https://github.com/thoughtbot/shoulda-matchers/pull/631
+[#634]: https://github.com/thoughtbot/shoulda-matchers/pull/634
+[#637]: https://github.com/thoughtbot/shoulda-matchers/pull/637
+[#642]: https://github.com/thoughtbot/shoulda-matchers/pull/642
 
 # 2.8.0.rc1
 

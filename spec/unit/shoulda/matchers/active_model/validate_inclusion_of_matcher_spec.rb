@@ -68,6 +68,30 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       end
     end
 
+    context 'against an attribute with a specific column limit' do
+      it 'does not raise an exception when attempting to use the matcher' do
+        possible_values = (1..5).to_a
+        builder = build_object_allowing(possible_values)
+        assertion = -> { expect_to_match_on_values(builder, possible_values) }
+        expect(&assertion).not_to raise_error
+      end
+
+      def build_object(options = {}, &block)
+        build_object_with_generic_attribute(
+          options.merge(
+            column_type: :integer,
+            column_options: { limit: 2 },
+            value: 1
+          ),
+          &block
+        )
+      end
+
+      def expect_to_match_on_values(builder, values, &block)
+        expect_to_match_in_array(builder, values, &block)
+      end
+    end
+
     context "against a float attribute" do
       it_behaves_like 'it supports in_array',
         possible_values: [1.0, 2.0, 3.0, 4.0, 5.0],

@@ -177,9 +177,9 @@ module Shoulda
 
         def initialize(*values)
           self.values_to_match = values
-          self.message_finder_factory = ValidationMessageFinder
           self.options = {}
           self.after_setting_value_callback = -> {}
+          self.validator = Validator.new
         end
 
         def for(attribute)
@@ -189,7 +189,7 @@ module Shoulda
         end
 
         def on(context)
-          @context = context
+          validator.context = context
           self
         end
 
@@ -205,7 +205,7 @@ module Shoulda
         end
 
         def strict
-          self.message_finder_factory = ExceptionMessageFinder
+          validator.strict = true
           self
         end
 
@@ -215,16 +215,18 @@ module Shoulda
 
         def matches?(instance)
           self.instance = instance
+          validator.record = instance
 
           values_to_match.none? do |value|
+            validator.reset
             self.value = value
-            set_value(value)
-            errors_match?
+            set_attribute(value)
+            errors_match? || any_range_error_occurred?
           end
         end
 
         def failure_message
-          "Did not expect #{expectation},\ngot error: #{matched_error}"
+          "Did not expect #{expectation},\ngot#{error_description}"
         end
         alias failure_message_for_should failure_message
 
@@ -234,18 +236,37 @@ module Shoulda
         alias failure_message_for_should_not failure_message_when_negated
 
         def description
-          message_finder.allow_description(allowed_values)
+          validator.allow_description(allowed_values)
         end
 
         protected
 
-        attr_accessor :values_to_match, :message_finder_factory,
-          :instance, :attribute_to_set, :attribute_to_check_message_against,
-          :context, :value, :matched_error, :after_setting_value_callback
+        attr_reader :attribute_to_check_message_against
+        attr_accessor :values_to_match, :instance, :attribute_to_set, :value,
+          :matched_error, :after_setting_value_callback, :validator
 
-        def set_value(value)
-          instance.__send__("#{attribute_to_set}=", value)
+        def attribute_to_check_message_against=(attribute)
+          @attribute_to_check_message_against = attribute
+          validator.attribute = attribute
+        end
+
+        def set_attribute(value)
+          set_attribute_ignoring_range_errors(value)
           after_setting_value_callback.call
+        end
+
+        def set_attribute_ignoring_range_errors(value)
+          instance.__send__("#{attribute_to_set}=", value)
+        rescue RangeError => exception
+          # Have to reset the attribute so that we don't get a RangeError the
+          # next time we attempt to write the attribute (ActiveRecord seems to
+          # set the attribute to the "bad" value anyway)
+          reset_attribute
+          validator.capture_range_error(exception)
+        end
+
+        def reset_attribute
+          instance.send(:raw_write_attribute, attribute_to_set, nil)
         end
 
         def errors_match?
@@ -253,7 +274,7 @@ module Shoulda
         end
 
         def has_messages?
-          message_finder.has_messages?
+          validator.has_messages?
         end
 
         def errors_for_attribute_match?
@@ -265,7 +286,7 @@ module Shoulda
         end
 
         def errors_for_attribute
-          message_finder.messages
+          validator.formatted_messages
         end
 
         def errors_match_regexp?
@@ -280,30 +301,25 @@ module Shoulda
           end
         end
 
+        def any_range_error_occurred?
+          validator.captured_range_error?
+        end
+
         def expectation
           parts = [
-            error_source,
-            includes_expected_message,
+            expected_messages_description,
             "when #{attribute_to_set} is set to #{value.inspect}"
           ]
 
           parts.join(' ').squeeze(' ')
         end
 
-        def includes_expected_message
-          if expected_message
-            "to include #{expected_message.inspect}"
-          else
-            ''
-          end
-        end
-
-        def error_source
-          message_finder.source_description
+        def expected_messages_description
+          validator.expected_messages_description(expected_message)
         end
 
         def error_description
-          message_finder.messages_description
+          validator.messages_description
         end
 
         def allowed_values
@@ -325,7 +341,7 @@ module Shoulda
         end
 
         def default_expected_message
-          message_finder.expected_message_from(default_attribute_message)
+          validator.expected_message_from(default_attribute_message)
         end
 
         def default_attribute_message
@@ -347,10 +363,6 @@ module Shoulda
 
         def model_name
           instance.class.to_s.underscore
-        end
-
-        def message_finder
-          message_finder_factory.new(instance, attribute_to_check_message_against, context)
         end
       end
     end
