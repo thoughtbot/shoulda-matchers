@@ -44,6 +44,8 @@ matrix:
       gemfile: gemfiles/4.0.1.gemfile
     - rvm: 2.1.4
       gemfile: gemfiles/4.1.gemfile
+    - rvm: 2.2
+      gemfile: gemfiles/4.1.gemfile
     - rvm: rbx-19mode
       gemfile: gemfiles/3.2.gemfile
     - rvm: jruby-19mode
