@@ -94,10 +94,12 @@ GEM
     powerbar (1.0.11)
       ansi (~> 1.4.0)
       hashie (>= 1.1.0)
-    pry (0.9.12.6)
-      coderay (~> 1.0)
-      method_source (~> 0.8)
+    pry (0.10.1)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
       slop (~> 3.4)
+    pry-nav (0.2.4)
+      pry (>= 0.9.10, < 0.11.0)
     pygments.rb (0.6.0)
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.1.0)
@@ -148,7 +150,7 @@ GEM
       sass (>= 3.1.10)
       tilt (~> 1.3)
     shoulda-context (1.2.0)
-    slop (3.4.7)
+    slop (3.6.0)
     spring (1.1.3)
     spring-commands-rspec (1.0.2)
       spring (>= 0.9.1)
@@ -192,7 +194,7 @@ DEPENDENCIES
   jruby-openssl
   minitest (~> 4.0)
   minitest-reporters
-  pry
+  pry-nav
   pygments.rb
   rails (~> 3.2.13)
   rake (>= 0.9.2)

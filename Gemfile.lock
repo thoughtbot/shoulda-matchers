@@ -70,10 +70,12 @@ GEM
     multi_test (0.1.1)
     polyglot (0.3.3)
     posix-spawn (0.3.8)
-    pry (0.9.12.6)
-      coderay (~> 1.0)
-      method_source (~> 0.8)
+    pry (0.10.1)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
       slop (~> 3.4)
+    pry-nav (0.2.4)
+      pry (>= 0.9.10, < 0.11.0)
     pygments.rb (0.3.7)
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.1.0)
@@ -120,7 +122,7 @@ GEM
       rspec-support (~> 3.0.0)
     rspec-support (3.0.3)
     shoulda-context (1.2.0)
-    slop (3.4.7)
+    slop (3.6.0)
     sprockets (2.2.2)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -149,7 +151,7 @@ DEPENDENCIES
   bundler (~> 1.1)
   jdbc-sqlite3
   jruby-openssl
-  pry
+  pry-nav
   pygments.rb
   rails (~> 3.0)
   rake (>= 0.9.2)
