@@ -354,30 +354,30 @@ title: Shoulda Matchers
   %h2.section-header List of Matchers
 
   .list-wrapper
-    %h4 ActiveRecord
+    %h4 ActiveModel
     %li allow_mass_assignment_of
     %li allow_value
-    %li validate_inclusion_of
-    %li validate_exclusion_of
-    %li ensure_length_of
     %li have_secure_password
     %li validate_confirmation_of
+    %li validate_exclusion_of
+    %li validate_inclusion_of
+    %li validate_length_of
     %li validate_numericality_of
     %li validate_presence_of
-    %li validate_uniqueness_of
 
   .list-wrapper
-    %h4 ActiveModel
+    %h4 ActiveRecord
     %li accept_nested_attributes_for
     %li belong_to
     %li define_enum_for
-    %li have_many
-    %li have_one
     %li have_and_belong_to_many
     %li have_db_column
     %li have_db_index
+    %li have_many
+    %li have_one
     %li have_readonly_attribute
     %li serialize
+    %li validate_uniqueness_of
 
   .list-wrapper
     %h4 ActionController
@@ -389,7 +389,10 @@ title: Shoulda Matchers
     %li respond_with
     %li route
     %li set_session
-    %li set_the_flash
+    %li set_flash
+    %li use_after_action / use_after_filter
+    %li use_around_action / use_around_filter
+    %li use_before_action / use_before_filter
 
   .list-wrapper
     %h4 Independent Matchers
