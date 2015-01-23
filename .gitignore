@@ -1,13 +1,9 @@
-*.rbc
-*.swo
-*.swp
 .bundle
 .gh-pages
-.svn/
 .yardoc
 coverage
+build
 doc
 pkg
-tags
-test/*/log/*.log
+source
 tmp
