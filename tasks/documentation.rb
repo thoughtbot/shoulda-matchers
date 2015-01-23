@@ -22,13 +22,13 @@ module Shoulda
 
           desc 'Generate docs for a particular version'
           task :generate, [:version, :latest_version] => :setup do |t, args|
-            publisher.generate_docs_for(args.version, latest_version: latest_version)
+            publisher.generate_docs_for(args.version, latest_version: args.latest_version)
           end
 
           desc 'Generate docs for a particular version and push them to GitHub'
           task :publish, [:version, :latest_version] => :setup do |t, args|
-            publisher.generate_docs_for(args.version, latest_version: latest_version)
-            publisher.publish_docs_for(args.version, latest_version: latest_version)
+            publisher.generate_docs_for(args.version, latest_version: args.latest_version)
+            publisher.publish_docs_for(args.version, latest_version: args.latest_version)
           end
 
           desc "Generate docs for version #{DocumentationPublisher.current_version} and push them to GitHub"
