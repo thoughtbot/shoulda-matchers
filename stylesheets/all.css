@@ -668,7 +668,7 @@ nav {
 .logo {
   height: 4.0625em;
   width: 15.625em;
-  background: url("/shoulda-matchers/images/shoulda-matchers-logo.svg") no-repeat;
+  background: url("../images/shoulda-matchers-logo.svg") no-repeat;
   display: inline-block;
   float: left;
   margin-top: 1.1875em; }
@@ -716,7 +716,7 @@ nav {
 .main-header {
   height: 45em;
   width: auto;
-  background: url("/shoulda-matchers/images/background-header.png") no-repeat top;
+  background: url("../images/background-header.png") no-repeat top;
   background-size: cover; }
   @media screen and (max-width: 67.1875em) {
     /* line 96, /Users/elliot/code/thoughtbot/shoulda-matchers/source/stylesheets/landing/_index.scss */
@@ -799,7 +799,7 @@ nav {
   -webkit-transition: all 0.2s ease-in-out;
   -moz-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
-  background: url("/shoulda-matchers/images/emoji-thumb.svg") no-repeat; }
+  background: url("../images/emoji-thumb.svg") no-repeat; }
   /* line 167, /Users/elliot/code/thoughtbot/shoulda-matchers/source/stylesheets/landing/_index.scss */
   .emoji-thumb:hover {
     height: 5em;
@@ -812,7 +812,7 @@ nav {
   -webkit-transition: all 0.2s ease-in-out;
   -moz-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
-  background: url("/shoulda-matchers/images/emoji-thumb-down.svg") no-repeat; }
+  background: url("../images/emoji-thumb-down.svg") no-repeat; }
   /* line 178, /Users/elliot/code/thoughtbot/shoulda-matchers/source/stylesheets/landing/_index.scss */
   .emoji-thumb-down:hover {
     height: 4.6875em;
