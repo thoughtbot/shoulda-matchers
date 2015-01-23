@@ -1,13 +1,5 @@
 # HEAD
 
-### Features
-
-* Update `dependent` qualifier on association matchers to support `:destroy`,
-  `:delete`, `:nullify`, `:restrict`, `:restrict_with_exception`, and
-  `:restrict_with_error`. You can also pass `true` or `false` to assert that
-  the association has (or has not) been declared with *any* dependent option.
-  ([#631])
-
 ### Bug fixes
 
 * Fix `allow_value`, `validate_numericality_of` and `validate_inclusion_of` so
@@ -16,6 +8,14 @@
   the range of the column (assuming the column is an integer). RangeError is now
   treated specially, failing the test instead of bubbling up as an error.
   ([#634], [#637], [#642])
+
+### Features
+
+* Update `dependent` qualifier on association matchers to support `:destroy`,
+  `:delete`, `:nullify`, `:restrict`, `:restrict_with_exception`, and
+  `:restrict_with_error`. You can also pass `true` or `false` to assert that
+  the association has (or has not) been declared with *any* dependent option.
+  ([#631])
 
 [#631]: https://github.com/thoughtbot/shoulda-matchers/pull/631
 [#634]: https://github.com/thoughtbot/shoulda-matchers/pull/634
