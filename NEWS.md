@@ -8,6 +8,8 @@
   the association has (or has not) been declared with *any* dependent option.
   ([#631])
 
+### Bug fixes
+
 * Fix `allow_value`, `validate_numericality_of` and `validate_inclusion_of` so
   that they handle RangeErrors emitted from ActiveRecord 4.2. These exceptions
   arise whenever we attempt to set an attribute using a value that lies outside
