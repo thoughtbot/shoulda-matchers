@@ -20,15 +20,17 @@ module UnitTests
       end
 
       def failure_message
-        msg = "Expectation should have failed with message '#{expected}'"
+        lines = ['Expectation should have failed with message:']
+        lines << Shoulda::Matchers::Util.indent(expected, 2)
 
         if @actual
-          msg << ",\nactually failed with '#{@actual}'"
+          lines << 'Actually failed with:'
+          lines << Shoulda::Matchers::Util.indent(@actual, 2)
         else
-          msg << ", but did not fail."
+          lines << 'However, the expectation did not fail.'
         end
 
-        msg
+        lines.join("\n")
       end
 
       def failure_message_for_should
@@ -36,10 +38,9 @@ module UnitTests
       end
 
       def failure_message_when_negated
-        msg  = "Expectation should not have failed with message '#{expected}'"
-        msg << ", but did."
-
-        msg
+        lines = ['Expectation should not have failed with message:']
+        lines << Shoulda::Matchers::Util.indent(expected, 2)
+        lines.join("\n")
       end
 
       def failure_message_for_should_not

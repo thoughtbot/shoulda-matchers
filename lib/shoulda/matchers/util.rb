@@ -23,6 +23,11 @@ module Shoulda
           end
         end
       end
+
+      def self.indent(string, width)
+        indentation = ' ' * width
+        string.split(/[\n\r]/).map { |line| indentation + line }.join("\n")
+      end
     end
   end
 end
