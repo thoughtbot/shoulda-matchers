@@ -42,25 +42,80 @@ module Shoulda
             "#{expectation} #{@value}"
           end
 
+          def failure_message
+            last_failing_submatcher.failure_message
+          end
+          alias failure_message_for_should failure_message
+
+          def failure_message_when_negated
+            last_failing_submatcher.failure_message_when_negated
+          end
+          alias failure_message_for_should_not failure_message_when_negated
+
           private
 
-          def comparison_combos
-            allow = :allows_value_of
-            disallow = :disallows_value_of
-            checker_types =
-              case @operator
-                when :> then [allow, disallow, disallow]
-                when :>= then [allow, allow, disallow]
-                when :== then [disallow, allow, disallow]
-                when :< then [disallow, disallow, allow]
-                when :<= then [disallow, allow, allow]
+          def all_bounds_correct?
+            failing_submatchers.empty?
+          end
+
+          def failing_submatchers
+            submatchers_and_results.
+              select { |x| !x[:matched] }.
+              map { |x| x[:matcher] }
+          end
+
+          def last_failing_submatcher
+            failing_submatchers.last
+          end
+
+          def submatchers
+            @_submatchers ||=
+              comparison_combos.map do |diff, submatcher_method_name|
+                matcher = __send__(submatcher_method_name, @value + diff, nil)
+                matcher.with_message(@message, values: { count: @value })
+                matcher
               end
-            diffs_to_compare.zip(checker_types)
+          end
+
+          def submatchers_and_results
+            @_submatchers_and_results ||=
+              submatchers.map do |matcher|
+                { matcher: matcher, matched: matcher.matches?(@subject) }
+              end
+          end
+
+          def comparison_combos
+            diffs_to_compare.zip(submatcher_method_names)
+          end
+
+          def submatcher_method_names
+            assertions.map do |value|
+              if value
+                :allow_value_matcher
+              else
+                :disallow_value_matcher
+              end
+            end
+          end
+
+          def assertions
+            case @operator
+              when :>
+                [false, false, true]
+              when :>=
+                [false, true, true]
+              when :==
+                [false, true, false]
+              when :<
+                [true, false, false]
+              when :<=
+                [true, true, false]
+            end
           end
 
           def diffs_to_compare
             diff = @numericality_matcher.diff_to_compare
-            [diff, 0, -diff]
+            [-diff, 0, diff]
           end
 
           def expectation
@@ -70,14 +125,6 @@ module Shoulda
               when :== then "equal to"
               when :< then "less than"
               when :<= then "less than or equal to"
-            end
-          end
-
-          def all_bounds_correct?
-            @comparison_combos.all? do |diff, checker_type|
-              __send__(checker_type, @value + diff) do |matcher|
-                matcher.with_message(@message, values: { count: @value })
-              end
             end
           end
         end
