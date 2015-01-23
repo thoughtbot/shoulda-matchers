@@ -90,20 +90,91 @@ title: Shoulda Matchers
 %section.examples-wrapper
   .wrapper
     %h2.section-header
-      Extensive matchers for ActiveRecord, ActiveModel, and ActionController
+      Extensive matchers for ActiveModel, ActiveRecord, and ActionController
     .vertical-tabs-container.js-vertical-tabs-container
       .vertical-tabs
-        %a.js-vertical-tab.vertical-tab.is-active{:href => "#tab1"} ActiveRecord validation matchers
-        %a.js-vertical-tab.vertical-tab{:href => "#tab2"} ActiveRecord association matchers
-        %a.js-vertical-tab.vertical-tab{:href => "#tab3"} ActiveModel validation matchers
-        %a.js-vertical-tab.vertical-tab{:href => "#tab4"} Other ActiveModel matchers
+        %a.js-vertical-tab.vertical-tab.is-active{:href => "#tab1"} ActiveModel validation matchers
+        %a.js-vertical-tab.vertical-tab{:href => "#tab2"} Other ActiveModel matchers
+        %a.js-vertical-tab.vertical-tab{:href => "#tab3"} ActiveRecord validation matchers
+        %a.js-vertical-tab.vertical-tab{:href => "#tab4"} ActiveRecord association matchers
         %a.js-vertical-tab.vertical-tab{:href => "#tab5"} ActionController matchers
         %a.js-vertical-tab.vertical-tab{:href => "#tab6"} Independent matchers
       .vertical-tab-content-container
         #tab1.vertical-tab-accordion
+          %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "#tab3"}
+            ActiveModel validation matchers
+          .js-vertical-tab-content.vertical-tab-content.is-active
+            %p
+              Example:
+              %code validate_presence_of
+              matcher
+            .code-sample
+              .filename Post model
+              %pre
+                %code.language-ruby
+                  :preserve
+                    class Robot
+                      include ActiveModel::Model
+                      attr_accessor :arms
+
+                      validate :arms, presence: true
+                    end
+            .code-sample
+              .filename Test using RSpec
+              %pre
+                %code.language-ruby
+                  :preserve
+                    describe Robot do
+                      it { should validate_presence_of(:arms) }
+                    end
+            .code-sample
+              .filename Test using Shoulda Context
+              %pre
+                %code.language-ruby
+                  :preserve
+                    class RobotTest &lt; ActiveSupport::TestCase
+                      should validate_presence_of(:arms)
+                    end
+        #tab2.vertical-tab-accordion
+          %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "#tab4"}
+            Other ActiveModel matchers
+          .js-vertical-tab-content.vertical-tab-content
+            %p
+              Example:
+              %code have_secure_password
+              matcher
+            .code-sample
+              .filename Post model
+              %pre
+                %code.language-ruby
+                  :preserve
+                    class User
+                      include ActiveModel::Model
+                      include ActiveModel::SecurePassword
+                      attr_accessor :password
+
+                      has_secure_password
+                    end
+            .code-sample
+              .filename Test using RSpec
+              %pre
+                %code.language-ruby
+                  :preserve
+                    describe User do
+                      it { should have_secure_password }
+                    end
+            .code-sample
+              .filename Test using Shoulda Context
+              %pre
+                %code.language-ruby
+                  :preserve
+                    class UserTest &lt; ActiveSupport::TestCase
+                      should have_secure_password
+                    end
+        #tab3.vertical-tab-accordion
           %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading.is-active{:href => "#tab1"}
             ActiveRecord validation matchers
-          .js-vertical-tab-content.vertical-tab-content.is-active
+          .js-vertical-tab-content.vertical-tab-content
             %p
               Example:
               %code validate_uniqueness_of
@@ -151,7 +222,7 @@ title: Shoulda Matchers
                           case_insensitive
                       end
                     end
-        #tab2.vertical-tab-accordion
+        #tab4.vertical-tab-accordion
           %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "#tab2"}
             ActiveRecord association matchers
           .js-vertical-tab-content.vertical-tab-content
@@ -192,77 +263,6 @@ title: Shoulda Matchers
                       should have_many(:acquaintances).
                         through(:friends).
                         class_name('Person')
-                    end
-        #tab3.vertical-tab-accordion
-          %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "#tab3"}
-            ActiveModel validation matchers
-          .js-vertical-tab-content.vertical-tab-content
-            %p
-              Example:
-              %code validate_presence_of
-              matcher
-            .code-sample
-              .filename Post model
-              %pre
-                %code.language-ruby
-                  :preserve
-                    class Robot
-                      include ActiveModel::Model
-                      attr_accessor :arms
-
-                      validate :arms, presence: true
-                    end
-            .code-sample
-              .filename Test using RSpec
-              %pre
-                %code.language-ruby
-                  :preserve
-                    describe Robot do
-                      it { should validate_presence_of(:arms) }
-                    end
-            .code-sample
-              .filename Test using Shoulda Context
-              %pre
-                %code.language-ruby
-                  :preserve
-                    class RobotTest &lt; ActiveSupport::TestCase
-                      should validate_presence_of(:arms)
-                    end
-        #tab4.vertical-tab-accordion
-          %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "#tab4"}
-            Other ActiveModel matchers
-          .js-vertical-tab-content.vertical-tab-content
-            %p
-              Example:
-              %code have_secure_password
-              matcher
-            .code-sample
-              .filename Post model
-              %pre
-                %code.language-ruby
-                  :preserve
-                    class User
-                      include ActiveModel::Model
-                      include ActiveModel::SecurePassword
-                      attr_accessor :password
-
-                      has_secure_password
-                    end
-            .code-sample
-              .filename Test using RSpec
-              %pre
-                %code.language-ruby
-                  :preserve
-                    describe User do
-                      it { should have_secure_password }
-                    end
-            .code-sample
-              .filename Test using Shoulda Context
-              %pre
-                %code.language-ruby
-                  :preserve
-                    class UserTest &lt; ActiveSupport::TestCase
-                      should have_secure_password
                     end
         #tab5.vertical-tab-accordion
           %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "#tab5"}
