@@ -1,4 +1,4 @@
-# HEAD
+# 2.8.0.rc2
 
 ### Bug fixes
 
