@@ -1,5 +1,7 @@
 .bundle
 .gh-pages
+.thoughtbot-gh-pages
+.mcmire-gh-pages
 .yardoc
 coverage
 build

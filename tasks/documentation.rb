@@ -57,10 +57,10 @@ module Shoulda
 
     class DocumentationPublisher
       CURRENT_VERSION = Shoulda::Matchers::VERSION
-      GH_PAGES_DIR = '.gh-pages'
-      DOCS_DIR = "#{GH_PAGES_DIR}/docs"
       GITHUB_USERNAME = 'thoughtbot'
       # GITHUB_USERNAME = 'mcmire'
+      GH_PAGES_DIR = ".#{GITHUB_USERNAME}-gh-pages"
+      DOCS_DIR = "#{GH_PAGES_DIR}/docs"
 
       def self.current_version
         CURRENT_VERSION
