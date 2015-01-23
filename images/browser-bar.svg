@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 17.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 886.3 28.4" enable-background="new 0 0 886.3 28.4" xml:space="preserve">
+<g id="Layer_1">
+	<path fill="#CFCFCF" d="M886.2,28.9c0-0.2,0-0.3,0-0.5V8.9c0-1.7-1.4-3-3-3H2.7c-1.6,0-3,1.3-3,3v19.5c0,0.2,0,0.3,0,0.5H886.2z"/>
+	<g>
+		<g>
+			<g opacity="0.5">
+				<circle fill="#FFFFFF" cx="23.3" cy="18.9" r="5.5"/>
+				<circle opacity="0.7" fill="none" stroke="#FFFFFF" stroke-width="0.6" stroke-miterlimit="10" cx="23.3" cy="18.9" r="5.5"/>
+			</g>
+			<g>
+				<radialGradient id="SVGID_2_" cx="23.2353" cy="20.0673" r="7.2036" gradientUnits="userSpaceOnUse">
+					<stop  offset="0" style="stop-color:#F8AFAD"/>
+					<stop  offset="0.719" style="stop-color:#E62E25"/>
+					<stop  offset="1" style="stop-color:#BD2726"/>
+				</radialGradient>
+				<circle fill="url(#SVGID_2_)" cx="23.3" cy="17.9" r="5.5"/>
+				<circle opacity="0.7" fill="none" stroke="#010101" stroke-width="0.6" stroke-miterlimit="10" cx="23.3" cy="17.9" r="5.5"/>
+			</g>
+		</g>
+		<g>
+			<g>
+				<defs>
+					<filter id="Adobe_OpacityMaskFilter" filterUnits="userSpaceOnUse" x="18.5" y="12.4" width="9.4" height="9.4">
+						<feFlood  style="flood-color:white;flood-opacity:1" result="back"/>
+						<feBlend  in="SourceGraphic" in2="back" mode="normal"/>
+					</filter>
+				</defs>
+				<mask maskUnits="userSpaceOnUse" x="18.5" y="12.4" width="9.4" height="9.4" id="SVGID_4_">
+					<g filter="url(#Adobe_OpacityMaskFilter)">
+						<g>
+							
+								<linearGradient id="SVGID_5_" gradientUnits="userSpaceOnUse" x1="225.2685" y1="-119.3683" x2="225.2685" y2="-130.9745" gradientTransform="matrix(1.0268 0 0 1.0538 -208.2693 150.3844)">
+								<stop  offset="0.6038" style="stop-color:#010101"/>
+								<stop  offset="0.9467" style="stop-color:#FFFFFF"/>
+							</linearGradient>
+							<ellipse fill="url(#SVGID_5_)" cx="23" cy="18.5" rx="6" ry="6.1"/>
+						</g>
+					</g>
+				</mask>
+				<g opacity="0.6" mask="url(#SVGID_4_)">
+					<radialGradient id="SVGID_6_" cx="22.9128" cy="17.1297" r="4.6761" gradientUnits="userSpaceOnUse">
+						<stop  offset="0.635" style="stop-color:#FFFFFF"/>
+						<stop  offset="1" style="stop-color:#FFFFFF;stop-opacity:0"/>
+					</radialGradient>
+					<circle fill="url(#SVGID_6_)" cx="23.2" cy="17" r="4.7"/>
+				</g>
+				<defs>
+					<filter id="Adobe_OpacityMaskFilter_1_" filterUnits="userSpaceOnUse" x="18.5" y="12.4" width="9.4" height="9.4">
+						<feFlood  style="flood-color:white;flood-opacity:1" result="back"/>
+						<feBlend  in="SourceGraphic" in2="back" mode="normal"/>
+					</filter>
+				</defs>
+				<mask maskUnits="userSpaceOnUse" x="18.5" y="12.4" width="9.4" height="9.4" id="SVGID_7_">
+					<g filter="url(#Adobe_OpacityMaskFilter_1_)">
+						<g>
+							
+								<linearGradient id="SVGID_8_" gradientUnits="userSpaceOnUse" x1="225.2685" y1="-119.3683" x2="225.2685" y2="-130.9745" gradientTransform="matrix(1.0268 0 0 1.0538 -208.2693 150.3844)">
+								<stop  offset="0.7239" style="stop-color:#010101"/>
+								<stop  offset="0.9467" style="stop-color:#FFFFFF"/>
+							</linearGradient>
+							<ellipse fill="url(#SVGID_8_)" cx="23" cy="18.5" rx="6" ry="6.1"/>
+						</g>
+					</g>
+				</mask>
+				<g mask="url(#SVGID_7_)">
+					<radialGradient id="SVGID_9_" cx="22.9128" cy="17.1297" r="4.6761" gradientUnits="userSpaceOnUse">
+						<stop  offset="0.635" style="stop-color:#FFFFFF"/>
+						<stop  offset="1" style="stop-color:#FFFFFF;stop-opacity:0"/>
+					</radialGradient>
+					<circle fill="url(#SVGID_9_)" cx="23.2" cy="17" r="4.7"/>
+				</g>
+			</g>
+			<g opacity="0.5">
+				<defs>
+					<filter id="Adobe_OpacityMaskFilter_2_" filterUnits="userSpaceOnUse" x="18.5" y="12.4" width="9.4" height="9.4">
+						<feFlood  style="flood-color:white;flood-opacity:1" result="back"/>
+						<feBlend  in="SourceGraphic" in2="back" mode="normal"/>
+					</filter>
+				</defs>
+				<mask maskUnits="userSpaceOnUse" x="18.5" y="12.4" width="9.4" height="9.4" id="SVGID_10_">
+					<g filter="url(#Adobe_OpacityMaskFilter_2_)">
+						<g>
+							
+								<linearGradient id="SVGID_11_" gradientUnits="userSpaceOnUse" x1="225.2685" y1="-119.3683" x2="225.2685" y2="-130.9745" gradientTransform="matrix(1.0268 0 0 1.0538 -208.2693 150.3844)">
+								<stop  offset="0.6038" style="stop-color:#010101"/>
+								<stop  offset="0.9467" style="stop-color:#FFFFFF"/>
+							</linearGradient>
+							<ellipse fill="url(#SVGID_11_)" cx="23" cy="18.5" rx="6" ry="6.1"/>
+						</g>
+					</g>
+				</mask>
+				<g opacity="0.6" mask="url(#SVGID_10_)">
+					<radialGradient id="SVGID_12_" cx="22.9128" cy="17.1297" r="4.6761" gradientUnits="userSpaceOnUse">
+						<stop  offset="0.635" style="stop-color:#FFFFFF"/>
+						<stop  offset="1" style="stop-color:#FFFFFF;stop-opacity:0"/>
+					</radialGradient>
+					<circle fill="url(#SVGID_12_)" cx="23.2" cy="17" r="4.7"/>
+				</g>
+				<defs>
+					<filter id="Adobe_OpacityMaskFilter_3_" filterUnits="userSpaceOnUse" x="18.5" y="12.2" width="9.4" height="9.4">
+						<feFlood  style="flood-color:white;flood-opacity:1" result="back"/>
+						<feBlend  in="SourceGraphic" in2="back" mode="normal"/>
+					</filter>
+				</defs>
+				<mask maskUnits="userSpaceOnUse" x="18.5" y="12.2" width="9.4" height="9.4" id="SVGID_13_">
+					<g filter="url(#Adobe_OpacityMaskFilter_3_)">
+						<g>
+							
+								<linearGradient id="SVGID_15_" gradientUnits="userSpaceOnUse" x1="225.2789" y1="-119.5027" x2="225.2789" y2="-131.109" gradientTransform="matrix(1.0268 0 0 1.0538 -208.2693 150.3844)">
+								<stop  offset="0.7239" style="stop-color:#010101"/>
+								<stop  offset="0.9467" style="stop-color:#FFFFFF"/>
+							</linearGradient>
+							<ellipse fill="url(#SVGID_15_)" cx="23" cy="18.3" rx="6" ry="6.1"/>
+						</g>
+					</g>
+				</mask>
+				<g mask="url(#SVGID_13_)">
+					<radialGradient id="SVGID_16_" cx="22.9236" cy="16.988" r="4.6761" gradientUnits="userSpaceOnUse">
+						<stop  offset="0.635" style="stop-color:#FFFFFF"/>
+						<stop  offset="1" style="stop-color:#FFFFFF;stop-opacity:0"/>
+					</radialGradient>
+					<circle fill="url(#SVGID_16_)" cx="23.2" cy="16.9" r="4.7"/>
+				</g>
+			</g>
+			<defs>
+				<filter id="Adobe_OpacityMaskFilter_4_" filterUnits="userSpaceOnUse" x="21.4" y="14.2" width="3.7" height="3.7">
+					<feFlood  style="flood-color:white;flood-opacity:1" result="back"/>
+					<feBlend  in="SourceGraphic" in2="back" mode="normal"/>
+				</filter>
+			</defs>
+			<mask maskUnits="userSpaceOnUse" x="21.4" y="14.2" width="3.7" height="3.7" id="SVGID_17_">
+				<g filter="url(#Adobe_OpacityMaskFilter_4_)">
+					<g>
+						<ellipse fill="#010101" cx="23.2" cy="24.5" rx="9.3" ry="9.6"/>
+					</g>
+				</g>
+			</mask>
+			<g opacity="0.9" mask="url(#SVGID_17_)">
+				<circle fill="#FFFFFF" cx="23.3" cy="16" r="1.8"/>
+			</g>
+		</g>
+	</g>
+	<g>
+		<g>
+			<g opacity="0.5">
+				<circle fill="#FFFFFF" cx="42.6" cy="18.9" r="5.5"/>
+				<circle opacity="0.7" fill="none" stroke="#FFFFFF" stroke-width="0.6" stroke-miterlimit="10" cx="42.6" cy="18.9" r="5.5"/>
+			</g>
+			<g>
+				<radialGradient id="SVGID_18_" cx="42.5784" cy="20.0673" r="7.2036" gradientUnits="userSpaceOnUse">
+					<stop  offset="0" style="stop-color:#FBE884"/>
+					<stop  offset="0.7122" style="stop-color:#EDAE46"/>
+					<stop  offset="1" style="stop-color:#CB8129"/>
+				</radialGradient>
+				<circle fill="url(#SVGID_18_)" cx="42.6" cy="17.9" r="5.5"/>
+				<circle opacity="0.7" fill="none" stroke="#2B180C" stroke-width="0.6" stroke-miterlimit="10" cx="42.6" cy="17.9" r="5.5"/>
+			</g>
+		</g>
+		<g>
+			<g>
+				<defs>
+					<filter id="Adobe_OpacityMaskFilter_5_" filterUnits="userSpaceOnUse" x="37.9" y="12.4" width="9.4" height="9.4">
+						<feFlood  style="flood-color:white;flood-opacity:1" result="back"/>
+						<feBlend  in="SourceGraphic" in2="back" mode="normal"/>
+					</filter>
+				</defs>
+				<mask maskUnits="userSpaceOnUse" x="37.9" y="12.4" width="9.4" height="9.4" id="SVGID_19_">
+					<g filter="url(#Adobe_OpacityMaskFilter_5_)">
+						<g>
+							
+								<linearGradient id="SVGID_20_" gradientUnits="userSpaceOnUse" x1="244.1067" y1="-119.3683" x2="244.1067" y2="-130.9745" gradientTransform="matrix(1.0268 0 0 1.0538 -208.2693 150.3844)">
+								<stop  offset="0.6038" style="stop-color:#010101"/>
+								<stop  offset="0.9467" style="stop-color:#FFFFFF"/>
+							</linearGradient>
+							<ellipse fill="url(#SVGID_20_)" cx="42.4" cy="18.5" rx="6" ry="6.1"/>
+						</g>
+					</g>
+				</mask>
+				<g opacity="0.6" mask="url(#SVGID_19_)">
+					<radialGradient id="SVGID_21_" cx="42.2559" cy="17.1297" r="4.6761" gradientUnits="userSpaceOnUse">
+						<stop  offset="0.635" style="stop-color:#FFFFFF"/>
+						<stop  offset="1" style="stop-color:#FFFFFF;stop-opacity:0"/>
+					</radialGradient>
+					<circle fill="url(#SVGID_21_)" cx="42.5" cy="17" r="4.7"/>
+				</g>
+				<defs>
+					<filter id="Adobe_OpacityMaskFilter_6_" filterUnits="userSpaceOnUse" x="37.9" y="12.4" width="9.4" height="9.4">
+						<feFlood  style="flood-color:white;flood-opacity:1" result="back"/>
+						<feBlend  in="SourceGraphic" in2="back" mode="normal"/>
+					</filter>
+				</defs>
+				<mask maskUnits="userSpaceOnUse" x="37.9" y="12.4" width="9.4" height="9.4" id="SVGID_22_">
+					<g filter="url(#Adobe_OpacityMaskFilter_6_)">
+						<g>
+							
+								<linearGradient id="SVGID_23_" gradientUnits="userSpaceOnUse" x1="244.1067" y1="-119.3683" x2="244.1067" y2="-130.9745" gradientTransform="matrix(1.0268 0 0 1.0538 -208.2693 150.3844)">
+								<stop  offset="0.7239" style="stop-color:#010101"/>
+								<stop  offset="0.9467" style="stop-color:#FFFFFF"/>
+							</linearGradient>
+							<ellipse fill="url(#SVGID_23_)" cx="42.4" cy="18.5" rx="6" ry="6.1"/>
+						</g>
+					</g>
+				</mask>
+				<g mask="url(#SVGID_22_)">
+					<radialGradient id="SVGID_24_" cx="42.2559" cy="17.1297" r="4.6761" gradientUnits="userSpaceOnUse">
+						<stop  offset="0.635" style="stop-color:#FFFFFF"/>
+						<stop  offset="1" style="stop-color:#FFFFFF;stop-opacity:0"/>
+					</radialGradient>
+					<circle fill="url(#SVGID_24_)" cx="42.5" cy="17" r="4.7"/>
+				</g>
+			</g>
+			<g opacity="0.5">
+				<defs>
+					<filter id="Adobe_OpacityMaskFilter_7_" filterUnits="userSpaceOnUse" x="37.9" y="12.4" width="9.4" height="9.4">
+						<feFlood  style="flood-color:white;flood-opacity:1" result="back"/>
+						<feBlend  in="SourceGraphic" in2="back" mode="normal"/>
+					</filter>
+				</defs>
+				<mask maskUnits="userSpaceOnUse" x="37.9" y="12.4" width="9.4" height="9.4" id="SVGID_25_">
+					<g filter="url(#Adobe_OpacityMaskFilter_7_)">
+						<g>
+							
+								<linearGradient id="SVGID_26_" gradientUnits="userSpaceOnUse" x1="244.1067" y1="-119.3683" x2="244.1067" y2="-130.9745" gradientTransform="matrix(1.0268 0 0 1.0538 -208.2693 150.3844)">
+								<stop  offset="0.6038" style="stop-color:#010101"/>
+								<stop  offset="0.9467" style="stop-color:#FFFFFF"/>
+							</linearGradient>
+							<ellipse fill="url(#SVGID_26_)" cx="42.4" cy="18.5" rx="6" ry="6.1"/>
+						</g>
+					</g>
+				</mask>
+				<g opacity="0.6" mask="url(#SVGID_25_)">
+					<radialGradient id="SVGID_27_" cx="42.2559" cy="17.1297" r="4.6761" gradientUnits="userSpaceOnUse">
+						<stop  offset="0.635" style="stop-color:#FFFFFF"/>
+						<stop  offset="1" style="stop-color:#FFFFFF;stop-opacity:0"/>
+					</radialGradient>
+					<circle fill="url(#SVGID_27_)" cx="42.5" cy="17" r="4.7"/>
+				</g>
+				<defs>
+					<filter id="Adobe_OpacityMaskFilter_8_" filterUnits="userSpaceOnUse" x="37.9" y="12.2" width="9.4" height="9.4">
+						<feFlood  style="flood-color:white;flood-opacity:1" result="back"/>
+						<feBlend  in="SourceGraphic" in2="back" mode="normal"/>
+					</filter>
+				</defs>
+				<mask maskUnits="userSpaceOnUse" x="37.9" y="12.2" width="9.4" height="9.4" id="SVGID_28_">
+					<g filter="url(#Adobe_OpacityMaskFilter_8_)">
+						<g>
+							
+								<linearGradient id="SVGID_29_" gradientUnits="userSpaceOnUse" x1="244.1172" y1="-119.5027" x2="244.1172" y2="-131.109" gradientTransform="matrix(1.0268 0 0 1.0538 -208.2693 150.3844)">
+								<stop  offset="0.7239" style="stop-color:#010101"/>
+								<stop  offset="0.9467" style="stop-color:#FFFFFF"/>
+							</linearGradient>
+							<ellipse fill="url(#SVGID_29_)" cx="42.4" cy="18.3" rx="6" ry="6.1"/>
+						</g>
+					</g>
+				</mask>
+				<g mask="url(#SVGID_28_)">
+					<radialGradient id="SVGID_30_" cx="42.2667" cy="16.988" r="4.6761" gradientUnits="userSpaceOnUse">
+						<stop  offset="0.635" style="stop-color:#FFFFFF"/>
+						<stop  offset="1" style="stop-color:#FFFFFF;stop-opacity:0"/>
+					</radialGradient>
+					<circle fill="url(#SVGID_30_)" cx="42.6" cy="16.9" r="4.7"/>
+				</g>
+			</g>
+			<defs>
+				<filter id="Adobe_OpacityMaskFilter_9_" filterUnits="userSpaceOnUse" x="40.8" y="14.2" width="3.7" height="3.7">
+					<feFlood  style="flood-color:white;flood-opacity:1" result="back"/>
+					<feBlend  in="SourceGraphic" in2="back" mode="normal"/>
+				</filter>
+			</defs>
+			<mask maskUnits="userSpaceOnUse" x="40.8" y="14.2" width="3.7" height="3.7" id="SVGID_31_">
+				<g filter="url(#Adobe_OpacityMaskFilter_9_)">
+					<g>
+						<ellipse fill="#010101" cx="42.5" cy="24.5" rx="9.3" ry="9.6"/>
+					</g>
+				</g>
+			</mask>
+			<g opacity="0.9" mask="url(#SVGID_31_)">
+				<circle fill="#FFFFFF" cx="42.6" cy="16" r="1.8"/>
+			</g>
+		</g>
+	</g>
+	<g>
+		<g>
+			<g opacity="0.5">
+				<circle fill="#FFFFFF" cx="61" cy="18.9" r="5.5"/>
+				<circle opacity="0.7" fill="none" stroke="#FFFFFF" stroke-width="0.6" stroke-miterlimit="10" cx="61" cy="18.9" r="5.5"/>
+			</g>
+			<g>
+				<radialGradient id="SVGID_32_" cx="60.9651" cy="20.1109" r="7.2036" gradientUnits="userSpaceOnUse">
+					<stop  offset="0" style="stop-color:#CCE190"/>
+					<stop  offset="0.717" style="stop-color:#8FC968"/>
+					<stop  offset="1" style="stop-color:#3D9A45"/>
+				</radialGradient>
+				<circle fill="url(#SVGID_32_)" cx="61" cy="17.9" r="5.5"/>
+				<circle opacity="0.7" fill="none" stroke="#010101" stroke-width="0.6" stroke-miterlimit="10" cx="61" cy="17.9" r="5.5"/>
+			</g>
+		</g>
+		<g>
+			<g>
+				<defs>
+					<filter id="Adobe_OpacityMaskFilter_10_" filterUnits="userSpaceOnUse" x="56.3" y="12.4" width="9.4" height="9.4">
+						<feFlood  style="flood-color:white;flood-opacity:1" result="back"/>
+						<feBlend  in="SourceGraphic" in2="back" mode="normal"/>
+					</filter>
+				</defs>
+				<mask maskUnits="userSpaceOnUse" x="56.3" y="12.4" width="9.4" height="9.4" id="SVGID_33_">
+					<g filter="url(#Adobe_OpacityMaskFilter_10_)">
+						<g>
+							
+								<linearGradient id="SVGID_34_" gradientUnits="userSpaceOnUse" x1="262.0135" y1="-119.327" x2="262.0135" y2="-130.9332" gradientTransform="matrix(1.0268 0 0 1.0538 -208.2693 150.3844)">
+								<stop  offset="0.6038" style="stop-color:#010101"/>
+								<stop  offset="0.9467" style="stop-color:#FFFFFF"/>
+							</linearGradient>
+							<ellipse fill="url(#SVGID_34_)" cx="60.8" cy="18.5" rx="6" ry="6.1"/>
+						</g>
+					</g>
+				</mask>
+				<g opacity="0.6" mask="url(#SVGID_33_)">
+					<radialGradient id="SVGID_35_" cx="60.6426" cy="17.1733" r="4.6761" gradientUnits="userSpaceOnUse">
+						<stop  offset="0.635" style="stop-color:#FFFFFF"/>
+						<stop  offset="1" style="stop-color:#FFFFFF;stop-opacity:0"/>
+					</radialGradient>
+					<circle fill="url(#SVGID_35_)" cx="60.9" cy="17.1" r="4.7"/>
+				</g>
+				<defs>
+					<filter id="Adobe_OpacityMaskFilter_11_" filterUnits="userSpaceOnUse" x="56.3" y="12.4" width="9.4" height="9.4">
+						<feFlood  style="flood-color:white;flood-opacity:1" result="back"/>
+						<feBlend  in="SourceGraphic" in2="back" mode="normal"/>
+					</filter>
+				</defs>
+				<mask maskUnits="userSpaceOnUse" x="56.3" y="12.4" width="9.4" height="9.4" id="SVGID_36_">
+					<g filter="url(#Adobe_OpacityMaskFilter_11_)">
+						<g>
+							
+								<linearGradient id="SVGID_37_" gradientUnits="userSpaceOnUse" x1="262.0135" y1="-119.327" x2="262.0135" y2="-130.9332" gradientTransform="matrix(1.0268 0 0 1.0538 -208.2693 150.3844)">
+								<stop  offset="0.7239" style="stop-color:#010101"/>
+								<stop  offset="0.9467" style="stop-color:#FFFFFF"/>
+							</linearGradient>
+							<ellipse fill="url(#SVGID_37_)" cx="60.8" cy="18.5" rx="6" ry="6.1"/>
+						</g>
+					</g>
+				</mask>
+				<g mask="url(#SVGID_36_)">
+					<radialGradient id="SVGID_38_" cx="60.6426" cy="17.1733" r="4.6761" gradientUnits="userSpaceOnUse">
+						<stop  offset="0.635" style="stop-color:#FFFFFF"/>
+						<stop  offset="1" style="stop-color:#FFFFFF;stop-opacity:0"/>
+					</radialGradient>
+					<circle fill="url(#SVGID_38_)" cx="60.9" cy="17.1" r="4.7"/>
+				</g>
+			</g>
+			<g opacity="0.5">
+				<defs>
+					<filter id="Adobe_OpacityMaskFilter_12_" filterUnits="userSpaceOnUse" x="56.3" y="12.4" width="9.4" height="9.4">
+						<feFlood  style="flood-color:white;flood-opacity:1" result="back"/>
+						<feBlend  in="SourceGraphic" in2="back" mode="normal"/>
+					</filter>
+				</defs>
+				<mask maskUnits="userSpaceOnUse" x="56.3" y="12.4" width="9.4" height="9.4" id="SVGID_39_">
+					<g filter="url(#Adobe_OpacityMaskFilter_12_)">
+						<g>
+							
+								<linearGradient id="SVGID_40_" gradientUnits="userSpaceOnUse" x1="262.0135" y1="-119.327" x2="262.0135" y2="-130.9332" gradientTransform="matrix(1.0268 0 0 1.0538 -208.2693 150.3844)">
+								<stop  offset="0.6038" style="stop-color:#010101"/>
+								<stop  offset="0.9467" style="stop-color:#FFFFFF"/>
+							</linearGradient>
+							<ellipse fill="url(#SVGID_40_)" cx="60.8" cy="18.5" rx="6" ry="6.1"/>
+						</g>
+					</g>
+				</mask>
+				<g opacity="0.6" mask="url(#SVGID_39_)">
+					<radialGradient id="SVGID_41_" cx="60.6426" cy="17.1733" r="4.6761" gradientUnits="userSpaceOnUse">
+						<stop  offset="0.635" style="stop-color:#FFFFFF"/>
+						<stop  offset="1" style="stop-color:#FFFFFF;stop-opacity:0"/>
+					</radialGradient>
+					<circle fill="url(#SVGID_41_)" cx="60.9" cy="17.1" r="4.7"/>
+				</g>
+				<defs>
+					<filter id="Adobe_OpacityMaskFilter_13_" filterUnits="userSpaceOnUse" x="56.3" y="12.3" width="9.4" height="9.4">
+						<feFlood  style="flood-color:white;flood-opacity:1" result="back"/>
+						<feBlend  in="SourceGraphic" in2="back" mode="normal"/>
+					</filter>
+				</defs>
+				<mask maskUnits="userSpaceOnUse" x="56.3" y="12.3" width="9.4" height="9.4" id="SVGID_42_">
+					<g filter="url(#Adobe_OpacityMaskFilter_13_)">
+						<g>
+							
+								<linearGradient id="SVGID_43_" gradientUnits="userSpaceOnUse" x1="262.024" y1="-119.4614" x2="262.024" y2="-131.0676" gradientTransform="matrix(1.0268 0 0 1.0538 -208.2693 150.3844)">
+								<stop  offset="0.7239" style="stop-color:#010101"/>
+								<stop  offset="0.9467" style="stop-color:#FFFFFF"/>
+							</linearGradient>
+							<ellipse fill="url(#SVGID_43_)" cx="60.8" cy="18.4" rx="6" ry="6.1"/>
+						</g>
+					</g>
+				</mask>
+				<g mask="url(#SVGID_42_)">
+					<radialGradient id="SVGID_44_" cx="60.6534" cy="17.0316" r="4.6761" gradientUnits="userSpaceOnUse">
+						<stop  offset="0.635" style="stop-color:#FFFFFF"/>
+						<stop  offset="1" style="stop-color:#FFFFFF;stop-opacity:0"/>
+					</radialGradient>
+					<circle fill="url(#SVGID_44_)" cx="60.9" cy="16.9" r="4.7"/>
+				</g>
+			</g>
+			<defs>
+				<filter id="Adobe_OpacityMaskFilter_14_" filterUnits="userSpaceOnUse" x="59.2" y="14.2" width="3.7" height="3.7">
+					<feFlood  style="flood-color:white;flood-opacity:1" result="back"/>
+					<feBlend  in="SourceGraphic" in2="back" mode="normal"/>
+				</filter>
+			</defs>
+			<mask maskUnits="userSpaceOnUse" x="59.2" y="14.2" width="3.7" height="3.7" id="SVGID_45_">
+				<g filter="url(#Adobe_OpacityMaskFilter_14_)">
+					<g>
+						<ellipse fill="#010101" cx="60.9" cy="24.6" rx="9.3" ry="9.6"/>
+					</g>
+				</g>
+			</mask>
+			<g opacity="0.9" mask="url(#SVGID_45_)">
+				<circle fill="#FFFFFF" cx="61" cy="16.1" r="1.8"/>
+			</g>
+		</g>
+	</g>
+</g>
+<g id="Layer_2" display="none">
+</g>
+</svg>
