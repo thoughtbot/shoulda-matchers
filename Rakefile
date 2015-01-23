@@ -5,8 +5,6 @@ require 'appraisal'
 require 'erb'
 require_relative 'lib/shoulda/matchers/version'
 
-CURRENT_VERSION = Shoulda::Matchers::VERSION
-
 RSpec::Core::RakeTask.new('spec:unit') do |t|
   t.ruby_opts = '-w -r ./spec/report_warnings'
   t.pattern = "spec/unit/**/*_spec.rb"
@@ -34,45 +32,57 @@ task :appraise do
   exec 'appraisal install && appraisal rake'
 end
 
+CURRENT_VERSION = Shoulda::Matchers::VERSION
 GH_PAGES_DIR = '.gh-pages'
+# GITHUB_USERNAME = 'thoughtbot'
+GITHUB_USERNAME = 'mcmire'
 
 namespace :docs do
   file GH_PAGES_DIR do
-    sh "git clone git@github.com:thoughtbot/shoulda-matchers.git #{GH_PAGES_DIR} --branch gh-pages"
+    create_reference_to_gh_pages_branch
   end
 
   task :setup => GH_PAGES_DIR do
-    within_gh_pages do
-      sh 'git fetch origin'
-      sh 'git reset --hard origin/gh-pages'
-    end
+    reset_repo_directory
   end
 
   desc 'Generate docs for a particular version'
   task :generate, [:version, :latest_version] => :setup do |t, args|
-    generate_docs(args.version, latest_version: latest_version)
+    generate_docs_for(args.version, latest_version: latest_version)
   end
 
   desc 'Generate docs for a particular version and push them to GitHub'
   task :publish, [:version, :latest_version] => :setup do |t, args|
-    generate_docs(args.version, latest_version: latest_version)
-    publish_docs(args.version, latest_version: latest_version)
+    generate_docs_for(args.version, latest_version: latest_version)
+    publish_docs_for(args.version, latest_version: latest_version)
   end
 
   desc "Generate docs for version #{CURRENT_VERSION} and push them to GitHub"
   task :publish_latest => :setup do
     version = Gem::Version.new(CURRENT_VERSION)
+    options = {}
 
     unless version.prerelease?
-      latest_version = version.to_s
+      options[:latest_version] = version.to_s
     end
 
-    generate_docs(CURRENT_VERSION, latest_version: latest_version)
-    publish_docs(CURRENT_VERSION, latest_version: latest_version)
+    generate_docs_for(CURRENT_VERSION, options)
+    publish_docs_for(CURRENT_VERSION, options)
   end
 
-  def rewrite_index_to_inject_version(ref, version)
-    within_gh_pages do
+  def create_reference_to_gh_pages_branch
+    sh "git clone git@github.com:#{GITHUB_USERNAME}/shoulda-matchers.git #{GH_PAGES_DIR} --branch gh-pages"
+  end
+
+  def reset_repo_directory
+    within_gh_pages_dir do
+      sh 'git fetch origin'
+      sh 'git reset --hard origin/gh-pages'
+    end
+  end
+
+  def add_version_to_index_page_for(ref, version)
+    within_gh_pages_dir do
       filename = "#{ref}/index.html"
       content = File.read(filename)
       content.sub!(%r{<h1>shoulda-matchers.+</h1>}, "<h1>shoulda-matchers (#{version})</h1>")
@@ -80,15 +90,15 @@ namespace :docs do
     end
   end
 
-  def generate_docs(version, options = {})
+  def generate_docs_for(version, options = {})
     ref = determine_ref_from(version)
 
     sh "rm -rf #{GH_PAGES_DIR}/#{ref}"
     sh "bundle exec yard -o #{GH_PAGES_DIR}/#{ref}"
 
-    rewrite_index_to_inject_version(ref, version)
+    add_version_to_index_page_for(ref, version)
 
-    within_gh_pages do
+    within_gh_pages_dir do
       sh "git add #{ref}"
     end
 
@@ -97,13 +107,13 @@ namespace :docs do
     end
   end
 
-  def publish_docs(version, options = {})
+  def publish_docs_for(version, options = {})
     message = build_commit_message(version)
 
-    within_gh_pages do
+    within_gh_pages_dir do
       sh 'git clean -f'
       sh "git commit -m '#{message}'"
-      sh 'git push'
+      sh 'git push origin gh-pages'
     end
   end
 
@@ -113,7 +123,7 @@ namespace :docs do
 
     erb = ERB.new(File.read('doc_config/gh-pages/index.html.erb'))
 
-    within_gh_pages do
+    within_gh_pages_dir do
       File.open('index.html', 'w') { |f| f.write(erb.result(binding)) }
       sh 'git add index.html'
     end
@@ -131,7 +141,7 @@ namespace :docs do
     "Regenerated docs for version #{version}"
   end
 
-  def within_gh_pages(&block)
+  def within_gh_pages_dir(&block)
     Dir.chdir(GH_PAGES_DIR, &block)
   end
 end
