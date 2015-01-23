@@ -18,11 +18,11 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
 
     it 'rejects with the ActiveRecord :not_a_number message' do
       the_matcher = matcher
-
-      the_matcher.matches?(define_model(:example, attr: :string).new)
-
-      expect(the_matcher.failure_message_when_negated)
-        .to include 'Did not expect errors to include "is not a number"'
+      expect do
+        expect(not_validating_numericality).to the_matcher
+      end.to fail_with_message_including(
+        'Expected errors to include "is not a number"'
+      )
     end
 
     it 'rejects with the ActiveRecord :not_an_integer message' do
