@@ -22,9 +22,9 @@ module SiteTasks
 end
 
 class SitePublisher
-  GH_PAGES_DIR = '.gh-pages'
   GITHUB_USERNAME = 'thoughtbot'
   # GITHUB_USERNAME = 'mcmire'
+  GH_PAGES_DIR = ".#{GITHUB_USERNAME}-gh-pages"
 
   def self.current_version
     CURRENT_VERSION
