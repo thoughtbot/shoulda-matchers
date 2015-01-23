@@ -1,7 +1,7 @@
 # Site branch
 
 This is the branch where the site for shoulda-matchers (located at
-<http://shoulda.io>) is kept.
+<http://matchers.shoulda.io>) is kept.
 
 Here's how to make changes:
 
