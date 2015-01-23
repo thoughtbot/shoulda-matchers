@@ -1,6 +1,7 @@
 module Shoulda
   module Matchers
     module ActiveModel
+      # @private
       module StrictValidator
         def allow_description(allowed_values)
           "doesn't raise when #{attribute} is set to #{allowed_values}"
