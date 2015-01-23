@@ -20,7 +20,7 @@
     <nav>
   <div class='wrapper'>
     <div class='logo'></div>
-    <a class='btn-github' href='https://github.com/thoughtbot/shoulda-matchers' target='_blank'>Github</a>
+    <a class='btn-github' href='https://github.com/thoughtbot/shoulda-matchers' target='_blank'>GitHub</a>
     <a class='btn-docs' href='docs'>Docs</a>
   </div>
 </nav>
@@ -31,7 +31,7 @@
     </div>
     <div class='browser-wrapper'>
       <div class='browser-container animation'>
-        <h4 class='subheader'>Without Shoulda</h4>
+        <h4 class='subheader'>Without Shoulda Matchers</h4>
         <div class='browser-bar'>
           <div class='browser-button'></div>
           <div class='browser-button'></div>
@@ -45,7 +45,7 @@
     </div>
     <div class='browser-wrapper'>
       <div class='browser-container animation'>
-        <h4 class='subheader'>With Shoulda</h4>
+        <h4 class='subheader'>With Shoulda Matchers</h4>
         <div class='browser-bar'>
           <div class='browser-button'></div>
           <div class='browser-button'></div>
@@ -81,71 +81,23 @@
 <section class='examples-wrapper'>
   <div class='wrapper'>
     <h2 class='section-header'>
-      Extensive matchers for ActiveRecord, ActiveModel, and ActionController
+      Extensive matchers for ActiveModel, ActiveRecord, and ActionController
     </h2>
     <div class='vertical-tabs-container js-vertical-tabs-container'>
       <div class='vertical-tabs'>
-        <a class='js-vertical-tab vertical-tab is-active' href='#tab1'>ActiveRecord validation matchers</a>
-        <a class='js-vertical-tab vertical-tab' href='#tab2'>ActiveRecord association matchers</a>
-        <a class='js-vertical-tab vertical-tab' href='#tab3'>ActiveModel validation matchers</a>
-        <a class='js-vertical-tab vertical-tab' href='#tab4'>Other ActiveModel matchers</a>
+        <a class='js-vertical-tab vertical-tab is-active' href='#tab1'>ActiveModel validation matchers</a>
+        <a class='js-vertical-tab vertical-tab' href='#tab2'>Other ActiveModel matchers</a>
+        <a class='js-vertical-tab vertical-tab' href='#tab3'>ActiveRecord validation matchers</a>
+        <a class='js-vertical-tab vertical-tab' href='#tab4'>ActiveRecord association matchers</a>
         <a class='js-vertical-tab vertical-tab' href='#tab5'>ActionController matchers</a>
         <a class='js-vertical-tab vertical-tab' href='#tab6'>Independent matchers</a>
       </div>
       <div class='vertical-tab-content-container'>
         <div class='vertical-tab-accordion' id='tab1'>
-          <a class='js-vertical-tab-accordion-heading vertical-tab-accordion-heading is-active' href='#tab1'>
-            ActiveRecord validation matchers
-          </a>
-          <div class='js-vertical-tab-content vertical-tab-content is-active'>
-            <p>
-              Example:
-              <code>validate_uniqueness_of</code>
-              matcher
-            </p>
-            <div class='code-sample'>
-              <div class='filename'>Post model</div>
-              <pre><code class='language-ruby'>class Post &lt; ActiveRecord::Base&#x000A;  validates_uniqueness_of :slug,&#x000A;    scope: :user_id,&#x000A;    message: 'duplicate slug within same user_id',&#x000A;    case_insensitive: true&#x000A;end</code></pre>
-            </div>
-            <div class='code-sample'>
-              <div class='filename'>Test using RSpec</div>
-              <pre><code class='language-ruby'>describe Post do&#x000A;  context 'validations' do&#x000A;    subject { FactoryGirl.build(:post) }&#x000A;&#x000A;    it do&#x000A;      should validate_uniqueness_of(:slug).&#x000A;        scoped_to(:user_id).&#x000A;        with_message('duplicate slug within same user_id').&#x000A;        case_insensitive&#x000A;    end&#x000A;  end&#x000A;end</code></pre>
-            </div>
-            <div class='code-sample'>
-              <div class='filename'>Test using Shoulda Context</div>
-              <pre><code class='language-ruby'>class PostTest &lt; ActiveSupport::TestCase&#x000A;  context 'validations' do&#x000A;    subject { FactoryGirl.build(:post) }&#x000A;&#x000A;    should validate_uniqueness_of(:slug).&#x000A;      scoped_to(:user_id).&#x000A;      with_message('duplicate slug within same user_id').&#x000A;      case_insensitive&#x000A;  end&#x000A;end</code></pre>
-            </div>
-          </div>
-        </div>
-        <div class='vertical-tab-accordion' id='tab2'>
-          <a class='js-vertical-tab-accordion-heading vertical-tab-accordion-heading' href='#tab2'>
-            ActiveRecord association matchers
-          </a>
-          <div class='js-vertical-tab-content vertical-tab-content'>
-            <p>
-              Example:
-              <code>have_many</code>
-              matcher
-            </p>
-            <div class='code-sample'>
-              <div class='filename'>Post model</div>
-              <pre><code class='language-ruby'>class Person &lt; ActiveRecord::Base&#x000A;  has_many :acquaintances,&#x000A;    through: :friends,&#x000A;    class_name: 'Person'&#x000A;end</code></pre>
-            </div>
-            <div class='code-sample'>
-              <div class='filename'>Test using RSpec</div>
-              <pre><code class='language-ruby'>describe Person do&#x000A;  it do&#x000A;    should have_many(:acquaintances).&#x000A;      through(:friends).&#x000A;      class_name('Person')&#x000A;  end&#x000A;end</code></pre>
-            </div>
-            <div class='code-sample'>
-              <div class='filename'>Test using Shoulda Context</div>
-              <pre><code class='language-ruby'>require 'test_helper'&#x000A;&#x000A;class PersonTest &lt; ActiveSupport::TestCase&#x000A;  should have_many(:acquaintances).&#x000A;    through(:friends).&#x000A;    class_name('Person')&#x000A;end</code></pre>
-            </div>
-          </div>
-        </div>
-        <div class='vertical-tab-accordion' id='tab3'>
           <a class='js-vertical-tab-accordion-heading vertical-tab-accordion-heading' href='#tab3'>
             ActiveModel validation matchers
           </a>
-          <div class='js-vertical-tab-content vertical-tab-content'>
+          <div class='js-vertical-tab-content vertical-tab-content is-active'>
             <p>
               Example:
               <code>validate_presence_of</code>
@@ -165,7 +117,7 @@
             </div>
           </div>
         </div>
-        <div class='vertical-tab-accordion' id='tab4'>
+        <div class='vertical-tab-accordion' id='tab2'>
           <a class='js-vertical-tab-accordion-heading vertical-tab-accordion-heading' href='#tab4'>
             Other ActiveModel matchers
           </a>
@@ -186,6 +138,54 @@
             <div class='code-sample'>
               <div class='filename'>Test using Shoulda Context</div>
               <pre><code class='language-ruby'>class UserTest &lt; ActiveSupport::TestCase&#x000A;  should have_secure_password&#x000A;end</code></pre>
+            </div>
+          </div>
+        </div>
+        <div class='vertical-tab-accordion' id='tab3'>
+          <a class='js-vertical-tab-accordion-heading vertical-tab-accordion-heading is-active' href='#tab1'>
+            ActiveRecord validation matchers
+          </a>
+          <div class='js-vertical-tab-content vertical-tab-content'>
+            <p>
+              Example:
+              <code>validate_uniqueness_of</code>
+              matcher
+            </p>
+            <div class='code-sample'>
+              <div class='filename'>Post model</div>
+              <pre><code class='language-ruby'>class Post &lt; ActiveRecord::Base&#x000A;  validates_uniqueness_of :slug,&#x000A;    scope: :user_id,&#x000A;    message: 'duplicate slug within same user_id',&#x000A;    case_insensitive: true&#x000A;end</code></pre>
+            </div>
+            <div class='code-sample'>
+              <div class='filename'>Test using RSpec</div>
+              <pre><code class='language-ruby'>describe Post do&#x000A;  context 'validations' do&#x000A;    subject { FactoryGirl.build(:post) }&#x000A;&#x000A;    it do&#x000A;      should validate_uniqueness_of(:slug).&#x000A;        scoped_to(:user_id).&#x000A;        with_message('duplicate slug within same user_id').&#x000A;        case_insensitive&#x000A;    end&#x000A;  end&#x000A;end</code></pre>
+            </div>
+            <div class='code-sample'>
+              <div class='filename'>Test using Shoulda Context</div>
+              <pre><code class='language-ruby'>class PostTest &lt; ActiveSupport::TestCase&#x000A;  context 'validations' do&#x000A;    subject { FactoryGirl.build(:post) }&#x000A;&#x000A;    should validate_uniqueness_of(:slug).&#x000A;      scoped_to(:user_id).&#x000A;      with_message('duplicate slug within same user_id').&#x000A;      case_insensitive&#x000A;  end&#x000A;end</code></pre>
+            </div>
+          </div>
+        </div>
+        <div class='vertical-tab-accordion' id='tab4'>
+          <a class='js-vertical-tab-accordion-heading vertical-tab-accordion-heading' href='#tab2'>
+            ActiveRecord association matchers
+          </a>
+          <div class='js-vertical-tab-content vertical-tab-content'>
+            <p>
+              Example:
+              <code>have_many</code>
+              matcher
+            </p>
+            <div class='code-sample'>
+              <div class='filename'>Post model</div>
+              <pre><code class='language-ruby'>class Person &lt; ActiveRecord::Base&#x000A;  has_many :acquaintances,&#x000A;    through: :friends,&#x000A;    class_name: 'Person'&#x000A;end</code></pre>
+            </div>
+            <div class='code-sample'>
+              <div class='filename'>Test using RSpec</div>
+              <pre><code class='language-ruby'>describe Person do&#x000A;  it do&#x000A;    should have_many(:acquaintances).&#x000A;      through(:friends).&#x000A;      class_name('Person')&#x000A;  end&#x000A;end</code></pre>
+            </div>
+            <div class='code-sample'>
+              <div class='filename'>Test using Shoulda Context</div>
+              <pre><code class='language-ruby'>require 'test_helper'&#x000A;&#x000A;class PersonTest &lt; ActiveSupport::TestCase&#x000A;  should have_many(:acquaintances).&#x000A;    through(:friends).&#x000A;    class_name('Person')&#x000A;end</code></pre>
             </div>
           </div>
         </div>
@@ -244,30 +244,30 @@
 <section class='wrapper'>
   <h2 class='section-header'>List of Matchers</h2>
   <div class='list-wrapper'>
-    <h4>ActiveRecord</h4>
+    <h4>ActiveModel</h4>
     <li>allow_mass_assignment_of</li>
     <li>allow_value</li>
-    <li>validate_inclusion_of</li>
-    <li>validate_exclusion_of</li>
-    <li>ensure_length_of</li>
     <li>have_secure_password</li>
     <li>validate_confirmation_of</li>
+    <li>validate_exclusion_of</li>
+    <li>validate_inclusion_of</li>
+    <li>validate_length_of</li>
     <li>validate_numericality_of</li>
     <li>validate_presence_of</li>
-    <li>validate_uniqueness_of</li>
   </div>
   <div class='list-wrapper'>
-    <h4>ActiveModel</h4>
+    <h4>ActiveRecord</h4>
     <li>accept_nested_attributes_for</li>
     <li>belong_to</li>
     <li>define_enum_for</li>
-    <li>have_many</li>
-    <li>have_one</li>
     <li>have_and_belong_to_many</li>
     <li>have_db_column</li>
     <li>have_db_index</li>
+    <li>have_many</li>
+    <li>have_one</li>
     <li>have_readonly_attribute</li>
     <li>serialize</li>
+    <li>validate_uniqueness_of</li>
   </div>
   <div class='list-wrapper'>
     <h4>ActionController</h4>
@@ -279,7 +279,10 @@
     <li>respond_with</li>
     <li>route</li>
     <li>set_session</li>
-    <li>set_the_flash</li>
+    <li>set_flash</li>
+    <li>use_after_action / use_after_filter</li>
+    <li>use_around_action / use_around_filter</li>
+    <li>use_before_action / use_before_filter</li>
   </div>
   <div class='list-wrapper'>
     <h4>Independent Matchers</h4>
@@ -289,7 +292,7 @@
 <footer>
   <div class='wrapper'>
     <div class='footer-buttons'>
-      <a class='btn-github' href='https://github.com/thoughtbot/shoulda-matchers' target='_blank'>
+      <a class='btn-github' href='https://github.com/thoughtbot/shoulda-matchers#installation' target='_blank'>
         Get full installation instructions on GitHub
       </a>
     </div>
