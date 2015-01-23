@@ -23,8 +23,8 @@ end
 
 class SitePublisher
   GH_PAGES_DIR = '.gh-pages'
-  # GITHUB_USERNAME = 'thoughtbot'
-  GITHUB_USERNAME = 'mcmire'
+  GITHUB_USERNAME = 'thoughtbot'
+  # GITHUB_USERNAME = 'mcmire'
 
   def self.current_version
     CURRENT_VERSION
