@@ -34,6 +34,7 @@ end
 
 CURRENT_VERSION = Shoulda::Matchers::VERSION
 GH_PAGES_DIR = '.gh-pages'
+DOCS_DIR = "#{GH_PAGES_DIR}/docs"
 # GITHUB_USERNAME = 'thoughtbot'
 GITHUB_USERNAME = 'mcmire'
 
@@ -42,7 +43,9 @@ namespace :docs do
     create_reference_to_gh_pages_branch
   end
 
-  task :setup => GH_PAGES_DIR do
+  file DOCS_DIR => GH_PAGES_DIR
+
+  task :setup => DOCS_DIR do
     reset_repo_directory
   end
 
@@ -82,7 +85,7 @@ namespace :docs do
   end
 
   def add_version_to_index_page_for(ref, version)
-    within_gh_pages_dir do
+    within_docs_dir do
       filename = "#{ref}/index.html"
       content = File.read(filename)
       content.sub!(%r{<h1>shoulda-matchers.+</h1>}, "<h1>shoulda-matchers (#{version})</h1>")
@@ -93,12 +96,12 @@ namespace :docs do
   def generate_docs_for(version, options = {})
     ref = determine_ref_from(version)
 
-    sh "rm -rf #{GH_PAGES_DIR}/#{ref}"
-    sh "bundle exec yard -o #{GH_PAGES_DIR}/#{ref}"
+    sh "rm -rf #{DOCS_DIR}/#{ref}"
+    sh "bundle exec yard -o #{DOCS_DIR}/#{ref}"
 
     add_version_to_index_page_for(ref, version)
 
-    within_gh_pages_dir do
+    within_docs_dir do
       sh "git add #{ref}"
     end
 
@@ -123,7 +126,7 @@ namespace :docs do
 
     erb = ERB.new(File.read('doc_config/gh-pages/index.html.erb'))
 
-    within_gh_pages_dir do
+    within_docs_dir do
       File.open('index.html', 'w') { |f| f.write(erb.result(binding)) }
       sh 'git add index.html'
     end
@@ -143,6 +146,10 @@ namespace :docs do
 
   def within_gh_pages_dir(&block)
     Dir.chdir(GH_PAGES_DIR, &block)
+  end
+
+  def within_docs_dir(&block)
+    Dir.chdir(DOCS_DIR, &block)
   end
 end
 
