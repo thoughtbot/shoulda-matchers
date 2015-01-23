@@ -183,7 +183,7 @@ and may be redistributed under the terms specified in the
 [travis-badge]: http://img.shields.io/travis/thoughtbot/shoulda-matchers/master.svg
 [travis]: http://travis-ci.org/thoughtbot/shoulda-matchers
 [downloads-badge]: http://img.shields.io/gem/dtv/shoulda-matchers.svg
-[rubydocs]: http://thoughtbot.github.io/shoulda-matchers
+[rubydocs]: http://matchers.shoulda.io
 [community]: http://thoughtbot.com/community
 [contributors]: https://github.com/thoughtbot/shoulda-matchers/contributors
 [shoulda]: http://github.com/thoughtbot/shoulda
