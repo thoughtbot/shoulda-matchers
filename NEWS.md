@@ -1,28 +1,4 @@
-# 2.8.0.rc2
-
-### Bug fixes
-
-* Fix `allow_value`, `validate_numericality_of` and `validate_inclusion_of` so
-  that they handle RangeErrors emitted from ActiveRecord 4.2. These exceptions
-  arise whenever we attempt to set an attribute using a value that lies outside
-  the range of the column (assuming the column is an integer). RangeError is now
-  treated specially, failing the test instead of bubbling up as an error.
-  ([#634], [#637], [#642])
-
-### Features
-
-* Update `dependent` qualifier on association matchers to support `:destroy`,
-  `:delete`, `:nullify`, `:restrict`, `:restrict_with_exception`, and
-  `:restrict_with_error`. You can also pass `true` or `false` to assert that
-  the association has (or has not) been declared with *any* dependent option.
-  ([#631])
-
-[#631]: https://github.com/thoughtbot/shoulda-matchers/pull/631
-[#634]: https://github.com/thoughtbot/shoulda-matchers/pull/634
-[#637]: https://github.com/thoughtbot/shoulda-matchers/pull/637
-[#642]: https://github.com/thoughtbot/shoulda-matchers/pull/642
-
-# 2.8.0.rc1
+# 2.8.0
 
 ### Deprecations
 
@@ -73,6 +49,13 @@
   notation (e.g. `posts#show`), route parameters such as `id` do not need to be
   specified as a string but may be specified as a number as well. ([#602])
 
+* Fix `allow_value`, `validate_numericality_of` and `validate_inclusion_of` so
+  that they handle RangeErrors emitted from ActiveRecord 4.2. These exceptions
+  arise whenever we attempt to set an attribute using a value that lies outside
+  the range of the column (assuming the column is an integer). RangeError is now
+  treated specially, failing the test instead of bubbling up as an error.
+  ([#634], [#637], [#642])
+
 ### Features
 
 * Add ability to test `:primary_key` option on associations. ([#597])
@@ -94,6 +77,12 @@
 * Add support for Rails 4.2, especially fixing `serialize` matcher to remove
   warning about `serialized_attributes` being deprecated. ([#627])
 
+* Update `dependent` qualifier on association matchers to support `:destroy`,
+  `:delete`, `:nullify`, `:restrict`, `:restrict_with_exception`, and
+  `:restrict_with_error`. You can also pass `true` or `false` to assert that
+  the association has (or has not) been declared with *any* dependent option.
+  ([#631])
+
 ### Improvements
 
 * Tweak `allow_value` failure message so that it reads a bit nicer when listing
@@ -111,6 +100,10 @@
 [#543]: https://github.com/thoughtbot/shoulda-matchers/pull/543
 [#622]: https://github.com/thoughtbot/shoulda-matchers/pull/622
 [#627]: https://github.com/thoughtbot/shoulda-matchers/pull/627
+[#631]: https://github.com/thoughtbot/shoulda-matchers/pull/631
+[#634]: https://github.com/thoughtbot/shoulda-matchers/pull/634
+[#637]: https://github.com/thoughtbot/shoulda-matchers/pull/637
+[#642]: https://github.com/thoughtbot/shoulda-matchers/pull/642
 
 # 2.7.0
 
