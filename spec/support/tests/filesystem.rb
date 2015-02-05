@@ -69,9 +69,32 @@ module Tests
     end
 
     def remove_from_file(path, pattern)
+      unless pattern.is_a?(Regexp)
+        pattern = Regexp.new('^' + Regexp.escape(pattern) + '$')
+      end
+
+      transform(path) do |lines|
+        lines.reject { |line| line =~ pattern }
+      end
+    end
+
+    def comment_lines_matching(path, pattern)
+      transform(path) do |lines|
+        lines.map do |line|
+          if line =~ pattern
+            "###{line}"
+          else
+            line
+          end
+        end
+      end
+    end
+
+    def transform(path)
       content = read(path)
-      content.sub!(/#{pattern}\n/, '')
-      write(path, content)
+      lines = content.split(/\n/)
+      transformed_lines = yield lines
+      write(path, transformed_lines.join("\n") + "\n")
     end
   end
 end

@@ -35,7 +35,7 @@ module Tests
 
     def remove_gem(gem)
       updating do
-        fs.remove_from_file('Gemfile', /^gem ("|')gem\1/)
+        fs.comment_lines_matching('Gemfile', /^[ ]*gem ("|')#{gem}\1/)
       end
     end
 
