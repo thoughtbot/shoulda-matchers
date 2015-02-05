@@ -367,6 +367,17 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         end
       end
 
+      it 'matches when validation uses given message that has an interpolated variable' do
+        builder = build_object_allowing(
+          valid_values,
+          validation_options: { message: '%{value} is not included' },
+        )
+
+        expect_to_match_on_values(builder, valid_values) do |matcher|
+          matcher.with_message(/ is not included\Z/)
+        end
+      end
+
       it 'does not match when validation uses the default message instead of given message' do
         builder = build_object_allowing(valid_values)
 
