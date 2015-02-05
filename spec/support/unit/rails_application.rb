@@ -12,7 +12,10 @@ module UnitTests
     def create
       fs.clean
       generate
-      fs.within_project { install_gems }
+      fs.within_project do
+        install_gems
+        remove_unwanted_gems
+      end
     end
 
     def load
@@ -75,17 +78,13 @@ module UnitTests
     def fix_available_locales_warning
       # See here for more on this:
       # http://stackoverflow.com/questions/20361428/rails-i18n-validation-deprecation-warning
-
-      filename = 'config/application.rb'
-
-      lines = fs.read(filename).split("\n")
-      lines.insert(-3, <<EOT)
+      fs.transform('config/application.rb') do |lines|
+        lines.insert(-3, <<-EOT)
 if I18n.respond_to?(:enforce_available_locales=)
   I18n.enforce_available_locales = false
 end
-EOT
-
-      fs.write(filename, lines.join("\n"))
+        EOT
+      end
     end
 
     def load_environment
@@ -101,7 +100,13 @@ EOT
       bundle.install_gems
     end
 
-    private
+    def remove_unwanted_gems
+      bundle.updating do
+        bundle.remove_gem 'debugger'
+        bundle.remove_gem 'byebug'
+        bundle.remove_gem 'web-console'
+      end
+    end
 
     def run_command!(*args)
       Tests::CommandRunner.run!(*args)

@@ -85,6 +85,9 @@ module AcceptanceTests
         bundle.remove_gem 'turn'
         bundle.remove_gem 'coffee-rails'
         bundle.remove_gem 'uglifier'
+        bundle.remove_gem 'debugger'
+        bundle.remove_gem 'byebug'
+        bundle.remove_gem 'web-console'
       end
     end
 
