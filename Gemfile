@@ -7,7 +7,7 @@ gem 'bundler', '~> 1.1'
 gem 'pry-nav'
 gem 'rails', '~> 3.0'
 gem 'rake', '>= 0.9.2'
-gem 'rspec-rails', '>= 2.99.0'
+gem 'rspec-rails', '~> 3.0'
 
 # YARD
 gem 'yard'
