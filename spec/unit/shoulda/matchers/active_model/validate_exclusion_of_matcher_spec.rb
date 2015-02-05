@@ -52,6 +52,11 @@ describe Shoulda::Matchers::ActiveModel::ValidateExclusionOfMatcher, type: :mode
       expect(validating_exclusion(in: 2..4, message: 'not good')).
         to validate_exclusion_of(:attr).in_range(2..4).with_message(/not good/)
     end
+
+    it 'accepts ensuring the correct range with %{value}' do
+      expect(validating_exclusion(in: 2..4, message: '%{value} is not good')).
+        to validate_exclusion_of(:attr).in_range(2..4).with_message(/ is not good/)
+    end
   end
 
   context 'an attribute with custom range validations' do
