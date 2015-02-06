@@ -1,3 +1,9 @@
+require_relative 'support/tests/current_bundle'
+
+Tests::CurrentBundle.instance.assert_appraisal!
+
+#---
+
 require File.expand_path('../support/unit/rails_application', __FILE__)
 
 def monkey_patch_minitest_to_do_nothing

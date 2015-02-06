@@ -1,3 +1,9 @@
+require_relative 'support/tests/current_bundle'
+
+Tests::CurrentBundle.instance.assert_appraisal!
+
+#---
+
 require 'rspec/core'
 
 Dir[ File.join(File.expand_path('../support/acceptance/**/*.rb', __FILE__)) ].sort.each do |file|
