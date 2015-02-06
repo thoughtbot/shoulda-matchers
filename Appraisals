@@ -1,11 +1,23 @@
 ruby_version = Gem::Version.new(RUBY_VERSION + '')
 
+shared_dependencies = proc do
+  gem 'rspec-rails', '~> 3.0'
+  gem 'shoulda-context', '~> 1.2.0'
+  gem 'sqlite3', platform: :ruby
+  gem 'activerecord-jdbc-adapter', platform: :jruby
+  gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
+  gem 'jdbc-sqlite3', platform: :jruby
+  gem 'jruby-openssl', platform: :jruby
+  gem 'therubyrhino', platform: :jruby
+end
+
 spring = proc do
   gem 'spring'
   gem 'spring-commands-rspec'
 end
 
 rails_3 = proc do
+  instance_eval(&shared_dependencies)
   gem 'strong_parameters'
   gem 'minitest', '~> 4.0'
   gem 'minitest-reporters'
@@ -36,6 +48,7 @@ rails_3_2 = proc do
 end
 
 rails_4 = proc do
+  instance_eval(&shared_dependencies)
   instance_eval(&spring)
   gem 'uglifier', '>= 1.3.0'
   gem 'coffee-rails', '~> 4.0.0'

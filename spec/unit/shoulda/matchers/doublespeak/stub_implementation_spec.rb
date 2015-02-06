@@ -7,7 +7,7 @@ module Shoulda::Matchers::Doublespeak
         implementation = described_class.new
         double = build_double
 
-        double.expects(:record_call).with(:args, :block)
+        allow(double).to receive(:record_call).with(:args, :block)
 
         implementation.call(double, :object, :args, :block)
       end
