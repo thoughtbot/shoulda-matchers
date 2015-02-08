@@ -3,3 +3,10 @@ StringLiterals:
 
 AlignParameters:
   EnforcedStyle: with_fixed_indentation
+
+CollectionMethods:
+  PreferredMethods:
+    find: detect
+    reduce: inject
+    collect: map
+    find_all: select

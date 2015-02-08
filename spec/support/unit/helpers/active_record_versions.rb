@@ -12,5 +12,13 @@ module UnitTests
     def active_record_can_raise_range_error?
       active_record_version >= 4.2
     end
+
+    def active_record_supports_enum?
+      defined?(::ActiveRecord::Enum)
+    end
+
+    def active_record_supports_has_secure_password?
+      active_record_version >= 3.1
+    end
   end
 end

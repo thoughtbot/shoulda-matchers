@@ -20,9 +20,5 @@ module UnitTests
     def rails_gte_4_1?
       rails_version >= 4.1
     end
-
-    def active_record_supports_enum?
-      defined?(::ActiveRecord::Enum)
-    end
   end
 end

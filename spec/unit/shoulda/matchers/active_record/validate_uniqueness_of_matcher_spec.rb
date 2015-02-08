@@ -1,506 +1,539 @@
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :model do
-  context 'a model without a a uniqueness validation' do
-    it 'rejects' do
-      model = define_model(:example, attr: :string) { attr_accessible :attr } .new
-      Example.create!(attr: 'value')
-      expect(model).not_to matcher
-    end
-  end
+  shared_context 'it supports scoped attributes of a certain type' do |options = {}|
+    type = options.fetch(:type)
 
-  context 'a model with a uniqueness validation' do
-    context 'where the subject has a character limit' do
-      it 'tests with values within the character limit' do
-        model = define_model(:example, attr: { type: :string, options: { limit: 1 } }) do
-         attr_accessible :attr
-         validates_uniqueness_of :attr
-        end.new
-        expect(model).to matcher
-      end
-    end
-
-    context 'with an existing record' do
-      it 'requires a unique value for that attribute' do
-        create_existing
-        expect(validating_uniqueness_with_other).to matcher
-      end
-
-      it 'accepts when the subject is an existing record' do
-        expect(create_existing).to matcher
-      end
-
-      it 'rejects when a scope is specified' do
-        create_existing
-        expect(validating_uniqueness_with_other).not_to matcher.scoped_to(:other)
-      end
-
-      def create_existing
-        define_model_with_other
-        Example.create!(attr: 'value', other: 1)
-      end
-    end
-
-    context 'without an existing record' do
-      it 'does not require a created instance' do
-        define_model_with_other
-        expect(Example.count).to eq 0
-        expect(validating_uniqueness_with_other).to matcher
-      end
-
-      context "and the table uses non-nullable columns, set beforehand" do
-        it "does not require the record to be persisted" do
-          model = define_model_with_non_nullable_column
-          record = model.new(required_attribute_name => "some value")
-          expect(record).to validate_uniqueness_of(unique_attribute_name)
-        end
-
-        def define_model_with_non_nullable_column
-          model = define_model(:example,
-            unique_attribute_name => :string,
-            required_attribute_name => {
-              type: :string,
-              options: { null: false }
-            }
+    context 'when the correct scope is specified' do
+      context 'when the subject is a new record' do
+        it 'accepts' do
+          record = build_record_validating_uniqueness(
+            scopes: [
+              build_attribute(name: :scope1),
+              { name: :scope2 }
+            ]
           )
-
-          model.tap do
-            model.attr_accessible(
-              required_attribute_name,
-              unique_attribute_name
-            )
-            model.validates_presence_of(required_attribute_name)
-            model.validates_uniqueness_of(unique_attribute_name)
-          end
+          expect(record).to validate_uniqueness.scoped_to(:scope1, :scope2)
         end
 
-        def required_attribute_name
-          :required_attribute_name
-        end
-
-        def unique_attribute_name
-          :unique_attribute_name
-        end
-      end
-    end
-
-    def define_model_with_other(options = {})
-      @model ||= define_model(:example, attr: :string, other: :integer) do
-        attr_accessible :attr, :other
-        validates_uniqueness_of :attr, options
-      end
-    end
-
-    def validating_uniqueness_with_other(options = {})
-      define_model_with_other.new
-    end
-  end
-
-  context 'a model with a uniqueness validation, a custom error, and an existing record' do
-    it 'rejects when the actual message does not match the default message' do
-      expect(validating_uniqueness_with_existing_record(message: 'Bad value')).
-        not_to matcher
-    end
-
-    it 'rejects when the messages do not match' do
-      expect(validating_uniqueness_with_existing_record(message: 'Bad value')).
-        not_to matcher.with_message(/abc/)
-    end
-
-    it 'accepts when the messages match' do
-      expect(validating_uniqueness_with_existing_record(message: 'Bad value')).
-        to matcher.with_message(/Bad/)
-    end
-
-    def validating_uniqueness_with_existing_record(options = {})
-      model = define_model(:example, attr: :string) do
-        attr_accessible :attr
-        validates_uniqueness_of :attr, options
-      end.new
-      Example.create!(attr: 'value')
-      model
-    end
-  end
-
-  context 'a model with a scoped uniqueness validation with an existing value' do
-    it 'accepts when the correct scope is specified' do
-      expect(validating_scoped_uniqueness([:scope1, :scope2])).
-        to matcher.scoped_to(:scope1, :scope2)
-    end
-
-    it 'accepts when the subject is an existing record' do
-      define_scoped_model([:scope1, :scope2])
-      expect(create_existing_record).to matcher.scoped_to(:scope1, :scope2)
-    end
-
-    it 'rejects when too narrow of a scope is specified' do
-      expect(validating_scoped_uniqueness([:scope1, :scope2])).
-        not_to matcher.scoped_to(:scope1, :scope2, :other)
-    end
-
-    it 'rejects when too broad of a scope is specified' do
-      expect(validating_scoped_uniqueness([:scope1, :scope2])).
-        not_to matcher.scoped_to(:scope1)
-    end
-
-    it 'rejects when a different scope is specified' do
-      expect(validating_scoped_uniqueness([:scope1])).
-        not_to matcher.scoped_to(:other)
-    end
-
-    it 'rejects when no scope is specified' do
-      expect(validating_scoped_uniqueness([:scope1])).not_to matcher
-    end
-
-    it 'rejects when a non-existent attribute is specified as a scope' do
-      expect(validating_scoped_uniqueness([:scope1])).
-        not_to matcher.scoped_to(:fake)
-    end
-
-    if rails_gte_4_1?
-      context 'when the scoped attribute is an enum' do
-        it 'accepts' do
-          expect(validating_scoped_uniqueness_with_enum([:scope1], scope1: 0)).
-            to matcher.scoped_to(:scope1)
-        end
-
-        context 'with a nil value' do
-          it 'accepts' do
-            expect(validating_scoped_uniqueness_with_enum([:scope1], scope1: nil)).
-              to matcher.scoped_to(:scope1)
-          end
-        end
-
-        context 'when too narrow of a scope is specified' do
-          it 'rejects' do
-            expect(validating_scoped_uniqueness_with_enum_with_two_scopes).
-              not_to matcher.scoped_to(:scope1, :scope2, :other)
-          end
-        end
-
-        context 'when too broad of a scope is specified' do
-          it 'rejects' do
-            expect(validating_scoped_uniqueness_with_enum_with_two_scopes).
-              not_to matcher.scoped_to(:scope1)
-          end
-        end
-
-        def validating_scoped_uniqueness_with_enum_with_two_scopes
-          validating_scoped_uniqueness_with_enum([:scope1, :scope2], scope1: 0, scope2: 0)
-        end
-      end
-    end
-
-    context 'when the scoped attribute is a date' do
-      it "accepts" do
-        expect(validating_scoped_uniqueness([:scope1], :date, scope1: Date.today)).
-          to matcher.scoped_to(:scope1)
-      end
-
-      context 'with an existing record that conflicts with scope.next' do
-        it 'accepts' do
-          expect(validating_scoped_uniqueness_with_conflicting_next(:scope1, :date, scope1: Date.today)).
-            to matcher.scoped_to(:scope1)
-        end
-      end
-
-      context 'when too narrow of a scope is specified' do
-        it 'rejects' do
-          expect(validating_scoped_uniqueness([:scope1, :scope2], :date, scope1: Date.today, scope2: Date.today)).
-            not_to matcher.scoped_to(:scope1, :scope2, :other)
-        end
-      end
-
-      context 'when too broad of a scope is specified' do
-        it 'rejects' do
-          expect(validating_scoped_uniqueness([:scope1, :scope2], :date, scope1: Date.today, scope2: Date.today)).
-            not_to matcher.scoped_to(:scope1)
-        end
-      end
-    end
-
-    context 'when the scoped attribute is a datetime' do
-      it 'accepts' do
-        expect(validating_scoped_uniqueness([:scope1], :datetime, scope1: DateTime.now)).
-          to matcher.scoped_to(:scope1)
-      end
-
-      context 'with an existing record that conflicts with scope.next' do
-        it 'accepts' do
-          expect(validating_scoped_uniqueness_with_conflicting_next(:scope1, :datetime, scope1: DateTime.now)).
-            to matcher.scoped_to(:scope1)
-        end
-      end
-
-      context 'with a nil value' do
-        it 'accepts' do
-          expect(validating_scoped_uniqueness([:scope1], :datetime, scope1: nil)).
-            to matcher.scoped_to(:scope1)
-        end
-      end
-
-      context 'when too narrow of a scope is specified' do
-        it 'rejects' do
-          expect(validating_scoped_uniqueness([:scope1, :scope2], :datetime, scope1: DateTime.now, scope2: DateTime.now)).
-            not_to matcher.scoped_to(:scope1, :scope2, :other)
-        end
-      end
-
-      context 'when too broad of a scope is specified' do
-        it 'rejects' do
-          expect(validating_scoped_uniqueness([:scope1, :scope2], :datetime, scope1: DateTime.now, scope2: DateTime.now)).
-            not_to matcher.scoped_to(:scope1)
-        end
-      end
-    end
-
-    context 'when the scoped attribute is a uuid' do
-      it 'accepts' do
-        expect(validating_scoped_uniqueness([:scope1], :uuid, scope1: SecureRandom.uuid)).
-          to matcher.scoped_to(:scope1)
-      end
-
-      context 'with an existing record that conflicts with scope.next' do
-        it 'accepts' do
-          expect(validating_scoped_uniqueness_with_conflicting_next(:scope1, :uuid, scope1: SecureRandom.uuid)).
-            to matcher.scoped_to(:scope1)
-        end
-      end
-
-      context 'with a nil value' do
-        it 'accepts' do
-          expect(validating_scoped_uniqueness([:scope1], :uuid, scope1: nil)).
-            to matcher.scoped_to(:scope1)
-        end
-      end
-
-      context 'when too narrow of a scope is specified' do
-        it 'rejects' do
-          record = validating_scoped_uniqueness([:scope1, :scope2], :uuid,
-            scope1: SecureRandom.uuid,
-            scope2: SecureRandom.uuid
+        it 'still accepts if the value of the scope is nil' do
+          record = build_record_validating_uniqueness(
+            scopes: [
+              build_attribute(name: :scope, value: nil)
+            ]
           )
-          expect(record).not_to matcher.scoped_to(:scope1, :scope2, :other)
+          expect(record).to validate_uniqueness.scoped_to(:scope)
         end
       end
 
-      context 'when too broad of a scope is specified' do
-        it 'rejects' do
-          record = validating_scoped_uniqueness([:scope1, :scope2], :uuid,
-            scope1: SecureRandom.uuid,
-            scope2: SecureRandom.uuid
+      context 'when the subject is an existing record' do
+        it 'accepts' do
+          record = create_record_validating_uniqueness(
+            scopes: [
+              build_attribute(name: :scope1),
+              { name: :scope2 }
+            ]
           )
-          expect(record).not_to matcher.scoped_to(:scope1)
+          expect(record).to validate_uniqueness.scoped_to(:scope1, :scope2)
+        end
+
+        it 'still accepts if the value of the scope is nil' do
+          record = create_record_validating_uniqueness(
+            scopes: [
+              build_attribute(name: :scope, value: nil)
+            ]
+          )
+          expect(record).to validate_uniqueness.scoped_to(:scope)
         end
       end
     end
 
-    def create_existing_record(attributes = {})
-      @existing ||= create_record(attributes)
-    end
-
-    def create_record(attributes = {})
-      default_attributes = {attr: 'value', scope1: 1, scope2: 2, other: 3}
-      Example.create!(default_attributes.merge(attributes))
-    end
-
-    def define_scoped_model(scope, scope_attr_type = :integer)
-      define_model(:example, attr: :string, scope1: scope_attr_type,
-                   scope2: scope_attr_type, other: :integer) do
-        attr_accessible :attr, :scope1, :scope2, :other
-        validates_uniqueness_of :attr, scope: scope
-      end
-    end
-
-    def validating_scoped_uniqueness(*args)
-      attributes = args.extract_options!
-      model = define_scoped_model(*args).new
-      create_existing_record(attributes)
-      model
-    end
-
-    def validating_scoped_uniqueness_with_enum(*args)
-      attributes = args.extract_options!
-      model = define_scoped_model(*args)
-      model.enum scope1: [:foo, :bar]
-      create_existing_record(attributes)
-      model.new
-    end
-
-    def validating_scoped_uniqueness_with_conflicting_next(*args)
-      attributes = args.extract_options!
-      model = define_scoped_model(*args).new
-      2.times do
-        attributes[:scope1] = attributes[:scope1].next
-        create_record(attributes)
-      end
-      model
-    end
-  end
-
-  context 'a model with a case-sensitive uniqueness validation on a string attribute and an existing record' do
-    it 'accepts a case-sensitive value for that attribute' do
-      expect(case_sensitive_validation_with_existing_value(:string)).
-        to matcher
-    end
-
-    it 'rejects a case-insensitive value for that attribute' do
-      expect(case_sensitive_validation_with_existing_value(:string)).
-        not_to matcher.case_insensitive
-    end
-  end
-
-  context 'a model with a case-sensitive uniqueness validation on an integer attribute with an existing value' do
-    it 'accepts a case-insensitive value for that attribute' do
-      expect(case_sensitive_validation_with_existing_value(:integer)).
-        to matcher.case_insensitive
-    end
-
-    it 'accepts a case-sensitive value for that attribute' do
-      expect(case_sensitive_validation_with_existing_value(:integer)).to matcher
-    end
-  end
-
-  context "when the validation allows nil" do
-    context "when there is an existing entry with a nil" do
-      it "should allow_nil" do
-        model = define_model_with_allow_nil
-        Example.create!(attr: nil)
-        expect(model).to matcher.allow_nil
-      end
-    end
-
-    if active_model_3_1?
-      context 'when the subject has a secure password' do
-        it 'allows nil on the attribute' do
-          model = define_model(:example, attr: :string, password_digest: :string) do |m|
-            validates_uniqueness_of :attr, allow_nil: true
-            has_secure_password
-          end.new
-          expect(model).to matcher.allow_nil
-        end
-      end
-    end
-
-    it "should create a nil and verify that it is allowed" do
-      model = define_model_with_allow_nil
-      expect(model).to matcher.allow_nil
-      Example.all.any?{ |instance| instance.attr.nil? }
-    end
-
-    def define_model_with_allow_nil
-      define_model(:example, attr: :integer) do
-        attr_accessible :attr
-        validates_uniqueness_of :attr, allow_nil: true
-      end.new
-    end
-  end
-
-  context "when the validation does not allow a nil" do
-    context "when there is an existing entry with a nil" do
-      it "should not allow_nil" do
-        model = define_model_without_allow_nil
-        Example.create!(attr: nil)
-        expect(model).not_to matcher.allow_nil
-      end
-    end
-
-    it "should not allow_nil" do
-      model = define_model_without_allow_nil
-      expect(model).not_to matcher.allow_nil
-    end
-
-    def define_model_without_allow_nil
-      define_model(:example, attr: :integer) do
-        attr_accessible :attr
-        validates_uniqueness_of :attr
-      end.new
-    end
-  end
-
-  context 'when the validation allows blank' do
-    context 'when there is an existing record with a blank value' do
+    context "when more than one record exists that has the next version of the attribute's value" do
       it 'accepts' do
-        model = model_allowing_blank
-        model.create!(attribute_name => '')
-        expect(model.new).to matcher.allow_blank
+        value1 = dummy_value_for(type)
+        value2 = next_version_of(value1)
+        value3 = next_version_of(value2)
+        model = define_model_validating_uniqueness(
+          scopes: [ build_attribute(name: :scope) ],
+        )
+        create_record_from(model, scope: value2)
+        create_record_from(model, scope: value3)
+        record = build_record_from(model, scope: value1)
+
+        expect(record).to validate_uniqueness.scoped_to(:scope)
       end
     end
 
-    context 'when there is not an an existing record with a blank value' do
-      it 'still accepts' do
-        expect(record_allowing_blank).to matcher.allow_blank
-      end
-
-      it 'automatically creates a record' do
-        model = model_allowing_blank
-        matcher.allow_blank.matches?(model.new)
-
-        record_created = model.all.any? do |instance|
-          instance.__send__(attribute_name).blank?
-        end
-
-        expect(record_created).to be true
-      end
-    end
-
-    def attribute_name
-      :attr
-    end
-
-    def model_allowing_blank
-      _attribute_name = attribute_name
-
-      define_model(:example, attribute_name => :string) do
-        attr_accessible _attribute_name
-        validates_uniqueness_of _attribute_name, allow_blank: true
-      end
-    end
-
-    def record_allowing_blank
-      model_allowing_blank.new
-    end
-  end
-
-  context 'when the validation does not allow blank' do
-    context 'when there is an existing entry with a blank value' do
+    context 'when too narrow of a scope is specified' do
       it 'rejects' do
-        model = model_disallowing_blank
-        model.create!(attribute_name => '')
-        expect(model.new).not_to matcher.allow_blank
+        record = build_record_validating_uniqueness(
+          scopes: [
+            build_attribute(name: :scope1),
+            { name: :scope2 }
+          ],
+        )
+        expect(record).
+          not_to validate_uniqueness.
+          scoped_to(:scope1, :scope2, :other)
       end
     end
 
-    it 'should not allow_blank' do
-      expect(record_disallowing_blank).not_to matcher.allow_blank
-    end
-
-    def attribute_name
-      :attr
-    end
-
-    def model_disallowing_blank
-      _attribute_name = attribute_name
-
-      define_model(:example, attribute_name => :string) do
-        attr_accessible _attribute_name
-        validates_uniqueness_of _attribute_name, allow_blank: false
+    context 'when too broad of a scope is specified' do
+      it 'rejects' do
+        record = build_record_validating_uniqueness(
+          scopes: [
+            build_attribute(name: :scope1),
+            { name: :scope2 }
+          ],
+        )
+        expect(record).
+          not_to validate_uniqueness.
+          scoped_to(:scope1)
       end
     end
 
-    def record_disallowing_blank
-      model_disallowing_blank.new
+    context 'when a different scope is specified' do
+      it 'rejects' do
+        record = build_record_validating_uniqueness(
+          scopes: [ build_attribute(name: :scope) ],
+          additional_attributes: [:other]
+        )
+        expect(record).
+          not_to validate_uniqueness.
+          scoped_to(:other)
+      end
+    end
+
+    context 'when no scope is specified' do
+      it 'rejects' do
+        record = build_record_validating_uniqueness(
+          scopes: [ build_attribute(name: :scope) ]
+        )
+        expect(record).not_to validate_uniqueness
+      end
+    end
+
+    context 'when a non-existent attribute is specified as a scope' do
+      it 'rejects' do
+        record = build_record_validating_uniqueness(
+          scopes: [ build_attribute(name: :scope) ]
+        )
+        expect(record).not_to validate_uniqueness.scoped_to(:non_existent)
+      end
+    end
+
+    define_method(:build_attribute) do |options|
+      options.merge(type: type)
     end
   end
 
-  context "when testing that a polymorphic *_type column is one of the validation scopes" do
-    it "sets that column to a meaningful value that works with other validations on the same column" do
-      user_model = define_model :user
+  context 'when the model does not have a uniqueness validation' do
+    it 'rejects' do
+      model = define_model(:example, attribute_name => :string) do |m|
+        m.attr_accessible attribute_name
+      end
+
+      model.create!(attr: 'value')
+
+      expect(model.new).not_to validate_uniqueness_of(attribute_name)
+    end
+  end
+
+  context 'when the model has a uniqueness validation' do
+    context 'when the attribute has a character limit' do
+      it 'accepts' do
+        record = build_record_validating_uniqueness(
+          attribute_type: :string,
+          attribute_options: { limit: 1 }
+        )
+
+        expect(record).to validate_uniqueness
+      end
+    end
+
+    context 'when the record is created beforehand' do
+      context 'when the subject is a new record' do
+        it 'accepts' do
+          create_record_validating_uniqueness
+          expect(new_record_validating_uniqueness).
+            to validate_uniqueness
+        end
+      end
+
+      context 'when the subject is an existing record' do
+        it 'accepts' do
+          expect(existing_record_validating_uniqueness).to validate_uniqueness
+        end
+      end
+
+      context 'when the validation has no scope and a scope is specified' do
+        it 'rejects' do
+          model = define_model_validating_uniqueness(
+            additional_attributes: [:other]
+          )
+          create_record_from(model)
+          record = build_record_from(model)
+          expect(record).not_to validate_uniqueness.scoped_to(:other)
+        end
+      end
+    end
+
+    context 'when the record is not created beforehand' do
+      it 'creates the record automatically' do
+        model = define_model_validating_uniqueness
+        assertion = -> {
+          record = build_record_from(model)
+          expect(record).to validate_uniqueness
+        }
+        expect(&assertion).to change(model, :count).from(0).to(1)
+      end
+
+      context 'and the table has required attributes other than the attribute being validated, set beforehand' do
+        it 'does not require the record to be persisted' do
+          options = {
+            additional_attributes: [
+              { name: :required_attribute, options: { null: false } }
+            ]
+          }
+          model = define_model_validating_uniqueness(options) do |m|
+            m.validates_presence_of :required_attribute
+          end
+
+          record = build_record_from(model, required_attribute: 'something')
+          expect(record).to validate_uniqueness
+        end
+      end
+    end
+
+    context 'and the validation has a custom message' do
+      context 'when no message is specified' do
+        it 'rejects' do
+          record = build_record_validating_uniqueness(
+            validation_options: { message: 'bad value' }
+          )
+          expect(record).not_to validate_uniqueness
+        end
+      end
+
+      context 'given a string' do
+        context 'when the given and actual messages do not match' do
+          it 'rejects' do
+            record = build_record_validating_uniqueness(
+              validation_options: { message: 'bad value' }
+            )
+            expect(record).
+              not_to validate_uniqueness.
+              with_message('something else entirely')
+          end
+        end
+
+        context 'when the given and actual messages match' do
+          it 'accepts' do
+            record = build_record_validating_uniqueness(
+              validation_options: { message: 'bad value' }
+            )
+            expect(record).
+              to validate_uniqueness.
+              with_message('bad value')
+          end
+        end
+      end
+
+      context 'given a regex' do
+        context 'when the given and actual messages do not match' do
+          it 'rejects' do
+            record = build_record_validating_uniqueness(
+              validation_options: { message: 'Bad value' }
+            )
+            expect(record).
+              not_to validate_uniqueness.
+              with_message(/something else entirely/)
+          end
+        end
+
+        context 'when the given and actual messages match' do
+          it 'accepts' do
+            record = build_record_validating_uniqueness(
+              validation_options: { message: 'bad value' }
+            )
+            expect(record).
+              to validate_uniqueness.
+              with_message(/bad/)
+          end
+        end
+      end
+    end
+  end
+
+  context 'when the model has a scoped uniqueness validation' do
+    context 'when one of the scoped attributes is a string column' do
+      include_context 'it supports scoped attributes of a certain type',
+        type: :string
+    end
+
+    context 'when one of the scoped attributes is an integer column' do
+      include_context 'it supports scoped attributes of a certain type',
+        type: :integer
+
+      if active_record_supports_enum?
+        context 'when one of the scoped attributes is an enum' do
+          it 'accepts' do
+            record = build_record_validating_scoped_uniqueness_with_enum(
+              enum_scope: :scope
+            )
+            expect(record).to validate_uniqueness.scoped_to(:scope)
+          end
+
+          context 'when too narrow of a scope is specified' do
+            it 'rejects' do
+              record = build_record_validating_scoped_uniqueness_with_enum(
+                enum_scope: :scope1,
+                additional_scopes: [:scope2],
+                additional_attributes: [:other]
+              )
+              expect(record).
+                not_to validate_uniqueness.
+                scoped_to(:scope1, :scope2, :other)
+            end
+          end
+
+          context 'when too broad of a scope is specified' do
+            it 'rejects' do
+              record = build_record_validating_scoped_uniqueness_with_enum(
+                enum_scope: :scope1,
+                additional_scopes: [:scope2]
+              )
+              expect(record).
+                not_to validate_uniqueness.
+                scoped_to(:scope1)
+            end
+          end
+        end
+      end
+    end
+
+    context 'when one of the scoped attributes is a date column' do
+      include_context 'it supports scoped attributes of a certain type',
+        type: :date
+    end
+
+    context 'when one of the scoped attributes is a datetime column' do
+      include_context 'it supports scoped attributes of a certain type',
+        type: :datetime
+    end
+
+    context 'when one of the scoped attributes is a UUID column' do
+      include_context 'it supports scoped attributes of a certain type',
+        type: :uuid
+    end
+  end
+
+  context 'when the model has a case-sensitive validation on a string attribute' do
+    context 'when case_insensitive is not specified' do
+      it 'accepts' do
+        record = build_record_validating_uniqueness(
+          attribute_type: :string,
+          validation_options: { case_sensitive: true }
+        )
+
+        expect(record).to validate_uniqueness
+      end
+    end
+
+    context 'when case_insensitive is specified' do
+      it 'rejects' do
+        record = build_record_validating_uniqueness(
+          attribute_type: :string,
+          validation_options: { case_sensitive: true }
+        )
+
+        expect(record).not_to validate_uniqueness.case_insensitive
+      end
+    end
+  end
+
+  context 'when the validation is declared with allow_nil' do
+    context 'given a new record whose attribute is nil' do
+      it 'accepts' do
+        model = define_model_validating_uniqueness(
+          validation_options: { allow_nil: true }
+        )
+        record = build_record_from(model, attribute_name => nil)
+        expect(record).to validate_uniqueness.allow_nil
+      end
+    end
+
+    context 'given an existing record whose attribute is nil' do
+      it 'accepts' do
+        model = define_model_validating_uniqueness(
+          validation_options: { allow_nil: true }
+        )
+        record = create_record_from(model, attribute_name => nil)
+        expect(record).to validate_uniqueness.allow_nil
+      end
+    end
+
+    if active_record_supports_has_secure_password?
+      context 'when the model is declared with has_secure_password' do
+        it 'accepts' do
+          model = define_model_validating_uniqueness(
+            validation_options: { allow_nil: true },
+            additional_attributes: [{ name: :password_digest, type: :string }]
+          ) do |m|
+            m.has_secure_password
+          end
+
+          record = build_record_from(model, attribute_name => nil)
+
+          expect(record).to validate_uniqueness.allow_nil
+        end
+      end
+    end
+  end
+
+  context 'when the validation is not declared with allow_nil' do
+    context 'given a new record whose attribute is nil' do
+      it 'rejects' do
+        model = define_model_validating_uniqueness
+        record = build_record_from(model, attribute_name => nil)
+        expect(record).not_to validate_uniqueness.allow_nil
+      end
+    end
+
+    context 'given an existing record whose attribute is nil' do
+      it 'rejects' do
+        model = define_model_validating_uniqueness
+        record = create_record_from(model, attribute_name => nil)
+        expect(record).not_to validate_uniqueness.allow_nil
+      end
+    end
+  end
+
+  context 'when the validation is declared with allow_blank' do
+    context 'given a new record whose attribute is nil' do
+      it 'accepts' do
+        model = define_model_validating_uniqueness(
+          validation_options: { allow_blank: true }
+        )
+        record = build_record_from(model, attribute_name => nil)
+        expect(record).to validate_uniqueness.allow_blank
+      end
+    end
+
+    context 'given an existing record whose attribute is nil' do
+      it 'accepts' do
+        model = define_model_validating_uniqueness(
+          validation_options: { allow_blank: true }
+        )
+        record = create_record_from(model, attribute_name => nil)
+        expect(record).to validate_uniqueness.allow_blank
+      end
+    end
+
+    context 'given a new record whose attribute is empty' do
+      it 'accepts' do
+        model = define_model_validating_uniqueness(
+          attribute_type: :string,
+          validation_options: { allow_blank: true }
+        )
+        record = build_record_from(model, attribute_name => '')
+        expect(record).to validate_uniqueness.allow_blank
+      end
+    end
+
+    context 'given an existing record whose attribute is empty' do
+      it 'accepts' do
+        model = define_model_validating_uniqueness(
+          attribute_type: :string,
+          validation_options: { allow_blank: true }
+        )
+        record = create_record_from(model, attribute_name => '')
+        expect(record).to validate_uniqueness.allow_blank
+      end
+    end
+
+    if active_record_supports_has_secure_password?
+      context 'when the model is declared with has_secure_password' do
+        context 'given a record whose attribute is nil' do
+          it 'accepts' do
+            model = define_model_validating_uniqueness(
+              validation_options: { allow_blank: true },
+              additional_attributes: [{ name: :password_digest, type: :string }]
+            ) do |m|
+              m.has_secure_password
+            end
+
+            record = build_record_from(model, attribute_name => nil)
+
+            expect(record).to validate_uniqueness.allow_blank
+          end
+        end
+
+        context 'given a record whose attribute is empty' do
+          it 'accepts' do
+            model = define_model_validating_uniqueness(
+              attribute_type: :string,
+              validation_options: { allow_blank: true },
+              additional_attributes: [{ name: :password_digest, type: :string }]
+            ) do |m|
+              m.has_secure_password
+            end
+
+            record = build_record_from(model, attribute_name => '')
+
+            expect(record).to validate_uniqueness.allow_blank
+          end
+        end
+      end
+    end
+  end
+
+  context 'when the validation is not declared with allow_blank' do
+    context 'given a new record whose attribute is nil' do
+      it 'rejects' do
+        model = define_model_validating_uniqueness
+        record = build_record_from(model, attribute_name => nil)
+        expect(record).not_to validate_uniqueness.allow_blank
+      end
+    end
+
+    context 'given an existing record whose attribute is nil' do
+      it 'rejects' do
+        model = define_model_validating_uniqueness
+        record = create_record_from(model, attribute_name => nil)
+        expect(record).not_to validate_uniqueness.allow_blank
+      end
+    end
+
+    context 'given a new record whose attribute is empty' do
+      it 'rejects' do
+        model = define_model_validating_uniqueness(
+          attribute_type: :string
+        )
+        record = build_record_from(model, attribute_name => '')
+        expect(record).not_to validate_uniqueness.allow_blank
+      end
+    end
+
+    context 'given an existing record whose attribute is empty' do
+      it 'rejects' do
+        model = define_model_validating_uniqueness(
+          attribute_type: :string
+        )
+        record = create_record_from(model, attribute_name => '')
+        expect(record).not_to validate_uniqueness.allow_blank
+      end
+    end
+  end
+
+  context 'when testing that a polymorphic *_type column is one of the validation scopes' do
+    it 'sets that column to a meaningful value that works with other validations on the same column' do
+      user_model = define_model 'User'
       favorite_columns = {
         favoriteable_id: { type: :integer, options: { null: false } },
         favoriteable_type: { type: :string, options: { null: false } }
       }
-      favorite_model = define_model :favorite, favorite_columns do
+      favorite_model = define_model 'Favorite', favorite_columns do
         attr_accessible :favoriteable
         belongs_to :favoriteable, polymorphic: true
         validates :favoriteable, presence: true
@@ -516,8 +549,8 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
         scoped_to(:favoriteable_type)
     end
 
-    context "if the model the *_type column refers to is namespaced, and shares the last part of its name with an existing model" do
-      it "still works" do
+    context 'if the model the *_type column refers to is namespaced, and shares the last part of its name with an existing model' do
+      it 'still works' do
         define_class 'User'
         define_module 'Models'
         user_model = define_model 'Models::User'
@@ -543,22 +576,161 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
     end
   end
 
-  def case_sensitive_validation_with_existing_value(attr_type)
-    model = define_model(:example, attr: attr_type) do
-      attr_accessible :attr
-      validates_uniqueness_of :attr, case_sensitive: true
-    end.new
-    if attr_type == :string
-      Example.create!(attr: 'value')
-    elsif attr_type == :integer
-      Example.create!(attr: 1)
+  let(:model_attributes) { {} }
+
+  def default_attribute
+    { type: :string }
+  end
+
+  def normalize_attribute(attribute)
+    if attribute.is_a?(Hash)
+      default_attribute.merge(attribute)
     else
-      raise 'Must be :string or :integer'
+      default_attribute.merge(name: attribute)
     end
+  end
+
+  def normalize_attributes(attributes)
+    attributes.map do |attribute|
+      normalize_attribute(attribute)
+    end
+  end
+
+  def column_options_from(attributes)
+    attributes.inject({}) do |options, attribute|
+      options[attribute[:name]] = {
+        type: attribute[:type],
+        options: attribute.fetch(:options, {})
+      }
+      options
+    end
+  end
+
+  def attributes_with_values_for(model)
+    model_attributes[model].each_with_object({}) do |attribute, attrs|
+      attrs[attribute[:name]] = attribute.fetch(:value) do
+        dummy_value_for(attribute[:type])
+      end
+    end
+  end
+
+  def dummy_value_for(attribute_type)
+    case attribute_type
+    when :string
+      'dummy value'
+    when :integer
+      1
+    when :date
+      Date.today
+    when :datetime
+      Date.today.to_datetime
+    when :time
+      Time.now
+    when :uuid
+      SecureRandom.uuid
+    else
+      raise ArgumentError, "Unknown type '#{attribute_type}'"
+    end
+  end
+
+  def next_version_of(value)
+    if value.respond_to?(:next)
+      value.next
+    elsif value.respond_to?(:to_datetime)
+      next_version_of(value.to_datetime)
+    end
+  end
+
+  def build_record_from(model, extra_attributes = {})
+    attributes = attributes_with_values_for(model)
+    model.new(attributes.merge(extra_attributes))
+  end
+
+  def create_record_from(model, extra_attributes = {})
+    build_record_from(model, extra_attributes).tap do |record|
+      record.save!
+    end
+  end
+
+  def determine_scope_attribute_names_from(scope_attributes)
+    scope_attributes.map do |attribute|
+      if attribute.is_a?(Hash)
+        attribute[:name]
+      else
+        attribute
+      end
+    end
+  end
+
+  def define_model_validating_uniqueness(options = {}, &block)
+    attribute_type = options.fetch(:attribute_type, :string)
+    attribute_options = options.fetch(:attribute_options, {})
+    attribute = {
+      name: attribute_name,
+      type: attribute_type,
+      options: attribute_options
+    }
+    scope_attributes = normalize_attributes(options.fetch(:scopes, []))
+    scope_attribute_names = scope_attributes.map { |attr| attr[:name] }
+    additional_attributes = normalize_attributes(
+      options.fetch(:additional_attributes, [])
+    )
+    attributes = [attribute] + scope_attributes + additional_attributes
+    validation_options = options.fetch(:validation_options, {})
+
+    column_options = column_options_from(attributes)
+
+    model = define_model(:example, column_options) do |m|
+      m.validates_uniqueness_of attribute_name,
+        validation_options.merge(scope: scope_attribute_names)
+
+      attributes.each do |attr|
+        m.attr_accessible(attr[:name])
+      end
+
+      block.call(m) if block
+    end
+
+    model_attributes[model] = attributes
+
     model
   end
 
-  def matcher
-    validate_uniqueness_of(:attr)
+  def build_record_validating_uniqueness(options = {}, &block)
+    model = define_model_validating_uniqueness(options, &block)
+    build_record_from(model)
+  end
+  alias_method :new_record_validating_uniqueness,
+    :build_record_validating_uniqueness
+
+  def create_record_validating_uniqueness(options = {}, &block)
+    build_record_validating_uniqueness(options, &block).tap do |record|
+      record.save!
+    end
+  end
+  alias_method :existing_record_validating_uniqueness,
+    :create_record_validating_uniqueness
+
+  def build_record_validating_scoped_uniqueness_with_enum(options = {})
+    options = options.dup
+    enum_scope_attribute =
+      normalize_attribute(options.delete(:enum_scope)).
+      merge(type: :integer)
+    additional_scopes = options.delete(:additional_scopes) { [] }
+    options[:scopes] = [enum_scope_attribute] + additional_scopes
+    dummy_enum_values = [:foo, :bar]
+
+    model = define_model_validating_uniqueness(options)
+    model.enum(enum_scope_attribute[:name] => dummy_enum_values)
+
+    build_record_from(model)
+  end
+
+  def validate_uniqueness
+    validate_uniqueness_of(attribute_name)
+  end
+
+  def attribute_name
+    :attr
   end
 end
