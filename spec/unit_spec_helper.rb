@@ -51,6 +51,7 @@ RSpec.configure do |config|
   UnitTests::RailsVersions.configure_example_group(config)
   UnitTests::ActiveRecordVersions.configure_example_group(config)
   UnitTests::ActiveModelVersions.configure_example_group(config)
+  UnitTests::DatabaseHelpers.configure_example_group(config)
 
   config.include UnitTests::Matchers
 end

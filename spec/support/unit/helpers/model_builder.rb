@@ -68,7 +68,11 @@ module UnitTests
 
       define_model_class(class_name).tap do |model|
         if block
-          model.class_eval(&block)
+          if block.arity == 0
+            model.class_eval(&block)
+          else
+            block.call(model)
+          end
         end
 
         model.table_name = table_name
