@@ -110,7 +110,7 @@ module Tests
 
     def fail!
       raise <<-MESSAGE
-Command #{command.inspect} exited with status #{exit_status}.
+Command #{formatted_command.inspect} exited with status #{exit_status}.
 Output:
 #{divider('START') + output + divider('END')}
       MESSAGE
