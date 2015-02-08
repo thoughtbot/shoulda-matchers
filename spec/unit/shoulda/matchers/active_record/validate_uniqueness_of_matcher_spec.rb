@@ -2,7 +2,8 @@ require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :model do
   shared_context 'it supports scoped attributes of a certain type' do |options = {}|
-    type = options.fetch(:type)
+    column_type = options.fetch(:column_type)
+    value_type = options.fetch(:value_type, column_type)
 
     context 'when the correct scope is specified' do
       context 'when the subject is a new record' do
@@ -34,6 +35,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
               { name: :scope2 }
             ]
           )
+
           expect(record).to validate_uniqueness.scoped_to(:scope1, :scope2)
         end
 
@@ -50,7 +52,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
 
     context "when more than one record exists that has the next version of the attribute's value" do
       it 'accepts' do
-        value1 = dummy_value_for(type)
+        value1 = dummy_value_for(value_type)
         value2 = next_version_of(value1)
         value3 = next_version_of(value2)
         model = define_model_validating_uniqueness(
@@ -123,7 +125,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
     end
 
     define_method(:build_attribute) do |options|
-      options.merge(type: type)
+      options.merge(column_type: column_type, value_type: value_type)
     end
   end
 
@@ -268,12 +270,12 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
   context 'when the model has a scoped uniqueness validation' do
     context 'when one of the scoped attributes is a string column' do
       include_context 'it supports scoped attributes of a certain type',
-        type: :string
+        column_type: :string
     end
 
     context 'when one of the scoped attributes is an integer column' do
       include_context 'it supports scoped attributes of a certain type',
-        type: :integer
+        column_type: :integer
 
       if active_record_supports_enum?
         context 'when one of the scoped attributes is an enum' do
@@ -314,17 +316,23 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
 
     context 'when one of the scoped attributes is a date column' do
       include_context 'it supports scoped attributes of a certain type',
-        type: :date
+        column_type: :date
     end
 
-    context 'when one of the scoped attributes is a datetime column' do
+    context 'when one of the scoped attributes is a datetime column (using DateTime)' do
       include_context 'it supports scoped attributes of a certain type',
-        type: :datetime
+        column_type: :datetime
+    end
+
+    context 'when one of the scoped attributes is a datetime column (using Time)' do
+      include_context 'it supports scoped attributes of a certain type',
+        column_type: :datetime,
+        value_type: :time
     end
 
     context 'when one of the scoped attributes is a UUID column' do
       include_context 'it supports scoped attributes of a certain type',
-        type: :uuid
+        column_type: :uuid
     end
   end
 
@@ -579,11 +587,19 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
   let(:model_attributes) { {} }
 
   def default_attribute
-    { type: :string }
+    {
+      value_type: :string,
+      column_type: :string,
+    }
   end
 
   def normalize_attribute(attribute)
     if attribute.is_a?(Hash)
+      if attribute.key?(:type)
+        attribute[:value_type] = attribute[:type]
+        attribute[:column_type] = attribute[:type]
+      end
+
       default_attribute.merge(attribute)
     else
       default_attribute.merge(name: attribute)
@@ -599,7 +615,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
   def column_options_from(attributes)
     attributes.inject({}) do |options, attribute|
       options[attribute[:name]] = {
-        type: attribute[:type],
+        type: attribute[:column_type],
         options: attribute.fetch(:options, {})
       }
       options
@@ -609,7 +625,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
   def attributes_with_values_for(model)
     model_attributes[model].each_with_object({}) do |attribute, attrs|
       attrs[attribute[:name]] = attribute.fetch(:value) do
-        dummy_value_for(attribute[:type])
+        dummy_value_for(attribute[:value_type])
       end
     end
   end
@@ -634,10 +650,10 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
   end
 
   def next_version_of(value)
-    if value.respond_to?(:next)
+    if value.is_a?(Time)
+      value + 1
+    elsif value.respond_to?(:next)
       value.next
-    elsif value.respond_to?(:to_datetime)
-      next_version_of(value.to_datetime)
     end
   end
 
@@ -667,7 +683,8 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
     attribute_options = options.fetch(:attribute_options, {})
     attribute = {
       name: attribute_name,
-      type: attribute_type,
+      value_type: attribute_type,
+      column_type: attribute_type,
       options: attribute_options
     }
     scope_attributes = normalize_attributes(options.fetch(:scopes, []))
@@ -677,7 +694,6 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
     )
     attributes = [attribute] + scope_attributes + additional_attributes
     validation_options = options.fetch(:validation_options, {})
-
     column_options = column_options_from(attributes)
 
     model = define_model(:example, column_options) do |m|
@@ -715,7 +731,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
     options = options.dup
     enum_scope_attribute =
       normalize_attribute(options.delete(:enum_scope)).
-      merge(type: :integer)
+      merge(value_type: :integer, column_type: :integer)
     additional_scopes = options.delete(:additional_scopes) { [] }
     options[:scopes] = [enum_scope_attribute] + additional_scopes
     dummy_enum_values = [:foo, :bar]
