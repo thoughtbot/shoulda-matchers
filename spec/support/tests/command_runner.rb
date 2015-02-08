@@ -51,12 +51,6 @@ module Tests
       @directory = directory || Dir.pwd
     end
 
-    def formatted_command
-      [formatted_env, Shellwords.join(command)].
-        select { |value| !value.empty? }.
-        join(' ')
-    end
-
     def call
       possibly_retrying do
         possibly_running_quickly do
@@ -108,7 +102,7 @@ module Tests
 
     def fail!
       raise <<-MESSAGE
-Command #{command.inspect} exited with status #{exit_status}.
+Command #{formatted_command.inspect} exited with status #{exit_status}.
 Output:
 #{divider('START') + output + divider('END')}
       MESSAGE
@@ -135,6 +129,12 @@ Output:
       ([command_prefix] + args).flatten.flat_map do |word|
         Shellwords.split(word)
       end
+    end
+
+    def formatted_command
+      [formatted_env, Shellwords.join(command)].
+        select { |value| !value.empty? }.
+        join(' ')
     end
 
     def formatted_env
