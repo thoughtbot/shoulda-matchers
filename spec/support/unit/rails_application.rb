@@ -1,17 +1,22 @@
-require_relative '../tests/command_runner'
-require_relative '../tests/filesystem'
 require_relative '../tests/bundle'
+require_relative '../tests/command_runner'
+require_relative '../tests/database'
+require_relative '../tests/filesystem'
+
+require 'yaml'
 
 module UnitTests
   class RailsApplication
     def initialize
       @fs = Tests::Filesystem.new
       @bundle = Tests::Bundle.new
+      @database = Tests::Database.instance
     end
 
     def create
       fs.clean
       generate
+
       fs.within_project do
         install_gems
         remove_unwanted_gems
@@ -54,7 +59,7 @@ module UnitTests
 
     protected
 
-    attr_reader :fs, :shell, :bundle
+    attr_reader :fs, :shell, :bundle, :database
 
     private
 
@@ -69,6 +74,7 @@ module UnitTests
     def generate
       rails_new
       fix_available_locales_warning
+      write_database_configuration
     end
 
     def rails_new
@@ -87,13 +93,18 @@ end
       end
     end
 
+    def write_database_configuration
+      YAML.dump(database.config.to_hash, fs.open('config/database.yml', 'w'))
+    end
+
     def load_environment
       require environment_file_path
     end
 
     def run_migrations
-      ActiveRecord::Migration.verbose = false
-      ActiveRecord::Migrator.migrate(migrations_directory)
+      fs.within_project do
+        run_command! 'bundle exec rake db:drop db:create db:migrate'
+      end
     end
 
     def install_gems

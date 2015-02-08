@@ -66,17 +66,21 @@ module UnitTests
         create_table(table_name, &table_block)
       end
 
-      define_model_class(class_name).tap do |model|
+      model = define_model_class(class_name).tap do |m|
         if block
           if block.arity == 0
-            model.class_eval(&block)
+            m.class_eval(&block)
           else
-            block.call(model)
+            block.call(m)
           end
         end
 
-        model.table_name = table_name
+        m.table_name = table_name
       end
+
+      defined_models << model
+
+      model
     end
 
     private
@@ -88,6 +92,10 @@ module UnitTests
       # Rails 3.1 - 4.0
       elsif ActiveRecord::Base.connection_pool.respond_to?(:clear_cache!)
         ActiveRecord::Base.connection_pool.clear_cache!
+      end
+
+      defined_models.each do |model|
+        model.reset_column_information
       end
     end
 
@@ -101,6 +109,10 @@ module UnitTests
 
     def created_tables
       @_created_tables ||= []
+    end
+
+    def defined_models
+      @_defined_models ||= []
     end
   end
 end

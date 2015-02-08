@@ -6,7 +6,7 @@ module UnitTests
     end
 
     def database_adapter
-      Tests::Database.adapter_name
+      Tests::Database.instance.adapter_name
     end
 
     def database_supports_uuid_columns?

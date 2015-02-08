@@ -83,19 +83,22 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher, type: :model do
     context 'when the value is outside of the range of the column' do
       context 'not qualified with strict' do
         it 'accepts, failing with the correct message' do
-          attribute_options = { type: :integer, options: { limit: 2 } }
+          type = :integer
+          attribute_options = { type: type, options: { limit: 2 } }
           record = define_model(:example, attr: attribute_options).new
           assertion = -> { expect(record).not_to disallow_value(100000).for(:attr) }
+          column_type_class = column_type_class_for(type)
           message = <<-MESSAGE.strip_heredoc.strip
             Did not expect errors when attr is set to 100000,
-            got RangeError: "100000 is out of range for ActiveRecord::Type::Integer with limit 2"
+            got RangeError: "100000 is out of range for #{column_type_class} with limit 2"
           MESSAGE
           expect(&assertion).to fail_with_message(message)
         end
 
         context 'qualified with a message' do
           it 'ignores any specified message, failing with the correct message' do
-            attribute_options = { type: :integer, options: { limit: 2 } }
+            type = :integer
+            attribute_options = { type: type, options: { limit: 2 } }
             record = define_model(:example, attr: attribute_options).new
             assertion = -> do
               expect(record).
@@ -103,9 +106,10 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher, type: :model do
                 for(:attr).
                 with_message('some message')
             end
+            column_type_class = column_type_class_for(type)
             message = <<-MESSAGE.strip_heredoc.strip
               Did not expect errors to include "some message" when attr is set to 100000,
-              got RangeError: "100000 is out of range for ActiveRecord::Type::Integer with limit 2"
+              got RangeError: "100000 is out of range for #{column_type_class} with limit 2"
             MESSAGE
             expect(&assertion).to fail_with_message(message)
           end
@@ -115,7 +119,8 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher, type: :model do
       if active_model_supports_strict?
         context 'qualified with strict' do
           it 'accepts, failing with the correct message' do
-            attribute_options = { type: :integer, options: { limit: 2 } }
+            type = :integer
+            attribute_options = { type: type, options: { limit: 2 } }
             record = define_model(:example, attr: attribute_options).new
             assertion = -> do
               expect(record).
@@ -123,16 +128,18 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher, type: :model do
                 for(:attr).
                 strict
             end
+            column_type_class = column_type_class_for(type)
             message = <<-MESSAGE.strip_heredoc.strip
               Did not expect an exception to have been raised when attr is set to 100000,
-              got RangeError: "100000 is out of range for ActiveRecord::Type::Integer with limit 2"
+              got RangeError: "100000 is out of range for #{column_type_class} with limit 2"
             MESSAGE
             expect(&assertion).to fail_with_message(message)
           end
 
           context 'qualified with a message' do
             it 'ignores any specified message' do
-              attribute_options = { type: :integer, options: { limit: 2 } }
+              type = :integer
+              attribute_options = { type: type, options: { limit: 2 } }
               record = define_model(:example, attr: attribute_options).new
               assertion = -> do
                 expect(record).
@@ -141,9 +148,10 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher, type: :model do
                   with_message('some message').
                   strict
               end
+              column_type_class = column_type_class_for(type)
               message = <<-MESSAGE.strip_heredoc.strip
                 Did not expect exception to include "some message" when attr is set to 100000,
-                got RangeError: "100000 is out of range for ActiveRecord::Type::Integer with limit 2"
+                got RangeError: "100000 is out of range for #{column_type_class} with limit 2"
               MESSAGE
               expect(&assertion).to fail_with_message(message)
             end

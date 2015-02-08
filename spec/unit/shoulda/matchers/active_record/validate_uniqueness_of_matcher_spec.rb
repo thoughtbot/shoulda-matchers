@@ -300,8 +300,10 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
         column_type: :datetime
     end
 
-    context 'when one of the scoped attributes is a UUID' do
-      it_behaves_like 'it supports scoped attributes of a certain type', :uuid
+    if database_supports_uuid_columns?
+      context 'when one of the scoped attributes is a UUID' do
+        it_behaves_like 'it supports scoped attributes of a certain type', :uuid
+      end
     end
   end
 
