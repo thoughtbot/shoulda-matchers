@@ -1,13 +1,15 @@
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :model do
-  shared_examples_for 'it supports scoped attributes of a certain type' do |type|
+  shared_examples_for 'it supports scoped attributes of a certain type' do |user_type, options = {}|
+    column_type = options.fetch(:column_type, user_type)
+
     context 'when the correct scope is specified' do
       context 'when the subject is a new record' do
         it 'accepts' do
           record = build_record_validating_uniqueness(
             scopes: [
-              { name: :scope1, type: type },
+              { name: :scope1, user_type: user_type, column_type: column_type },
               { name: :scope2 }
             ]
           )
@@ -19,10 +21,11 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
         it 'accepts' do
           record = create_record_validating_uniqueness(
             scopes: [
-              { name: :scope1, type: type },
+              { name: :scope1, user_type: user_type, column_type: column_type },
               { name: :scope2 }
             ]
           )
+
           expect(record).to validate_uniqueness.scoped_to(:scope1, :scope2)
         end
       end
@@ -30,9 +33,13 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
 
     context "when more than one record exists that has the next version of the attribute's value" do
       it 'accepts' do
-        value = dummy_value_for(type)
+        value = dummy_value_for(column_type)
         model = define_model_validating_uniqueness(
-          scopes: [{ name: :scope, type: type }]
+          scopes: [{
+            name: :scope,
+            user_type: user_type,
+            column_type: column_type
+          }]
         )
         create_record_from(model, scope: next_version_of(value))
         create_record_from(model, scope: next_version_of(next_version_of(value)))
@@ -46,7 +53,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
       it 'rejects' do
         record = build_record_validating_uniqueness(
           scopes: [
-            { name: :scope1, type: type },
+            { name: :scope1, user_type: user_type, column_type: column_type },
             { name: :scope2 }
           ],
         )
@@ -60,7 +67,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
       it 'rejects' do
         record = build_record_validating_uniqueness(
           scopes: [
-            { name: :scope1, type: type },
+            { name: :scope1, user_type: user_type, column_type: column_type },
             { name: :scope2 }
           ],
         )
@@ -286,6 +293,11 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
 
     context 'when one of the scoped attributes is a DateTime' do
       it_behaves_like 'it supports scoped attributes of a certain type', :datetime
+    end
+
+    context 'when one of the scoped attributes is a time' do
+      it_behaves_like 'it supports scoped attributes of a certain type', :time,
+        column_type: :datetime
     end
 
     context 'when one of the scoped attributes is a UUID' do
@@ -544,11 +556,20 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
   let(:model_attributes) { {} }
 
   def default_attribute
-    { type: :string, value: dummy_value_for(:string) }
+    {
+      user_type: :string,
+      column_type: :string,
+      value: dummy_value_for(:string)
+    }
   end
 
   def normalize_attribute(attribute)
     if attribute.is_a?(Hash)
+      if attribute.key?(:type)
+        attribute[:user_type] = attribute[:type]
+        attribute[:column_type] = attribute[:type]
+      end
+
       default_attribute.merge(attribute)
     else
       default_attribute.merge(name: attribute)
@@ -564,7 +585,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
   def column_options_from(attributes)
     attributes.inject({}) do |options, attribute|
       options[attribute[:name]] = {
-        type: attribute[:type],
+        type: attribute[:column_type],
         options: attribute.fetch(:options, {})
       }
       options
@@ -573,7 +594,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
 
   def attributes_with_dummy_values_for(model)
     model_attributes[model].each_with_object({}) do |attribute, attrs|
-      attrs[attribute[:name]] = dummy_value_for(attribute[:type])
+      attrs[attribute[:name]] = dummy_value_for(attribute[:user_type])
     end
   end
 
@@ -597,10 +618,10 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
   end
 
   def next_version_of(value)
-    if value.respond_to?(:next)
+    if value.is_a?(Time)
+      value + 1
+    elsif value.respond_to?(:next)
       value.next
-    elsif value.respond_to?(:to_datetime)
-      next_version_of(value.to_datetime)
     end
   end
 
@@ -630,7 +651,8 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
     attribute_options = options.fetch(:attribute_options, {})
     attribute = {
       name: attribute_name,
-      type: attribute_type,
+      user_type: attribute_type,
+      column_type: attribute_type,
       options: attribute_options
     }
     scope_attributes = normalize_attributes(options.fetch(:scopes, []))
@@ -640,7 +662,6 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
     )
     attributes = [attribute] + scope_attributes + additional_attributes
     validation_options = options.fetch(:validation_options, {})
-
     column_options = column_options_from(attributes)
 
     model = define_model(:example, column_options) do |m|
