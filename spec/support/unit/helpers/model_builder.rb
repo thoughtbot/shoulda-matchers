@@ -52,9 +52,17 @@ module UnitTests
       table_block = lambda do |table|
         columns.each do |column_name, specification|
           if specification.is_a?(Hash)
-            table.column column_name, specification[:type], specification[:options]
+            column_type = specification[:type]
+            column_options = specification.fetch(:options, {})
           else
-            table.column column_name, specification
+            column_type = specification
+            column_options = {}
+          end
+
+          begin
+            table.__send__(column_type, column_name, column_options)
+          rescue NoMethodError
+            raise NoMethodError, "#{Tests::Database.instance.adapter_class} does not support :#{column_type} columns"
           end
         end
       end
