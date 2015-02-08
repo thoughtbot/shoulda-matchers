@@ -3,6 +3,7 @@ require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
 require 'appraisal'
 require_relative 'tasks/documentation'
+require_relative 'spec/support/tests/database'
 
 RSpec::Core::RakeTask.new('spec:unit') do |t|
   t.ruby_opts = '-w -r ./spec/report_warnings'

@@ -41,11 +41,15 @@ module AcceptanceTests
     end
 
     def run_rake_tasks(*tasks)
-      run_command_within_bundle('rake', *tasks)
+      options = tasks.last.is_a?(Hash) ? tasks.pop : {}
+      args = ['rake', *tasks, '--trace'] + [options]
+      run_command_within_bundle(*args)
     end
 
     def run_rake_tasks!(*tasks)
-      run_command_within_bundle!('rake', *tasks)
+      options = tasks.last.is_a?(Hash) ? tasks.pop : {}
+      args = ['rake', *tasks, '--trace'] + [options]
+      run_command_within_bundle!(*args)
     end
   end
 end

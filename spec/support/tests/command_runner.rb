@@ -134,7 +134,7 @@ Output:
     end
 
     def command
-      ([command_prefix] + args).flat_map do |word|
+      ([command_prefix] + args).flatten.flat_map do |word|
         Shellwords.split(word)
       end
     end

@@ -14,7 +14,7 @@ describe 'shoulda-matchers integrates with Rails' do
       end
     FILE
 
-    run_rake_tasks!('db:migrate', 'db:test:prepare')
+    run_rake_tasks! *%w(db:drop db:create db:migrate)
 
     write_file 'app/models/user.rb', <<-FILE
       class User < ActiveRecord::Base

@@ -2,6 +2,8 @@ require_relative 'file_helpers'
 require_relative 'gem_helpers'
 require_relative 'minitest_helpers'
 
+require 'yaml'
+
 module AcceptanceTests
   module StepHelpers
     include FileHelpers
@@ -72,6 +74,11 @@ module AcceptanceTests
         bundle.remove_gem 'debugger'
         bundle.remove_gem 'byebug'
         bundle.remove_gem 'web-console'
+        bundle.add_gem 'pg'
+      end
+
+      fs.open('config/database.yml', 'w') do |file|
+        YAML.dump(database.config.to_hash, file)
       end
     end
 
