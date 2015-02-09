@@ -393,11 +393,14 @@ module Shoulda
         end
 
         def correct_type_for_column(column)
-          if column.type == :string
+          column = column_for(scope)
+
+          case column.type
+          when :string
             '0'
-          elsif column.type == :datetime
+          when :datetime
             DateTime.now
-          elsif column.type == :uuid
+          when :uuid
             SecureRandom.uuid
           else
             0
@@ -405,10 +408,14 @@ module Shoulda
         end
 
         def next_value_for(scope, previous_value)
-          if @subject.class.respond_to?(:defined_enums) && @subject.defined_enums[scope.to_s]
+          column = column_for(scope)
+
+          if column.type == :uuid
+            SecureRandom.uuid
+          elsif defined_as_enum?(scope)
             available_values = available_enum_values_for(scope, previous_value)
             available_values.keys.last
-          elsif scope.to_s =~ /_type$/ && model_class?(previous_value)
+          elsif polymorphic_type_attribute?(scope, previous_value)
             Uniqueness::TestModels.create(previous_value).to_s
           elsif previous_value.respond_to?(:next)
             previous_value.next
@@ -419,14 +426,19 @@ module Shoulda
           end
         end
 
+        def defined_as_enum?(scope)
+          @subject.class.respond_to?(:defined_enums) &&
+            @subject.defined_enums[scope.to_s]
+        end
+
+        def polymorphic_type_attribute?(scope, previous_value)
+          scope.to_s =~ /_type$/ && model_class?(previous_value)
+        end
+
         def available_enum_values_for(scope, previous_value)
           @subject.defined_enums[scope.to_s].reject do |key, _|
             key == previous_value
           end
-        end
-
-        def class_name
-          @subject.class.name
         end
 
         def existing_value
@@ -435,6 +447,14 @@ module Shoulda
             value.swapcase!
           end
           value
+        end
+
+        def class_name
+          @subject.class.name
+        end
+
+        def column_for(scope)
+          @subject.class.columns_hash[scope.to_s]
         end
       end
     end

@@ -35,8 +35,8 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
     context "when more than one record exists that has the next version of the attribute's value" do
       it 'accepts' do
         value1 = dummy_value_for(value_type)
-        value2 = next_version_of(value1)
-        value3 = next_version_of(value2)
+        value2 = next_version_of(value1, value_type)
+        value3 = next_version_of(value2, value_type)
         model = define_model_validating_uniqueness(
           scopes: [ build_attribute(name: :scope) ],
         )
@@ -633,8 +633,10 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
     end
   end
 
-  def next_version_of(value)
-    if value.is_a?(Time)
+  def next_version_of(value, value_type)
+    if value_type == :uuid
+      SecureRandom.uuid
+    elsif value_type == :time
       value + 1
     elsif value.respond_to?(:next)
       value.next

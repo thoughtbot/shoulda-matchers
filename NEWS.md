@@ -21,6 +21,16 @@
   * `set_session['key'].to(nil)` will no longer pass when the key in question
     has not been set yet.
 
+### Bug fixes
+
+* So far the tests for the gem have been running against only SQLite. Now they
+  run against PostgreSQL, too. As a result we were able to fix some
+  Postgres-related bugs:
+
+  * Fix `validate_uniqueness_of` + `scoped_to` so that when one of the scope
+    attributes is a UUID column that ends in an "f", the matcher is able to
+    generate a proper "next" value without erroring.
+
 # 2.8.0
 
 ### Deprecations
