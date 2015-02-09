@@ -372,7 +372,7 @@ module Shoulda
               previous_value = all_records.map(&scope).max
 
               # Assume the scope is a foreign key if the field is nil
-              previous_value ||= correct_type_for_column(@subject.class.columns_hash[scope.to_s])
+              previous_value ||= dummy_value_for(@subject.class.columns_hash[scope.to_s])
 
               next_value = next_value_for(scope, previous_value)
 
@@ -392,15 +392,16 @@ module Shoulda
           end
         end
 
-        def correct_type_for_column(column)
-          if column.type == :string
-            '0'
-          elsif column.type == :datetime
+        def dummy_value_for(column)
+          case column.type
+          when :integer
+            0
+          when :datetime
             DateTime.now
-          elsif column.type == :uuid
+          when :uuid
             SecureRandom.uuid
           else
-            0
+            'dummy value'
           end
         end
 

@@ -52,9 +52,17 @@ module UnitTests
       table_block = lambda do |table|
         columns.each do |column_name, specification|
           if specification.is_a?(Hash)
-            table.column column_name, specification[:type], specification[:options]
+            column_type = specification[:type]
+            column_options = specification.fetch(:options, {})
           else
-            table.column column_name, specification
+            column_type = specification
+            column_options = {}
+          end
+
+          begin
+            table.__send__(column_type, column_name, column_options)
+          rescue NoMethodError
+            raise NoMethodError, "#{Tests::Database.instance.adapter_class} does not support :#{column_type} columns"
           end
         end
       end
@@ -66,13 +74,21 @@ module UnitTests
         create_table(table_name, &table_block)
       end
 
-      define_model_class(class_name).tap do |model|
+      model = define_model_class(class_name).tap do |m|
         if block
-          model.class_eval(&block)
+          if block.arity == 0
+            m.class_eval(&block)
+          else
+            block.call(m)
+          end
         end
 
-        model.table_name = table_name
+        m.table_name = table_name
       end
+
+      defined_models << model
+
+      model
     end
 
     private
@@ -84,6 +100,10 @@ module UnitTests
       # Rails 3.1 - 4.0
       elsif ActiveRecord::Base.connection_pool.respond_to?(:clear_cache!)
         ActiveRecord::Base.connection_pool.clear_cache!
+      end
+
+      defined_models.each do |model|
+        model.reset_column_information
       end
     end
 
@@ -97,6 +117,10 @@ module UnitTests
 
     def created_tables
       @_created_tables ||= []
+    end
+
+    def defined_models
+      @_defined_models ||= []
     end
   end
 end
