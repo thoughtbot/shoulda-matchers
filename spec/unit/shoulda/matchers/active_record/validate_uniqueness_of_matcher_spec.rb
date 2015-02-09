@@ -613,7 +613,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
     when :time
       Time.now
     when :uuid
-      SecureRandom.hex
+      SecureRandom.uuid
     else
       raise ArgumentError, "Unknown type '#{attribute_type}'"
     end
