@@ -8,8 +8,8 @@ branches:
     - gh-pages
 
 env:
-  DATABASE_ADAPTER=sqlite3
-  DATABASE_ADAPTER=postgresql
+  - DATABASE_ADAPTER=sqlite3
+  - DATABASE_ADAPTER=postgresql
 
 rvm:
   - 2.0.0
