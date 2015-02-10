@@ -20,5 +20,9 @@ module UnitTests
     def active_record_supports_has_secure_password?
       active_record_version >= 3.1
     end
+
+    def active_record_supports_array_columns?
+      active_record_version > 4.2
+    end
   end
 end

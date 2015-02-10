@@ -12,5 +12,7 @@ module UnitTests
     def database_supports_uuid_columns?
       database_adapter == :postgresql
     end
+    alias_method :database_supports_array_columns?,
+      :database_supports_uuid_columns?
   end
 end

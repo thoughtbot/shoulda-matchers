@@ -4,6 +4,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
   shared_context 'it supports scoped attributes of a certain type' do |options = {}|
     column_type = options.fetch(:column_type)
     value_type = options.fetch(:value_type, column_type)
+    array = options.fetch(:array, false)
 
     context 'when the correct scope is specified' do
       context 'when the subject is a new record' do
@@ -34,11 +35,11 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
 
     context "when more than one record exists that has the next version of the attribute's value" do
       it 'accepts' do
-        value1 = dummy_value_for(value_type)
+        value1 = dummy_value_for(value_type, array: array)
         value2 = next_version_of(value1, value_type)
         value3 = next_version_of(value2, value_type)
         model = define_model_validating_uniqueness(
-          scopes: [ build_attribute(name: :scope) ],
+          scopes: [ build_attribute(name: :scope) ]
         )
         create_record_from(model, scope: value2)
         create_record_from(model, scope: value3)
@@ -95,6 +96,13 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
         )
         expect(record).not_to validate_uniqueness
       end
+
+      it 'accepts if the scope is unset beforehand' do
+        record = build_record_validating_uniqueness(
+          scopes: [ build_attribute(name: :scope, value: nil) ]
+        )
+        expect(record).to validate_uniqueness
+      end
     end
 
     context 'when a non-existent attribute is specified as a scope' do
@@ -107,7 +115,11 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
     end
 
     define_method(:build_attribute) do |options|
-      options.merge(column_type: column_type, value_type: value_type)
+      options.merge(
+        column_type: column_type,
+        value_type: value_type,
+        array: array
+      )
     end
   end
 
@@ -321,6 +333,45 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
       context 'when one of the scoped attributes is a UUID column' do
         include_context 'it supports scoped attributes of a certain type',
           column_type: :uuid
+      end
+    end
+
+    if database_supports_array_columns? && active_record_supports_array_columns?
+      context 'when one of the scoped attributes is a array-of-string column' do
+        include_examples 'it supports scoped attributes of a certain type',
+          column_type: :string,
+          array: true
+      end
+
+      context 'when one of the scoped attributes is an array-of-integer column' do
+        include_examples 'it supports scoped attributes of a certain type',
+          column_type: :integer,
+          array: true
+      end
+
+      context 'when one of the scoped attributes is an array-of-date column' do
+        include_examples 'it supports scoped attributes of a certain type',
+          column_type: :date,
+          array: true
+      end
+
+      context 'when one of the scoped attributes is an array-of-datetime column (using DateTime)' do
+        include_examples 'it supports scoped attributes of a certain type',
+          column_type: :datetime,
+          array: true
+      end
+
+      context 'when one of the scoped attributes is an array-of-datetime column (using Time)' do
+        include_examples 'it supports scoped attributes of a certain type',
+          column_type: :datetime,
+          value_type: :time,
+          array: true
+      end
+
+      context 'when one of the scoped attributes is an array-of-text column' do
+        include_examples 'it supports scoped attributes of a certain type',
+          column_type: :text,
+          array: true
       end
     end
   end
@@ -579,6 +630,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
     {
       value_type: :string,
       column_type: :string,
+      array: false
     }
   end
 
@@ -603,10 +655,15 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
 
   def column_options_from(attributes)
     attributes.inject({}) do |options, attribute|
-      options[attribute[:name]] = {
+      options_for_attribute = options[attribute[:name]] = {
         type: attribute[:column_type],
         options: attribute.fetch(:options, {})
       }
+
+      if attribute[:array]
+        options_for_attribute[:options][:array] = attribute[:array]
+      end
+
       options
     end
   end
@@ -614,12 +671,23 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
   def attributes_with_values_for(model)
     model_attributes[model].each_with_object({}) do |attribute, attrs|
       attrs[attribute[:name]] = attribute.fetch(:value) do
-        dummy_value_for(attribute[:value_type])
+        dummy_value_for(
+          attribute[:value_type],
+          array: attribute[:array]
+        )
       end
     end
   end
 
-  def dummy_value_for(attribute_type)
+  def dummy_value_for(attribute_type, array: false)
+    if array
+      [ dummy_scalar_value_for(attribute_type) ]
+    else
+      dummy_scalar_value_for(attribute_type)
+    end
+  end
+
+  def dummy_scalar_value_for(attribute_type)
     case attribute_type
     when :string, :text
       'dummy value'
@@ -639,9 +707,11 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
   end
 
   def next_version_of(value, value_type)
-    if value_type == :uuid
+    if value.is_a?(Array)
+      [ next_version_of(value[0], value_type) ]
+    elsif value_type == :uuid
       SecureRandom.uuid
-    elsif value_type == :time
+    elsif value.is_a?(Time)
       value + 1
     elsif value.respond_to?(:next)
       value.next

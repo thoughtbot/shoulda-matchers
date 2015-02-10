@@ -304,6 +304,7 @@ module Shoulda
             instance.__send__("#{@attribute}=", value_for_new_record(options))
             ensure_secure_password_set(instance)
             instance.save(validate: false)
+            pp all_records: @subject.class.all
             @created_record = instance
           end
         end
@@ -371,10 +372,12 @@ module Shoulda
             @options[:scopes].all? do |scope|
               previous_value = all_records.map(&scope).max
 
-              # Assume the scope is a foreign key if the field is nil
-              previous_value ||= correct_type_for_column(@subject.class.columns_hash[scope.to_s])
-
-              next_value = next_value_for(scope, previous_value)
+              next_value =
+                if previous_value.blank?
+                  dummy_value_for(scope)
+                else
+                  next_value_for(scope, previous_value)
+                end
 
               @subject.__send__("#{scope}=", next_value)
 
@@ -392,9 +395,17 @@ module Shoulda
           end
         end
 
-        def correct_type_for_column(column)
+        def dummy_value_for(scope)
           column = column_for(scope)
 
+          if column.array
+            [ dummy_scalar_value_for(column) ]
+          else
+            dummy_scalar_value_for(column)
+          end
+        end
+
+        def dummy_scalar_value_for(column)
           case column.type
           when :string
             '0'
@@ -408,6 +419,16 @@ module Shoulda
         end
 
         def next_value_for(scope, previous_value)
+          column = column_for(scope)
+
+          if previous_value.is_a?(Array)
+            [ next_scalar_value_for(scope, previous_value[0]) ]
+          else
+            next_scalar_value_for(scope, previous_value)
+          end
+        end
+
+        def next_scalar_value_for(scope, previous_value)
           column = column_for(scope)
 
           if column.type == :uuid
