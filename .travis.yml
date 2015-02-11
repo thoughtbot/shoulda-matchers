@@ -3,9 +3,8 @@ sudo: false
 script: "bundle exec rake"
 
 branches:
-  except:
-    - site
-    - gh-pages
+  only:
+    - master
 
 rvm:
   - 2.0.0
