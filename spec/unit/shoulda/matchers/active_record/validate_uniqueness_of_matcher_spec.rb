@@ -17,6 +17,14 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
           )
           expect(record).to validate_uniqueness.scoped_to(:scope1, :scope2)
         end
+
+        it 'still accepts if the scope is unset beforehand' do
+          record = build_record_validating_uniqueness(
+            scopes: [ build_attribute(name: :scope, value: nil) ]
+          )
+
+          expect(record).to validate_uniqueness.scoped_to(:scope)
+        end
       end
 
       context 'when the subject is an existing record' do
@@ -29,6 +37,14 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
           )
 
           expect(record).to validate_uniqueness.scoped_to(:scope1, :scope2)
+        end
+
+        it 'still accepts if the scope is unset beforehand' do
+          record = create_record_validating_uniqueness(
+            scopes: [ build_attribute(name: :scope, value: nil) ]
+          )
+
+          expect(record).to validate_uniqueness.scoped_to(:scope)
         end
       end
     end

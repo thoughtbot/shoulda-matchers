@@ -25,22 +25,18 @@
 
 * So far the tests for the gem have been running against only SQLite. Now they
   run against PostgreSQL, too. As a result we were able to fix some
-  Postgres-related bugs:
+  Postgres-related bugs, specifically around `validate_uniqueness_of`:
 
-  * Fix `validate_uniqueness_of` + `scoped_to` so that when one of the scope
-    attributes is a UUID column that ends in an "f", the matcher is able to
+  * When scoped to a UUID column that ends in an "f", the matcher is able to
     generate a proper "next" value without erroring. ([#402], [#587], [#662])
 
-  * Fix `validate_uniqueness_of` so that it works with scope attributes that are
-    PostgreSQL array columns. Please note that this is only supported for
-    Rails 4.2 and greater, as versions before this cannot handle array columns
-    correctly, particularly in conjunction with the uniqueness validator.
-    ([#554])
+  * Support scopes that are PostgreSQL array columns. Please note that this is
+    only supported for Rails 4.2 and greater, as versions before this cannot
+    handle array columns correctly, particularly in conjunction with the
+    uniqueness validator. ([#554])
 
-[#402]: https://github.com/thoughtbot/shoulda-matchers/pull/402
-[#587]: https://github.com/thoughtbot/shoulda-matchers/pull/587
-[#662]: https://github.com/thoughtbot/shoulda-matchers/pull/662
-[#554]: https://github.com/thoughtbot/shoulda-matchers/pull/554
+  * Fix so that when scoped to a text column and the scope is set to nil before
+    running it through the matcher, the matcher does not fail. ([#521], [#607])
 
 * Fix `define_enum_for` so that it actually tests that the attribute is present
   in the list of defined enums, as you could fool it by merely defining a class
@@ -48,7 +44,13 @@
   vein, passing a pluralized version of the attribute name to `define_enum_for`
   would erroneously pass, and now it fails. ([#641])
 
+[#402]: https://github.com/thoughtbot/shoulda-matchers/pull/402
+[#587]: https://github.com/thoughtbot/shoulda-matchers/pull/587
+[#662]: https://github.com/thoughtbot/shoulda-matchers/pull/662
+[#554]: https://github.com/thoughtbot/shoulda-matchers/pull/554
 [#641]: https://github.com/thoughtbot/shoulda-matchers/pull/641
+[#521]: https://github.com/thoughtbot/shoulda-matchers/pull/521
+[#607]: https://github.com/thoughtbot/shoulda-matchers/pull/607
 
 # 2.8.0
 

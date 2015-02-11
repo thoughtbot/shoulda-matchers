@@ -304,7 +304,6 @@ module Shoulda
             instance.__send__("#{@attribute}=", value_for_new_record(options))
             ensure_secure_password_set(instance)
             instance.save(validate: false)
-            pp all_records: @subject.class.all
             @created_record = instance
           end
         end
@@ -407,20 +406,20 @@ module Shoulda
 
         def dummy_scalar_value_for(column)
           case column.type
-          when :string
-            '0'
+          when :integer
+            0
+          when :date
+            Date.today
           when :datetime
             DateTime.now
           when :uuid
             SecureRandom.uuid
           else
-            0
+            'dummy value'
           end
         end
 
         def next_value_for(scope, previous_value)
-          column = column_for(scope)
-
           if previous_value.is_a?(Array)
             [ next_scalar_value_for(scope, previous_value[0]) ]
           else
