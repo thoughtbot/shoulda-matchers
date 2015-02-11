@@ -10,16 +10,9 @@ rvm:
   - 2.0.0
   - 2.1.4
   - 2.2.0
-  - rbx-19mode
-  - jruby-19mode
 
 gemfile:
   - gemfiles/4.0.0.gemfile
   - gemfiles/4.0.1.gemfile
   - gemfiles/4.1.gemfile
   - gemfiles/4.2.gemfile
-
-matrix:
-  allow_failures:
-    - rvm: rbx-19mode
-    - rvm: jruby-19mode
