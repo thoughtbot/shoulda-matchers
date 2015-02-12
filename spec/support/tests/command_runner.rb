@@ -19,7 +19,7 @@ module Tests
       end
     end
 
-    attr_reader :status, :options, :env, :directory
+    attr_reader :status, :options, :env
     attr_accessor :command_prefix, :run_quickly, :run_successfully, :retries,
       :timeout
 
@@ -35,7 +35,7 @@ module Tests
 
       @wrapper = ->(block) { block.call }
       @command_prefix = ''
-      @directory = Dir.pwd
+      self.directory = Dir.pwd
       @run_quickly = false
       @run_successfully = false
       @retries = 1
@@ -47,8 +47,12 @@ module Tests
       @wrapper = block
     end
 
+    def directory
+      @options[:chdir]
+    end
+
     def directory=(directory)
-      @directory = directory || Dir.pwd
+      @options[:chdir] = directory || Dir.pwd
     end
 
     def formatted_command
@@ -60,9 +64,7 @@ module Tests
     def call
       possibly_retrying do
         possibly_running_quickly do
-          debug { "\n\e[32mRunning command:\e[0m #{formatted_command}" }
-          wrapper.call(-> { run })
-          debug { "\n" + divider('START') + output + divider('END') }
+          run_with_debugging
 
           if run_successfully && !success?
             fail!
@@ -132,7 +134,7 @@ Output:
     end
 
     def command
-      ([command_prefix] + args).flatten.flat_map do |word|
+      ([command_prefix] + args).flat_map do |word|
         Shellwords.split(word)
       end
     end
@@ -142,12 +144,22 @@ Output:
     end
 
     def run
-      Dir.chdir(directory) do
-        pid = spawn(env, *command, options)
-        Process.waitpid(pid)
-      end
-
+      pid = spawn(env, *command, options)
+      Process.waitpid(pid)
       @status = $?
+    end
+
+    def run_with_wrapper
+      wrapper.call(method(:run))
+    end
+
+    def run_with_debugging
+      debug { "\n\e[33mChanging to directory:\e[0m #{directory}" }
+      debug { "\e[32mRunning command:\e[0m #{formatted_command}" }
+
+      run_with_wrapper
+
+      debug { "\n" + divider('START') + output + divider('END') }
     end
 
     def possibly_running_quickly(&block)
@@ -160,7 +172,7 @@ Output:
           message =
             "Command timed out after #{timeout} seconds: #{formatted_command}\n" +
             "Output:\n" +
-            elided_output
+            output
 
           raise TimeoutError, message
         end

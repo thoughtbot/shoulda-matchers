@@ -20,7 +20,7 @@ module AcceptanceTests
           "Expected output:\n" +
           output + "\n\n" +
           "Actual output:\n" +
-          runner.elided_output
+          runner.output
       end
 
       protected
