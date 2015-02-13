@@ -397,7 +397,7 @@ module Shoulda
         def dummy_value_for(scope)
           column = column_for(scope)
 
-          if column.array
+          if column.respond_to?(:array) && column.array
             [ dummy_scalar_value_for(column) ]
           else
             dummy_scalar_value_for(column)
