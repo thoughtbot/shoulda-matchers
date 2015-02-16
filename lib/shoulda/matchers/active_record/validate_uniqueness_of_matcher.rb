@@ -244,6 +244,7 @@ module Shoulda
 
           set_scoped_attributes &&
             validate_everything_except_duplicate_nils_or_blanks? &&
+            validate_case_sensitivity? &&
             validate_after_scope_change? &&
             allows_nil? &&
             allows_blank?
@@ -351,6 +352,22 @@ module Shoulda
           end
 
           disallows_value_of(existing_value, @expected_message)
+        end
+
+        def validate_case_sensitivity?
+          value = existing_value
+
+          if value.respond_to?(:swapcase)
+            swapcased_value = value.swapcase
+
+            if @options[:case_insensitive]
+              disallows_value_of(swapcased_value, @expected_message)
+            else
+              allows_value_of(swapcased_value, @expected_message)
+            end
+          else
+            true
+          end
         end
 
         def create_record_with_value
@@ -462,11 +479,7 @@ module Shoulda
         end
 
         def existing_value
-          value = existing_record.__send__(@attribute)
-          if @options[:case_insensitive] && value.respond_to?(:swapcase!)
-            value.swapcase!
-          end
-          value
+          existing_record.__send__(@attribute)
         end
 
         def class_name
