@@ -37,7 +37,7 @@ describe Shoulda::Matchers::ActionController, type: :controller do
   end
 end
 
-describe Shoulda::Matchers::ActionController::StrongParametersMatcher, type: :controller do
+describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller do
   describe '#description' do
     it 'returns the correct string' do
       options = { action: :create, method: :post }

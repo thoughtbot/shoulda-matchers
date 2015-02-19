@@ -151,14 +151,14 @@ module Shoulda
       #       )
       #     end
       #
-      # @return [StrongParametersMatcher]
+      # @return [PermitMatcher]
       #
       def permit(*params)
-        StrongParametersMatcher.new(params).in_context(self)
+        PermitMatcher.new(params).in_context(self)
       end
 
       # @private
-      class StrongParametersMatcher
+      class PermitMatcher
         attr_writer :stubbed_params
 
         def initialize(expected_permitted_params)
