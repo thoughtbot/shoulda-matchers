@@ -13,6 +13,16 @@ module Shoulda
         def world
           @_world ||= World.new
         end
+
+        def debugging_enabled?
+          ENV['DEBUG_DOUBLESPEAK'] == '1'
+        end
+
+        def debug(&block)
+          if debugging_enabled?
+            puts block.call
+          end
+        end
       end
     end
   end

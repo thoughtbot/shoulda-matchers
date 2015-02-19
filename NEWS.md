@@ -52,6 +52,16 @@
   vein, passing a pluralized version of the attribute name to `define_enum_for`
   would erroneously pass, and now it fails. ([#641])
 
+* Fix `permit` so that it does not break the functionality of
+  ActionController::Parameters#require. ([#648], [#675])
+
+### Features
+
+* Add `on` qualifier to `permit`. This allows you to make an assertion that
+  a restriction was placed on a slice of the `params` hash and not the entire
+  `params` hash. Although we don't require you to use this qualifier, we do
+  recommend it, as it's a more precise check. ([#675])
+
 [#402]: https://github.com/thoughtbot/shoulda-matchers/pull/402
 [#587]: https://github.com/thoughtbot/shoulda-matchers/pull/587
 [#662]: https://github.com/thoughtbot/shoulda-matchers/pull/662
@@ -59,6 +69,8 @@
 [#641]: https://github.com/thoughtbot/shoulda-matchers/pull/641
 [#521]: https://github.com/thoughtbot/shoulda-matchers/pull/521
 [#607]: https://github.com/thoughtbot/shoulda-matchers/pull/607
+[#648]: https://github.com/thoughtbot/shoulda-matchers/pull/648
+[#675]: https://github.com/thoughtbot/shoulda-matchers/pull/675
 
 # 2.8.0
 
