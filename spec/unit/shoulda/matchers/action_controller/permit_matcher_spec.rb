@@ -1,47 +1,173 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActionController, type: :controller do
-  describe '#permit' do
-    it 'matches when the sent parameter is allowed' do
-      controller_for_resource_with_strong_parameters(action: :create) do
-        params.require(:user).permit(:name)
-      end
+describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller do
+  it 'requires an action' do
+    assertion = -> { expect(controller).to permit(:name) }
 
-      expect(@controller).to permit(:name).for(:create)
+    define_controller_for_resource_with_strong_parameters
+
+    expect(&assertion).to raise_error(described_class::ActionNotDefinedError)
+  end
+
+  it 'requires a verb for a non-restful action' do
+    define_controller_for_resource_with_strong_parameters
+
+    assertion = lambda do
+      expect(controller).to permit(:name).for(:authorize)
     end
 
-    it 'does not match when the sent parameter is not allowed' do
-      controller_for_resource_with_strong_parameters(action: :create) do
-        params.require(:user).permit(:name)
-      end
+    expect(&assertion).to raise_error(described_class::VerbNotDefinedError)
+  end
 
-      expect(@controller).not_to permit(:admin).for(:create)
+  it 'accepts a subset of the permitted attributes' do
+    define_controller_for_resource_with_strong_parameters(action: :create) do
+      params.require(:user).permit(:name, :age)
     end
 
-    it 'matches against multiple attributes' do
-      controller_for_resource_with_strong_parameters(action: :create) do
-        params.require(:user).permit(:name, :age)
-      end
+    expect(controller).to permit(:name).for(:create)
+  end
 
-      expect(@controller).to permit(:name, :age).for(:create)
+  it 'accepts all of the permitted attributes' do
+    define_controller_for_resource_with_strong_parameters(action: :create) do
+      params.require(:user).permit(:name, :age)
     end
 
-    it 'can be used more than once in the same test' do
-      controller_for_resource_with_strong_parameters(action: :create) do
-        params.require(:user).permit(:name)
+    expect(controller).to permit(:name, :age).for(:create)
+  end
+
+  it 'rejects attributes that have not been permitted' do
+    define_controller_for_resource_with_strong_parameters(action: :create) do
+      params.require(:user).permit(:name)
+    end
+
+    expect(controller).not_to permit(:name, :admin).for(:create)
+  end
+
+  it 'rejects when #permit has not been called' do
+    define_controller_for_resource_with_strong_parameters(action: :create)
+
+    expect(controller).not_to permit(:name).for(:create)
+  end
+
+  it 'can be used more than once in the same test' do
+    define_controller_for_resource_with_strong_parameters(action: :create) do
+      params.require(:user).permit(:name)
+    end
+
+    expect(controller).to permit(:name).for(:create)
+    expect(controller).not_to permit(:admin).for(:create)
+  end
+
+  it 'works with routes that require extra params' do
+    options = {
+      controller_name: 'Posts',
+      action: :show,
+      routes: -> { get '/posts/:slug', to: 'posts#show' }
+    }
+
+    define_controller_for_resource_with_strong_parameters(options) do
+      params.require(:user).permit(:name)
+    end
+
+    expect(controller).
+      to permit(:name).
+      for(:show, verb: :get, params: { slug: 'foo' })
+  end
+
+  it 'works with #update specifically' do
+    define_controller_for_resource_with_strong_parameters(action: :update) do
+      params.require(:user).permit(:name)
+    end
+
+    expect(controller).
+      to permit(:name).
+      for(:update, params: { id: 1 })
+  end
+
+  it 'tracks multiple calls to #permit' do
+    sets_of_attributes = [
+      [:eta, :diner_id],
+      [:phone_number, :address_1, :address_2, :city, :state, :zip]
+    ]
+
+    define_controller_for_resource_with_strong_parameters(action: :create) do
+      params.require(:order).permit(sets_of_attributes[0])
+      params.require(:diner).permit(sets_of_attributes[1])
+    end
+
+    expect(controller).to permit(*sets_of_attributes[0]).for(:create)
+    expect(controller).to permit(*sets_of_attributes[1]).for(:create)
+  end
+
+  describe '#matches?' do
+    it 'does not raise an error when #fetch was used instead of #require (issue #495)' do
+      matcher = permit(:eta, :diner_id).for(:create)
+      matching = -> { matcher.matches?(controller) }
+
+      define_controller_for_resource_with_strong_parameters(action: :create) do
+        params.fetch(:order, {}).permit(:eta, :diner_id)
       end
 
-      expect(@controller).to permit(:name).for(:create)
-      expect(@controller).not_to permit(:admin).for(:create)
+      expect(&matching).not_to raise_error
+    end
+
+    context 'stubbing params on the controller' do
+      it 'still allows the original params hash to be modified and accessed prior to the call to #require' do
+        actual_user_params = nil
+        actual_foo_param = nil
+        matcher = permit(:name).for(
+          :create,
+          params: { user: { some: 'params' } }
+        )
+
+        define_controller_for_resource_with_strong_parameters(action: :create) do
+          params[:foo] = 'bar'
+          actual_foo_param = params[:foo]
+          actual_user_params = params[:user]
+
+          params.require(:user).permit(:name)
+        end
+
+        matcher.matches?(controller)
+
+        expect(actual_user_params).to eq('some' => 'params')
+        expect(actual_foo_param).to eq 'bar'
+      end
+
+      it 'does not permanently stub the params hash' do
+        matcher = permit(:name).for(:create)
+        params_access = -> { controller.params.require(:user) }
+
+        define_controller_for_resource_with_strong_parameters(action: :create)
+
+        matcher.matches?(controller)
+
+        expect(&params_access).
+          to raise_error(::ActionController::ParameterMissing)
+      end
+
+      it 'prevents permanently stubbing params on error' do
+        matcher = permit(:name).for(:create)
+        params_access = -> { controller.params.require(:user) }
+
+        define_controller_raising_exception
+
+        begin
+          matcher.matches?(controller)
+        rescue simulated_error_class
+        end
+
+        expect(&params_access).
+          to raise_error(::ActionController::ParameterMissing)
+      end
     end
   end
-end
 
-describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller do
   describe '#description' do
     it 'returns the correct string' do
       options = { action: :create, method: :post }
-      controller_for_resource_with_strong_parameters(options) do
+
+      define_controller_for_resource_with_strong_parameters(options) do
         params.permit(:name, :age)
       end
 
@@ -53,7 +179,8 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
     context 'when a verb is specified' do
       it 'returns the correct string' do
         options = { action: :some_action }
-        controller_for_resource_with_strong_parameters(options) do
+
+        define_controller_for_resource_with_strong_parameters(options) do
           params.permit(:name, :age)
         end
 
@@ -65,195 +192,37 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
     end
   end
 
-  describe '#matches?' do
-    it 'is true for a subset of the allowable attributes' do
-      controller_for_resource_with_strong_parameters(action: :create) do
-        params.require(:user).permit(:name)
-      end
-
-      matcher = described_class.new([:name]).in_context(self).for(:create)
-      expect(matcher.matches?(@controller)).to be true
-    end
-
-    it 'is true for all the allowable attributes' do
-      controller_for_resource_with_strong_parameters(action: :create) do
+  describe 'positive failure message' do
+    it 'includes all missing attributes' do
+      define_controller_for_resource_with_strong_parameters(action: :create) do
         params.require(:user).permit(:name, :age)
       end
 
-      matcher = described_class.new([:name, :age]).in_context(self).for(:create)
-      expect(matcher.matches?(@controller)).to be true
-    end
-
-    it 'is false when any attributes are not allowed' do
-      controller_for_resource_with_strong_parameters(action: :create) do
-        params.require(:user).permit(:name)
+      assertion = lambda do
+        expect(@controller).
+          to permit(:name, :age, :city, :country).
+          for(:create)
       end
 
-      matcher = described_class.new([:name, :admin]).in_context(self).for(:create)
-      expect(matcher.matches?(@controller)).to be false
-    end
-
-    it 'is false when permit is not called' do
-      controller_for_resource_with_strong_parameters(action: :create)
-
-      matcher = described_class.new([:name]).in_context(self).for(:create)
-      expect(matcher.matches?(@controller)).to be false
-    end
-
-    it 'requires an action' do
-      controller_for_resource_with_strong_parameters
-      matcher = described_class.new([:name])
-      expect { matcher.matches?(@controller) }.
-        to raise_error(described_class::ActionNotDefinedError)
-    end
-
-    it 'requires a verb for non-restful action' do
-      controller_for_resource_with_strong_parameters
-      matcher = described_class.new([:name]).for(:authorize)
-      expect { matcher.matches?(@controller) }.
-        to raise_error(described_class::VerbNotDefinedError)
-    end
-
-    it 'works with routes that require extra params' do
-      options = {
-        controller_name: 'Posts',
-        action: :show,
-        routes: -> {
-          get '/posts/:slug', to: 'posts#show'
-        }
-      }
-      controller_for_resource_with_strong_parameters(options) do
-        params.require(:user).permit(:name)
-      end
-
-      matcher = described_class.new([:name]).
-        in_context(self).
-        for(:show, verb: :get, params: { slug: 'foo' })
-      expect(matcher.matches?(@controller)).to be true
-    end
-
-    it 'works with #update specifically' do
-      controller_for_resource_with_strong_parameters(action: :update) do
-        params.require(:user).permit(:name)
-      end
-
-      matcher = described_class.new([:name]).
-        in_context(self).
-        for(:update, params: { id: 1 })
-      expect(matcher.matches?(@controller)).to be true
-    end
-
-    it 'does not raise an error when #fetch was used instead of #require (issue #495)' do
-      controller_for_resource_with_strong_parameters(action: :create) do
-        params.fetch(:order, {}).permit(:eta, :diner_id)
-      end
-
-      matcher = described_class.new([:eta, :diner_id]).
-        in_context(self).
-        for(:create)
-      expect(matcher.matches?(@controller)).to be true
-    end
-
-    it 'tracks multiple calls to #permit' do
-      sets_of_attributes = [
-        [:eta, :diner_id],
-        [:phone_number, :address_1, :address_2, :city, :state, :zip]
-      ]
-      controller_for_resource_with_strong_parameters(action: :create) do
-        params.require(:order).permit(sets_of_attributes[0])
-        params.require(:diner).permit(sets_of_attributes[1])
-      end
-
-      matcher = described_class.new(sets_of_attributes[0]).
-        in_context(self).
-        for(:create)
-      expect(matcher.matches?(@controller)).to be true
-
-      matcher = described_class.new(sets_of_attributes[1]).
-        in_context(self).
-        for(:create)
-      expect(matcher.matches?(@controller)).to be true
-    end
-
-    context 'stubbing params on the controller' do
-      it 'still allows the original params to be set and accessed' do
-        actual_user_params = nil
-        actual_foo_param = nil
-
-        controller_for_resource_with_strong_parameters(action: :create) do
-          params[:foo] = 'bar'
-          actual_foo_param = params[:foo]
-
-          actual_user_params = params[:user]
-
-          params.require(:user).permit(:name)
-        end
-
-        matcher = described_class.new([:name]).
-          in_context(self).
-          for(:create, params: { user: { some: 'params' } })
-        matcher.matches?(@controller)
-
-        expect(actual_user_params).to eq('some' => 'params')
-        expect(actual_foo_param).to eq 'bar'
-      end
-
-      it 'stubs the params during the controller action' do
-        controller_for_resource_with_strong_parameters(action: :create) do
-          params.require(:user)
-        end
-
-        matcher = described_class.new([:name]).in_context(self).for(:create)
-
-        expect { matcher.matches?(@controller) }.not_to raise_error
-      end
-
-      it 'does not permanently stub params' do
-        controller_for_resource_with_strong_parameters(action: :create)
-
-        matcher = described_class.new([:name]).in_context(self).for(:create)
-        matcher.matches?(@controller)
-
-        expect {
-          @controller.params.require(:user)
-        }.to raise_error(::ActionController::ParameterMissing)
-      end
-
-      it 'prevents permanently stubbing params on error' do
-        stub_controller_with_exception
-
-        begin
-          matcher = described_class.new([:name]).in_context(self).for(:create)
-          matcher.matches?(@controller)
-        rescue SimulatedError
-        end
-
-        expect {
-          @controller.params.require(:user)
-        }.to raise_error(::ActionController::ParameterMissing)
-      end
+      expect(&assertion).to fail_with_message(
+        'Expected controller to permit city and country, but it did not.'
+      )
     end
   end
 
-  describe 'failure message' do
-    it 'includes all missing attributes' do
-      controller_for_resource_with_strong_parameters(action: :create) do
+  describe 'negative failure message' do
+    it 'includes all attributes that should not have been permitted but were' do
+      define_controller_for_resource_with_strong_parameters(action: :create) do
         params.require(:user).permit(:name, :age)
       end
 
-      expect {
-        expect(@controller).to permit(:name, :age, :city, :country).for(:create)
-      }.to fail_with_message('Expected controller to permit city and country, but it did not.')
-    end
-
-    it 'includes all attributes that should not have been allowed but were' do
-      controller_for_resource_with_strong_parameters(action: :create) do
-        params.require(:user).permit(:name, :age)
+      assertion = lambda do
+        expect(controller).not_to permit(:name, :age).for(:create)
       end
 
-      expect {
-        expect(@controller).not_to permit(:name, :age).for(:create)
-      }.to fail_with_message('Expected controller not to permit name and age, but it did.')
+      expect(&assertion).to fail_with_message(
+        'Expected controller not to permit name and age, but it did.'
+      )
     end
   end
 
@@ -262,7 +231,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
       it 'POSTs to the controller' do
         controller = ActionController::Base.new
         context = build_context
-        matcher = described_class.new([:name]).in_context(context).for(:create)
+        matcher = permit(:name).for(:create).in_context(context)
 
         matcher.matches?(controller)
 
@@ -275,7 +244,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
         it 'PATCHes to the controller' do
           controller = ActionController::Base.new
           context = build_context
-          matcher = described_class.new([:name]).in_context(context).for(:update)
+          matcher = permit(:name).for(:update).in_context(context)
 
           matcher.matches?(controller)
 
@@ -285,7 +254,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
         it 'PUTs to the controller' do
           controller = ActionController::Base.new
           context = build_context
-          matcher = described_class.new([:name]).in_context(context).for(:update)
+          matcher = permit(:name).for(:update).in_context(context)
 
           matcher.matches?(controller)
 
@@ -298,9 +267,9 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
       it 'calls the action with the verb' do
         controller = ActionController::Base.new
         context = build_context
-        matcher = described_class.new([:name]).
-          in_context(context).
-          for(:hide, verb: :delete)
+        matcher = permit(:name).
+          for(:hide, verb: :delete).
+          in_context(context)
 
         matcher.matches?(controller)
 
@@ -309,10 +278,47 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
     end
   end
 
-  def stub_controller_with_exception
+  let(:simulated_error_class) do
+    Class.new(StandardError)
+  end
+
+  def define_controller_for_resource_with_strong_parameters(
+    options = {},
+    &action_body
+  )
+    model_name = options.fetch(:model_name, 'User')
+    controller_name = options.fetch(:controller_name, 'UsersController')
+    collection_name = controller_name.
+      to_s.sub(/Controller$/, '').underscore.
+      to_sym
+    action_name = options.fetch(:action, :some_action)
+    routes = options.fetch(:routes, -> { resources collection_name })
+
+    define_model(model_name)
+
+    controller_class = define_controller(controller_name) do
+      define_method action_name do
+        if action_body
+          instance_eval(&action_body)
+        end
+
+        render nothing: true
+      end
+    end
+
+    setup_rails_controller_test(controller_class)
+
+    define_routes(&routes)
+
+    controller_class
+  end
+
+  def define_controller_raising_exception
+    _simulated_error_class = simulated_error_class
+
     controller_class = define_controller('Examples') do
-      def create
-        raise SimulatedError
+      define_method :create do
+        raise _simulated_error_class
       end
     end
 
@@ -321,11 +327,11 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
     define_routes do
       get 'examples', to: 'examples#create'
     end
+
+    controller_class
   end
 
   def build_context
     double('context', post: nil, put: nil, patch: nil, delete: nil)
   end
-
-  class SimulatedError < StandardError; end
 end
