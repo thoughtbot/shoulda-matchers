@@ -57,8 +57,12 @@ module UnitTests
       namespace.const_get(name_without_namespace).tap do |constant|
         constant.unloadable
 
-        if block_given?
-          constant.class_eval(&block)
+        if block
+          if block.arity == 0
+            constant.class_eval(&block)
+          else
+            block.call(constant)
+          end
         end
       end
     end

@@ -52,34 +52,6 @@ module UnitTests
       $test_app.create_temp_view(path, contents)
     end
 
-    def controller_for_resource_with_strong_parameters(options = {}, &action_body)
-      model_name = options.fetch(:model_name, 'User')
-      controller_name = options.fetch(:controller_name, 'UsersController')
-      collection_name = controller_name.
-        to_s.sub(/Controller$/, '').underscore.
-        to_sym
-      action_name = options.fetch(:action, :some_action)
-      routes ||= options.fetch(:routes, -> { resources collection_name })
-
-      define_model(model_name)
-
-      controller_class = define_controller(controller_name) do
-        define_method action_name do
-          if action_body
-            instance_eval(&action_body)
-          end
-
-          render nothing: true
-        end
-      end
-
-      setup_rails_controller_test(controller_class)
-
-      define_routes(&routes)
-
-      controller_class
-    end
-
     def delete_temporary_views
       $test_app.delete_temp_views
     end
