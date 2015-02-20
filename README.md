@@ -174,7 +174,7 @@ to all the [contributors][contributors].
 
 ## License
 
-shoulda-matchers is copyright © 2006-2014 thoughtbot, inc. It is free software,
+shoulda-matchers is copyright © 2006-2015 [thoughtbot, inc](https://thoughtbot.com/). It is free software,
 and may be redistributed under the terms specified in the
 [MIT-LICENSE](MIT-LICENSE) file.
 
