@@ -1,3 +1,12 @@
+GIT
+  remote: git://github.com/pry/pry.git
+  revision: f0cbec507111743fdbc273735ea4f0f6164a5b21
+  specs:
+    pry (0.10.1)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -91,10 +100,6 @@ GEM
     posix-spawn (0.3.9)
     protected_attributes (1.0.8)
       activemodel (>= 4.0.1, < 5.0)
-    pry (0.10.1)
-      coderay (~> 1.1.0)
-      method_source (~> 0.8.1)
-      slop (~> 3.4)
     pry-nav (0.2.4)
       pry (>= 0.9.10, < 0.11.0)
     pygments.rb (0.6.2)
@@ -208,6 +213,7 @@ DEPENDENCIES
   minitest-reporters
   pg
   protected_attributes (~> 1.0.6)
+  pry!
   pry-nav
   pygments.rb
   rails (~> 4.2.0)
