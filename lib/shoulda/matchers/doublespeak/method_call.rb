@@ -2,6 +2,7 @@ module Shoulda
   module Matchers
     module Doublespeak
       class MethodCall
+        attr_accessor :return_value
         attr_reader :method_name, :args, :block, :object, :double
 
         def initialize(args)
@@ -10,6 +11,13 @@ module Shoulda
           @block = args[:block]
           @double = args[:double]
           @object = args[:object]
+          @return_value = nil
+        end
+
+        def with_return_value(return_value)
+          dup.tap do |call|
+            call.return_value = return_value
+          end
         end
 
         def ==(other)

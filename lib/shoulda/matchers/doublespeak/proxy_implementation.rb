@@ -18,8 +18,9 @@ module Shoulda
         end
 
         def call(call)
-          stub_implementation.call(call)
-          call.double.call_original_method(call)
+          return_value = call.double.call_original_method(call)
+          stub_implementation.call(call.with_return_value(return_value))
+          return_value
         end
 
         protected
