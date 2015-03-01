@@ -63,6 +63,10 @@ module Shoulda
           implementation = @implementation
           _method_name = method_name
 
+          if klass.instance_methods(false).include?(method_name)
+            klass.__send__(:remove_method, method_name)
+          end
+
           klass.__send__(:define_method, method_name) do |*args, &block|
             call = MethodCall.new(
               double: double,
