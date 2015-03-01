@@ -5,7 +5,8 @@ module Shoulda
       class Double
         attr_reader :calls
 
-        def initialize(klass, method_name, implementation)
+        def initialize(world, klass, method_name, implementation)
+          @world = world
           @klass = klass
           @method_name = method_name
           @implementation = implementation
@@ -41,17 +42,20 @@ module Shoulda
         end
 
         def call_original_method(call)
-          if original_method
-            original_method.bind(call.object).call(*call.args, &call.block)
+          unbound_method = world.original_method_for(klass, call.method_name)
+
+          if unbound_method
+            unbound_method.bind(call.object).call(*call.args, &call.block)
           end
         end
 
         protected
 
-        attr_reader :klass, :method_name, :implementation, :original_method
+        attr_reader :world, :klass, :method_name, :implementation,
+          :original_method
 
         def store_original_method
-          @original_method = klass.instance_method(method_name)
+          world.store_original_method_for(klass, method_name)
         end
 
         def replace_method_with_double
@@ -72,8 +76,10 @@ module Shoulda
         end
 
         def restore_original_method
-          original_method = @original_method
+          original_method = world.original_method_for(klass, method_name)
+
           klass.__send__(:remove_method, method_name)
+
           klass.__send__(:define_method, method_name) do |*args, &block|
             original_method.bind(self).call(*args, &block)
           end

@@ -3,7 +3,8 @@ module Shoulda
     module Doublespeak
       # @private
       class DoubleCollection
-        def initialize(klass)
+        def initialize(world, klass)
+          @world = world
           @klass = klass
           @doubles_by_method_name = {}
         end
@@ -40,12 +41,12 @@ module Shoulda
 
         protected
 
-        attr_reader :klass, :doubles_by_method_name
+        attr_reader :world, :klass, :doubles_by_method_name
 
         def register_double(method_name, implementation_type)
           implementation =
             DoubleImplementationRegistry.find(implementation_type)
-          double = Double.new(klass, method_name, implementation)
+          double = Double.new(world, klass, method_name, implementation)
           doubles_by_method_name[method_name] = double
           double
         end

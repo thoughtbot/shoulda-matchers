@@ -10,16 +10,19 @@ module Shoulda::Matchers::Doublespeak
         world.double_collection_for(:klass)
         world.double_collection_for(:klass)
 
-        expect(DoubleCollection).to have_received(:new).with(:klass).once
+        expect(DoubleCollection).
+          to have_received(:new).
+          with(world, :klass).
+          once
       end
 
       it 'returns the created DoubleCollection' do
+        world = described_class.new
         double_collection = build_double_collection
         allow(DoubleCollection).
           to receive(:new).
-          with(:klass).
+          with(world, :klass).
           and_return(double_collection)
-        world = described_class.new
 
         expect(world.double_collection_for(:klass)).to be double_collection
       end
@@ -40,7 +43,7 @@ module Shoulda::Matchers::Doublespeak
         double_collections.zip(klasses).each do |double_collection, klass|
           allow(DoubleCollection).
             to receive(:new).
-            with(klass).
+            with(world, klass).
             and_return(double_collection)
           world.double_collection_for(klass)
         end

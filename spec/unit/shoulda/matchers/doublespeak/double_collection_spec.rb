@@ -5,7 +5,7 @@ module Shoulda::Matchers::Doublespeak
     describe '#register_stub' do
       it 'calls DoubleImplementationRegistry.find correctly' do
         allow(DoubleImplementationRegistry).to receive(:find)
-        double_collection = described_class.new(:klass)
+        double_collection = described_class.new(build_world, :klass)
 
         double_collection.register_stub(:a_method)
 
@@ -13,24 +13,25 @@ module Shoulda::Matchers::Doublespeak
       end
 
       it 'calls Double.new correctly' do
+        world = build_world
         allow(DoubleImplementationRegistry).
           to receive(:find).
           and_return(:implementation)
         allow(Double).to receive(:new)
-        double_collection = described_class.new(:klass)
+        double_collection = described_class.new(world, :klass)
 
         double_collection.register_stub(:a_method)
 
         expect(Double).
           to have_received(:new).
-          with(:klass, :a_method, :implementation)
+          with(world, :klass, :a_method, :implementation)
       end
     end
 
     describe '#register_proxy' do
       it 'calls DoubleImplementationRegistry.find correctly' do
         allow(DoubleImplementationRegistry).to receive(:find)
-        double_collection = described_class.new(:klass)
+        double_collection = described_class.new(build_world, :klass)
 
         double_collection.register_proxy(:a_method)
 
@@ -40,24 +41,25 @@ module Shoulda::Matchers::Doublespeak
       end
 
       it 'calls Double.new correctly' do
+        world = build_world
         allow(DoubleImplementationRegistry).
           to receive(:find).
           and_return(:implementation)
         allow(Double).to receive(:new)
-        double_collection = described_class.new(:klass)
+        double_collection = described_class.new(world, :klass)
 
         double_collection.register_proxy(:a_method)
 
         expect(Double).
           to have_received(:new).
-          with(:klass, :a_method, :implementation)
+          with(world, :klass, :a_method, :implementation)
       end
     end
 
     describe '#activate' do
       it 'replaces all registered methods with doubles' do
         klass = create_class(first_method: 1, second_method: 2)
-        double_collection = described_class.new(klass)
+        double_collection = described_class.new(build_world, klass)
         double_collection.register_stub(:first_method)
         double_collection.register_stub(:second_method)
 
@@ -72,7 +74,7 @@ module Shoulda::Matchers::Doublespeak
     describe '#deactivate' do
       it 'restores the original methods that were doubled' do
         klass = create_class(first_method: 1, second_method: 2)
-        double_collection = described_class.new(klass)
+        double_collection = described_class.new(build_world, klass)
         double_collection.register_stub(:first_method)
         double_collection.register_stub(:second_method)
 
@@ -88,7 +90,7 @@ module Shoulda::Matchers::Doublespeak
     describe '#calls_to' do
       it 'returns all calls to the given method' do
         klass = create_class(a_method: nil)
-        double_collection = described_class.new(klass)
+        double_collection = described_class.new(build_world, klass)
         double_collection.register_stub(:a_method)
         double_collection.activate
 
@@ -108,7 +110,7 @@ module Shoulda::Matchers::Doublespeak
 
       it 'returns an empty array if the method has never been doubled' do
         klass = create_class
-        double_collection = described_class.new(klass)
+        double_collection = described_class.new(build_world, klass)
         expect(double_collection.calls_to(:non_existent_method)).to eq []
       end
     end
@@ -119,6 +121,10 @@ module Shoulda::Matchers::Doublespeak
           klass.__send__(:define_method, name) { |*args| value }
         end
       end
+    end
+
+    def build_world
+      Shoulda::Matchers::Doublespeak::World.new
     end
   end
 end

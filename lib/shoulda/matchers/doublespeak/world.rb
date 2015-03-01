@@ -4,7 +4,19 @@ module Shoulda
       # @private
       class World
         def double_collection_for(klass)
-          double_collections_by_class[klass] ||= DoubleCollection.new(klass)
+          double_collections_by_class[klass] ||=
+            DoubleCollection.new(self, klass)
+        end
+
+        def store_original_method_for(klass, method_name)
+          original_methods_for_class(klass)[method_name] ||=
+            klass.instance_method(method_name)
+        end
+
+        def original_method_for(klass, method_name)
+          if original_methods_by_class.key?(klass)
+            original_methods_by_class[klass][method_name]
+          end
         end
 
         def with_doubles_activated
@@ -30,6 +42,14 @@ module Shoulda
 
         def double_collections_by_class
           @_double_collections_by_class ||= {}
+        end
+
+        def original_methods_by_class
+          @_original_methods_by_class ||= {}
+        end
+
+        def original_methods_for_class(klass)
+          original_methods_by_class[klass] ||= {}
         end
       end
     end
