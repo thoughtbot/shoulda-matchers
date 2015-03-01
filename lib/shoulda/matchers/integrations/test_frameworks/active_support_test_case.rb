@@ -2,6 +2,7 @@ module Shoulda
   module Matchers
     module Integrations
       module TestFrameworks
+        # @private
         class ActiveSupportTestCase
           Integrations.register_test_framework(self, :active_support_test_case)
 

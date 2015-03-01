@@ -2,6 +2,7 @@ module Shoulda
   module Matchers
     module Integrations
       module TestFrameworks
+        # @private
         class Minitest4
           Integrations.register_test_framework(self, :minitest_4)
 

@@ -2,6 +2,7 @@ module Shoulda
   module Matchers
     module Integrations
       module Libraries
+        # @private
         class ActiveModel
           Integrations.register_library(self, :active_model)
 

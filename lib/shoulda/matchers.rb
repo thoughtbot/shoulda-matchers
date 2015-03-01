@@ -16,6 +16,7 @@ require 'shoulda/matchers/active_record'
 module Shoulda
   module Matchers
     class << self
+      # @private
       attr_accessor :assertion_exception_class
     end
   end

@@ -1,6 +1,7 @@
 module Shoulda
   module Matchers
     module Integrations
+      # @private
       class Registry
         def register(klass, name)
           registry[name] = klass

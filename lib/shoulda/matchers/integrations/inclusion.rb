@@ -1,6 +1,7 @@
 module Shoulda
   module Matchers
     module Integrations
+      # @private
       module Inclusion
         def include_into(mod, *other_mods, &block)
           mods_to_include = other_mods.dup

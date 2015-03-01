@@ -1,6 +1,7 @@
 module Shoulda
   module Matchers
     module Doublespeak
+      # @private
       class MethodCall
         attr_accessor :return_value
         attr_reader :method_name, :args, :block, :object, :double

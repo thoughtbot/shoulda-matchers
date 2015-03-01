@@ -2,6 +2,7 @@ module Shoulda
   module Matchers
     module Integrations
       module TestFrameworks
+        # @private
         class MissingTestFramework
           Integrations.register_test_framework(self, :missing_test_framework)
 

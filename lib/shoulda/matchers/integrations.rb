@@ -1,5 +1,6 @@
 module Shoulda
   module Matchers
+    # @private
     module Integrations
       class << self
         def register_library(klass, name)

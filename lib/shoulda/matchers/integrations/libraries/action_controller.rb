@@ -2,6 +2,7 @@ module Shoulda
   module Matchers
     module Integrations
       module Libraries
+        # @private
         class ActionController
           Integrations.register_library(self, :action_controller)
 

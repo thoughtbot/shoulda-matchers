@@ -2,6 +2,7 @@ module Shoulda
   module Matchers
     module Integrations
       module TestFrameworks
+        # @private
         class Rspec
           Integrations.register_test_framework(self, :rspec)
 
