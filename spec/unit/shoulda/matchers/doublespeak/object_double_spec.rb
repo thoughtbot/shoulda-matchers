@@ -1,4 +1,4 @@
-require 'unit_spec_helper'
+require 'doublespeak_spec_helper'
 
 module Shoulda::Matchers::Doublespeak
   describe ObjectDouble do
