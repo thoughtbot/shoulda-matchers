@@ -56,6 +56,8 @@ complex, and error-prone.
 
 * **[filter_param](lib/shoulda/matchers/action_controller/filter_param_matcher.rb)**
   tests parameter filtering configuration.
+* **[permit](lib/shoulda/matchers/action_controller/permit_matcher.rb)** tests
+  that an action places a restriction on the `params` hash.
 * **[redirect_to](lib/shoulda/matchers/action_controller/redirect_to_matcher.rb)**
   tests that an action redirects to a certain location.
 * **[render_template](lib/shoulda/matchers/action_controller/render_template_matcher.rb)**
