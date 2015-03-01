@@ -17,9 +17,9 @@ module Shoulda
           @stub_implementation = stub_implementation
         end
 
-        def call(double, object, args, block)
-          stub_implementation.call(double, object, args, block)
-          double.call_original_method(object, args, block)
+        def call(call)
+          stub_implementation.call(call)
+          call.double.call_original_method(call)
         end
 
         protected

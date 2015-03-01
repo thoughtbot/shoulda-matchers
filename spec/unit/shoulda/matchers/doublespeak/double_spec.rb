@@ -41,18 +41,26 @@ module Shoulda::Matchers::Doublespeak
     describe '#activate' do
       it 'replaces the method with an implementation' do
         implementation = build_implementation
-        klass = create_class(a_method: 42)
+        method_name = :a_method
+        klass = create_class(method_name => :some_return_value)
         instance = klass.new
-        double = described_class.new(klass, :a_method, implementation)
+        double = described_class.new(klass, method_name, implementation)
         args = [:any, :args]
         block = -> {}
+        call = MethodCall.new(
+          double: double,
+          object: instance,
+          method_name: method_name,
+          args: args,
+          block: block
+        )
 
         double.activate
-        instance.a_method(*args, &block)
+        instance.__send__(method_name, *args, &block)
 
         expect(implementation).
           to have_received(:call).
-          with(double, instance, args, block)
+          with(call)
       end
     end
 
@@ -92,29 +100,26 @@ module Shoulda::Matchers::Doublespeak
     end
 
     describe '#record_call' do
-      it 'stores the arguments and block given to the method in calls' do
-        double = described_class.new(:klass, :a_method, :implementation)
-        calls = [
-          [:any, :args], :block,
-          [:more, :args]
-        ]
-        double.record_call(calls[0][0], calls[0][1])
-        double.record_call(calls[1][0], nil)
-
-        expect(double.calls[0].args).to eq calls[0][0]
-        expect(double.calls[0].block).to eq calls[0][1]
-        expect(double.calls[1].args).to eq calls[1][0]
+      it 'adds the given call to the list of calls' do
+        double = described_class.new(:a_klass, :a_method, :an_implementation)
+        double.record_call(:some_call)
+        expect(double.calls.last).to eq :some_call
       end
     end
 
     describe '#call_original_method' do
-      it 'binds the stored method object to the class and calls it with the given args and block' do
+      it 'binds the stored method object to the given object and calls it with the given args and block' do
         klass = create_class
         instance = klass.new
         actual_args = actual_block = method_called = nil
         expected_args = [:one, :two, :three]
         expected_block = -> { }
-        double = described_class.new(klass, :a_method, :implementation)
+        call = double('call',
+          object: instance,
+          args: expected_args,
+          block: expected_block
+        )
+        double = described_class.new(klass, :a_method, :an_implementation)
 
         klass.__send__(:define_method, :a_method) do |*args, &block|
           actual_args = expected_args
@@ -123,7 +128,7 @@ module Shoulda::Matchers::Doublespeak
         end
 
         double.activate
-        double.call_original_method(instance, expected_args, expected_block)
+        double.call_original_method(call)
 
         expect(expected_args).to eq actual_args
         expect(expected_block).to eq actual_block
@@ -131,11 +136,8 @@ module Shoulda::Matchers::Doublespeak
       end
 
       it 'does nothing if no method has been stored' do
-        double = described_class.new(:klass, :a_method, :implementation)
-
-        expect {
-          double.call_original_method(:instance, [:any, :args], nil)
-        }.not_to raise_error
+        double = described_class.new(:klass, :a_method, :an_implementation)
+        expect { double.call_original_method(:a_call) }.not_to raise_error
       end
     end
 

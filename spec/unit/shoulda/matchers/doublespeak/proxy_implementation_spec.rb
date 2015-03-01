@@ -15,24 +15,28 @@ module Shoulda::Matchers::Doublespeak
     describe '#call' do
       it 'delegates to its stub_implementation' do
         stub_implementation = build_stub_implementation
-        double = build_double
+        call = build_call
         implementation = described_class.new(stub_implementation)
-        implementation.call(double, :object, :args, :block)
+
+        implementation.call(call)
 
         expect(stub_implementation).
           to have_received(:call).
-          with(double, :object, :args, :block)
+          with(call)
       end
 
       it 'calls #call_original_method on the double' do
         stub_implementation = build_stub_implementation
-        implementation = described_class.new(stub_implementation)
         double = build_double
-        implementation.call(double, :object, :args, :block)
+        call = build_call(double: double)
+        allow(double).to receive(:call_original_method).and_return(call)
+        implementation = described_class.new(stub_implementation)
+
+        implementation.call(call)
 
         expect(double).
           to have_received(:call_original_method).
-          with(:object, :args, :block)
+          with(call)
       end
     end
 
@@ -42,6 +46,10 @@ module Shoulda::Matchers::Doublespeak
 
     def build_double
       double('double', call_original_method: nil)
+    end
+
+    def build_call(double: build_double)
+      double('call', double: double)
     end
   end
 end

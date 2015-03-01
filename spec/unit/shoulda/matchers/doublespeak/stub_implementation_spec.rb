@@ -6,18 +6,20 @@ module Shoulda::Matchers::Doublespeak
       it 'calls #record_call on the double' do
         implementation = described_class.new
         double = build_double
+        call = build_call(double: double)
 
-        allow(double).to receive(:record_call).with(:args, :block)
+        allow(double).to receive(:record_call).with(call)
 
-        implementation.call(double, :object, :args, :block)
+        implementation.call(call)
       end
 
       context 'if no explicit implementation was set' do
         it 'returns nil' do
           implementation = described_class.new
           double = build_double
+          call = build_call(double: double)
 
-          return_value = implementation.call(double, :object, :args, :block)
+          return_value = implementation.call(call)
 
           expect(return_value).to eq nil
         end
@@ -28,29 +30,33 @@ module Shoulda::Matchers::Doublespeak
           implementation = described_class.new
           implementation.returns(42)
           double = build_double
+          call = build_call(double: double)
 
-          return_value = implementation.call(double, :object, :args, :block)
+          return_value = implementation.call(call)
 
           expect(return_value).to eq 42
         end
       end
 
       context 'if the implementation was set as a block' do
-        it 'calls the block with the object and args/block passed to the method' do
+        it 'calls the block with the MethodCall object the implementation was called with' do
           double = build_double
           expected_object, expected_args, expected_block = :object, :args, :block
+          call = build_call(
+            double: double,
+            object: expected_object,
+            args: expected_args,
+            block: expected_block
+          )
           actual_object, actual_args, actual_block = []
           implementation = described_class.new
-          implementation.returns do |object, args, block|
-            actual_object, actual_args, actual_block = object, args, block
+          implementation.returns do |actual_call|
+            actual_object = actual_call.object
+            actual_args = actual_call.args
+            actual_block = actual_call.block
           end
 
-          implementation.call(
-            double,
-            expected_object,
-            expected_args,
-            expected_block
-          )
+          implementation.call(call)
 
           expect(actual_object).to eq expected_object
           expect(actual_args).to eq expected_args
@@ -61,8 +67,9 @@ module Shoulda::Matchers::Doublespeak
           implementation = described_class.new
           implementation.returns { 42 }
           double = build_double
+          call = build_call(double: double)
 
-          return_value = implementation.call(double, :object, :args, :block)
+          return_value = implementation.call(call)
 
           expect(return_value).to eq 42
         end
@@ -73,8 +80,9 @@ module Shoulda::Matchers::Doublespeak
           implementation = described_class.new
           implementation.returns(:something_else) { 42 }
           double = build_double
+          call = build_call(double: double)
 
-          return_value = implementation.call(double, :object, :args, :block)
+          return_value = implementation.call(call)
 
           expect(return_value).to eq 42
         end
@@ -83,6 +91,11 @@ module Shoulda::Matchers::Doublespeak
 
     def build_double
       double('double', record_call: nil)
+    end
+
+    def build_call(options = {})
+      defaults = { double: build_double }
+      double('call', defaults.merge(options))
     end
   end
 end

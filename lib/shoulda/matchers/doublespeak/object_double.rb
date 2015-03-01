@@ -19,8 +19,13 @@ module Shoulda
         end
 
         def method_missing(method_name, *args, &block)
-          calls << MethodCallWithName.new(method_name, args, block)
-          (calls_by_method_name[method_name] ||= []) << MethodCall.new(args, block)
+          call = MethodCall.new(
+            method_name: method_name,
+            args: args,
+            block: block
+          )
+          calls << call
+          (calls_by_method_name[method_name] ||= []) << call
           nil
         end
 

@@ -36,13 +36,13 @@ module Shoulda
           end
         end
 
-        def record_call(args, block)
-          calls << MethodCall.new(args, block)
+        def record_call(call)
+          calls << call
         end
 
-        def call_original_method(object, args, block)
+        def call_original_method(call)
           if original_method
-            original_method.bind(object).call(*args, &block)
+            original_method.bind(call.object).call(*call.args, &call.block)
           end
         end
 
@@ -55,11 +55,19 @@ module Shoulda
         end
 
         def replace_method_with_double
-          implementation = @implementation
           double = self
+          implementation = @implementation
+          _method_name = method_name
 
           klass.__send__(:define_method, method_name) do |*args, &block|
-            implementation.call(double, self, args, block)
+            call = MethodCall.new(
+              double: double,
+              object: self,
+              method_name: _method_name,
+              args: args,
+              block: block
+            )
+            implementation.call(call)
           end
         end
 
