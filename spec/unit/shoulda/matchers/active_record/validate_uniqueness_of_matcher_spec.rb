@@ -664,6 +664,21 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
     end
   end
 
+  context 'when the scope_to is used and existing records contain nil values on scoped attribute' do
+    it 'still works' do
+      model = define_model_validating_uniqueness(
+          scopes: [name: :scope1])
+
+      create_record_from(model, attribute_name: 'uniq 1', scope1: 'uniq 1')
+      create_record_from(model, attribute_name: 'rec with nil desc', scope1: nil)
+      record = build_record_from(model, attribute_name: 'this should be ok', scope1: 'this should be ok')
+
+      expect(record).
+        to validate_uniqueness.
+        scoped_to(:scope1)
+    end
+  end
+
   let(:model_attributes) { {} }
 
   def default_attribute
