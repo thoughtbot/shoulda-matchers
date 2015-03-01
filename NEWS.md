@@ -55,6 +55,9 @@
 * Fix `permit` so that it does not break the functionality of
   ActionController::Parameters#require. ([#648], [#675])
 
+* Fix `validate_uniqueness_of` + `scoped_to` so that it does not raise an error
+  if a record exists where the scoped attribute is nil. ([#677])
+
 ### Features
 
 * Add `on` qualifier to `permit`. This allows you to make an assertion that
@@ -71,6 +74,7 @@
 [#607]: https://github.com/thoughtbot/shoulda-matchers/pull/607
 [#648]: https://github.com/thoughtbot/shoulda-matchers/pull/648
 [#675]: https://github.com/thoughtbot/shoulda-matchers/pull/675
+[#677]: https://github.com/thoughtbot/shoulda-matchers/pull/677
 
 # 2.8.0
 

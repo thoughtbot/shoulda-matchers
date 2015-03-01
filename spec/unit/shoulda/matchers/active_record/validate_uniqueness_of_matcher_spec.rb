@@ -390,6 +390,17 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
           array: true
       end
     end
+
+    context "when an existing record that is not the first has a nil value for the scoped attribute" do
+      it 'still works' do
+        model = define_model_validating_uniqueness(scopes: [:scope])
+        create_record_from(model, scope: 'some value')
+        create_record_from(model, scope: nil)
+        record = build_record_from(model, scope: 'a different value')
+
+        expect(record).to validate_uniqueness.scoped_to(:scope)
+      end
+    end
   end
 
   context 'when the model has a case-sensitive validation' do
