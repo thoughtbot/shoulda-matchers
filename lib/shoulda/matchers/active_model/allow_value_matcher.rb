@@ -118,9 +118,36 @@ module Shoulda
       #         with_message('State must be open or closed')
       #     end
       #
+      # Use `with_message` with a regexp to perform a partial match:
+      #
+      #     class UserProfile
+      #       include ActiveModel::Model
+      #       attr_accessor :state
+      #
+      #       validates_format_of :state,
+      #         with: /^(open|closed)$/,
+      #         message: 'State must be open or closed'
+      #     end
+      #
+      #     # RSpec
+      #     describe UserProfile do
+      #       it do
+      #         should allow_value('open', 'closed').
+      #           for(:state).
+      #           with_message(/open or closed/)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class UserProfileTest < ActiveSupport::TestCase
+      #       should allow_value('open', 'closed').
+      #         for(:state).
+      #         with_message(/open or closed/)
+      #     end
+      #
       # Use `with_message` with the `:against` option if the attribute the
       # validation message is stored under is different from the attribute
-      # being validated.
+      # being validated:
       #
       #     class UserProfile
       #       include ActiveModel::Model
