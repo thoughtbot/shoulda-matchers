@@ -2,8 +2,9 @@ module Shoulda
   module Matchers
     module ActiveModel
       # The `allow_value` matcher is used to test that an attribute of a model
-      # can or cannot be set to a particular value or values. It is most
-      # commonly used in conjunction with the `validates_format_of` validation.
+      # can or cannot be set to a particular value. It is most commonly used in
+      # conjunction with the `validates_format_of` validation, but is applicable
+      # in other contexts as well.
       #
       # #### should
       #
