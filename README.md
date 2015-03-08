@@ -6,6 +6,8 @@ shoulda-matchers provides Test::Unit- and RSpec-compatible one-liners that test
 common Rails functionality. These tests would otherwise be much longer, more
 complex, and error-prone.
 
+Thank you to all the [contributors][contributors].
+
 ### ActiveModel Matchers
 
 * **[allow_mass_assignment_of](lib/shoulda/matchers/active_model/allow_mass_assignment_of_matcher.rb)**
@@ -169,24 +171,31 @@ and over again, keep this command running in a separate terminal session:
 shoulda-matchers follows Semantic Versioning 2.0 as defined at
 <http://semver.org>.
 
-## Credits
-
-shoulda-matchers is maintained and funded by [thoughtbot][community]. Thank you
-to all the [contributors][contributors].
-
 ## License
 
 shoulda-matchers is copyright © 2006-2015 [thoughtbot, inc](https://thoughtbot.com/). It is free software,
 and may be redistributed under the terms specified in the
 [MIT-LICENSE](MIT-LICENSE) file.
 
+## About thoughtbot
+
+![thoughtbot](https://thoughtbot.com/logo.png)
+
+shoulda-matchers is maintained and funded by thoughtbot, inc. 
+The names and logos for thoughtbot are trademarks of thoughtbot, inc.
+
+We are passionate about open source software.
+See [our other projects][community].
+We are [available for hire][hire].
+
+[community]: https://thoughtbot.com/community?utm_source=github
+[hire]: https://thoughtbot.com?utm_source=github
 [version-badge]: http://img.shields.io/gem/v/shoulda-matchers.svg
 [rubygems]: http://rubygems.org/gems/shoulda-matchers
 [travis-badge]: http://img.shields.io/travis/thoughtbot/shoulda-matchers/master.svg
 [travis]: http://travis-ci.org/thoughtbot/shoulda-matchers
 [downloads-badge]: http://img.shields.io/gem/dtv/shoulda-matchers.svg
 [rubydocs]: http://matchers.shoulda.io/docs
-[community]: http://thoughtbot.com/community
 [contributors]: https://github.com/thoughtbot/shoulda-matchers/contributors
 [shoulda]: http://github.com/thoughtbot/shoulda
 [shoulda-context]: http://github.com/thoughtbot/shoulda-context
