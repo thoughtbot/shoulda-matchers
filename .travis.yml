@@ -3,10 +3,6 @@ sudo: false
 cache: bundler
 script: "bundle exec rake"
 
-branches:
-  only:
-    - master
-
 env:
   - DATABASE_ADAPTER=sqlite3
   - DATABASE_ADAPTER=postgresql
