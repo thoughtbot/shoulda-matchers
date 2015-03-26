@@ -76,13 +76,13 @@ Thank you to all the [contributors][contributors].
   makes assertions on the `session` hash.
 * **[set_flash](lib/shoulda/matchers/action_controller/set_flash_matcher.rb)**
   makes assertions on the `flash` hash.
-* **[use_after_action](lib/shoulda/matchers/action_controller/use_after_action.rb)**
+* **[use_after_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L79)**
   tests that a `after_action` callback is defined in your controller. (Aliased
   as *use_after_filter*.)
-* **[use_around_action](lib/shoulda/matchers/action_controller/use_around_action.rb)**
+* **[use_around_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L129)**
   tests that a `around_action` callback is defined in your controller. (Aliased
   as *use_around_filter*.)
-* **[use_before_action](lib/shoulda/matchers/action_controller/use_before_action.rb)**
+* **[use_before_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L54)**
   tests that a `before_action` callback is defined in your controller. (Aliased
   as *use_before_filter*.)
 
@@ -181,7 +181,7 @@ and may be redistributed under the terms specified in the
 
 ![thoughtbot](https://thoughtbot.com/logo.png)
 
-shoulda-matchers is maintained and funded by thoughtbot, inc. 
+shoulda-matchers is maintained and funded by thoughtbot, inc.
 The names and logos for thoughtbot are trademarks of thoughtbot, inc.
 
 We are passionate about open source software.
