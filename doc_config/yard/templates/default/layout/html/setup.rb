@@ -21,7 +21,7 @@ def diskfile
 end
 
 def preprocess_index(contents)
-  regex = /\[ (\w+) \] \( lib\/([^()]+)\.rb \)/x
+  regex = /\[ (\w+) \] \( lib \/ ([^()]+) \.rb (?:\#L\d+)? \)/x
 
   contents.gsub(regex) do
     method_name, file_path = $1, $2
