@@ -23,6 +23,30 @@ module Shoulda
       #
       # #### Qualifiers
       #
+      # ##### on
+      #
+      # Use `on` if your validation applies only under a certain context.
+      #
+      #     class Registration
+      #       include ActiveModel::Model
+      #       attr_accessor :terms_of_service
+      #
+      #       validates_acceptance_of :terms_of_service, on: :create
+      #     end
+      #
+      #     # RSpec
+      #     describe Registration do
+      #       it do
+      #         should validate_acceptance_of(:terms_of_service).
+      #           on(:create)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class RegistrationTest < ActiveSupport::TestCase
+      #       should validate_acceptance_of(:terms_of_service).on(:create)
+      #     end
+      #
       # ##### with_message
       #
       # Use `with_message` if you are using a custom validation message.
