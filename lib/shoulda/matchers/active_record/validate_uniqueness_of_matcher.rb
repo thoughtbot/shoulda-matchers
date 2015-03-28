@@ -88,6 +88,22 @@ module Shoulda
       #
       # #### Qualifiers
       #
+      # Use `on` if your validation applies only under a certain context.
+      #
+      #     class Post < ActiveRecord::Base
+      #       validates_uniqueness_of :title, on: :create
+      #     end
+      #
+      #     # RSpec
+      #     describe Post do
+      #       it { should validate_uniqueness_of(:title).on(:create) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PostTest < ActiveSupport::TestCase
+      #       should validate_uniqueness_of(:title).on(:create)
+      #     end
+      #
       # ##### with_message
       #
       # Use `with_message` if you are using a custom validation message.
