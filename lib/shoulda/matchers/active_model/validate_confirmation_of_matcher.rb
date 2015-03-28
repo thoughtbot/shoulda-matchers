@@ -23,6 +23,27 @@ module Shoulda
       #
       # #### Qualifiers
       #
+      # ##### on
+      #
+      # Use `on` if your validation applies only under a certain context.
+      #
+      #     class User
+      #       include ActiveModel::Model
+      #       attr_accessor :password
+      #
+      #       validates_confirmation_of :password, on: :create
+      #     end
+      #
+      #     # RSpec
+      #     describe User do
+      #       it { should validate_confirmation_of(:password).on(:create) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class UserTest < ActiveSupport::TestCase
+      #       should validate_confirmation_of(:password).on(:create)
+      #     end
+      #
       # ##### with_message
       #
       # Use `with_message` if you are using a custom validation message.
