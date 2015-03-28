@@ -7,6 +7,31 @@ module Shoulda
       #
       # #### Qualifiers
       #
+      # Use `on` if your validation applies only under a certain context.
+      #
+      #     class User
+      #       include ActiveModel::Model
+      #       attr_accessor :password
+      #
+      #       validates_length_of :password, minimum: 10, on: :create
+      #     end
+      #
+      #     # RSpec
+      #     describe User do
+      #       it do
+      #         should validate_length_of(:password).
+      #           is_at_least(10).
+      #           on(:create)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class UserTest < ActiveSupport::TestCase
+      #       should validate_length_of(:password).
+      #         is_at_least(10).
+      #         on(:create)
+      #     end
+      #
       # ##### is_at_least
       #
       # Use `is_at_least` to test usage of the `:minimum` option. This asserts
