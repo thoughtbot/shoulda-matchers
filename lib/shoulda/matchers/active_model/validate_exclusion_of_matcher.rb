@@ -54,6 +54,35 @@ module Shoulda
       #
       # #### Qualifiers
       #
+      # ##### on
+      #
+      # Use `on` if your validation applies only under a certain context.
+      #
+      #     class Game
+      #       include ActiveModel::Model
+      #       attr_accessor :weapon
+      #
+      #       validates_exclusion_of :weapon,
+      #         in: ['pistol', 'paintball gun', 'stick'],
+      #         on: :create
+      #     end
+      #
+      #     # RSpec
+      #     describe Game do
+      #       it do
+      #         should validate_exclusion_of(:weapon).
+      #           in_array(['pistol', 'paintball gun', 'stick']).
+      #           on(:create)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class GameTest < ActiveSupport::TestCase
+      #       should validate_exclusion_of(:weapon).
+      #         in_array(['pistol', 'paintball gun', 'stick']).
+      #         on(:create)
+      #     end
+      #
       # ##### with_message
       #
       # Use `with_message` if you are using a custom validation message.
