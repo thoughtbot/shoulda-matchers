@@ -135,9 +135,9 @@ module Shoulda
       #
       #     class User
       #       include ActiveModel::Model
-      #       attr_accessor :api_token
+      #       attr_accessor :password
       #
-      #       validates_length_of :api_token,
+      #       validates_length_of :password,
       #         minimum: 10,
       #         message: "Password isn't long enough"
       #     end
