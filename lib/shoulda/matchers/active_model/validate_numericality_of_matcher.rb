@@ -23,6 +23,30 @@ module Shoulda
       #
       # #### Qualifiers
       #
+      # ##### on
+      #
+      # Use `on` if your validation applies only under a certain context.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attr_accessor :number_of_dependents
+      #
+      #       validates_numericality_of :number_of_dependents, on: :create
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it do
+      #         should validate_numericality_of(:number_of_dependents).
+      #           on(:create)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_numericality_of(:number_of_dependents).on(:create)
+      #     end
+      #
       # ##### only_integer
       #
       # Use `only_integer` to test usage of the `:only_integer` option. This
