@@ -23,6 +23,27 @@ module Shoulda
       #
       # #### Qualifiers
       #
+      # ##### on
+      #
+      # Use `on` if your validation applies only under a certain context.
+      #
+      #     class Artillery
+      #       include ActiveModel::Model
+      #       attr_accessor :arms
+      #
+      #       validates_absence_of :arms, on: :create
+      #     end
+      #
+      #     # RSpec
+      #     describe Artillery do
+      #       it { should validate_absence_of(:arms).on(:create) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class ArtilleryTest < ActiveSupport::TestCase
+      #       should validate_absence_of(:arms).on(:create)
+      #     end
+      #
       # ##### with_message
       #
       # Use `with_message` if you are using a custom validation message.
