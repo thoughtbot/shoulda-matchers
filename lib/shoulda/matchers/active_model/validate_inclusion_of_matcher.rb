@@ -67,6 +67,33 @@ module Shoulda
       #
       # #### Qualifiers
       #
+      # Use `on` if your validation applies only under a certain context.
+      #
+      #     class Issue
+      #       include ActiveModel::Model
+      #       attr_accessor :severity
+      #
+      #       validates_inclusion_of :severity,
+      #         in: %w(low medium high),
+      #         on: :create
+      #     end
+      #
+      #     # RSpec
+      #     describe Issue do
+      #       it do
+      #         should validate_inclusion_of(:severity).
+      #           in_array(%w(low medium high)).
+      #           on(:create)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class IssueTest < ActiveSupport::TestCase
+      #       should validate_inclusion_of(:severity).
+      #         in_array(%w(low medium high)).
+      #         on(:create)
+      #     end
+      #
       # ##### with_message
       #
       # Use `with_message` if you are using a custom validation message.
