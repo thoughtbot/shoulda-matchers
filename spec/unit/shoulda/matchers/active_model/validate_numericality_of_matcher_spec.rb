@@ -1,425 +1,777 @@
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :model do
-  context 'with a model with a numericality validation' do
-    it 'accepts' do
-      expect(validating_numericality).to matcher
+  class << self
+    def all_qualifiers
+      [
+        {
+          category: :comparison,
+          name: :is_greater_than,
+          argument: 1,
+          validation_name: :greater_than,
+          validation_value: 1,
+        },
+        {
+          category: :comparison,
+          name: :is_greater_than_or_equal_to,
+          argument: 1,
+          validation_name: :greater_than_or_equal_to,
+          validation_value: 1,
+        },
+        {
+          category: :comparison,
+          name: :is_less_than,
+          argument: 1,
+          validation_name: :less_than,
+          validation_value: 1,
+        },
+        {
+          category: :comparison,
+          name: :is_less_than_or_equal_to,
+          argument: 1,
+          validation_name: :less_than_or_equal_to,
+          validation_value: 1,
+        },
+        {
+          category: :comparison,
+          name: :is_equal_to,
+          argument: 1,
+          validation_name: :equal_to,
+          validation_value: 1,
+        },
+        {
+          category: :cardinality,
+          name: :odd,
+          validation_name: :odd,
+          validation_value: true,
+        },
+        {
+          category: :cardinality,
+          name: :even,
+          validation_name: :even,
+          validation_value: true,
+        },
+        {
+          name: :only_integer,
+          validation_name: :only_integer,
+          validation_value: true,
+        }
+      ]
     end
 
-    it 'does not override the default message with a blank' do
-      expect(validating_numericality).to matcher.with_message(nil)
-    end
-  end
-
-  context 'with a model without a numericality validation' do
-    it 'rejects' do
-      expect(not_validating_numericality).not_to matcher
+    def qualifiers_under(category)
+      all_qualifiers.select do |qualifier|
+        qualifier[:category] == category
+      end
     end
 
-    it 'rejects with the ActiveRecord :not_a_number message' do
-      the_matcher = matcher
-      expect do
-        expect(not_validating_numericality).to the_matcher
-      end.to fail_with_message_including(
-        'Expected errors to include "is not a number"'
-      )
+    def mutually_exclusive_qualifiers
+      qualifiers_under(:cardinality) + qualifiers_under(:comparison)
     end
 
-    it 'rejects with the ActiveRecord :not_an_integer message' do
-      the_matcher = matcher.only_integer
-      expect do
-        expect(not_validating_numericality).to the_matcher
-      end.to fail_with_message_including(
-        'Expected errors to include "must be an integer"'
-      )
+    def non_mutually_exclusive_qualifiers
+      all_qualifiers - mutually_exclusive_qualifiers
     end
 
-    it 'rejects with the ActiveRecord :odd message' do
-      the_matcher = matcher.odd
-      expect do
-        expect(not_validating_numericality).to the_matcher
-      end.to fail_with_message_including(
-        'Expected errors to include "must be odd"'
-      )
+    def validations_by_qualifier
+      all_qualifiers.each_with_object({}) do |qualifier, hash|
+        hash[qualifier[:name]] = qualifier[:validation_name]
+      end
     end
 
-    it 'rejects with the ActiveRecord :even message' do
-      the_matcher = matcher.even
-      expect do
-        expect(not_validating_numericality).to the_matcher
-      end.to fail_with_message_including(
-        'Expected errors to include "must be even"'
-      )
-    end
-  end
+    def all_qualifier_combinations
+      combinations = []
 
-  context 'with the allow_nil option' do
-    it 'allows nil values for that attribute' do
-      expect(validating_numericality(allow_nil: true)).to matcher.allow_nil
-    end
+      ([nil] + mutually_exclusive_qualifiers).each do |mutually_exclusive_qualifier|
+        (0..non_mutually_exclusive_qualifiers.length).each do |n|
+          non_mutually_exclusive_qualifiers.combination(n) do |combination|
+            super_combination = (
+              [mutually_exclusive_qualifier] +
+              combination
+            )
+            super_combination.select!(&:present?)
 
-    it 'rejects when the model does not allow nil' do
-      the_matcher = matcher.allow_nil
-      expect {
-        expect(validating_numericality).to the_matcher
-      }.to fail_with_message_including('Did not expect errors to include "is not a number"')
-    end
-  end
+            if super_combination.any?
+              combinations << super_combination
+            end
+          end
+        end
+      end
 
-  context 'with the only_integer option' do
-    it 'allows integer values for that attribute' do
-      expect(validating_numericality(only_integer: true)).to matcher.only_integer
+      combinations
     end
 
-    it 'rejects when the model does not enforce integer values' do
-      expect(validating_numericality).not_to matcher.only_integer
+    def default_qualifier_arguments
+      all_qualifiers.each_with_object({}) do |qualifier, hash|
+        hash[qualifier[:name]] = qualifier[:argument]
+      end
     end
 
-    it 'rejects with the ActiveRecord :not_an_integer message' do
-      the_matcher = matcher.only_integer
-      expect do
-        expect(validating_numericality).to the_matcher
-      end.to fail_with_message_including(
-        'Expected errors to include "must be an integer"'
-      )
-    end
-  end
-
-  context 'with the odd option' do
-    it 'allows odd number values for that attribute' do
-      expect(validating_numericality(odd: true)).to matcher.odd
-    end
-
-    it 'rejects when the model does not enforce odd number values' do
-      expect(validating_numericality).not_to matcher.odd
-    end
-
-    it 'rejects with the ActiveRecord :odd message' do
-      the_matcher = matcher.odd
-      expect do
-        expect(validating_numericality).to the_matcher
-      end.to fail_with_message_including(
-        'Expected errors to include "must be odd"'
-      )
-    end
-  end
-
-  context 'with the even option' do
-    it 'allows even number values for that attribute' do
-      expect(validating_numericality(even: true)).to matcher.even
-    end
-
-    it 'rejects when the model does not enforce even number values' do
-      expect(validating_numericality).not_to matcher.even
-    end
-
-    it 'rejects with the ActiveRecord :even message' do
-      the_matcher = matcher.even
-      expect do
-        expect(validating_numericality).to the_matcher
-      end.to fail_with_message_including(
-        'Expected errors to include "must be even"'
-      )
+    def default_validation_values
+      all_qualifiers.each_with_object({}) do |qualifier, hash|
+        hash[qualifier[:validation_name]] = qualifier[:validation_value]
+      end
     end
   end
 
-  context 'qualified with less_than_or_equal_to' do
-    it 'does not raise an error if the given value is right at the allowed max value for the column' do
-      record = record_with_integer_column_of_limit(:attr, 2, less_than_or_equal_to: 32767)
-      assertion = -> {
-        expect(record).to validate_numericality_of(:attr).is_less_than_or_equal_to(32767)
-      }
-      expect(&assertion).not_to raise_error
+  context 'qualified with nothing' do
+    context 'and validating numericality' do
+      it 'accepts' do
+        record = build_record_validating_numericality
+        expect(record).to validate_numericality
+      end
+    end
+
+    context 'and not validating anything' do
+      it 'rejects since it does not disallow non-numbers' do
+        record = build_record_validating_nothing
+        assertion = -> { expect(record).to validate_numericality }
+        expect(&assertion).to fail_with_message_including(
+          'Expected errors to include "is not a number"'
+        )
+      end
     end
   end
 
-  context 'qualified with less_than' do
-    it 'does not raise an error if the given value is right at the allowed max value for the column' do
-      record = record_with_integer_column_of_limit(:attr, 2, less_than: 32767)
-      assertion = -> {
-        expect(record).to validate_numericality_of(:attr).is_less_than(32767)
-      }
-      expect(&assertion).not_to raise_error
+  context 'qualified with allow_nil' do
+    context 'and validating with allow_nil' do
+      it 'accepts' do
+        record = build_record_validating_numericality(allow_nil: true)
+        expect(record).to validate_numericality.allow_nil
+      end
+    end
+
+    context 'and not validating with allow_nil' do
+      it 'rejects since it tries to treat nil as a number' do
+        record = build_record_validating_numericality
+        assertion = lambda do
+          expect(record).to validate_numericality.allow_nil
+        end
+        expect(&assertion).to fail_with_message_including(
+          %[Did not expect errors to include "is not a number" when #{attribute_name} is set to nil]
+        )
+      end
     end
   end
 
-  context 'qualified with equal_to' do
-    it 'does not raise an error if the given value is right at the allowed min value for the column' do
-      record = record_with_integer_column_of_limit(:attr, 2, equal_to: -32768)
-      assertion = -> {
-        expect(record).to validate_numericality_of(:attr).is_equal_to(-32768)
-      }
-      expect(&assertion).not_to raise_error
+  context 'qualified with only_integer' do
+    context 'and validating with only_integer' do
+      it 'accepts' do
+        record = build_record_validating_numericality(only_integer: true)
+        expect(record).to validate_numericality.only_integer
+      end
     end
 
-    it 'does not raise an error if the given value is right at the allowed max value for the column' do
-      record = record_with_integer_column_of_limit(:attr, 2, equal_to: 32767)
-      assertion = -> {
-        expect(record).to validate_numericality_of(:attr).is_equal_to(32767)
-      }
-      expect(&assertion).not_to raise_error
+    context 'and not validating with only_integer' do
+      it 'rejects since it does not disallow non-integers' do
+        record = build_record_validating_numericality
+        assertion = lambda do
+          expect(record).to validate_numericality.only_integer
+        end
+        expect(&assertion).to fail_with_message_including(
+          'Expected errors to include "must be an integer"'
+        )
+      end
     end
   end
 
-  context 'qualified with greater_than_or_equal to' do
-    it 'does not raise an error if the given value is right at the allowed min value for the column' do
-      record = record_with_integer_column_of_limit(:attr, 2,
-        greater_than_or_equal_to: -32768
-      )
-      assertion = -> {
+  context 'qualified with odd' do
+    context 'and validating with odd' do
+      it 'accepts' do
+        record = build_record_validating_numericality(odd: true)
+        expect(record).to validate_numericality.odd
+      end
+    end
+
+    context 'and not validating with odd' do
+      it 'rejects since it does not disallow even numbers' do
+        record = build_record_validating_numericality
+        assertion = lambda do
+          expect(record).to validate_numericality.odd
+        end
+        expect(&assertion).to fail_with_message_including(
+          'Expected errors to include "must be odd"'
+        )
+      end
+    end
+  end
+
+  context 'qualified with even' do
+    context 'and validating with even' do
+      it 'allows even number values for that attribute' do
+        record = build_record_validating_numericality(even: true)
+        expect(record).to validate_numericality.even
+      end
+    end
+
+    context 'and not validating with even' do
+      it 'rejects since it does not disallow odd numbers' do
+        record = build_record_validating_numericality
+        assertion = -> { expect(record).to validate_numericality.even }
+        expect(&assertion).to fail_with_message_including(
+          'Expected errors to include "must be even"'
+        )
+      end
+    end
+  end
+
+  context 'qualified with is_less_than_or_equal_to' do
+    context 'and validating with less_than_or_equal_to' do
+      it 'accepts' do
+        record = build_record_validating_numericality(
+          less_than_or_equal_to: 18
+        )
+        expect(record).to validate_numericality.is_less_than_or_equal_to(18)
+      end
+
+      context 'if the given value is right at the allowed max value for the column' do
+        it 'does not raise an error' do
+          record = build_record_with_integer_column_of_limit(2,
+            less_than_or_equal_to: 32767
+          )
+          assertion = lambda do
+            expect(record).
+              to validate_numericality.
+              is_less_than_or_equal_to(32767)
+          end
+          expect(&assertion).not_to raise_error
+        end
+      end
+    end
+
+    context 'and not validating with less_than_or_equal_to' do
+      it 'rejects since it does not disallow numbers greater than the value' do
+        record = build_record_validating_numericality
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            is_less_than_or_equal_to(18)
+        end
+        expect(&assertion).to fail_with_message_including(
+          'Expected errors to include "must be less than or equal to 18"'
+        )
+      end
+    end
+  end
+
+  context 'qualified with is_less_than' do
+    context 'and validating with less_than' do
+      it 'accepts' do
+        record = build_record_validating_numericality(less_than: 18)
         expect(record).
-          to validate_numericality_of(:attr).
-          is_greater_than_or_equal_to(-32768)
-      }
-      expect(&assertion).not_to raise_error
+          to validate_numericality.
+          is_less_than(18)
+      end
+
+      context 'if the given value is right at the allowed max value for the column' do
+        it 'does not raise an error' do
+          record = build_record_with_integer_column_of_limit(2, less_than: 32767)
+          assertion = lambda do
+            expect(record).to validate_numericality.is_less_than(32767)
+          end
+          expect(&assertion).not_to raise_error
+        end
+      end
+    end
+
+    context 'and not validating with less_than' do
+      it 'rejects since it does not disallow numbers greater than or equal to the value' do
+        record = build_record_validating_numericality
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            is_less_than(18)
+        end
+        expect(&assertion).to fail_with_message_including(
+          'Expected errors to include "must be less than 18"'
+        )
+      end
     end
   end
 
-  context 'qualified with greater_than' do
-    it 'does not raise an error if the given value is right at the allowed min value for the column' do
-      record = record_with_integer_column_of_limit(:attr, 2,
-        greater_than: -32768
-      )
-      assertion = -> {
+  context 'qualified with is_equal_to' do
+    context 'and validating with equal_to' do
+      it 'accepts' do
+        record = build_record_validating_numericality(equal_to: 18)
+        expect(record).to validate_numericality.is_equal_to(18)
+      end
+
+      context 'if the given value is right at the allowed min value for the column' do
+        it 'does not raise an error' do
+          record = build_record_with_integer_column_of_limit(2, equal_to: -32768)
+          assertion = lambda do
+            expect(record).to validate_numericality.is_equal_to(-32768)
+          end
+          expect(&assertion).not_to raise_error
+        end
+      end
+
+      context 'if the given value is right at the allowed max value for the column' do
+        it 'does not raise an error' do
+          record = build_record_with_integer_column_of_limit(2, equal_to: 32767)
+          assertion = lambda do
+            expect(record).to validate_numericality.is_equal_to(32767)
+          end
+          expect(&assertion).not_to raise_error
+        end
+      end
+    end
+
+    context 'and not validating with equal_to' do
+      it 'rejects since it does not disallow numbers that are not the value' do
+        record = build_record_validating_numericality
+        assertion = lambda do
+          expect(record).to validate_numericality.is_equal_to(18)
+        end
+        expect(&assertion).to fail_with_message_including(
+          'Expected errors to include "must be equal to 18"'
+        )
+      end
+    end
+  end
+
+  context 'qualified with is_greater_than_or_equal to' do
+    context 'validating with greater_than_or_equal_to' do
+      it 'accepts' do
+        record = build_record_validating_numericality(
+          greater_than_or_equal_to: 18
+        )
         expect(record).
-          to validate_numericality_of(:attr).
-          is_greater_than(-32768)
-      }
-      expect(&assertion).not_to raise_error
+          to validate_numericality.
+          is_greater_than_or_equal_to(18)
+      end
+
+      context 'if the given value is right at the allowed min value for the column' do
+        it 'does not raise an error' do
+          record = build_record_with_integer_column_of_limit(2,
+            greater_than_or_equal_to: -32768
+          )
+          assertion = lambda do
+            expect(record).
+              to validate_numericality_of(:attr).
+              is_greater_than_or_equal_to(-32768)
+          end
+          expect(&assertion).not_to raise_error
+        end
+      end
+    end
+
+    context 'not validating with greater_than_or_equal_to' do
+      it 'rejects since it does not disallow numbers that are less than the value' do
+        record = build_record_validating_numericality
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            is_greater_than_or_equal_to(18)
+        end
+        expect(&assertion).to fail_with_message_including(
+          'Expected errors to include "must be greater than or equal to 18"'
+        )
+      end
     end
   end
 
-  context 'with multiple options together' do
-    context 'the success cases' do
-      it do
-        expect(validating_numericality(only_integer: true, greater_than: 18))
-          .to matcher.only_integer.is_greater_than(18)
+  context 'qualified with is_greater_than' do
+    context 'and validating with greater_than' do
+      it 'accepts' do
+        record = build_record_validating_numericality(greater_than: 18)
+        expect(record).
+          to validate_numericality.
+          is_greater_than(18)
       end
 
-      it do
-        expect(validating_numericality(even: true, greater_than: 18))
-          .to matcher.even.is_greater_than(18)
-      end
-      it do
-        expect(validating_numericality(odd: true, less_than_or_equal_to: 99))
-          .to matcher.odd.is_less_than_or_equal_to(99)
-      end
-
-      it do
-        expect(validating_numericality(
-                 only_integer: true,
-                 greater_than: 18,
-                 less_than: 99)
-        ).to matcher.only_integer.is_greater_than(18).is_less_than(99)
+      context 'if the given value is right at the allowed min value for the column' do
+        it 'does not raise an error' do
+          record = build_record_with_integer_column_of_limit(2,
+            greater_than: -32768
+          )
+          assertion = lambda do
+            expect(record).
+              to validate_numericality_of(:attr).
+              is_greater_than(-32768)
+          end
+          expect(&assertion).not_to raise_error
+        end
       end
     end
 
-    context 'the failure cases with different validators' do
-      it do
-        expect(validating_numericality(even: true, greater_than: 18))
-          .not_to matcher.only_integer.is_greater_than(18)
+    context 'and not validating with greater_than' do
+      it 'rejects since it does not disallow numbers that are less than or equal to the value' do
+        record = build_record_validating_numericality
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            is_greater_than(18)
+        end
+        expect(&assertion).to fail_with_message_including(
+          'Expected errors to include "must be greater than 18"'
+        )
       end
+    end
+  end
 
-      it do
-        expect(validating_numericality(greater_than: 18))
-          .not_to matcher.only_integer.is_greater_than(18)
-      end
-
-      it do
-        expect(
-          validating_numericality(even: true, greater_than_or_equal_to: 18)
-        ).not_to matcher.even.is_greater_than(18)
-      end
-
-      it do
-        expect(validating_numericality(odd: true, greater_than: 18))
-          .not_to matcher.even.is_greater_than(18)
-      end
-
-      it do
-        expect(validating_numericality(
-                 odd: true,
-                 greater_than_or_equal_to: 99
-               )
-        ).not_to matcher.odd.is_less_than_or_equal_to(99)
-      end
-
-      it do
-        expect(validating_numericality(
-                 only_integer: true,
-                 greater_than_or_equal_to: 18,
-                 less_than: 99
-               )
-        ).not_to matcher.only_integer.is_greater_than(18).is_less_than(99)
+  context 'qualified with with_message' do
+    context 'and validating with the same message' do
+      it 'accepts' do
+        record = build_record_validating_numericality(message: 'custom')
+        expect(record).to validate_numericality.with_message(/custom/)
       end
     end
 
-    context 'the failure cases with wrong values' do
+    context 'and validating with a different message' do
+      it 'rejects' do
+        record = build_record_validating_numericality(message: 'custom')
+        expect(record).not_to validate_numericality.with_message(/wrong/)
+      end
+    end
+
+    context 'and no message is provided' do
+      it 'ignores the qualifier' do
+        record = build_record_validating_numericality
+        expect(record).to validate_numericality.with_message(nil)
+      end
+    end
+  end
+
+  context 'with combinations of qualifiers together' do
+    all_qualifier_combinations.each do |combination|
+      if combination.size > 1
+        it do
+          validation_options = build_validation_options(for: combination)
+          record = build_record_validating_numericality(validation_options)
+          validate_numericality = self.validate_numericality
+          apply_qualifiers!(for: combination, to: validate_numericality)
+          expect(record).to validate_numericality
+        end
+      end
+    end
+
+    context 'when the qualifiers do not match the validation options' do
       it do
-        expect(validating_numericality(only_integer: true, greater_than: 19))
-          .not_to matcher.only_integer.is_greater_than(18)
+        record = build_record_validating_numericality(
+          even: true,
+          greater_than: 18
+        )
+        expect(record).
+          not_to validate_numericality.
+          only_integer.
+          is_greater_than(18)
       end
 
       it do
-        expect(validating_numericality(only_integer: true, greater_than: 17))
-          .not_to matcher.only_integer.is_greater_than(18)
+        record = build_record_validating_numericality(greater_than: 18)
+        expect(record).
+          not_to validate_numericality.
+          only_integer.
+          is_greater_than(18)
       end
 
       it do
-        expect(validating_numericality(even: true, greater_than: 20))
-          .not_to matcher.even.is_greater_than(18)
+        record = build_record_validating_numericality(
+          even: true,
+          greater_than_or_equal_to: 18
+        )
+        expect(record).
+          not_to validate_numericality.
+          even.
+          is_greater_than(18)
       end
 
       it do
-        expect(validating_numericality(even: true, greater_than: 16))
-          .not_to matcher.even.is_greater_than(18)
+        record = build_record_validating_numericality(
+          odd: true,
+          greater_than: 18
+        )
+        expect(record).
+          not_to validate_numericality.
+          even.
+          is_greater_than(18)
       end
 
       it do
-        expect(validating_numericality(odd: true, less_than_or_equal_to: 101))
-         .not_to matcher.odd.is_less_than_or_equal_to(99)
+        record = build_record_validating_numericality(
+          odd: true,
+          greater_than_or_equal_to: 99
+        )
+        expect(record).
+          not_to validate_numericality.
+          odd.
+          is_less_than_or_equal_to(99)
       end
 
       it do
-        expect(validating_numericality(odd: true, less_than_or_equal_to: 97))
-          .not_to matcher.odd.is_less_than_or_equal_to(99)
+        record = build_record_validating_numericality(
+          only_integer: true,
+          greater_than_or_equal_to: 18,
+          less_than: 99
+        )
+        expect(record).
+          not_to validate_numericality.
+          only_integer.
+          is_greater_than(18).
+          is_less_than(99)
+      end
+    end
+
+    context 'when qualifiers match the validation options but the values are different' do
+      it do
+        record = build_record_validating_numericality(
+          only_integer: true,
+          greater_than: 19
+        )
+        expect(record).
+          not_to validate_numericality.
+          only_integer.
+          is_greater_than(18)
       end
 
       it do
-        expect(validating_numericality(only_integer: true,
-                                          greater_than: 19,
-                                          less_than: 99))
-          .not_to matcher.only_integer.is_greater_than(18).is_less_than(99)
+        record = build_record_validating_numericality(
+          only_integer: true,
+          greater_than: 17
+        )
+        expect(record).
+          not_to validate_numericality.
+          only_integer.
+          is_greater_than(18)
       end
 
       it do
-        expect(validating_numericality(only_integer: true,
-                                          greater_than: 18,
-                                          less_than: 100))
-          .not_to matcher.only_integer.is_greater_than(18).is_less_than(99)
+        record = build_record_validating_numericality(
+          even: true,
+          greater_than: 20
+        )
+        expect(record).
+          not_to validate_numericality.
+          even.
+          is_greater_than(18)
+      end
+
+      it do
+        record = build_record_validating_numericality(
+          even: true,
+          greater_than: 16
+        )
+        expect(record).
+          not_to validate_numericality.
+          even.
+          is_greater_than(18)
+      end
+
+      it do
+        record = build_record_validating_numericality(
+          odd: true,
+          less_than_or_equal_to: 101
+        )
+        expect(record).
+          not_to validate_numericality.
+          odd.
+          is_less_than_or_equal_to(99)
+      end
+
+      it do
+        record = build_record_validating_numericality(
+          odd: true,
+          less_than_or_equal_to: 97
+        )
+        expect(record).
+          not_to validate_numericality.
+          odd.
+          is_less_than_or_equal_to(99)
+      end
+
+      it do
+        record = build_record_validating_numericality(
+          only_integer: true,
+          greater_than: 19,
+          less_than: 99
+        )
+        expect(record).
+          not_to validate_numericality.
+          only_integer.
+          is_greater_than(18).
+          is_less_than(99)
+      end
+
+      it do
+        record = build_record_validating_numericality(
+          only_integer: true,
+          greater_than: 18,
+          less_than: 100
+        )
+        expect(record).
+          not_to validate_numericality.
+          only_integer.
+          is_greater_than(18).
+          is_less_than(99)
       end
     end
   end
 
   context 'with large numbers' do
     it do
-      expect(validating_numericality(greater_than: 100_000))
-        .to matcher.is_greater_than(100_000)
+      record = build_record_validating_numericality(greater_than: 100_000)
+      expect(record).to validate_numericality.is_greater_than(100_000)
     end
 
     it do
-      expect(validating_numericality(less_than: 100_000))
-        .to matcher.is_less_than(100_000)
+      record = build_record_validating_numericality(less_than: 100_000)
+      expect(record).to validate_numericality.is_less_than(100_000)
     end
 
     it do
-      expect(validating_numericality(greater_than_or_equal_to: 100_000))
-        .to matcher.is_greater_than_or_equal_to(100_000)
+      record = build_record_validating_numericality(
+        greater_than_or_equal_to: 100_000
+      )
+      expect(record).
+        to validate_numericality.
+        is_greater_than_or_equal_to(100_000)
     end
 
     it do
-      expect(validating_numericality(less_than_or_equal_to: 100_000))
-        .to matcher.is_less_than_or_equal_to(100_000)
-    end
-  end
-
-  context 'with a custom validation message' do
-    it 'accepts when the messages match' do
-      expect(validating_numericality(message: 'custom')).
-          to matcher.with_message(/custom/)
-    end
-
-    it 'rejects when the messages do not match' do
-      expect(validating_numericality(message: 'custom')).
-          not_to matcher.with_message(/wrong/)
+      record = build_record_validating_numericality(
+        less_than_or_equal_to: 100_000
+      )
+      expect(record).
+        to validate_numericality.
+        is_less_than_or_equal_to(100_000)
     end
   end
 
   context 'when the subject is stubbed' do
-    it 'retains stubs on submatchers' do
-      subject = define_model :example, attr: :string do
+    it 'retains that stub while the validate_numericality is matching' do
+      model = define_model :example, attr: :string do
         validates_numericality_of :attr, odd: true
         before_validation :set_attr!
         def set_attr!; self.attr = 5 end
-      end.new
+      end
 
-      allow(subject).to receive(:set_attr!)
-      expect(subject).to matcher.odd
+      record = model.new
+      allow(record).to receive(:set_attr!)
+
+      expect(record).to validate_numericality_of(:attr).odd
     end
   end
 
   describe '#description' do
-    context 'without submatchers' do
-      it { expect(matcher.description).to eq 'only allow numbers for attr' }
-    end
-
-    context 'with only integer option' do
-      it do
-        expect(matcher.only_integer.description)
-          .to eq 'only allow integers for attr'
+    context 'qualified with nothing' do
+      it 'describes that it allows numbers' do
+        matcher = validate_numericality_of(:attr)
+        expect(matcher.description).to eq 'only allow numbers for attr'
       end
     end
 
-    [:odd, :even].each do |type|
-      context "with #{type} option" do
-        it do
-          expect(matcher.__send__(type).description)
-            .to eq "only allow #{type} numbers for attr"
+    context 'qualified with only_integer' do
+      it 'describes that it allows integers' do
+        matcher = validate_numericality_of(:attr).only_integer
+        expect(matcher.description).to eq 'only allow integers for attr'
+      end
+    end
+
+    qualifiers_under(:cardinality).each do |qualifier|
+      context "qualified with #{qualifier[:name]}" do
+        it "describes that it allows #{qualifier[:name]} numbers" do
+          matcher = validate_numericality_of(:attr).__send__(qualifier[:name])
+          expect(matcher.description).
+            to eq "only allow #{qualifier[:name]} numbers for attr"
         end
       end
     end
 
-    [:is_greater_than,
-     :is_greater_than_or_equal_to,
-     :is_less_than,
-     :is_less_than_or_equal_to,
-     :is_equal_to ].each do |comparison|
-      context "with #{comparison} option" do
-        it do
-          expect(matcher.__send__(comparison, 18).description)
-          .to eq(
-            'only allow numbers for attr which are ' +
-            "#{comparison.to_s.sub('is_', '').gsub('_', ' ')} 18"
+    qualifiers_under(:comparison).each do |qualifier|
+      comparison_phrase = qualifier[:validation_name].to_s.gsub('_', ' ')
+
+      context "qualified with #{qualifier[:name]}" do
+        it "describes that it allows numbers #{comparison_phrase} a certain value" do
+          matcher = validate_numericality_of(:attr).
+            __send__(qualifier[:name], 18)
+
+          expect(matcher.description).to eq(
+            "only allow numbers for attr which are #{comparison_phrase} 18"
           )
         end
       end
     end
 
-    context 'with odd, is_greater_than_or_equal_to option' do
-      it do
-        expect(matcher.odd.is_greater_than_or_equal_to(18).description)
-          .to eq(
-            'only allow odd numbers for attr ' +
-            'which are greater than or equal to 18'
-          )
+    context 'qualified with odd + is_greater_than_or_equal_to' do
+      it "describes that it allows odd numbers greater than or equal to a certain value" do
+        matcher = validate_numericality_of(:attr).
+          odd.
+          is_greater_than_or_equal_to(18)
+
+        expect(matcher.description).to eq(
+          'only allow odd numbers for attr which are greater than or equal to 18'
+        )
       end
     end
 
-    context 'with only integer, is_greater_than and less_than_or_equal_to option' do
-      it { expect(matcher.only_integer.is_greater_than(18).is_less_than_or_equal_to(100).description).
-          to eq "only allow integers for attr which are greater than 18 and less than or equal to 100" }
+    context 'qualified with only integer + is_greater_than + less_than_or_equal_to' do
+      it 'describes that it allows integer greater than one value and less than or equal to another' do
+        matcher = validate_numericality_of(:attr).
+          only_integer.
+          is_greater_than(18).
+          is_less_than_or_equal_to(100)
+
+        expect(matcher.description).to eq(
+          'only allow integers for attr which are greater than 18 and less than or equal to 100'
+        )
+      end
     end
   end
 
+  def build_validation_options(args)
+    combination = args.fetch(:for)
 
-  def validating_numericality(options = {})
-    define_model :example, attr: :string do
-      validates_numericality_of :attr, options
-    end.new
+    combination.each_with_object({}) do |qualifier, hash|
+      value = self.class.default_validation_values.fetch(qualifier[:validation_name])
+      hash[qualifier[:validation_name]] = value
+    end
   end
 
-  def not_validating_numericality
-    define_model(:example, attr: :string).new
+  def apply_qualifiers!(args)
+    combination = args.fetch(:for)
+    matcher = args.fetch(:to)
+
+    combination.each do |qualifier|
+      args = self.class.default_qualifier_arguments.fetch(qualifier[:name])
+      matcher.__send__(qualifier[:name], *args)
+    end
   end
 
-  def matcher
-    validate_numericality_of(:attr)
+  def define_model_validating_numericality(options = {})
+    define_model 'Example', attribute_name => :string do |model|
+      model.validates_numericality_of(attribute_name, options)
+    end
   end
 
-  def record_with_integer_column_of_limit(attribute, limit, validation_options = {})
+  def build_record_validating_numericality(options = {})
+    define_model_validating_numericality(options).new
+  end
+
+  def define_model_validating_nothing
+    define_model('Example', attribute_name => :string)
+  end
+
+  def build_record_validating_nothing
+    define_model_validating_nothing.new
+  end
+
+  def validate_numericality
+    validate_numericality_of(attribute_name)
+  end
+
+  def attribute_name
+    :attr
+  end
+
+  def define_model_with_integer_column_of_limit(limit, validation_options = {})
     column_options = { type: :integer, options: { limit: limit } }
-    define_model :example, attribute => column_options do
-      validates_numericality_of attribute, validation_options
-    end.new
+    define_model :example, attribute_name => column_options do |model|
+      model.validates_numericality_of(attribute_name, validation_options)
+    end
+  end
+
+  def build_record_with_integer_column_of_limit(limit, validation_options = {})
+    define_model_with_integer_column_of_limit(limit, validation_options).new
   end
 end
