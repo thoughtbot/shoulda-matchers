@@ -1,5 +1,13 @@
 require 'unit_spec_helper'
 
+describe Shoulda::Matchers::ActiveModel do
+  describe '#allow_values' do
+    it 'is aliased to #allow_value' do
+      expect(method(:allow_values)).to eq(method(:allow_value))
+    end
+  end
+end
+
 describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
   context "#description" do
     it 'describes itself with multiple values' do

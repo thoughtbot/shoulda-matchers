@@ -194,6 +194,7 @@ module Shoulda
           AllowValueMatcher.new(*values)
         end
       end
+      alias_method :allow_values, :allow_value
 
       # @private
       class AllowValueMatcher
