@@ -58,6 +58,9 @@
 * Fix `validate_uniqueness_of` + `scoped_to` so that it does not raise an error
   if a record exists where the scoped attribute is nil. ([#677])
 
+* Fix `route` matcher so if your route includes a default `format`, you can
+  specify this as a symbol or string. ([#693])
+
 ### Features
 
 * Add `on` qualifier to `permit`. This allows you to make an assertion that
@@ -78,6 +81,7 @@
 [#675]: https://github.com/thoughtbot/shoulda-matchers/pull/675
 [#677]: https://github.com/thoughtbot/shoulda-matchers/pull/677
 [#620]: https://github.com/thoughtbot/shoulda-matchers/pull/620
+[#693]: https://github.com/thoughtbot/shoulda-matchers/pull/693
 
 # 2.8.0
 
