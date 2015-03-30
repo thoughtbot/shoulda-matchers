@@ -77,6 +77,13 @@
 
 * Add `join_table` qualifier to `have_and_belong_to_many`. ([#556])
 
+* `allow_values` is now an alias for `allow_value`. This makes more sense when
+  checking against multiple values:
+
+    it { should allow_values('this', 'and', 'that') }
+
+  ([#692])
+
 [#402]: https://github.com/thoughtbot/shoulda-matchers/pull/402
 [#587]: https://github.com/thoughtbot/shoulda-matchers/pull/587
 [#662]: https://github.com/thoughtbot/shoulda-matchers/pull/662
@@ -94,6 +101,7 @@
 [#556]: https://github.com/thoughtbot/shoulda-matchers/pull/556
 [#457]: https://github.com/thoughtbot/shoulda-matchers/pull/457
 [#694]: https://github.com/thoughtbot/shoulda-matchers/pull/694
+[#692]: https://github.com/thoughtbot/shoulda-matchers/pull/692
 
 # 2.8.0
 
