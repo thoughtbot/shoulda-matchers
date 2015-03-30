@@ -48,6 +48,26 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
             to(action: 'show', some: 'other', params: 'here')
         end
       end
+
+      context 'when route has a default format' do
+        it 'accepts' do
+          expect(controller_with_defined_routes).
+            to route(:post, "/#{controller_path}").
+            to(action: 'create', format: 'json')
+        end
+
+        it 'accepts when format is specified as a symbol' do
+          expect(controller_with_defined_routes).
+            to route(:post, "/#{controller_path}").
+            to(action: 'create', format: :json)
+        end
+
+        it 'rejects when format is unspecified' do
+          expect(controller_with_defined_routes).
+            not_to route(:post, "/#{controller_path}").
+            to(action: 'create')
+        end
+      end
     end
 
     context 'when controller and action are specified as a joined string' do
@@ -64,6 +84,20 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
             to("#{controller_path}#show", id: 1)
         end
       end
+
+      context 'when route has the format' do
+        it 'accepts' do
+          expect(controller_with_defined_routes).
+            to route(:post, "/#{controller_path}").
+            to("#{controller_path}#create", format: 'json')
+        end
+
+        it 'rejects when format is unspecified' do
+          expect(controller_with_defined_routes).
+            not_to route(:post, "/#{controller_path}").
+            to(action: 'create')
+        end
+      end
     end
 
     def controller_with_defined_routes
@@ -76,6 +110,9 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
         define_routes do
           get "/#{_controller_path}", to: "#{_controller_path}#index"
           get "/#{_controller_path}/:id", to: "#{_controller_path}#show"
+          post "/#{_controller_path}",
+            to: "#{_controller_path}#create",
+            defaults: { format: :json }
         end
 
         controller

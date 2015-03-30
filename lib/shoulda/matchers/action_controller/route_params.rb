@@ -3,6 +3,8 @@ module Shoulda
     module ActionController
       # @private
       class RouteParams
+        PARAMS_TO_SYMBOLIZE = %i{ format }
+
         def initialize(args)
           @args = args
         end
@@ -26,17 +28,24 @@ module Shoulda
         def extract_params_from_string
           controller, action = args[0].split('#')
           params = (args[1] || {}).merge(controller: controller, action: action)
-          stringify_values(params)
+          normalize_values(params)
         end
 
         def stringify_params
-          stringify_values(args[0])
+          normalize_values(args[0])
         end
 
-        def stringify_values(hash)
-          hash.inject({}) do |hash_copy, (key, value)|
-            hash_copy[key] = stringify(value)
-            hash_copy
+        def normalize_values(hash)
+          hash.each_with_object({}) do |(key, value), hash_copy|
+            hash_copy[key] = symbolize_or_stringify(key, value)
+          end
+        end
+
+        def symbolize_or_stringify(key, value)
+          if key.in?(PARAMS_TO_SYMBOLIZE)
+            value.to_sym
+          else
+            stringify(value)
           end
         end
 

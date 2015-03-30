@@ -79,6 +79,10 @@ module Shoulda
       #
       #     route(:get, '/posts/1').to('posts#show', id: 1)
       #
+      # You may also specify special parameters such as `:format`:
+      #
+      #     route(:get, '/posts').to('posts#index', format: :json)
+      #
       # @return [RouteMatcher]
       #
       def route(method, path)
