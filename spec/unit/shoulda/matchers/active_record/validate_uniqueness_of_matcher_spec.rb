@@ -283,6 +283,43 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
         column_type: :string
     end
 
+    context 'when one of the scoped attributes is a boolean column' do
+      include_context 'it supports scoped attributes of a certain type',
+        column_type: :boolean
+    end
+
+    context 'when there is more than one scoped attribute and all are boolean columns' do
+      it 'accepts when all of the scoped attributes are true' do
+        record = build_record_validating_uniqueness(
+          scopes: [
+            { type: :boolean, name: :scope1, value: true },
+            { type: :boolean, name: :scope2, value: true }
+          ]
+        )
+        expect(record).to validate_uniqueness.scoped_to(:scope1, :scope2)
+      end
+
+      it 'accepts when all the scoped attributes are false' do
+        record = build_record_validating_uniqueness(
+          scopes: [
+            { type: :boolean, name: :scope1, value: false },
+            { type: :boolean, name: :scope2, value: false }
+          ]
+        )
+        expect(record).to validate_uniqueness.scoped_to(:scope1, :scope2)
+      end
+
+      it 'accepts when one of the scoped attributes is true and the other is false' do
+        record = build_record_validating_uniqueness(
+          scopes: [
+            { type: :boolean, name: :scope1, value: true },
+            { type: :boolean, name: :scope2, value: false }
+          ]
+        )
+        expect(record).to validate_uniqueness.scoped_to(:scope1, :scope2)
+      end
+    end
+
     context 'when one of the scoped attributes is an integer column' do
       include_context 'it supports scoped attributes of a certain type',
         column_type: :integer
@@ -752,6 +789,8 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
       Time.now
     when :uuid
       SecureRandom.uuid
+    when :boolean
+      true
     else
       raise ArgumentError, "Unknown type '#{attribute_type}'"
     end
@@ -764,6 +803,8 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
       SecureRandom.uuid
     elsif value.is_a?(Time)
       value + 1
+    elsif value.in?([true, false])
+      !value
     elsif value.respond_to?(:next)
       value.next
     end

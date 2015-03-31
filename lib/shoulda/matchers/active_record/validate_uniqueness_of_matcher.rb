@@ -257,6 +257,7 @@ module Shoulda
           @original_subject = subject
           @subject = subject.class.new
           @expected_message ||= :taken
+          @all_records = @subject.class.all
 
           set_scoped_attributes &&
             validate_everything_except_duplicate_nils_or_blanks? &&
@@ -397,12 +398,11 @@ module Shoulda
         end
 
         def validate_after_scope_change?
-          if @options[:scopes].blank?
+          if @options[:scopes].blank? || all_scopes_are_booleans?
             true
           else
-            all_records = @subject.class.all
             @options[:scopes].all? do |scope|
-              previous_value = all_records.map(&scope).compact.max
+              previous_value = @all_records.map(&scope).compact.max
 
               next_value =
                 if previous_value.blank?
@@ -447,6 +447,8 @@ module Shoulda
             DateTime.now
           when :uuid
             SecureRandom.uuid
+          when :boolean
+            true
           else
             'dummy value'
           end
@@ -474,9 +476,21 @@ module Shoulda
             previous_value.next
           elsif previous_value.respond_to?(:to_datetime)
             previous_value.to_datetime.next
+          elsif boolean_value?(previous_value)
+            !previous_value
           else
             previous_value.to_s.next
           end
+        end
+
+        def all_scopes_are_booleans?
+          @options[:scopes].all? do |scope|
+            @all_records.map(&scope).all? { |s| boolean_value?(s) }
+          end
+        end
+
+        def boolean_value?(value)
+          value.in?([true, false])
         end
 
         def defined_as_enum?(scope)

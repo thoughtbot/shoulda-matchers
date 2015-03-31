@@ -61,6 +61,9 @@
 * Fix `route` matcher so if your route includes a default `format`, you can
   specify this as a symbol or string. ([#693])
 
+* Fix `validate_uniqueness_of` so that it allows you to test against scoped
+  attributes that are boolean columns. ([#457], [#694])
+
 ### Features
 
 * Add `on` qualifier to `permit`. This allows you to make an assertion that
@@ -89,6 +92,8 @@
 [#356]: https://github.com/thoughtbot/shoulda-matchers/pull/356
 [#358]: https://github.com/thoughtbot/shoulda-matchers/pull/358
 [#556]: https://github.com/thoughtbot/shoulda-matchers/pull/556
+[#457]: https://github.com/thoughtbot/shoulda-matchers/pull/457
+[#694]: https://github.com/thoughtbot/shoulda-matchers/pull/694
 
 # 2.8.0
 
