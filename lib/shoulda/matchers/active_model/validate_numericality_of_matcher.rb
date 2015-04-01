@@ -384,6 +384,11 @@ module Shoulda
           self
         end
 
+        def on(context)
+          @submatchers.each { |matcher| matcher.on(context) }
+          self
+        end
+
         def matches?(subject)
           @subject = subject
           failing_submatchers.empty?

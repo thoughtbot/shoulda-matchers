@@ -197,6 +197,26 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
     end
   end
 
+  context 'qualified with on and validating with on' do
+    it 'accepts' do
+      expect(instance_with_validations(on: :customizable)).
+        to matcher.on(:customizable)
+    end
+  end
+
+  context 'qualified with on but not validating with on' do
+    it 'accepts since the validation never considers a context' do
+      expect(instance_with_validations).to matcher.on(:customizable)
+    end
+  end
+
+  context 'not qualified with on but validating with on' do
+    it 'rejects since the validation never runs' do
+      expect(instance_with_validations(on: :customizable)).
+        not_to matcher
+    end
+  end
+
   describe '#comparison_description' do
     [{ operator: :>, value: 0, expectation: 'greater than 0' },
      { operator: :>=, value: -1.0, expectation: 'greater than or equal to -1.0' },

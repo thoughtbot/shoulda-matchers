@@ -55,6 +55,12 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           name: :only_integer,
           validation_name: :only_integer,
           validation_value: true,
+        },
+        {
+          name: :on,
+          argument: :customizable,
+          validation_name: :on,
+          validation_value: :customizable
         }
       ]
     end
@@ -454,6 +460,32 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
     end
   end
 
+  context 'qualified with on and validating with on' do
+    it 'accepts' do
+      record = build_record_validating_numericality(on: :customizable)
+      expect(record).to validate_numericality.on(:customizable)
+    end
+  end
+
+  context 'qualified with on but not validating with on' do
+    it 'accepts since the validation never considers a context' do
+      record = build_record_validating_numericality
+      expect(record).to validate_numericality.on(:customizable)
+    end
+  end
+
+  context 'not qualified with on but validating with on' do
+    it 'rejects since the validation never runs' do
+      record = build_record_validating_numericality(on: :customizable)
+      assertion = lambda do
+        expect(record).to validate_numericality
+      end
+      expect(&assertion).to fail_with_message_including(
+        'Expected errors to include "is not a number"'
+      )
+    end
+  end
+
   context 'with combinations of qualifiers together' do
     all_qualifier_combinations.each do |combination|
       if combination.size > 1
@@ -778,7 +810,8 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
   end
 
   def define_model_validating_numericality(options = {})
-    attribute_name = options.fetch(:attribute_name) { self.attribute_name }
+    attribute_name = options.delete(:attribute_name) { self.attribute_name }
+
     define_model 'Example', attribute_name => :string do |model|
       model.validates_numericality_of(attribute_name, options)
     end

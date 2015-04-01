@@ -64,6 +64,26 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OddNumberMatcher 
     end
   end
 
+  context 'qualified with on and validating with on' do
+    it 'accepts' do
+      expect(validating_odd_number(on: :customizable)).
+        to subject.on(:customizable)
+    end
+  end
+
+  context 'qualified with on but not validating with on' do
+    it 'accepts since the validation never considers a context' do
+      expect(validating_odd_number).to subject.on(:customizable)
+    end
+  end
+
+  context 'not qualified with on but validating with on' do
+    it 'rejects since the validation never runs' do
+      expect(validating_odd_number(on: :customizable)).
+        not_to subject
+    end
+  end
+
   def validating_odd_number(options = {})
     define_model :example, attr: :string do
       validates_numericality_of :attr, { odd: true }.merge(options)

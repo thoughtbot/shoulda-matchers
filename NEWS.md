@@ -70,6 +70,8 @@
 
 * Add `strict` qualifier to `validate_numericality_of`. ([#620])
 
+* Add `on` qualifier to `validate_numericality_of`. (h/t [#356], [#358])
+
 [#402]: https://github.com/thoughtbot/shoulda-matchers/pull/402
 [#587]: https://github.com/thoughtbot/shoulda-matchers/pull/587
 [#662]: https://github.com/thoughtbot/shoulda-matchers/pull/662
@@ -82,6 +84,8 @@
 [#677]: https://github.com/thoughtbot/shoulda-matchers/pull/677
 [#620]: https://github.com/thoughtbot/shoulda-matchers/pull/620
 [#693]: https://github.com/thoughtbot/shoulda-matchers/pull/693
+[#356]: https://github.com/thoughtbot/shoulda-matchers/pull/356
+[#358]: https://github.com/thoughtbot/shoulda-matchers/pull/358
 
 # 2.8.0
 

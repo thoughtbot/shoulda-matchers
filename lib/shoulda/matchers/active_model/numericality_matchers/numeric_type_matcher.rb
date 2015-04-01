@@ -22,6 +22,11 @@ module Shoulda
             self
           end
 
+          def on(context)
+            @disallow_value_matcher.on(context)
+            self
+          end
+
           def allowed_type
             raise NotImplementedError
           end
