@@ -59,8 +59,7 @@ module Shoulda
       #
       # ##### allow_nil
       #
-      # Use `allow_nil` if you want to validate a `belongs_to` association but
-      # if the record is present
+      # Use `allow_nil` if you want to allow a nil value
       #
       #     class User < ActiveRecord:Base; end
       #
@@ -134,18 +133,13 @@ module Shoulda
 
       # @private
       class ValidatePresenceOfMatcher < ValidationMatcher
-        def initialize(attribute)
-          super(attribute)
-          @options = {}
-        end
-
         def with_message(message)
           @expected_message = message if message
           self
         end
 
         def allow_nil(allow_nil = true)
-          @options[:allow_nil] = allow_nil
+          @allow_nil = allow_nil
           self
         end
 
@@ -153,10 +147,10 @@ module Shoulda
           super(subject)
           @expected_message ||= :blank
 
-          if @options[:allow_nil]
-            allows_value_of(nil)
-          elsif secure_password_being_validated?
+          if secure_password_being_validated?
             disallows_and_double_checks_value_of!(blank_value, @expected_message)
+          elsif @allow_nil
+            allows_value_of(nil)
           else
             disallows_value_of(blank_value, @expected_message)
           end
