@@ -39,6 +39,23 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
     end
   end
 
+  context 'a belongs_to association with a presence validation and allow_nil' do
+    it 'allows a nil value' do
+      if ::ActiveModel::VERSION::STRING.to_f >= 4.0
+        child = define_parent_and_child_belongs_to_allow_nil.new
+        expect(child).to validate_presence_of(:parent).allow_nil
+      end
+    end
+
+    def define_parent_and_child_belongs_to_allow_nil
+      define_model :parent
+      define_model :child, parent_id: :integer do
+        belongs_to :parent
+        validates_presence_of :parent, allow_nil: true
+      end
+    end
+  end
+
   context 'a has_many association with a presence validation' do
     it 'requires the attribute to be set' do
       expect(has_many_children(presence: true)).to validate_presence_of(:children)

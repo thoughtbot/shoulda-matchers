@@ -57,6 +57,29 @@ module Shoulda
       #
       # #### Qualifiers
       #
+      # ##### allow_nil
+      #
+      # Use `allow_nil` if you want to validate a `belongs_to` association but
+      # if the record is present
+      #
+      #     class User < ActiveRecord:Base; end
+      #
+      #     class Document < ActiveRecord:Base
+      #       belongs_to :user
+      #
+      #       validates :user, :presence => true, :allow_nil
+      #     end
+      #
+      #     # RSpec
+      #     describe Document do
+      #       it { should validate_presence_of(:user).allow_nil }
+      #     end
+      #
+      #     # Test::Unit
+      #     class DocumentTest < ActiveSupport::TestCase
+      #       should validate_presence_of(:user).allow_nil
+      #     end
+      #
       # ##### on
       #
       # Use `on` if your validation applies only under a certain context.
@@ -111,8 +134,18 @@ module Shoulda
 
       # @private
       class ValidatePresenceOfMatcher < ValidationMatcher
+        def initialize(attribute)
+          super(attribute)
+          @options = {}
+        end
+
         def with_message(message)
           @expected_message = message if message
+          self
+        end
+
+        def allow_nil(allow_nil = true)
+          @options[:allow_nil] = allow_nil
           self
         end
 
@@ -120,7 +153,9 @@ module Shoulda
           super(subject)
           @expected_message ||= :blank
 
-          if secure_password_being_validated?
+          if @options[:allow_nil]
+            allows_value_of(nil)
+          elsif secure_password_being_validated?
             disallows_and_double_checks_value_of!(blank_value, @expected_message)
           else
             disallows_value_of(blank_value, @expected_message)
