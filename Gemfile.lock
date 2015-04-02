@@ -14,9 +14,12 @@ GEM
       bundler
       rake
       thor (>= 0.14.0)
+    byebug (4.0.4)
+      columnize (= 0.9.0)
     celluloid (0.16.0)
       timers (~> 4.0.0)
     coderay (1.1.0)
+    columnize (0.9.0)
     diff-lcs (1.2.5)
     ffi (1.9.8)
     formatador (0.2.5)
@@ -44,8 +47,9 @@ GEM
       nenv (~> 0.1)
       shellany (~> 0.0)
     posix-spawn (0.3.8)
-    pry-nav (0.2.4)
-      pry (>= 0.9.10, < 0.11.0)
+    pry-byebug (3.1.0)
+      byebug (~> 4.0)
+      pry (~> 0.10)
     pygments.rb (0.3.7)
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.1.0)
@@ -77,7 +81,7 @@ DEPENDENCIES
   guard
   guard-yard
   pry!
-  pry-nav
+  pry-byebug
   pygments.rb
   rake (~> 10.0)
   redcarpet

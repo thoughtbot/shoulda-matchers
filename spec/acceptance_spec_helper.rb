@@ -6,7 +6,7 @@ Tests::CurrentBundle.instance.assert_appraisal!
 
 require 'rspec/core'
 require 'pry'
-require 'pry-nav'
+require 'pry-byebug'
 
 Dir[ File.join(File.expand_path('../support/acceptance/**/*.rb', __FILE__)) ].sort.each do |file|
   require file
