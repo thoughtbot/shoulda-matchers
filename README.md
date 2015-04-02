@@ -1,14 +1,15 @@
-# shoulda-matchers [![Gem Version][version-badge]][rubygems] [![Build Status][travis-badge]][travis] ![Downloads][downloads-badge]
+# Shoulda Matchers [![Gem Version][version-badge]][rubygems] [![Build Status][travis-badge]][travis] ![Downloads][downloads-badge]
 
-[Official Documentation][rubydocs]
-
-shoulda-matchers provides Test::Unit- and RSpec-compatible one-liners that test
+Shoulda Matchers provides RSpec- and Minitest-compatible one-liners that test
 common Rails functionality. These tests would otherwise be much longer, more
 complex, and error-prone.
 
-Thank you to all the [contributors][contributors].
+[View the official documentation for the latest version (2.8.0).][rubydocs]
 
-### ActiveModel Matchers
+*This is the README for the master branch (3.0.0.alpha). [View the README for
+2.8.0 instead.][2.8.0-README]*
+
+### ActiveModel matchers
 
 * **[allow_mass_assignment_of](lib/shoulda/matchers/active_model/allow_mass_assignment_of_matcher.rb)**
   tests usage of Rails 3's `attr_accessible` and `attr_protected` macros.
@@ -29,7 +30,7 @@ Thank you to all the [contributors][contributors].
 * **[validate_presence_of](lib/shoulda/matchers/active_model/validate_presence_of_matcher.rb)**
   tests usage of `validates_presence_of`.
 
-### ActiveRecord Matchers
+### ActiveRecord matchers
 
 * **[accept_nested_attributes_for](lib/shoulda/matchers/active_record/accept_nested_attributes_for_matcher.rb)**
   tests usage of the `accepts_nested_attributes_for` macro.
@@ -54,7 +55,7 @@ Thank you to all the [contributors][contributors].
 * **[validate_uniqueness_of](lib/shoulda/matchers/active_record/validate_uniqueness_of_matcher.rb)**
   tests usage of `validates_uniqueness_of`.
 
-### ActionController Matchers
+### ActionController matchers
 
 * **[filter_param](lib/shoulda/matchers/action_controller/filter_param_matcher.rb)**
   tests parameter filtering configuration.
@@ -86,7 +87,7 @@ Thank you to all the [contributors][contributors].
   tests that a `before_action` callback is defined in your controller. (Aliased
   as *use_before_filter*.)
 
-### Independent Matchers
+### Independent matchers
 
 * **[delegate_method](lib/shoulda/matchers/independent/delegate_method_matcher.rb)**
   tests that an object forwards messages to other, internal objects by way of
@@ -96,27 +97,30 @@ Thank you to all the [contributors][contributors].
 
 ### RSpec
 
-Include the gem in your Gemfile:
+Include `shoulda-matchers` in your Gemfile:
 
 ``` ruby
 group :test do
-  gem 'shoulda-matchers', require: false
+  gem 'shoulda-matchers'
 end
 ```
 
-Then require the gem following rspec-rails in your rails_helper (or spec_helper
-if you're using RSpec 2.x):
+[Then, configure the gem to integrate with RSpec](#configuration).
+
+Now you can use matchers in your tests. For instance a model test might look
+like this:
 
 ``` ruby
-require 'rspec/rails'
-require 'shoulda/matchers'
+describe Person do
+  it { should validate_presence_of(:name) }
+end
 ```
 
-### Test::Unit
+### Minitest / Test::Unit
 
-shoulda-matchers was originally a component of [Shoulda][shoulda], a meta-gem
-that also provides `should` and `context` syntax via
-[shoulda-context][shoulda-context]. For this reason you'll want to include this
+Shoulda Matchers was originally a component of [Shoulda][shoulda], a gem that
+also provides `should` and `context` syntax via
+[`shoulda-context`][shoulda-context]. For this reason you'll want to include this
 gem in your Gemfile instead:
 
 ```ruby
@@ -125,31 +129,44 @@ group :test do
 end
 ```
 
-### Non-Rails apps
+[Then, configure the gem to integrate with Minitest](#configuration).
 
-Once it is loaded, shoulda-matchers automatically includes itself into your test
-framework. It will mix in the appropriate matchers for ActiveRecord,
-ActiveModel, and ActionController depending on the modules that are available at
-runtime. For instance, in order to use the ActiveRecord matchers, ActiveRecord
-must be present beforehand.
+Now you can use matchers in your tests. For instance a model test might look
+like this:
 
-If your application is written against Rails, everything should "just work", as
-shoulda-matchers will most likely be declared after Rails in your Gemfile. If
-your application is written against another framework such as Sinatra or
-Padrino, you may have a different setup, so you will want to ensure that you are
-requiring shoulda-matchers after the components of Rails you are using. For
-instance, if you wanted to use and test against ActiveModel, you'd say:
-
-```ruby
-gem 'activemodel'
-gem 'shoulda-matchers'
+``` ruby
+class PersonTest < ActiveSupport::TestCase
+  should validate_presence_of(:name)
+end
 ```
 
-and not:
+### Configuration
 
-```ruby
-gem 'shoulda-matchers'
-gem 'activemodel'
+Before you can use Shoulda Matchers, you'll need to tell it a couple of things:
+
+* Which test framework you're using
+* Which portion of the matchers you want to use
+
+You can supply this information by using a configuration block. Place the
+following in your test or spec helper:
+
+``` ruby
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    # Choose a test framework:
+    with.test_framework :rspec
+    with.test_framework :minitest
+    with.test_framework :minitest_4
+    with.test_framework :test_unit
+
+    # Choose a library:
+    with.library :active_record
+    with.library :active_model
+    with.library :action_controller
+    # Or, choose all of the above:
+    with.library :rails
+  end
+end
 ```
 
 ## Generating documentation
@@ -164,16 +181,26 @@ from this directory. Then, open `doc/index.html` in your browser.
 If you want to see a live preview as you work without having to run `yard` over
 and over again, keep this command running in a separate terminal session:
 
-    watchr docs.watchr
+    bundle exec guard
+
+## Contributing
+
+Shoulda Matchers is open source, and we are grateful for
+[everyone][contributors] who's contributed so far.
+
+If you'd like to contribute, please take a look at the
+[instructions](CONTRIBUTING.md) for installing dependencies and crafting a good
+pull request.
 
 ## Versioning
 
-shoulda-matchers follows Semantic Versioning 2.0 as defined at
+Shoulda Matchers follows Semantic Versioning 2.0 as defined at
 <http://semver.org>.
 
 ## License
 
-shoulda-matchers is copyright © 2006-2015 [thoughtbot, inc](https://thoughtbot.com/). It is free software,
+Shoulda Matchers is copyright © 2006-2015
+[thoughtbot, inc](https://thoughtbot.com/). It is free software,
 and may be redistributed under the terms specified in the
 [MIT-LICENSE](MIT-LICENSE) file.
 
@@ -181,7 +208,7 @@ and may be redistributed under the terms specified in the
 
 ![thoughtbot](https://thoughtbot.com/logo.png)
 
-shoulda-matchers is maintained and funded by thoughtbot, inc.
+Shoulda Matchers is maintained and funded by thoughtbot, inc.
 The names and logos for thoughtbot are trademarks of thoughtbot, inc.
 
 We are passionate about open source software.
@@ -199,3 +226,4 @@ We are [available for hire][hire].
 [contributors]: https://github.com/thoughtbot/shoulda-matchers/contributors
 [shoulda]: http://github.com/thoughtbot/shoulda
 [shoulda-context]: http://github.com/thoughtbot/shoulda-context
+[2.8.0-README]: https://github.com/thoughtbot/shoulda-matchers/tree/v2.8.0#shoulda-matchers---
