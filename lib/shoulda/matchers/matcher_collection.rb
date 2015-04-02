@@ -2,21 +2,27 @@ module Shoulda
   module Matchers
     # @private
     module MatcherCollection
+      Configuration = Struct.new(:klass, :args, :block)
+      MatcherWithResult = Struct.new(:matcher, :result)
+
       def initialize
         @matcher_builder_configurations = []
         @matcher_customizers = []
       end
 
       def add(klass, *args, &block)
-        matcher_builder_configurations << {
-          klass: klass,
-          args: args,
-          block: block
-        }
+        matcher_builder_configurations << Configuration.new(klass, args, block)
       end
 
-      def configure(&customizer)
+      def configure(*args, &customizer)
         matcher_customizers << customizer
+      end
+
+      def add_qualifier(qualifier, *args)
+        qualifier, *args = args
+        matcher_customizers << lambda do |matcher|
+          matcher.__send__(qualifier, *args)
+        end
       end
 
       def invoke(method_name)
@@ -51,9 +57,9 @@ module Shoulda
 
       def matchers
         @_matchers ||= matcher_builder_configurations.map do |config|
-          config[:klass].new(*config[:args]).tap do |matcher|
-            if config[:block]
-              matcher.call(config[:block])
+          config.klass.new(*config.args).tap do |matcher|
+            if config.block
+              matcher.call(config.block)
             end
 
             matcher_customizers.each do |customizer|
@@ -66,6 +72,7 @@ module Shoulda
       def matcher_result_tuples
         @_matcher_result_tuples ||=
           matchers.map do |matcher|
+          Matcher.
             { matcher: matcher, matches: matcher.matches?(subject) }
           end
       end

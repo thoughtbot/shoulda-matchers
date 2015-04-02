@@ -15,27 +15,19 @@ module Shoulda
         end
 
         def for(attribute)
-          matcher_collection.configure do |matcher|
-            matcher.for(attribute)
-          end
+          matcher_collection.add_qualifier(:for, attribute)
         end
 
         def on(context)
-          matcher_collection.configure do |matcher|
-            matcher.on(context)
-          end
+          matcher_collection.add_qualifier(:on, context)
         end
 
         def strict
-          matcher_collection.configure do |matcher|
-            matcher.strict
-          end
+          matcher_collection.add_qualifier(:strict)
         end
 
         def with_message(message, options = {})
-          matcher_collection.configure do |matcher|
-            matcher.with_message(message, options)
-          end
+          matcher_collection.add_qualifier(:with_message, message, options)
         end
 
         def description
