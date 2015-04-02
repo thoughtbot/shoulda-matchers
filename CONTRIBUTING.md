@@ -6,7 +6,7 @@ Overview
 
 1. Fork the repo.
 
-2. Install [Dependencies](#installing-dependencies).
+2. Install [dependencies](#installing-dependencies).
 
 3. Run the tests. We only take pull requests with passing tests, and it's great
 to know that you have a clean slate: `bundle && bundle exec rake`
@@ -30,14 +30,16 @@ we'll bring your changes into master. Now you're a contributor!
 Installing Dependencies
 =======================
 
-On Debian/Ubuntu based systems
+On Debian/Ubuntu-based systems
 ------------------------------
 
 ```
 sudo apt-get install -y ruby-dev libpq-dev libsqlite3-dev nodejs
 ```
 
-Ubuntu, as of 14.04 ships with ruby 1.92. shoulda-matchers requires 2.x, so [install rvm], then install ruby-2.2:
+Ubuntu, as of 14.04 ships with Ruby 1.92. shoulda-matchers requires Ruby 2.x, so use
+your Ruby version manager of choice to install the latest version of Ruby (2.2.1 at
+the time of this writing)
 
 ```
 rvm install 2.2
@@ -51,7 +53,7 @@ On RedHat-based systems
 sudo yum install -y ruby-devel postgresql-devel sqlite-devel zlib-devel
 ```
 
-Also, install one of the javascript runtimes supported by [execjs]. For instance, to install node.js:
+Also, install one of the JavaScript runtimes supported by [execjs]. For instance, to install node.js:
 
 ```
 sudo su
