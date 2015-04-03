@@ -1,8 +1,7 @@
 We love contributions from the community! Here's a quick guide to making a pull
-request:
+request.
 
-Overview
-========
+## Overview
 
 1. Fork the repo.
 
@@ -16,10 +15,7 @@ issue first.
 
 5. Make the test pass.
 
-6. If you're adding a new feature, ensure that the documentation is up to date
-(see the README for instructions on previewing documentation live).
-
-7. Finally, push to your fork and submit a pull request.
+6. Finally, push to your fork and submit a pull request.
 
 At this point you're waiting on us. We try to respond to issues and pull
 requests within a few business days. We may suggest some changes to make to your
@@ -27,11 +23,9 @@ code to fit with our [code style] or the project style, or discuss alternate
 ways of addressing the issue in question. When we're happy with everything,
 we'll bring your changes into master. Now you're a contributor!
 
-Installing Dependencies
-=======================
+## Installing Dependencies
 
-On Debian/Ubuntu-based systems
-------------------------------
+### On Debian/Ubuntu-based systems
 
 ```
 sudo apt-get install -y ruby-dev libpq-dev libsqlite3-dev nodejs
@@ -48,11 +42,10 @@ rvm use 2.2
 
 # rbenv
 rbenv install 2.2.1
-rbenv global 2.2.1
+rbenv shell 2.2.1
 ```
 
-On RedHat-based systems
------------------------
+### On RedHat-based systems
 
 ```
 sudo yum install -y ruby-devel postgresql-devel sqlite-devel zlib-devel
