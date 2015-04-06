@@ -3,8 +3,7 @@ module Shoulda
     module Integrations
       module TestFrameworks
         # @private
-        class Minitest5
-          Integrations.register_test_framework(self, :minitest_5)
+        class Minitest
           Integrations.register_test_framework(self, :minitest)
 
           def validate!

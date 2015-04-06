@@ -15,8 +15,7 @@ Shoulda::Matchers.configure do |config|
   config.integrate do |with|
     # Choose one:
     with.test_framework :rspec
-    with.test_framework :minitest    # or, :minitest_5
-    with.test_framework :minitest_4
+    with.test_framework :minitest
     with.test_framework :test_unit
   end
 end

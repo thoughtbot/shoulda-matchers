@@ -95,7 +95,7 @@ module AcceptanceTests
     end
 
     def integrates_with_nunit?(test_framework)
-      nunit_frameworks = [:test_unit, :minitest, :minitest_4, :minitest_5]
+      nunit_frameworks = [:test_unit, :minitest]
       nunit_frameworks.include?(test_framework)
     end
 
