@@ -154,6 +154,9 @@
 * Fix `validate_uniqueness_of` so that it allows you to test against scoped
   attributes that are boolean columns. ([#457], [#694])
 
+* Fix failure message for `validate_numericality_of` as it sometimes didn't
+  provide the reason for failure. ([#699])
+
 ### Features
 
 * Add `on` qualifier to `permit`. This allows you to make an assertion that
@@ -196,6 +199,7 @@
 [#457]: https://github.com/thoughtbot/shoulda-matchers/pull/457
 [#694]: https://github.com/thoughtbot/shoulda-matchers/pull/694
 [#692]: https://github.com/thoughtbot/shoulda-matchers/pull/692
+[#699]: https://github.com/thoughtbot/shoulda-matchers/pull/699
 
 # 2.8.0
 

@@ -391,7 +391,7 @@ module Shoulda
 
         def matches?(subject)
           @subject = subject
-          failing_submatchers.empty?
+          first_failing_submatcher.nil?
         end
 
         def description
@@ -410,12 +410,12 @@ module Shoulda
         end
 
         def failure_message
-          last_failing_submatcher.failure_message
+          first_failing_submatcher.failure_message
         end
         alias failure_message_for_should failure_message
 
         def failure_message_when_negated
-          last_failing_submatcher.failure_message_when_negated
+          first_failing_submatcher.failure_message_when_negated
         end
         alias failure_message_for_should_not failure_message_when_negated
 
@@ -450,21 +450,10 @@ module Shoulda
           @diff_to_compare = [@diff_to_compare, matcher.diff_to_compare].max
         end
 
-        def submatchers_and_results
-          @_submatchers_and_results ||=
-            @submatchers.map do |matcher|
-              { matcher: matcher, matched: matcher.matches?(@subject) }
-            end
-        end
-
-        def failing_submatchers
-          submatchers_and_results.
-            select { |x| !x[:matched] }.
-            map { |x| x[:matcher] }
-        end
-
-        def last_failing_submatcher
-          failing_submatchers.last
+        def first_failing_submatcher
+          @_first_failing_submatcher ||= @submatchers.detect do |submatcher|
+            !submatcher.matches?(@subject)
+          end
         end
 
         def allowed_types
