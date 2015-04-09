@@ -512,11 +512,41 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
       end
 
       it do
+        record = build_record_validating_numericality(
+          even: true,
+          greater_than: 18
+        )
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            only_integer.
+            is_greater_than(18)
+        end
+        expect(&assertion).to fail_with_message_including(
+          '* "must be even" (attribute: attr, value: "19")'
+        )
+      end
+
+      it do
         record = build_record_validating_numericality(greater_than: 18)
         expect(record).
           not_to validate_numericality.
           only_integer.
           is_greater_than(18)
+      end
+
+      it do
+        skip 'Need to be fixed the code, actually do not have the right message'
+        record = build_record_validating_numericality(greater_than: 18)
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            only_integer.
+            is_greater_than(18)
+        end
+        expect(&assertion).to fail_with_message_including(
+          ''
+        )
       end
 
       it do
@@ -528,6 +558,22 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           not_to validate_numericality.
           even.
           is_greater_than(18)
+      end
+
+      it do
+        record = build_record_validating_numericality(
+          even: true,
+          greater_than_or_equal_to: 18
+        )
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            even.
+            is_greater_than(18)
+        end
+        expect(&assertion).to fail_with_message_including(
+          %{Expected errors to include "must be greater than 18" when attr is set to 18,\ngot no errors}
+        )
       end
 
       it do
@@ -544,12 +590,44 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
       it do
         record = build_record_validating_numericality(
           odd: true,
+          greater_than: 18
+        )
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            even.
+            is_greater_than(18)
+        end
+        expect(&assertion).to fail_with_message_including(
+          '* "must be odd" (attribute: attr, value: "20")'
+        )
+      end
+
+      it do
+        record = build_record_validating_numericality(
+          odd: true,
           greater_than_or_equal_to: 99
         )
         expect(record).
           not_to validate_numericality.
           odd.
           is_less_than_or_equal_to(99)
+      end
+
+      it do
+        record = build_record_validating_numericality(
+          odd: true,
+          greater_than_or_equal_to: 99
+        )
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            odd.
+            is_less_than_or_equal_to(99)
+        end
+        expect(&assertion).to fail_with_message_including(
+          %{Expected errors to include "must be less than or equal to 99" when attr is set to 101,\ngot no errors}
+        )
       end
 
       it do
@@ -563,6 +641,24 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           only_integer.
           is_greater_than(18).
           is_less_than(99)
+      end
+
+      it do
+        record = build_record_validating_numericality(
+          only_integer: true,
+          greater_than_or_equal_to: 18,
+          less_than: 99
+        )
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            only_integer.
+            is_greater_than(18).
+            is_less_than(99)
+        end
+        expect(&assertion).to fail_with_message_including(
+          %{Expected errors to include "must be greater than 18" when attr is set to 18,\ngot no errors}
+        )
       end
     end
 
@@ -581,12 +677,44 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
       it do
         record = build_record_validating_numericality(
           only_integer: true,
+          greater_than: 19
+        )
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            only_integer.
+            is_greater_than(18)
+        end
+        expect(&assertion).to fail_with_message_including(
+          '* "must be greater than 19" (attribute: attr, value: "19")'
+        )
+      end
+
+      it do
+        record = build_record_validating_numericality(
+          only_integer: true,
           greater_than: 17
         )
         expect(record).
           not_to validate_numericality.
           only_integer.
           is_greater_than(18)
+      end
+
+      it do
+        record = build_record_validating_numericality(
+          only_integer: true,
+          greater_than: 17
+        )
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            only_integer.
+            is_greater_than(18)
+        end
+        expect(&assertion).to fail_with_message_including(
+          %{Expected errors to include "must be greater than 18" when attr is set to 18,\ngot no errors}
+        )
       end
 
       it do
@@ -603,12 +731,44 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
       it do
         record = build_record_validating_numericality(
           even: true,
+          greater_than: 20
+        )
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            even.
+            is_greater_than(18)
+        end
+        expect(&assertion).to fail_with_message_including(
+          '* "must be greater than 20" (attribute: attr, value: "20")'
+        )
+      end
+
+      it do
+        record = build_record_validating_numericality(
+          even: true,
           greater_than: 16
         )
         expect(record).
           not_to validate_numericality.
           even.
           is_greater_than(18)
+      end
+
+      it do
+        record = build_record_validating_numericality(
+          even: true,
+          greater_than: 16
+        )
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            even.
+            is_greater_than(18)
+        end
+        expect(&assertion).to fail_with_message_including(
+          %{Expected errors to include "must be greater than 18" when attr is set to 18,\ngot no errors}
+        )
       end
 
       it do
@@ -625,12 +785,44 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
       it do
         record = build_record_validating_numericality(
           odd: true,
+          less_than_or_equal_to: 101
+        )
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            odd.
+            is_less_than_or_equal_to(99)
+        end
+        expect(&assertion).to fail_with_message_including(
+          %{Expected errors to include "must be less than or equal to 99" when attr is set to 101,\ngot no errors}
+        )
+      end
+
+      it do
+        record = build_record_validating_numericality(
+          odd: true,
           less_than_or_equal_to: 97
         )
         expect(record).
           not_to validate_numericality.
           odd.
           is_less_than_or_equal_to(99)
+      end
+
+      it do
+        record = build_record_validating_numericality(
+          odd: true,
+          less_than_or_equal_to: 97
+        )
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            odd.
+            is_less_than_or_equal_to(99)
+        end
+        expect(&assertion).to fail_with_message_including(
+          '* "must be less than or equal to 97" (attribute: attr, value: "101")'
+        )
       end
 
       it do
@@ -649,6 +841,24 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
       it do
         record = build_record_validating_numericality(
           only_integer: true,
+          greater_than: 19,
+          less_than: 99
+        )
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            only_integer.
+            is_greater_than(18).
+            is_less_than(99)
+        end
+        expect(&assertion).to fail_with_message_including(
+          '* "must be less than 99" (attribute: attr, value: "100")'
+        )
+      end
+
+      it do
+        record = build_record_validating_numericality(
+          only_integer: true,
           greater_than: 18,
           less_than: 100
         )
@@ -657,6 +867,24 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           only_integer.
           is_greater_than(18).
           is_less_than(99)
+      end
+
+      it do
+        record = build_record_validating_numericality(
+          only_integer: true,
+          greater_than: 18,
+          less_than: 100
+        )
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            only_integer.
+            is_greater_than(18).
+            is_less_than(99)
+        end
+        expect(&assertion).to fail_with_message_including(
+          '* "must be less than 100" (attribute: attr, value: "100")'
+        )
       end
     end
   end
