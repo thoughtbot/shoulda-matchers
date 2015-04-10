@@ -536,7 +536,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
       end
 
       it do
-        skip 'Need to be fixed the code, actually do not have the right message'
         record = build_record_validating_numericality(greater_than: 18)
         assertion = lambda do
           expect(record).
@@ -545,7 +544,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
             is_greater_than(18)
         end
         expect(&assertion).to fail_with_message_including(
-          ''
+          %{Expected errors to include "must be an integer" when attr is set to 0.1,\ngot no errors}
         )
       end
 
