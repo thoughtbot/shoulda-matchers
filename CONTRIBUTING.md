@@ -3,6 +3,9 @@ request.
 
 ## Overview
 
+0. If you haven't contributed before, please read and understand the [Code of
+Conduct].
+
 1. Fork the repo.
 
 2. Install [dependencies](#installing-dependencies).
@@ -60,6 +63,7 @@ curl -sL https://rpm.nodesource.com/setup | bash -
 yum install -y nodejs
 ```
 
+[Code of Conduct]: https://thoughtbot.com/open-source-code-of-conduct
 [code style]: https://github.com/thoughtbot/guides/tree/master/style
 [execjs]: https://github.com/sstephenson/execjs
 [install rvm]: https://rvm.io/rvm/install
