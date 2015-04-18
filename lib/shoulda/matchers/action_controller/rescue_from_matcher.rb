@@ -54,7 +54,7 @@ module Shoulda
         end
 
         def description
-          description = "rescues from #{exception}"
+          description = "rescue from #{exception}"
           description << " with ##{expected_method}" if expected_method
           description
         end
