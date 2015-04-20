@@ -1,7 +1,7 @@
 module Shoulda
   module Matchers
     # @private
-    module MatcherCollection
+    class MatcherCollection
       Configuration = Struct.new(:klass, :args, :block)
       MatcherWithResult = Struct.new(:matcher, :result)
 
@@ -18,10 +18,9 @@ module Shoulda
         matcher_customizers << customizer
       end
 
-      def add_qualifier(qualifier, *args)
-        qualifier, *args = args
+      def add_qualifier(name, *args)
         matcher_customizers << lambda do |matcher|
-          matcher.__send__(qualifier, *args)
+          matcher.__send__(name, *args)
         end
       end
 
@@ -33,25 +32,26 @@ module Shoulda
 
       def matches?(subject)
         @subject = subject
-        failing_submatchers.empty?
+        first_failing_matcher.nil?
       end
 
       def does_not_match?(subject)
         @subject = subject
-        passing_submatchers.empty?
+        !first_failing_matcher.nil?
       end
 
-      def failure_message
-        first_failing_matcher.failure_message
-      end
+      # def failure_message
+        # first_failing_matcher.failure_message
+      # end
 
-      def failure_message_when_negated
-        first_passing_matcher.failure_message_when_negated
-      end
+      # def failure_message_when_negated
+        # first_passing_matcher.failure_message_when_negated
+      # end
 
       protected
 
-      attr_reader :matcher_builder_configurations, :matcher_customizers
+      attr_reader :matcher_builder_configurations, :matcher_customizers,
+        :subject
 
       private
 
@@ -69,20 +69,14 @@ module Shoulda
         end
       end
 
-      def matcher_result_tuples
-        @_matcher_result_tuples ||=
-          matchers.map do |matcher|
-          Matcher.
-            { matcher: matcher, matches: matcher.matches?(subject) }
-          end
-      end
-
       def first_failing_matcher
-        matcher_result_tuples.detect { |tuple| tuple[:matches] }
+        @_first_failing_matcher ||=
+          matchers.detect { |matcher| !matcher.matches?(subject) }
       end
 
       def first_passing_matcher
-        matcher_result_tuples.detect { |tuple| !tuple[:matches] }
+        @_first_passing_matcher ||=
+          matchers.detect { |matcher| matcher.matches?(subject) }
       end
     end
   end

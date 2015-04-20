@@ -241,6 +241,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
     end
   end
 
+  # NOTE: These tests only applies to allow_value
   if active_record_can_raise_range_error?
     context 'when the value is outside of the range of the column' do
       context 'not qualified with strict' do
@@ -323,6 +324,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
     end
   end
 
+  # NOTE: These tests only applies to allow_value
   context 'when the attribute writer method ignores a non-nil value' do
     context 'when the attribute has a reader method' do
       it 'raises a CouldNotSetAttributeError' do
@@ -345,6 +347,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
     end
   end
 
+  # NOTE: These tests only applies to allow_value
   context 'when the attribute writer method ignores a nil value' do
     context 'when the attribute has a reader method' do
       it 'raises a CouldNotSetAttribute error' do

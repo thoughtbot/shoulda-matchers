@@ -7,36 +7,60 @@ module Shoulda
 
       # @private
       class AllowValuesMatcher
-        delegate :matches?, :does_not_match?, :failure_message,
-          :failure_message_when_negated, to: :matcher_collection
+        delegate :matches?, :does_not_match?, to: :matcher_collection
 
         def initialize(values)
+          if values.empty?
+            raise ArgumentError, '#allow_values requires values to test with'
+          end
+
+          @values = values
           @matcher_collection = build_matcher_collection
-        end
-
-        def for(attribute)
-          matcher_collection.add_qualifier(:for, attribute)
-        end
-
-        def on(context)
-          matcher_collection.add_qualifier(:on, context)
-        end
-
-        def strict
-          matcher_collection.add_qualifier(:strict)
-        end
-
-        def with_message(message, options = {})
-          matcher_collection.add_qualifier(:with_message, message, options)
+          @qualifiers = {}
         end
 
         def description
           "be valid when #{attribute} is set to #{formatted_values(values)}"
         end
 
+        def matches?(subject)
+          unless qualifiers.key?(:for)
+            raise ArgumentError, '#allow_values requires an attribute to test against'
+          end
+
+          super(subject)
+        end
+
+        def failure_message
+        end
+
+        def for(attribute)
+          qualifiers[:for] = attribute
+          matcher_collection.add_qualifier(:for, attribute)
+          self
+        end
+
+        def on(context)
+          qualifiers[:on] = context
+          matcher_collection.add_qualifier(:on, context)
+          self
+        end
+
+        def strict
+          qualifiers[:strict] = true
+          matcher_collection.add_qualifier(:strict)
+          self
+        end
+
+        def with_message(message, options = {})
+          qualifiers[:message] = { value: message, options: options }
+          matcher_collection.add_qualifier(:with_message, message, options)
+          self
+        end
+
         protected
 
-        attr_reader :matcher_collection
+        attr_reader :values, :matcher_collection, :qualifiers
 
         private
 

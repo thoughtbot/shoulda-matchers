@@ -1,0 +1,4 @@
+#!/bin/bash
+
+LATEST_APPRAISAL=$(ls gemfiles | sort -r | head -n 1 | perl -pe 's/^(\d+\.\d+)\.gemfile.lock/\1/')
+bundle exec appraisal $LATEST_APPRAISAL rspec "$@"
