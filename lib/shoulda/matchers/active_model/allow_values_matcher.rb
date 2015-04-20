@@ -1,14 +1,14 @@
 module Shoulda
   module Matchers
     module ActiveModel
-      # The `allow_value` matcher is used to test that an attribute of a model
-      # can or cannot be set to a particular value. It is most commonly used in
-      # conjunction with the `validates_format_of` validation, but is applicable
-      # in other contexts as well.
+      # The `allow_values` matcher is used to test that an attribute of a model
+      # can or cannot be set to a particular value or values. It is most
+      # commonly used in conjunction with the `validates_format_of` validation,
+      # but could be applicable in other contexts as well.
       #
       # #### should
       #
-      # In the positive form, `allow_value` asserts that an attribute can be
+      # In the positive form, `allow_values` asserts that an attribute can be
       # set to one or more values, succeeding if none of the values cause the
       # record to be invalid:
       #
@@ -22,20 +22,20 @@ module Shoulda
       #     # RSpec
       #     describe UserProfile do
       #       it do
-      #         should allow_value('http://foo.com', 'http://bar.com/baz').
+      #         should allow_values('http://foo.com', 'http://bar.com/baz').
       #           for(:website_url)
       #       end
       #     end
       #
       #     # Test::Unit
       #     class UserProfileTest < ActiveSupport::TestCase
-      #       should allow_value('http://foo.com', 'http://bar.com/baz').
+      #       should allow_values('http://foo.com', 'http://bar.com/baz').
       #         for(:website_url)
       #     end
       #
       # #### should_not
       #
-      # In the negative form, `allow_value` asserts that an attribute cannot be
+      # In the negative form, `allow_values` asserts that an attribute cannot be
       # set to one or more values, succeeding if the *first* value causes the
       # record to be invalid.
       #
@@ -51,12 +51,12 @@ module Shoulda
       #
       #     describe UserProfile do
       #       # One assertion: 'buz' and 'bar' will not be tested
-      #       it { should_not allow_value('fiz', 'buz', 'bar').for(:website_url) }
+      #       it { should_not allow_values('fiz', 'buz', 'bar').for(:website_url) }
       #
       #       # Three assertions, all tested separately
-      #       it { should_not allow_value('fiz').for(:website_url) }
-      #       it { should_not allow_value('buz').for(:website_url) }
-      #       it { should_not allow_value('bar').for(:website_url) }
+      #       it { should_not allow_values('fiz').for(:website_url) }
+      #       it { should_not allow_values('buz').for(:website_url) }
+      #       it { should_not allow_values('bar').for(:website_url) }
       #     end
       #
       # #### Qualifiers
@@ -77,7 +77,7 @@ module Shoulda
       #     # RSpec
       #     describe UserProfile do
       #       it do
-      #         should allow_value('2013-01-01').
+      #         should allow_values('2013-01-01').
       #           for(:birthday_as_string).
       #           on(:create)
       #       end
@@ -85,7 +85,7 @@ module Shoulda
       #
       #     # Test::Unit
       #     class UserProfileTest < ActiveSupport::TestCase
-      #       should allow_value('2013-01-01').
+      #       should allow_values('2013-01-01').
       #         for(:birthday_as_string).
       #         on(:create)
       #     end
@@ -106,7 +106,7 @@ module Shoulda
       #     # RSpec
       #     describe UserProfile do
       #       it do
-      #         should allow_value('open', 'closed').
+      #         should allow_values('open', 'closed').
       #           for(:state).
       #           with_message('State must be open or closed')
       #       end
@@ -114,7 +114,7 @@ module Shoulda
       #
       #     # Test::Unit
       #     class UserProfileTest < ActiveSupport::TestCase
-      #       should allow_value('open', 'closed').
+      #       should allow_values('open', 'closed').
       #         for(:state).
       #         with_message('State must be open or closed')
       #     end
@@ -133,7 +133,7 @@ module Shoulda
       #     # RSpec
       #     describe UserProfile do
       #       it do
-      #         should allow_value('open', 'closed').
+      #         should allow_values('open', 'closed').
       #           for(:state).
       #           with_message(/open or closed/)
       #       end
@@ -141,7 +141,7 @@ module Shoulda
       #
       #     # Test::Unit
       #     class UserProfileTest < ActiveSupport::TestCase
-      #       should allow_value('open', 'closed').
+      #       should allow_values('open', 'closed').
       #         for(:state).
       #         with_message(/open or closed/)
       #     end
@@ -169,7 +169,7 @@ module Shoulda
       #     # RSpec
       #     describe UserProfile do
       #       it do
-      #         should allow_value('Broncos', 'Titans').
+      #         should allow_values('Broncos', 'Titans').
       #           for(:sports_team).
       #           with_message('Must be either a Broncos or Titans fan',
       #             against: :chosen_sports_team
@@ -179,26 +179,26 @@ module Shoulda
       #
       #     # Test::Unit
       #     class UserProfileTest < ActiveSupport::TestCase
-      #       should allow_value('Broncos', 'Titans').
+      #       should allow_values('Broncos', 'Titans').
       #         for(:sports_team).
       #         with_message('Must be either a Broncos or Titans fan',
       #           against: :chosen_sports_team
       #         )
       #     end
       #
-      # @return [AllowValueMatcher]
+      # @return [AllowValuesMatcher]
       #
-      def allow_value(*values)
+      def allow_values(*values)
         if values.empty?
           raise ArgumentError, 'need at least one argument'
         else
-          AllowValueMatcher.new(*values)
+          AllowValuesMatcher.new(*values)
         end
       end
       alias_method :allow_values, :allow_value
 
       # @private
-      class AllowValueMatcher
+      class AllowValuesMatcher
         # @private
         class CouldNotSetAttributeError < Shoulda::Matchers::Error
           def self.create(model, attribute, expected_value, actual_value)
