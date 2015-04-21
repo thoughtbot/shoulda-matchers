@@ -1,60 +1,22 @@
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::AllowValuesMatcher, type: :model do
-  shared_examples 'basic tests' do
-    it 'matches when the given values are valid' do
-      record = build_record_allowing_values(/[a-z]{3}/)
-      matcher = wrap_allow_values(allow('hat', 'kit', 'ban'))
-      expect(record).to matcher
-    end
-
-    it 'does not match when some of the given values are invalid, producing an appropriate failure message' do
-      record = build_record_allowing_values(/[a-z]{3}/)
-      matcher = wrap_allow_values(allow('hat', 'kite', 'ban'))
-      assertion = -> { expect(record).not_to matcher }
-      expect(&assertion).to fail_with_message(<<-MESSAGE)
-        Did not expect errors when attr is set to "kite",
-        got errors:
-        * "is invalid" (attribute: attr, value: "kite")
-      MESSAGE
-    end
-
-    it 'does not match when all of the given values are invalid, producing an appropriate failure message' do
-      record = build_record_allowing_values(/[a-z]{3}/)
-      matcher = wrap_allow_values(allow('hate', 'kite', 'bane'))
-      assertion = -> { expect(record).not_to matcher }
-      expect(&assertion).to fail_with_message(<<-MESSAGE)
-        Did not expect errors when attr is set to "hate", "kite", or "bane",
-        got errors:
-        * "is invalid" (attribute: attr, value: "hate")
-        * "is invalid" (attribute: attr, value: "kite")
-        * "is invalid" (attribute: attr, value: "bane")
-      MESSAGE
-    end
-
-    def wrap_allow_values(matcher)
-      matcher
-    end
-  end
-
   context 'when no values are provided' do
-    it 'raises an ArgumentError immediately' do
+    it 'raises an error immediately' do
       expect { allow_values }.to raise_error(
-        ArgumentError,
-        '#allow_values requires values to test with'
+        /You need to specify one or more values to test with/
       )
     end
   end
 
   context 'when no attribute is provided' do
-    it 'raises an ArgumentError when the matcher runs' do
+    it 'raises an error when the matcher runs' do
       assertion = lambda do
         expect(any_object).to allow_values('foo', 'bar', 'baz')
       end
 
       expect(&assertion).to raise_error(
-        ArgumentError,
-        '#allow_values requires an attribute to test against'
+        /You need to specify an attribute to test against/
       )
     end
 
@@ -64,36 +26,437 @@ describe Shoulda::Matchers::ActiveModel::AllowValuesMatcher, type: :model do
   end
 
   context 'when the model has a validation on the attribute' do
-    include_examples 'basic tests'
+    it 'matches positively when all of the given values are valid' do
+      record = build_record_allowing_values(/\A[a-z]{3}\z/)
+      expect(record).to allow_multiple('hat', 'kit', 'ban')
+    end
+
+    it 'does not match positively when some of the given values are invalid, producing an appropriate failure message' do
+      record = build_record_allowing_values(/\A[a-z]{3}\z/)
+      assertion = lambda do
+        expect(record).to allow_multiple('hat', 'kite', 'ban')
+      end
+      message = <<-MESSAGE.strip_heredoc.chomp
+        Did not expect errors when attr is set to "kite",
+        got errors:
+        * "is invalid" (attribute: attr, value: "kite")
+      MESSAGE
+      expect(&assertion).to fail_with_message(message)
+    end
+
+    it 'does not match positively when all of the given values are invalid, producing an appropriate failure message' do
+      record = build_record_allowing_values(/\A[a-z]{3}\z/)
+      assertion = lambda do
+        expect(record).to allow_multiple('hate', 'kite', 'bane')
+      end
+      # message = <<-MESSAGE.strip_heredoc
+        # Did not expect errors when attr is set to "hate", "kite", or "bane",
+        # got errors:
+        # * "is invalid" (attribute: attr, value: "hate")
+        # * "is invalid" (attribute: attr, value: "kite")
+        # * "is invalid" (attribute: attr, value: "bane")
+      # MESSAGE
+      message = <<-MESSAGE.strip_heredoc.chomp
+        Did not expect errors when attr is set to "hate",
+        got errors:
+        * "is invalid" (attribute: attr, value: "hate")
+      MESSAGE
+      expect(&assertion).to fail_with_message(message)
+    end
 
     context 'when the validation uses a custom message (a string)' do
       context 'when the matcher is qualified with the same message' do
-        include_examples 'basic tests'
+        it 'matches positively when all of the given values are valid' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/,
+            message: 'custom message'
+          )
+          expect(record).
+            to allow_multiple('hat', 'kit', 'ban').
+            with_message('custom message')
+        end
+
+        it 'does not match positively when some of the given values are invalid, producing an appropriate failure message' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/,
+            message: 'custom message'
+          )
+          assertion = lambda do
+            expect(record).
+              to allow_multiple('hat', 'kite', 'ban').
+              with_message('custom message')
+          end
+          message = <<-MESSAGE.strip_heredoc.chomp
+            Did not expect errors to include "custom message" when attr is set to "kite",
+            got errors:
+            * "custom message" (attribute: attr, value: "kite")
+          MESSAGE
+          expect(&assertion).to fail_with_message(message)
+        end
+
+        it 'does not match positively when all of the given values are invalid, producing an appropriate failure message' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/,
+            message: 'custom message'
+          )
+          assertion = lambda do
+            expect(record).
+              to allow_multiple('hate', 'kite', 'bane').
+              with_message('custom message')
+          end
+          # message = <<-MESSAGE.strip_heredoc
+            # Did not expect errors when attr is set to "hate", "kite", or "bane",
+            # got errors:
+            # * "is invalid" (attribute: attr, value: "hate")
+            # * "is invalid" (attribute: attr, value: "kite")
+            # * "is invalid" (attribute: attr, value: "bane")
+          # MESSAGE
+          message = <<-MESSAGE.strip_heredoc.chomp
+            Did not expect errors to include "custom message" when attr is set to "hate",
+            got errors:
+            * "custom message" (attribute: attr, value: "hate")
+          MESSAGE
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'when the matcher is qualified with a regex matching the same message' do
+        it 'matches positively when all of the given values are valid' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/,
+            message: 'custom message'
+          )
+          expect(record).
+            to allow_multiple('hat', 'kit', 'ban').
+            with_message(/message/)
+        end
+
+        it 'does not match positively when some of the given values are invalid, producing an appropriate failure message' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/,
+            message: 'custom message'
+          )
+          assertion = lambda do
+            expect(record).
+              to allow_multiple('hat', 'kite', 'ban').
+              with_message(/message/)
+          end
+          message = <<-MESSAGE.strip_heredoc.chomp
+            Did not expect errors to include /message/ when attr is set to "kite",
+            got errors:
+            * "custom message" (attribute: attr, value: "kite")
+          MESSAGE
+          expect(&assertion).to fail_with_message(message)
+        end
+
+        it 'does not match positively when all of the given values are invalid, producing an appropriate failure message' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/,
+            message: 'custom message'
+          )
+          assertion = lambda do
+            expect(record).
+              to allow_multiple('hate', 'kite', 'bane').
+              with_message(/message/)
+          end
+          # message = <<-MESSAGE.strip_heredoc
+            # Did not expect errors when attr is set to "hate", "kite", or "bane",
+            # got errors:
+            # * "is invalid" (attribute: attr, value: "hate")
+            # * "is invalid" (attribute: attr, value: "kite")
+            # * "is invalid" (attribute: attr, value: "bane")
+          # MESSAGE
+          message = <<-MESSAGE.strip_heredoc.chomp
+            Did not expect errors to include /message/ when attr is set to "hate",
+            got errors:
+            * "custom message" (attribute: attr, value: "hate")
+          MESSAGE
+          expect(&assertion).to fail_with_message(message)
+        end
       end
 
       context 'when the matcher is qualified with a different message' do
-        it 'does not match, producing an appropriate failure message'
+        it 'matches positively given a valid value' do
+          # TODO: This should print a warning
+          record = build_record_allowing_values(/abc/, message: 'custom message')
+          expect(record).to allow_single('abcde').with_message('different message')
+        end
+
+        it 'does not match negatively given an invalid value, producing an appropriate failure message' do
+          record = build_record_allowing_values(/abc/, message: 'custom message')
+          assertion = lambda do
+            expect(record).
+              not_to allow_single('xyz').
+              with_message('different message')
+          end
+          message = <<-MESSAGE.strip_heredoc.chomp
+            Expected errors to include "different message" when attr is set to "xyz",
+            got errors:
+            * "custom message" (attribute: attr, value: "xyz")
+          MESSAGE
+          expect(&assertion).to fail_with_message(message)
+        end
       end
 
       context 'when the matcher is qualified with no message' do
-        it 'does not match, producing an appropriate failure message'
+        it 'matches positively when all of the given values are valid' do
+          # TODO: This should print a warning
+          record = build_record_allowing_values(/\A[a-z]{3}\z/,
+            message: 'custom message'
+          )
+          expect(record).to allow_multiple('hat', 'kit', 'ban')
+        end
+
+        it 'does not match positively when some of the given values are invalid, producing an appropriate failure message' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/,
+            message: 'custom message'
+          )
+          assertion = lambda do
+            expect(record).to allow_multiple('hat', 'kite', 'ban')
+          end
+          message = <<-MESSAGE.strip_heredoc.chomp
+            Did not expect errors when attr is set to "kite",
+            got errors:
+            * "custom message" (attribute: attr, value: "kite")
+          MESSAGE
+          expect(&assertion).to fail_with_message(message)
+        end
+
+        it 'does not match positively when all of the given values are invalid, producing an appropriate failure message' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/,
+            message: 'custom message'
+          )
+          assertion = lambda do
+            expect(record).to allow_multiple('hate', 'kite', 'bane')
+          end
+          # message = <<-MESSAGE.strip_heredoc
+            # Did not expect errors when attr is set to "hate", "kite", or "bane",
+            # got errors:
+            # * "is invalid" (attribute: attr, value: "hate")
+            # * "is invalid" (attribute: attr, value: "kite")
+            # * "is invalid" (attribute: attr, value: "bane")
+          # MESSAGE
+          message = <<-MESSAGE.strip_heredoc.chomp
+            Did not expect errors when attr is set to "hate",
+            got errors:
+            * "custom message" (attribute: attr, value: "hate")
+          MESSAGE
+          expect(&assertion).to fail_with_message(message)
+        end
       end
     end
 
     context 'when the validation uses a custom message (an i18n key)' do
-      context 'when the matcher is qualified with the same message' do
-        include_examples 'basic tests'
+      context 'when the matcher is qualified with the same message (an i18n key)' do
+        it 'matches positively when all of the given values are valid' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/, message: :taken)
+          expect(record).
+            to allow_multiple('hat', 'kit', 'ban').
+            with_message(:taken)
+        end
+
+        it 'does not match positively when some of the given values are invalid, producing an appropriate failure message' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/, message: :taken)
+          assertion = lambda do
+            expect(record).
+              to allow_multiple('hat', 'kite', 'ban').
+              with_message(:taken)
+          end
+          message = <<-MESSAGE.strip_heredoc.chomp
+            Did not expect errors to include "is taken" when attr is set to "kite",
+            got errors:
+            * "is taken" (attribute: attr, value: "kite")
+          MESSAGE
+          expect(&assertion).to fail_with_message(message)
+        end
+
+        it 'does not match positively when all of the given values are invalid, producing an appropriate failure message' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/, message: :taken)
+          assertion = lambda do
+            expect(record).
+              to allow_multiple('hate', 'kite', 'bane').
+              with_message(:taken)
+          end
+          # message = <<-MESSAGE.strip_heredoc
+            # Did not expect errors when attr is set to "hate", "kite", or "bane",
+            # got errors:
+            # * "is invalid" (attribute: attr, value: "hate")
+            # * "is invalid" (attribute: attr, value: "kite")
+            # * "is invalid" (attribute: attr, value: "bane")
+          # MESSAGE
+          message = <<-MESSAGE.strip_heredoc.chomp
+            Did not expect errors to include "is taken" when attr is set to "hate",
+            got errors:
+            * "is taken" (attribute: attr, value: "hate")
+          MESSAGE
+          expect(&assertion).to fail_with_message(message)
+        end
       end
 
-      context 'when the matcher is qualified with a different message' do
-        it 'does not match, producing an appropriate failure message'
+      context 'when the matcher is qualified with the same message (a string)' do
+        it 'matches positively when all of the given values are valid' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/, message: :taken)
+          expect(record).
+            to allow_multiple('hat', 'kit', 'ban').
+            with_message('is taken')
+        end
+
+        it 'does not match positively when some of the given values are invalid, producing an appropriate failure message' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/, message: :taken)
+          assertion = lambda do
+            expect(record).
+              to allow_multiple('hat', 'kite', 'ban').
+              with_message('is taken')
+          end
+          message = <<-MESSAGE.strip_heredoc.chomp
+            Did not expect errors to include "is taken" when attr is set to "kite",
+            got errors:
+            * "is taken" (attribute: attr, value: "kite")
+          MESSAGE
+          expect(&assertion).to fail_with_message(message)
+        end
+
+        it 'does not match positively when all of the given values are invalid, producing an appropriate failure message' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/, message: :taken)
+          assertion = lambda do
+            expect(record).
+              to allow_multiple('hate', 'kite', 'bane').
+              with_message('is taken')
+          end
+          # message = <<-MESSAGE.strip_heredoc
+            # Did not expect errors when attr is set to "hate", "kite", or "bane",
+            # got errors:
+            # * "is invalid" (attribute: attr, value: "hate")
+            # * "is invalid" (attribute: attr, value: "kite")
+            # * "is invalid" (attribute: attr, value: "bane")
+          # MESSAGE
+          message = <<-MESSAGE.strip_heredoc.chomp
+            Did not expect errors to include "is taken" when attr is set to "hate",
+            got errors:
+            * "is taken" (attribute: attr, value: "hate")
+          MESSAGE
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'when the matcher is qualified with a regex matching the same message' do
+        it 'matches positively when all of the given values are valid' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/,
+            message: :taken
+          )
+          expect(record).
+            to allow_multiple('hat', 'kit', 'ban').
+            with_message(/taken/)
+        end
+
+        it 'does not match positively when some of the given values are invalid, producing an appropriate failure message' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/,
+            message: :taken
+          )
+          assertion = lambda do
+            expect(record).
+              to allow_multiple('hat', 'kite', 'ban').
+              with_message(/taken/)
+          end
+          message = <<-MESSAGE.strip_heredoc.chomp
+            Did not expect errors to include /message/ when attr is set to "kite",
+            got errors:
+            * "is taken" (attribute: attr, value: "kite")
+          MESSAGE
+          expect(&assertion).to fail_with_message(message)
+        end
+
+        it 'does not match positively when all of the given values are invalid, producing an appropriate failure message' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/,
+            message: :taken
+          )
+          assertion = lambda do
+            expect(record).
+              to allow_multiple('hate', 'kite', 'bane').
+              with_message(/taken/)
+          end
+          # message = <<-MESSAGE.strip_heredoc
+            # Did not expect errors when attr is set to "hate", "kite", or "bane",
+            # got errors:
+            # * "is invalid" (attribute: attr, value: "hate")
+            # * "is invalid" (attribute: attr, value: "kite")
+            # * "is invalid" (attribute: attr, value: "bane")
+          # MESSAGE
+          message = <<-MESSAGE.strip_heredoc.chomp
+            Did not expect errors to include /taken/ when attr is set to "hate",
+            got errors:
+            * "taken" (attribute: attr, value: "hate")
+          MESSAGE
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'when the matcher is qualified with a different message (i18n key or otherwise)' do
+        it 'matches positively given a valid value' do
+          # TODO: This should print a warning
+          record = build_record_allowing_values(/abc/, message: :taken)
+          expect(record).to allow_single('abcde').with_message('different message')
+        end
+
+        it 'does not match negatively given an invalid value, producing an appropriate failure message' do
+          record = build_record_allowing_values(/abc/, message: :taken)
+          assertion = lambda do
+            expect(record).
+              not_to allow_single('xyz').
+              with_message('different message')
+          end
+          message = <<-MESSAGE.strip_heredoc.chomp
+            Expected errors to include "different message" when attr is set to "xyz",
+            got errors:
+            * "is taken" (attribute: attr, value: "xyz")
+          MESSAGE
+          expect(&assertion).to fail_with_message(message)
+        end
       end
 
       context 'when the matcher is qualified with no message' do
-        it 'does not match, producing an appropriate failure message'
+        it 'matches positively when all of the given values are valid' do
+          # TODO: This should print a warning
+          record = build_record_allowing_values(/\A[a-z]{3}\z/,
+            message: :taken
+          )
+          expect(record).to allow_multiple('hat', 'kit', 'ban')
+        end
+
+        it 'does not match positively when some of the given values are invalid, producing an appropriate failure message' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/,
+            message: :taken
+          )
+          assertion = lambda do
+            expect(record).to allow_multiple('hat', 'kite', 'ban')
+          end
+          message = <<-MESSAGE.strip_heredoc.chomp
+            Did not expect errors when attr is set to "kite",
+            got errors:
+            * "is taken" (attribute: attr, value: "kite")
+          MESSAGE
+          expect(&assertion).to fail_with_message(message)
+        end
+
+        it 'does not match positively when all of the given values are invalid, producing an appropriate failure message' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/,
+            message: :taken
+          )
+          assertion = lambda do
+            expect(record).to allow_multiple('hate', 'kite', 'bane')
+          end
+          # message = <<-MESSAGE.strip_heredoc
+            # Did not expect errors when attr is set to "hate", "kite", or "bane",
+            # got errors:
+            # * "is invalid" (attribute: attr, value: "hate")
+            # * "is invalid" (attribute: attr, value: "kite")
+            # * "is invalid" (attribute: attr, value: "bane")
+          # MESSAGE
+          message = <<-MESSAGE.strip_heredoc.chomp
+            Did not expect errors when attr is set to "hate",
+            got errors:
+            * "is taken" (attribute: attr, value: "hate")
+          MESSAGE
+          expect(&assertion).to fail_with_message(message)
+        end
       end
     end
 
+=begin
     context 'when the validation uses a custom message (an i18n key + interpolation values)' do
       context 'when the matcher is qualified with the same message + same values' do
         include_examples 'basic tests'
@@ -174,8 +537,10 @@ describe Shoulda::Matchers::ActiveModel::AllowValuesMatcher, type: :model do
         it 'does not match, producing an appropriate failure message'
       end
     end
+=end
   end
 
+=begin
   context 'when the model has several validations on the attribute' do
     include_examples 'basic tests'
   end
@@ -199,18 +564,24 @@ describe Shoulda::Matchers::ActiveModel::AllowValuesMatcher, type: :model do
       it 'includes the fact it is using a custom message'
     end
   end
+=end
 
-  def build_model_allowing_values(regexp)
+  def build_model_allowing_values(regexp, options = {})
+    options = { with: regexp }.merge(options)
     define_model 'Example', attribute_being_validated => :string do |model|
-      model.validates_format_of(attribute_being_validated, with: regexp)
+      model.validates_format_of(attribute_being_validated, options)
     end
   end
 
-  def build_record_allowing_values(regexp)
-    build_model_allowing_values(regexp).new
+  def build_record_allowing_values(regexp, options = {})
+    build_model_allowing_values(regexp, options).new
   end
 
-  def allow(*values)
+  def allow_single(value)
+    allow_value(value).for(attribute_being_validated)
+  end
+
+  def allow_multiple(*values)
     allow_values(*values).for(attribute_being_validated)
   end
 

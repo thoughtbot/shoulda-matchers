@@ -6,7 +6,8 @@ module Shoulda
     def self.warn(message)
       header = "Warning from shoulda-matchers:"
       divider = "*" * TERMINAL_MAX_WIDTH
-      wrapped_message = word_wrap(message, TERMINAL_MAX_WIDTH)
+      # wrapped_message = word_wrap(message, TERMINAL_MAX_WIDTH)
+      wrapped_message = message
       full_message = [
         divider,
         [header, wrapped_message.strip].join("\n\n"),
@@ -27,10 +28,20 @@ EOT
     # Source: <https://www.ruby-forum.com/topic/57805>
     # @private
     def self.word_wrap(text, width=80)
-      text.
-        gsub(/\n+/, " ").
-        gsub( /(\S{#{width}})(?=\S)/, '\1 ' ).
-        gsub( /(.{1,#{width}})(?:\s+|$)/, "\\1\n" )
+      paras = text.split(/\n{2,}/)
+
+      paras.map! do |para|
+        if para =~ /\A[ ]{2,}/
+          para
+        else
+          para.
+            gsub(/\n+/, " ").
+            gsub(/(\S{#{width}})(?=\S)/, '\1 ').
+            gsub(/(.{1,#{width}})(?:\s+|$)/, "\\1\n")
+        end
+      end
+
+      paras.join("\n\n")
     end
   end
 end

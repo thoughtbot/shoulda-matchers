@@ -40,7 +40,8 @@ module UnitTests
       private
 
       def expectation
-        "print a warning including:\n  #{expected_warning}"
+        "print a warning including:\n" +
+          Shoulda::Matchers.word_wrap(expected_warning)
       end
 
       def actual_warning

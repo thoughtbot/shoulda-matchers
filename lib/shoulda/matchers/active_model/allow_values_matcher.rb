@@ -1,10 +1,11 @@
 module Shoulda
   module Matchers
     module ActiveModel
-      # The `allow_values` matcher is used to test that an attribute of a model
-      # can or cannot be set to a particular value or values. It is most
-      # commonly used in conjunction with the `validates_format_of` validation,
-      # but could be applicable in other contexts as well.
+      # The `allow_values` matcher (also available as `allow_value`) is used to
+      # test that an attribute of a model can or cannot be set to a particular
+      # value or values. It is most commonly used in conjunction with the
+      # `validates_format_of` validation, but could be applicable in other
+      # contexts as well.
       #
       # #### should
       #
@@ -36,11 +37,8 @@ module Shoulda
       # #### should_not
       #
       # In the negative form, `allow_values` asserts that an attribute cannot be
-      # set to one or more values, succeeding if the *first* value causes the
-      # record to be invalid.
-      #
-      # **This can be surprising** so in this case if you need to check that
-      # *all* of the values are invalid, use separate assertions:
+      # set to one or more values, succeeding if any value causes the record to
+      # be invalid.
       #
       #     class UserProfile
       #       include ActiveModel::Model
@@ -49,14 +47,18 @@ module Shoulda
       #       validates_format_of :website_url, with: URI.regexp
       #     end
       #
+      #     # RSpec
       #     describe UserProfile do
-      #       # One assertion: 'buz' and 'bar' will not be tested
-      #       it { should_not allow_values('fiz', 'buz', 'bar').for(:website_url) }
+      #       it do
+      #         should allow_values('bad value', 'http://bar.com/baz').
+      #           for(:website_url)
+      #       end
+      #     end
       #
-      #       # Three assertions, all tested separately
-      #       it { should_not allow_values('fiz').for(:website_url) }
-      #       it { should_not allow_values('buz').for(:website_url) }
-      #       it { should_not allow_values('bar').for(:website_url) }
+      #     # Test::Unit
+      #     class UserProfileTest < ActiveSupport::TestCase
+      #       should allow_values('bad value', 'http://bar.com/baz').
+      #         for(:website_url)
       #     end
       #
       # #### Qualifiers
@@ -77,7 +79,7 @@ module Shoulda
       #     # RSpec
       #     describe UserProfile do
       #       it do
-      #         should allow_values('2013-01-01').
+      #         should allow_value('2013-01-01').
       #           for(:birthday_as_string).
       #           on(:create)
       #       end
@@ -85,7 +87,7 @@ module Shoulda
       #
       #     # Test::Unit
       #     class UserProfileTest < ActiveSupport::TestCase
-      #       should allow_values('2013-01-01').
+      #       should allow_value('2013-01-01').
       #         for(:birthday_as_string).
       #         on(:create)
       #     end
@@ -160,7 +162,7 @@ module Shoulda
       #
       #       def sports_team_must_be_valid
       #         if sports_team !~ /^(Broncos|Titans)$/i
-      #           self.errors.add :chosen_sports_team,
+      #           @errors.add :chosen_sports_team,
       #             'Must be either a Broncos fan or a Titans fan'
       #         end
       #       end
@@ -189,13 +191,9 @@ module Shoulda
       # @return [AllowValuesMatcher]
       #
       def allow_values(*values)
-        if values.empty?
-          raise ArgumentError, 'need at least one argument'
-        else
-          AllowValuesMatcher.new(*values)
-        end
+        AllowValuesMatcher.new(*values)
       end
-      alias_method :allow_values, :allow_value
+      alias_method :allow_value, :allow_values
 
       # @private
       class AllowValuesMatcher
@@ -219,18 +217,24 @@ module Shoulda
 
         include Helpers
 
-        attr_accessor :attribute_with_message
-        attr_accessor :options
-
         def initialize(*values)
-          self.values_to_match = values
-          self.options = {}
-          self.after_setting_value_callback = -> {}
-          self.validator = Validator.new
+          if values.empty?
+            raise ArgumentError, <<-MESSAGE.strip_heredoc
+              You need to specify one or more values to test with. For example:
+
+                allow_value('some value').for(:an_attribute)
+                allow_values('this', 'and', 'that').for(:an_attribute)
+            MESSAGE
+          end
+
+          @values_to_match = values
+          @qualifiers = {}
+          @after_setting_value_callback = -> {}
+          @validator = Validator.new
         end
 
         def for(attribute)
-          self.attribute_to_set = attribute
+          qualifiers[:attribute_to_set] = attribute
           self.attribute_to_check_message_against = attribute
           self
         end
@@ -240,9 +244,9 @@ module Shoulda
           self
         end
 
-        def with_message(message, options={})
-          self.options[:expected_message] = message
-          self.options[:expected_message_values] = options.fetch(:values, {})
+        def with_message(message, options = {})
+          qualifiers[:expected_message] = message
+          qualifiers[:expected_message_values] = options.fetch(:values, {})
 
           if options.key?(:against)
             self.attribute_to_check_message_against = options[:against]
@@ -257,10 +261,19 @@ module Shoulda
         end
 
         def _after_setting_value(&callback)
-          self.after_setting_value_callback = callback
+          @after_setting_value_callback = callback
         end
 
         def matches?(instance)
+          unless qualifiers.key?(:attribute_to_set)
+            raise ArgumentError, Shoulda::Matchers.word_wrap(<<-MESSAGE.strip_heredoc)
+              You need to specify an attribute to test against. You can do this with #for, e.g.:
+
+                  allow_value('some value').for(:an_attribute)
+                  allow_values('this', 'and', 'that').for(:an_attribute)
+            MESSAGE
+          end
+
           self.instance = instance
           values_to_match.all? { |value| value_matches?(value) }
         end
@@ -286,9 +299,8 @@ module Shoulda
 
         protected
 
-        attr_reader :instance, :attribute_to_check_message_against
-        attr_accessor :values_to_match, :attribute_to_set, :value,
-          :matched_error, :after_setting_value_callback, :validator
+        attr_reader :instance, :values_to_match, :value, :matched_error,
+          :after_setting_value_callback, :validator, :qualifiers
 
         def instance=(instance)
           @instance = instance
@@ -296,12 +308,13 @@ module Shoulda
         end
 
         def attribute_to_check_message_against=(attribute)
-          @attribute_to_check_message_against = attribute
+          qualifiers[:attribute_to_check_message_against] = attribute
           validator.attribute = attribute
         end
 
         def value_matches?(value)
-          self.value = value
+          validator.reset
+          @value = value
           set_attribute(value)
           !(errors_match? || any_range_error_occurred?)
         end
@@ -312,7 +325,7 @@ module Shoulda
         end
 
         def set_attribute_ignoring_range_errors(value)
-          instance.__send__("#{attribute_to_set}=", value)
+          instance.__send__("#{qualifiers[:attribute_to_set]}=", value)
           ensure_that_attribute_has_been_changed_to_or_from_nil!(value)
         rescue RangeError => exception
           # Have to reset the attribute so that we don't get a RangeError the
@@ -323,16 +336,16 @@ module Shoulda
         end
 
         def reset_attribute
-          instance.send(:raw_write_attribute, attribute_to_set, nil)
+          instance.send(:raw_write_attribute, qualifiers[:attribute_to_set], nil)
         end
 
         def ensure_that_attribute_has_been_changed_to_or_from_nil!(expected_value)
-          actual_value = instance.__send__(attribute_to_set)
+          actual_value = instance.__send__(qualifiers[:attribute_to_set])
 
           if expected_value.nil? != actual_value.nil?
             raise CouldNotSetAttributeError.create(
               instance.class,
-              attribute_to_set,
+              qualifiers[:attribute_to_set],
               expected_value,
               actual_value
             )
@@ -349,7 +362,7 @@ module Shoulda
 
         def errors_for_attribute_match?
           if expected_message
-            self.matched_error = errors_match_regexp? || errors_match_string?
+            @matched_error = errors_match_regexp? || errors_match_string?
           else
             errors_for_attribute.compact.any?
           end
@@ -378,7 +391,7 @@ module Shoulda
         def expectation
           parts = [
             expected_messages_description,
-            "when #{attribute_to_set} is set to #{value.inspect}"
+            "when #{qualifiers[:attribute_to_set]} is set to #{value.inspect}"
           ]
 
           parts.join(' ').squeeze(' ')
@@ -401,11 +414,11 @@ module Shoulda
         end
 
         def expected_message
-          if options.key?(:expected_message)
-            if Symbol === options[:expected_message]
+          if qualifiers.key?(:expected_message)
+            if Symbol === qualifiers[:expected_message]
               default_expected_message
             else
-              options[:expected_message]
+              qualifiers[:expected_message]
             end
           end
         end
@@ -416,7 +429,7 @@ module Shoulda
 
         def default_attribute_message
           default_error_message(
-            options[:expected_message],
+            qualifiers[:expected_message],
             default_attribute_message_values
           )
         end
@@ -425,10 +438,10 @@ module Shoulda
           defaults = {
             model_name: model_name,
             instance: instance,
-            attribute: attribute_to_check_message_against,
+            attribute: qualifiers[:attribute_to_check_message_against],
           }
 
-          defaults.merge(options[:expected_message_values])
+          defaults.merge(qualifiers[:expected_message_values])
         end
 
         def model_name
