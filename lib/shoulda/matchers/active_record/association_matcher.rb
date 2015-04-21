@@ -774,6 +774,29 @@ module Shoulda
       #         class_name('City')
       #     end
       #
+      # ##### join_table
+      #
+      # Use `join_table` to test usage of the `:join_table` option. This
+      # asserts that the table you're referring to actually exists.
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_and_belongs_to_many :issues, join_table: 'people_tickets'
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it do
+      #         should have_and_belong_to_many(:issues).
+      #           join_table('people_tickets')
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_and_belong_to_many(:issues).
+      #         join_table('people_tickets')
+      #     end
+      #
       # ##### validate
       #
       # Use `validate` to test that the `:validate` option was specified.
