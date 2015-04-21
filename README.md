@@ -6,8 +6,10 @@ complex, and error-prone.
 
 [View the official documentation for the latest version (2.8.0).][rubydocs]
 
-*This is the README for the master branch (3.0.0.alpha). [View the README for
-2.8.0 instead.][2.8.0-README]*
+**Heads up! This is the README for the master branch. [You might be more
+interested in the README for 2.8.0 instead.][2.8.0-README]**
+
+----
 
 ### ActiveModel matchers
 
@@ -141,6 +143,10 @@ end
 ```
 
 ### Configuration
+
+**NOTE: The new configuration syntax isn't available in a public release just
+yet -- please refer to the [README for 2.8.0][2.8.0-README] for the current
+installation instructions.**
 
 Before you can use Shoulda Matchers, you'll need to tell it a couple of things:
 
