@@ -348,6 +348,13 @@ EOT
               @failure_message = "#{@array} doesn't match array in validation"
               false
             end
+          else
+            message = <<-EOT.strip_heredoc
+              You need to use the `in_array` or `in_range` qualifiers, eg.
+              * should validate_inclusion_of(:state).in_array(%w(open resolved unresolved))
+              * should validate_inclusion_of(:state).in_range(1..5)
+            EOT
+            raise ArgumentError, message
           end
         end
 

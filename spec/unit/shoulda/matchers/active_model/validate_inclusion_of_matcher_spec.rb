@@ -254,6 +254,11 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     zero = args[:zero]
     reserved_outside_value = args.fetch(:reserved_outside_value)
 
+    it 'raise a error when the in_array option is missing' do
+      builder = build_object
+      expect_to_raise_error_with_missing_options(builder)
+    end
+
     it 'does not match a record with no validations' do
       builder = build_object
       expect_not_to_match_on_values(builder, possible_values)
@@ -338,6 +343,11 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
   shared_examples_for 'it supports in_range' do |args|
     possible_values = args[:possible_values]
+
+    it 'raise a error when the in_range option is missing' do
+      builder = build_object
+      expect_to_raise_error_with_missing_options(builder)
+    end
 
     it 'does not match a record with no validations' do
       builder = build_object
@@ -626,6 +636,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     matcher = validate_inclusion_of(builder.attribute)
     yield matcher if block_given?
     expect(builder.object).not_to(matcher)
+  end
+
+  def expect_to_raise_error_with_missing_options(builder)
+    matcher = validate_inclusion_of(builder.attribute)
+    expect do
+      expect(builder.object).to(matcher)
+    end.to raise_error(ArgumentError, /`in_array` or `in_range` qualifiers/)
   end
 
   def expect_to_match_in_array(builder, array)
