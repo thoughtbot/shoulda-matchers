@@ -158,6 +158,13 @@ module Shoulda
               disallows_maximum_value
           elsif @array
             disallows_all_values_in_array?
+          else
+            message = <<-EOT.strip_heredoc
+              You need to use the `in_array` or `in_range` qualifiers, eg.
+              * should validate_exclusion_of(:state).in_array(%w(open resolved unresolved))
+              * should validate_exclusion_of(:state).in_range(1..5)
+            EOT
+            raise ArgumentError, message
           end
         end
 

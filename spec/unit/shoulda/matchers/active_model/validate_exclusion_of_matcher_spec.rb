@@ -87,6 +87,15 @@ describe Shoulda::Matchers::ActiveModel::ValidateExclusionOfMatcher, type: :mode
     end
   end
 
+  context 'without the in_array or in_range qualifier' do
+    it 'raise a error when the qualifier is missing' do
+      expect do
+        expect(validating_exclusion(in: 2..5)).
+          to validate_exclusion_of(:attr)
+      end.to raise_error(ArgumentError, /`in_array` or `in_range` qualifiers/)
+    end
+  end
+
   def validating_exclusion(options)
     define_model(:example, attr: :integer) do
       validates_exclusion_of :attr, options
