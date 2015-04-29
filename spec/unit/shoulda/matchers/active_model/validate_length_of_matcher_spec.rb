@@ -161,6 +161,15 @@ describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher, type: :model d
     end
   end
 
+  context 'without a qualifier' do
+    it 'raise a error when the qualifier is missing' do
+      expect do
+        expect(validating_length(minimum: 4)).
+          to validate_length_of(:attr)
+      end.to raise_error(ArgumentError, /at least one qualifier/)
+    end
+  end
+
   def validating_length(options = {})
     define_model(:example, attr: :string) do
       validates_length_of :attr, options

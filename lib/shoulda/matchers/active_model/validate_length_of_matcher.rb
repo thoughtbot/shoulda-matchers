@@ -291,6 +291,14 @@ module Shoulda
         end
 
         def matches?(subject)
+          if @options.empty?
+            message = <<-EOT.strip_heredoc
+              You need to use at least one qualifier, eg.
+              * should validate_length_of(:bio).is_at_least(15)
+              * should validate_length_of(:status_update).is_at_most(140)
+            EOT
+            raise ArgumentError, message
+          end
           super(subject)
           translate_messages!
           lower_bound_matches? && upper_bound_matches?
