@@ -95,6 +95,7 @@ module Shoulda
           @method  = method
           @path    = path
           @context = context
+          @params = {}
         end
 
         attr_reader :failure_message, :failure_message_when_negated
@@ -113,6 +114,14 @@ module Shoulda
         end
 
         def matches?(controller)
+          if @params.empty?
+            message = <<-EOT.strip_heredoc
+              You need to use the `to` qualifier, eg.
+              * should route(:get, '/posts').to(action: :index)
+              * should route(:get, '/posts/1').to(action: :show, id: 1)
+            EOT
+            raise ArgumentError, message
+          end
           guess_controller!(controller)
           route_recognized?
         end

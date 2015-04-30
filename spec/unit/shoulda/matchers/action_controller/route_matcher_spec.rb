@@ -35,6 +35,13 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
           to(action: 'index')
       end
 
+      it 'raises a error when called without the `to` qualifier' do
+        expect do
+          expect(controller_with_defined_routes).
+            to route(:get, "/#{controller_path}")
+        end.to raise_error(ArgumentError, /qualifier/)
+      end
+
       context 'when route has parameters' do
         it 'accepts a non-string parameter' do
           expect(controller_with_defined_routes).
