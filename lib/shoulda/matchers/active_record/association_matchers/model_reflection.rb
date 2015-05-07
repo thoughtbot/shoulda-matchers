@@ -65,15 +65,21 @@ module Shoulda
             end
           end
 
+          def validate_inverse_of_through_association!
+            if through?
+              reflection.check_validity!
+            end
+          end
+
+          def has_and_belongs_to_many_name
+            reflection.options[:through]
+          end
+
           protected
 
           attr_reader :reflection, :subject
 
           private
-
-          def has_and_belongs_to_many_name
-            reflection.options[:through]
-          end
 
           def has_and_belongs_to_many_name_table_name
             if has_and_belongs_to_many_reflection

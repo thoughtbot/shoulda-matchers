@@ -4,9 +4,23 @@ module Shoulda
       module AssociationMatchers
         # @private
         class ModelReflector
-          delegate :associated_class, :through?, :join_table_name,
-            :association_relation, :polymorphic?, :foreign_key,
-            :association_foreign_key, to: :reflection
+          delegate(
+            :associated_class,
+            :association_foreign_key,
+            :association_relation,
+            :foreign_key,
+            :has_and_belongs_to_many_name,
+            :join_table_name,
+            :polymorphic?,
+            :validate_inverse_of_through_association!,
+            to: :reflection
+          )
+
+          delegate(
+            :through?,
+            to: :reflection,
+            allow_nil: true
+          )
 
           def initialize(subject, name)
             @subject = subject

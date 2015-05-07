@@ -847,6 +847,15 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       expect(having_many_children).to have_many(:children)
     end
 
+    it 'does not reject a non-:through association where there is no belongs_to in the inverse model' do
+      define_model :Child, parent_id: :integer
+      parent_class = define_model :Parent do
+        has_many :children
+      end
+
+      expect { have_many(:children) }.to match_against(parent_class.new)
+    end
+
     it 'accepts a valid association with a :through option' do
       define_model :child
       define_model :conception, child_id: :integer,
@@ -858,6 +867,21 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
         has_many :children, through: :conceptions
       end
       expect(Parent.new).to have_many(:children)
+    end
+
+    it 'rejects a :through association where there is no belongs_to in the inverse model' do
+      define_model :Child
+      define_model :Conception, child_id: :integer, parent_id: :integer
+      parent_class = define_model :Parent do
+        has_many :conceptions
+        has_many :children, through: :conceptions
+      end
+
+      expect { have_many(:children) }
+        .not_to match_against(parent_class.new)
+        .and_fail_with(<<-MESSAGE)
+Expected Parent to have a has_many association called children through conceptions (Could not find the source association(s) "child" or :children in model Conception. Try 'has_many :children, :through => :conceptions, :source => <name>'. Is it one of ?)
+        MESSAGE
     end
 
     it 'accepts a valid association with an :as option' do

@@ -1144,6 +1144,7 @@ module Shoulda
           @subject = subject
           association_exists? &&
             macro_correct? &&
+            validate_inverse_of_through_association &&
             (polymorphic? || class_exists?) &&
             foreign_key_exists? &&
             primary_key_exists? &&
@@ -1198,7 +1199,14 @@ module Shoulda
         end
 
         def expectation
-          "#{model_class.name} to have a #{macro} association called #{name}"
+          expectation =
+            "#{model_class.name} to have a #{macro} association called #{name}"
+
+          if through?
+            expectation << " through #{reflector.has_and_belongs_to_many_name}"
+          end
+
+          expectation
         end
 
         def missing_options
@@ -1239,6 +1247,14 @@ module Shoulda
             @missing = "actual association type was #{reflection.macro}"
             false
           end
+        end
+
+        def validate_inverse_of_through_association
+          reflector.validate_inverse_of_through_association!
+          true
+        rescue ::ActiveRecord::ActiveRecordError => error
+          @missing = error.message
+          false
         end
 
         def macro_supports_primary_key?
