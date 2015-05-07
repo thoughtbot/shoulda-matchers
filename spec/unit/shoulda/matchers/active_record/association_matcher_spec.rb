@@ -311,6 +311,19 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       expect(Parent.new).to have_many(:children)
     end
 
+    it 'raises a specific error when has invalid ActiveRecord association definition' do
+      define_model :child
+      define_model :conception, child_id: :integer, parent_id: :integer
+      define_model :parent do
+        has_many :conceptions
+        has_many :children, through: :conceptions
+      end
+      message = /Check your models definitions, the following error was raised by ActiveRecord:/
+      expect do
+        expect(Parent.new).to have_many(:children)
+      end.to raise_error(Shoulda::Matchers::ActiveRecord::Error, message)
+    end
+
     it 'accepts a valid association with an :as option' do
       define_model :child, guardian_type: :string, guardian_id: :integer
       define_model :parent do

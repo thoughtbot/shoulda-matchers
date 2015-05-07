@@ -10,6 +10,7 @@ module Shoulda
             super(reflection)
             @reflection = reflection
             @subject = reflection.active_record
+            check_validity!
           end
 
           def associated_class
@@ -70,6 +71,12 @@ module Shoulda
           attr_reader :reflection, :subject
 
           private
+
+          def check_validity!
+            reflection.check_validity!
+          rescue ::ActiveRecord::ActiveRecordError => e
+            raise ActiveRecord::Error.new(e)
+          end
 
           def has_and_belongs_to_many_name
             reflection.options[:through]
