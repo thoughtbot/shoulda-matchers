@@ -47,15 +47,15 @@ module AcceptanceTests
 
     def each_test_helper_file
       options[:test_frameworks].each do |test_framework|
-        library = options[:library]
-        test_helper_file = test_helper_file_for(test_framework, library)
-        yield test_helper_file, test_framework, library
+        libraries = options.fetch(:libraries, [])
+        test_helper_file = test_helper_file_for(test_framework, libraries)
+        yield test_helper_file, test_framework, libraries
       end
     end
 
-    def add_configuration_block_to(test_helper_file, test_framework, library)
+    def add_configuration_block_to(test_helper_file, test_framework, libraries)
       test_framework_config = test_framework_config_for(test_framework)
-      library_config = library_config_for(library)
+      library_config = library_config_for(libraries)
 
       content = <<-EOT
         Shoulda::Matchers.configure do |config|
@@ -81,16 +81,13 @@ module AcceptanceTests
       end
     end
 
-    def library_config_for(library)
-      if library
-        "with.library :#{library}\n"
-      else
-        ''
-      end
+    def library_config_for(libraries)
+      libraries.map { |library| "with.library :#{library}" }.join("\n")
     end
 
-    def test_helper_file_for(test_framework, library)
-      if integrates_with_rails?(test_framework, library) || integrates_with_nunit?(test_framework)
+    def test_helper_file_for(test_framework, libraries)
+      if integrates_with_rails?(test_framework, libraries) ||
+        integrates_with_nunit?(test_framework)
         'test/test_helper.rb'
       elsif integrates_with_rspec?(test_framework)
         spec_helper_file_path
@@ -106,8 +103,8 @@ module AcceptanceTests
       test_framework == :rspec
     end
 
-    def integrates_with_rails?(test_framework, library)
-      test_framework.nil? && library == :rails
+    def integrates_with_rails?(test_framework, libraries)
+      test_framework.nil? && libraries.include?(:rails)
     end
   end
 end

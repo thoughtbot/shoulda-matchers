@@ -14,7 +14,7 @@ describe 'shoulda-matchers integrates with Rails' do
       end
     FILE
 
-    run_rake_tasks! *%w(db:drop db:create db:migrate)
+    run_rake_tasks!(*%w(db:drop db:create db:migrate))
 
     write_file 'app/models/user.rb', <<-FILE
       class User < ActiveRecord::Base
@@ -39,7 +39,7 @@ describe 'shoulda-matchers integrates with Rails' do
       add_gems_for_n_unit
       add_shoulda_matchers_to_project(
         test_frameworks: [default_test_framework],
-        library: :rails
+        libraries: [:rails]
       )
     end
 
@@ -51,7 +51,7 @@ describe 'shoulda-matchers integrates with Rails' do
       add_gems_for_rspec
       add_shoulda_matchers_to_project(
         test_frameworks: [:rspec],
-        library: :rails
+        libraries: [:rails]
       )
     end
 
@@ -68,7 +68,7 @@ describe 'shoulda-matchers integrates with Rails' do
       add_gems_for_rspec
       add_shoulda_matchers_to_project(
         test_frameworks: [:rspec],
-        library: :rails,
+        libraries: [:rails],
         manually: true
       )
     end
@@ -84,7 +84,7 @@ describe 'shoulda-matchers integrates with Rails' do
       add_gems_for_rspec
       add_shoulda_matchers_to_project(
         test_frameworks: [:rspec, nil],
-        library: :rails
+        libraries: [:rails]
       )
     end
 

@@ -19,7 +19,7 @@
     include the gem as normal.
   * You'll need to add the following somewhere in your `rails_helper` (for
     RSpec) or `test_helper` (for Minitest / Test::Unit):
-  
+
     ``` ruby
     Shoulda::Matchers.configure do |config|
       config.integrate do |with|
@@ -29,11 +29,11 @@
         with.test_framework :minitest_4
         with.test_framework :test_unit
 
-        # Choose a library:
+        # Choose one or more libraries:
         with.library :active_record
         with.library :active_model
         with.library :action_controller
-        # Or, choose all of the above:
+        # Or, choose the following (which implies all of the above):
         with.library :rails
       end
     end

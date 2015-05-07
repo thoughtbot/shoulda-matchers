@@ -11,6 +11,7 @@ module Shoulda
 
         def initialize(configuration, &block)
           @test_frameworks = Set.new
+          @libraries = Set.new
 
           test_framework :missing_test_framework
           library :missing_library
@@ -24,14 +25,14 @@ module Shoulda
         end
 
         def library(name)
-          @library = Integrations.find_library!(name)
+          @libraries << Integrations.find_library!(name)
         end
 
         def apply
-          if no_test_frameworks_added? && library_not_set?
+          if no_test_frameworks_added? && no_libraries_added?
             raise ConfigurationError, <<EOT
-shoulda-matchers is not configured correctly. You need to specify a test
-framework and/or library. For example:
+shoulda-matchers is not configured correctly. You need to specify at least one
+test framework and/or library. For example:
 
 Shoulda::Matchers.configure do |config|
   config.integrate do |with|
@@ -44,7 +45,7 @@ EOT
 
           @test_frameworks.each do |test_framework|
             test_framework.include(Shoulda::Matchers::Independent)
-            @library.integrate_with(test_framework)
+            @libraries.each { |library| library.integrate_with(test_framework) }
           end
         end
 
@@ -58,8 +59,8 @@ EOT
           @test_frameworks.empty? || !@test_frameworks.any?(&:present?)
         end
 
-        def library_not_set?
-          @library.nil?
+        def no_libraries_added?
+          @libraries.empty?
         end
       end
     end
