@@ -642,7 +642,8 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     matcher = validate_inclusion_of(builder.attribute)
     expect do
       expect(builder.object).to(matcher)
-    end.to raise_error(ArgumentError, /`in_array` or `in_range` qualifiers/)
+    end.to raise_error(described_class::MissingRequiredQualifier,
+                       /`in_array` or `in_range` qualifiers/)
   end
 
   def expect_to_match_in_array(builder, array)

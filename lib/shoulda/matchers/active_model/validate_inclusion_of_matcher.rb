@@ -349,12 +349,7 @@ EOT
               false
             end
           else
-            message = <<-EOT.strip_heredoc
-              You need to use the `in_array` or `in_range` qualifiers, eg.
-              * should validate_inclusion_of(:state).in_array(%w(open resolved unresolved))
-              * should validate_inclusion_of(:state).in_range(1..5)
-            EOT
-            raise ArgumentError, message
+            raise MissingRequiredQualifier
           end
         end
 
@@ -511,6 +506,17 @@ EOT
             when BigDecimal then :decimal
             when Fixnum then :fixnum
             else :default
+          end
+        end
+
+        # @private
+        class MissingRequiredQualifier < StandardError
+          def message
+            <<-EOT.strip_heredoc
+              You need to use the `in_array` or `in_range` qualifiers, eg.
+              * should validate_inclusion_of(:state).in_array(%w(open resolved unresolved))
+              * should validate_inclusion_of(:state).in_range(1..5)
+            EOT
           end
         end
       end
