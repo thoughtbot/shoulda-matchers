@@ -43,6 +43,36 @@ module Shoulda
       #         allow_destroy(true)
       #     end
       #
+      # Use `reject_if` to assert that the `:reject_if` option was
+      # specified, with a Proc (or lambda with an arity of 1) or a
+      # plain object.
+      #
+      #     class Car < ActiveRecord::Base
+      #       accepts_nested_attributes_for :mirrors,
+      #         reject_if: proc { |obj| obj.count != 2 }
+      #
+      #       accepts_nested_attributes_for :mirrors,
+      #         reject_if: :different_than_2?
+      #
+      #       def different_than_2?
+      #         mirrors.count != 2
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe Car do
+      #       it do
+      #         should accept_nested_attributes_for(:mirrors).
+      #           reject_if(:different_than_2?)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class CarTest < ActiveSupport::TestCase
+      #       should accept_nested_attributes_for(:mirrors).
+      #         reject_if(:different_than_2?)
+      #     end
+      #
       # ##### limit
       #
       # Use `limit` to assert that the `:limit` option was specified.
@@ -106,6 +136,11 @@ module Shoulda
           self
         end
 
+        def reject_if(reject_if)
+          @options[:reject_if] = reject_if
+          self
+        end
+
         def limit(limit)
           @options[:limit] = limit
           self
@@ -120,6 +155,7 @@ module Shoulda
           @subject = subject
           exists? &&
             allow_destroy_correct? &&
+            reject_if_correct? &&
             limit_correct? &&
             update_only_correct?
         end
@@ -136,6 +172,9 @@ module Shoulda
           description = "accepts_nested_attributes_for :#{@name}"
           if @options.key?(:allow_destroy)
             description += " allow_destroy => #{@options[:allow_destroy]}"
+          end
+          if @options.key?(:reject_if)
+            description += " reject_if => #{@options[:reject_if]}"
           end
           if @options.key?(:limit)
             description += " limit => #{@options[:limit]}"
@@ -162,6 +201,42 @@ module Shoulda
           verify_option_is_correct(:allow_destroy, failure_message)
         end
 
+        def reject_if_correct?
+          if @options.key?(:reject_if)
+            @problem = nil
+            problem_prefix =
+              "reject_if should resolve to #{@options[:reject_if].inspect}"
+            actual_option_value = config[:reject_if]
+
+            case actual_option_value
+            when Symbol
+              if @subject.respond_to?(actual_option_value, true)
+                resolved_option_value = @subject.send(actual_option_value)
+              else
+                @problem =
+                  "#{problem_prefix}, but #{actual_option_value.inspect} " +
+                  "does not exist on #{model_class.name}"
+              end
+            when Proc
+              resolved_option_value = actual_option_value.call(@subject)
+            else
+              resolved_option_value = actual_option_value
+            end
+
+            if @problem
+              false
+            elsif @options[:reject_if] == resolved_option_value
+              true
+            else
+              @problem =
+                "#{problem_prefix}, got #{resolved_option_value.inspect}"
+              false
+            end
+          else
+            true
+          end
+        end
+
         def limit_correct?
           failure_message = "limit should be #{@options[:limit]}, got #{config[:limit]}"
           verify_option_is_correct(:limit, failure_message)
@@ -172,9 +247,9 @@ module Shoulda
           verify_option_is_correct(:update_only, failure_message)
         end
 
-        def verify_option_is_correct(option, failure_message)
-          if @options.key?(option)
-            if @options[option] == config[option]
+        def verify_option_is_correct(option_name, failure_message)
+          if @options.key?(option_name)
+            if @options[option_name] == resolved_option_for(option_name)
               true
             else
               @problem = failure_message
@@ -182,6 +257,19 @@ module Shoulda
             end
           else
             true
+          end
+        end
+
+        def resolved_option_for(option_name)
+          option_value = config[option_name]
+
+          case option_value
+          when Symbol
+            @subject.public_send(option_value)
+          when Proc
+            option_value.call(@subject)
+          else
+            option_value
           end
         end
 
