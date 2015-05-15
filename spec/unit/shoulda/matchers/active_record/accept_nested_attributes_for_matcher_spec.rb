@@ -44,6 +44,75 @@ describe Shoulda::Matchers::ActiveRecord::AcceptNestedAttributesForMatcher, type
     end
   end
 
+
+  context 'reject_if' do
+    it 'accepts a valid truthy value' do
+      matching = accepting_children(reject_if: true)
+
+      expect(matching).to children_matcher.reject_if(true)
+    end
+
+    it 'accepts a valid falsey value' do
+      matching = accepting_children(reject_if: false)
+
+      expect(matching).to children_matcher.reject_if(false)
+    end
+
+    it 'rejects an invalid truthy value' do
+      matcher = children_matcher
+      matching = accepting_children(reject_if: true)
+
+      expect(matcher.reject_if(false).matches?(matching)).to eq false
+      expect(matcher.failure_message).to match(/should not reject if/)
+    end
+
+    it 'rejects an invalid falsey value' do
+      matcher = children_matcher
+      matching = accepting_children(reject_if: false)
+
+      expect(matcher.reject_if(true).matches?(matching)).to eq false
+      expect(matcher.failure_message).to match(/should reject if/)
+    end
+
+    context 'with a proc object' do
+      it 'accepts a call-ed truthy value' do
+        matching = accepting_children(reject_if: ->(_unused) { true })
+
+        expect(matching).to children_matcher.reject_if(true)
+      end
+
+      it 'accepts a call-ed falsey value' do
+        matching = accepting_children(reject_if: ->(_unused) { false })
+
+        expect(matching).to children_matcher.reject_if(false)
+      end
+    end
+
+    context 'with a Symbol' do
+      it 'accepts a call-ed truthy value' do
+        matching = accepting_children(reject_if: :truthy_method)
+        matching.should_receive(:truthy_method).once.and_return(true)
+
+        expect(matching).to children_matcher.reject_if(true)
+      end
+
+      it 'accepts a call-ed falsey value' do
+        matching = accepting_children(reject_if: :falsey_method)
+        matching.should_receive(:falsey_method).once.and_return(false)
+
+        expect(matching).to children_matcher.reject_if(false)
+      end
+
+      it 'reject unknown methods' do
+        matching = accepting_children(reject_if: :unknown_method)
+        m = children_matcher
+
+        expect { m.reject_if(:unknown_method).matches?(matching) }.
+          to raise_error NoMethodError
+      end
+    end
+  end
+
   context 'limit' do
     it 'accepts a correct value' do
       expect(accepting_children(limit: 3)).to children_matcher.limit(3)

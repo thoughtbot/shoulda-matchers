@@ -43,6 +43,36 @@ module Shoulda
       #         allow_destroy(true)
       #     end
       #
+      # Use `reject_if` to assert that the `:reject_if` option was
+      # specified, with a Proc (or lambda with an arity of 1) or a
+      # plain object.
+      #
+      #     class Car < ActiveRecord::Base
+      #       accepts_nested_attributes_for :mirrors,
+      #         reject_if: proc { |obj| obj.count != 2 }
+      #
+      #       accepts_nested_attributes_for :mirrors,
+      #         reject_if: :different_than_2?
+      #
+      #       def different_than_2?
+      #         mirrors.count != 2
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe Car do
+      #       it do
+      #         should accept_nested_attributes_for(:mirrors).
+      #           reject_if(:different_than_2?)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class CarTest < ActiveSupport::TestCase
+      #       should accept_nested_attributes_for(:mirrors).
+      #         reject_if(:different_than_2?)
+      #     end
+      #
       # ##### limit
       #
       # Use `limit` to assert that the `:limit` option was specified.
@@ -106,6 +136,11 @@ module Shoulda
           self
         end
 
+        def reject_if(reject_if)
+          @options[:reject_if] = reject_if
+          self
+        end
+
         def limit(limit)
           @options[:limit] = limit
           self
@@ -120,6 +155,7 @@ module Shoulda
           @subject = subject
           exists? &&
             allow_destroy_correct? &&
+            reject_if_correct? &&
             limit_correct? &&
             update_only_correct?
         end
@@ -138,6 +174,9 @@ module Shoulda
           description = "accepts_nested_attributes_for :#{@name}"
           if @options.key?(:allow_destroy)
             description += " allow_destroy => #{@options[:allow_destroy]}"
+          end
+          if @options.key?(:reject_if)
+            description += " reject_if => #{@options[:reject_if]}"
           end
           if @options.key?(:limit)
             description += " limit => #{@options[:limit]}"
@@ -164,6 +203,11 @@ module Shoulda
           verify_option_is_correct(:allow_destroy, failure_message)
         end
 
+        def reject_if_correct?
+          failure_message = "#{should_or_should_not(@options[:reject_if])} reject if"
+          verify_option_is_correct(:reject_if, failure_message)
+        end
+
         def limit_correct?
           failure_message = "limit should be #{@options[:limit]}, got #{config[:limit]}"
           verify_option_is_correct(:limit, failure_message)
@@ -176,7 +220,16 @@ module Shoulda
 
         def verify_option_is_correct(option, failure_message)
           if @options.key?(option)
-            if @options[option] == config[option]
+            actual_option = case _option = config[option]
+                            when Symbol
+                              @subject.public_send(_option)
+                            when Proc
+                              _option.call(@subject)
+                            else
+                              _option
+                            end
+
+            if @options[option] == actual_option
               true
             else
               @problem = failure_message
