@@ -257,7 +257,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
     context 'negating the matcher' do
       it 'rejects with the correct failure message' do
         post_office = PostOffice.new
-        message = 'Expected PostOffice not to delegate #deliver_mail to #mailman object, but it did'
+        message = 'Expected PostOffice not to delegate #deliver_mail= to #mailman object, but it did'
 
         expect {
           expect(post_office).not_to delegate_method(:deliver_mail=).to(:mailman)

@@ -219,7 +219,7 @@ module Shoulda
 
         def init_delegated_arguments
           if assignment_method?
-            ["test"]
+            [nil]
           else
             []
           end
