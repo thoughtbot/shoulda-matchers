@@ -202,7 +202,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
     end
   end
 
-  context 'when the subject delegates correctly' do
+  context 'when the subject delegates correctly in normal method' do
     before do
       define_class('Mailman')
 
@@ -229,6 +229,38 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
 
         expect {
           expect(post_office).not_to delegate_method(:deliver_mail).to(:mailman)
+        }.to fail_with_message(message)
+      end
+    end
+  end
+
+  context 'when the subject delegates correctly in assignment method' do
+    before do
+      define_class('Mailman')
+
+      define_class('PostOffice') do
+        def deliver_mail=(arg)
+          mailman.deliver_mail = arg
+        end
+
+        def mailman
+          Mailman.new
+        end
+      end
+    end
+
+    it 'accepts' do
+      post_office = PostOffice.new
+      expect(post_office).to delegate_method(:deliver_mail=).to(:mailman)
+    end
+
+    context 'negating the matcher' do
+      it 'rejects with the correct failure message' do
+        post_office = PostOffice.new
+        message = 'Expected PostOffice not to delegate #deliver_mail to #mailman object, but it did'
+
+        expect {
+          expect(post_office).not_to delegate_method(:deliver_mail=).to(:mailman)
         }.to fail_with_message(message)
       end
     end

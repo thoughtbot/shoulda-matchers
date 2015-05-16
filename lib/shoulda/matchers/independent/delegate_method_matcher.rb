@@ -159,7 +159,7 @@ module Shoulda
           @delegate_method = @delegating_method
           @delegate_object = Doublespeak::ObjectDouble.new
 
-          @delegated_arguments = []
+          @delegated_arguments = init_delegated_arguments
           @delegate_object_reader_method = nil
           @subject = nil
           @subject_double_collection = nil
@@ -215,6 +215,18 @@ module Shoulda
             :"#{build_delegating_method_prefix(prefix)}_#{delegate_method}"
             delegate_method
           self
+        end
+
+        def init_delegated_arguments
+          if assignment_method?
+            ["test"]
+          else
+            []
+          end
+        end
+
+        def assignment_method?
+          @delegating_method.to_s.match(/=$/).present?
         end
 
         def build_delegating_method_prefix(prefix)
