@@ -226,7 +226,7 @@ module Shoulda
         end
 
         def assignment_method?
-          @delegating_method.to_s.match(/=$/).present?
+          !@delegating_method.to_s.match(/=$/).nil?
         end
 
         def build_delegating_method_prefix(prefix)
