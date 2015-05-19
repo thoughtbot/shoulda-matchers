@@ -19,6 +19,10 @@ interested in the README for 2.8.0 instead.][2.8.0-README]**
   tests usage of the `validates_format_of` validation.
 * **[have_secure_password](lib/shoulda/matchers/active_model/have_secure_password_matcher.rb)**
   tests usage of `has_secure_password`.
+* **[validate_absence_of](lib/shoulda/matchers/active_model/validate_absence_of_matcher.rb)**
+  tests usage of `validates_absence_of`.
+* **[validate_acceptance_of](lib/shoulda/matchers/active_model/validate_acceptance_of_matcher.rb)**
+  tests usage of `validates_acceptance_of`.
 * **[validate_confirmation_of](lib/shoulda/matchers/active_model/validate_confirmation_of_matcher.rb)**
   tests usage of `validates_confirmation_of`.
 * **[validate_exclusion_of](lib/shoulda/matchers/active_model/validate_exclusion_of_matcher.rb)**
