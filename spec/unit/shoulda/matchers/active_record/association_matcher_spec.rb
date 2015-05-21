@@ -86,11 +86,6 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
         .to belong_to(:parent).inverse_of(:children)
     end
 
-    it 'rejects an association with a bad :inverse_of option' do
-      expect(belonging_to_parent(inverse_of: :other_children))
-        .not_to belong_to(:parent).inverse_of(:children)
-    end
-
     it 'rejects an association that has no :inverse_of option' do
       expect(belonging_to_parent)
         .not_to belong_to(:parent).inverse_of(:children)
@@ -280,7 +275,9 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
     end
 
     def belonging_to_parent(options = {})
-      define_model :parent
+      define_model :parent do
+        has_many :children
+      end
       define_model :child, parent_id: :integer do
         belongs_to :parent, options
       end.new
@@ -567,18 +564,6 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       end
 
       expect(Parent.new).to have_many(:children)
-    end
-
-    it 'rejects an association with a nonstandard reverse foreign key, if :inverse_of is not correct' do
-      define_model :child, mother_id: :integer do
-        belongs_to :mother, inverse_of: :children, class_name: :Parent
-      end
-
-      define_model :parent do
-        has_many :children, inverse_of: :ancestor
-      end
-
-      expect(Parent.new).not_to have_many(:children)
     end
 
     def having_many_children(options = {})
