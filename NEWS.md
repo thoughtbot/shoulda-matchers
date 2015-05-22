@@ -29,6 +29,20 @@
   (which is to permit this) is misleading, as the test that you write by using
   `allow_value` is different from the test that actually ends up getting run.
 
+* Change behavior of `validate_uniqueness_of` when the matcher is not
+  qualified with any scopes, but your validation is. Previously the following
+  test would pass when it now fails:
+
+  ``` ruby
+  class Post < ActiveRecord::Base
+    validate :slug, uniqueness: { scope: :user_id }
+  end
+
+  describe Post do
+    it { should validate_uniqueness_of(:slug) }
+  end
+  ```
+
 ### Bug fixes
 
 * So far the tests for the gem have been running against only SQLite. Now they

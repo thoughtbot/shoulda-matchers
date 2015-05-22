@@ -113,11 +113,11 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
         expect(record).not_to validate_uniqueness
       end
 
-      it 'accepts if the scope is unset beforehand' do
+      it 'rejects if the scope is unset beforehand' do
         record = build_record_validating_uniqueness(
           scopes: [ build_attribute(name: :scope, value: nil) ]
         )
-        expect(record).to validate_uniqueness
+        expect(record).not_to validate_uniqueness
       end
     end
 
@@ -130,8 +130,8 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
       end
     end
 
-    define_method(:build_attribute) do |options|
-      options.merge(
+    define_method(:build_attribute) do |attribute_options|
+      attribute_options.merge(
         column_type: column_type,
         value_type: value_type,
         array: array

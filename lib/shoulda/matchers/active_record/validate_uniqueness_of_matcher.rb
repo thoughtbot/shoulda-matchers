@@ -259,7 +259,8 @@ module Shoulda
           @expected_message ||= :taken
           @all_records = @subject.class.all
 
-          set_scoped_attributes &&
+          scopes_match? &&
+            set_scoped_attributes &&
             validate_everything_except_duplicate_nils_or_blanks? &&
             validate_case_sensitivity? &&
             validate_after_scope_change? &&
@@ -270,6 +271,37 @@ module Shoulda
         end
 
         private
+
+        def validation
+          @subject.class._validators[@attribute].detect do |validator|
+            validator.is_a?(::ActiveRecord::Validations::UniquenessValidator)
+          end
+        end
+
+        def scopes_match?
+          expected_scopes = Array.wrap(@options[:scopes])
+
+          if validation
+            actual_scopes = Array.wrap(validation.options[:scope])
+          else
+            actual_scopes = []
+          end
+
+          if expected_scopes == actual_scopes
+            true
+          else
+            @failure_message = "Expected validation to be scoped to " +
+              "#{expected_scopes}"
+
+            if actual_scopes.present?
+              @failure_message << ", but it was scoped to #{actual_scopes}."
+            else
+              @failure_message << ", but it was not scoped to anything."
+            end
+
+            false
+          end
+        end
 
         def allows_nil?
           if @options[:allow_nil]
