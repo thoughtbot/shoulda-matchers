@@ -10,16 +10,18 @@
 
       expect(record).not_to allow_value('good value', *bad_values)
 
+  ([19ce8a6])
+
 * `ensure_inclusion_of`, `ensure_exclusion_of`, and `ensure_length_of` have been
-  removed in favor of their `validate_*` counterparts.
+  removed in favor of their `validate_*` counterparts. ([55c8d09])
 
 * `set_the_flash` and `set_session` have been changed to more closely align with
   each other:
-  * `set_the_flash` has been removed in favor of `set_flash`.
+  * `set_the_flash` has been removed in favor of `set_flash`. ([801f2c7])
   * `set_session('foo')` is no longer valid syntax, please use
-    `set_session['foo']` instead.
+    `set_session['foo']` instead. ([535fe05])
   * `set_session['key'].to(nil)` will no longer pass when the key in question
-    has not been set yet.
+    has not been set yet. ([535fe05])
 
 * `allow_value` may raise an error if the attribute in question contains custom
   logic to ignore certain values, resulting in a discrepancy between the value
@@ -28,6 +30,14 @@
   vice versa, then you'll get a CouldNotSetAttributeError. The current behavior
   (which is to permit this) is misleading, as the test that you write by using
   `allow_value` is different from the test that actually ends up getting run.
+  ([eaaa2d8])
+
+[19ce8a6]: https://github.com/thoughtbot/shoulda-matchers/commit/19c38a642a2ae1316ef12540a0185cd026901e74
+[eaaa2d8]: https://github.com/thoughtbot/shoulda-matchers/commit/eaaa2d83e5cd31a3ca0a1aaa65441ea1a4fffa49
+[55c8d09]: https://github.com/thoughtbot/shoulda-matchers/commit/55c8d09bf2af886540924efa83c3b518d926a770
+[801f2c7]: https://github.com/thoughtbot/shoulda-matchers/commit/801f2c7c1eab3b2053244485c9800f850959cfef
+[535fe05]: https://github.com/thoughtbot/shoulda-matchers/commit/535fe05be8686fdafd8b22f2ed5c4192bd565d50
+[eaaa2d8]: https://github.com/thoughtbot/shoulda-matchers/commit/eaaa2d83e5cd31a3ca0a1aaa65441ea1a4fffa49
 
 * Change behavior of `validate_uniqueness_of` when the matcher is not
   qualified with any scopes, but your validation is. Previously the following
@@ -87,7 +97,8 @@
 
 * Add `strict` qualifier to `validate_numericality_of`. ([#620])
 
-* Add `on` qualifier to `validate_numericality_of`. (h/t [#356], [#358])
+* Add `on` qualifier to `validate_numericality_of`. ([9748869]; h/t [#356],
+  [#358])
 
 * Add `join_table` qualifier to `have_and_belong_to_many`. ([#556])
 
@@ -98,6 +109,7 @@
 
   ([#692])
 
+[9748869]: https://github.com/thoughtbot/shoulda-matchers/commit/97488690910520ed8e1f2e164b1982eff5ef1f19
 [#402]: https://github.com/thoughtbot/shoulda-matchers/pull/402
 [#587]: https://github.com/thoughtbot/shoulda-matchers/pull/587
 [#662]: https://github.com/thoughtbot/shoulda-matchers/pull/662
