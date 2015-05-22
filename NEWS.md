@@ -2,15 +2,81 @@
 
 ### Backward-incompatible changes
 
-* The negative form of `allow_value` has been changed so that instead of
-  asserting that any of the given values is an invalid value (allowing good
-  values to pass through), assert that *all* values are invalid values (allowing
-  good values not to pass through). This means that this test which formerly
-  passed will now fail:
+* We've dropped support for Rails 3.x, Ruby 1.9.2, and Ruby 1.9.3, and RSpec 2.
+  All of these things have been end-of-lifed. This doesn't mean that the gem
+  will stop working immediately, but we won't accept any pull requests to fix
+  any compatibility issues, so you're encouraged to upgrade.
+  ([a4045a1], [b7fe87a])
 
-      expect(record).not_to allow_value('good value', *bad_values)
+* The gem no longer detects the test framework you're using or mixes itself into
+  that framework automatically. [History][no-auto-integration-1] has
+  [shown][no-auto-integration-2] that performing any kind of detection is prone
+  to bugs and more complicated than it should be.
 
-  ([19ce8a6])
+  Here are the updated instructions:
+
+  * You no longer need to say `require: false` in your Gemfile; you can
+    include the gem as normal.
+  * You'll need to add the following somewhere in your `rails_helper` (for
+    RSpec) or `test_helper` (for Minitest / Test::Unit):
+  
+    ``` ruby
+    Shoulda::Matchers.configure do |config|
+      config.integrate do |with|
+        # Choose a test framework:
+        with.test_framework :rspec
+        with.test_framework :minitest
+        with.test_framework :minitest_4
+        with.test_framework :test_unit
+
+        # Choose a library:
+        with.library :active_record
+        with.library :active_model
+        with.library :action_controller
+        # Or, choose all of the above:
+        with.library :rails
+      end
+    end
+    ```
+
+  ([1900071])
+
+* There are two changes to `allow_value`:
+
+  * The negative form of the matcher has been changed so that instead of
+    asserting that any of the given values is an invalid value (allowing good
+    values to pass through), assert that *all* values are invalid values
+    (allowing good values not to pass through). This means that this test which
+    formerly passed will now fail:
+
+        expect(record).not_to allow_value('good value', *bad_values)
+
+    ([19ce8a6])
+
+  * The matcher may raise an error if the attribute in question contains
+    custom logic to ignore certain values, resulting in a discrepancy between
+    the value you provide and the value that the attribute is actually set to.
+    Specifically, if the attribute cannot be changed from a non-nil value to a
+    nil value, or vice versa, then you'll get a CouldNotSetAttributeError. The
+    current behavior (which is to permit this) is misleading, as the test that
+    you're writing under the hood by using `allow_value` could be different from
+    the test that actually ends up getting run. ([eaaa2d8])
+
+* `validate_uniqueness_of` is now properly case-insensitive by default, to match
+  the default behavior of the validation itself. This is a backward-incompatible
+  change because this test which incorrectly passed before will now fail:
+
+    ``` ruby
+    class Product < ActiveRecord::Base
+      validates_uniqueness_of :name, case_sensitive: false
+    end
+
+    describe Product do
+      it { is_expected.to validate_uniqueness_of(:name) }
+    end
+    ```
+
+    ([57a1922])
 
 * `ensure_inclusion_of`, `ensure_exclusion_of`, and `ensure_length_of` have been
   removed in favor of their `validate_*` counterparts. ([55c8d09])
@@ -22,22 +88,6 @@
     `set_session['foo']` instead. ([535fe05])
   * `set_session['key'].to(nil)` will no longer pass when the key in question
     has not been set yet. ([535fe05])
-
-* `allow_value` may raise an error if the attribute in question contains custom
-  logic to ignore certain values, resulting in a discrepancy between the value
-  you provide and the value that the attribute is actually set to. Specifically,
-  if the attribute cannot be changed from a non-nil value to a nil value, or
-  vice versa, then you'll get a CouldNotSetAttributeError. The current behavior
-  (which is to permit this) is misleading, as the test that you write by using
-  `allow_value` is different from the test that actually ends up getting run.
-  ([eaaa2d8])
-
-[19ce8a6]: https://github.com/thoughtbot/shoulda-matchers/commit/19c38a642a2ae1316ef12540a0185cd026901e74
-[eaaa2d8]: https://github.com/thoughtbot/shoulda-matchers/commit/eaaa2d83e5cd31a3ca0a1aaa65441ea1a4fffa49
-[55c8d09]: https://github.com/thoughtbot/shoulda-matchers/commit/55c8d09bf2af886540924efa83c3b518d926a770
-[801f2c7]: https://github.com/thoughtbot/shoulda-matchers/commit/801f2c7c1eab3b2053244485c9800f850959cfef
-[535fe05]: https://github.com/thoughtbot/shoulda-matchers/commit/535fe05be8686fdafd8b22f2ed5c4192bd565d50
-[eaaa2d8]: https://github.com/thoughtbot/shoulda-matchers/commit/eaaa2d83e5cd31a3ca0a1aaa65441ea1a4fffa49
 
 * Change behavior of `validate_uniqueness_of` when the matcher is not
   qualified with any scopes, but your validation is. Previously the following
@@ -52,6 +102,22 @@
     it { should validate_uniqueness_of(:slug) }
   end
   ```
+
+  ([6ac7b81])
+
+[no-auto-integration-1]: https://github.com/freerange/mocha/commit/049080c673ee3f76e76adc1e1a6122c7869f1648
+[no-auto-integration-2]: https://github.com/rr/rr/issues/29
+[1900071]: https://github.com/thoughtbot/shoulda-matchers/commit/190007155e0676aae84d08d8ed8eed3beebc3a06
+[b7fe87a]: https://github.com/thoughtbot/shoulda-matchers/commit/b7fe87ae915f6b1f99d64e847fea536ad0f78024
+[a4045a1]: https://github.com/thoughtbot/shoulda-matchers/commit/a4045a1f9bc454e618a7c55960942eb030f02fdd
+[57a1922]: https://github.com/thoughtbot/shoulda-matchers/commit/57a19228b6a85f12ba7a79a26dae5869c1499c6d
+[19ce8a6]: https://github.com/thoughtbot/shoulda-matchers/commit/19c38a642a2ae1316ef12540a0185cd026901e74
+[eaaa2d8]: https://github.com/thoughtbot/shoulda-matchers/commit/eaaa2d83e5cd31a3ca0a1aaa65441ea1a4fffa49
+[55c8d09]: https://github.com/thoughtbot/shoulda-matchers/commit/55c8d09bf2af886540924efa83c3b518d926a770
+[801f2c7]: https://github.com/thoughtbot/shoulda-matchers/commit/801f2c7c1eab3b2053244485c9800f850959cfef
+[535fe05]: https://github.com/thoughtbot/shoulda-matchers/commit/535fe05be8686fdafd8b22f2ed5c4192bd565d50
+[eaaa2d8]: https://github.com/thoughtbot/shoulda-matchers/commit/eaaa2d83e5cd31a3ca0a1aaa65441ea1a4fffa49
+[6ac7b81]: https://github.com/thoughtbot/shoulda-matchers/commit/6ac7b8158cfba3b518eb3da3c24345e4473b416f
 
 ### Bug fixes
 
@@ -105,7 +171,9 @@
 * `allow_values` is now an alias for `allow_value`. This makes more sense when
   checking against multiple values:
 
-    it { should allow_values('this', 'and', 'that') }
+  ``` ruby
+  it { should allow_values('this', 'and', 'that') }
+  ```
 
   ([#692])
 
