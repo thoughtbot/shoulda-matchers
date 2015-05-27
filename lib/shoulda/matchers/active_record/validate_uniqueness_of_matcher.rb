@@ -235,13 +235,13 @@ module Shoulda
           self
         end
 
-        def allow_nil
-          @options[:allow_nil] = true
+        def allow_nil(allow_nil = true)
+          @options[:allow_nil] = allow_nil
           self
         end
 
-        def allow_blank
-          @options[:allow_blank] = true
+        def allow_blank(allow_blank = true)
+          @options[:allow_blank] = allow_blank
           self
         end
 
