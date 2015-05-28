@@ -51,7 +51,7 @@ end
 
 appraise '4.1' do
   instance_eval(&rails_4)
-  gem 'rails', '~> 4.1.0'
+  gem 'rails', github: 'rails/rails', branch: '4-1-stable'
   gem 'jbuilder', '~> 2.0'
   gem 'sass-rails', '~> 4.0.3'
   gem 'sdoc', '~> 0.4.0'
