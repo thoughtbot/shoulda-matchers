@@ -264,6 +264,35 @@ Example did not properly validate that the length of :attr is 4.
     end
   end
 
+  context 'qualified with allow_nil' do
+    context 'and validating with allow_nil' do
+      it 'accepts' do
+        expect(validating_length(minimum: 1, allow_nil: true)).
+          to validate_length_of(:attr).is_at_least(1).allow_nil
+      end
+    end
+
+    context 'and not validating with allow_nil' do
+      it 'rejects' do
+        assertion = lambda do
+          expect(validating_length(minimum: 1)).
+            to validate_length_of(:attr).is_at_least(1).allow_nil
+        end
+
+        message = <<-MESSAGE
+Example did not properly validate that the length of :attr is at least
+1.
+  After setting :attr to ‹nil›, the matcher expected the Example to be
+  valid, but it was invalid instead, producing these validation errors:
+
+  * attr: ["is too short (minimum is 1 character)"]
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+    end
+  end
+
   def define_model_validating_length(options = {})
     options = options.dup
     attribute_name = options.delete(:attribute_name) { :attr }
