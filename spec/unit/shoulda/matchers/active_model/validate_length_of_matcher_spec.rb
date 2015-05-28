@@ -161,6 +161,27 @@ describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher, type: :model d
     end
   end
 
+  context 'qualified with allow_nil' do
+    context 'and validating with allow_nil' do
+      it 'accepts' do
+        expect(validating_length(minimum: 1, allow_nil: true)).
+          to validate_length_of(:attr).is_at_least(1).allow_nil
+      end
+    end
+
+    context 'and not validating with allow_nil' do
+      it 'rejects' do
+        assertion = lambda do
+          expect(validating_length(minimum: 1)).
+            to validate_length_of(:attr).is_at_least(1).allow_nil
+        end
+        expect(&assertion).to fail_with_message_including(
+          %[Did not expect errors when attr is set to nil]
+        )
+      end
+    end
+  end
+
   def validating_length(options = {})
     define_model(:example, attr: :string) do
       validates_length_of :attr, options
