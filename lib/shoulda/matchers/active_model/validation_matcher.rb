@@ -19,6 +19,11 @@ module Shoulda
           self
         end
 
+        def allow_blank
+          @options[:allow_blank] = true
+          self
+        end
+
         def strict
           @strict = true
           self
@@ -94,6 +99,15 @@ module Shoulda
 
         def strict?
           @strict
+        end
+
+        def allow_blank_matches?
+          if @options.key?(:allow_blank)
+            blank_values = ['', ' ', "\n", "\r", "\t", "\f"]
+            @options[:allow_blank] == blank_values.all? { |value| allows_value_of(value) }
+          else
+            true
+          end
         end
       end
     end

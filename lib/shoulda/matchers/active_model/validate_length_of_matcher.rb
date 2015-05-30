@@ -311,15 +311,10 @@ module Shoulda
           description
         end
 
-        def allow_blank
-          @options[:allow_blank] = true
-          self
-        end
-
         def matches?(subject)
           super(subject)
           translate_messages!
-          lower_bound_matches? && upper_bound_matches? && allows_blank_value?
+          lower_bound_matches? && upper_bound_matches? && allow_blank_matches?
         end
 
         private
@@ -389,15 +384,6 @@ module Shoulda
 
         def disallows_length_of?(length, message)
           disallows_value_of(string_of_length(length), message)
-        end
-
-        def allows_blank_value?
-          if @options.key?(:allow_blank)
-            blank_values = ['', ' ', "\n", "\r", "\t", "\f"]
-            blank_values.all? { |value| allows_value_of(value) }
-          else
-            true
-          end
         end
 
         def string_of_length(length)

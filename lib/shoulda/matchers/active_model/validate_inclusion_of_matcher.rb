@@ -302,11 +302,6 @@ EOT
           self
         end
 
-        def allow_blank(allow_blank = true)
-          @options[:allow_blank] = allow_blank
-          self
-        end
-
         def allow_nil(allow_nil = true)
           @options[:allow_nil] = allow_nil
           self
@@ -362,18 +357,9 @@ EOT
 
         def matches_for_array?
           allows_all_values_in_array? &&
-            allows_blank_value? &&
+            allow_blank_matches? &&
             allows_nil_value? &&
             disallows_value_outside_of_array?
-        end
-
-        def allows_blank_value?
-          if @options.key?(:allow_blank)
-            blank_values = ['', ' ', "\n", "\r", "\t", "\f"]
-            @options[:allow_blank] == blank_values.all? { |value| allows_value_of(value) }
-          else
-            true
-          end
         end
 
         def allows_nil_value?
