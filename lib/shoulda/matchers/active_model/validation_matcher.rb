@@ -24,6 +24,11 @@ module Shoulda
           self
         end
 
+        def allow_blank
+          options[:allow_blank] = true
+          self
+        end
+
         def strict
           @expects_strict = true
           self
@@ -116,7 +121,19 @@ module Shoulda
           )
         end
 
+        def allow_blank_matches?
+          !expects_to_allow_blank? ||
+            blank_values.all? { |value| allows_value_of(value) }
+        end
+
+        def allow_blank_does_not_match?
+          expects_to_allow_blank? &&
+            blank_values.all? { |value| disallows_value_of(value) }
+        end
+
         private
+
+        attr_reader :options
 
         def overall_failure_message
           Shoulda::Matchers.word_wrap(
@@ -160,6 +177,14 @@ module Shoulda
         def run_allow_or_disallow_matcher(matcher)
           @last_submatcher_run = matcher
           matcher.matches?(subject)
+        end
+
+        def expects_to_allow_blank?
+          options[:allow_blank]
+        end
+
+        def blank_values
+          ['', ' ', "\n", "\r", "\t", "\f"]
         end
       end
     end
