@@ -161,6 +161,27 @@ describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher, type: :model d
     end
   end
 
+  context 'qualified with allow_blank' do
+    context 'and validating with allow_blank' do
+      it 'accepts' do
+        expect(validating_length(minimum: 2, allow_blank: true)).
+          to validate_length_of(:attr).is_at_least(2).allow_blank
+      end
+    end
+
+    context 'and not validating with allow_blank' do
+      it 'rejects' do
+        assertion = lambda do
+          expect(validating_length(minimum: 2)).
+            to validate_length_of(:attr).is_at_least(2).allow_blank
+        end
+        expect(&assertion).to fail_with_message_including(
+          %[Did not expect errors when attr is set to ""]
+        )
+      end
+    end
+  end
+
   def validating_length(options = {})
     define_model(:example, attr: :string) do
       validates_length_of :attr, options

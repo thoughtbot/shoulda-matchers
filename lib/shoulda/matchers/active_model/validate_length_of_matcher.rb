@@ -216,6 +216,27 @@ module Shoulda
       #         with_long_message('Secret key must be less than 100 characters')
       #     end
       #
+      # ##### allow_blank
+      #
+      # Use `allow_blank` to assert that the attribute allows blank.
+      #
+      #     class User
+      #       include ActiveModel::Model
+      #       attr_accessor :bio
+      #
+      #       validates_length_of :bio, minimum: 15, allow_blank: true
+      #     end
+      #
+      #     # RSpec
+      #     describe User do
+      #       it { should validate_length_of(:bio).is_at_least(15).allow_blank }
+      #     end
+      #
+      #     # Test::Unit
+      #     class UserTest < ActiveSupport::TestCase
+      #       should validate_length_of(:bio).is_at_least(15).allow_blank
+      #     end
+      #
       # @return [ValidateLengthOfMatcher]
       #
       def validate_length_of(attr)
@@ -290,10 +311,15 @@ module Shoulda
           description
         end
 
+        def allow_blank
+          @options[:allow_blank] = true
+          self
+        end
+
         def matches?(subject)
           super(subject)
           translate_messages!
-          lower_bound_matches? && upper_bound_matches?
+          lower_bound_matches? && upper_bound_matches? && allows_blank_value?
         end
 
         private
@@ -363,6 +389,15 @@ module Shoulda
 
         def disallows_length_of?(length, message)
           disallows_value_of(string_of_length(length), message)
+        end
+
+        def allows_blank_value?
+          if @options.key?(:allow_blank)
+            blank_values = ['', ' ', "\n", "\r", "\t", "\f"]
+            blank_values.all? { |value| allows_value_of(value) }
+          else
+            true
+          end
         end
 
         def string_of_length(length)
