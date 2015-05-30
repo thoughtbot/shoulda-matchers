@@ -249,7 +249,6 @@ module Shoulda
 
         def initialize(attribute)
           super(attribute)
-          @options = {}
           @short_message = nil
           @long_message = nil
         end
@@ -293,11 +292,6 @@ module Shoulda
             @short_message = message
             @long_message = message
           end
-          self
-        end
-
-        def allow_nil
-          @options[:allow_nil] = true
           self
         end
 
@@ -393,14 +387,6 @@ module Shoulda
 
         def string_of_length(length)
           'x' * length
-        end
-
-        def allow_nil_matches?
-          if @options.key?(:allow_nil)
-            allows_value_of(nil)
-          else
-            true
-          end
         end
       end
     end

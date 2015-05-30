@@ -12,10 +12,16 @@ module Shoulda
           @strict = false
           @failure_message = nil
           @failure_message_when_negated = nil
+          @options = {}
         end
 
         def on(context)
           @context = context
+          self
+        end
+
+        def allow_nil
+          @options[:allow_nil] = true
           self
         end
 
@@ -94,6 +100,14 @@ module Shoulda
 
         def strict?
           @strict
+        end
+
+        def allow_nil_matches?
+          if @options.key?(:allow_nil)
+            allows_value_of(nil)
+          else
+            true
+          end
         end
       end
     end
