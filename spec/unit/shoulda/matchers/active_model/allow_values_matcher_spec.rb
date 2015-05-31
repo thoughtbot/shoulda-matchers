@@ -257,9 +257,9 @@ describe Shoulda::Matchers::ActiveModel::AllowValuesMatcher, type: :model do
               with_message(:taken)
           end
           message = <<-MESSAGE.strip_heredoc.chomp
-            Did not expect errors to include "is taken" when attr is set to "kite",
+            Did not expect errors to include "has already been taken" when attr is set to "kite",
             got errors:
-            * "is taken" (attribute: attr, value: "kite")
+            * "has already been taken" (attribute: attr, value: "kite")
           MESSAGE
           expect(&assertion).to fail_with_message(message)
         end
@@ -279,9 +279,9 @@ describe Shoulda::Matchers::ActiveModel::AllowValuesMatcher, type: :model do
             # * "is invalid" (attribute: attr, value: "bane")
           # MESSAGE
           message = <<-MESSAGE.strip_heredoc.chomp
-            Did not expect errors to include "is taken" when attr is set to "hate",
+            Did not expect errors to include "has already been taken" when attr is set to "hate",
             got errors:
-            * "is taken" (attribute: attr, value: "hate")
+            * "has already been taken" (attribute: attr, value: "hate")
           MESSAGE
           expect(&assertion).to fail_with_message(message)
         end
@@ -292,7 +292,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValuesMatcher, type: :model do
           record = build_record_allowing_values(/\A[a-z]{3}\z/, message: :taken)
           expect(record).
             to allow_multiple('hat', 'kit', 'ban').
-            with_message('is taken')
+            with_message('has already been taken')
         end
 
         it 'does not match positively when some of the given values are invalid, producing an appropriate failure message' do
@@ -300,12 +300,12 @@ describe Shoulda::Matchers::ActiveModel::AllowValuesMatcher, type: :model do
           assertion = lambda do
             expect(record).
               to allow_multiple('hat', 'kite', 'ban').
-              with_message('is taken')
+              with_message('has already been taken')
           end
           message = <<-MESSAGE.strip_heredoc.chomp
-            Did not expect errors to include "is taken" when attr is set to "kite",
+            Did not expect errors to include "has already been taken" when attr is set to "kite",
             got errors:
-            * "is taken" (attribute: attr, value: "kite")
+            * "has already been taken" (attribute: attr, value: "kite")
           MESSAGE
           expect(&assertion).to fail_with_message(message)
         end
@@ -315,7 +315,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValuesMatcher, type: :model do
           assertion = lambda do
             expect(record).
               to allow_multiple('hate', 'kite', 'bane').
-              with_message('is taken')
+              with_message('has already been taken')
           end
           # message = <<-MESSAGE.strip_heredoc
             # Did not expect errors when attr is set to "hate", "kite", or "bane",
@@ -325,9 +325,9 @@ describe Shoulda::Matchers::ActiveModel::AllowValuesMatcher, type: :model do
             # * "is invalid" (attribute: attr, value: "bane")
           # MESSAGE
           message = <<-MESSAGE.strip_heredoc.chomp
-            Did not expect errors to include "is taken" when attr is set to "hate",
+            Did not expect errors to include "has already been taken" when attr is set to "hate",
             got errors:
-            * "is taken" (attribute: attr, value: "hate")
+            * "has already been taken" (attribute: attr, value: "hate")
           MESSAGE
           expect(&assertion).to fail_with_message(message)
         end
@@ -353,9 +353,9 @@ describe Shoulda::Matchers::ActiveModel::AllowValuesMatcher, type: :model do
               with_message(/taken/)
           end
           message = <<-MESSAGE.strip_heredoc.chomp
-            Did not expect errors to include /message/ when attr is set to "kite",
+            Did not expect errors to include /taken/ when attr is set to "kite",
             got errors:
-            * "is taken" (attribute: attr, value: "kite")
+            * "has already been taken" (attribute: attr, value: "kite")
           MESSAGE
           expect(&assertion).to fail_with_message(message)
         end
@@ -379,7 +379,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValuesMatcher, type: :model do
           message = <<-MESSAGE.strip_heredoc.chomp
             Did not expect errors to include /taken/ when attr is set to "hate",
             got errors:
-            * "taken" (attribute: attr, value: "hate")
+            * "has already been taken" (attribute: attr, value: "hate")
           MESSAGE
           expect(&assertion).to fail_with_message(message)
         end
@@ -402,7 +402,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValuesMatcher, type: :model do
           message = <<-MESSAGE.strip_heredoc.chomp
             Expected errors to include "different message" when attr is set to "xyz",
             got errors:
-            * "is taken" (attribute: attr, value: "xyz")
+            * "has already been taken" (attribute: attr, value: "xyz")
           MESSAGE
           expect(&assertion).to fail_with_message(message)
         end
@@ -427,7 +427,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValuesMatcher, type: :model do
           message = <<-MESSAGE.strip_heredoc.chomp
             Did not expect errors when attr is set to "kite",
             got errors:
-            * "is taken" (attribute: attr, value: "kite")
+            * "has already been taken" (attribute: attr, value: "kite")
           MESSAGE
           expect(&assertion).to fail_with_message(message)
         end
@@ -449,17 +449,79 @@ describe Shoulda::Matchers::ActiveModel::AllowValuesMatcher, type: :model do
           message = <<-MESSAGE.strip_heredoc.chomp
             Did not expect errors when attr is set to "hate",
             got errors:
-            * "is taken" (attribute: attr, value: "hate")
+            * "has already been taken" (attribute: attr, value: "hate")
           MESSAGE
           expect(&assertion).to fail_with_message(message)
         end
       end
     end
 
-=begin
     context 'when the validation uses a custom message (an i18n key + interpolation values)' do
       context 'when the matcher is qualified with the same message + same values' do
-        include_examples 'basic tests'
+        before do
+          UnitTests::I18nFaker.stub_validation_error(
+            model_name: :example,
+            attribute_name: :attr,
+            message: :custom_message,
+            value: 'custom message'
+          )
+        end
+
+        it 'matches positively when all of the given values are valid' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/,
+            attribute_name: :attr,
+            model_name: :example,
+            message: :custom_message
+          )
+          expect(record).
+            to allow_multiple('hat', 'kit', 'ban').
+            with_message(:custom_message)
+        end
+
+        it 'does not match positively when some of the given values are invalid, producing an appropriate failure message' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/,
+            attribute_name: :attr,
+            model_name: :example,
+            message: :custom_message
+          )
+          assertion = lambda do
+            expect(record).
+              to allow_multiple('hat', 'kite', 'ban').
+              with_message(:custom_message)
+          end
+          message = <<-MESSAGE.strip_heredoc.chomp
+            Did not expect errors to include "custom message" when attr is set to "kite",
+            got errors:
+            * "custom message" (attribute: attr, value: "kite")
+          MESSAGE
+          expect(&assertion).to fail_with_message(message)
+        end
+
+        it 'does not match positively when all of the given values are invalid, producing an appropriate failure message' do
+          record = build_record_allowing_values(/\A[a-z]{3}\z/,
+            attribute_name: :attr,
+            model_name: :example,
+            message: :custom_message
+          )
+          assertion = lambda do
+            expect(record).
+              to allow_multiple('hate', 'kite', 'bane').
+              with_message(:custom_message)
+          end
+          # message = <<-MESSAGE.strip_heredoc
+            # Did not expect errors when attr is set to "hate", "kite", or "bane",
+            # got errors:
+            # * "is invalid" (attribute: attr, value: "hate")
+            # * "is invalid" (attribute: attr, value: "kite")
+            # * "is invalid" (attribute: attr, value: "bane")
+          # MESSAGE
+          message = <<-MESSAGE.strip_heredoc.chomp
+            Did not expect errors to include "custom message" when attr is set to "hate",
+            got errors:
+            * "custom message" (attribute: attr, value: "hate")
+          MESSAGE
+          expect(&assertion).to fail_with_message(message)
+        end
       end
 
       context 'when the matcher is qualified with the same message + different values' do
@@ -475,6 +537,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValuesMatcher, type: :model do
       end
     end
 
+=begin
     context 'when the validation uses a custom message, but on an attribute different from the one being validated' do
       context 'when the matcher is qualified with the same custom attribute' do
         include_examples 'basic tests'
@@ -567,9 +630,13 @@ describe Shoulda::Matchers::ActiveModel::AllowValuesMatcher, type: :model do
 =end
 
   def build_model_allowing_values(regexp, options = {})
+    model_name = options.delete(:model_name) { 'Example' }
     options = { with: regexp }.merge(options)
-    define_model 'Example', attribute_being_validated => :string do |model|
-      model.validates_format_of(attribute_being_validated, options)
+    attribute = options.fetch(:attribute_being_validated) do
+      attribute_being_validated
+    end
+    define_model model_name, attribute => :string do |model|
+      model.validates_format_of(attribute, options)
     end
   end
 

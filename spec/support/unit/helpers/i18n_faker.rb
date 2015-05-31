@@ -11,5 +11,19 @@ module UnitTests
       tree = keys.reverse.inject(message) { |data, key| { key => data } }
       I18n.backend.store_translations(:en, tree)
     end
+
+    def stub_validation_error(args)
+      model_name = args.delete(:model_name)
+      attribute_name = args.delete(:attribute_name)
+      message = args.delete(:message)
+      value = args.delete(:value)
+      keys =
+        %w(activerecord errors models) +
+        [model_name] +
+        %w(attributes) +
+        [attribute_name, message]
+
+      stub_translation(keys, value)
+    end
   end
 end
