@@ -16,7 +16,7 @@ module UnitTests
           @actual = ex.message
         end
 
-        @actual && @actual == expected
+        @actual && @actual == expected.sub(/\n\z/, '')
       end
 
       def failure_message

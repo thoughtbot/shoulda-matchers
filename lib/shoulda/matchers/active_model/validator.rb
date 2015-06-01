@@ -49,7 +49,7 @@ module Shoulda
         end
 
         def messages_description
-          if has_messages?
+          if has_messages? && !record.valid?
             " errors:\n#{pretty_error_messages(record)}"
           else
             ' no errors'

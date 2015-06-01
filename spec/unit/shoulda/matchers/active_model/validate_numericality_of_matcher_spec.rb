@@ -505,18 +505,37 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           even: true,
           greater_than: 18
         )
-        expect(record).
-          not_to validate_numericality.
-          only_integer.
-          is_greater_than(18)
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            only_integer.
+            is_greater_than(18)
+        end
+        message = format_message_according_to_rails_version(
+          <<-MESSAGE.strip_heredoc
+            Expected errors to include "must be an integer" when attr is set to 0.1,
+            got errors:
+            * "must be even" (attribute: attr, value: "19")
+          MESSAGE
+        )
+        expect(&assertion).to fail_with_message(message)
       end
 
-      it do
+     it do
         record = build_record_validating_numericality(greater_than: 18)
-        expect(record).
-          not_to validate_numericality.
-          only_integer.
-          is_greater_than(18)
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            only_integer.
+            is_greater_than(18)
+        end
+        message = format_message_according_to_rails_version(
+          <<-MESSAGE.strip_heredoc
+            Expected errors to include "must be an integer" when attr is set to 0.1,
+            got no errors
+          MESSAGE
+        )
+        expect(&assertion).to fail_with_message(message)
       end
 
       it do
@@ -524,10 +543,19 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           even: true,
           greater_than_or_equal_to: 18
         )
-        expect(record).
-          not_to validate_numericality.
-          even.
-          is_greater_than(18)
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            even.
+            is_greater_than(18)
+        end
+        message = format_message_according_to_rails_version(
+          <<-MESSAGE.strip_heredoc
+            Expected errors to include "must be greater than 18" when attr is set to 18,
+            got no errors
+          MESSAGE
+        )
+        expect(&assertion).to fail_with_message(message)
       end
 
       it do
@@ -535,10 +563,20 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           odd: true,
           greater_than: 18
         )
-        expect(record).
-          not_to validate_numericality.
-          even.
-          is_greater_than(18)
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            even.
+            is_greater_than(18)
+        end
+        message = format_message_according_to_rails_version(
+          <<-MESSAGE.strip_heredoc
+            Expected errors to include "must be even" when attr is set to 1,
+            got errors:
+            * "must be odd" (attribute: attr, value: "20")
+          MESSAGE
+        )
+        expect(&assertion).to fail_with_message(message)
       end
 
       it do
@@ -546,10 +584,19 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           odd: true,
           greater_than_or_equal_to: 99
         )
-        expect(record).
-          not_to validate_numericality.
-          odd.
-          is_less_than_or_equal_to(99)
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            odd.
+            is_less_than_or_equal_to(99)
+        end
+        message = format_message_according_to_rails_version(
+          <<-MESSAGE.strip_heredoc
+            Expected errors to include "must be less than or equal to 99" when attr is set to 101,
+            got no errors
+          MESSAGE
+        )
+        expect(&assertion).to fail_with_message(message)
       end
 
       it do
@@ -558,11 +605,20 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           greater_than_or_equal_to: 18,
           less_than: 99
         )
-        expect(record).
-          not_to validate_numericality.
-          only_integer.
-          is_greater_than(18).
-          is_less_than(99)
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            only_integer.
+            is_greater_than(18).
+            is_less_than(99)
+        end
+        message = format_message_according_to_rails_version(
+          <<-MESSAGE.strip_heredoc
+            Expected errors to include "must be greater than 18" when attr is set to 18,
+            got no errors
+          MESSAGE
+        )
+        expect(&assertion).to fail_with_message(message)
       end
     end
 
@@ -572,10 +628,20 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           only_integer: true,
           greater_than: 19
         )
-        expect(record).
-          not_to validate_numericality.
-          only_integer.
-          is_greater_than(18)
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            only_integer.
+            is_greater_than(18)
+        end
+        message = format_message_according_to_rails_version(
+          <<-MESSAGE.strip_heredoc
+            Expected errors to include "must be greater than 18" when attr is set to 18,
+            got errors:
+            * "must be greater than 19" (attribute: attr, value: "19")
+          MESSAGE
+        )
+        expect(&assertion).to fail_with_message(message)
       end
 
       it do
@@ -583,10 +649,19 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           only_integer: true,
           greater_than: 17
         )
-        expect(record).
-          not_to validate_numericality.
-          only_integer.
-          is_greater_than(18)
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            only_integer.
+            is_greater_than(18)
+        end
+        message = format_message_according_to_rails_version(
+          <<-MESSAGE.strip_heredoc
+            Expected errors to include "must be greater than 18" when attr is set to 18,
+            got no errors
+          MESSAGE
+        )
+        expect(&assertion).to fail_with_message(message)
       end
 
       it do
@@ -594,10 +669,20 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           even: true,
           greater_than: 20
         )
-        expect(record).
-          not_to validate_numericality.
-          even.
-          is_greater_than(18)
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            even.
+            is_greater_than(18)
+        end
+        message = format_message_according_to_rails_version(
+          <<-MESSAGE.strip_heredoc
+            Expected errors to include "must be greater than 18" when attr is set to 18,
+            got errors:
+            * "must be greater than 20" (attribute: attr, value: "20")
+          MESSAGE
+        )
+        expect(&assertion).to fail_with_message(message)
       end
 
       it do
@@ -605,10 +690,19 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           even: true,
           greater_than: 16
         )
-        expect(record).
-          not_to validate_numericality.
-          even.
-          is_greater_than(18)
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            even.
+            is_greater_than(18)
+        end
+        message = format_message_according_to_rails_version(
+          <<-MESSAGE.strip_heredoc
+            Expected errors to include "must be greater than 18" when attr is set to 18,
+            got no errors
+          MESSAGE
+        )
+        expect(&assertion).to fail_with_message(message)
       end
 
       it do
@@ -616,10 +710,19 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           odd: true,
           less_than_or_equal_to: 101
         )
-        expect(record).
-          not_to validate_numericality.
-          odd.
-          is_less_than_or_equal_to(99)
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            odd.
+            is_less_than_or_equal_to(99)
+        end
+        message = format_message_according_to_rails_version(
+          <<-MESSAGE.strip_heredoc
+            Expected errors to include "must be less than or equal to 99" when attr is set to 101,
+            got no errors
+          MESSAGE
+        )
+        expect(&assertion).to fail_with_message(message)
       end
 
       it do
@@ -627,10 +730,20 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           odd: true,
           less_than_or_equal_to: 97
         )
-        expect(record).
-          not_to validate_numericality.
-          odd.
-          is_less_than_or_equal_to(99)
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            odd.
+            is_less_than_or_equal_to(99)
+        end
+        message = format_message_according_to_rails_version(
+          <<-MESSAGE.strip_heredoc
+            Expected errors to include "must be less than or equal to 99" when attr is set to 101,
+            got errors:
+            * "must be less than or equal to 97" (attribute: attr, value: "101")
+          MESSAGE
+        )
+        expect(&assertion).to fail_with_message(message)
       end
 
       it do
@@ -639,11 +752,21 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           greater_than: 19,
           less_than: 99
         )
-        expect(record).
-          not_to validate_numericality.
-          only_integer.
-          is_greater_than(18).
-          is_less_than(99)
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            only_integer.
+            is_greater_than(18).
+            is_less_than(99)
+        end
+        message = format_message_according_to_rails_version(
+          <<-MESSAGE.strip_heredoc
+            Expected errors to include "must be greater than 18" when attr is set to 18,
+            got errors:
+            * "must be less than 99" (attribute: attr, value: "100")
+          MESSAGE
+        )
+        expect(&assertion).to fail_with_message(message)
       end
 
       it do
@@ -652,11 +775,21 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           greater_than: 18,
           less_than: 100
         )
-        expect(record).
-          not_to validate_numericality.
-          only_integer.
-          is_greater_than(18).
-          is_less_than(99)
+        assertion = lambda do
+          expect(record).
+            to validate_numericality.
+            only_integer.
+            is_greater_than(18).
+            is_less_than(99)
+        end
+        message = format_message_according_to_rails_version(
+          <<-MESSAGE.strip_heredoc
+            Expected errors to include "must be less than 99" when attr is set to 100,
+            got errors:
+            * "must be less than 100" (attribute: attr, value: "100")
+          MESSAGE
+        )
+        expect(&assertion).to fail_with_message(message)
       end
     end
   end
@@ -846,5 +979,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
 
   def build_record_with_integer_column_of_limit(limit, validation_options = {})
     define_model_with_integer_column_of_limit(limit, validation_options).new
+  end
+
+  def format_message_according_to_rails_version(message)
+    if rails_lt_4_2?
+      message.gsub(/"(\d+)"/, '\1')
+    else
+      message
+    end
   end
 end
