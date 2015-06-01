@@ -82,7 +82,9 @@ module AcceptanceTests
     end
 
     def library_config_for(library)
-      if library
+      if library.respond_to? :map
+        library.map { |lib| "with.library :#{lib}\n" }.join
+      elsif library
         "with.library :#{library}\n"
       else
         ''
