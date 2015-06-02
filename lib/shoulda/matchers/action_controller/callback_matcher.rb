@@ -20,6 +20,26 @@ module Shoulda
       #       should_not use_before_filter(:prevent_ssl)
       #     end
       #
+      # #### Qualifiers
+      #
+      # ##### only
+      #
+      # Use `only` to assert that the filter acts on specific actions.
+      #
+      #     class UsersController < ApplicationController
+      #       before_filter :authenticate_user!, only: :edit
+      #     end
+      #
+      #     # RSpec
+      #     describe UsersController do
+      #       it { should use_before_filter(:authenticate_user!).only(:edit) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class UsersControllerTest < ActionController::TestCase
+      #       should use_before_filter(:authenticate_user!).only(:edit)
+      #     end
+      #
       # @return [CallbackMatcher]
       #
       def use_before_filter(callback)
@@ -43,6 +63,26 @@ module Shoulda
       #     class IssuesControllerTest < ActionController::TestCase
       #       should use_after_filter(:log_activity)
       #       should_not use_after_filter(:destroy_user)
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### only
+      #
+      # Use `only` to assert that the filter acts on specific actions.
+      #
+      #     class UsersController < ApplicationController
+      #       after_filter :log_activity, only: :edit
+      #     end
+      #
+      #     # RSpec
+      #     describe UsersController do
+      #       it { should use_after_filter(:log_activity).only(:edit) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class UsersControllerTest < ActionController::TestCase
+      #       should use_after_filter(:log_activity).only(:edit)
       #     end
       #
       # @return [CallbackMatcher]
@@ -70,6 +110,26 @@ module Shoulda
       #       should_not use_before_action(:prevent_ssl)
       #     end
       #
+      # #### Qualifiers
+      #
+      # ##### only
+      #
+      # Use `only` to assert that the callback acts on specific actions.
+      #
+      #     class UsersController < ApplicationController
+      #       before_action :authenticate_user!, only: :edit
+      #     end
+      #
+      #     # RSpec
+      #     describe UsersController do
+      #       it { should use_before_action(:authenticate_user!).only(:edit) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class UsersControllerTest < ActionController::TestCase
+      #       should use_before_action(:authenticate_user!).only(:edit)
+      #     end
+      #
       # @return [CallbackMatcher]
       #
       def use_before_action(callback)
@@ -93,6 +153,27 @@ module Shoulda
       #     class IssuesControllerTest < ActionController::TestCase
       #       should use_after_action(:log_activity)
       #       should_not use_after_action(:destroy_user)
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### only
+      #
+      # Use `only` to assert that the callback acts on specific actions.
+      #
+      #     class UsersController < ApplicationController
+      #
+      #       after_action :log_activity, only: :edit
+      #     end
+      #
+      #     # RSpec
+      #     describe UsersController do
+      #       it { should use_after_action(:log_activity).only(:edit) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class UsersControllerTest < ActionController::TestCase
+      #       should use_after_action(:log_activity).only(:edit)
       #     end
       #
       # @return [CallbackMatcher]
@@ -120,6 +201,26 @@ module Shoulda
       #       should_not use_around_filter(:save_view_context)
       #     end
       #
+      # #### Qualifiers
+      #
+      # ##### only
+      #
+      # Use `only` to assert that the filter acts on specific actions.
+      #
+      #     class ChangesController < ApplicationController
+      #       around_filter :wrap_in_transaction, only: :edit
+      #     end
+      #
+      #     # RSpec
+      #     describe ChangesController do
+      #       it { should use_around_filter(:wrap_in_transaction).only(:edit) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class ChangesControllerTest < ActionController::TestCase
+      #       should use_around_filter(:wrap_in_transaction).only(:edit)
+      #     end
+      #
       # @return [CallbackMatcher]
       #
       def use_around_filter(callback)
@@ -145,6 +246,26 @@ module Shoulda
       #       should_not use_around_action(:save_view_context)
       #     end
       #
+      # #### Qualifiers
+      #
+      # ##### only
+      #
+      # Use `only` to assert that the callback acts on specific actions.
+      #
+      #     class ChangesController < ApplicationController
+      #       around_action :wrap_in_transaction, only: :edit
+      #     end
+      #
+      #     # RSpec
+      #     describe ChangesController do
+      #       it { should use_around_action(:wrap_in_transaction).only(:edit) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class ChangesControllerTest < ActionController::TestCase
+      #       should use_around_action(:wrap_in_transaction).only(:edit)
+      #     end
+      #
       # @return [CallbackMatcher]
       #
       def use_around_action(callback)
@@ -157,27 +278,39 @@ module Shoulda
           @method_name = method_name
           @kind = kind
           @callback_type = callback_type
+          @options = {}
+        end
+
+        def only(actions)
+          @options[:only] = Array(actions)
+          self
         end
 
         def matches?(controller)
           @controller = controller
           @controller_class = controller.class
 
-          callbacks.map(&:filter).include?(method_name)
+          filter_matches? && only_matches?
         end
 
         def failure_message
-          "Expected that #{controller_class.name} would have :#{method_name} as a #{kind}_#{callback_type}"
+          message = "Expected that #{controller_class.name} would have :#{method_name} as a #{kind}_#{callback_type}"
+          append_only_description(message)
+          message
         end
         alias failure_message_for_should failure_message
 
         def failure_message_when_negated
-          "Expected that #{controller_class.name} would not have :#{method_name} as a #{kind}_#{callback_type}"
+          message = "Expected that #{controller_class.name} would not have :#{method_name} as a #{kind}_#{callback_type}"
+          append_only_description(message)
+          message
         end
         alias failure_message_for_should_not failure_message_when_negated
 
         def description
-          "have :#{method_name} as a #{kind}_#{callback_type}"
+          description = "have :#{method_name} as a #{kind}_#{callback_type}"
+          append_only_description(description)
+          description
         end
 
         protected
@@ -188,8 +321,38 @@ module Shoulda
           end
         end
 
+        def filter_matches?
+          callbacks.map(&:filter).include?(method_name)
+        end
+
+        def only_matches?
+          if options.key?(:only)
+            callbacks.any? do |c|
+              c.filter == method_name && callback_if(c) == only_options_as_if
+            end
+          else
+            true
+          end
+        end
+
+        def callback_if(callback)
+          callback.instance_variable_get(:@if).first
+        end
+
+        def only_options_as_if
+          options[:only].map do |action|
+            "action_name == '#{action}'"
+          end.join(' || ')
+        end
+
+        def append_only_description(string)
+          if options.key?(:only)
+            string << " :only => #{options[:only]}"
+          end
+        end
+
         attr_reader :method_name, :controller, :controller_class, :kind,
-          :callback_type
+          :callback_type, :options
       end
     end
   end

@@ -33,7 +33,7 @@ describe Shoulda::Matchers::ActionController::CallbackMatcher, type: :controller
         message = "Expected that HookController would have #{method_name.inspect} as a #{kind}_#{callback_type}"
 
         expect {
-          expect(controller).to send("use_#{kind}_#{callback_type}", method_name)
+          expect(controller).to match
         }.to fail_with_message(message)
       end
     end
@@ -45,12 +45,92 @@ describe Shoulda::Matchers::ActionController::CallbackMatcher, type: :controller
 
         expect { expect(controller).not_to match }.to fail_with_message(message)
       end
+
+      context "qualified with only" do
+        let(:action) { :index }
+        let(:multiple_actions) { [:index, :show] }
+        let(:other_action) { :other_action }
+
+        context "and when a #{kind} hook is in place with the qualifier" do
+          it "accepts" do
+            add_callback(kind, callback_type, method_name, only: action)
+            expect(controller).to match.only(action)
+          end
+
+          it "accepts with multiple qualifier options" do
+            add_callback(kind, callback_type, method_name, only: multiple_actions)
+            expect(controller).to match.only(multiple_actions)
+          end
+        end
+
+        context "and when a #{kind} hook is in place without the qualifier" do
+          it "rejects" do
+            add_callback(kind, callback_type, method_name)
+            expect(controller).not_to match.only(action)
+          end
+
+          it "rejects with multiple qualifier options" do
+            add_callback(kind, callback_type, method_name)
+            expect(controller).not_to match.only(multiple_actions)
+          end
+        end
+
+        context "and when a #{kind} hook is in place but the qualifier is on other action" do
+          it "rejects" do
+            add_callback(kind, callback_type, method_name)
+            add_callback(kind, callback_type, other_action, only: action)
+            expect(controller).not_to match.only(action)
+          end
+
+          it "rejects with multiple qualifier options" do
+            add_callback(kind, callback_type, method_name)
+            add_callback(kind, callback_type, other_action, only: multiple_actions)
+            expect(controller).not_to match.only(multiple_actions)
+          end
+        end
+
+        context "and when a #{kind} hook is missing" do
+          it "rejects" do
+            expect(controller).not_to match.only(action)
+          end
+
+          it "rejects with multiple qualifier options" do
+            expect(controller).not_to match.only(multiple_actions)
+          end
+        end
+
+        describe 'description' do
+          it 'includes the filter kind and name and qualifier option' do
+            message = "have #{method_name.inspect} as a #{kind}_#{callback_type} :only => [:#{action}]"
+            expect(matcher.only(action).description).to eq(message)
+          end
+        end
+
+        describe 'failure message' do
+          it 'includes the filter kind name and qualifier that was expected' do
+            message = "Expected that HookController would have #{method_name.inspect} as a #{kind}_#{callback_type} :only => [:#{action}]"
+
+            expect {
+              expect(controller).to match.only(action)
+            }.to fail_with_message(message)
+          end
+        end
+
+        describe 'failure message when negated' do
+          it 'includes the filter kind and name that was expected' do
+            add_callback(kind, callback_type, method_name, only: action)
+            message = "Expected that HookController would not have #{method_name.inspect} as a #{kind}_#{callback_type} :only => [:#{action}]"
+
+            expect { expect(controller).not_to match.only(action) }.to fail_with_message(message)
+          end
+        end
+      end
     end
 
     private
 
-    def add_callback(kind, callback_type, callback)
-      controller.class.__send__("#{kind}_#{callback_type}", callback)
+    def add_callback(kind, callback_type, callback, options = {})
+      controller.class.__send__("#{kind}_#{callback_type}", callback, options)
     end
   end
 
