@@ -26,7 +26,7 @@ module Shoulda
         end
 
         def has_key?(key)
-          values_to_check.include?(key)
+          values_to_check.include?(key.to_s)
         end
 
         def has_value?(expected_value)
