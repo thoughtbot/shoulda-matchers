@@ -56,9 +56,28 @@ shared_examples_for 'set session or flash matcher' do
 
     context 'in the positive' do
       context 'if the given key is present in the store' do
-        it 'accepts' do
-          controller = controller_with_store('the key' => 'any value')
-          expect(controller).to set_store['the key']
+        context 'and controller set the key as a string' do
+          it 'accepts the param as a string' do
+            controller = controller_with_store('the_key' => 'any value')
+            expect(controller).to set_store['the_key']
+          end
+
+          it 'accepts the param as a symbol' do
+            controller = controller_with_store('the_key' => 'any value')
+            expect(controller).to set_store[:the_key]
+          end
+        end
+
+        context 'and controller set the key as a symbol' do
+          it 'accepts the param as a string' do
+            controller = controller_with_store(the_key: 'any value')
+            expect(controller).to set_store['the_key']
+          end
+
+          it 'accepts the param as a symbol' do
+            controller = controller_with_store(the_key: 'any value')
+            expect(controller).to set_store[:the_key]
+          end
         end
       end
 
