@@ -37,17 +37,35 @@ module Shoulda
       #     # RSpec
       #     describe UsersController do
       #       it do
+      #         params = {
+      #           user: {
+      #             first_name: 'John',
+      #             last_name: 'Doe',
+      #             email: 'johndoe@example.com',
+      #             password: 'password'
+      #           }
+      #         }
       #         should permit(:first_name, :last_name, :email, :password).
-      #           for(:create).
+      #           for(:create, params: params).
       #           on(:user)
       #       end
       #     end
       #
       #     # Test::Unit
       #     class UsersControllerTest < ActionController::TestCase
-      #       should permit(:first_name, :last_name, :email, :password).
-      #         for(:create).
-      #         on(:user)
+      #       should "(for POST #create) restrict parameters on :user to first_name, last_name, email, and password" do
+      #         params = {
+      #           user: {
+      #             first_name: 'John',
+      #             last_name: 'Doe',
+      #             email: 'johndoe@example.com',
+      #             password: 'password'
+      #           }
+      #         }
+      #         should permit(:first_name, :last_name, :email, :password).
+      #           for(:create, params: params).
+      #           on(:user)
+      #       end
       #     end
       #
       # If your action requires query parameters in order to work, then you'll
@@ -83,8 +101,17 @@ module Shoulda
       #       end
       #
       #       it do
+      #         params = {
+      #           id: 1,
+      #           user: {
+      #             first_name: 'Jon',
+      #             last_name: 'Doe',
+      #             email: 'jondoe@example.com',
+      #             password: 'password'
+      #           }
+      #         }
       #         should permit(:first_name, :last_name, :email, :password).
-      #           for(:update, params: { id: 1 }).
+      #           for(:update, params: params).
       #           on(:user)
       #       end
       #     end
@@ -95,9 +122,20 @@ module Shoulda
       #         create(:user, id: 1)
       #       end
       #
-      #       should permit(:first_name, :last_name, :email, :password).
-      #         for(:update, params: { id: 1 }).
-      #         on(:user)
+      #       should "(for PATCH #update) restrict parameters on :user to :first_name, :last_name, :email, and :password" do
+      #         params = {
+      #           id: 1,
+      #           user: {
+      #             first_name: 'Jon',
+      #             last_name: 'Doe',
+      #             email: 'jondoe@example.com',
+      #             password: 'password'
+      #           }
+      #         }
+      #         should permit(:first_name, :last_name, :email, :password).
+      #           for(:update, params: params).
+      #           on(:user)
+      #       end
       #     end
       #
       # Finally, if you have an action that isn't one of the seven resourceful
@@ -136,8 +174,9 @@ module Shoulda
       #       end
       #
       #       it do
+      #         params = { id: 1, user: { activated: true } }
       #         should permit(:activated).
-      #           for(:toggle, params: { id: 1 }, verb: :put).
+      #           for(:toggle, params: params, verb: :put).
       #           on(:user)
       #       end
       #     end
@@ -148,9 +187,12 @@ module Shoulda
       #         create(:user, id: 1)
       #       end
       #
-      #       should permit(:activated).
-      #         for(:toggle, params: { id: 1 }, verb: :put).
-      #         on(:user)
+      #       should "(for PUT #toggle) restrict parameters on :user to :activated" do
+      #         params = { id: 1, user: { activated: true } }
+      #         should permit(:activated).
+      #           for(:toggle, params: params, verb: :put).
+      #           on(:user)
+      #       end
       #     end
       #
       # @return [PermitMatcher]
