@@ -330,7 +330,11 @@ module Shoulda
         end
 
         def callback_if(callback)
-          callback.instance_variable_get(:@if).first
+          if RailsShim.action_pack_gte_4_1?
+            callback.instance_variable_get(:@if).first
+          else
+            callback.options[:if].first
+          end
         end
 
         def only_options_as_if
