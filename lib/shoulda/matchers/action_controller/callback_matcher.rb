@@ -294,23 +294,17 @@ module Shoulda
         end
 
         def failure_message
-          message = "Expected that #{controller_class.name} would have :#{method_name} as a #{kind}_#{callback_type}"
-          append_only_description(message)
-          message
+          "Expected that #{controller_class.name} would #{expectation}"
         end
         alias failure_message_for_should failure_message
 
         def failure_message_when_negated
-          message = "Expected that #{controller_class.name} would not have :#{method_name} as a #{kind}_#{callback_type}"
-          append_only_description(message)
-          message
+          "Expected that #{controller_class.name} would not #{expectation}"
         end
         alias failure_message_for_should_not failure_message_when_negated
 
         def description
-          description = "have :#{method_name} as a #{kind}_#{callback_type}"
-          append_only_description(description)
-          description
+          expectation
         end
 
         protected
@@ -345,10 +339,12 @@ module Shoulda
           end.join(' || ')
         end
 
-        def append_only_description(string)
+        def expectation
+          message = "have :#{method_name} as a #{kind}_#{callback_type}"
           if options.key?(:only)
-            string << " :only => #{options[:only]}"
+            message << " :only => #{options[:only]}"
           end
+          message
         end
 
         attr_reader :method_name, :controller, :controller_class, :kind,
