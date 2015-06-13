@@ -30,6 +30,10 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
+  if config.files_to_run.one?
+    config.default_formatter = 'doc'
+  end
+
   config.mock_with :rspec
 
   if config.respond_to?(:infer_spec_type_from_file_location!)
