@@ -276,6 +276,23 @@ module Shoulda
       #       should have_many(:friends)
       #     end
       #
+      # Note that polymorphic associations are automatically detected and do not
+      # need any qualifiers:
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_many :pictures, as: :imageable
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it { should have_many(:pictures) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_many(:pictures)
+      #     end
+      #
       # #### Qualifiers
       #
       # ##### conditions
