@@ -86,6 +86,55 @@ describe Shoulda::Matchers::ActiveRecord::AcceptNestedAttributesForMatcher, type
     end
   end
 
+  context 'reject_if' do
+    context 'with :all_blank' do
+      it 'accepts a correct value' do
+        expect(accepting_children(reject_if: :all_blank)).to children_matcher.
+          reject_if(:all_blank)
+      end
+
+      it 'rejects an different symbol on the matcher' do
+        matcher = children_matcher.reject_if(:different_symbol)
+        rejecting = accepting_children(reject_if: :all_blank)
+
+        expect(matcher.matches?(rejecting)).to eq false
+        expect(matcher.failure_message).to match(/should be :different_symbol, got :all_blank/)
+      end
+
+      it 'rejects an different symbol on the model' do
+        matcher = children_matcher.reject_if(:all_blank)
+        rejecting = accepting_children(reject_if: :different_symbol)
+
+        expect(matcher.matches?(rejecting)).to eq false
+        expect(matcher.failure_message).to match(/should be :all_blank, got :different_symbol/)
+      end
+    end
+
+    context 'with proc' do
+      it 'raises a error' do
+        expect do
+          expect(accepting_children(reject_if: :all_blank)).to children_matcher.
+            reject_if(-> {})
+        end.to raise_error(ArgumentError, /symbol as reject_if param/)
+      end
+    end
+
+    context 'with a symbol' do
+      it 'accepts a correct value' do
+        expect(accepting_children(reject_if: :some_method)).to children_matcher.
+          reject_if(:some_method)
+      end
+
+      it 'rejects an different symbol' do
+        matcher = children_matcher.reject_if(:other_method)
+        rejecting = accepting_children(reject_if: :some_method)
+
+        expect(matcher.matches?(rejecting)).to eq false
+        expect(matcher.failure_message).to match(/should be :other_method, got :some_method/)
+      end
+    end
+  end
+
   def accepting_children(options = {})
     define_model :child, parent_id: :integer
     define_model :parent do

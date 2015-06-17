@@ -88,6 +88,34 @@ module Shoulda
       #         update_only(true)
       #     end
       #
+      # ##### reject_if
+      #
+      # Use `reject_if` to assert that the `:reject_if` option was
+      # specified.
+      #
+      #     class Car < ActiveRecord::Base
+      #       accepts_nested_attributes_for :engine, reject_if: :all_blank
+      #     end
+      #
+      #     # RSpec
+      #     describe Car do
+      #       it do
+      #         should accept_nested_attributes_for(:engine).
+      #           reject_if(:all_blank)
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class CarTest < ActiveSupport::TestCase
+      #       should accept_nested_attributes_for(:engine).
+      #         reject_if(:all_blank)
+      #     end
+      #
+      # ###### Caveat
+      #
+      # Since we are not capable to compare a Proc unless they are exactly the same object,
+      # the qualifier accepts only symbol as parameter.
+      #
       # @return [AcceptNestedAttributesForMatcher]
       #
       def accept_nested_attributes_for(name)
@@ -116,12 +144,18 @@ module Shoulda
           self
         end
 
+        def reject_if(reject_if)
+          @options[:reject_if] = reject_if
+          self
+        end
+
         def matches?(subject)
           @subject = subject
           exists? &&
             allow_destroy_correct? &&
             limit_correct? &&
-            update_only_correct?
+            update_only_correct? &&
+            reject_if_correct?
         end
 
         def failure_message
@@ -144,6 +178,9 @@ module Shoulda
           end
           if @options.key?(:update_only)
             description += " update_only => #{@options[:update_only]}"
+          end
+          if @options.key?(:reject_if)
+            description += " reject_if => #{@options[:reject_if]}"
           end
           description
         end
@@ -172,6 +209,40 @@ module Shoulda
         def update_only_correct?
           failure_message = "#{should_or_should_not(@options[:update_only])} be update only"
           verify_option_is_correct(:update_only, failure_message)
+        end
+
+        def reject_if_correct?
+          failure_message = "reject_if #{should_or_should_not(@options[:reject_if])} be :#{@options[:reject_if]}, got "
+
+          if reject_if_option_is_a_callable?
+            message = "You need to use a symbol as reject_if param"
+            raise ArgumentError, message
+          elsif reject_if_all_blank_matches?
+            true
+          elsif reject_if_config_is_equals_a_proc?
+            failure_message << ":all_blank"
+            @problem = failure_message
+            false
+          else
+            failure_message << ":#{config[:reject_if]}"
+            verify_option_is_correct(:reject_if, failure_message)
+          end
+        end
+
+        def reject_if_option_is_a_callable?
+          @options[:reject_if].respond_to?(:call)
+        end
+
+        def reject_if_config_is_equals_a_proc?
+          Proc === config[:reject_if]
+        end
+
+        def reject_if_all_blank_matches?
+          @options[:reject_if] == :all_blank && reject_if_config_is_equals_a_proc?
+        end
+
+        def trying_to_compare_symbol_with_proc?
+          @options[:reject_if].is_a?(Symbol) && reject_if_config_is_equals_a_proc?
         end
 
         def verify_option_is_correct(option, failure_message)
