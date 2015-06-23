@@ -51,5 +51,18 @@ module AcceptanceTests
       args = ['rake', *tasks, '--trace'] + [options]
       run_command_within_bundle!(*args)
     end
+
+    def append_rake_task(task, depends_on, code)
+      file = File.join(fs.project_directory, 'Rakefile')
+      if IO.read(file).split("\n").grep("task :#{task}").empty?
+        depend_line = [depends_on].flatten.map { |x| ":#{x}" }.join(', ')
+        task_code = <<-CODE
+task :#{task} => [ #{depend_line} ] do
+  #{code.strip}
+end
+        CODE
+        append_to_file file, task_code
+      end
+    end
   end
 end

@@ -112,6 +112,10 @@ module AcceptanceTests
       run_command_within_bundle 'rspec --format documentation --backtrace', *paths
     end
 
+    def add_rspec_expectations_to_project!
+      add_gem 'rspec-expectations', rspec_expectations_version
+    end
+
     def run_rspec_suite
       run_rake_tasks('spec', env: { SPEC_OPTS: '-fd' })
     end

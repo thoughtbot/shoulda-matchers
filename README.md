@@ -197,6 +197,30 @@ describe Person do
 end
 ```
 
+### RSpec-Expectations
+
+Use this instead of the RSpec ifself in case you just use the specific module gem
+'rspec-expectations' to test webpart(s).
+
+Include `shoulda-matchers` in your Gemfile:
+
+``` ruby
+group :test do
+  gem 'shoulda-matchers'
+end
+```
+
+Then, configure the gem to integrate with RSpec specifying the test framework as `:rspec_exp`:
+
+    Shoulda::Matchers.configure do |config|
+      config.integrate do |with|
+        with.test_framework :rspec_exp
+        # ...
+      end
+    end
+
+Now you can use matchers in your tests as for RSpec part.
+
 ### Minitest
 
 Shoulda Matchers was originally a component of [Shoulda][shoulda], a gem that

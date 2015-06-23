@@ -94,7 +94,8 @@ module AcceptanceTests
       files = []
 
       if integrates_with_nunit_and_rails?(test_framework, libraries) ||
-        integrates_with_nunit_only?(test_framework)
+          integrates_with_nunit_only?(test_framework) ||
+          integrates_with_rspec_expectations?(test_framework)
         files << 'test/test_helper.rb'
       end
 
@@ -116,6 +117,10 @@ module AcceptanceTests
 
     def integrates_with_rspec?(test_framework)
       test_framework == :rspec
+    end
+
+    def integrates_with_rspec_expectations?(test_framework)
+      test_framework == :rspec_exp
     end
 
     def integrates_with_rspec_rails_3_x?(test_framework, libraries)
