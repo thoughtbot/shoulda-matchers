@@ -18,8 +18,8 @@ module Shoulda
       #       describe 'GET #show' do
       #         before { get :show }
       #
-      #         it { should redirect_to(posts_path) }
-      #         it { should redirect_to(action: :index) }
+      #         it { is_expected.to redirect_to(posts_path) }
+      #         it { is_expected.to redirect_to(action: :index) }
       #       end
       #     end
       #

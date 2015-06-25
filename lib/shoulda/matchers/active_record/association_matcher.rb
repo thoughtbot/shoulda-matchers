@@ -12,7 +12,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should belong_to(:organization) }
+      #       it { is_expected.to belong_to(:organization) }
       #     end
       #
       #     # Test::Unit
@@ -29,7 +29,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Comment do
-      #       it { should belong_to(:commentable) }
+      #       it { is_expected.to belong_to(:commentable) }
       #     end
       #
       #     # Test::Unit
@@ -51,7 +51,7 @@ module Shoulda
       #     # RSpec
       #     describe Person do
       #       it do
-      #         should belong_to(:family).
+      #         is_expected.to belong_to(:family).
       #           conditions(everyone_is_perfect: false)
       #       end
       #     end
@@ -73,7 +73,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should belong_to(:previous_company).order('hired_on desc') }
+      #       it { is_expected.to belong_to(:previous_company).order('hired_on desc') }
       #     end
       #
       #     # Test::Unit
@@ -92,7 +92,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should belong_to(:ancient_city).class_name('City') }
+      #       it { is_expected.to belong_to(:ancient_city).class_name('City') }
       #     end
       #
       #     # Test::Unit
@@ -111,7 +111,7 @@ module Shoulda
       #     # RSpec
       #     describe Person do
       #       it do
-      #         should belong_to(:great_country).
+      #         is_expected.to belong_to(:great_country).
       #           with_primary_key('country_id')
       #       end
       #     end
@@ -133,7 +133,7 @@ module Shoulda
       #     # RSpec
       #     describe Person do
       #       it do
-      #         should belong_to(:great_country).
+      #         is_expected.to belong_to(:great_country).
       #           with_foreign_key('country_id')
       #       end
       #     end
@@ -154,7 +154,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should belong_to(:world).dependent(:destroy) }
+      #       it { is_expected.to belong_to(:world).dependent(:destroy) }
       #     end
       #
       #     # Test::Unit
@@ -166,7 +166,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should belong_to(:world).dependent(true) }
+      #       it { is_expected.to belong_to(:world).dependent(true) }
       #     end
       #
       # To assert that *no* `:dependent` option was specified, use `false`:
@@ -177,7 +177,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should belong_to(:company).dependent(false) }
+      #       it { is_expected.to belong_to(:company).dependent(false) }
       #     end
       #
       # ##### counter_cache
@@ -191,7 +191,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should belong_to(:organization).counter_cache(true) }
+      #       it { is_expected.to belong_to(:organization).counter_cache(true) }
       #     end
       #
       #     # Test::Unit
@@ -209,7 +209,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should belong_to(:organization).touch(true) }
+      #       it { is_expected.to belong_to(:organization).touch(true) }
       #     end
       #
       #     # Test::Unit
@@ -227,7 +227,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Account do
-      #       it { should belong_to(:bank).autosave(true) }
+      #       it { is_expected.to belong_to(:bank).autosave(true) }
       #     end
       #
       #     # Test::Unit
@@ -245,7 +245,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person
-      #       it { should belong_to(:organization).inverse_of(:employees) }
+      #       it { is_expected.to belong_to(:organization).inverse_of(:employees) }
       #     end
       #
       #     # Test::Unit
@@ -268,7 +268,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should have_many(:friends) }
+      #       it { is_expected.to have_many(:friends) }
       #     end
       #
       #     # Test::Unit
@@ -289,7 +289,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should have_many(:coins).conditions(quality: 'mint') }
+      #       it { is_expected.to have_many(:coins).conditions(quality: 'mint') }
       #     end
       #
       #     # Test::Unit
@@ -308,7 +308,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should have_many(:shirts).order('color') }
+      #       it { is_expected.to have_many(:shirts).order('color') }
       #     end
       #
       #     # Test::Unit
@@ -327,7 +327,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should have_many(:hopes).class_name('Dream') }
+      #       it { is_expected.to have_many(:hopes).class_name('Dream') }
       #     end
       #
       #     # Test::Unit
@@ -345,7 +345,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should have_many(:worries).with_primary_key('worrier_id') }
+      #       it { is_expected.to have_many(:worries).with_primary_key('worrier_id') }
       #     end
       #
       #     # Test::Unit
@@ -363,7 +363,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should have_many(:worries).with_foreign_key('worrier_id') }
+      #       it { is_expected.to have_many(:worries).with_foreign_key('worrier_id') }
       #     end
       #
       #     # Test::Unit
@@ -381,7 +381,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should have_many(:secret_documents).dependent(:destroy) }
+      #       it { is_expected.to have_many(:secret_documents).dependent(:destroy) }
       #     end
       #
       #     # Test::Unit
@@ -400,7 +400,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should have_many(:acquaintances).through(:friends) }
+      #       it { is_expected.to have_many(:acquaintances).through(:friends) }
       #     end
       #
       #     # Test::Unit
@@ -420,7 +420,7 @@ module Shoulda
       #     # RSpec
       #     describe Person do
       #       it do
-      #         should have_many(:job_offers).
+      #         is_expected.to have_many(:job_offers).
       #           through(:friends).
       #           source(:opportunities)
       #       end
@@ -443,7 +443,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should have_many(:ideas).validate(false) }
+      #       it { is_expected.to have_many(:ideas).validate(false) }
       #     end
       #
       #     # Test::Unit
@@ -461,7 +461,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Player do
-      #       it { should have_many(:games).autosave(true) }
+      #       it { is_expected.to have_many(:games).autosave(true) }
       #     end
       #
       #     # Test::Unit
@@ -484,7 +484,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should have_one(:partner) }
+      #       it { is_expected.to have_one(:partner) }
       #     end
       #
       #     # Test::Unit
@@ -505,7 +505,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should have_one(:pet).conditions('weight < 80') }
+      #       it { is_expected.to have_one(:pet).conditions('weight < 80') }
       #     end
       #
       #     # Test::Unit
@@ -524,7 +524,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should have_one(:focus).order('priority desc') }
+      #       it { is_expected.to have_one(:focus).order('priority desc') }
       #     end
       #
       #     # Test::Unit
@@ -543,7 +543,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should have_one(:chance).class_name('Opportunity') }
+      #       it { is_expected.to have_one(:chance).class_name('Opportunity') }
       #     end
       #
       #     # Test::Unit
@@ -561,7 +561,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should have_one(:contract).dependent(:nullify) }
+      #       it { is_expected.to have_one(:contract).dependent(:nullify) }
       #     end
       #
       #     # Test::Unit
@@ -579,7 +579,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should have_one(:job).with_primary_key('worker_id') }
+      #       it { is_expected.to have_one(:job).with_primary_key('worker_id') }
       #     end
       #
       #     # Test::Unit
@@ -597,7 +597,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should have_one(:job).with_foreign_key('worker_id') }
+      #       it { is_expected.to have_one(:job).with_foreign_key('worker_id') }
       #     end
       #
       #     # Test::Unit
@@ -616,7 +616,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should have_one(:life).through(:partner) }
+      #       it { is_expected.to have_one(:life).through(:partner) }
       #     end
       #
       #     # Test::Unit
@@ -635,7 +635,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should have_one(:car).through(:partner).source(:vehicle) }
+      #       it { is_expected.to have_one(:car).through(:partner).source(:vehicle) }
       #     end
       #
       #     # Test::Unit
@@ -653,7 +653,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should have_one(:parking_card).validate(false) }
+      #       it { is_expected.to have_one(:parking_card).validate(false) }
       #     end
       #
       #     # Test::Unit
@@ -671,7 +671,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Account do
-      #       it { should have_one(:bank).autosave(true) }
+      #       it { is_expected.to have_one(:bank).autosave(true) }
       #     end
       #
       #     # Test::Unit
@@ -695,7 +695,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should have_and_belong_to_many(:awards) }
+      #       it { is_expected.to have_and_belong_to_many(:awards) }
       #     end
       #
       #     # Test::Unit
@@ -717,7 +717,7 @@ module Shoulda
       #     # RSpec
       #     describe Person do
       #       it do
-      #         should have_and_belong_to_many(:issues).
+      #         is_expected.to have_and_belong_to_many(:issues).
       #           conditions(difficulty: 'hard')
       #       end
       #     end
@@ -740,7 +740,7 @@ module Shoulda
       #     # RSpec
       #     describe Person do
       #       it do
-      #         should have_and_belong_to_many(:projects).
+      #         is_expected.to have_and_belong_to_many(:projects).
       #           order('time_spent')
       #       end
       #     end
@@ -763,7 +763,7 @@ module Shoulda
       #     # RSpec
       #     describe Person do
       #       it do
-      #         should have_and_belong_to_many(:places_visited).
+      #         is_expected.to have_and_belong_to_many(:places_visited).
       #           class_name('City')
       #       end
       #     end
@@ -786,7 +786,7 @@ module Shoulda
       #     # RSpec
       #     describe Person do
       #       it do
-      #         should have_and_belong_to_many(:issues).
+      #         is_expected.to have_and_belong_to_many(:issues).
       #           join_table('people_tickets')
       #       end
       #     end
@@ -808,7 +808,7 @@ module Shoulda
       #     # RSpec
       #     describe Person do
       #       it do
-      #         should have_and_belong_to_many(:interviews).
+      #         is_expected.to have_and_belong_to_many(:interviews).
       #           validate(false)
       #       end
       #     end
@@ -829,7 +829,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Publisher do
-      #       it { should have_and_belong_to_many(:advertisers).autosave(true) }
+      #       it { is_expected.to have_and_belong_to_many(:advertisers).autosave(true) }
       #     end
       #
       #     # Test::Unit

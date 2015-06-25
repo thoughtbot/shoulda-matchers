@@ -19,8 +19,8 @@ module Shoulda
       #       describe 'GET #show' do
       #         before { get :show }
       #
-      #         it { should render_template('show') }
-      #         it { should render_template(partial: 'sidebar') }
+      #         it { is_expected.to render_template('show') }
+      #         it { is_expected.to render_template(partial: 'sidebar') }
       #       end
       #     end
       #

@@ -14,7 +14,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Phone do
-      #       it { should have_db_column(:supported_ios_version) }
+      #       it { is_expected.to have_db_column(:supported_ios_version) }
       #     end
       #
       #     # Test::Unit
@@ -39,7 +39,7 @@ module Shoulda
       #     # RSpec
       #     describe Phone do
       #       it do
-      #         should have_db_column(:camera_aperture).of_type(:decimal)
+      #         is_expected.to have_db_column(:camera_aperture).of_type(:decimal)
       #       end
       #     end
       #
@@ -65,7 +65,7 @@ module Shoulda
       #     # RSpec
       #     describe Phone do
       #       it do
-      #         should have_db_column(:camera_aperture).
+      #         is_expected.to have_db_column(:camera_aperture).
       #           with_options(precision: 1, null: false)
       #       end
       #     end

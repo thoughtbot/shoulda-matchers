@@ -9,7 +9,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Product do
-      #       it { should serialize(:customizations) }
+      #       it { is_expected.to serialize(:customizations) }
       #     end
       #
       #     # Test::Unit
@@ -40,7 +40,7 @@ module Shoulda
       #     # RSpec
       #     describe Product do
       #       it do
-      #         should serialize(:specifications).
+      #         is_expected.to serialize(:specifications).
       #           as(ProductSpecsSerializer)
       #       end
       #     end
@@ -72,7 +72,7 @@ module Shoulda
       #     # RSpec
       #     describe Product do
       #       it do
-      #         should serialize(:options).
+      #         is_expected.to serialize(:options).
       #           as_instance_of(ProductOptionsSerializer)
       #       end
       #     end

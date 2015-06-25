@@ -13,7 +13,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should validate_numericality_of(:gpa) }
+      #       it { is_expected.to validate_numericality_of(:gpa) }
       #     end
       #
       #     # Test::Unit
@@ -37,7 +37,7 @@ module Shoulda
       #     # RSpec
       #     describe Person do
       #       it do
-      #         should validate_numericality_of(:number_of_dependents).
+      #         is_expected.to validate_numericality_of(:number_of_dependents).
       #           on(:create)
       #       end
       #     end
@@ -62,7 +62,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should validate_numericality_of(:age).only_integer }
+      #       it { is_expected.to validate_numericality_of(:age).only_integer }
       #     end
       #
       #     # Test::Unit
@@ -87,7 +87,7 @@ module Shoulda
       #     # RSpec
       #     describe Person do
       #       it do
-      #         should validate_numericality_of(:number_of_cars).
+      #         is_expected.to validate_numericality_of(:number_of_cars).
       #           is_less_than(2)
       #       end
       #     end
@@ -115,7 +115,7 @@ module Shoulda
       #     # RSpec
       #     describe Person do
       #       it do
-      #         should validate_numericality_of(:birth_year).
+      #         is_expected.to validate_numericality_of(:birth_year).
       #           is_less_than_or_equal_to(1987)
       #       end
       #     end
@@ -141,7 +141,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should validate_numericality_of(:weight).is_equal_to(150) }
+      #       it { is_expected.to validate_numericality_of(:weight).is_equal_to(150) }
       #     end
       #
       #     # Test::Unit
@@ -166,7 +166,7 @@ module Shoulda
       #     # RSpec
       #     describe Person do
       #       it do
-      #         should validate_numericality_of(:height).
+      #         is_expected.to validate_numericality_of(:height).
       #           is_greater_than_or_equal_to(55)
       #       end
       #     end
@@ -193,7 +193,7 @@ module Shoulda
       #     # RSpec
       #     describe Person do
       #       it do
-      #         should validate_numericality_of(:legal_age).
+      #         is_expected.to validate_numericality_of(:legal_age).
       #           is_greater_than(21)
       #       end
       #     end
@@ -218,7 +218,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should validate_numericality_of(:birth_month).even }
+      #       it { is_expected.to validate_numericality_of(:birth_month).even }
       #     end
       #
       #     # Test::Unit
@@ -241,7 +241,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person do
-      #       it { should validate_numericality_of(:birth_day).odd }
+      #       it { is_expected.to validate_numericality_of(:birth_day).odd }
       #     end
       #
       #     # Test::Unit
@@ -264,7 +264,7 @@ module Shoulda
       #     # RSpec
       #     describe Person do
       #       it do
-      #         should validate_numericality_of(:number_of_dependents).
+      #         is_expected.to validate_numericality_of(:number_of_dependents).
       #           with_message('Number of dependents must be a number')
       #       end
       #     end
@@ -288,7 +288,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Post do
-      #       it { should validate_numericality_of(:age).allow_nil }
+      #       it { is_expected.to validate_numericality_of(:age).allow_nil }
       #     end
       #
       #     # Test::Unit

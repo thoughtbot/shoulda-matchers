@@ -16,7 +16,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Blog do
-      #       it { should have_db_index(:user_id) }
+      #       it { is_expected.to have_db_index(:user_id) }
       #     end
       #
       #     # Test::Unit
@@ -42,7 +42,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Blog do
-      #       it { should have_db_index(:name).unique(true) }
+      #       it { is_expected.to have_db_index(:name).unique(true) }
       #     end
       #
       #     # Test::Unit
@@ -55,7 +55,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Blog do
-      #       it { should have_db_index(:name).unique }
+      #       it { is_expected.to have_db_index(:name).unique }
       #     end
       #
       #     # Test::Unit

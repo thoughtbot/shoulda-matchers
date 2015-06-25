@@ -16,7 +16,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe User do
-      #       it { should have_secure_password }
+      #       it { is_expected.to have_secure_password }
       #     end
       #
       #     # Test::Unit

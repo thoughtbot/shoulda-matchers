@@ -15,7 +15,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Post do
-      #       it { should validate_uniqueness_of(:permalink) }
+      #       it { is_expected.to validate_uniqueness_of(:permalink) }
       #     end
       #
       #     # Test::Unit
@@ -50,7 +50,7 @@ module Shoulda
       # You may be tempted to test the model like this:
       #
       #     describe Post do
-      #       it { should validate_uniqueness_of(:title) }
+      #       it { is_expected.to validate_uniqueness_of(:title) }
       #     end
       #
       # However, running this test will fail with something like:
@@ -70,7 +70,7 @@ module Shoulda
       #     describe Post do
       #       describe "validations" do
       #         subject { Post.new(content: 'Here is the content') }
-      #         it { should validate_uniqueness_of(:title) }
+      #         it { is_expected.to validate_uniqueness_of(:title) }
       #       end
       #     end
       #
@@ -82,7 +82,7 @@ module Shoulda
       #     describe Post do
       #       describe "validations" do
       #         subject { FactoryGirl.build(:post) }
-      #         it { should validate_uniqueness_of(:title) }
+      #         it { is_expected.to validate_uniqueness_of(:title) }
       #       end
       #     end
       #
@@ -96,7 +96,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Post do
-      #       it { should validate_uniqueness_of(:title).on(:create) }
+      #       it { is_expected.to validate_uniqueness_of(:title).on(:create) }
       #     end
       #
       #     # Test::Unit
@@ -115,7 +115,7 @@ module Shoulda
       #     # RSpec
       #     describe Post do
       #       it do
-      #         should validate_uniqueness_of(:title).
+      #         is_expected.to validate_uniqueness_of(:title).
       #           with_message('Please choose another title')
       #       end
       #     end
@@ -138,7 +138,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Post do
-      #       it { should validate_uniqueness_of(:slug).scoped_to(:journal_id) }
+      #       it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:journal_id) }
       #     end
       #
       #     # Test::Unit
@@ -159,7 +159,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Post do
-      #       it { should validate_uniqueness_of(:key).case_insensitive }
+      #       it { is_expected.to validate_uniqueness_of(:key).case_insensitive }
       #     end
       #
       #     # Test::Unit
@@ -177,7 +177,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Post do
-      #       it { should validate_uniqueness_of(:author_id).allow_nil }
+      #       it { is_expected.to validate_uniqueness_of(:author_id).allow_nil }
       #     end
       #
       #     # Test::Unit
@@ -197,7 +197,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Post do
-      #       it { should validate_uniqueness_of(:author_id).allow_blank }
+      #       it { is_expected.to validate_uniqueness_of(:author_id).allow_blank }
       #     end
       #
       #     # Test::Unit

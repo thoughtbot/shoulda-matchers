@@ -18,7 +18,7 @@ module Shoulda
       #     # RSpec
       #     describe Game do
       #       it do
-      #         should validate_exclusion_of(:supported_os).
+      #         is_expected.to validate_exclusion_of(:supported_os).
       #           in_array(['Mac', 'Linux'])
       #       end
       #     end
@@ -41,7 +41,7 @@ module Shoulda
       #     # RSpec
       #     describe Game do
       #       it do
-      #         should validate_exclusion_of(:floors_with_enemies).
+      #         is_expected.to validate_exclusion_of(:floors_with_enemies).
       #           in_range(5..8)
       #       end
       #     end
@@ -70,7 +70,7 @@ module Shoulda
       #     # RSpec
       #     describe Game do
       #       it do
-      #         should validate_exclusion_of(:weapon).
+      #         is_expected.to validate_exclusion_of(:weapon).
       #           in_array(['pistol', 'paintball gun', 'stick']).
       #           on(:create)
       #       end
@@ -99,7 +99,7 @@ module Shoulda
       #     # RSpec
       #     describe Game do
       #       it do
-      #         should validate_exclusion_of(:weapon).
+      #         is_expected.to validate_exclusion_of(:weapon).
       #           in_array(['pistol', 'paintball gun', 'stick']).
       #           with_message('You chose a puny weapon')
       #       end

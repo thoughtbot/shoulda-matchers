@@ -21,7 +21,7 @@ module Shoulda
       #     # RSpec
       #     describe UserProfile do
       #       it do
-      #         should allow_value('http://foo.com', 'http://bar.com/baz').
+      #         is_expected.to allow_value('http://foo.com', 'http://bar.com/baz').
       #           for(:website_url)
       #       end
       #     end
@@ -50,12 +50,12 @@ module Shoulda
       #
       #     describe UserProfile do
       #       # One assertion: 'buz' and 'bar' will not be tested
-      #       it { should_not allow_value('fiz', 'buz', 'bar').for(:website_url) }
+      #       it { is_expected.not_to allow_value('fiz', 'buz', 'bar').for(:website_url) }
       #
       #       # Three assertions, all tested separately
-      #       it { should_not allow_value('fiz').for(:website_url) }
-      #       it { should_not allow_value('buz').for(:website_url) }
-      #       it { should_not allow_value('bar').for(:website_url) }
+      #       it { is_expected.not_to allow_value('fiz').for(:website_url) }
+      #       it { is_expected.not_to allow_value('buz').for(:website_url) }
+      #       it { is_expected.not_to allow_value('bar').for(:website_url) }
       #     end
       #
       # #### Qualifiers
@@ -76,7 +76,7 @@ module Shoulda
       #     # RSpec
       #     describe UserProfile do
       #       it do
-      #         should allow_value('2013-01-01').
+      #         is_expected.to allow_value('2013-01-01').
       #           for(:birthday_as_string).
       #           on(:create)
       #       end
@@ -105,7 +105,7 @@ module Shoulda
       #     # RSpec
       #     describe UserProfile do
       #       it do
-      #         should allow_value('open', 'closed').
+      #         is_expected.to allow_value('open', 'closed').
       #           for(:state).
       #           with_message('State must be open or closed')
       #       end
@@ -132,7 +132,7 @@ module Shoulda
       #     # RSpec
       #     describe UserProfile do
       #       it do
-      #         should allow_value('open', 'closed').
+      #         is_expected.to allow_value('open', 'closed').
       #           for(:state).
       #           with_message(/open or closed/)
       #       end
@@ -168,7 +168,7 @@ module Shoulda
       #     # RSpec
       #     describe UserProfile do
       #       it do
-      #         should allow_value('Broncos', 'Titans').
+      #         is_expected.to allow_value('Broncos', 'Titans').
       #           for(:sports_team).
       #           with_message('Must be either a Broncos or Titans fan',
       #             against: :chosen_sports_team

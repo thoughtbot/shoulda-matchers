@@ -10,7 +10,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Car do
-      #       it { should accept_nested_attributes_for(:doors) }
+      #       it { is_expected.to accept_nested_attributes_for(:doors) }
       #     end
       #
       #     # Test::Unit (using Shoulda)
@@ -32,7 +32,7 @@ module Shoulda
       #     # RSpec
       #     describe Car do
       #       it do
-      #         should accept_nested_attributes_for(:mirrors).
+      #         is_expected.to accept_nested_attributes_for(:mirrors).
       #           allow_destroy(true)
       #       end
       #     end
@@ -54,7 +54,7 @@ module Shoulda
       #     # RSpec
       #     describe Car do
       #       it do
-      #         should accept_nested_attributes_for(:windows).
+      #         is_expected.to accept_nested_attributes_for(:windows).
       #           limit(3)
       #       end
       #     end
@@ -77,7 +77,7 @@ module Shoulda
       #     # RSpec
       #     describe Car do
       #       it do
-      #         should accept_nested_attributes_for(:engine).
+      #         is_expected.to accept_nested_attributes_for(:engine).
       #           update_only(true)
       #       end
       #     end

@@ -15,7 +15,7 @@ module Shoulda
       #       describe 'GET #show' do
       #         before { get :show }
       #
-      #         it { should render_with_layout('posts') }
+      #         it { is_expected.to render_with_layout('posts') }
       #       end
       #     end
       #
@@ -42,7 +42,7 @@ module Shoulda
       #       describe 'GET #sidebar' do
       #         before { get :sidebar }
       #
-      #         it { should_not render_with_layout }
+      #         it { is_expected.not_to render_with_layout }
       #       end
       #     end
       #

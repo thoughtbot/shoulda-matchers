@@ -19,7 +19,7 @@ module Shoulda
       #     # RSpec
       #     describe User do
       #       it do
-      #         should validate_length_of(:password).
+      #         is_expected.to validate_length_of(:password).
       #           is_at_least(10).
       #           on(:create)
       #       end
@@ -48,7 +48,7 @@ module Shoulda
       #     # RSpec
       #
       #     describe User do
-      #       it { should validate_length_of(:bio).is_at_least(15) }
+      #       it { is_expected.to validate_length_of(:bio).is_at_least(15) }
       #     end
       #
       #     # Test::Unit
@@ -72,7 +72,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe User do
-      #       it { should validate_length_of(:status_update).is_at_most(140) }
+      #       it { is_expected.to validate_length_of(:status_update).is_at_most(140) }
       #     end
       #
       #     # Test::Unit
@@ -95,7 +95,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe User do
-      #       it { should validate_length_of(:favorite_superhero).is_equal_to(6) }
+      #       it { is_expected.to validate_length_of(:favorite_superhero).is_equal_to(6) }
       #     end
       #
       #     # Test::Unit
@@ -118,7 +118,7 @@ module Shoulda
       #     # RSpec
       #     describe User do
       #       it do
-      #         should validate_length_of(:password).
+      #         is_expected.to validate_length_of(:password).
       #           is_at_least(5).is_at_most(30)
       #       end
       #     end
@@ -145,7 +145,7 @@ module Shoulda
       #     # RSpec
       #     describe User do
       #       it do
-      #         should validate_length_of(:password).
+      #         is_expected.to validate_length_of(:password).
       #           is_at_least(10).
       #           with_message("Password isn't long enough")
       #       end
@@ -174,7 +174,7 @@ module Shoulda
       #     # RSpec
       #     describe User do
       #       it do
-      #         should validate_length_of(:secret_key).
+      #         is_expected.to validate_length_of(:secret_key).
       #           is_at_least(15).
       #           with_short_message('Secret key must be more than 15 characters')
       #       end
@@ -203,7 +203,7 @@ module Shoulda
       #     # RSpec
       #     describe User do
       #       it do
-      #         should validate_length_of(:secret_key).
+      #         is_expected.to validate_length_of(:secret_key).
       #           is_at_most(100).
       #           with_long_message('Secret key must be less than 100 characters')
       #       end

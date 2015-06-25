@@ -20,13 +20,13 @@ module Shoulda
       #       describe 'GET #index' do
       #         before { get :index }
       #
-      #         it { should set_session }
+      #         it { is_expected.to set_session }
       #       end
       #
       #       describe 'DELETE #destroy' do
       #         before { delete :destroy }
       #
-      #         it { should_not set_session }
+      #         it { is_expected.not_to set_session }
       #       end
       #     end
       #
@@ -62,8 +62,8 @@ module Shoulda
       #       describe 'GET #index' do
       #         before { get :index }
       #
-      #         it { should set_session[:foo] }
-      #         it { should_not set_session[:bar] }
+      #         it { is_expected.to set_session[:foo] }
+      #         it { is_expected.not_to set_session[:bar] }
       #       end
       #     end
       #
@@ -93,10 +93,10 @@ module Shoulda
       #       describe 'GET #index' do
       #         before { get :index }
       #
-      #         it { should set_session.to('A candy bar') }
-      #         it { should set_session.to(/bar/) }
-      #         it { should set_session[:foo].to('bar') }
-      #         it { should_not set_session[:foo].to('something else') }
+      #         it { is_expected.to set_session.to('A candy bar') }
+      #         it { is_expected.to set_session.to(/bar/) }
+      #         it { is_expected.to set_session[:foo].to('bar') }
+      #         it { is_expected.not_to set_session[:foo].to('something else') }
       #       end
       #     end
       #

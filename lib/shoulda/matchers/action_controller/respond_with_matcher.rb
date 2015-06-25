@@ -17,7 +17,7 @@ module Shoulda
       #       describe 'GET #index' do
       #         before { get :index }
       #
-      #         it { should respond_with(403) }
+      #         it { is_expected.to respond_with(403) }
       #       end
       #     end
       #
@@ -43,7 +43,7 @@ module Shoulda
       #       describe 'DELETE #destroy' do
       #         before { delete :destroy }
       #
-      #         it { should respond_with(500..600) }
+      #         it { is_expected.to respond_with(500..600) }
       #       end
       #     end
       #
@@ -69,7 +69,7 @@ module Shoulda
       #       describe 'GET #show' do
       #         before { get :show }
       #
-      #         it { should respond_with(:locked) }
+      #         it { is_expected.to respond_with(:locked) }
       #       end
       #     end
       #

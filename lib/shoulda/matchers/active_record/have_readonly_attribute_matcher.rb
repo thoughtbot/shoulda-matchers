@@ -10,7 +10,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe User do
-      #       it { should have_readonly_attribute(:password) }
+      #       it { is_expected.to have_readonly_attribute(:password) }
       #     end
       #
       #     # Test::Unit
