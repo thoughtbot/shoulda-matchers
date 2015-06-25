@@ -34,8 +34,6 @@ module Shoulda
       class HaveSecurePasswordMatcher
         attr_reader :failure_message
 
-        alias failure_message_for_should failure_message
-
         CORRECT_PASSWORD = "aBcDe12345"
         INCORRECT_PASSWORD = "password"
 

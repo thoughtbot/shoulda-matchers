@@ -99,9 +99,6 @@ module Shoulda
 
         attr_reader :failure_message, :failure_message_when_negated
 
-        alias failure_message_for_should failure_message
-        alias failure_message_for_should_not failure_message_when_negated
-
         def to(*args)
           @params = RouteParams.new(args).normalize
           self

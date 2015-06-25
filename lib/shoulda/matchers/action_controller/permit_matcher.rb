@@ -257,12 +257,10 @@ module Shoulda
         def failure_message
           "Expected #{verb.upcase} ##{action} to #{expectation},\nbut #{reality}."
         end
-        alias failure_message_for_should failure_message
 
         def failure_message_when_negated
           "Expected #{verb.upcase} ##{action} not to #{expectation},\nbut it did."
         end
-        alias failure_message_for_should_not failure_message_when_negated
 
         protected
 

@@ -3,10 +3,7 @@
 ### Backward-incompatible changes
 
 * We've dropped support for Rails 3.x, Ruby 1.9.2, and Ruby 1.9.3, and RSpec 2.
-  All of these things have been end-of-lifed. This doesn't mean that the gem
-  will stop working immediately, but we won't accept any pull requests to fix
-  any compatibility issues, so you're encouraged to upgrade.
-  ([a4045a1], [b7fe87a])
+  All of these have been end-of-lifed. ([a4045a1], [b7fe87a])
 
 * The gem no longer detects the test framework you're using or mixes itself into
   that framework automatically. [History][no-auto-integration-1] has
