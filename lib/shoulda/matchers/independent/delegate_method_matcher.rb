@@ -230,12 +230,10 @@ module Shoulda
             "#{formatted_delegate_object_reader_method_name(include_module: true)}:" +
             formatted_calls_on_delegate_object
         end
-        alias failure_message_for_should failure_message
 
         def failure_message_when_negated
           "Expected #{class_under_test} not to #{description}, but it did"
         end
-        alias failure_message_for_should_not failure_message_when_negated
 
         protected
 

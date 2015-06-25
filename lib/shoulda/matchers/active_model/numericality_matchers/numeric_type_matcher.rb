@@ -38,12 +38,10 @@ module Shoulda
           def failure_message
             @disallow_value_matcher.failure_message
           end
-          alias failure_message_for_should failure_message
 
           def failure_message_when_negated
             @disallow_value_matcher.failure_message_when_negated
           end
-          alias failure_message_for_should_not failure_message_when_negated
         end
       end
     end

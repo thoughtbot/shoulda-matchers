@@ -88,12 +88,10 @@ module Shoulda
         def failure_message
           "Expected #{expectation}, but #{result}"
         end
-        alias failure_message_for_should failure_message
 
         def failure_message_when_negated
           "Did not expect #{expectation}, but #{result}"
         end
-        alias failure_message_for_should_not failure_message_when_negated
 
         def description
           description = 'render with '

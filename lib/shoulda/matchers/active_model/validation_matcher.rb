@@ -5,8 +5,6 @@ module Shoulda
       class ValidationMatcher
         attr_reader :failure_message
 
-        alias failure_message_for_should failure_message
-
         def initialize(attribute)
           @attribute = attribute
           @strict = false
@@ -27,7 +25,6 @@ module Shoulda
         def failure_message_when_negated
           @failure_message_when_negated || @failure_message
         end
-        alias failure_message_for_should_not failure_message_when_negated
 
         def matches?(subject)
           @subject = subject

@@ -43,9 +43,6 @@ module Shoulda
       class RedirectToMatcher
         attr_reader :failure_message, :failure_message_when_negated
 
-        alias failure_message_for_should failure_message
-        alias failure_message_for_should_not failure_message_when_negated
-
         def initialize(url_or_description, context, &block)
           @url_block = nil
           @url = nil

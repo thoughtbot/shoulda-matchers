@@ -412,12 +412,10 @@ module Shoulda
         def failure_message
           first_failing_submatcher.failure_message
         end
-        alias failure_message_for_should failure_message
 
         def failure_message_when_negated
           first_failing_submatcher.failure_message_when_negated
         end
-        alias failure_message_for_should_not failure_message_when_negated
 
         private
 

@@ -169,12 +169,10 @@ module Shoulda
         def failure_message
           "Expected that #{controller_class.name} would have :#{method_name} as a #{kind}_#{callback_type}"
         end
-        alias failure_message_for_should failure_message
 
         def failure_message_when_negated
           "Expected that #{controller_class.name} would not have :#{method_name} as a #{kind}_#{callback_type}"
         end
-        alias failure_message_for_should_not failure_message_when_negated
 
         def description
           "have :#{method_name} as a #{kind}_#{callback_type}"
