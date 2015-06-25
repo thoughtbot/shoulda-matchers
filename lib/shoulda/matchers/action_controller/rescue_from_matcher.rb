@@ -18,7 +18,7 @@ module Shoulda
       #     # RSpec
       #     describe ApplicationController do
       #       it do
-      #         should rescue_from(ActiveRecord::RecordNotFound).
+      #         is_expected.to rescue_from(ActiveRecord::RecordNotFound).
       #           with(:handle_not_found)
       #       end
       #     end

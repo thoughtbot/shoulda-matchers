@@ -13,7 +13,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Artillery do
-      #       it { should validate_absence_of(:arms) }
+      #       it { is_expected.to validate_absence_of(:arms) }
       #     end
       #
       #     # Test::Unit
@@ -36,7 +36,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Artillery do
-      #       it { should validate_absence_of(:arms).on(:create) }
+      #       it { is_expected.to validate_absence_of(:arms).on(:create) }
       #     end
       #
       #     # Test::Unit
@@ -59,7 +59,7 @@ module Shoulda
       #     # RSpec
       #     describe Artillery do
       #       it do
-      #         should validate_absence_of(:arms).
+      #         is_expected.to validate_absence_of(:arms).
       #           with_message("We're fresh outta arms here, soldier!")
       #       end
       #     end

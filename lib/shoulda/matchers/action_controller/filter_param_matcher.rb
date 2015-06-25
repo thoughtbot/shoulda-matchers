@@ -11,7 +11,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe ApplicationController do
-      #       it { should filter_param(:secret_key) }
+      #       it { is_expected.to filter_param(:secret_key) }
       #     end
       #
       #     # Test::Unit

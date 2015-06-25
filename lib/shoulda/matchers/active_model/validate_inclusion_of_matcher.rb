@@ -19,7 +19,7 @@ module Shoulda
       #     # RSpec
       #     describe Issue do
       #       it do
-      #         should validate_inclusion_of(:state).
+      #         is_expected.to validate_inclusion_of(:state).
       #           in_array(%w(open resolved unresolved))
       #       end
       #     end
@@ -41,7 +41,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Issue do
-      #       it { should validate_inclusion_of(:state).in_range(1..5) }
+      #       it { is_expected.to validate_inclusion_of(:state).in_range(1..5) }
       #     end
       #
       #     # Test::Unit
@@ -57,13 +57,13 @@ module Shoulda
       # one of these three values. That means there isn't any way we can refute
       # this logic in a test. Hence, this will produce a warning:
       #
-      #     it { should validate_inclusion_of(:imported).in_array([true, false]) }
+      #     it { is_expected.to validate_inclusion_of(:imported).in_array([true, false]) }
       #
       # The only case where `validate_inclusion_of` *could* be appropriate is
       # for ensuring that a boolean column accepts nil, but we recommend
       # using `allow_value` instead, like this:
       #
-      #     it { should allow_value(nil).for(:imported) }
+      #     it { is_expected.to allow_value(nil).for(:imported) }
       #
       # #### Qualifiers
       #
@@ -81,7 +81,7 @@ module Shoulda
       #     # RSpec
       #     describe Issue do
       #       it do
-      #         should validate_inclusion_of(:severity).
+      #         is_expected.to validate_inclusion_of(:severity).
       #           in_array(%w(low medium high)).
       #           on(:create)
       #       end
@@ -110,7 +110,7 @@ module Shoulda
       #     # RSpec
       #     describe Issue do
       #       it do
-      #         should validate_inclusion_of(:severity).
+      #         is_expected.to validate_inclusion_of(:severity).
       #           in_array(%w(low medium high)).
       #           with_message('Severity must be low, medium, or high')
       #       end
@@ -146,7 +146,7 @@ module Shoulda
       #     # RSpec
       #     describe Person do
       #       it do
-      #         should validate_inclusion_of(:age).
+      #         is_expected.to validate_inclusion_of(:age).
       #           in_range(0..65).
       #           with_low_message('You do not receive any benefits')
       #       end
@@ -182,7 +182,7 @@ module Shoulda
       #     # RSpec
       #     describe Person do
       #       it do
-      #         should validate_inclusion_of(:age).
+      #         is_expected.to validate_inclusion_of(:age).
       #           in_range(0..21).
       #           with_high_message("You're too old for this stuff")
       #       end
@@ -212,7 +212,7 @@ module Shoulda
       #     # RSpec
       #     describe Issue do
       #       it do
-      #         should validate_inclusion_of(:state).
+      #         is_expected.to validate_inclusion_of(:state).
       #           in_array(%w(open resolved unresolved)).
       #           allow_nil
       #       end
@@ -242,7 +242,7 @@ module Shoulda
       #     # RSpec
       #     describe Issue do
       #       it do
-      #         should validate_inclusion_of(:state).
+      #         is_expected.to validate_inclusion_of(:state).
       #           in_array(%w(open resolved unresolved)).
       #           allow_blank
       #       end

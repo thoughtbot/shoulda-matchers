@@ -24,11 +24,11 @@ module Shoulda
       #
       #     # RSpec
       #     describe Post do
-      #       it { should allow_mass_assignment_of(:title) }
+      #       it { is_expected.to allow_mass_assignment_of(:title) }
       #     end
       #
       #     describe User do
-      #       it { should_not allow_mass_assignment_of(:encrypted_password) }
+      #       it { is_expected.not_to allow_mass_assignment_of(:encrypted_password) }
       #     end
       #
       #     # Test::Unit
@@ -57,7 +57,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Post do
-      #       it { should allow_mass_assignment_of(:title).as(:admin) }
+      #       it { is_expected.to allow_mass_assignment_of(:title).as(:admin) }
       #     end
       #
       #     # Test::Unit

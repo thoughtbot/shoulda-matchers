@@ -10,8 +10,8 @@ module Shoulda
       #
       #     # RSpec
       #     describe UsersController do
-      #       it { should use_before_filter(:authenticate_user!) }
-      #       it { should_not use_before_filter(:prevent_ssl) }
+      #       it { is_expected.to use_before_filter(:authenticate_user!) }
+      #       it { is_expected.not_to use_before_filter(:prevent_ssl) }
       #     end
       #
       #     # Test::Unit
@@ -35,8 +35,8 @@ module Shoulda
       #
       #     # RSpec
       #     describe IssuesController do
-      #       it { should use_after_filter(:log_activity) }
-      #       it { should_not use_after_filter(:destroy_user) }
+      #       it { is_expected.to use_after_filter(:log_activity) }
+      #       it { is_expected.not_to use_after_filter(:destroy_user) }
       #     end
       #
       #     # Test::Unit
@@ -60,8 +60,8 @@ module Shoulda
       #
       #     # RSpec
       #     describe UsersController do
-      #       it { should use_before_action(:authenticate_user!) }
-      #       it { should_not use_before_action(:prevent_ssl) }
+      #       it { is_expected.to use_before_action(:authenticate_user!) }
+      #       it { is_expected.not_to use_before_action(:prevent_ssl) }
       #     end
       #
       #     # Test::Unit
@@ -85,8 +85,8 @@ module Shoulda
       #
       #     # RSpec
       #     describe IssuesController do
-      #       it { should use_after_action(:log_activity) }
-      #       it { should_not use_after_action(:destroy_user) }
+      #       it { is_expected.to use_after_action(:log_activity) }
+      #       it { is_expected.not_to use_after_action(:destroy_user) }
       #     end
       #
       #     # Test::Unit
@@ -110,8 +110,8 @@ module Shoulda
       #
       #     # RSpec
       #     describe ChangesController do
-      #       it { should use_around_filter(:wrap_in_transaction) }
-      #       it { should_not use_around_filter(:save_view_context) }
+      #       it { is_expected.to use_around_filter(:wrap_in_transaction) }
+      #       it { is_expected.not_to use_around_filter(:save_view_context) }
       #     end
       #
       #     # Test::Unit
@@ -135,8 +135,8 @@ module Shoulda
       #
       #     # RSpec
       #     describe ChangesController do
-      #       it { should use_around_action(:wrap_in_transaction) }
-      #       it { should_not use_around_action(:save_view_context) }
+      #       it { is_expected.to use_around_action(:wrap_in_transaction) }
+      #       it { is_expected.not_to use_around_action(:save_view_context) }
       #     end
       #
       #     # Test::Unit

@@ -23,7 +23,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Courier do
-      #       it { should delegate_method(:deliver).to(:post_office) }
+      #       it { is_expected.to delegate_method(:deliver).to(:post_office) }
       #     end
       #
       #     # Test::Unit
@@ -43,7 +43,7 @@ module Shoulda
       #     end
       #
       #     describe Courier do
-      #       it { should delegate_method(:deliver).to(:post_office) }
+      #       it { is_expected.to delegate_method(:deliver).to(:post_office) }
       #     end
       #
       # To employ some terminology, we would say that Courier's #deliver method
@@ -74,7 +74,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Courier do
-      #       it { should delegate_method(:deliver).to(:post_office).as(:ship) }
+      #       it { is_expected.to delegate_method(:deliver).to(:post_office).as(:ship) }
       #     end
       #
       #     # Test::Unit
@@ -95,9 +95,9 @@ module Shoulda
       #
       #     # RSpec
       #     describe Page do
-      #       it { should delegate_method(:name).to(:site).with_prefix }
-      #       it { should delegate_method(:name).to(:site).with_prefix(true) }
-      #       it { should delegate_method(:title).to(:site).with_prefix(:root) }
+      #       it { is_expected.to delegate_method(:name).to(:site).with_prefix }
+      #       it { is_expected.to delegate_method(:name).to(:site).with_prefix(true) }
+      #       it { is_expected.to delegate_method(:title).to(:site).with_prefix(:root) }
       #     end
       #
       #     # Test::Unit
@@ -132,7 +132,7 @@ module Shoulda
       #     # RSpec
       #     describe Courier do
       #       it do
-      #         should delegate_method(:deliver_package).
+      #         is_expected.to delegate_method(:deliver_package).
       #           to(:post_office).
       #           with_arguments(expedited: true)
       #       end

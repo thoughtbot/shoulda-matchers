@@ -37,7 +37,7 @@ module Shoulda
       #     # RSpec
       #     describe UsersController do
       #       it do
-      #         should permit(:first_name, :last_name, :email, :password).
+      #         is_expected.to permit(:first_name, :last_name, :email, :password).
       #           for(:create).
       #           on(:user)
       #       end
@@ -83,7 +83,7 @@ module Shoulda
       #       end
       #
       #       it do
-      #         should permit(:first_name, :last_name, :email, :password).
+      #         is_expected.to permit(:first_name, :last_name, :email, :password).
       #           for(:update, params: { id: 1 }).
       #           on(:user)
       #       end
@@ -136,7 +136,7 @@ module Shoulda
       #       end
       #
       #       it do
-      #         should permit(:activated).
+      #         is_expected.to permit(:activated).
       #           for(:toggle, params: { id: 1 }, verb: :put).
       #           on(:user)
       #       end

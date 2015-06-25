@@ -10,7 +10,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Process do
-      #       it { should define_enum_for(:status) }
+      #       it { is_expected.to define_enum_for(:status) }
       #       end
       #     end
       #
@@ -33,7 +33,7 @@ module Shoulda
       #     # RSpec
       #     describe Process do
       #       it do
-      #         should define_enum_for(:status).
+      #         is_expected.to define_enum_for(:status).
       #           with([:running, :stopped, :suspended])
       #       end
       #     end

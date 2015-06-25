@@ -24,8 +24,8 @@ module Shoulda
       #
       #     # RSpec
       #     describe PostsController do
-      #       it { should route(:get, '/posts').to(action: :index) }
-      #       it { should route(:get, '/posts/1').to(action: :show, id: 1) }
+      #       it { is_expected.to route(:get, '/posts').to(action: :index) }
+      #       it { is_expected.to route(:get, '/posts/1').to(action: :show, id: 1) }
       #     end
       #
       #     # Test::Unit
@@ -39,12 +39,12 @@ module Shoulda
       #     # RSpec
       #     describe 'Routing' do
       #       it do
-      #         should route(:get, '/posts').
+      #         is_expected.to route(:get, '/posts').
       #           to(controller: :posts, action: :index)
       #       end
       #
       #       it do
-      #         should route(:get, '/posts/1').
+      #         is_expected.to route(:get, '/posts/1').
       #           to('posts#show', id: 1)
       #       end
       #     end

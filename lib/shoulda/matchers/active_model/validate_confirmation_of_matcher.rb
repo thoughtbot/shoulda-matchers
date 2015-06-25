@@ -13,7 +13,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe User do
-      #       it { should validate_confirmation_of(:email) }
+      #       it { is_expected.to validate_confirmation_of(:email) }
       #     end
       #
       #     # Test::Unit
@@ -36,7 +36,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe User do
-      #       it { should validate_confirmation_of(:password).on(:create) }
+      #       it { is_expected.to validate_confirmation_of(:password).on(:create) }
       #     end
       #
       #     # Test::Unit
@@ -59,7 +59,7 @@ module Shoulda
       #     # RSpec
       #     describe User do
       #       it do
-      #         should validate_confirmation_of(:password).
+      #         is_expected.to validate_confirmation_of(:password).
       #           with_message('Please re-enter your password')
       #       end
       #     end

@@ -20,13 +20,13 @@ module Shoulda
       #       describe 'GET #index' do
       #         before { get :index }
       #
-      #         it { should set_flash }
+      #         it { is_expected.to set_flash }
       #       end
       #
       #       describe 'DELETE #destroy' do
       #         before { delete :destroy }
       #
-      #         it { should_not set_flash }
+      #         it { is_expected.not_to set_flash }
       #       end
       #     end
       #
@@ -62,8 +62,8 @@ module Shoulda
       #       describe 'GET #index' do
       #         before { get :index }
       #
-      #         it { should set_flash[:foo] }
-      #         it { should_not set_flash[:bar] }
+      #         it { is_expected.to set_flash[:foo] }
+      #         it { is_expected.not_to set_flash[:bar] }
       #       end
       #     end
       #
@@ -93,10 +93,10 @@ module Shoulda
       #       describe 'GET #index' do
       #         before { get :index }
       #
-      #         it { should set_flash.to('A candy bar') }
-      #         it { should set_flash.to(/bar/) }
-      #         it { should set_flash[:foo].to('bar') }
-      #         it { should_not set_flash[:foo].to('something else') }
+      #         it { is_expected.to set_flash.to('A candy bar') }
+      #         it { is_expected.to set_flash.to(/bar/) }
+      #         it { is_expected.to set_flash[:foo].to('bar') }
+      #         it { is_expected.not_to set_flash[:foo].to('something else') }
       #       end
       #     end
       #
@@ -128,9 +128,9 @@ module Shoulda
       #       describe 'GET #show' do
       #         before { get :show }
       #
-      #         it { should set_flash.now }
-      #         it { should set_flash[:foo].now }
-      #         it { should set_flash[:foo].to('bar').now }
+      #         it { is_expected.to set_flash.now }
+      #         it { is_expected.to set_flash[:foo].now }
+      #         it { is_expected.to set_flash[:foo].to('bar').now }
       #       end
       #     end
       #

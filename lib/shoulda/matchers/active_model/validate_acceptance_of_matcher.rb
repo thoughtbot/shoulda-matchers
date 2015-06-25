@@ -13,7 +13,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Registration do
-      #       it { should validate_acceptance_of(:eula) }
+      #       it { is_expected.to validate_acceptance_of(:eula) }
       #     end
       #
       #     # Test::Unit
@@ -37,7 +37,7 @@ module Shoulda
       #     # RSpec
       #     describe Registration do
       #       it do
-      #         should validate_acceptance_of(:terms_of_service).
+      #         is_expected.to validate_acceptance_of(:terms_of_service).
       #           on(:create)
       #       end
       #     end
@@ -62,7 +62,7 @@ module Shoulda
       #     # RSpec
       #     describe Registration do
       #       it do
-      #         should validate_acceptance_of(:terms_of_service).
+      #         is_expected.to validate_acceptance_of(:terms_of_service).
       #           with_message('You must accept the terms of service')
       #       end
       #     end

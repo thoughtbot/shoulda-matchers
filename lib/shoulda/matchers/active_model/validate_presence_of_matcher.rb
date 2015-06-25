@@ -13,7 +13,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Robot do
-      #       it { should validate_presence_of(:arms) }
+      #       it { is_expected.to validate_presence_of(:arms) }
       #     end
       #
       #     # Test::Unit
@@ -39,7 +39,7 @@ module Shoulda
       #     describe User do
       #       subject { User.new(password: '123456') }
       #
-      #       it { should validate_presence_of(:password) }
+      #       it { is_expected.to validate_presence_of(:password) }
       #     end
       #
       # the above test will raise an error like this:
@@ -70,7 +70,7 @@ module Shoulda
       #
       #     # RSpec
       #     describe Robot do
-      #       it { should validate_presence_of(:arms).on(:create) }
+      #       it { is_expected.to validate_presence_of(:arms).on(:create) }
       #     end
       #
       #     # Test::Unit
@@ -92,7 +92,7 @@ module Shoulda
       #     # RSpec
       #     describe Robot do
       #       it do
-      #         should validate_presence_of(:legs).
+      #         is_expected.to validate_presence_of(:legs).
       #           with_message('Robot has no legs')
       #       end
       #     end
