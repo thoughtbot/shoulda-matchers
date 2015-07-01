@@ -1,3 +1,5 @@
+require 'shoulda/matchers/doublespeak'
+
 module Shoulda
   module Matchers
     module Independent
