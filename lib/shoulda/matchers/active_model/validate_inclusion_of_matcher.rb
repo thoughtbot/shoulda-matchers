@@ -310,8 +310,8 @@ EOT
           self
         end
 
-        def allow_blank(allow_blank = true)
-          @options[:allow_blank] = allow_blank
+        def allow_blank
+          @options[:allow_blank] = true
           self
         end
 
@@ -319,8 +319,8 @@ EOT
           @options[:allow_blank]
         end
 
-        def allow_nil(allow_nil = true)
-          @options[:allow_nil] = allow_nil
+        def allow_nil
+          @options[:allow_nil] = true
           self
         end
 

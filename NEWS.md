@@ -1,3 +1,15 @@
+# HEAD (unreleased)
+
+### Improvements
+
+* For consistency with other matchers, the `allow_nil` and `allow_blank`
+  qualifiers on the `validate_inclusion_of` matcher does not take any arguments;
+  using these qualifiers will always enable these options.
+
+  * *Pull request: [#747]*
+
+[#747]: https://github.com/thoughtbot/shoulda-matchers/pull/747
+
 # 3.1.1
 
 ### Bug fixes
