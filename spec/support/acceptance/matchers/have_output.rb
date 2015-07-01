@@ -18,7 +18,7 @@ module AcceptanceTests
         "Expected command to have output, but did not.\n\n" +
           "Command: #{runner.formatted_command}\n\n" +
           "Expected output:\n" +
-          output + "\n\n" +
+          output.inspect + "\n\n" +
           "Actual output:\n" +
           runner.output
       end

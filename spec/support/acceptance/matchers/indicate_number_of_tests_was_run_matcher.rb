@@ -40,7 +40,7 @@ module AcceptanceTests
       private
 
       def expected_output
-        /#{number} (tests|runs), #{number} assertions, 0 failures, 0 errors(, 0 skips)?/
+        /#{number} (?:tests?|runs?|examples?)(?:, #{number} assertions)?, 0 failures(?:, 0 errors(?:, 0 skips)?)?/
       end
 
       def actual_output

@@ -16,7 +16,10 @@ module AcceptanceTests
 
     def call
       add_gem 'shoulda-matchers', gem_options
-      configure_test_helper_files
+
+      unless options[:with_configuration] === false
+        configure_test_helper_files
+      end
     end
 
     protected
@@ -48,8 +51,10 @@ module AcceptanceTests
     def each_test_helper_file
       options[:test_frameworks].each do |test_framework|
         libraries = options.fetch(:libraries, [])
-        test_helper_file = test_helper_file_for(test_framework, libraries)
-        yield test_helper_file, test_framework, libraries
+
+        test_helper_files_for(test_framework, libraries).each do |test_helper_file|
+          yield test_helper_file, test_framework, libraries
+        end
       end
     end
 
@@ -85,16 +90,26 @@ module AcceptanceTests
       libraries.map { |library| "with.library :#{library}" }.join("\n")
     end
 
-    def test_helper_file_for(test_framework, libraries)
-      if integrates_with_rails?(test_framework, libraries) ||
-        integrates_with_nunit?(test_framework)
-        'test/test_helper.rb'
-      elsif integrates_with_rspec?(test_framework)
-        spec_helper_file_path
+    def test_helper_files_for(test_framework, libraries)
+      files = []
+
+      if integrates_with_nunit_and_rails?(test_framework, libraries) ||
+        integrates_with_nunit_only?(test_framework)
+        files << 'test/test_helper.rb'
       end
+
+      if integrates_with_rspec?(test_framework)
+        if bundle.includes?('rspec-rails')
+          files << 'spec/rails_helper.rb'
+        else
+          files << 'spec/spec_helper.rb'
+        end
+      end
+
+      files
     end
 
-    def integrates_with_nunit?(test_framework)
+    def integrates_with_nunit_only?(test_framework)
       nunit_frameworks = [:test_unit, :minitest, :minitest_4, :minitest_5]
       nunit_frameworks.include?(test_framework)
     end
@@ -103,8 +118,16 @@ module AcceptanceTests
       test_framework == :rspec
     end
 
-    def integrates_with_rails?(test_framework, libraries)
+    def integrates_with_rspec_rails_3_x?(test_framework, libraries)
+      integrates_with_rails?(libraries) && rspec_rails_version >= 3
+    end
+
+    def integrates_with_nunit_and_rails?(test_framework, libraries)
       test_framework.nil? && libraries.include?(:rails)
+    end
+
+    def integrates_with_rails?(libraries)
+      libraries.include?(:rails)
     end
   end
 end

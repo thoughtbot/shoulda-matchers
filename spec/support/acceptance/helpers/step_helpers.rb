@@ -90,10 +90,23 @@ module AcceptanceTests
       FILE
     end
 
+    def add_rspec_to_project
+      add_gem 'rspec-core', rspec_core_version
+      add_gem 'rspec-expectations', rspec_expectations_version
+      append_to_file 'spec/spec_helper.rb', <<-FILE
+        require 'rspec/core'
+        require 'rspec/expectations'
+      FILE
+    end
+
     def add_rspec_rails_to_project!
       add_gem 'rspec-rails', rspec_rails_version
       run_command_within_bundle!('rails g rspec:install')
       remove_from_file '.rspec', '--warnings'
+    end
+
+    def run_rspec_tests(*paths)
+      run_command_within_bundle 'rspec --format documentation --backtrace', *paths
     end
 
     def run_rspec_suite

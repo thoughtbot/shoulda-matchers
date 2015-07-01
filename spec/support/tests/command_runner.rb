@@ -117,7 +117,11 @@ Output:
     end
 
     def has_output?(expected_output)
-      output.include?(expected_output)
+      if expected_output.is_a?(Regexp)
+        output =~ expected_output
+      else
+        output.include?(expected_output)
+      end
     end
 
     protected
