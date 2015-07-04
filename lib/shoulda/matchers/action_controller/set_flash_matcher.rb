@@ -175,9 +175,8 @@ module Shoulda
         def now
           store = FlashStore.now
           @underlying_matcher = SetSessionOrFlashMatcher.new(store)
-          if key
-            @underlying_matcher[key]
-          end
+          @underlying_matcher[key]
+          @underlying_matcher.to(expected_value)
           self
         end
 
@@ -193,13 +192,14 @@ module Shoulda
         end
 
         def to(expected_value = nil, &block)
+          @expected_value = expected_value
           underlying_matcher.to(expected_value, &block)
           self
         end
 
         protected
 
-        attr_reader :underlying_matcher, :key
+        attr_reader :underlying_matcher, :key, :expected_value
       end
     end
   end

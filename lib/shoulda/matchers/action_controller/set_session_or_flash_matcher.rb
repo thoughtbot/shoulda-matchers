@@ -13,7 +13,9 @@ module Shoulda
         end
 
         def [](key)
-          @key = key
+          if key
+            @key = key
+          end
           self
         end
 
@@ -26,7 +28,9 @@ module Shoulda
 
             @expected_value = context.instance_eval(&block)
           else
-            @expected_value = expected_value
+            if expected_value
+              @expected_value = expected_value
+            end
           end
 
           self
