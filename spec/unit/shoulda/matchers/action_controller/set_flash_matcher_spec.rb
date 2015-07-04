@@ -40,4 +40,48 @@ describe Shoulda::Matchers::ActionController::SetFlashMatcher, type: :controller
       expect(controller).not_to set_flash.now['key for flash']
     end
   end
+
+  context 'when the now qualifier is called after the key is set' do
+    it 'does not match when controller set flash' do
+      controller = build_fake_response do
+        flash['key for flash'] = 'value for flash'
+      end
+
+      expect(controller).not_to set_flash['key for flash'].now
+    end
+
+    it 'match when controller set flash.now' do
+      controller = build_fake_response do
+        flash.now['key for flash.now'] = 'value for flash.now'
+      end
+
+      expect(controller).to set_flash['key for flash.now'].now
+    end
+  end
+
+  context 'when the now qualifier is called after the to is called' do
+    it 'does not match when controller set flash' do
+      controller = build_fake_response do
+        flash['to for flash'] = 'value for flash'
+      end
+
+      expect(controller).not_to set_flash['to for flash'].to('value for flash').now
+    end
+
+    it 'match when controller set flash.now' do
+      controller = build_fake_response do
+        flash.now['to for flash.now'] = 'value for flash.now'
+      end
+
+      expect(controller).to set_flash['to for flash.now'].to('value for flash.now').now
+    end
+
+    it 'does not match when controller set flash.now with a different message' do
+      controller = build_fake_response do
+        flash.now['to for flash.now'] = 'value for flash.now'
+      end
+
+      expect(controller).not_to set_flash['to for flash.now'].to('other message').now
+    end
+  end
 end
