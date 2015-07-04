@@ -175,6 +175,9 @@ module Shoulda
         def now
           store = FlashStore.now
           @underlying_matcher = SetSessionOrFlashMatcher.new(store)
+          if key
+            @underlying_matcher[key]
+          end
           self
         end
 
@@ -184,6 +187,7 @@ module Shoulda
         end
 
         def [](key)
+          @key = key
           underlying_matcher[key]
           self
         end
@@ -195,7 +199,7 @@ module Shoulda
 
         protected
 
-        attr_reader :underlying_matcher
+        attr_reader :underlying_matcher, :key
       end
     end
   end
