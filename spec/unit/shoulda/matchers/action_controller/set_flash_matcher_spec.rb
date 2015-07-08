@@ -40,4 +40,28 @@ describe Shoulda::Matchers::ActionController::SetFlashMatcher, type: :controller
       expect(controller).not_to set_flash.now['key for flash']
     end
   end
+
+  context 'when the now qualifier is called after the key is set' do
+    it 'raises a QualifierOrderError' do
+      controller = build_fake_response
+
+      usage = lambda do
+        expect(controller).to set_flash['any key'].now
+      end
+
+      expect(&usage).to raise_error(described_class::QualifierOrderError)
+    end
+  end
+
+  context 'when the now qualifier is called after the to qualifier' do
+    it 'raises a QualifierOrderError' do
+      controller = build_fake_response
+
+      usage = lambda do
+        expect(controller).to set_flash.to('any value').now
+      end
+
+      expect(&usage).to raise_error(described_class::QualifierOrderError)
+    end
+  end
 end

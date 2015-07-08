@@ -86,6 +86,11 @@
   * `set_session['key'].to(nil)` will no longer pass when the key in question
     has not been set yet. ([535fe05])
 
+* Change `set_flash` so that `set_flash[:foo].now` is no longer valid syntax.
+  You'll want to use `set_flash.now[:foo]` instead. This was changed in order to
+  more closely align with how `flash.now` works when used in a controller.
+  ([#755], [#752])
+
 * Change behavior of `validate_uniqueness_of` when the matcher is not
   qualified with any scopes, but your validation is. Previously the following
   test would pass when it now fails:
@@ -115,6 +120,8 @@
 [535fe05]: https://github.com/thoughtbot/shoulda-matchers/commit/535fe05be8686fdafd8b22f2ed5c4192bd565d50
 [eaaa2d8]: https://github.com/thoughtbot/shoulda-matchers/commit/eaaa2d83e5cd31a3ca0a1aaa65441ea1a4fffa49
 [6ac7b81]: https://github.com/thoughtbot/shoulda-matchers/commit/6ac7b8158cfba3b518eb3da3c24345e4473b416f
+[#755]: https://github.com/thoughtbot/shoulda-matchers/pull/755
+[#752]: https://github.com/thoughtbot/shoulda-matchers/pull/752
 
 ### Bug fixes
 
