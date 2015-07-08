@@ -129,8 +129,8 @@ module Shoulda
       #         before { get :show }
       #
       #         it { should set_flash.now }
-      #         it { should set_flash[:foo].now }
-      #         it { should set_flash[:foo].to('bar').now }
+      #         it { should set_flash.now[:foo] }
+      #         it { should set_flash.now[:foo].to('bar') }
       #       end
       #     end
       #
@@ -140,8 +140,8 @@ module Shoulda
       #         setup { get :show }
       #
       #         should set_flash.now
-      #         should set_flash[:foo].now
-      #         should set_flash[:foo].to('bar').now
+      #         should set_flash.now[:foo]
+      #         should set_flash.now[:foo].to('bar')
       #       end
       #     end
       #
@@ -173,6 +173,10 @@ module Shoulda
         end
 
         def now
+          if key || expected_value
+            raise QualiferOrderError
+          end
+
           store = FlashStore.now
           @underlying_matcher = SetSessionOrFlashMatcher.new(store)
           self
@@ -184,18 +188,31 @@ module Shoulda
         end
 
         def [](key)
+          @key = key
           underlying_matcher[key]
           self
         end
 
         def to(expected_value = nil, &block)
+          @expected_value = expected_value
           underlying_matcher.to(expected_value, &block)
           self
         end
 
         protected
 
-        attr_reader :underlying_matcher
+        attr_reader :underlying_matcher, :key, :expected_value
+
+        # @private
+        class QualiferOrderError < StandardError
+          def message
+            <<-EOT.strip_heredoc
+            You need to call the `now` qualifier before any other, eg.
+            * should set_flash.now[:foo]
+            * should set_flash.now[:foo].to('bar')
+            EOT
+          end
+        end
       end
     end
   end
