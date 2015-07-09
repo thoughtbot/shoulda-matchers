@@ -24,6 +24,63 @@ require 'shoulda/matchers/active_model/have_secure_password_matcher'
 
 module Shoulda
   module Matchers
+    # This mixin provides matchers that are used to test behavior, such as
+    # validations, that you've added to your ActiveModel (or ActiveRecord)
+    # objects.
+    #
+    # #### Testing conditional validations
+    #
+    # If your model defines a validation conditionally -- meaning that the
+    # validation is declared with an `:if` or `:unless` option -- how do you
+    # test it? You might expect the validation matchers here to have
+    # corresponding `if` or `unless` qualifiers, but this isn't what you use.
+    # Instead, before using the matcher in question, you place the record
+    # you're testing in a state such that the validation you're also testing
+    # will be run. A common way to do this is to make a new `context` and
+    # override the subject to populate the record accordingly. You'll also want
+    # to make sure to test that the validation is *not* run when the
+    # conditional fails.
+    #
+    # Here's an example to illustrate what we mean:
+    #
+    #     class User
+    #       include ActiveModel::Model
+    #
+    #       attr_accessor :role, :admin
+    #
+    #       validates_presence_of :role, if: :admin
+    #     end
+    #
+    #     # RSpec
+    #     describe User do
+    #       context "when an admin" do
+    #         subject { User.new(admin: true) }
+    #
+    #         it { should validate_presence_of(:role) }
+    #       end
+    #
+    #       context "when not an admin" do
+    #         subject { User.new(admin: false) }
+    #
+    #         it { should_not validate_presence_of(:role) }
+    #       end
+    #     end
+    #
+    #     # Test::Unit
+    #     class UserTest < ActiveSupport::TestCase
+    #       context "when an admin" do
+    #         subject { User.new(admin: true) }
+    #
+    #         should validate_presence_of(:role)
+    #       end
+    #
+    #       context "when not an admin" do
+    #         subject { User.new(admin: false) }
+    #
+    #         should_not validate_presence_of(:role)
+    #       end
+    #     end
+    #
     module ActiveModel
     end
   end
