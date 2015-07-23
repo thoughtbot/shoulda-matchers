@@ -23,11 +23,6 @@ module Shoulda
           end
         end
 
-        def capture_range_error(exception)
-          @captured_range_error = exception
-          extend ValidatorWithCapturedRangeError
-        end
-
         def allow_description(allowed_values)
           "allow #{attribute} to be set to #{allowed_values}"
         end
@@ -85,9 +80,6 @@ module Shoulda
 
         def collect_errors_or_exceptions
           collect_messages
-        rescue RangeError => exception
-          capture_range_error(exception)
-          []
         end
 
         def validation_errors

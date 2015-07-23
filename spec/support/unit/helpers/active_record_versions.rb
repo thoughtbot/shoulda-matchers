@@ -9,10 +9,6 @@ module UnitTests
       Tests::Version.new(ActiveRecord::VERSION::STRING)
     end
 
-    def active_record_can_raise_range_error?
-      active_record_version >= 4.2
-    end
-
     def active_record_supports_enum?
       defined?(::ActiveRecord::Enum)
     end
