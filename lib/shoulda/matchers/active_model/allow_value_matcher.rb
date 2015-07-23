@@ -304,23 +304,9 @@ module Shoulda
         end
 
         def set_attribute(value)
-          set_attribute_ignoring_range_errors(value)
-          after_setting_value_callback.call
-        end
-
-        def set_attribute_ignoring_range_errors(value)
           instance.__send__("#{attribute_to_set}=", value)
           ensure_that_attribute_has_been_changed_to_or_from_nil!(value)
-        rescue RangeError => exception
-          # Have to reset the attribute so that we don't get a RangeError the
-          # next time we attempt to write the attribute (ActiveRecord seems to
-          # set the attribute to the "bad" value anyway)
-          reset_attribute
-          validator.capture_range_error(exception)
-        end
-
-        def reset_attribute
-          instance.send(:raw_write_attribute, attribute_to_set, nil)
+          after_setting_value_callback.call
         end
 
         def ensure_that_attribute_has_been_changed_to_or_from_nil!(expected_value)
