@@ -52,6 +52,47 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
     end
   end
 
+  context "an ActiveModel with a validation on an attribute that delegates to a has_many association in another ActiveModel" do
+    before do
+      parent = define_active_model_class('Parent', accessors: [:children]).new
+      example_class = define_active_model_class('Example', accessors: [:parent]) do
+        delegate :children, :children=, to: :parent
+        validates_presence_of :children
+      end
+      @model = example_class.new(parent: parent)
+    end
+
+    it 'accepts' do
+      expect(@model).to validate_presence_of(:children)
+    end
+  end
+
+  context "an ActiveModel with a validation on an attribute that delegates to a habtm association in another ActiveModel" do
+    before do
+      define_model :child
+      parent_class = define_model :parent do
+        has_and_belongs_to_many :children
+        validates_presence_of :children
+      end
+      parent = parent_class.new
+
+      create_table 'children_parents', id: false do |t|
+        t.integer :child_id
+        t.integer :parent_id
+      end
+
+      example_class = define_active_model_class('Example', accessors: [:parent]) do
+        delegate :children, :children=, to: :parent
+        validates_presence_of :children
+      end
+      @model = example_class.new(parent: parent)
+    end
+
+    it 'accepts' do
+      expect(@model).to validate_presence_of(:children)
+    end
+  end
+
   context 'a required has_and_belongs_to_many association' do
     before do
       define_model :child

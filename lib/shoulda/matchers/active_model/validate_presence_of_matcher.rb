@@ -154,16 +154,11 @@ module Shoulda
         end
 
         def collection?
-          if reflection
-            [:has_many, :has_and_belongs_to_many].include?(reflection.macro)
+          if @subject.send(@attribute).respond_to?(:each)
+            true
           else
             false
           end
-        end
-
-        def reflection
-          @subject.class.respond_to?(:reflect_on_association) &&
-            @subject.class.reflect_on_association(@attribute)
         end
       end
     end
