@@ -62,8 +62,8 @@ module Shoulda
       #       describe 'GET #index' do
       #         before { get :index }
       #
-      #         it { should set_flash[:foo] }
-      #         it { should_not set_flash[:bar] }
+      #         it { should set_flash['foo'] }
+      #         it { should_not set_flash['bar'] }
       #       end
       #     end
       #
@@ -72,8 +72,8 @@ module Shoulda
       #       context 'GET #index' do
       #         setup { get :show }
       #
-      #         should set_flash[:foo]
-      #         should_not set_flash[:bar]
+      #         should set_flash['foo']
+      #         should_not set_flash['bar']
       #       end
       #     end
       #
@@ -95,8 +95,8 @@ module Shoulda
       #
       #         it { should set_flash.to('A candy bar') }
       #         it { should set_flash.to(/bar/) }
-      #         it { should set_flash[:foo].to('bar') }
-      #         it { should_not set_flash[:foo].to('something else') }
+      #         it { should set_flash['foo'].to('bar') }
+      #         it { should_not set_flash['foo'].to('something else') }
       #       end
       #     end
       #
@@ -107,8 +107,8 @@ module Shoulda
       #
       #         should set_flash.to('A candy bar')
       #         should set_flash.to(/bar/)
-      #         should set_flash[:foo].to('bar')
-      #         should_not set_flash[:foo].to('something else')
+      #         should set_flash['foo'].to('bar')
+      #         should_not set_flash['foo'].to('something else')
       #       end
       #     end
       #
@@ -129,8 +129,8 @@ module Shoulda
       #         before { get :show }
       #
       #         it { should set_flash.now }
-      #         it { should set_flash[:foo].now }
-      #         it { should set_flash[:foo].to('bar').now }
+      #         it { should set_flash['foo'].now }
+      #         it { should set_flash['foo'].to('bar').now }
       #       end
       #     end
       #
@@ -140,8 +140,8 @@ module Shoulda
       #         setup { get :show }
       #
       #         should set_flash.now
-      #         should set_flash[:foo].now
-      #         should set_flash[:foo].to('bar').now
+      #         should set_flash['foo'].now
+      #         should set_flash['foo'].to('bar').now
       #       end
       #     end
       #
