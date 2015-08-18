@@ -20,7 +20,7 @@ module Shoulda
       #         before { get :show }
       #
       #         it { should render_template('show') }
-      #         it { should render_template(partial: 'sidebar') }
+      #         it { should render_template(partial: '_sidebar') }
       #       end
       #     end
       #
@@ -30,7 +30,7 @@ module Shoulda
       #         setup { get :show }
       #
       #         should render_template('show')
-      #         should render_template(partial: 'sidebar')
+      #         should render_template(partial: '_sidebar')
       #       end
       #     end
       #
