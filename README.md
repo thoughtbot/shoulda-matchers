@@ -122,6 +122,18 @@ describe Person do
 end
 ```
 
+Note that in this README and throughout the documentation we're using the
+`should` form of RSpec's one-liner syntax over `is_expected.to`. The `should`
+form works regardless of how you've configured RSpec -- meaning you can still
+use it even when using the `expect` syntax. But if you prefer to use
+`is_expected.to`, you can do that too:
+
+``` ruby
+describe Person do
+  it { is_expected.to validate_presence_of(:name) }
+end
+```
+
 ### Minitest / Test::Unit
 
 Shoulda Matchers was originally a component of [Shoulda][shoulda], a gem that
