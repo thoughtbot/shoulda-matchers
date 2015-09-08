@@ -110,9 +110,15 @@ end
 [Then, configure the gem to integrate with RSpec](#configuration).
 
 Now you can use matchers in your tests. For instance a model test might look
-like this:
+like this, depending on your RSpec syntax:
 
 ``` ruby
+# config.syntax = :expect
+describe Person do
+  it { is_expected.to validate_presence_of(:name) }
+end
+
+# config.syntax = :should
 describe Person do
   it { should validate_presence_of(:name) }
 end
