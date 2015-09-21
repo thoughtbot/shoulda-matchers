@@ -346,7 +346,7 @@ module Shoulda
         end
 
         def existing_record_is_blank?
-          @existing_record.present? && existing_value.strip == ''
+          @existing_record.present? && existing_value.blank?
         end
 
         def create_record_in_database(options = {})

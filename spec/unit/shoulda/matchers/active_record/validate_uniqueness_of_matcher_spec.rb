@@ -163,6 +163,17 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
       end
     end
 
+    context 'when the attribute is an integer' do
+      it 'accepts' do
+        record = build_record_validating_uniqueness(
+          attribute_type: :integer,
+          validation_options: { allow_blank: true }
+        )
+
+        expect(record).to validate_uniqueness.allow_blank
+      end
+    end
+
     context 'when the record is created beforehand' do
       context 'when the subject is a new record' do
         it 'accepts' do
