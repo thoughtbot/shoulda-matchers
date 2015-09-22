@@ -24,6 +24,46 @@ require 'shoulda/matchers/active_model/have_secure_password_matcher'
 
 module Shoulda
   module Matchers
+    # #### Conditional validation
+    #
+    # None of the validations matchers provide a conditional qualifier, but you
+    # can define a explicit subject to be tested and this way test a conditional
+    # validation.
+    #
+    #     class User
+    #       include ActiveModel::Model
+    #       attr_accessor :role, :admin
+    #
+    #       validates_presence_of :role, if: admin?
+    #     end
+    #
+    #     # RSpec
+    #     describe User do
+    #       context "admin?" do
+    #         it "validates presence of role when true" do
+    #           User.new(admin: true).should validate_presence_of(:role)
+    #         end
+    #
+    #         it "does not validates presence of role when false" do
+    #           User.new(admin: false).should_not validate_presence_of(:role)
+    #         end
+    #       end
+    #     end
+    #
+    #     # Test::Unit
+    #     class UsetTest < ActiveSupport::TestCase
+    #       context "admin?" do
+    #         context "validates presence of role when true" do
+    #           subject { User.new(admin: true) }
+    #           should validate_presence_of(:role)
+    #         end
+    #
+    #         context "does not validates presence of role when false" do
+    #           subject { User.new(admin: false) }
+    #           should_not validate_presence_of(:role)
+    #         end
+    #       end
+    #     end
     module ActiveModel
     end
   end
