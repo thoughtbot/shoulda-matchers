@@ -38,7 +38,16 @@ module Shoulda
       #     describe UsersController do
       #       it do
       #         should permit(:first_name, :last_name, :email, :password).
-      #           for(:create).
+      #           for(:create,
+      #             params: {
+      #               user: {
+      #                 first_name: 'Jon',
+      #                 last_name: 'Doe',
+      #                 email: 'jondoe@example.com',
+      #                 password: 'password'
+      #               }
+      #             }
+      #           ).
       #           on(:user)
       #       end
       #     end
@@ -46,7 +55,16 @@ module Shoulda
       #     # Test::Unit
       #     class UsersControllerTest < ActionController::TestCase
       #       should permit(:first_name, :last_name, :email, :password).
-      #         for(:create).
+      #         for(:create,
+      #           params: {
+      #             user: {
+      #               first_name: 'Jon',
+      #               last_name: 'Doe',
+      #               email: 'jondoe@example.com',
+      #               password: 'password'
+      #             }
+      #           }
+      #         ).
       #         on(:user)
       #     end
       #
@@ -84,7 +102,17 @@ module Shoulda
       #
       #       it do
       #         should permit(:first_name, :last_name, :email, :password).
-      #           for(:update, params: { id: 1 }).
+      #           for(:update,
+      #             params: {
+      #               id: 1,
+      #               user: {
+      #                 first_name: 'Jon',
+      #                 last_name: 'Doe',
+      #                 email: 'jondoe@example.com',
+      #                 password: 'password'
+      #               }
+      #             }
+      #           ).
       #           on(:user)
       #       end
       #     end
@@ -96,7 +124,17 @@ module Shoulda
       #       end
       #
       #       should permit(:first_name, :last_name, :email, :password).
-      #         for(:update, params: { id: 1 }).
+      #         for(:update,
+      #           params: {
+      #             id: 1,
+      #             user: {
+      #               first_name: 'Jon',
+      #               last_name: 'Doe',
+      #               email: 'jondoe@example.com',
+      #               password: 'password'
+      #             }
+      #           }
+      #         ).
       #         on(:user)
       #     end
       #
@@ -137,7 +175,10 @@ module Shoulda
       #
       #       it do
       #         should permit(:activated).
-      #           for(:toggle, params: { id: 1 }, verb: :put).
+      #           for(:toggle,
+      #             params: { id: 1, user: { activated: true } },
+      #             verb: :put
+      #           ).
       #           on(:user)
       #       end
       #     end
@@ -149,7 +190,10 @@ module Shoulda
       #       end
       #
       #       should permit(:activated).
-      #         for(:toggle, params: { id: 1 }, verb: :put).
+      #         for(:toggle,
+      #           params: { id: 1, user: { activated: true } },
+      #           verb: :put
+      #         ).
       #         on(:user)
       #     end
       #
