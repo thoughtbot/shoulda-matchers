@@ -202,6 +202,11 @@ If you'd like to contribute, please take a look at the
 [instructions](CONTRIBUTING.md) for installing dependencies and crafting a good
 pull request.
 
+## Compatibility
+
+Shoulda Matchers is tested and supported against Rails 4.x, RSpec 3.x, Minitest
+5, and Ruby 2.x.
+
 ## Versioning
 
 Shoulda Matchers follows Semantic Versioning 2.0 as defined at
