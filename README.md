@@ -1,6 +1,6 @@
 # Shoulda Matchers [![Gem Version][version-badge]][rubygems] [![Build Status][travis-badge]][travis] ![Downloads][downloads-badge]
 
-Shoulda Matchers provides RSpec- and Minitest-compatible one-liners that test
+Shoulda Matchers provides RSpec 3- and Minitest-compatible one-liners that test
 common Rails functionality. These tests would otherwise be much longer, more
 complex, and error-prone.
 
@@ -101,7 +101,7 @@ interested in the README for 2.8.0 instead.][2.8.0-README]**
 
 ## Installation
 
-### RSpec
+### RSpec 3
 
 Include `shoulda-matchers` in your Gemfile:
 
