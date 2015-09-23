@@ -33,6 +33,41 @@ module Shoulda
             publisher.generate_docs_for(args.version, latest_version: args.latest_version)
           end
 
+          desc 'Watch source files for this project for changes and autogenerate docs accordingly'
+          task :autogenerate do
+            require 'fssm'
+
+            project_directory = File.expand_path(File.dirname(__FILE__) + "/..")
+
+            regenerate_docs = -> (base, relative) {
+              print 'Regenerating docs... '
+              system('bundle exec yard doc &>/dev/null')
+              puts 'done!'
+            }
+
+            puts 'Waiting for documentation files to change...'
+
+            FSSM.monitor do
+              path project_directory do
+                glob 'README.md'
+                create(&regenerate_docs)
+                update(&regenerate_docs)
+              end
+
+              path File.join(project_directory, 'doc_config/yard') do
+                glob '**/*.rb'
+                create(&regenerate_docs)
+                update(&regenerate_docs)
+              end
+
+              path File.join(project_directory, 'lib') do
+                glob '**/*.rb'
+                create(&regenerate_docs)
+                update(&regenerate_docs)
+              end
+            end
+          end
+
           desc 'Generate docs for a particular version and push them to GitHub'
           task :publish, [:version, :latest_version] => :setup do |t, args|
             unless args.version

@@ -188,10 +188,11 @@ You can preview changes you make to the documentation locally by running
 
 from this directory. Then, open `doc/index.html` in your browser.
 
-If you want to see a live preview as you work without having to run `yard` over
-and over again, keep this command running in a separate terminal session:
+If you want to be able to regenerate the docs as you work without having to run
+`yard doc` over and over again, keep this command running in a separate terminal
+session:
 
-    bundle exec guard
+    rake docs:autogenerate
 
 ## Contributing
 
