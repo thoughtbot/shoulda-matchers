@@ -96,10 +96,12 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
   context 'a required has_and_belongs_to_many association' do
     before do
       define_model :child
-      @model = define_model :parent do
+      parent_class = define_model :parent do
         has_and_belongs_to_many :children
         validates_presence_of :children
-      end.new
+      end
+      @model = parent_class.new
+
       create_table 'children_parents', id: false do |t|
         t.integer :child_id
         t.integer :parent_id
@@ -114,9 +116,11 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
   context 'an optional has_and_belongs_to_many association' do
     before do
       define_model :child
-      @model = define_model :parent do
+      parent_class = define_model :parent do
         has_and_belongs_to_many :children
-      end.new
+      end
+      @model = parent_class.new
+
       create_table 'children_parents', id: false do |t|
         t.integer :child_id
         t.integer :parent_id
@@ -209,9 +213,10 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
   end
 
   def validating_presence(options = {})
-    define_model :example, attr: :string do
+    example_class = define_model :example, attr: :string do
       validates_presence_of :attr, options
-    end.new
+    end
+    example_class.new
   end
 
   def active_model(&block)
@@ -224,17 +229,19 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
 
   def has_many_children(options = {})
     define_model :child
-    define_model :parent do
+    parent_class = define_model :parent do
       has_many :children
       if options[:presence]
         validates_presence_of :children
       end
-    end.new
+    end
+    parent_class.new
   end
 
   def active_resource_model
-    define_active_resource_class :foo, attr: :string do
+    foo_class = define_active_resource_class :foo, attr: :string do
       validates_presence_of :attr
-    end.new
+    end
+    foo_class.new
   end
 end
