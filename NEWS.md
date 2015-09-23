@@ -2,8 +2,9 @@
 
 ### Backward-incompatible changes
 
-* We've dropped support for Rails 3.x, Ruby 1.9.2, and Ruby 1.9.3, and RSpec 2.
-  All of these have been end-of-lifed. ([a4045a1], [b7fe87a])
+* We've dropped support for Rails 3.x, Ruby 1.9.2, Ruby 1.9.3, RSpec 2, and
+  Minitest 4. All of these either have been end-of-lifed or are no longer
+  maintained. ([a4045a1], [b7fe87a], [32c0e62])
 
 * The gem no longer detects the test framework you're using or mixes itself into
   that framework automatically. [History][no-auto-integration-1] has
@@ -115,6 +116,7 @@
 [535fe05]: https://github.com/thoughtbot/shoulda-matchers/commit/535fe05be8686fdafd8b22f2ed5c4192bd565d50
 [eaaa2d8]: https://github.com/thoughtbot/shoulda-matchers/commit/eaaa2d83e5cd31a3ca0a1aaa65441ea1a4fffa49
 [6ac7b81]: https://github.com/thoughtbot/shoulda-matchers/commit/6ac7b8158cfba3b518eb3da3c24345e4473b416f
+[32c0e62]: https://github.com/thoughtbot/shoulda-matchers/commit/32c0e62596b87e37a301f87bbe21cfcc77750552
 
 ### Bug fixes
 
