@@ -85,6 +85,8 @@
     `set_session['foo']` instead. ([535fe05])
   * `set_session['key'].to(nil)` will no longer pass when the key in question
     has not been set yet. ([535fe05])
+  * `set_flash[:foo].now` is no longer valid syntax, please use
+    `set_flash.now[:foo]` instead.
 
 * Change behavior of `validate_uniqueness_of` when the matcher is not
   qualified with any scopes, but your validation is. Previously the following
