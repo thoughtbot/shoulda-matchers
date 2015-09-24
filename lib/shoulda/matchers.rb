@@ -12,6 +12,7 @@ require 'shoulda/matchers/warn'
 require 'shoulda/matchers/action_controller'
 require 'shoulda/matchers/active_model'
 require 'shoulda/matchers/active_record'
+require 'shoulda/matchers/routing'
 
 module Shoulda
   module Matchers

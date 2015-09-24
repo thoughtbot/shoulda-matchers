@@ -11,7 +11,8 @@ module Shoulda
           SUB_LIBRARIES = [
             :active_model,
             :active_record,
-            :action_controller
+            :action_controller,
+            :routing
           ]
 
           def integrate_with(test_framework)
