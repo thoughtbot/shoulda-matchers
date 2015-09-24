@@ -9,7 +9,7 @@ module Shoulda
           def validate!
           end
 
-          def include(*modules)
+          def include(*modules, **options)
             test_case_class.class_eval do
               include(*modules)
               extend(*modules)

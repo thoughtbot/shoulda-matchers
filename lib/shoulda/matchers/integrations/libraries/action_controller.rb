@@ -10,7 +10,7 @@ module Shoulda
           include Integrations::Rails
 
           def integrate_with(test_framework)
-            test_framework.include(matchers_module)
+            test_framework.include(matchers_module, type: :controller)
 
             include_into(::ActionController::TestCase, matchers_module) do
               def subject

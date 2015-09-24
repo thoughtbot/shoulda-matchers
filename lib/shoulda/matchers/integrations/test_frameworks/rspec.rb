@@ -9,9 +9,9 @@ module Shoulda
           def validate!
           end
 
-          def include(*modules)
+          def include(*modules, **options)
             ::RSpec.configure do |config|
-              config.include(*modules)
+              config.include(*modules, **options)
             end
           end
 

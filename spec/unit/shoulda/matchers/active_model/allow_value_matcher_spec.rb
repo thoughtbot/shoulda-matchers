@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveModel do
+describe Shoulda::Matchers::ActiveModel, type: :model do
   describe '#allow_values' do
     it 'is aliased to #allow_value' do
       expect(method(:allow_values)).to eq(method(:allow_value))
