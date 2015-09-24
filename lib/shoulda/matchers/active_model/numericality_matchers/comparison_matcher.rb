@@ -24,8 +24,23 @@ module Shoulda
             @strict = false
           end
 
+          def description
+            message = "validate that #{@attribute} is #{comparison_expectation} #{@value}"
+
+            if @strict
+              message << " strictly"
+            end
+
+            message
+          end
+
           def for(attribute)
             @attribute = attribute
+            self
+          end
+
+          def with_message(message)
+            @message = message
             self
           end
 
@@ -34,20 +49,16 @@ module Shoulda
             all_bounds_correct?
           end
 
-          def with_message(message)
-            @message = message
-          end
-
-          def comparison_description
-            "#{expectation} #{@value}"
-          end
-
           def failure_message
             last_failing_submatcher.failure_message
           end
 
           def failure_message_when_negated
             last_failing_submatcher.failure_message_when_negated
+          end
+
+          def comparison_description
+            "#{comparison_expectation} #{@value}"
           end
 
           private
@@ -116,7 +127,7 @@ module Shoulda
             [-diff, 0, diff]
           end
 
-          def expectation
+          def comparison_expectation
             case @operator
               when :> then "greater than"
               when :>= then "greater than or equal to"
