@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'appraisal', '~> 1.0'
+gem 'appraisal', '~> 2.0'
 gem 'bundler', '~> 1.1'
 gem 'pry', github: 'pry/pry'
 gem 'pry-byebug'

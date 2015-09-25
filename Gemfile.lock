@@ -10,7 +10,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    appraisal (1.0.2)
+    appraisal (2.1.0)
       bundler
       rake
       thor (>= 0.14.0)
@@ -45,7 +45,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  appraisal (~> 1.0)
+  appraisal (~> 2.0)
   bundler (~> 1.1)
   fssm
   pry!
@@ -56,3 +56,6 @@ DEPENDENCIES
   rspec-core (>= 3.2.0, < 4)
   rspec-expectations (>= 3.2.0, < 4)
   yard
+
+BUNDLED WITH
+   1.10.6

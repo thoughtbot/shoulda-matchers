@@ -41,7 +41,7 @@ GEM
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
     ansi (1.5.0)
-    appraisal (1.0.3)
+    appraisal (2.1.0)
       bundler
       rake
       thor (>= 0.14.0)
@@ -77,7 +77,7 @@ GEM
     method_source (0.8.2)
     mime-types (2.6.2)
     minitest (5.8.1)
-    minitest-reporters (1.1.1)
+    minitest-reporters (1.1.2)
       ansi
       builder
       minitest (>= 5.0)
@@ -178,7 +178,7 @@ DEPENDENCIES
   activerecord-jdbc-adapter
   activerecord-jdbcsqlite3-adapter
   activeresource (= 4.0.0)
-  appraisal (~> 1.0)
+  appraisal (~> 2.0)
   bcrypt (~> 3.1.7)
   bundler (~> 1.1)
   coffee-rails (~> 4.0.0)
