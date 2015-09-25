@@ -38,6 +38,19 @@
 
   ([1900071])
 
+* Previously, under RSpec, all of the matchers were mixed into all of the
+  example groups. This created a problem because some gems, such as
+  [active_model_serializers-matchers], provide matchers that share the same
+  name as some of our own matchers. Now, matchers are only mixed into whichever
+  example group they belong to:
+
+    * ActiveModel and ActiveRecord matchers are available only in model example
+      groups.
+    * ActionController matchers are available only in controller example groups.
+    * The `route` matcher is available only in routing example groups.
+
+  ([af98a23], [8cf449b])
+
 * There are two changes to `allow_value`:
 
   * The negative form of the matcher has been changed so that instead of
@@ -107,6 +120,7 @@
 
   ([6ac7b81])
 
+[active_model_serializers-matchers]: https://github.com/adambarber/active_model_serializers-matchers
 [no-auto-integration-1]: https://github.com/freerange/mocha/commit/049080c673ee3f76e76adc1e1a6122c7869f1648
 [no-auto-integration-2]: https://github.com/rr/rr/issues/29
 [1900071]: https://github.com/thoughtbot/shoulda-matchers/commit/190007155e0676aae84d08d8ed8eed3beebc3a06
@@ -256,13 +270,6 @@
   notation (e.g. `posts#show`), route parameters such as `id` do not need to be
   specified as a string but may be specified as a number as well. ([#602])
 
-* Fix `allow_value`, `validate_numericality_of` and `validate_inclusion_of` so
-  that they handle RangeErrors emitted from ActiveRecord 4.2. These exceptions
-  arise whenever we attempt to set an attribute using a value that lies outside
-  the range of the column (assuming the column is an integer). RangeError is now
-  treated specially, failing the test instead of bubbling up as an error.
-  ([#634], [#637], [#642])
-
 ### Features
 
 * Add ability to test `:primary_key` option on associations. ([#597])
@@ -308,9 +315,6 @@
 [#622]: https://github.com/thoughtbot/shoulda-matchers/pull/622
 [#627]: https://github.com/thoughtbot/shoulda-matchers/pull/627
 [#631]: https://github.com/thoughtbot/shoulda-matchers/pull/631
-[#634]: https://github.com/thoughtbot/shoulda-matchers/pull/634
-[#637]: https://github.com/thoughtbot/shoulda-matchers/pull/637
-[#642]: https://github.com/thoughtbot/shoulda-matchers/pull/642
 
 # 2.7.0
 
