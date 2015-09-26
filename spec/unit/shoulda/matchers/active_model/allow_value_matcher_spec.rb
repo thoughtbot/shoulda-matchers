@@ -62,7 +62,9 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
 
     it 'rejects several bad values' do
       expect(validating_format(with: /abc/)).
-        not_to allow_value('xyz', 'zyx', nil, []).for(:attr)
+        not_to allow_value('xyz', 'zyx', nil, []).
+        for(:attr).
+        ignoring_interference_by_writer
     end
   end
 
@@ -182,12 +184,18 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
 
     it 'does not match given a bad value' do
       bad_values.each do |bad_value|
-        expect(model).not_to allow_value(bad_value).for(:attr)
+        expect(model).
+          not_to allow_value(bad_value).
+          for(:attr).
+          ignoring_interference_by_writer
       end
     end
 
     it 'does not match given multiple bad values' do
-      expect(model).not_to allow_value(*bad_values).for(:attr)
+      expect(model).
+        not_to allow_value(*bad_values).
+        for(:attr).
+        ignoring_interference_by_writer
     end
 
     it "does not match given good values along with bad values" do
@@ -241,48 +249,139 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
     end
   end
 
-  context 'when the attribute writer method ignores a non-nil value' do
-    context 'when the attribute has a reader method' do
-      it 'raises a CouldNotSetAttributeError' do
-        model = define_active_model_class 'Example' do
-          attr_reader :name
+  context 'when the attribute interferes with attempts to be set' do
+    context 'when the matcher has not been qualified with #ignoring_interference_by_writer' do
+      context 'when the attribute cannot be changed from nil to non-nil' do
+        it 'raises a CouldNotSetAttributeError' do
+          model = define_active_model_class 'Example' do
+            attr_reader :name
 
-          def name=(_value)
-            nil
+            def name=(_value)
+              nil
+            end
           end
+
+          assertion = -> {
+            expect(model.new).to allow_value('anything').for(:name)
+          }
+
+          expect(&assertion).to raise_error(
+            described_class::CouldNotSetAttributeError
+          )
         end
+      end
 
-        assertion = -> {
-          expect(model.new).to allow_value('anything').for(:name)
-        }
+      context 'when the attribute cannot be changed from non-nil to nil' do
+        it 'raises a CouldNotSetAttribute error' do
+          model = define_active_model_class 'Example' do
+            attr_reader :name
 
-        expect(&assertion).to raise_error(
-          Shoulda::Matchers::ActiveModel::AllowValueMatcher::CouldNotSetAttributeError
-        )
+            def name=(value)
+              @name = value unless value.nil?
+            end
+          end
+
+          record = model.new(name: 'some name')
+
+          assertion = -> {
+            expect(record).to allow_value(nil).for(:name)
+          }
+
+          expect(&assertion).to raise_error(
+            described_class::CouldNotSetAttributeError
+          )
+        end
+      end
+
+      context 'when the attribute cannot be changed from a non-nil value to another non-nil value' do
+        it 'raises a CouldNotSetAttribute error' do
+          model = define_active_model_class 'Example' do
+            attr_reader :name
+
+            def name=(_value)
+              @name = 'constant name'
+            end
+          end
+
+          record = model.new(name: 'some name')
+
+          assertion = -> {
+            expect(record).to allow_value('another name').for(:name)
+          }
+
+          expect(&assertion).to raise_error(
+            described_class::CouldNotSetAttributeError
+          )
+        end
       end
     end
-  end
 
-  context 'when the attribute writer method ignores a nil value' do
-    context 'when the attribute has a reader method' do
-      it 'raises a CouldNotSetAttribute error' do
-        model = define_active_model_class 'Example' do
-          attr_reader :name
+    context 'when the matcher has been qualified with #ignoring_interference_by_writer' do
+      context 'when the attribute cannot be changed from nil to non-nil' do
+        it 'does not raise an error at all' do
+          model = define_active_model_class 'Example' do
+            attr_reader :name
 
-          def name=(value)
-            @name = value unless value.nil?
+            def name=(_value)
+              nil
+            end
           end
+
+          assertion = lambda do
+            expect(model.new).
+              to allow_value('anything').
+              for(:name).
+              ignoring_interference_by_writer
+          end
+
+          expect(&assertion).not_to raise_error
         end
+      end
 
-        record = model.new(name: 'some name')
+      context 'when the attribute cannot be changed from non-nil to nil' do
+        it 'does not raise an error at all' do
+          model = define_active_model_class 'Example' do
+            attr_reader :name
 
-        assertion = -> {
-          expect(record).to allow_value(nil).for(:name)
-        }
+            def name=(value)
+              @name = value unless value.nil?
+            end
+          end
 
-        expect(&assertion).to raise_error(
-          Shoulda::Matchers::ActiveModel::AllowValueMatcher::CouldNotSetAttributeError
-        )
+          record = model.new(name: 'some name')
+
+          assertion = lambda do
+            expect(record).
+              to allow_value(nil).
+              for(:name).
+              ignoring_interference_by_writer
+          end
+
+          expect(&assertion).not_to raise_error
+        end
+      end
+
+      context 'when the attribute cannot be changed from a non-nil value to another non-nil value' do
+        it 'does not raise an error at all' do
+          model = define_active_model_class 'Example' do
+            attr_reader :name
+
+            def name=(_value)
+              @name = 'constant name'
+            end
+          end
+
+          record = model.new(name: 'some name')
+
+          assertion = lambda do
+            expect(record).
+              to allow_value('another name').
+              for(:name).
+              ignoring_interference_by_writer
+          end
+
+          expect(&assertion).not_to raise_error
+        end
       end
     end
   end

@@ -8,9 +8,10 @@ module Shoulda
 
           def initialize(attribute, options = {})
             @attribute = attribute
-            @disallow_value_matcher = DisallowValueMatcher.new(NON_EVEN_NUMBER_VALUE).
-                for(@attribute).
-                with_message(:even)
+            @disallow_value_matcher =
+              DisallowValueMatcher.new(NON_EVEN_NUMBER_VALUE.to_s).
+              for(@attribute).
+              with_message(:even)
           end
 
           def allowed_type

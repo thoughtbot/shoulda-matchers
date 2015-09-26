@@ -53,24 +53,102 @@
 
 * There are two changes to `allow_value`:
 
-  * The negative form of the matcher has been changed so that instead of
+  * The negative form of `allow_value` has been changed so that instead of
     asserting that any of the given values is an invalid value (allowing good
     values to pass through), assert that *all* values are invalid values
     (allowing good values not to pass through). This means that this test which
     formerly passed will now fail:
 
-        expect(record).not_to allow_value('good value', *bad_values)
+    ``` ruby
+    expect(record).not_to allow_value('good value', *bad_values)
+    ```
 
     ([19ce8a6])
 
-  * The matcher may raise an error if the attribute in question contains
-    custom logic to ignore certain values, resulting in a discrepancy between
-    the value you provide and the value that the attribute is actually set to.
-    Specifically, if the attribute cannot be changed from a non-nil value to a
-    nil value, or vice versa, then you'll get a CouldNotSetAttributeError. The
-    current behavior (which is to permit this) is misleading, as the test that
-    you're writing under the hood by using `allow_value` could be different from
-    the test that actually ends up getting run. ([eaaa2d8])
+  * `allow_value` now raises a CouldNotSetAttributeError if in setting the
+    attribute, the value of the attribute from reading the attribute back is
+    different from the one used to set it.
+
+    This would happen if the writer method for that attribute has custom logic
+    to ignore certain incoming values or change them in any way. Here are three
+    examples we've seen:
+
+    * You're attempting to assert that an attribute should not allow nil, yet
+      the attribute's writer method contains a conditional to do nothing if
+      the attribute is set to nil:
+
+      ``` ruby
+      class Foo
+        include ActiveModel::Model
+
+        attr_reader :bar
+
+        def bar=(value)
+          return if value.nil?
+          @bar = value
+        end
+      end
+
+      describe Foo do
+        it do
+          foo = Foo.new
+          foo.bar = "baz"
+          # This will raise a CouldNotSetAttributeError since `foo.bar` is now "123"
+          expect(foo).not_to allow_value(nil).for(:bar)
+        end
+      end
+      ```
+
+    * You're attempting to assert that an numeric attribute should not allow a
+      string that contains non-numeric characters, yet the writer method for
+      that attribute strips out non-numeric characters:
+
+      ``` ruby
+      class Foo
+        include ActiveModel::Model
+
+        attr_reader :bar
+
+        def bar=(value)
+          @bar = value.gsub(/\D+/, '')
+        end
+      end
+
+      describe Foo do
+        it do
+          foo = Foo.new
+          # This will raise a CouldNotSetAttributeError since `foo.bar` is now "123"
+          expect(foo).not_to allow_value("abc123").for(:bar)
+        end
+      end
+      ```
+
+    * You're passing a value to `allow_value` that the model typecasts into
+      another value:
+
+      ``` ruby
+      describe Foo do
+        # Assume that `attr` is a string
+        # This will raise a CouldNotSetAttributeError since `attr` typecasts `[]` to `"[]"`
+        it { should_not allow_value([]).for(:attr) }
+      end
+      ```
+
+    With all of these failing examples, why are we making this change? We want
+    to guard you (as the developer) from writing a test that you think acts one
+    way but actually acts a different way, as this could lead to a confusing
+    false positive or negative.
+
+    If you understand the problem and wish to override this behavior so that
+    you do not get a CouldNotSetAttributeError, you can add the
+    `ignoring_interference_by_writer` qualifier like so. Note that this will not
+    always cause the test to pass.
+
+    ``` ruby
+    it { should_not allow_value([]).for(:attr).ignoring_interference_by_writer }
+    ```
+
+    ([eaaa2d8])
 
 * `validate_uniqueness_of` is now properly case-insensitive by default, to match
   the default behavior of the validation itself. This is a backward-incompatible

@@ -7,7 +7,8 @@ module Shoulda
           NON_INTEGER_VALUE = 0.1
           def initialize(attribute)
             @attribute = attribute
-            @disallow_value_matcher = DisallowValueMatcher.new(NON_INTEGER_VALUE).
+            @disallow_value_matcher =
+              DisallowValueMatcher.new(NON_INTEGER_VALUE.to_s).
               for(attribute).
               with_message(:not_an_integer)
           end

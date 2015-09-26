@@ -20,6 +20,10 @@ module Shoulda
       def message
         ""
       end
+
+      def inspect
+        %(#<#{self.class}: #{message}>)
+      end
     end
   end
 end

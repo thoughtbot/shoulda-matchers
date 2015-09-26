@@ -31,6 +31,11 @@ module Shoulda
           self
         end
 
+        def ignoring_interference_by_writer
+          @allow_matcher.ignoring_interference_by_writer
+          self
+        end
+
         def failure_message
           @allow_matcher.failure_message_when_negated
         end

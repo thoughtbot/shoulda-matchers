@@ -226,6 +226,7 @@ module Shoulda
           self.options = {}
           self.after_setting_value_callback = -> {}
           self.validator = Validator.new
+          @ignoring_interference_by_writer = false
         end
 
         def for(attribute)
@@ -252,6 +253,11 @@ module Shoulda
 
         def strict
           validator.strict = true
+          self
+        end
+
+        def ignoring_interference_by_writer
+          @ignoring_interference_by_writer = true
           self
         end
 
@@ -297,6 +303,10 @@ module Shoulda
           validator.attribute = attribute
         end
 
+        def ignoring_interference_by_writer?
+          @ignoring_interference_by_writer
+        end
+
         def value_matches?(value)
           self.value = value
           set_attribute(value)
@@ -305,14 +315,14 @@ module Shoulda
 
         def set_attribute(value)
           instance.__send__("#{attribute_to_set}=", value)
-          ensure_that_attribute_has_been_changed_to_or_from_nil!(value)
+          ensure_that_attribute_was_set!(value)
           after_setting_value_callback.call
         end
 
-        def ensure_that_attribute_has_been_changed_to_or_from_nil!(expected_value)
+        def ensure_that_attribute_was_set!(expected_value)
           actual_value = instance.__send__(attribute_to_set)
 
-          if expected_value.nil? != actual_value.nil?
+          if expected_value != actual_value && !ignoring_interference_by_writer?
             raise CouldNotSetAttributeError.create(
               instance.class,
               attribute_to_set,

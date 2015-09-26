@@ -86,6 +86,7 @@ module Shoulda
         def matches?(subject)
           super(subject)
           @expected_message ||= :present
+
           disallows_value_of(value, @expected_message)
         end
 
@@ -103,21 +104,22 @@ module Shoulda
             else
               obj
             end
-          elsif [Fixnum, Float].include?(attribute_class)
-            1
-          elsif attribute_class == BigDecimal
-            BigDecimal.new(1, 0)
-          elsif !attribute_class || attribute_class == String
-            'an arbitrary value'
           else
-            attribute_class.new
+            case column_type
+            when :integer, :float then 1
+            when :decimal then BigDecimal.new(1, 0)
+            when :datetime, :time, :timestamp then Time.now
+            when :date then Date.new
+            when :binary then "0"
+            else 'an arbitrary value'
+            end
           end
         end
 
-        def attribute_class
+        def column_type
           @subject.class.respond_to?(:columns_hash) &&
-            @subject.class.columns_hash[@attribute.to_s].respond_to?(:klass) &&
-            @subject.class.columns_hash[@attribute.to_s].klass
+            @subject.class.columns_hash[@attribute.to_s].respond_to?(:type) &&
+            @subject.class.columns_hash[@attribute.to_s].type
         end
 
         def collection?

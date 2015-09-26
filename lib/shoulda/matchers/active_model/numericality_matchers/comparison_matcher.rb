@@ -80,7 +80,11 @@ module Shoulda
           def submatchers
             @_submatchers ||=
               comparison_combos.map do |diff, submatcher_method_name|
-                matcher = __send__(submatcher_method_name, @value + diff, nil)
+                matcher = __send__(
+                  submatcher_method_name,
+                  (@value + diff).to_s,
+                  nil
+                )
                 matcher.with_message(@message, values: { count: @value })
                 matcher
               end
