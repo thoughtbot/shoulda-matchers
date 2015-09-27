@@ -148,7 +148,7 @@
     it { should_not allow_value([]).for(:attr).ignoring_interference_by_writer }
     ```
 
-    ([eaaa2d8])
+    ([9d9dc4e])
 
 * `validate_uniqueness_of` is now properly case-insensitive by default, to match
   the default behavior of the validation itself. This is a backward-incompatible
@@ -210,10 +210,10 @@
 [55c8d09]: https://github.com/thoughtbot/shoulda-matchers/commit/55c8d09bf2af886540924efa83c3b518d926a770
 [801f2c7]: https://github.com/thoughtbot/shoulda-matchers/commit/801f2c7c1eab3b2053244485c9800f850959cfef
 [535fe05]: https://github.com/thoughtbot/shoulda-matchers/commit/535fe05be8686fdafd8b22f2ed5c4192bd565d50
-[eaaa2d8]: https://github.com/thoughtbot/shoulda-matchers/commit/eaaa2d83e5cd31a3ca0a1aaa65441ea1a4fffa49
 [6ac7b81]: https://github.com/thoughtbot/shoulda-matchers/commit/6ac7b8158cfba3b518eb3da3c24345e4473b416f
 [#755]: https://github.com/thoughtbot/shoulda-matchers/pull/755
 [#752]: https://github.com/thoughtbot/shoulda-matchers/pull/752
+[9d9dc4e]: https://github.com/thoughtbot/shoulda-matchers/commit/9d9dc4e6b9cf2c19df66a1b4ba432ad8d3e5dded
 
 ### Bug fixes
 
