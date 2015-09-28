@@ -2,6 +2,20 @@ require 'doublespeak_spec_helper'
 
 module Shoulda::Matchers::Doublespeak
   describe Double do
+    describe 'initializer' do
+      context 'if doubles are currently activated on the world level' do
+        it 'immediately activates the new Double' do
+          world = build_world(doubles_activated?: true)
+          klass = create_class(a_method_name: nil)
+          implementation = build_implementation
+
+          double = described_class.new(world, klass, :a_method_name, implementation)
+
+          expect(double).to be_activated
+        end
+      end
+    end
+
     describe '#to_return' do
       it 'tells its implementation to call the given block' do
         sent_block = -> { }
@@ -12,7 +26,7 @@ module Shoulda::Matchers::Doublespeak
           actual_block = block
         end
         double = described_class.new(
-          :a_world,
+          build_world,
           :klass,
           :a_method,
           implementation
@@ -24,7 +38,7 @@ module Shoulda::Matchers::Doublespeak
       it 'tells its implementation to return the given value' do
         implementation = build_implementation
         double = described_class.new(
-          :a_world,
+          build_world,
           :klass,
           :a_method,
           implementation
@@ -43,7 +57,7 @@ module Shoulda::Matchers::Doublespeak
           actual_block = block
         end
         double = described_class.new(
-          :a_world,
+          build_world,
           :klass,
           :a_method,
           implementation
@@ -127,7 +141,7 @@ module Shoulda::Matchers::Doublespeak
         klass = create_class(a_method: 42)
         instance = klass.new
         double = described_class.new(
-          :a_world,
+          build_world,
           klass,
           :a_method,
           build_implementation
@@ -141,7 +155,7 @@ module Shoulda::Matchers::Doublespeak
     describe '#record_call' do
       it 'adds the given call to the list of calls' do
         double = described_class.new(
-          :a_world,
+          build_world,
           :a_klass,
           :a_method,
           :an_implementation
@@ -247,7 +261,8 @@ module Shoulda::Matchers::Doublespeak
     def build_world(methods = {})
       defaults = {
         original_method_for: nil,
-        store_original_method_for: nil
+        store_original_method_for: nil,
+        doubles_activated?: nil
       }
       double('world', defaults.merge(methods))
     end

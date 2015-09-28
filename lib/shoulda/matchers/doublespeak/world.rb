@@ -3,6 +3,10 @@ module Shoulda
     module Doublespeak
       # @private
       class World
+        def initialize
+          @doubles_activated = false
+        end
+
         def double_collection_for(klass)
           double_collections_by_class[klass] ||=
             DoubleCollection.new(self, klass)
@@ -20,10 +24,16 @@ module Shoulda
         end
 
         def with_doubles_activated
+          @doubles_activated = true
           activate
           yield
         ensure
+          @doubles_activated = false
           deactivate
+        end
+
+        def doubles_activated?
+          @doubles_activated
         end
 
         private

@@ -7,7 +7,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
         params_with_conditional_require(ctrl.params).permit(:name, :age)
       end
 
-      expect(controller).to permit_with_conditional_params(
+      expect(controller).to permit_with_conditional_slice_of_params(
         permit(:name).for(:create)
       )
     end
@@ -17,7 +17,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
         params_with_conditional_require(ctrl.params).permit(:name, :age)
       end
 
-      expect(controller).to permit_with_conditional_params(
+      expect(controller).to permit_with_conditional_slice_of_params(
         permit(:name, :age).for(:create)
       )
     end
@@ -27,7 +27,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
         params_with_conditional_require(ctrl.params).permit(:name)
       end
 
-      expect(controller).not_to permit_with_conditional_params(
+      expect(controller).not_to permit_with_conditional_slice_of_params(
         permit(:name, :admin).for(:create)
       )
     end
@@ -35,7 +35,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
     it 'rejects when #permit has not been called' do
       define_controller_with_strong_parameters(action: :create)
 
-      expect(controller).not_to permit_with_conditional_params(
+      expect(controller).not_to permit_with_conditional_slice_of_params(
         permit(:name).for(:create)
       )
     end
@@ -46,11 +46,6 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
         [:phone_number, :address_1, :address_2, :city, :state, :zip]
       ]
 
-      params = {
-        order: { some: 'value' },
-        diner: { some: 'value' }
-      }
-
       define_controller_with_strong_parameters(action: :create) do |ctrl|
         params_with_conditional_require(ctrl.params, :order).
           permit(sets_of_attributes[0])
@@ -59,14 +54,16 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
           permit(sets_of_attributes[1])
       end
 
-      expect(controller).to permit_with_conditional_params(
+      expect(controller).to permit_with_conditional_slice_of_params(
         permit(*sets_of_attributes[0]).for(:create),
-        params
+        all_params: [:order, :diner],
+        selected_param: :order
       )
 
-      expect(controller).to permit_with_conditional_params(
+      expect(controller).to permit_with_conditional_slice_of_params(
         permit(*sets_of_attributes[1]).for(:create),
-        params
+        all_params: [:order, :diner],
+        selected_param: :diner
       )
     end
   end
@@ -91,7 +88,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
 
   context 'when operating on the entire params hash' do
     include_context 'basic tests' do
-      def permit_with_conditional_params(permit, _params = {})
+      def permit_with_conditional_slice_of_params(permit, options = {})
         permit
       end
 
@@ -103,9 +100,16 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
 
   context 'when operating on a slice of the params hash' do
     include_context 'basic tests' do
-      def permit_with_conditional_params(permit, params = nil)
-        params ||= { user: { some: 'value' } }
-        permit.add_params(params)
+      def permit_with_conditional_slice_of_params(
+        permit,
+        all_params: [:user],
+        selected_param: :user
+      )
+        params = all_params.reduce({}) do |hash, param|
+          hash.merge(param => { any: 'value' })
+        end
+
+        permit.add_params(params).on(selected_param)
       end
 
       def params_with_conditional_require(params, *filters)

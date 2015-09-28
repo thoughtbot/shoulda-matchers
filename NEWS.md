@@ -3,7 +3,7 @@
 ### Backward-incompatible changes
 
 * We've dropped support for Rails 3.x, Ruby 1.9.2, and Ruby 1.9.3, and RSpec 2.
-  All of these have been end-of-lifed. ([a4045a1], [b7fe87a])
+  All of these have been end-of-lifed. ([a4045a1], [b7fe87a], [32c0e62])
 
 * The gem no longer detects the test framework you're using or mixes itself into
   that framework automatically. [History][no-auto-integration-1] has
@@ -214,6 +214,7 @@
 [#755]: https://github.com/thoughtbot/shoulda-matchers/pull/755
 [#752]: https://github.com/thoughtbot/shoulda-matchers/pull/752
 [9d9dc4e]: https://github.com/thoughtbot/shoulda-matchers/commit/9d9dc4e6b9cf2c19df66a1b4ba432ad8d3e5dded
+[32c0e62]: https://github.com/thoughtbot/shoulda-matchers/commit/32c0e62596b87e37a301f87bbe21cfcc77750552
 
 ### Bug fixes
 
@@ -252,6 +253,8 @@
 
 * Fix failure message for `validate_numericality_of` as it sometimes didn't
   provide the reason for failure. ([#699])
+
+* Fix `permit` + `on` as it did not work correctly. ([#771])
 
 ### Features
 
@@ -296,6 +299,7 @@
 [#694]: https://github.com/thoughtbot/shoulda-matchers/pull/694
 [#692]: https://github.com/thoughtbot/shoulda-matchers/pull/692
 [#699]: https://github.com/thoughtbot/shoulda-matchers/pull/699
+[#771]: https://github.com/thoughtbot/shoulda-matchers/pull/771
 
 # 2.8.0
 

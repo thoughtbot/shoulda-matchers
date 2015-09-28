@@ -12,6 +12,14 @@ module Shoulda
           @implementation = implementation
           @activated = false
           @calls = []
+
+          if world.doubles_activated?
+            activate
+          end
+        end
+
+        def activated?
+          @activated
         end
 
         def to_return(value = nil, &block)
