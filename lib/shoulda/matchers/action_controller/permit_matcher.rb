@@ -238,7 +238,7 @@ module Shoulda
         end
 
         def description
-          "(on #{verb.upcase} ##{action}) " + expectation
+          "(for #{verb.upcase} ##{action}) " + expectation
         end
 
         def matches?(controller)
@@ -272,7 +272,7 @@ module Shoulda
           message = 'restrict parameters '
 
           if subparameter
-            message << " for #{subparameter.inspect}"
+            message << "on #{subparameter.inspect} "
           end
 
           message << 'to ' + format_param_names(expected_permitted_params)

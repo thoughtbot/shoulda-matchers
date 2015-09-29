@@ -164,7 +164,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
     expect(controller).not_to permit(:admin).for(:create)
   end
 
-  it 'allows extra parameters to be passed to the action if it requires them' do
+  it 'allows extra parameters to be provided if the route requires them' do
     options = {
       controller_name: 'Posts',
       action: :show,
@@ -285,7 +285,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
 
       matcher = described_class.new([:name, :age, :height]).for(:create)
       expect(matcher.description).to eq(
-        '(on POST #create) restrict parameters to :name, :age, and :height'
+        '(for POST #create) restrict parameters to :name, :age, and :height'
       )
     end
 
@@ -301,49 +301,182 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
           new([:name]).
           for(:some_action, verb: :put)
         expect(matcher.description).to eq(
-          '(on PUT #some_action) restrict parameters to :name'
+          '(for PUT #some_action) restrict parameters to :name'
         )
       end
     end
   end
 
   describe 'positive failure message' do
-    it 'includes all missing attributes' do
-      define_controller_with_strong_parameters(action: :create) do
-        params.permit(:name, :age)
+    context 'when no parameters were permitted' do
+      it 'returns the correct message' do
+        define_controller_with_strong_parameters(action: :create)
+
+        assertion = lambda do
+          expect(@controller).
+            to permit(:name, :age, :city, :country).
+            for(:create)
+        end
+
+        message =
+          'Expected POST #create to restrict parameters to ' +
+          ":name, :age, :city, and :country,\n" +
+          'but it did not restrict any parameters.'
+
+        expect(&assertion).to fail_with_message(message)
+      end
+    end
+
+    context 'when some, but not all, parameters were permitted' do
+      it 'returns the correct message, including missing attributes' do
+        define_controller_with_strong_parameters(action: :create) do
+          params.permit(:name, :age)
+        end
+
+        assertion = lambda do
+          expect(@controller).
+            to permit(:name, :age, :city, :country).
+            for(:create)
+        end
+
+        message =
+          'Expected POST #create to restrict parameters to ' +
+          ":name, :age, :city, and :country,\n" +
+          'but the restricted parameters were :name and :age instead.'
+
+        expect(&assertion).to fail_with_message(message)
+      end
+    end
+
+    context 'qualified with #on' do
+      context 'when the subparameter was never required' do
+        it 'returns the correct message' do
+          define_controller_with_strong_parameters(action: :create) do
+            params.permit(:name, :age)
+          end
+
+          assertion = lambda do
+            expect(@controller).
+              to permit(:name, :age, :city, :country).
+              for(:create).
+              on(:person)
+          end
+
+          message =
+            'Expected POST #create to restrict parameters on :person to ' +
+            ":name, :age, :city, and :country,\n" +
+            'but it did not restrict any parameters.'
+
+          expect(&assertion).to fail_with_message(message)
+        end
       end
 
-      assertion = lambda do
-        expect(@controller).
-          to permit(:name, :age, :city, :country).
-          for(:create)
+      context 'when the subparameter was required' do
+        context 'but no parameters were permitted' do
+          it 'returns the correct message' do
+            define_controller_with_strong_parameters(action: :create) do
+              params.require(:person)
+            end
+
+            assertion = lambda do
+              params = {
+                person: {
+                  name: 'some name',
+                  age: 'some age'
+                }
+              }
+              expect(@controller).
+                to permit(:name, :age, :city, :country).
+                for(:create, params: params).
+                on(:person)
+            end
+
+            message =
+              'Expected POST #create to restrict parameters on :person to ' +
+              ":name, :age, :city, and :country,\n" +
+              'but it did not restrict any parameters.'
+
+            expect(&assertion).to fail_with_message(message)
+          end
+        end
+
+        context 'but some, but not all, parameters were permitted' do
+          it 'returns the correct message' do
+            define_controller_with_strong_parameters(action: :create) do
+              params.require(:person).permit(:name, :age)
+            end
+
+            assertion = lambda do
+              params = {
+                person: {
+                  name: 'some name',
+                  age: 'some age'
+                }
+              }
+              expect(@controller).
+                to permit(:name, :age, :city, :country).
+                for(:create, params: params).
+                on(:person)
+            end
+
+            message =
+              'Expected POST #create to restrict parameters on :person to ' +
+              ":name, :age, :city, and :country,\n" +
+              'but the restricted parameters were :name and :age instead.'
+
+            expect(&assertion).to fail_with_message(message)
+          end
+        end
       end
-
-      message =
-        "Expected POST #create to restrict parameters to " +
-        ":name, :age, :city, and :country,\n" +
-        "but the restricted parameters were :name and :age instead."
-
-      expect(&assertion).to fail_with_message(message)
     end
   end
 
   describe 'negative failure message' do
-    it 'includes all attributes that should not have been permitted but were' do
+    it 'returns the correct message' do
       define_controller_with_strong_parameters(action: :create) do
-        params.permit(:name, :age)
+        params.permit(:name, :age, :city, :country)
       end
 
       assertion = lambda do
-        expect(controller).not_to permit(:name, :age).for(:create)
+        expect(@controller).
+          not_to permit(:name, :age, :city, :country).
+          for(:create)
       end
 
       message =
-        "Expected POST #create not to restrict parameters to " +
-        ":name and :age,\n" +
-        "but it did."
+        'Expected POST #create not to restrict parameters to ' +
+        ":name, :age, :city, and :country,\n" +
+        'but it did.'
 
       expect(&assertion).to fail_with_message(message)
+    end
+
+    context 'qualified with #on' do
+      it 'returns the correct message' do
+        define_controller_with_strong_parameters(action: :create) do
+          params.require(:person).permit(:name, :age)
+        end
+
+        assertion = lambda do
+          params = {
+            person: {
+              name: 'some name',
+              age: 'some age'
+            }
+          }
+          expect(@controller).
+            not_to permit(:name, :age).
+            for(:create, params: params).
+            on(:person)
+        end
+
+        message =
+          'Expected POST #create not to restrict parameters on :person to ' +
+          ":name and :age,\n" +
+          'but it did.'
+
+        expect(&assertion).to fail_with_message(message)
+      end
     end
   end
 
