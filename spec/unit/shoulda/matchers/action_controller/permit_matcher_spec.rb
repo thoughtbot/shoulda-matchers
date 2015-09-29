@@ -40,7 +40,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
       )
     end
 
-    it 'tracks multiple calls to #permit' do
+    it 'tracks multiple calls to #permit for different subparameters' do
       sets_of_attributes = [
         [:eta, :diner_id],
         [:phone_number, :address_1, :address_2, :city, :state, :zip]
@@ -130,6 +130,28 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
         not_to permit(:eta, :diner_id).
         for(:create, params: { order: { some: 'value' } }).
         on(:something_else)
+    end
+
+    it 'tracks multiple calls to #permit for the same subparameter' do
+      define_controller_with_strong_parameters(action: :create) do
+        params.require(:foo).permit(:bar)
+        params.require(:foo).permit(:baz)
+      end
+
+      params = {
+        foo: {
+          bar: 'some value',
+          baz: 'some value'
+        }
+      }
+      expect(controller).
+        to permit(:bar).
+        on(:foo).
+        for(:create, params: params)
+      expect(controller).
+        to permit(:baz).
+        on(:foo).
+        for(:create, params: params)
     end
   end
 
