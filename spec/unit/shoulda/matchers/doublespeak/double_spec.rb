@@ -86,7 +86,8 @@ module Shoulda::Matchers::Doublespeak
           object: instance,
           method_name: method_name,
           args: args,
-          block: block
+          block: block,
+          caller: :some_caller
         )
 
         double.activate

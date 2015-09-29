@@ -29,6 +29,12 @@ module Shoulda
           end
         end
 
+        def calls_by_method_name
+          doubles_by_method_name.reduce({}) do |hash, (method_name, double)|
+            hash.merge method_name => double.calls.map(&:args)
+          end
+        end
+
         def calls_to(method_name)
           double = doubles_by_method_name[method_name]
 

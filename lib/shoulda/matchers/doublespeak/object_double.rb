@@ -22,7 +22,8 @@ module Shoulda
           call = MethodCall.new(
             method_name: method_name,
             args: args,
-            block: block
+            block: block,
+            caller: ::Kernel.caller
           )
           calls << call
           (calls_by_method_name[method_name] ||= []) << call

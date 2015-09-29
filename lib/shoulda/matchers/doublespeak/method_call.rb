@@ -4,11 +4,12 @@ module Shoulda
       # @private
       class MethodCall
         attr_accessor :return_value
-        attr_reader :method_name, :args, :block, :object, :double
+        attr_reader :method_name, :args, :caller, :block, :object, :double
 
         def initialize(args)
           @method_name = args.fetch(:method_name)
           @args = args.fetch(:args)
+          @caller = args.fetch(:caller)
           @block = args[:block]
           @double = args[:double]
           @object = args[:object]
@@ -28,6 +29,14 @@ module Shoulda
             block == other.block &&
             double == other.double &&
             object == other.object
+        end
+
+        def to_hash
+          { method_name: method_name, args: args }
+        end
+
+        def inspect
+          "#<#{self.class.name} #{to_hash.inspect}>"
         end
       end
     end

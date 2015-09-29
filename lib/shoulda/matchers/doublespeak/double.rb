@@ -81,7 +81,8 @@ module Shoulda
               object: self,
               method_name: _method_name,
               args: args,
-              block: block
+              block: block,
+              caller: caller
             )
             implementation.call(call)
           end
