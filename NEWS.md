@@ -1,4 +1,4 @@
-# HEAD
+# 3.0.0
 
 ### Backward-incompatible changes
 
