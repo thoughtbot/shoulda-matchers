@@ -54,7 +54,6 @@ module Shoulda
           controller.flash.dup.tap do |flash|
             copy_flashes(controller.flash, flash)
             copy_discard_if_necessary(controller.flash, flash)
-            # sweep_flash_if_necessary(flash)
           end
         end
 
@@ -66,12 +65,6 @@ module Shoulda
         def copy_discard_if_necessary(original_flash, new_flash)
           discard = original_flash.instance_variable_get('@discard').dup
           new_flash.instance_variable_set('@discard', discard)
-        end
-
-        def sweep_flash_if_necessary(flash)
-          unless @use_now
-            flash.sweep
-          end
         end
 
         def set_values
