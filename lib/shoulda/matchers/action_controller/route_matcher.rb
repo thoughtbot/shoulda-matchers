@@ -4,8 +4,9 @@ module Shoulda
       # The `route` matcher tests that a route resolves to a controller,
       # action, and params; and that the controller, action, and params
       # generates the same route. For an RSpec suite, this is like using a
-      # combination of `route_to` and `be_routable`. For a Test::Unit suite, it
-      # provides a more expressive syntax over `assert_routing`.
+      # combination of `route_to` and `be_routable`. In a test suite using
+      # Minitest + Shoulda, it provides a more expressive syntax over
+      # `assert_routing`.
       #
       # You can use this matcher either in a controller test case or in a
       # routing test case. For instance, given these routes:
@@ -28,7 +29,7 @@ module Shoulda
       #       it { should route(:get, '/posts/1').to(action: :show, id: 1) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PostsControllerTest < ActionController::TestCase
       #       should route(:get, '/posts').to(action: 'index')
       #       should route(:get, '/posts/1').to(action: :show, id: 1)
@@ -49,7 +50,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class RoutesTest < ActionController::IntegrationTest
       #       should route(:get, '/posts').
       #         to(controller: :posts, action: :index)

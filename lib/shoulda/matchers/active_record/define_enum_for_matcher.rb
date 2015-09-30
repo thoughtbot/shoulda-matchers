@@ -14,7 +14,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class ProcessTest < ActiveSupport::TestCase
       #       should define_enum_for(:status)
       #     end
@@ -38,7 +38,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class ProcessTest < ActiveSupport::TestCase
       #       should define_enum_for(:status).
       #         with([:running, :stopped, :suspended])

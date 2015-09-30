@@ -3,7 +3,7 @@ module Shoulda
     module ActionController
       # The `redirect_to` matcher tests that an action redirects to a certain
       # location. In a test suite using RSpec, it is very similar to
-      # rspec-rails's `redirect_to` matcher. In a test suite using Test::Unit /
+      # rspec-rails's `redirect_to` matcher. In a test suite using Minitest +
       # Shoulda, it provides a more expressive syntax over
       # `assert_redirected_to`.
       #
@@ -23,7 +23,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PostsControllerTest < ActionController::TestCase
       #       context 'GET #show' do
       #         setup { get :show }

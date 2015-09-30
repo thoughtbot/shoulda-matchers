@@ -24,7 +24,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class IssueTest < ActiveSupport::TestCase
       #       should validate_inclusion_of(:state).
       #         in_array(%w(open resolved unresolved))
@@ -44,7 +44,7 @@ module Shoulda
       #       it { should validate_inclusion_of(:state).in_range(1..5) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class IssueTest < ActiveSupport::TestCase
       #       should validate_inclusion_of(:state).in_range(1..5)
       #     end
@@ -87,7 +87,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class IssueTest < ActiveSupport::TestCase
       #       should validate_inclusion_of(:severity).
       #         in_array(%w(low medium high)).
@@ -116,7 +116,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class IssueTest < ActiveSupport::TestCase
       #       should validate_inclusion_of(:severity).
       #         in_array(%w(low medium high)).
@@ -152,7 +152,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should validate_inclusion_of(:age).
       #         in_range(0..65).
@@ -188,7 +188,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should validate_inclusion_of(:age).
       #         in_range(0..21).
@@ -218,7 +218,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class IssueTest < ActiveSupport::TestCase
       #       should validate_inclusion_of(:state).
       #         in_array(%w(open resolved unresolved)).
@@ -248,7 +248,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class IssueTest < ActiveSupport::TestCase
       #       should validate_inclusion_of(:state).
       #         in_array(%w(open resolved unresolved)).

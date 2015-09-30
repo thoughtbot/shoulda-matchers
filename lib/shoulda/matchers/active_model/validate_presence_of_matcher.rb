@@ -16,7 +16,7 @@ module Shoulda
       #       it { should validate_presence_of(:arms) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class RobotTest < ActiveSupport::TestCase
       #       should validate_presence_of(:arms)
       #     end
@@ -73,7 +73,7 @@ module Shoulda
       #       it { should validate_presence_of(:arms).on(:create) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class RobotTest < ActiveSupport::TestCase
       #       should validate_presence_of(:arms).on(:create)
       #     end
@@ -97,7 +97,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class RobotTest < ActiveSupport::TestCase
       #       should validate_presence_of(:legs).
       #         with_message('Robot has no legs')

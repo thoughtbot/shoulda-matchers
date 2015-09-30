@@ -23,7 +23,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class GameTest < ActiveSupport::TestCase
       #       should validate_exclusion_of(:supported_os).
       #         in_array(['Mac', 'Linux'])
@@ -46,7 +46,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class GameTest < ActiveSupport::TestCase
       #       should validate_exclusion_of(:floors_with_enemies).
       #         in_range(5..8)
@@ -76,7 +76,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class GameTest < ActiveSupport::TestCase
       #       should validate_exclusion_of(:weapon).
       #         in_array(['pistol', 'paintball gun', 'stick']).
@@ -105,7 +105,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class GameTest < ActiveSupport::TestCase
       #       should validate_exclusion_of(:weapon).
       #         in_array(['pistol', 'paintball gun', 'stick']).

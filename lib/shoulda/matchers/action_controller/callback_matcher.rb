@@ -14,7 +14,7 @@ module Shoulda
       #       it { should_not use_before_filter(:prevent_ssl) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class UsersControllerTest < ActionController::TestCase
       #       should use_before_filter(:authenticate_user!)
       #       should_not use_before_filter(:prevent_ssl)
@@ -39,7 +39,7 @@ module Shoulda
       #       it { should_not use_after_filter(:destroy_user) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class IssuesControllerTest < ActionController::TestCase
       #       should use_after_filter(:log_activity)
       #       should_not use_after_filter(:destroy_user)
@@ -64,7 +64,7 @@ module Shoulda
       #       it { should_not use_before_action(:prevent_ssl) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class UsersControllerTest < ActionController::TestCase
       #       should use_before_action(:authenticate_user!)
       #       should_not use_before_action(:prevent_ssl)
@@ -89,7 +89,7 @@ module Shoulda
       #       it { should_not use_after_action(:destroy_user) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class IssuesControllerTest < ActionController::TestCase
       #       should use_after_action(:log_activity)
       #       should_not use_after_action(:destroy_user)
@@ -114,7 +114,7 @@ module Shoulda
       #       it { should_not use_around_filter(:save_view_context) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class ChangesControllerTest < ActionController::TestCase
       #       should use_around_filter(:wrap_in_transaction)
       #       should_not use_around_filter(:save_view_context)
@@ -139,7 +139,7 @@ module Shoulda
       #       it { should_not use_around_action(:save_view_context) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class ChangesControllerTest < ActionController::TestCase
       #       should use_around_action(:wrap_in_transaction)
       #       should_not use_around_action(:save_view_context)

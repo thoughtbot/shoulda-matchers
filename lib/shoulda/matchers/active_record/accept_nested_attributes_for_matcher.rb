@@ -13,7 +13,7 @@ module Shoulda
       #       it { should accept_nested_attributes_for(:doors) }
       #     end
       #
-      #     # Test::Unit (using Shoulda)
+      #     # Minitest (Shoulda) (using Shoulda)
       #     class CarTest < ActiveSupport::TestCase
       #       should accept_nested_attributes_for(:doors)
       #     end
@@ -37,7 +37,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class CarTest < ActiveSupport::TestCase
       #       should accept_nested_attributes_for(:mirrors).
       #         allow_destroy(true)
@@ -59,7 +59,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class CarTest < ActiveSupport::TestCase
       #       should accept_nested_attributes_for(:windows).
       #         limit(3)
@@ -82,7 +82,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class CarTest < ActiveSupport::TestCase
       #       should accept_nested_attributes_for(:engine).
       #         update_only(true)

@@ -23,7 +23,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class ApplicationControllerTest < ActionController::TestCase
       #       should rescue_from(ActiveRecord::RecordNotFound).
       #         with(:handle_not_found)

@@ -135,7 +135,7 @@ describe Person do
 end
 ```
 
-### Minitest / Test::Unit
+### Minitest
 
 Shoulda Matchers was originally a component of [Shoulda][shoulda], a gem that
 also provides `should` and `context` syntax via

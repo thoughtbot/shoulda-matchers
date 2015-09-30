@@ -16,7 +16,7 @@ module Shoulda
       #       it { should validate_acceptance_of(:eula) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class RegistrationTest < ActiveSupport::TestCase
       #       should validate_acceptance_of(:eula)
       #     end
@@ -42,7 +42,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class RegistrationTest < ActiveSupport::TestCase
       #       should validate_acceptance_of(:terms_of_service).on(:create)
       #     end
@@ -67,7 +67,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class RegistrationTest < ActiveSupport::TestCase
       #       should validate_acceptance_of(:terms_of_service).
       #         with_message('You must accept the terms of service')

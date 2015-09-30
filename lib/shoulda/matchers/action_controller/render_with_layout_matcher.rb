@@ -19,7 +19,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PostsControllerTest < ActionController::TestCase
       #       context 'GET #show' do
       #         setup { get :show }
@@ -46,7 +46,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PostsControllerTest < ActionController::TestCase
       #       context 'GET #sidebar' do
       #         setup { get :sidebar }

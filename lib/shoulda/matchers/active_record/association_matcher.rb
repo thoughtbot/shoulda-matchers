@@ -15,7 +15,7 @@ module Shoulda
       #       it { should belong_to(:organization) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should belong_to(:organization)
       #     end
@@ -32,7 +32,7 @@ module Shoulda
       #       it { should belong_to(:commentable) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class CommentTest < ActiveSupport::TestCase
       #       should belong_to(:commentable)
       #     end
@@ -56,7 +56,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should belong_to(:family).
       #         conditions(everyone_is_perfect: false)
@@ -76,7 +76,7 @@ module Shoulda
       #       it { should belong_to(:previous_company).order('hired_on desc') }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should belong_to(:previous_company).order('hired_on desc')
       #     end
@@ -95,7 +95,7 @@ module Shoulda
       #       it { should belong_to(:ancient_city).class_name('City') }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should belong_to(:ancient_city).class_name('City')
       #     end
@@ -116,7 +116,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should belong_to(:great_country).
       #         with_primary_key('country_id')
@@ -138,7 +138,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should belong_to(:great_country).
       #         with_foreign_key('country_id')
@@ -157,7 +157,7 @@ module Shoulda
       #       it { should belong_to(:world).dependent(:destroy) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should belong_to(:world).dependent(:destroy)
       #     end
@@ -194,7 +194,7 @@ module Shoulda
       #       it { should belong_to(:organization).counter_cache(true) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should belong_to(:organization).counter_cache(true)
       #     end
@@ -212,7 +212,7 @@ module Shoulda
       #       it { should belong_to(:organization).touch(true) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should belong_to(:organization).touch(true)
       #     end
@@ -230,7 +230,7 @@ module Shoulda
       #       it { should belong_to(:bank).autosave(true) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class AccountTest < ActiveSupport::TestCase
       #       should belong_to(:bank).autosave(true)
       #     end
@@ -248,7 +248,7 @@ module Shoulda
       #       it { should belong_to(:organization).inverse_of(:employees) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should belong_to(:organization).inverse_of(:employees)
       #     end
@@ -271,7 +271,7 @@ module Shoulda
       #       it { should have_many(:friends) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_many(:friends)
       #     end
@@ -288,7 +288,7 @@ module Shoulda
       #       it { should have_many(:pictures) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_many(:pictures)
       #     end
@@ -309,7 +309,7 @@ module Shoulda
       #       it { should have_many(:coins).conditions(quality: 'mint') }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_many(:coins).conditions(quality: 'mint')
       #     end
@@ -328,7 +328,7 @@ module Shoulda
       #       it { should have_many(:shirts).order('color') }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_many(:shirts).order('color')
       #     end
@@ -347,7 +347,7 @@ module Shoulda
       #       it { should have_many(:hopes).class_name('Dream') }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_many(:hopes).class_name('Dream')
       #     end
@@ -365,7 +365,7 @@ module Shoulda
       #       it { should have_many(:worries).with_primary_key('worrier_id') }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_many(:worries).with_primary_key('worrier_id')
       #     end
@@ -383,7 +383,7 @@ module Shoulda
       #       it { should have_many(:worries).with_foreign_key('worrier_id') }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_many(:worries).with_foreign_key('worrier_id')
       #     end
@@ -401,7 +401,7 @@ module Shoulda
       #       it { should have_many(:secret_documents).dependent(:destroy) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_many(:secret_documents).dependent(:destroy)
       #     end
@@ -420,7 +420,7 @@ module Shoulda
       #       it { should have_many(:acquaintances).through(:friends) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_many(:acquaintances).through(:friends)
       #     end
@@ -443,7 +443,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_many(:job_offers).
       #         through(:friends).
@@ -463,7 +463,7 @@ module Shoulda
       #       it { should have_many(:ideas).validate(false) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_many(:ideas).validate(false)
       #     end
@@ -481,7 +481,7 @@ module Shoulda
       #       it { should have_many(:games).autosave(true) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PlayerTest < ActiveSupport::TestCase
       #       should have_many(:games).autosave(true)
       #     end
@@ -504,7 +504,7 @@ module Shoulda
       #       it { should have_one(:partner) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_one(:partner)
       #     end
@@ -525,7 +525,7 @@ module Shoulda
       #       it { should have_one(:pet).conditions('weight < 80') }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_one(:pet).conditions('weight < 80')
       #     end
@@ -544,7 +544,7 @@ module Shoulda
       #       it { should have_one(:focus).order('priority desc') }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_one(:focus).order('priority desc')
       #     end
@@ -563,7 +563,7 @@ module Shoulda
       #       it { should have_one(:chance).class_name('Opportunity') }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_one(:chance).class_name('Opportunity')
       #     end
@@ -581,7 +581,7 @@ module Shoulda
       #       it { should have_one(:contract).dependent(:nullify) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_one(:contract).dependent(:nullify)
       #     end
@@ -599,7 +599,7 @@ module Shoulda
       #       it { should have_one(:job).with_primary_key('worker_id') }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_one(:job).with_primary_key('worker_id')
       #     end
@@ -617,7 +617,7 @@ module Shoulda
       #       it { should have_one(:job).with_foreign_key('worker_id') }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_one(:job).with_foreign_key('worker_id')
       #     end
@@ -636,7 +636,7 @@ module Shoulda
       #       it { should have_one(:life).through(:partner) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_one(:life).through(:partner)
       #     end
@@ -655,7 +655,7 @@ module Shoulda
       #       it { should have_one(:car).through(:partner).source(:vehicle) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_one(:car).through(:partner).source(:vehicle)
       #     end
@@ -673,7 +673,7 @@ module Shoulda
       #       it { should have_one(:parking_card).validate(false) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_one(:parking_card).validate(false)
       #     end
@@ -691,7 +691,7 @@ module Shoulda
       #       it { should have_one(:bank).autosave(true) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class AccountTest < ActiveSupport::TestCase
       #       should have_one(:bank).autosave(true)
       #     end
@@ -715,7 +715,7 @@ module Shoulda
       #       it { should have_and_belong_to_many(:awards) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_and_belong_to_many(:awards)
       #     end
@@ -739,7 +739,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_and_belong_to_many(:issues).
       #         conditions(difficulty: 'hard')
@@ -762,7 +762,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_and_belong_to_many(:projects).
       #         order('time_spent')
@@ -785,7 +785,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_and_belong_to_many(:places_visited).
       #         class_name('City')
@@ -808,7 +808,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_and_belong_to_many(:issues).
       #         join_table('people_tickets')
@@ -830,7 +830,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_and_belong_to_many(:interviews).
       #         validate(false)
@@ -849,7 +849,7 @@ module Shoulda
       #       it { should have_and_belong_to_many(:advertisers).autosave(true) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class AccountTest < ActiveSupport::TestCase
       #       should have_and_belong_to_many(:advertisers).autosave(true)
       #     end

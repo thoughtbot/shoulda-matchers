@@ -26,8 +26,8 @@ module Shoulda
       #       it { should delegate_method(:deliver).to(:post_office) }
       #     end
       #
-      #     # Test::Unit
-      #     class CourierTest < Test::Unit::TestCase
+      #     # Minitest
+      #     class CourierTest < Minitest::Test
       #       should delegate_method(:deliver).to(:post_office)
       #     end
       #
@@ -77,8 +77,8 @@ module Shoulda
       #       it { should delegate_method(:deliver).to(:post_office).as(:ship) }
       #     end
       #
-      #     # Test::Unit
-      #     class CourierTest < Test::Unit::TestCase
+      #     # Minitest
+      #     class CourierTest < Minitest::Test
       #       should delegate_method(:deliver).to(:post_office).as(:ship)
       #     end
       #
@@ -100,8 +100,8 @@ module Shoulda
       #       it { should delegate_method(:title).to(:site).with_prefix(:root) }
       #     end
       #
-      #     # Test::Unit
-      #     class PageTest < Test::Unit::TestCase
+      #     # Minitest
+      #     class PageTest < Minitest::Test
       #       should delegate_method(:name).to(:site).with_prefix
       #       should delegate_method(:name).to(:site).with_prefix(true)
       #       should delegate_method(:title).to(:site).with_prefix(:root)
@@ -138,8 +138,8 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
-      #     class CourierTest < Test::Unit::TestCase
+      #     # Minitest
+      #     class CourierTest < Minitest::Test
       #       should delegate_method(:deliver_package).
       #         to(:post_office).
       #         with_arguments(expedited: true)

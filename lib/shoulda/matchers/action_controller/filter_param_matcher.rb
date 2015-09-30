@@ -14,7 +14,7 @@ module Shoulda
       #       it { should filter_param(:secret_key) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class ApplicationControllerTest < ActionController::TestCase
       #       should filter_param(:secret_key)
       #     end

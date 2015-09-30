@@ -18,7 +18,7 @@ module Shoulda
       #       it { should validate_uniqueness_of(:permalink) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PostTest < ActiveSupport::TestCase
       #       should validate_uniqueness_of(:permalink)
       #     end
@@ -99,7 +99,7 @@ module Shoulda
       #       it { should validate_uniqueness_of(:title).on(:create) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PostTest < ActiveSupport::TestCase
       #       should validate_uniqueness_of(:title).on(:create)
       #     end
@@ -120,7 +120,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PostTest < ActiveSupport::TestCase
       #       should validate_uniqueness_of(:title).
       #         with_message('Please choose another title')
@@ -141,7 +141,7 @@ module Shoulda
       #       it { should validate_uniqueness_of(:slug).scoped_to(:journal_id) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PostTest < ActiveSupport::TestCase
       #       should validate_uniqueness_of(:slug).scoped_to(:journal_id)
       #     end
@@ -162,7 +162,7 @@ module Shoulda
       #       it { should validate_uniqueness_of(:key).case_insensitive }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PostTest < ActiveSupport::TestCase
       #       should validate_uniqueness_of(:key).case_insensitive
       #     end
@@ -180,7 +180,7 @@ module Shoulda
       #       it { should validate_uniqueness_of(:author_id).allow_nil }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PostTest < ActiveSupport::TestCase
       #       should validate_uniqueness_of(:author_id).allow_nil
       #     end
@@ -200,7 +200,7 @@ module Shoulda
       #       it { should validate_uniqueness_of(:author_id).allow_blank }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PostTest < ActiveSupport::TestCase
       #       should validate_uniqueness_of(:author_id).allow_blank
       #     end

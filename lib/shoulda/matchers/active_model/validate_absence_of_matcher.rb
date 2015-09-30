@@ -16,7 +16,7 @@ module Shoulda
       #       it { should validate_absence_of(:arms) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class ArtilleryTest < ActiveSupport::TestCase
       #       should validate_absence_of(:arms)
       #     end
@@ -39,7 +39,7 @@ module Shoulda
       #       it { should validate_absence_of(:arms).on(:create) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class ArtilleryTest < ActiveSupport::TestCase
       #       should validate_absence_of(:arms).on(:create)
       #     end
@@ -64,7 +64,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class ArtilleryTest < ActiveSupport::TestCase
       #       should validate_absence_of(:arms).
       #         with_message("We're fresh outta arms here, soldier!")

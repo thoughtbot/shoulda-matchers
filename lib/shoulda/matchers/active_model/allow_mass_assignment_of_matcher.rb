@@ -31,7 +31,7 @@ module Shoulda
       #       it { should_not allow_mass_assignment_of(:encrypted_password) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PostTest < ActiveSupport::TestCase
       #       should allow_mass_assignment_of(:title)
       #     end
@@ -60,7 +60,7 @@ module Shoulda
       #       it { should allow_mass_assignment_of(:title).as(:admin) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PostTest < ActiveSupport::TestCase
       #       should allow_mass_assignment_of(:title).as(:admin)
       #     end

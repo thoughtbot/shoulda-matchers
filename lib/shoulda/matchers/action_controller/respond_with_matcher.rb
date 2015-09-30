@@ -21,7 +21,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PostsControllerTest < ActionController::TestCase
       #       context 'GET #index' do
       #         setup { get :index }
@@ -47,7 +47,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PostsControllerTest < ActionController::TestCase
       #       context 'DELETE #destroy' do
       #         setup { delete :destroy }
@@ -73,7 +73,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PostsControllerTest < ActionController::TestCase
       #       context 'GET #show' do
       #         setup { get :show }

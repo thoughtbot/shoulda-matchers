@@ -51,7 +51,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class UsersControllerTest < ActionController::TestCase
       #       should "(for POST #create) restrict parameters on :user to first_name, last_name, email, and password" do
       #         params = {
@@ -116,7 +116,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class UsersControllerTest < ActionController::TestCase
       #       setup do
       #         create(:user, id: 1)
@@ -181,7 +181,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class UsersControllerTest < ActionController::TestCase
       #       setup do
       #         create(:user, id: 1)

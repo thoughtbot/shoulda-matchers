@@ -3,8 +3,8 @@ module Shoulda
     module ActionController
       # The `render_template` matcher tests that an action renders a template
       # or partial. In RSpec, it is very similar to rspec-rails's
-      # `render_template` matcher. In Test::Unit, it provides a more expressive
-      # syntax over `assert_template`.
+      # `render_template` matcher. In a test suite using Minitest + Shoulda, it
+      # provides a more expressive syntax over `assert_template`.
       #
       #     class PostsController < ApplicationController
       #       def show
@@ -24,7 +24,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class PostsControllerTest < ActionController::TestCase
       #       context 'GET #show' do
       #         setup { get :show }
@@ -33,8 +33,6 @@ module Shoulda
       #         should render_template(partial: '_sidebar')
       #       end
       #     end
-      #
-      #
       #
       # @return [RenderTemplateMatcher]
       #

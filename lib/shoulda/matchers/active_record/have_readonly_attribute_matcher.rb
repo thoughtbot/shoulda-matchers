@@ -13,7 +13,7 @@ module Shoulda
       #       it { should have_readonly_attribute(:password) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class UserTest < ActiveSupport::TestCase
       #       should have_readonly_attribute(:password)
       #     end

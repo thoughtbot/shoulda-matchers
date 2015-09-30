@@ -19,7 +19,7 @@ module Shoulda
       #       it { should have_db_index(:user_id) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class BlogTest < ActiveSupport::TestCase
       #       should have_db_index(:user_id)
       #     end
@@ -45,7 +45,7 @@ module Shoulda
       #       it { should have_db_index(:name).unique(true) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class BlogTest < ActiveSupport::TestCase
       #       should have_db_index(:name).unique(true)
       #     end
@@ -58,7 +58,7 @@ module Shoulda
       #       it { should have_db_index(:name).unique }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class BlogTest < ActiveSupport::TestCase
       #       should have_db_index(:name).unique
       #     end

@@ -19,7 +19,7 @@ module Shoulda
       #       it { should have_secure_password }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class UserTest < ActiveSupport::TestCase
       #       should have_secure_password
       #     end

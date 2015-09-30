@@ -22,7 +22,7 @@ module Shoulda
       #       it { should allow_value('http://bar.com').for(:website_url) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class UserProfileTest < ActiveSupport::TestCase
       #       should allow_value('http://foo.com').for(:website_url)
       #       should allow_value('http://bar.com').for(:website_url)
@@ -46,7 +46,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class UserProfileTest < ActiveSupport::TestCase
       #       should allow_values('http://foo.com', 'http://bar.com/baz').
       #         for(:website_url)
@@ -169,7 +169,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class UserProfileTest < ActiveSupport::TestCase
       #       should allow_value('2013-01-01').
       #         for(:birthday_as_string).
@@ -198,7 +198,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class UserProfileTest < ActiveSupport::TestCase
       #       should allow_value('open', 'closed').
       #         for(:state).
@@ -225,7 +225,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class UserProfileTest < ActiveSupport::TestCase
       #       should allow_value('open', 'closed').
       #         for(:state).
@@ -263,7 +263,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class UserProfileTest < ActiveSupport::TestCase
       #       should allow_value('Broncos', 'Titans').
       #         for(:sports_team).
@@ -291,7 +291,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class AddressTest < ActiveSupport::TestCase
       #       should_not allow_value([]).
       #       for(:zip_code).

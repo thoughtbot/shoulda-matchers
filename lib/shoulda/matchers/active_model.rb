@@ -65,7 +65,7 @@ module Shoulda
     #       end
     #     end
     #
-    #     # Test::Unit
+    #     # Minitest (Shoulda)
     #     class UserTest < ActiveSupport::TestCase
     #       context "when an admin" do
     #         subject { User.new(admin: true) }

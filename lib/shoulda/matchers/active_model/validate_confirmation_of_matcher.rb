@@ -16,7 +16,7 @@ module Shoulda
       #       it { should validate_confirmation_of(:email) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class UserTest < ActiveSupport::TestCase
       #       should validate_confirmation_of(:email)
       #     end
@@ -39,7 +39,7 @@ module Shoulda
       #       it { should validate_confirmation_of(:password).on(:create) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class UserTest < ActiveSupport::TestCase
       #       should validate_confirmation_of(:password).on(:create)
       #     end
@@ -64,7 +64,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class UserTest < ActiveSupport::TestCase
       #       should validate_confirmation_of(:password).
       #         with_message('Please re-enter your password')

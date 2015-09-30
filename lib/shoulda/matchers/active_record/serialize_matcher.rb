@@ -12,7 +12,7 @@ module Shoulda
       #       it { should serialize(:customizations) }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class ProductTest < ActiveSupport::TestCase
       #       should serialize(:customizations)
       #     end
@@ -45,7 +45,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class ProductTest < ActiveSupport::TestCase
       #       should serialize(:specifications).
       #         as(ProductSpecsSerializer)
@@ -77,7 +77,7 @@ module Shoulda
       #       end
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class ProductTest < ActiveSupport::TestCase
       #       should serialize(:options).
       #         as_instance_of(ProductOptionsSerializer)
