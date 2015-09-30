@@ -16,7 +16,8 @@ interested in the README for 2.8.0 instead.][2.8.0-README]**
 * **[allow_mass_assignment_of](lib/shoulda/matchers/active_model/allow_mass_assignment_of_matcher.rb)**
   tests usage of Rails 3's `attr_accessible` and `attr_protected` macros.
 * **[allow_value](lib/shoulda/matchers/active_model/allow_value_matcher.rb)**
-  tests usage of the `validates_format_of` validation.
+  tests that an attribute is valid or invalid if set to one or more values.
+  *(Aliased as #allow_values.)*
 * **[have_secure_password](lib/shoulda/matchers/active_model/have_secure_password_matcher.rb)**
   tests usage of `has_secure_password`.
 * **[validate_absence_of](lib/shoulda/matchers/active_model/validate_absence_of_matcher.rb)**

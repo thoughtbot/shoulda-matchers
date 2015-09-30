@@ -1,15 +1,11 @@
 module Shoulda
   module Matchers
     module ActiveModel
-      # The `allow_value` matcher is used to test that an attribute of a model
-      # can or cannot be set to a particular value or values. It is most
-      # commonly used in conjunction with the `validates_format_of` validation.
+      # The `allow_value` matcher (or its alias, `allow_values`) is used to
+      # ensure that an attribute is valid or invalid if set to one or more
+      # values.
       #
-      # #### should
-      #
-      # In the positive form, `allow_value` asserts that an attribute can be
-      # set to one or more values, succeeding if none of the values cause the
-      # record to be invalid:
+      # Take this model for example:
       #
       #     class UserProfile
       #       include ActiveModel::Model
@@ -18,45 +14,136 @@ module Shoulda
       #       validates_format_of :website_url, with: URI.regexp
       #     end
       #
+      # You can use `allow_value` to test one value at a time:
+      #
+      #     # RSpec
+      #     describe UserProfile do
+      #       it { should allow_value('http://foo.com').for(:website_url) }
+      #       it { should allow_value('http://bar.com').for(:website_url) }
+      #     end
+      #
+      #     # Test::Unit
+      #     class UserProfileTest < ActiveSupport::TestCase
+      #       should allow_value('http://foo.com').for(:website_url)
+      #       should allow_value('http://bar.com').for(:website_url)
+      #     end
+      #
+      # You can also test multiple values in one go, if you like. In the
+      # positive sense, this makes an assertion that none of the values cause the
+      # record to be invalid. In the negative sense, this makes an assertion
+      # that none of the values cause the record to be valid:
+      #
       #     # RSpec
       #     describe UserProfile do
       #       it do
-      #         should allow_value('http://foo.com', 'http://bar.com/baz').
+      #         should allow_values('http://foo.com', 'http://bar.com').
+      #           for(:website_url)
+      #       end
+      #
+      #       it do
+      #         should_not allow_values('http://foo.com', 'buz').
       #           for(:website_url)
       #       end
       #     end
       #
       #     # Test::Unit
       #     class UserProfileTest < ActiveSupport::TestCase
-      #       should allow_value('http://foo.com', 'http://bar.com/baz').
+      #       should allow_values('http://foo.com', 'http://bar.com/baz').
+      #         for(:website_url)
+      #
+      #       should_not allow_values('http://foo.com', 'buz').
       #         for(:website_url)
       #     end
       #
-      # #### should_not
+      # #### Caveats
       #
-      # In the negative form, `allow_value` asserts that an attribute cannot be
-      # set to one or more values, succeeding if the *first* value causes the
-      # record to be invalid.
+      # When using `allow_value` or any matchers that depend on it, you may
+      # encounter a CouldNotSetAttributeError. This exception is raised if the
+      # matcher, in attempting to set a value on the attribute, detects that
+      # the value set is different from the value that the attribute returns
+      # upon reading it back.
       #
-      # **This can be surprising** so in this case if you need to check that
-      # *all* of the values are invalid, use separate assertions:
+      # This usually happens if the writer method (`foo=`, `bar=`, etc.) for
+      # that attribute has custom logic to ignore certain incoming values or
+      # change them in any way. Here are three examples we've seen:
       #
-      #     class UserProfile
-      #       include ActiveModel::Model
-      #       attr_accessor :website_url
+      # * You're attempting to assert that an attribute should not allow nil,
+      #   yet the attribute's writer method contains a conditional to do nothing
+      #   if the attribute is set to nil:
       #
-      #       validates_format_of :website_url, with: URI.regexp
-      #     end
+      #         class Foo
+      #           include ActiveModel::Model
       #
-      #     describe UserProfile do
-      #       # One assertion: 'buz' and 'bar' will not be tested
-      #       it { should_not allow_value('fiz', 'buz', 'bar').for(:website_url) }
+      #           attr_reader :bar
       #
-      #       # Three assertions, all tested separately
-      #       it { should_not allow_value('fiz').for(:website_url) }
-      #       it { should_not allow_value('buz').for(:website_url) }
-      #       it { should_not allow_value('bar').for(:website_url) }
-      #     end
+      #           def bar=(value)
+      #             return if value.nil?
+      #             @bar = value
+      #           end
+      #         end
+      #
+      #         describe Foo do
+      #           it do
+      #             foo = Foo.new
+      #             foo.bar = "baz"
+      #             # This will raise a CouldNotSetAttributeError since `foo.bar` is now "123"
+      #             expect(foo).not_to allow_value(nil).for(:bar)
+      #           end
+      #         end
+      #
+      # * You're attempting to assert that an numeric attribute should not allow a
+      #   string that contains non-numeric characters, yet the writer method for
+      #   that attribute strips out non-numeric characters:
+      #
+      #         class Foo
+      #           include ActiveModel::Model
+      #
+      #           attr_reader :bar
+      #
+      #           def bar=(value)
+      #             @bar = value.gsub(/\D+/, '')
+      #           end
+      #         end
+      #
+      #         describe Foo do
+      #           it do
+      #             foo = Foo.new
+      #             # This will raise a CouldNotSetAttributeError since `foo.bar` is now "123"
+      #             expect(foo).not_to allow_value("abc123").for(:bar)
+      #           end
+      #         end
+      #
+      # * You're passing a value to `allow_value` that the model typecasts into
+      #   another value:
+      #
+      #         describe Foo do
+      #           # Assume that `attr` is a string
+      #           # This will raise a CouldNotSetAttributeError since `attr` typecasts `[]` to `"[]"`
+      #           it { should_not allow_value([]).for(:attr) }
+      #         end
+      #
+      # So when you encounter this exception, you have a couple of options:
+      #
+      # * If you understand the problem and wish to override this behavior to
+      #   get around this exception, you can add the
+      #   `ignoring_interference_by_writer` qualifier like so:
+      #
+      #         it do
+      #           should_not allow_value([]).
+      #             for(:attr).
+      #             ignoring_interference_by_writer
+      #         end
+      #
+      # * Note, however, that the above option will not always cause the test to
+      #   pass. In this case, this is telling you that you don't need to use
+      #   `allow_value`, or quite possibly even the validation that you're
+      #   testing altogether. In any case, we would probably make the argument
+      #   that since it's clear that something is responsible for sanitizing
+      #   incoming data before it's stored in your model, there's no need to
+      #   ensure that sanitization places the model in a valid state, if such
+      #   sanitization creates valid data. In terms of testing, the sanitization
+      #   code should probably be tested, but not the effects of that
+      #   sanitization on the validness of the model.
       #
       # #### Qualifiers
       #
@@ -185,6 +272,32 @@ module Shoulda
       #         )
       #     end
       #
+      # ##### ignoring_interference_by_writer
+      #
+      # Use `ignoring_interference_by_writer` if you've encountered a
+      # CouldNotSetAttributeError and wish to ignore it. Please read the Caveats
+      # section above for more information.
+      #
+      #     class Address < ActiveRecord::Base
+      #       # Address has a zip_code field which is a string
+      #     end
+      #
+      #     # RSpec
+      #     describe Address do
+      #       it do
+      #         should_not allow_value([]).
+      #         for(:zip_code).
+      #         ignoring_interference_by_writer
+      #       end
+      #     end
+      #
+      #     # Test::Unit
+      #     class AddressTest < ActiveSupport::TestCase
+      #       should_not allow_value([]).
+      #       for(:zip_code).
+      #       ignoring_interference_by_writer
+      #     end
+      #
       # @return [AllowValueMatcher]
       #
       def allow_value(*values)
@@ -194,6 +307,7 @@ module Shoulda
           AllowValueMatcher.new(*values)
         end
       end
+      # @private
       alias_method :allow_values, :allow_value
 
       # @private
