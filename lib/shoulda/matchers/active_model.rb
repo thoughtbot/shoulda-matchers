@@ -27,7 +27,7 @@ module Shoulda
     # validations, that you've added to your ActiveModel (or ActiveRecord)
     # objects.
     #
-    # #### Testing conditional validations
+    # ### Testing conditional validations
     #
     # If your model defines a validation conditionally -- meaning that the
     # validation is declared with an `:if` or `:unless` option -- how do you
