@@ -1,7 +1,7 @@
 module Shoulda
   module Matchers
+    # @private
     module Routing
-      # @private
       def route(method, path)
         ActionController::RouteMatcher.new(method, path, self)
       end
