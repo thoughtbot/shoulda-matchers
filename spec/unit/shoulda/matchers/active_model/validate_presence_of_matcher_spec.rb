@@ -163,6 +163,20 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
     end
   end
 
+  context 'when the attribute typecasts nil to an empty array' do
+    it 'accepts' do
+      model = define_active_model_class :example do
+        attr_reader :foo
+
+        def foo=(value)
+          @foo = Array.wrap(value)
+        end
+      end
+
+      expect(model.new).to validate_presence_of(:foo)
+    end
+  end
+
   def matcher
     validate_presence_of(:attr)
   end

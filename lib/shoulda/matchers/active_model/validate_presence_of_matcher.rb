@@ -123,7 +123,7 @@ module Shoulda
           if secure_password_being_validated?
             disallows_and_double_checks_value_of!(blank_value, @expected_message)
           else
-            disallows_value_of(blank_value, @expected_message)
+            disallows_original_or_typecast_value?(blank_value, @expected_message)
           end
         end
 
@@ -143,6 +143,12 @@ module Shoulda
           disallows_value_of(value, message)
         rescue ActiveModel::AllowValueMatcher::CouldNotSetAttributeError
           raise ActiveModel::CouldNotSetPasswordError.create(@subject.class)
+        end
+
+        def disallows_original_or_typecast_value?(value, message)
+          disallows_value_of(blank_value, @expected_message)
+        rescue ActiveModel::AllowValueMatcher::CouldNotSetAttributeError => error
+          error.actual_value.blank?
         end
 
         def blank_value
