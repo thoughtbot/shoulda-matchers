@@ -85,14 +85,14 @@ interested in the README for 2.8.0 instead.][2.8.0-README]**
 * **[set_flash](lib/shoulda/matchers/action_controller/set_flash_matcher.rb)**
   makes assertions on the `flash` hash.
 * **[use_after_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L79)**
-  tests that a `after_action` callback is defined in your controller. (Aliased
-  as *use_after_filter*.)
+  tests that an `after_action` callback is defined in your controller. *(Aliased
+  as #use_after_filter.)*
 * **[use_around_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L129)**
-  tests that a `around_action` callback is defined in your controller. (Aliased
-  as *use_around_filter*.)
+  tests that an `around_action` callback is defined in your controller. *(Aliased
+  as #use_around_filter.)*
 * **[use_before_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L54)**
-  tests that a `before_action` callback is defined in your controller. (Aliased
-  as *use_before_filter*.)
+  tests that a `before_action` callback is defined in your controller. *(Aliased
+  as #use_before_filter.)*
 
 ### Independent matchers
 
