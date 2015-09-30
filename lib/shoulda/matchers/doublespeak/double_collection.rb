@@ -50,11 +50,13 @@ module Shoulda
         attr_reader :world, :klass, :doubles_by_method_name
 
         def register_double(method_name, implementation_type)
-          implementation =
-            DoubleImplementationRegistry.find(implementation_type)
-          double = Double.new(world, klass, method_name, implementation)
-          doubles_by_method_name[method_name] = double
-          double
+          doubles_by_method_name.fetch(method_name) do
+            implementation =
+              DoubleImplementationRegistry.find(implementation_type)
+            double = Double.new(world, klass, method_name, implementation)
+            doubles_by_method_name[method_name] = double
+            double
+          end
         end
       end
     end

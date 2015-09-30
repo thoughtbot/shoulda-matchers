@@ -26,6 +26,36 @@ module Shoulda::Matchers::Doublespeak
           to have_received(:new).
           with(world, :klass, :a_method, :implementation)
       end
+
+      context 'if a double has already been registered for the method' do
+        it 'does not call Double.new again' do
+          world = build_world
+          allow(DoubleImplementationRegistry).
+            to receive(:find).
+            and_return(:implementation)
+          allow(Double).to receive(:new)
+          double_collection = described_class.new(world, :klass)
+
+          double_collection.register_stub(:a_method)
+          double_collection.register_stub(:a_method)
+
+          expect(Double).to have_received(:new).once
+        end
+
+        it 'returns the same Double' do
+          world = build_world
+          allow(DoubleImplementationRegistry).
+            to receive(:find).
+            and_return(:implementation)
+          allow(Double).to receive(:new)
+          double_collection = described_class.new(world, :klass)
+
+          double1 = double_collection.register_stub(:a_method)
+          double2 = double_collection.register_stub(:a_method)
+
+          expect(double1).to equal(double2)
+        end
+      end
     end
 
     describe '#register_proxy' do
@@ -53,6 +83,36 @@ module Shoulda::Matchers::Doublespeak
         expect(Double).
           to have_received(:new).
           with(world, :klass, :a_method, :implementation)
+      end
+
+      context 'if a double has already been registered for the method' do
+        it 'does not call Double.new again' do
+          world = build_world
+          allow(DoubleImplementationRegistry).
+            to receive(:find).
+            and_return(:implementation)
+          allow(Double).to receive(:new)
+          double_collection = described_class.new(world, :klass)
+
+          double_collection.register_proxy(:a_method)
+          double_collection.register_proxy(:a_method)
+
+          expect(Double).to have_received(:new).once
+        end
+
+        it 'returns the same Double' do
+          world = build_world
+          allow(DoubleImplementationRegistry).
+            to receive(:find).
+            and_return(:implementation)
+          allow(Double).to receive(:new)
+          double_collection = described_class.new(world, :klass)
+
+          double1 = double_collection.register_proxy(:a_method)
+          double2 = double_collection.register_proxy(:a_method)
+
+          expect(double1).to equal(double2)
+        end
       end
     end
 

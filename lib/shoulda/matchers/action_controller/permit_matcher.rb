@@ -205,13 +205,13 @@ module Shoulda
       class PermitMatcher
         attr_writer :stubbed_params
 
-        def initialize(expected_permitted_params)
-          @expected_permitted_params = expected_permitted_params
+        def initialize(expected_permitted_parameter_names)
+          @expected_permitted_parameter_names = expected_permitted_parameter_names
           @action = nil
           @verb = nil
           @request_params = {}
-          @subparameter = nil
-          @parameters_doubles = ParametersDoubles.new
+          @subparameter_name = nil
+          @parameters_double_registry = CompositeParametersDoubleRegistry.new
         end
 
         def for(action, options = {})
@@ -226,9 +226,8 @@ module Shoulda
           self
         end
 
-        def on(subparameter)
-          @subparameter = subparameter
-          @parameters_doubles = SliceOfParametersDoubles.new(subparameter)
+        def on(subparameter_name)
+          @subparameter_name = subparameter_name
           self
         end
 
@@ -245,13 +244,13 @@ module Shoulda
           @controller = controller
           ensure_action_and_verb_present!
 
-          parameters_doubles.register
+          parameters_double_registry.register
 
           Doublespeak.with_doubles_activated do
             context.__send__(verb, action, request_params)
           end
 
-          unpermitted_params.empty?
+          unpermitted_parameter_names.empty?
         end
 
         def failure_message
@@ -264,50 +263,58 @@ module Shoulda
 
         protected
 
-        attr_reader :controller, :double_collections_by_param, :action, :verb,
-          :request_params, :expected_permitted_params, :context, :subparameter,
-          :parameters_doubles
+        attr_reader :controller, :double_collections_by_parameter_name, :action, :verb,
+          :request_params, :expected_permitted_parameter_names, :context, :subparameter_name,
+          :parameters_double_registry
 
         def expectation
           message = 'restrict parameters '
 
-          if subparameter
-            message << "on #{subparameter.inspect} "
+          if subparameter_name
+            message << "on #{subparameter_name.inspect} "
           end
 
-          message << 'to ' + format_param_names(expected_permitted_params)
+          message << 'to ' + format_parameter_names(expected_permitted_parameter_names)
 
           message
         end
 
         def reality
-          if actual_permitted_params.empty?
+          if actual_permitted_parameter_names.empty?
             'it did not restrict any parameters'
           else
             'the restricted parameters were ' +
-              format_param_names(actual_permitted_params) +
+              format_parameter_names(actual_permitted_parameter_names) +
               ' instead'
           end
         end
 
-        def format_param_names(param_names)
-          param_names.map(&:inspect).to_sentence
+        def format_parameter_names(parameter_names)
+          parameter_names.map(&:inspect).to_sentence
         end
 
-        def actual_permitted_params
-          parameters_doubles.permitted_params
+        def actual_permitted_parameter_names
+          @_actual_permitted_parameter_names ||= begin
+            if subparameter_name
+              options = { for: subparameter_name }
+            else
+              options = {}
+            end
+
+            parameters_double_registry.permitted_parameter_names(options)
+          end
         end
 
         def permit_called?
-          actual_permitted_params.any?
+          actual_permitted_parameter_names.any?
         end
 
-        def unpermitted_params
-          expected_permitted_params - actual_permitted_params
+        def unpermitted_parameter_names
+          expected_permitted_parameter_names - actual_permitted_parameter_names
         end
 
-        def verified_permitted_params
-          expected_permitted_params & actual_permitted_params
+        def verified_permitted_parameter_names
+          expected_permitted_parameter_names & actual_permitted_parameter_names
         end
 
         def ensure_action_and_verb_present!
@@ -327,57 +334,63 @@ module Shoulda
           end
         end
 
-        def param_names_as_sentence
-          expected_permitted_params.map(&:inspect).to_sentence
+        def parameter_names_as_sentence
+          expected_permitted_parameter_names.map(&:inspect).to_sentence
         end
 
         # @private
-        class ParametersDoubles
-          def self.permitted_params_within(double_collection)
-            double_collection.calls_to(:permit).map(&:args).flatten
-          end
-
+        class CompositeParametersDoubleRegistry
           def initialize
-            klass = ::ActionController::Parameters
-            @double_collection = Doublespeak.double_collection_for(klass)
+            @parameters_double_registries_by_params = {}
           end
 
           def register
-            double_collection.register_proxy(:permit)
+            double_collection = Doublespeak.double_collection_for(
+              ::ActionController::Parameters.singleton_class
+            )
+            double_collection.register_proxy(:new).to_return do |call|
+              params = call.return_value
+              parameters_double_registry = ParametersDoubleRegistry.new(params)
+              parameters_double_registry.register
+              parameters_double_registries_by_params[params] =
+                parameters_double_registry
+            end
           end
 
-          def permitted_params
-            ParametersDoubles.permitted_params_within(double_collection)
+          def permitted_parameter_names(options = {})
+            parameters_double_registries_by_params.flat_map do |params, double_registry|
+              double_registry.permitted_parameter_names(options)
+            end
           end
 
           protected
 
-          attr_reader :double_collection
+          attr_reader :parameters_double_registries_by_params
         end
 
         # @private
-        class SliceOfParametersDoubles
+        class ParametersDoubleRegistry
           TOP_LEVEL = Object.new
 
-          def initialize(subparameter)
-            klass = ::ActionController::Parameters
+          def self.permitted_parameter_names_within(double_collection)
+            double_collection.calls_to(:permit).map(&:args).flatten
+          end
 
-            @subparameter = subparameter
-            @double_collections_by_param = {
-              TOP_LEVEL => Doublespeak.double_collection_for(klass)
-            }
+          def initialize(params)
+            @params = params
+            @double_collections_by_parameter_name = {}
           end
 
           def register
-            top_level_collection = double_collections_by_param[TOP_LEVEL]
-            double_permit_on(top_level_collection)
-            double_require_on(top_level_collection)
+            register_double_for_permit_against(params, TOP_LEVEL)
           end
 
-          def permitted_params
-            if double_collections_by_param.key?(subparameter)
-              ParametersDoubles.permitted_params_within(
-                double_collections_by_param[subparameter]
+          def permitted_parameter_names(args = {})
+            subparameter_name = args.fetch(:for, TOP_LEVEL)
+
+            if double_collections_by_parameter_name.key?(subparameter_name)
+              self.class.permitted_parameter_names_within(
+                double_collections_by_parameter_name[subparameter_name]
               )
             else
               []
@@ -386,31 +399,30 @@ module Shoulda
 
           protected
 
-          attr_reader :subparameter, :double_collections_by_param
+          attr_reader :params, :double_collections_by_parameter_name
 
           private
 
-          def double_permit_on(double_collection)
+          def register_double_for_permit_against(params, subparameter_name)
+            klass = params.singleton_class
+
+            double_collection = Doublespeak.double_collection_for(klass)
+            register_double_for_permit_on(double_collection)
+            register_double_for_require_on(double_collection)
+
+            double_collections_by_parameter_name[subparameter_name] =
+              double_collection
+          end
+
+          def register_double_for_permit_on(double_collection)
             double_collection.register_proxy(:permit)
           end
 
-          def double_require_on(double_collection)
-            double_collections_by_param = @double_collections_by_param
-            require_double = double_collection.register_proxy(:require)
-
-            require_double.to_return do |call|
-              param_name = call.args.first
+          def register_double_for_require_on(double_collection)
+            double_collection.register_proxy(:require).to_return do |call|
               params = call.return_value
-              double_collections_by_param[param_name] ||=
-                double_permit_against(params)
-            end
-          end
-
-          def double_permit_against(params)
-            klass = params.singleton_class
-
-            Doublespeak.double_collection_for(klass).tap do |double_collection|
-              double_permit_on(double_collection)
+              subparameter_name = call.args.first
+              register_double_for_permit_against(params, subparameter_name)
             end
           end
         end
