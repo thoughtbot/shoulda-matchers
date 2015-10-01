@@ -4,10 +4,7 @@ Shoulda Matchers provides RSpec- and Minitest-compatible one-liners that test
 common Rails functionality. These tests would otherwise be much longer, more
 complex, and error-prone.
 
-[View the official documentation for the latest version (2.8.0).][rubydocs]
-
-**Heads up! This is the README for the master branch. [You might be more
-interested in the README for 2.8.0 instead.][2.8.0-README]**
+[View the official documentation for the latest version (3.0.0).][rubydocs]
 
 ----
 
@@ -161,10 +158,6 @@ end
 
 ### Configuration
 
-**NOTE: The new configuration syntax isn't available in a public release just
-yet -- please refer to the [README for 2.8.0][2.8.0-README] for the current
-installation instructions.**
-
 Before you can use Shoulda Matchers, you'll need to tell it a couple of things:
 
 * Which test framework you're using
@@ -255,4 +248,3 @@ We are [available for hire][hire].
 [contributors]: https://github.com/thoughtbot/shoulda-matchers/contributors
 [shoulda]: http://github.com/thoughtbot/shoulda
 [shoulda-context]: http://github.com/thoughtbot/shoulda-context
-[2.8.0-README]: https://github.com/thoughtbot/shoulda-matchers/tree/v2.8.0#shoulda-matchers---
