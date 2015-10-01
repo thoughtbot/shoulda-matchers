@@ -257,7 +257,7 @@
 * Fix `permit` + `on` as it did not work correctly. ([#771], [0d43835])
 
 * Fix `shoulda/matchers/independent` so that it can be required
-  independently, without having to require all of the gem. ([#746])
+  independently, without having to require all of the gem. ([#746], [e0a0200])
 
 ### Features
 
@@ -305,6 +305,7 @@
 [#771]: https://github.com/thoughtbot/shoulda-matchers/pull/771
 [0d43835]: https://github.com/thoughtbot/shoulda-matchers/commit/0d43835b615f379f069c7d2c2264a80332510778
 [#746]: https://github.com/thoughtbot/shoulda-matchers/pull/746
+[e0a0200]: https://github.com/thoughtbot/shoulda-matchers/commit/e0a0200fe47157c161fb206043540804bdad664e
 
 # 2.8.0
 
