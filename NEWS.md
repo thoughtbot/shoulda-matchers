@@ -150,7 +150,7 @@
 
     ([9d9dc4e])
 
-* `validate_uniqueness_of` is now properly case-insensitive by default, to match
+* `validate_uniqueness_of` is now properly case-sensitive by default, to match
   the default behavior of the validation itself. This is a backward-incompatible
   change because this test which incorrectly passed before will now fail:
 
