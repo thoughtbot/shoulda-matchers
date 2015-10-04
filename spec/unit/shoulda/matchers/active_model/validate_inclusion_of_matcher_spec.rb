@@ -75,7 +75,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       end
     end
 
-    context "against a float attribute" do
+    context 'against a float attribute' do
       it_behaves_like 'it supports in_array',
         possible_values: [1.0, 2.0, 3.0, 4.0, 5.0],
         zero: 0.0,
@@ -97,7 +97,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       end
     end
 
-    context "against a decimal attribute" do
+    context 'against a decimal attribute' do
       it_behaves_like 'it supports in_array',
         possible_values: [1.0, 2.0, 3.0, 4.0, 5.0].map { |number|
           BigDecimal.new(number.to_s)
@@ -112,6 +112,72 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       def build_object(options = {}, &block)
         build_object_with_generic_attribute(
           options.merge(column_type: :decimal, value: BigDecimal.new('1.0')),
+          &block
+        )
+      end
+
+      def add_outside_value_to(values)
+        values + [values.last + 1]
+      end
+    end
+
+    context 'against a date attribute' do
+      today = Date.today
+
+      it_behaves_like 'it supports in_array',
+        possible_values: (1..5).map { |n| today + n },
+        reserved_outside_value: described_class::ARBITRARY_OUTSIDE_DATE
+
+      it_behaves_like 'it supports in_range',
+        possible_values: (today .. today + 5)
+
+      define_method :build_object do |options = {}, &block|
+        build_object_with_generic_attribute(
+          options.merge(column_type: :date, value: today),
+          &block
+        )
+      end
+
+      def add_outside_value_to(values)
+        values + [values.last + 1]
+      end
+    end
+
+    context 'against a datetime attribute (using DateTime)' do
+      now = DateTime.now
+
+      it_behaves_like 'it supports in_array',
+        possible_values: (1..5).map { |n| now + n },
+        reserved_outside_value: described_class::ARBITRARY_OUTSIDE_DATETIME
+
+      it_behaves_like 'it supports in_range',
+        possible_values: (now .. now + 5)
+
+      define_method :build_object do |options = {}, &block|
+        build_object_with_generic_attribute(
+          options.merge(column_type: :datetime, value: now),
+          &block
+        )
+      end
+
+      def add_outside_value_to(values)
+        values + [values.last + 1]
+      end
+    end
+
+    context 'against a datetime attribute (using Time)' do
+      now = Time.now
+
+      it_behaves_like 'it supports in_array',
+        possible_values: (1..5).map { |n| now + n },
+        reserved_outside_value: described_class::ARBITRARY_OUTSIDE_TIME
+
+      it_behaves_like 'it supports in_range',
+        possible_values: (now .. now + 5)
+
+      define_method :build_object do |options = {}, &block|
+        build_object_with_generic_attribute(
+          options.merge(column_type: :time, value: now),
           &block
         )
       end
@@ -270,7 +336,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     end
 
     if zero
-      it 'matches when one of the given values is a 0' do
+      it 'matches when one of the given values is a zero' do
         valid_values = possible_values + [zero]
         builder = build_object_allowing(valid_values)
         expect_to_match_on_values(builder, valid_values)
@@ -526,7 +592,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         )
       end
     end
-
 
     def build_object_with_generic_attribute(options = {}, &block)
       attribute_name = :attr

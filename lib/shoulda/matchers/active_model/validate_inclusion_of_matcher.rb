@@ -263,9 +263,12 @@ module Shoulda
 
       # @private
       class ValidateInclusionOfMatcher < ValidationMatcher
-        ARBITRARY_OUTSIDE_STRING = 'shouldamatchersteststring'
+        ARBITRARY_OUTSIDE_STRING = 'shoulda-matchers test string'
         ARBITRARY_OUTSIDE_FIXNUM = 123456789
         ARBITRARY_OUTSIDE_DECIMAL = BigDecimal.new('0.123456789')
+        ARBITRARY_OUTSIDE_DATE = Date.jd(9999999)
+        ARBITRARY_OUTSIDE_DATETIME = DateTime.jd(9999999)
+        ARBITRARY_OUTSIDE_TIME = Time.at(9999999999)
         BOOLEAN_ALLOWS_BOOLEAN_MESSAGE = <<EOT
 You are using `validate_inclusion_of` to assert that a boolean column allows
 boolean values and disallows non-boolean ones. Be aware that it is not possible
@@ -447,6 +450,12 @@ EOT
             [ARBITRARY_OUTSIDE_FIXNUM]
           when :decimal
             [ARBITRARY_OUTSIDE_DECIMAL]
+          when :date
+            [ARBITRARY_OUTSIDE_DATE]
+          when :datetime
+            [ARBITRARY_OUTSIDE_DATETIME]
+          when :time
+            [ARBITRARY_OUTSIDE_TIME]
           else
             [ARBITRARY_OUTSIDE_STRING]
           end
@@ -492,9 +501,9 @@ EOT
 
         def column_type_to_attribute_type(type)
           case type
-            when :boolean, :decimal then type
             when :integer, :float then :fixnum
-            else :default
+            when :timestamp then :datetime
+            else type
           end
         end
 
@@ -503,7 +512,10 @@ EOT
             when true, false then :boolean
             when BigDecimal then :decimal
             when Fixnum then :fixnum
-            else :default
+            when Date then :date
+            when DateTime then :datetime
+            when Time then :time
+            else :unknown
           end
         end
       end
