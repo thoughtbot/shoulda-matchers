@@ -450,6 +450,20 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
 
         expect(record).to validate_uniqueness
       end
+
+      context 'given an existing record where the value of the attribute under test is not case-swappable' do
+        it 'raises a NonCaseSwappableValueError' do
+          model = define_model_validating_uniqueness(
+            attribute_type: :string,
+            validation_options: { case_sensitive: true },
+          )
+          record = create_record_from(model, attribute_name => '123')
+          running_matcher = -> { validate_uniqueness.matches?(record) }
+
+          expect(&running_matcher).
+            to raise_error(described_class::NonCaseSwappableValueError)
+        end
+      end
     end
 
     context 'when the matcher is qualified with case_insensitive' do

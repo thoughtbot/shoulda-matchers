@@ -412,6 +412,14 @@ module Shoulda
             if @options[:case_insensitive]
               disallows_value_of(swapcased_value, @expected_message)
             else
+              if value == swapcased_value
+                raise NonCaseSwappableValueError.create(
+                  model: @subject.class,
+                  attribute: @attribute,
+                  value: value
+                )
+              end
+
               allows_value_of(swapcased_value, @expected_message)
             end
           else
@@ -550,6 +558,33 @@ module Shoulda
 
         def column_for(scope)
           @subject.class.columns_hash[scope.to_s]
+        end
+
+        # @private
+        class NonCaseSwappableValueError < Shoulda::Matchers::Error
+          attr_accessor :model, :attribute, :value
+
+          def message
+            Shoulda::Matchers.word_wrap <<-MESSAGE
+Your #{model.name} model has a uniqueness validation on :#{attribute} which is
+declared to be case-sensitive, but the value the uniqueness matcher used,
+#{value.inspect}, doesn't contain any alpha characters, so using it to
+to test the case-sensitivity part of the validation is ineffective. There are
+two possible solutions for this depending on what you're trying to do here:
+
+a) If you meant for the validation to be case-sensitive, then you need to give
+   the uniqueness matcher a saved instance of #{model.name} with a value for
+   :#{attribute} that contains alpha characters.
+
+b) If you meant for the validation to be case-insensitive, then you need to
+   add `case_sensitive: false` to the validation and add `case_insensitive` to
+   the matcher.
+
+For more information, please see:
+
+http://matchers.shoulda.io/docs/v#{Shoulda::Matchers::VERSION}/file.NonCaseSwappableValueError.html
+            MESSAGE
+          end
         end
       end
     end
