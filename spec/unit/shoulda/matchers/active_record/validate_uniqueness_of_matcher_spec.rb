@@ -441,7 +441,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
   end
 
   context 'when the model has a case-sensitive validation' do
-    context 'when case_insensitive is not specified' do
+    context 'when the matcher is not qualified with case_insensitive' do
       it 'accepts' do
         record = build_record_validating_uniqueness(
           attribute_type: :string,
@@ -452,7 +452,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
       end
     end
 
-    context 'when case_insensitive is specified' do
+    context 'when the matcher is qualified with case_insensitive' do
       it 'rejects' do
         record = build_record_validating_uniqueness(
           attribute_type: :string,
