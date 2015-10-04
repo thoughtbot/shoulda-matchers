@@ -143,7 +143,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       end
     end
 
-    context 'against a datetime attribute (using DateTime)' do
+    context 'against a datetime attribute' do
       now = DateTime.now
 
       it_behaves_like 'it supports in_array',
@@ -165,7 +165,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       end
     end
 
-    context 'against a datetime attribute (using Time)' do
+    context 'against a time attribute' do
       now = Time.now
 
       it_behaves_like 'it supports in_array',
@@ -533,6 +533,28 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
   context 'for a database column' do
     include_context 'for a generic attribute'
+
+    context 'against a timestamp column' do
+      now = DateTime.now
+
+      it_behaves_like 'it supports in_array',
+        possible_values: (1..5).map { |n| now + n },
+        reserved_outside_value: described_class::ARBITRARY_OUTSIDE_DATETIME
+
+      it_behaves_like 'it supports in_range',
+        possible_values: (now .. now + 5)
+
+      define_method :build_object do |options = {}, &block|
+        build_object_with_generic_attribute(
+          options.merge(column_type: :timestamp, value: now),
+          &block
+        )
+      end
+
+      def add_outside_value_to(values)
+        values + [values.last + 1]
+      end
+    end
 
     context 'against a boolean attribute' do
       context 'which is nullable' do

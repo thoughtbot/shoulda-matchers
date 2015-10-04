@@ -3,7 +3,7 @@
 ### Bug fixes
 
 * Fix `validate_inclusion_of` + `in_array` when used against a date or datetime
-  attribute so that it does not raise a CouldNotSetAttributeError.
+  column/attribute so that it does not raise a CouldNotSetAttributeError.
 
 # 3.0.0
 
