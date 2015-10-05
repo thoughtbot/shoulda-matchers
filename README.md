@@ -105,7 +105,7 @@ Include `shoulda-matchers` in your Gemfile:
 
 ``` ruby
 group :test do
-  gem 'shoulda-matchers'
+  gem 'shoulda-matchers', '~> 3.0'
 end
 ```
 
@@ -141,7 +141,7 @@ gem in your Gemfile instead:
 
 ```ruby
 group :test do
-  gem 'shoulda'
+  gem 'shoulda', '~> 3.5'
 end
 ```
 
