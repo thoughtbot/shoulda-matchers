@@ -179,7 +179,7 @@ module Shoulda
       #
       # ##### is_greater_than
       #
-      # Use `is_greater_than` to test usage of tthe `:greater_than` option.
+      # Use `is_greater_than` to test usage of the `:greater_than` option.
       # This asserts that the attribute can take a number which is greater than
       # the given value and cannot take a number less than or equal to it.
       #
