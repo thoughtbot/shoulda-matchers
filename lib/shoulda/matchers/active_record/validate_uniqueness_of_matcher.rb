@@ -412,6 +412,12 @@ module Shoulda
             if @options[:case_insensitive]
               disallows_value_of(swapcased_value, @expected_message)
             else
+              if value == swapcased_value
+                raise ActiveModel::CouldNotValidateCaseError.create(
+                  existing_record,
+                  @attribute,
+                )
+              end
               allows_value_of(swapcased_value, @expected_message)
             end
           else

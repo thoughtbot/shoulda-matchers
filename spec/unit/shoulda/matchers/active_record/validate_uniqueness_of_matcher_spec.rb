@@ -450,9 +450,21 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
 
         expect(record).to validate_uniqueness
       end
+
+      context 'when the value has no case sensitivity' do
+        it 'accepts', focus: true do
+          model = define_model_validating_uniqueness(
+            attribute_type: :string,
+            validation_options: { case_sensitive: true },
+          )
+          record = create_record_from(model, attribute_name => '123')
+          error = Shoulda::Matchers::ActiveModel::CouldNotValidateCaseError
+          expect { validate_uniqueness.matches?(record) }.to raise_error error
+        end
+      end
     end
 
-    context 'when case_insensitive is specified' do
+    context 'when qualified with case_insensitive' do
       it 'rejects' do
         record = build_record_validating_uniqueness(
           attribute_type: :string,
