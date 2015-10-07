@@ -16,26 +16,13 @@ ENV['RAILS_ENV'] = 'test'
 require 'rspec/rails'
 require 'shoulda-matchers'
 
-PROJECT_ROOT = File.expand_path('../..', __FILE__)
-$LOAD_PATH << File.join(PROJECT_ROOT, 'lib')
+require 'spec_helper'
 
 Dir[ File.join(File.expand_path('../support/unit/**/*.rb', __FILE__)) ].sort.each do |file|
   require file
 end
 
 RSpec.configure do |config|
-  config.order = :random
-
-  config.expect_with :rspec do |c|
-    c.syntax = :expect
-  end
-
-  if config.files_to_run.one?
-    config.default_formatter = 'doc'
-  end
-
-  config.mock_with :rspec
-
   if config.respond_to?(:infer_spec_type_from_file_location!)
     config.infer_spec_type_from_file_location!
   end
@@ -69,5 +56,3 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
-
-$VERBOSE = true
