@@ -1,7 +1,7 @@
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OddNumberMatcher  do
-  subject { described_class.new(:attr) }
+  subject { described_class.new(numericality_matcher, :attr) }
 
   it_behaves_like 'a numerical submatcher'
   it_behaves_like 'a numerical type submatcher'
@@ -84,6 +84,10 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OddNumberMatcher 
     end
   end
 
+  def numericality_matcher
+    double(:numericality_matcher, given_numeric_column?: nil)
+  end
+
   def validating_odd_number(options = {})
     define_model :example, attr: :string do
       validates_numericality_of :attr, { odd: true }.merge(options)
@@ -93,5 +97,4 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OddNumberMatcher 
   def not_validating_odd_number
     define_model(:example, attr: :string).new
   end
-
 end

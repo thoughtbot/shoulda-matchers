@@ -1,7 +1,7 @@
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::EvenNumberMatcher  do
-  subject { described_class.new(:attr) }
+  subject { described_class.new(numericality_matcher, :attr) }
 
   it_behaves_like 'a numerical submatcher'
   it_behaves_like 'a numerical type submatcher'
@@ -84,6 +84,10 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::EvenNumberMatcher
     end
   end
 
+  def numericality_matcher
+    double(:numericality_matcher, given_numeric_column?: nil)
+  end
+
   def validating_even_number(options = {})
     define_model :example, attr: :string do
       validates_numericality_of :attr, { even: true }.merge(options)
@@ -93,5 +97,4 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::EvenNumberMatcher
   def not_validating_even_number
     define_model(:example, attr: :string).new
   end
-
 end

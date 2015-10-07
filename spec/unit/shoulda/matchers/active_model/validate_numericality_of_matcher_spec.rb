@@ -126,6 +126,30 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
         record = build_record_validating_numericality
         expect(record).to validate_numericality
       end
+
+      context 'when the column is an integer column' do
+        it 'raises an IneffectiveTestError' do
+          record = build_record_validating_numericality(
+            column_type: :integer
+          )
+          assertion = -> { expect(record).to validate_numericality }
+
+          expect(&assertion).
+            to raise_error(described_class::IneffectiveTestError)
+        end
+      end
+
+      context 'when the column is a float column' do
+        it 'raises an IneffectiveTestError' do
+          record = build_record_validating_numericality(
+            column_type: :float
+          )
+          assertion = -> { expect(record).to validate_numericality }
+
+          expect(&assertion).
+            to raise_error(described_class::IneffectiveTestError)
+        end
+      end
     end
 
     context 'and not validating anything' do
@@ -187,6 +211,28 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
         record = build_record_validating_numericality(odd: true)
         expect(record).to validate_numericality.odd
       end
+
+      context 'when the column is an integer column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :integer,
+            odd: true
+          )
+
+          expect(record).to validate_numericality.odd
+        end
+      end
+
+      context 'when the column is a float column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :float,
+            odd: true
+          )
+
+          expect(record).to validate_numericality.odd
+        end
+      end
     end
 
     context 'and not validating with odd' do
@@ -204,9 +250,31 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
 
   context 'qualified with even' do
     context 'and validating with even' do
-      it 'allows even number values for that attribute' do
+      it 'accepts' do
         record = build_record_validating_numericality(even: true)
         expect(record).to validate_numericality.even
+      end
+
+      context 'when the column is an integer column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :integer,
+            even: true
+          )
+
+          expect(record).to validate_numericality.even
+        end
+      end
+
+      context 'when the column is a float column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :float,
+            even: true
+          )
+
+          expect(record).to validate_numericality.even
+        end
       end
     end
 
@@ -228,6 +296,28 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           less_than_or_equal_to: 18
         )
         expect(record).to validate_numericality.is_less_than_or_equal_to(18)
+      end
+
+      context 'when the column is an integer column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :integer,
+            less_than_or_equal_to: 18
+          )
+
+          expect(record).to validate_numericality.is_less_than_or_equal_to(18)
+        end
+      end
+
+      context 'when the column is a float column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :float,
+            less_than_or_equal_to: 18
+          )
+
+          expect(record).to validate_numericality.is_less_than_or_equal_to(18)
+        end
       end
     end
 
@@ -254,6 +344,28 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           to validate_numericality.
           is_less_than(18)
       end
+
+      context 'when the column is an integer column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :integer,
+            less_than: 18
+          )
+
+          expect(record).to validate_numericality.is_less_than(18)
+        end
+      end
+
+      context 'when the column is a float column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :float,
+            less_than: 18
+          )
+
+          expect(record).to validate_numericality.is_less_than(18)
+        end
+      end
     end
 
     context 'and not validating with less_than' do
@@ -276,6 +388,28 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
       it 'accepts' do
         record = build_record_validating_numericality(equal_to: 18)
         expect(record).to validate_numericality.is_equal_to(18)
+      end
+
+      context 'when the column is an integer column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :integer,
+            equal_to: 18
+          )
+
+          expect(record).to validate_numericality.is_equal_to(18)
+        end
+      end
+
+      context 'when the column is a float column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :float,
+            equal_to: 18
+          )
+
+          expect(record).to validate_numericality.is_equal_to(18)
+        end
       end
     end
 
@@ -302,6 +436,32 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           to validate_numericality.
           is_greater_than_or_equal_to(18)
       end
+
+      context 'when the column is an integer column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :integer,
+            greater_than_or_equal_to: 18
+          )
+
+          expect(record).
+            to validate_numericality.
+            is_greater_than_or_equal_to(18)
+        end
+      end
+
+      context 'when the column is a float column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :float,
+            greater_than_or_equal_to: 18
+          )
+
+          expect(record).
+            to validate_numericality.
+            is_greater_than_or_equal_to(18)
+        end
+      end
     end
 
     context 'not validating with greater_than_or_equal_to' do
@@ -326,6 +486,32 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
         expect(record).
           to validate_numericality.
           is_greater_than(18)
+      end
+
+      context 'when the column is an integer column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :integer,
+            greater_than: 18
+          )
+
+          expect(record).
+            to validate_numericality.
+            is_greater_than(18)
+        end
+      end
+
+      context 'when the column is a float column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :float,
+            greater_than: 18
+          )
+
+          expect(record).
+            to validate_numericality.
+            is_greater_than(18)
+        end
       end
     end
 
@@ -740,6 +926,16 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
     end
   end
 
+  context 'against an ActiveModel model' do
+    it 'accepts' do
+      model = define_active_model_class :example, accessors: [:attr] do
+        validates_numericality_of :attr
+      end
+
+      expect(model.new).to validate_numericality_of(:attr)
+    end
+  end
+
   describe '#description' do
     context 'qualified with nothing' do
       it 'describes that it allows numbers' do
@@ -845,8 +1041,9 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
 
   def define_model_validating_numericality(options = {})
     attribute_name = options.delete(:attribute_name) { self.attribute_name }
+    column_type = options.delete(:column_type) { :string }
 
-    define_model 'Example', attribute_name => :string do |model|
+    define_model 'Example', attribute_name => { type: column_type } do |model|
       model.validates_numericality_of(attribute_name, options)
     end
   end

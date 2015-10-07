@@ -20,7 +20,6 @@ module Shoulda
             @value = value
             @operator = operator
             @message = ERROR_MESSAGES[operator]
-            @comparison_combos = comparison_combos
             @strict = false
           end
 
@@ -80,11 +79,7 @@ module Shoulda
           def submatchers
             @_submatchers ||=
               comparison_combos.map do |diff, submatcher_method_name|
-                matcher = __send__(
-                  submatcher_method_name,
-                  (@value + diff).to_s,
-                  nil
-                )
+                matcher = __send__(submatcher_method_name, diff, nil)
                 matcher.with_message(@message, values: { count: @value })
                 matcher
               end
@@ -127,8 +122,14 @@ module Shoulda
           end
 
           def diffs_to_compare
-            diff = @numericality_matcher.diff_to_compare
-            [-diff, 0, diff]
+            diff_to_compare = @numericality_matcher.diff_to_compare
+            values = [-1, 0, 1].map { |sign| @value + (diff_to_compare * sign) }
+
+            if @numericality_matcher.given_numeric_column?
+              values
+            else
+              values.map(&:to_s)
+            end
           end
 
           def comparison_expectation

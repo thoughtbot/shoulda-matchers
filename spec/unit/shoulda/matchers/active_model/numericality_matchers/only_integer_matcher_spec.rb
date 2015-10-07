@@ -1,7 +1,7 @@
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OnlyIntegerMatcher do
-  subject { described_class.new(:attr) }
+  subject { described_class.new(numericality_matcher, :attr) }
 
   it_behaves_like 'a numerical submatcher'
   it_behaves_like 'a numerical type submatcher'
@@ -82,6 +82,10 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OnlyIntegerMatche
       expect(validating_only_integer(on: :customizable)).
         not_to subject
     end
+  end
+
+  def numericality_matcher
+    double(:numericality_matcher, given_numeric_column?: nil)
   end
 
   def validating_only_integer(options = {})

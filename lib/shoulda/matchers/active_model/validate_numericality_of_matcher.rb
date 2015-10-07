@@ -315,18 +315,19 @@ module Shoulda
           @submatchers = []
           @diff_to_compare = DEFAULT_DIFF_TO_COMPARE
           @strict = false
+
           add_disallow_value_matcher
         end
 
         def strict
-          @submatchers.each(&:strict)
           @strict = true
+          @submatchers.each(&:strict)
           self
         end
 
         def only_integer
           prepare_submatcher(
-            NumericalityMatchers::OnlyIntegerMatcher.new(@attribute)
+            NumericalityMatchers::OnlyIntegerMatcher.new(self, @attribute)
           )
           self
         end
@@ -342,14 +343,14 @@ module Shoulda
 
         def odd
           prepare_submatcher(
-            NumericalityMatchers::OddNumberMatcher.new(@attribute)
+            NumericalityMatchers::OddNumberMatcher.new(self, @attribute)
           )
           self
         end
 
         def even
           prepare_submatcher(
-            NumericalityMatchers::EvenNumberMatcher.new(@attribute)
+            NumericalityMatchers::EvenNumberMatcher.new(self, @attribute)
           )
           self
         end
@@ -391,6 +392,19 @@ module Shoulda
 
         def matches?(subject)
           @subject = subject
+
+          if given_numeric_column?
+            remove_disallow_value_matcher
+          end
+
+          if @submatchers.empty?
+            raise IneffectiveTestError.create(
+              model: @subject.class,
+              attribute: @attribute,
+              column_type: column_type
+            )
+          end
+
           first_failing_submatcher.nil?
         end
 
@@ -417,7 +431,17 @@ module Shoulda
           first_failing_submatcher.failure_message_when_negated
         end
 
+        def given_numeric_column?
+          [:integer, :float].include?(column_type)
+        end
+
         private
+
+        def column_type
+          if @subject.class.respond_to?(:columns_hash)
+            @subject.class.columns_hash[@attribute.to_s].type
+          end
+        end
 
         def add_disallow_value_matcher
           disallow_value_matcher = DisallowValueMatcher.new(NON_NUMERIC_VALUE).
@@ -427,8 +451,13 @@ module Shoulda
           add_submatcher(disallow_value_matcher)
         end
 
+        def remove_disallow_value_matcher
+          @submatchers.shift
+        end
+
         def prepare_submatcher(submatcher)
           add_submatcher(submatcher)
+
           if submatcher.respond_to?(:diff_to_compare)
             update_diff_to_compare(submatcher)
           end
@@ -474,6 +503,32 @@ module Shoulda
               arr << submatcher.comparison_description
             end
             arr
+          end
+        end
+
+        class IneffectiveTestError < Shoulda::Matchers::Error
+          attr_accessor :model, :attribute, :column_type
+
+          def message
+            Shoulda::Matchers.word_wrap \
+<<MESSAGE
+You are attempting to use validate_numericality_of, but the attribute you're
+testing, :#{attribute}, is a #{column_type} column. One of the things that the
+numericality matcher does is to assert that setting :#{attribute} to a string
+that doesn't look like a #{column_type} will cause your
+#{humanized_model_name} to become invalid. In this case, it's impossible to make
+this assertion since :#{attribute} will typecast any incoming value to a
+#{column_type}. This means that it's already guaranteed to be numeric!
+Since this matcher isn't doing anything, you can remove it from your model
+tests, and in fact, you can remove the validation from your model as it isn't
+doing anything either.
+MESSAGE
+          end
+
+          private
+
+          def humanized_model_name
+            model.name.humanize.downcase
           end
         end
       end

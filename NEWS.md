@@ -4,17 +4,24 @@
 
 * Fix `validate_inclusion_of` + `in_array` when used against a date or datetime
   column/attribute so that it does not raise a CouldNotSetAttributeError.
-  ([8fa97b4])
+  ([#783], [8fa97b4])
+
+* Fix `validate_numericality_of` when used against a numeric column so that it
+  no longer raises a CouldNotSetAttributeError if the matcher has been qualified
+  in any way (`only_integer`, `greater_than`, `odd`, etc.). ([#784])
 
 ### Improvements
 
 * `validate_uniqueness_of` now raises a NonCaseSwappableValueError if the value
   the matcher is using to test uniqueness cannot be case-swapped -- in other
   words, if it doesn't contain any alpha characters. When this is the case, the
-  matcher cannot work effectively. ([#789])
+  matcher cannot work effectively. ([#789], [ada9bd3])
 
-[#789]: https://github.com/thoughtbot/shoulda-matchers/pull/789
+[#783]: https://github.com/thoughtbot/shoulda-matchers/pull/783
 [8fa97b4]: https://github.com/thoughtbot/shoulda-matchers/commit/8fa97b4ff33b57ce16dfb96be1ec892502f2aa9e
+[#784]: https://github.com/thoughtbot/shoulda-matchers/pull/784
+[#789]: https://github.com/thoughtbot/shoulda-matchers/pull/789
+[ada9bd3]: https://github.com/thoughtbot/shoulda-matchers/commit/ada9bd3a1b9f2bb9fa74d0dfe1f8f7080314298c
 
 # 3.0.0
 

@@ -283,6 +283,6 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
   end
 
   def numericality_matcher
-    double(diff_to_compare: 1)
+    double(diff_to_compare: 1, given_numeric_column?: nil)
   end
 end

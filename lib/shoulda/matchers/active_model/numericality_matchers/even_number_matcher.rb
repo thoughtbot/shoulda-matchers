@@ -6,20 +6,26 @@ module Shoulda
         class EvenNumberMatcher < NumericTypeMatcher
           NON_EVEN_NUMBER_VALUE = 1
 
-          def initialize(attribute, options = {})
-            @attribute = attribute
-            @disallow_value_matcher =
-              DisallowValueMatcher.new(NON_EVEN_NUMBER_VALUE.to_s).
-              for(@attribute).
-              with_message(:even)
-          end
-
           def allowed_type
             'even numbers'
           end
 
           def diff_to_compare
             2
+          end
+
+          protected
+
+          def wrap_disallow_value_matcher(matcher)
+            matcher.with_message(:even)
+          end
+
+          def disallowed_value
+            if @numeric_type_matcher.given_numeric_column?
+              NON_EVEN_NUMBER_VALUE
+            else
+              NON_EVEN_NUMBER_VALUE.to_s
+            end
           end
         end
       end
