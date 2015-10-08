@@ -514,4 +514,109 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
       end
     end
   end
+
+  context 'qualified with #allow_nil' do
+    context 'when using delegate from rails' do
+      context 'when delegate call allows nil' do
+        it 'accepts' do
+          define_class('Person') do
+            delegate :hello, to: :country, allow_nil: true
+            def country; end
+          end
+
+          person = Person.new
+          expect(person).to delegate_method(:hello).to(:country).allow_nil
+        end
+      end
+
+      context 'when delegate call does not allow nil' do
+        it 'rejects with the correct failure message' do
+          define_class('Person') do
+            delegate :hello, to: :country
+            def country; end
+          end
+
+          message = [
+            'Expected Person to delegate #hello to #country'\
+            ' object allowing nil',
+            'Method calls sent to Person#country:'
+          ].join("\n")
+
+          person = Person.new
+
+          expect do
+            expect(person).to delegate_method(:hello).to(:country).allow_nil
+          end.to fail_including(message)
+        end
+      end
+    end
+    context 'when using Forwardable' do
+      context 'when delegate object is nil' do
+        it 'rejects with the correct failure message' do
+          define_class('Person') do
+            extend Forwardable
+
+            def_delegators :country, :hello
+
+            def country; end
+          end
+
+          message = [
+            'Expected Person to delegate #hello to #country'\
+            ' object allowing nil',
+            'Method calls sent to Person#country:',
+            '1) hello()'
+          ].join("\n")
+
+          person = Person.new
+
+          expect do
+            expect(person).to delegate_method(:hello).to(:country).allow_nil
+          end.to fail_with_message(message)
+        end
+      end
+    end
+    context 'when using methods' do
+      context 'when supports nil delegate object' do
+        it 'accepts' do
+          define_class('Person') do
+            def country; end
+
+            def hello
+              return unless country
+              country.hello
+            end
+          end
+
+          person = Person.new
+          expect(person).to delegate_method(:hello).to(:country).allow_nil
+        end
+      end
+
+      context 'when does not supports nil delegate object' do
+        it 'rejects with the correct failure message' do
+          define_class('Person') do
+            def country; end
+
+            def hello
+              country.hello
+            end
+          end
+
+          message = [
+            'Expected Person to delegate #hello to #country'\
+            ' object allowing nil',
+            'Method calls sent to Person#country:',
+            '1) hello()'
+          ].join("\n")
+
+          person = Person.new
+
+          expect do
+            expect(person).to delegate_method(:hello).to(:country).allow_nil
+          end.to fail_with_message(message)
+        end
+      end
+    end
+  end
 end

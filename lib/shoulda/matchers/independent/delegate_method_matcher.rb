@@ -180,7 +180,8 @@ module Shoulda
 
           subject_has_delegating_method? &&
             subject_has_delegate_object_reader_method? &&
-            subject_delegates_to_delegate_object_correctly?
+            subject_delegates_to_delegate_object_correctly? &&
+            subject_delegates_to_nil_delegate_object_correctly?
         end
 
         def description
@@ -189,6 +190,10 @@ module Shoulda
 
           if delegated_arguments.any?
             string << " passing arguments #{delegated_arguments.inspect}"
+          end
+
+          if delegate_object_is_nil_allowed
+            string << ' allowing nil'
           end
 
           if delegate_method != delegating_method
@@ -220,6 +225,11 @@ module Shoulda
           self
         end
 
+        def allow_nil
+          @delegate_object_is_nil_allowed = true
+          self
+        end
+
         def build_delegating_method_prefix(prefix)
           case prefix
             when true, nil then delegate_object_reader_method
@@ -248,7 +258,8 @@ module Shoulda
           :delegate_method,
           :subject_double_collection,
           :delegate_object,
-          :delegate_object_reader_method
+          :delegate_object_reader_method,
+          :delegate_object_is_nil_allowed
 
         def subject
           @subject
@@ -328,8 +339,21 @@ module Shoulda
           end
         end
 
+        def subject_delegates_to_nil_delegate_object_correctly?
+          return true unless delegate_object_is_nil_allowed
+          register_subject_double_collection_to(nil)
+
+          Doublespeak.with_doubles_activated do
+            begin
+              subject.public_send(delegating_method, *delegated_arguments).nil?
+            rescue
+              false
+            end
+          end
+        end
+
         def subject_delegates_to_delegate_object_correctly?
-          register_subject_double_collection
+          register_subject_double_collection_to(delegate_object)
 
           Doublespeak.with_doubles_activated do
             subject.public_send(delegating_method, *delegated_arguments)
@@ -342,11 +366,11 @@ module Shoulda
           end
         end
 
-        def register_subject_double_collection
+        def register_subject_double_collection_to(returned_object)
           double_collection =
             Doublespeak.double_collection_for(subject.singleton_class)
           double_collection.register_stub(delegate_object_reader_method).
-            to_return(delegate_object)
+            to_return(returned_object)
 
           @subject_double_collection = double_collection
         end
