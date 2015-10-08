@@ -340,15 +340,18 @@ module Shoulda
         end
 
         def subject_delegates_to_nil_delegate_object_correctly?
-          return true unless delegate_object_is_nil_allowed
-          register_subject_double_collection_to(nil)
+          if delegate_object_is_nil_allowed
+            register_subject_double_collection_to(nil)
 
-          Doublespeak.with_doubles_activated do
-            begin
-              subject.public_send(delegating_method, *delegated_arguments).nil?
-            rescue
-              false
+            Doublespeak.with_doubles_activated do
+              begin
+                subject.public_send(delegating_method, *delegated_arguments).nil?
+              rescue
+                false
+              end
             end
+          else
+            true
           end
         end
 
