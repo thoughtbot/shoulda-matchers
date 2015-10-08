@@ -199,9 +199,9 @@ DEPENDENCIES
   rails (= 4.0.0)
   rake (~> 10.0)
   redcarpet
-  rspec-core (>= 3.2.0, < 4)
-  rspec-expectations (>= 3.2.0, < 4)
-  rspec-rails (>= 3.2.0, < 4)
+  rspec-core (>= 3.3.0, < 4)
+  rspec-expectations (>= 3.3.0, < 4)
+  rspec-rails (>= 3.3.0, < 4)
   sass-rails (~> 4.0.0)
   sdoc
   shoulda-context (~> 1.2.0)
@@ -212,6 +212,3 @@ DEPENDENCIES
   turbolinks
   uglifier (>= 1.3.0)
   yard
-
-BUNDLED WITH
-   1.10.6

@@ -5,8 +5,8 @@ gem 'bundler', '~> 1.1'
 gem 'pry', github: 'pry/pry'
 gem 'pry-byebug'
 gem 'rake', '~> 10.0'
-gem 'rspec-core', '>= 3.2.0', '< 4'
-gem 'rspec-expectations', '>= 3.2.0', '< 4'
+gem 'rspec-core', '>= 3.3.0', '< 4'
+gem 'rspec-expectations', '>= 3.3.0', '< 4'
 
 # YARD
 gem 'yard'
