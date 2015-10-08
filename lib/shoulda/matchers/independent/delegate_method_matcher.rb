@@ -341,17 +341,21 @@ module Shoulda
 
         def subject_delegates_to_nil_delegate_object_correctly?
           if delegate_object_is_nil_allowed
-            register_subject_double_collection_to(nil)
-
-            Doublespeak.with_doubles_activated do
-              begin
-                subject.public_send(delegating_method, *delegated_arguments).nil?
-              rescue
-                false
-              end
-            end
+            subject_delegates_to_nil_delegate_object?
           else
             true
+          end
+        end
+
+        def subject_delegates_to_nil_delegate_object?
+          register_subject_double_collection_to(nil)
+
+          Doublespeak.with_doubles_activated do
+            begin
+              subject.public_send(delegating_method, *delegated_arguments).nil?
+            rescue
+              false
+            end
           end
         end
 
