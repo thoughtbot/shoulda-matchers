@@ -14,6 +14,7 @@ ENV['BUNDLE_GEMFILE'] ||= app.gemfile_path
 ENV['RAILS_ENV'] = 'test'
 
 require 'rspec/rails'
+require 'rspec/matchers/fail_matchers'
 require 'shoulda-matchers'
 
 PROJECT_ROOT = File.expand_path('../..', __FILE__)
@@ -59,6 +60,7 @@ RSpec.configure do |config|
   UnitTests::ColumnTypeHelpers.configure_example_group(config)
 
   config.include UnitTests::Matchers
+  config.include RSpec::Matchers::FailMatchers
 end
 
 ActiveSupport::Deprecation.behavior = :stderr
