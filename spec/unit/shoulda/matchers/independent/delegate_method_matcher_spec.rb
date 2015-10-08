@@ -539,7 +539,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
           message = [
             'Expected Person to delegate #hello to #country'\
             ' object allowing nil',
-            'Method calls sent to Person#country:'
+            'Method calls sent to Person#country:',
           ].join("\n")
 
           person = Person.new
@@ -565,7 +565,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
             'Expected Person to delegate #hello to #country'\
             ' object allowing nil',
             'Method calls sent to Person#country:',
-            '1) hello()'
+            '1) hello()',
           ].join("\n")
 
           person = Person.new
@@ -607,7 +607,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
             'Expected Person to delegate #hello to #country'\
             ' object allowing nil',
             'Method calls sent to Person#country:',
-            '1) hello()'
+            '1) hello()',
           ].join("\n")
 
           person = Person.new
