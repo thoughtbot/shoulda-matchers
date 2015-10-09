@@ -33,11 +33,16 @@ module Shoulda
   end
 end
 
+require 'shoulda/matchers/integrations/apply_configuration'
 require 'shoulda/matchers/integrations/configuration'
 require 'shoulda/matchers/integrations/configuration_error'
 require 'shoulda/matchers/integrations/inclusion'
+require 'shoulda/matchers/integrations/library_not_available_error'
+require 'shoulda/matchers/integrations/no_test_frameworks_or_libraries_specified_error'
+require 'shoulda/matchers/integrations/no_test_frameworks_specified_error'
 require 'shoulda/matchers/integrations/rails'
 require 'shoulda/matchers/integrations/registry'
+require 'shoulda/matchers/integrations/test_framework_not_available_error'
 
 require 'shoulda/matchers/integrations/libraries'
 require 'shoulda/matchers/integrations/test_frameworks'

@@ -117,10 +117,12 @@ Output:
     end
 
     def has_output?(expected_output)
+      simplified_output = output.gsub(/\s+/, ' ')
+
       if expected_output.is_a?(Regexp)
-        output =~ expected_output
+        simplified_output =~ expected_output
       else
-        output.include?(expected_output)
+        simplified_output.include?(expected_output)
       end
     end
 

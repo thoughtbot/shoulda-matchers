@@ -6,14 +6,14 @@ module Shoulda
         class Minitest4
           Integrations.register_test_framework(self, :minitest_4)
 
-          def validate!
-          end
+          include Integrations::Inclusion
 
           def include(*modules, **options)
-            test_case_class.class_eval do
-              include(*modules)
-              extend(*modules)
-            end
+            include_into(inclusion_targets, modules, extend: true)
+          end
+
+          def inclusion_target_names
+            ["MiniTest::Unit::TestCase"]
           end
 
           def n_unit?
@@ -22,12 +22,6 @@ module Shoulda
 
           def present?
             true
-          end
-
-          private
-
-          def test_case_class
-            MiniTest::Unit::TestCase
           end
         end
       end

@@ -12,18 +12,23 @@ module AcceptanceTests
 
     extend RSpec::Matchers::DSL
 
-    def create_active_model_project
-      create_generic_bundler_project
-      add_gem 'activemodel', active_model_version
-    end
-
     def create_generic_bundler_project
       fs.create
       run_command! 'bundle init'
+      add_gem 'pry-byebug'
+    end
+
+    def create_active_model_project
+      create_generic_bundler_project
+      add_activemodel_to_project
     end
 
     def add_shoulda_matchers_to_project(options = {})
       AddsShouldaMatchersToProject.call(options)
+    end
+
+    def add_activemodel_to_project
+      add_gem 'activemodel', active_model_version
     end
 
     def add_minitest_to_project

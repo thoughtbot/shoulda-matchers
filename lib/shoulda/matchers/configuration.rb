@@ -1,19 +1,15 @@
 module Shoulda
   module Matchers
     # @private
-    def self.configure
-      yield configuration
-    end
-
-    # @private
-    def self.configuration
-      @_configuration ||= Configuration.new
+    def self.configure(&block)
+      yield Configuration.new
     end
 
     # @private
     class Configuration
       def integrate(&block)
-        Integrations::Configuration.apply(self, &block)
+        configuration = Integrations::Configuration.new(&block)
+        Integrations::ApplyConfiguration.call(configuration)
       end
     end
   end

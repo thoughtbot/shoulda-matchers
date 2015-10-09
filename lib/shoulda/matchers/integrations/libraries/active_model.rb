@@ -11,7 +11,11 @@ module Shoulda
 
           def integrate_with(test_framework)
             test_framework.include(matchers_module, type: :model)
-            include_into(ActiveSupport::TestCase, matchers_module)
+            include_into(inclusion_targets, [matchers_module], extend: true)
+          end
+
+          def inclusion_target_names
+            ["ActiveSupport::TestCase"]
           end
 
           private

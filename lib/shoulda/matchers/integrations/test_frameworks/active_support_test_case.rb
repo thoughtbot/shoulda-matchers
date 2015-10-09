@@ -6,11 +6,14 @@ module Shoulda
         class ActiveSupportTestCase
           Integrations.register_test_framework(self, :active_support_test_case)
 
-          def validate!
-          end
+          include Integrations::Inclusion
 
           def include(*modules, **options)
-            test_case_class.include(*modules)
+            include_into(inclusion_targets, modules)
+          end
+
+          def inclusion_target_names
+            ["ActiveSupport::TestCase"]
           end
 
           def n_unit?
@@ -24,12 +27,6 @@ module Shoulda
           protected
 
           attr_reader :configuration
-
-          private
-
-          def test_case_class
-            ActiveSupport::TestCase
-          end
         end
       end
     end

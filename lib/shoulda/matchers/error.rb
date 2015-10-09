@@ -13,16 +13,27 @@ module Shoulda
       end
 
       def initialize(*args)
-        super
-        @message = message
-      end
+        if respond_to?(:build_message)
+          message = build_message
+        else
+          message = self.message
+        end
 
-      def message
-        ""
+        formatted_message = Shoulda::Matchers.word_wrap(message).
+          sub(/\A\s*/, "\n\n").
+          sub(/\s*\Z/, "\n\n")
+
+        super(formatted_message)
       end
 
       def inspect
         %(#<#{self.class}: #{message}>)
+      end
+
+      private
+
+      def build_message
+        ""
       end
     end
   end

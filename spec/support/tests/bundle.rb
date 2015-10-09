@@ -28,6 +28,11 @@ module Tests
       updating do
         options = args.last.is_a?(Hash) ? args.pop : {}
         version = args.shift
+
+        if version.nil? && gem != 'shoulda-matchers'
+          version = version_of(gem)
+        end
+
         line = assemble_gem_line(gem, version, options)
         fs.append_to_file('Gemfile', line)
       end
@@ -45,8 +50,14 @@ module Tests
       end
     end
 
-    def version_of(gem)
-      Version.new(Bundler.definition.specs[gem][0].version)
+    def version_of(gem_name)
+      gem = Bundler.definition.specs[gem_name][0]
+
+      if gem.nil?
+        raise "'#{gem_name}' doesn't appear to be in the Gemfile"
+      end
+
+      Version.new(gem.version)
     end
 
     def includes?(gem)

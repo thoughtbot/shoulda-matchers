@@ -6,13 +6,18 @@ module Shoulda
         class Rspec
           Integrations.register_test_framework(self, :rspec)
 
-          def validate!
-          end
+          include Integrations::Inclusion
 
           def include(*modules, **options)
-            ::RSpec.configure do |config|
+            RSpec.configure do |config|
               config.include(*modules, **options)
             end
+          end
+
+          # This isn't used in the method above, but we use it to ensure that
+          # RSpec is available
+          def inclusion_target_names
+            ["RSpec"]
           end
 
           def n_unit?

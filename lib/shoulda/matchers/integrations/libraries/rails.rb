@@ -6,6 +6,7 @@ module Shoulda
         class Rails
           Integrations.register_library(self, :rails)
 
+          include Integrations::Inclusion
           include Integrations::Rails
 
           SUB_LIBRARIES = [
@@ -15,15 +16,28 @@ module Shoulda
             :routing
           ]
 
+          def initialize
+            @sub_libraries = SUB_LIBRARIES.map do |name|
+              Integrations.find_library!(name)
+            end
+          end
+
           def integrate_with(test_framework)
             Shoulda::Matchers.assertion_exception_class =
               ActiveSupport::TestCase::Assertion
 
-            SUB_LIBRARIES.each do |name|
-              library = Integrations.find_library!(name)
+            @sub_libraries.each do |library|
               library.integrate_with(test_framework)
             end
           end
+
+          def inclusion_target_names
+            sub_libraries.flat_map(&:inclusion_target_names)
+          end
+
+          protected
+
+          attr_reader :sub_libraries
         end
       end
     end
