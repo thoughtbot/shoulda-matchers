@@ -39,29 +39,22 @@ module Shoulda
 
             project_directory = File.expand_path(File.dirname(__FILE__) + "/..")
 
-            regenerate_docs = -> (base, relative) {
+            regenerate_docs = proc do
               print 'Regenerating docs... '
-              system('bundle exec yard doc &>/dev/null')
-              puts 'done!'
-            }
+              if system('bundle exec yard doc &>/dev/null')
+                puts 'done!'
+              else
+                print "\nCould not regenerate docs!!"
+              end
+            end
+
+            regenerate_docs.call
 
             puts 'Waiting for documentation files to change...'
 
             FSSM.monitor do
               path project_directory do
-                glob 'README.md'
-                create(&regenerate_docs)
-                update(&regenerate_docs)
-              end
-
-              path File.join(project_directory, 'doc_config/yard') do
-                glob '**/*.rb'
-                create(&regenerate_docs)
-                update(&regenerate_docs)
-              end
-
-              path File.join(project_directory, 'lib') do
-                glob '**/*.rb'
+                glob '{README.md,NEWS.md,.yardopts,docs/**/*.md,doc_config/yard/**/*.{rb,js,css,erb},lib/**/*.rb}'
                 create(&regenerate_docs)
                 update(&regenerate_docs)
               end
