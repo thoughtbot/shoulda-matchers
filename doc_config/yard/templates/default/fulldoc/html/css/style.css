@@ -91,7 +91,7 @@ h4 + h5 {
 #menu, #search {
   height: 6rem;
   line-height: 6rem;
-  text-transform: uppercase;
+  font-size: 1.1em;
 }
 #main {
   top: 6rem;
@@ -99,10 +99,9 @@ h4 + h5 {
 
 #menu {
   float: left;
-  letter-spacing: 1px;
   padding-left: 2em;
   position: relative;
-  width: 30em;
+  width: 45em;
 }
 
 #menu .noframes {
@@ -111,7 +110,6 @@ h4 + h5 {
 
 #search {
   float: right;
-  font-size: 0.9em;
 }
 
   #search ul {
@@ -201,6 +199,7 @@ h4 + h5 {
   padding: 10px;
   text-align: center;
   text-shadow: 0 1px 1px rgba(0,0,0,0.4);
+  font-size: 0.9em;
 }
 
 #footer a {
