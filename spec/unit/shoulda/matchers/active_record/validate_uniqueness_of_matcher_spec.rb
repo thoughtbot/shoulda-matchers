@@ -502,6 +502,51 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
     end
   end
 
+  context 'when the model maps all values to upcase' do
+    let(:add_attribute_upcase_normalization) do
+      lambda do |m|
+        setter_name = "#{attribute_name}=".to_sym
+        attr_name = attribute_name
+        m.class_eval do
+          define_method(setter_name) do |value|
+            upcase_value = value.respond_to?(:upcase) ? value.upcase : value
+            write_attribute(attr_name, upcase_value)
+          end
+        end
+      end
+    end
+
+    context 'when ignoring_interference_by_writer is not specified' do
+      it 'raises a CouldNotSetAttributeError' do
+        record = build_record_validating_uniqueness(
+          attribute_type: :string,
+          validation_options: { case_sensitive: false },
+          &add_attribute_upcase_normalization
+        )
+        running_matcher = lambda do
+          validate_uniqueness.case_insensitive.matches?(record)
+        end
+
+        avm_class = Shoulda::Matchers::ActiveModel::AllowValueMatcher
+        expect(&running_matcher).
+          to raise_error(avm_class::CouldNotSetAttributeError)
+      end
+    end
+
+    context 'when ignoring_interference_by_writer is specified' do
+      it 'accepts' do
+        record = build_record_validating_uniqueness(
+          attribute_type: :string,
+          validation_options: { case_sensitive: false },
+          &add_attribute_upcase_normalization
+        )
+
+        expect(record).to validate_uniqueness.
+          case_insensitive.ignoring_interference_by_writer
+      end
+    end
+  end
+
   context 'when the validation is declared with allow_nil' do
     context 'given a new record whose attribute is nil' do
       it 'accepts' do

@@ -8,6 +8,7 @@ module Shoulda
         def initialize(attribute)
           @attribute = attribute
           @strict = false
+          @ignoring_interference_by_writer = false
           @failure_message = nil
           @failure_message_when_negated = nil
         end
@@ -19,6 +20,11 @@ module Shoulda
 
         def strict
           @strict = true
+          self
+        end
+
+        def ignoring_interference_by_writer
+          @ignoring_interference_by_writer = true
           self
         end
 
@@ -71,6 +77,10 @@ module Shoulda
             matcher.strict
           end
 
+          if ignoring_interference_by_writer?
+            matcher.ignoring_interference_by_writer
+          end
+
           matcher
         end
 
@@ -86,11 +96,19 @@ module Shoulda
             matcher.strict
           end
 
+          if ignoring_interference_by_writer?
+            matcher.ignoring_interference_by_writer
+          end
+
           matcher
         end
 
         def strict?
           @strict
+        end
+
+        def ignoring_interference_by_writer?
+          @ignoring_interference_by_writer
         end
       end
     end
