@@ -91,9 +91,9 @@ module Shoulda
       #           end
       #         end
       #
-      # * You're attempting to assert that a numeric attribute should not allow a
-      #   string that contains non-numeric characters, yet the writer method for
-      #   that attribute strips out non-numeric characters:
+      # * You're attempting to assert that a numeric attribute should not allow
+      #   a string that contains non-numeric characters, yet the writer method
+      #   for that attribute strips out non-numeric characters:
       #
       #         class Foo
       #           include ActiveModel::Model
