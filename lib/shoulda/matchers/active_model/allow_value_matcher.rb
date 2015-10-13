@@ -91,7 +91,7 @@ module Shoulda
       #           end
       #         end
       #
-      # * You're attempting to assert that an numeric attribute should not allow a
+      # * You're attempting to assert that a numeric attribute should not allow a
       #   string that contains non-numeric characters, yet the writer method for
       #   that attribute strips out non-numeric characters:
       #
