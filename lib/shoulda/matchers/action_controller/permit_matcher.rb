@@ -308,16 +308,8 @@ module Shoulda
           end
         end
 
-        def permit_called?
-          actual_permitted_parameter_names.any?
-        end
-
         def unpermitted_parameter_names
           expected_permitted_parameter_names - actual_permitted_parameter_names
-        end
-
-        def verified_permitted_parameter_names
-          expected_permitted_parameter_names & actual_permitted_parameter_names
         end
 
         def ensure_action_and_verb_present!
