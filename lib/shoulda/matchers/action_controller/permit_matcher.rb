@@ -62,9 +62,10 @@ module Shoulda
       #             password: 'password'
       #           }
       #         }
-      #         should permit(:first_name, :last_name, :email, :password).
+      #         matcher = permit(:first_name, :last_name, :email, :password).
       #           for(:create, params: params).
       #           on(:user)
+      #         assert_accepts matcher, subject
       #       end
       #     end
       #
@@ -132,9 +133,10 @@ module Shoulda
       #             password: 'password'
       #           }
       #         }
-      #         should permit(:first_name, :last_name, :email, :password).
+      #         matcher = permit(:first_name, :last_name, :email, :password).
       #           for(:update, params: params).
       #           on(:user)
+      #         assert_accepts matcher, subject
       #       end
       #     end
       #
@@ -189,9 +191,10 @@ module Shoulda
       #
       #       should "(for PUT #toggle) restrict parameters on :user to :activated" do
       #         params = { id: 1, user: { activated: true } }
-      #         should permit(:activated).
+      #         matcher = permit(:activated).
       #           for(:toggle, params: params, verb: :put).
       #           on(:user)
+      #         assert_accepts matcher, subject
       #       end
       #     end
       #
