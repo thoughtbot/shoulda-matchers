@@ -250,7 +250,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :decimal,
-            odd: true
+            odd: true,
           )
 
           expect(record).to validate_numericality.odd
@@ -304,7 +304,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :decimal,
-            even: true
+            even: true,
           )
 
           expect(record).to validate_numericality.even
@@ -358,7 +358,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :decimal,
-            less_than_or_equal_to: 18
+            less_than_or_equal_to: 18,
           )
 
           expect(record).to validate_numericality.is_less_than_or_equal_to(18)
@@ -416,7 +416,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :decimal,
-            less_than: 18
+            less_than: 18,
           )
 
           expect(record).to validate_numericality.is_less_than(18)
@@ -472,7 +472,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :decimal,
-            equal_to: 18
+            equal_to: 18,
           )
 
           expect(record).to validate_numericality.is_equal_to(18)
@@ -534,7 +534,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :decimal,
-            greater_than_or_equal_to: 18
+            greater_than_or_equal_to: 18,
           )
 
           expect(record).
@@ -598,7 +598,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :decimal,
-            greater_than: 18
+            greater_than: 18,
           )
 
           expect(record).
