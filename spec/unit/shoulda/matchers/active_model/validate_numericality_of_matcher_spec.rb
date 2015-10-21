@@ -154,7 +154,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
       context 'when the column is a decimal column' do
         it 'raises an IneffectiveTestError' do
           record = build_record_validating_numericality(
-            column_type: :decimal
+            column_type: :decimal,
           )
           assertion = -> { expect(record).to validate_numericality }
 
