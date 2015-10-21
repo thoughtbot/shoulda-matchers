@@ -432,7 +432,7 @@ module Shoulda
         end
 
         def given_numeric_column?
-          [:integer, :float].include?(column_type)
+          [:integer, :float, :decimal].include?(column_type)
         end
 
         private
