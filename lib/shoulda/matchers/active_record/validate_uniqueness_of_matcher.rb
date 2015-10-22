@@ -133,7 +133,7 @@ module Shoulda
       # unique, but the scoped attributes are not unique either.
       #
       #     class Post < ActiveRecord::Base
-      #       validates_uniqueness_of :slug, scope: :user_id
+      #       validates_uniqueness_of :slug, scope: :journal_id
       #     end
       #
       #     # RSpec
