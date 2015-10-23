@@ -8,7 +8,7 @@
 
 * Fix `validate_numericality_of` when used against a numeric column so that it
   no longer raises a CouldNotSetAttributeError if the matcher has been qualified
-  in any way (`only_integer`, `greater_than`, `odd`, etc.). ([#784])
+  in any way (`only_integer`, `greater_than`, `odd`, etc.). ([#784], [#812])
 
 ### Improvements
 
@@ -22,6 +22,7 @@
 [#784]: https://github.com/thoughtbot/shoulda-matchers/pull/784
 [#789]: https://github.com/thoughtbot/shoulda-matchers/pull/789
 [ada9bd3]: https://github.com/thoughtbot/shoulda-matchers/commit/ada9bd3a1b9f2bb9fa74d0dfe1f8f7080314298c
+[#812]: https://github.com/thoughtbot/shoulda-matchers/pull/812
 
 # 3.0.0
 
