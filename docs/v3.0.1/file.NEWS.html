@@ -1,0 +1,866 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: NEWS
+  
+    &mdash; Documentation by YARD 0.8.7.3
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!" + escape(window.location.href);
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">NEWS</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><h1>3.0.1</h1>
+
+<h3>Bug fixes</h3>
+
+<ul>
+<li><p>Fix <code>validate_inclusion_of</code> + <code>in_array</code> when used against a date or datetime
+column/attribute so that it does not raise a CouldNotSetAttributeError.
+(<a href="https://github.com/thoughtbot/shoulda-matchers/pull/783">#783</a>, <a href="https://github.com/thoughtbot/shoulda-matchers/commit/8fa97b4ff33b57ce16dfb96be1ec892502f2aa9e">8fa97b4</a>)</p></li>
+<li><p>Fix <code>validate_numericality_of</code> when used against a numeric column so that it
+no longer raises a CouldNotSetAttributeError if the matcher has been qualified
+in any way (<code>only_integer</code>, <code>greater_than</code>, <code>odd</code>, etc.). (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/784">#784</a>, <a href="https://github.com/thoughtbot/shoulda-matchers/pull/812">#812</a>)</p></li>
+</ul>
+
+<h3>Improvements</h3>
+
+<ul>
+<li><code>validate_uniqueness_of</code> now raises a NonCaseSwappableValueError if the value
+the matcher is using to test uniqueness cannot be case-swapped -- in other
+words, if it doesn&#39;t contain any alpha characters. When this is the case, the
+matcher cannot work effectively. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/789">#789</a>, <a href="https://github.com/thoughtbot/shoulda-matchers/commit/ada9bd3a1b9f2bb9fa74d0dfe1f8f7080314298c">ada9bd3</a>)</li>
+</ul>
+
+<h1>3.0.0</h1>
+
+<h3>Backward-incompatible changes</h3>
+
+<ul>
+<li><p>We&#39;ve dropped support for Rails 3.x, Ruby 1.9.2, and Ruby 1.9.3, and RSpec 2.
+All of these have been end-of-lifed. (<a href="https://github.com/thoughtbot/shoulda-matchers/commit/a4045a1f9bc454e618a7c55960942eb030f02fdd">a4045a1</a>, <a href="https://github.com/thoughtbot/shoulda-matchers/commit/b7fe87ae915f6b1f99d64e847fea536ad0f78024">b7fe87a</a>, <a href="https://github.com/thoughtbot/shoulda-matchers/commit/32c0e62596b87e37a301f87bbe21cfcc77750552">32c0e62</a>)</p></li>
+<li><p>The gem no longer detects the test framework you&#39;re using or mixes itself into
+that framework automatically. <a href="https://github.com/freerange/mocha/commit/049080c673ee3f76e76adc1e1a6122c7869f1648">History</a> has
+<a href="https://github.com/rr/rr/issues/29">shown</a> that performing any kind of detection is prone
+to bugs and more complicated than it should be.</p>
+
+<p>Here are the updated instructions:</p>
+
+<ul>
+<li>You no longer need to say <code>require: false</code> in your Gemfile; you can
+include the gem as normal.</li>
+<li>You&#39;ll need to add the following somewhere in your <code>rails_helper</code> (for
+RSpec) or <code>test_helper</code> (for Minitest / Test::Unit):</li>
+</ul>
+
+<pre class="code ruby"><code class="ruby"><span class="ss">Shoulda</span><span class="p">:</span><span class="ss">:Matchers</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="n">config</span><span class="o">.</span><span class="n">integrate</span> <span class="k">do</span> <span class="o">|</span><span class="n">with</span><span class="o">|</span>
+    <span class="c1"># Choose a test framework:</span>
+    <span class="n">with</span><span class="o">.</span><span class="n">test_framework</span> <span class="ss">:rspec</span>
+    <span class="n">with</span><span class="o">.</span><span class="n">test_framework</span> <span class="ss">:minitest</span>
+    <span class="n">with</span><span class="o">.</span><span class="n">test_framework</span> <span class="ss">:minitest_4</span>
+    <span class="n">with</span><span class="o">.</span><span class="n">test_framework</span> <span class="ss">:test_unit</span>
+
+    <span class="c1"># Choose one or more libraries:</span>
+    <span class="n">with</span><span class="o">.</span><span class="n">library</span> <span class="ss">:active_record</span>
+    <span class="n">with</span><span class="o">.</span><span class="n">library</span> <span class="ss">:active_model</span>
+    <span class="n">with</span><span class="o">.</span><span class="n">library</span> <span class="ss">:action_controller</span>
+    <span class="c1"># Or, choose the following (which implies all of the above):</span>
+    <span class="n">with</span><span class="o">.</span><span class="n">library</span> <span class="ss">:rails</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>(<a href="https://github.com/thoughtbot/shoulda-matchers/commit/190007155e0676aae84d08d8ed8eed3beebc3a06">1900071</a>)</p></li>
+<li><p>Previously, under RSpec, all of the matchers were mixed into all of the
+example groups. This created a problem because some gems, such as
+<a href="https://github.com/adambarber/active_model_serializers-matchers">active_model_serializers-matchers</a>, provide matchers that share the same
+name as some of our own matchers. Now, matchers are only mixed into whichever
+example group they belong to:</p>
+
+<ul>
+<li>ActiveModel and ActiveRecord matchers are available only in model example
+groups.</li>
+<li>ActionController matchers are available only in controller example groups.</li>
+<li>The <code>route</code> matcher is available only in routing example groups.</li>
+</ul>
+
+<p>(<a href="https://github.com/thoughtbot/shoulda-matchers/commit/af98a23091551fb40aded5a8d4f9e5be926f53a9">af98a23</a>, <a href="https://github.com/thoughtbot/shoulda-matchers/commit/8cf449b4ca37d0d7446d2cabbfa5a1582358256d">8cf449b</a>)</p></li>
+<li><p>There are two changes to <code>allow_value</code>:</p>
+
+<ul>
+<li>The negative form of <code>allow_value</code> has been changed so that instead of
+asserting that any of the given values is an invalid value (allowing good
+values to pass through), assert that <em>all</em> values are invalid values
+(allowing good values not to pass through). This means that this test which
+formerly passed will now fail:</li>
+</ul>
+
+<pre class="code ruby"><code class="ruby"><span class="n">expect</span><span class="p">(</span><span class="n">record</span><span class="p">)</span><span class="o">.</span><span class="n">not_to</span> <span class="n">allow_value</span><span class="p">(</span><span class="s1">&#39;good value&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">bad_values</span><span class="p">)</span>
+</code></pre>
+
+<p>(<a href="https://github.com/thoughtbot/shoulda-matchers/commit/19c38a642a2ae1316ef12540a0185cd026901e74">19ce8a6</a>)
+* <code>allow_value</code> now raises a CouldNotSetAttributeError if in setting the
+attribute, the value of the attribute from reading the attribute back is
+different from the one used to set it.</p>
+
+<p>This would happen if the writer method for that attribute has custom logic
+to ignore certain incoming values or change them in any way. Here are three
+examples we&#39;ve seen:
+* You&#39;re attempting to assert that an attribute should not allow nil, yet
+  the attribute&#39;s writer method contains a conditional to do nothing if
+  the attribute is set to nil:</p>
+
+<pre class="code ruby"><code class="ruby">  <span class="k">class</span> <span class="nc">Foo</span>
+    <span class="kp">include</span> <span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:Model</span>
+
+    <span class="kp">attr_reader</span> <span class="ss">:bar</span>
+
+    <span class="k">def</span> <span class="nf">bar</span><span class="o">=</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+      <span class="k">return</span> <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">nil?</span>
+      <span class="vi">@bar</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="n">describe</span> <span class="no">Foo</span> <span class="k">do</span>
+    <span class="n">it</span> <span class="k">do</span>
+      <span class="n">foo</span> <span class="o">=</span> <span class="no">Foo</span><span class="o">.</span><span class="n">new</span>
+      <span class="n">foo</span><span class="o">.</span><span class="n">bar</span> <span class="o">=</span> <span class="s2">&quot;baz&quot;</span>
+      <span class="c1"># This will raise a CouldNotSetAttributeError since `foo.bar` is now &quot;123&quot;</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span><span class="o">.</span><span class="n">not_to</span> <span class="n">allow_value</span><span class="p">(</span><span class="kp">nil</span><span class="p">)</span><span class="o">.</span><span class="n">for</span><span class="p">(</span><span class="ss">:bar</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+</code></pre>
+
+<ul>
+<li><p>You&#39;re attempting to assert that an numeric attribute should not allow a
+string that contains non-numeric characters, yet the writer method for
+that attribute strips out non-numeric characters:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Foo</span>
+<span class="kp">include</span> <span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:Model</span>
+
+<span class="kp">attr_reader</span> <span class="ss">:bar</span>
+
+<span class="k">def</span> <span class="nf">bar</span><span class="o">=</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+  <span class="vi">@bar</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/\D+/</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">describe</span> <span class="no">Foo</span> <span class="k">do</span>
+<span class="n">it</span> <span class="k">do</span>
+  <span class="n">foo</span> <span class="o">=</span> <span class="no">Foo</span><span class="o">.</span><span class="n">new</span>
+  <span class="c1"># This will raise a CouldNotSetAttributeError since `foo.bar` is now &quot;123&quot;</span>
+  <span class="n">expect</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span><span class="o">.</span><span class="n">not_to</span> <span class="n">allow_value</span><span class="p">(</span><span class="s2">&quot;abc123&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">for</span><span class="p">(</span><span class="ss">:bar</span><span class="p">)</span>
+<span class="k">end</span>
+<span class="k">end</span>
+</code></pre></li>
+<li><p>You&#39;re passing a value to <code>allow_value</code> that the model typecasts into
+another value:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="n">describe</span> <span class="no">Foo</span> <span class="k">do</span>
+<span class="c1"># Assume that `attr` is a string</span>
+<span class="c1"># This will raise a CouldNotSetAttributeError since `attr` typecasts `[]` to `&quot;[]&quot;`</span>
+<span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">allow_value</span><span class="p">(</span><span class="o">[]</span><span class="p">)</span><span class="o">.</span><span class="n">for</span><span class="p">(</span><span class="ss">:attr</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+</code></pre></li>
+</ul>
+
+<p>With all of these failing examples, why are we making this change? We want
+to guard you (as the developer) from writing a test that you think acts one
+way but actually acts a different way, as this could lead to a confusing
+false positive or negative.</p>
+
+<p>If you understand the problem and wish to override this behavior so that
+you do not get a CouldNotSetAttributeError, you can add the
+<code>ignoring_interference_by_writer</code> qualifier like so. Note that this will not
+always cause the test to pass.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">allow_value</span><span class="p">(</span><span class="o">[]</span><span class="p">)</span><span class="o">.</span><span class="n">for</span><span class="p">(</span><span class="ss">:attr</span><span class="p">)</span><span class="o">.</span><span class="n">ignoring_interference_by_writer</span> <span class="p">}</span>
+</code></pre>
+
+<p>(<a href="https://github.com/thoughtbot/shoulda-matchers/commit/9d9dc4e6b9cf2c19df66a1b4ba432ad8d3e5dded">9d9dc4e</a>)</p></li>
+<li><p><code>validate_uniqueness_of</code> is now properly case-sensitive by default, to match
+the default behavior of the validation itself. This is a backward-incompatible
+change because this test which incorrectly passed before will now fail:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Product</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">validates_uniqueness_of</span> <span class="ss">:name</span><span class="p">,</span> <span class="n">case_sensitive</span><span class="p">:</span> <span class="kp">false</span>
+<span class="k">end</span>
+
+<span class="n">describe</span> <span class="no">Product</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">is_expected</span><span class="o">.</span><span class="n">to</span> <span class="n">validate_uniqueness_of</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>(<a href="https://github.com/thoughtbot/shoulda-matchers/commit/57a19228b6a85f12ba7a79a26dae5869c1499c6d">57a1922</a>)</p></li>
+<li><p><code>ensure_inclusion_of</code>, <code>ensure_exclusion_of</code>, and <code>ensure_length_of</code> have been
+removed in favor of their <code>validate_*</code> counterparts. (<a href="https://github.com/thoughtbot/shoulda-matchers/commit/55c8d09bf2af886540924efa83c3b518d926a770">55c8d09</a>)</p></li>
+<li><p><code>set_the_flash</code> and <code>set_session</code> have been changed to more closely align with
+each other:</p>
+
+<ul>
+<li><code>set_the_flash</code> has been removed in favor of <code>set_flash</code>. (<a href="https://github.com/thoughtbot/shoulda-matchers/commit/801f2c7c1eab3b2053244485c9800f850959cfef">801f2c7</a>)</li>
+<li><code>set_session(&#39;foo&#39;)</code> is no longer valid syntax, please use
+<code>set_session[&#39;foo&#39;]</code> instead. (<a href="https://github.com/thoughtbot/shoulda-matchers/commit/535fe05be8686fdafd8b22f2ed5c4192bd565d50">535fe05</a>)</li>
+<li><code>set_session[&#39;key&#39;].to(nil)</code> will no longer pass when the key in question
+has not been set yet. (<a href="https://github.com/thoughtbot/shoulda-matchers/commit/535fe05be8686fdafd8b22f2ed5c4192bd565d50">535fe05</a>)</li>
+</ul></li>
+<li><p>Change <code>set_flash</code> so that <code>set_flash[:foo].now</code> is no longer valid syntax.
+You&#39;ll want to use <code>set_flash.now[:foo]</code> instead. This was changed in order to
+more closely align with how <code>flash.now</code> works when used in a controller.
+(<a href="https://github.com/thoughtbot/shoulda-matchers/pull/755">#755</a>, <a href="https://github.com/thoughtbot/shoulda-matchers/pull/752">#752</a>)</p></li>
+<li><p>Change behavior of <code>validate_uniqueness_of</code> when the matcher is not
+qualified with any scopes, but your validation is. Previously the following
+test would pass when it now fails:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+<span class="n">validate</span> <span class="ss">:slug</span><span class="p">,</span> <span class="ss">uniqueness</span><span class="p">:</span> <span class="p">{</span> <span class="ss">scope</span><span class="p">:</span> <span class="ss">:user_id</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="n">describe</span> <span class="no">Post</span> <span class="k">do</span>
+<span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_uniqueness_of</span><span class="p">(</span><span class="ss">:slug</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>(<a href="https://github.com/thoughtbot/shoulda-matchers/commit/6ac7b8158cfba3b518eb3da3c24345e4473b416f">6ac7b81</a>)</p></li>
+</ul>
+
+<h3>Bug fixes</h3>
+
+<ul>
+<li><p>So far the tests for the gem have been running against only SQLite. Now they
+run against PostgreSQL, too. As a result we were able to fix some
+Postgres-related bugs, specifically around <code>validate_uniqueness_of</code>:</p>
+
+<ul>
+<li>When scoped to a UUID column that ends in an &quot;f&quot;, the matcher is able to
+generate a proper &quot;next&quot; value without erroring. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/402">#402</a>, <a href="https://github.com/thoughtbot/shoulda-matchers/pull/587">#587</a>, <a href="https://github.com/thoughtbot/shoulda-matchers/pull/662">#662</a>)</li>
+<li>Support scopes that are PostgreSQL array columns. Please note that this is
+only supported for Rails 4.2 and greater, as versions before this cannot
+handle array columns correctly, particularly in conjunction with the
+uniqueness validator. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/554">#554</a>)</li>
+<li>Fix so that when scoped to a text column and the scope is set to nil before
+running it through the matcher, the matcher does not fail. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/521">#521</a>, <a href="https://github.com/thoughtbot/shoulda-matchers/pull/607">#607</a>)</li>
+</ul></li>
+<li><p>Fix <code>define_enum_for</code> so that it actually tests that the attribute is present
+in the list of defined enums, as you could fool it by merely defining a class
+method that was the pluralized version of the attribute name. In the same
+vein, passing a pluralized version of the attribute name to <code>define_enum_for</code>
+would erroneously pass, and now it fails. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/641">#641</a>)</p></li>
+<li><p>Fix <code>permit</code> so that it does not break the functionality of
+ActionController::Parameters#require. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/648">#648</a>, <a href="https://github.com/thoughtbot/shoulda-matchers/pull/675">#675</a>)</p></li>
+<li><p>Fix <code>validate_uniqueness_of</code> + <code>scoped_to</code> so that it does not raise an error
+if a record exists where the scoped attribute is nil. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/677">#677</a>)</p></li>
+<li><p>Fix <code>route</code> matcher so if your route includes a default <code>format</code>, you can
+specify this as a symbol or string. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/693">#693</a>)</p></li>
+<li><p>Fix <code>validate_uniqueness_of</code> so that it allows you to test against scoped
+attributes that are boolean columns. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/457">#457</a>, <a href="https://github.com/thoughtbot/shoulda-matchers/pull/694">#694</a>)</p></li>
+<li><p>Fix failure message for <code>validate_numericality_of</code> as it sometimes didn&#39;t
+provide the reason for failure. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/699">#699</a>)</p></li>
+<li><p>Fix <code>shoulda/matchers/independent</code> so that it can be required
+independently, without having to require all of the gem. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/746">#746</a>, <a href="https://github.com/thoughtbot/shoulda-matchers/commit/e0a0200fe47157c161fb206043540804bdad664e">e0a0200</a>)</p></li>
+</ul>
+
+<h3>Features</h3>
+
+<ul>
+<li><p>Add <code>on</code> qualifier to <code>permit</code>. This allows you to make an assertion that
+a restriction was placed on a slice of the <code>params</code> hash and not the entire
+<code>params</code> hash. Although we don&#39;t require you to use this qualifier, we do
+recommend it, as it&#39;s a more precise check. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/675">#675</a>)</p></li>
+<li><p>Add <code>strict</code> qualifier to <code>validate_numericality_of</code>. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/620">#620</a>)</p></li>
+<li><p>Add <code>on</code> qualifier to <code>validate_numericality_of</code>. (<a href="https://github.com/thoughtbot/shoulda-matchers/commit/97488690910520ed8e1f2e164b1982eff5ef1f19">9748869</a>; h/t <a href="https://github.com/thoughtbot/shoulda-matchers/pull/356">#356</a>,
+<a href="https://github.com/thoughtbot/shoulda-matchers/pull/358">#358</a>)</p></li>
+<li><p>Add <code>join_table</code> qualifier to <code>have_and_belong_to_many</code>. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/556">#556</a>)</p></li>
+<li><p><code>allow_values</code> is now an alias for <code>allow_value</code>. This makes more sense when
+checking against multiple values:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">allow_values</span><span class="p">(</span><span class="s1">&#39;this&#39;</span><span class="p">,</span> <span class="s1">&#39;and&#39;</span><span class="p">,</span> <span class="s1">&#39;that&#39;</span><span class="p">)</span> <span class="p">}</span>
+</code></pre>
+
+<p>(<a href="https://github.com/thoughtbot/shoulda-matchers/pull/692">#692</a>)</p></li>
+</ul>
+
+<h1>2.8.0</h1>
+
+<h3>Deprecations</h3>
+
+<ul>
+<li><p><code>ensure_length_of</code> has been renamed to <code>validate_length_of</code>.
+<code>ensure_length_of</code> is deprecated and will be removed in 3.0.0.</p></li>
+<li><p><code>set_the_flash</code> has been renamed to <code>set_flash</code>. <code>set_the_flash</code> is
+deprecated and will be removed in 3.0.0.</p></li>
+<li><p><code>set_session(:foo)</code> is deprecated in favor of <code>set_session[:foo]</code>.
+<code>set_session(:foo)</code> will be invalid syntax in 3.0.0.</p></li>
+<li><p>Using <code>should set_session[:key].to(nil)</code> to assert that that a value has not
+been set is deprecated. Please use <code>should_not set_session[:key]</code> instead.
+In 3.0.0, <code>should set_session[:key].to(nil)</code> will only pass if the value is
+truly nil.</p></li>
+</ul>
+
+<h3>Bug fixes</h3>
+
+<ul>
+<li><p>Fix <code>delegate_method</code> so that it works again with shoulda-context. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/591">#591</a>)</p></li>
+<li><p>Fix <code>validate_uniqueness_of</code> when used with <code>scoped_to</code> so that when one of
+the scope attributes is a polymorphic <code>*_type</code> attribute and the model has
+another validation on the same attribute, the matcher does not fail with an
+error. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/592">#592</a>)</p></li>
+<li><p>Fix <code>has_many</code> used with <code>through</code> so that when the association does not
+exist, and the matcher fails, it does not raise an error when producing the
+failure message. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/588">#588</a>)</p></li>
+<li><p>Fix <code>have_and_belong_to_many</code> used with <code>join_table</code> so that it does not fail
+when <code>foreign_key</code> and/or <code>association_foreign_key</code> was specified on the
+association as a symbol instead of a string. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/584">#584</a>)</p></li>
+<li><p>Fix <code>allow_value</code> when an i18n translation key is passed to <code>with_message</code> and
+the <code>:against</code> option is used to specify an alternate attribute. A bug here
+also happened to affect <code>validate_confirmation_of</code> when an i18n translation
+key is passed to <code>with_message</code>. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/593">#593</a>)</p></li>
+<li><p>Fix <code>class_name</code> qualifier for association matchers so that if the model being
+referenced is namespaced, the matcher will correctly resolve the class before
+checking it against the association&#39;s <code>class_name</code>. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/537">#537</a>)</p></li>
+<li><p>Fix <code>validate_inclusion_of</code> used with <code>with_message</code> so that it fails if given
+a message that does not match the message on the validation. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/598">#598</a>)</p></li>
+<li><p>Fix <code>route</code> matcher so that when controller and action are specified in hash
+notation (e.g. <code>posts#show</code>), route parameters such as <code>id</code> do not need to be
+specified as a string but may be specified as a number as well. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/602">#602</a>)</p></li>
+</ul>
+
+<h3>Features</h3>
+
+<ul>
+<li><p>Add ability to test <code>:primary_key</code> option on associations. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/597">#597</a>)</p></li>
+<li><p>Add <code>allow_blank</code> qualifier to <code>validate_uniqueness_of</code> to complement
+the <code>allow_blank</code> option. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/543">#543</a>)</p></li>
+<li><p>Change <code>set_session</code> so that #[] and #to qualifiers are optional, similar to
+<code>set_flash</code>. That is, you can now say <code>should set_session</code> to assert that any
+flash value has been set, or <code>should set_session.to(&#39;value&#39;)</code> to assert that
+any value in the session is &#39;value&#39;.</p></li>
+<li><p>Change <code>set_session</code> so that its #to qualifier supports regexps, similar to
+<code>set_flash</code>.</p></li>
+<li><p>Add <code>with_prefix</code> qualifier to <code>delegate_method</code> to correspond to the <code>prefix</code>
+option for Rails&#39;s <code>delegate</code> macro. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/622">#622</a>)</p></li>
+<li><p>Add support for Rails 4.2, especially fixing <code>serialize</code> matcher to remove
+warning about <code>serialized_attributes</code> being deprecated. (<a href="https://github.com/thoughtbot/shoulda-matchers/pull/627">#627</a>)</p></li>
+<li><p>Update <code>dependent</code> qualifier on association matchers to support <code>:destroy</code>,
+<code>:delete</code>, <code>:nullify</code>, <code>:restrict</code>, <code>:restrict_with_exception</code>, and
+<code>:restrict_with_error</code>. You can also pass <code>true</code> or <code>false</code> to assert that
+the association has (or has not) been declared with <em>any</em> dependent option.
+(<a href="https://github.com/thoughtbot/shoulda-matchers/pull/631">#631</a>)</p></li>
+</ul>
+
+<h3>Improvements</h3>
+
+<ul>
+<li>Tweak <code>allow_value</code> failure message so that it reads a bit nicer when listing
+existing errors.</li>
+</ul>
+
+<h1>2.7.0</h1>
+
+<h3>Deprecations</h3>
+
+<ul>
+<li><p><code>ensure_inclusion_of</code> has been renamed to <code>validate_inclusion_of</code>.
+<code>ensure_inclusion_of</code> is deprecated and will be removed in 3.0.0.</p></li>
+<li><p><code>ensure_exclusion_of</code> has been renamed to <code>validate_exclusion_of</code>.
+<code>ensure_exclusion_of</code> is deprecated and will be removed in 3.0.0.</p></li>
+</ul>
+
+<h3>Bug fixes</h3>
+
+<ul>
+<li><p>Fix <code>delegate_method</code> so that it does not raise an error if the method that
+returns the delegate object is private.</p></li>
+<li><p>Warn when <code>ensure_inclusion_of</code> is chained with <code>.in_array([false, true])</code>
+as well as with <code>.in_array([true, false])</code>.</p></li>
+<li><p>Fix <code>set_session</code> so that the <code>to</code> qualifier if given nil checks that the
+session variable in question was set to nil (previously this actually did
+nothing).</p></li>
+<li><p>Fix <code>filter_param</code> so that it works when <code>config.filter_parameters</code> contains
+regexes.</p></li>
+<li><p>Fix <code>delegate_method</code> so that it can be required independent of Active
+Support.</p></li>
+<li><p>Fix <code>validate_uniqueness_of</code>. When used against an unpersisted record whose
+model contained a non-nullable column other than the one being validated, the
+matcher would break. Even if the test set that column to a value beforehand,
+the record had to be persisted in order for the matcher to work. Now this is
+no longer the case and the record can remain unpersisted.</p></li>
+<li><p>Fix <code>validate_absence_of</code>: it required that a string be passed as the
+attribute name rather than a symbol (which is the usual and documented usage).</p></li>
+</ul>
+
+<h3>Features</h3>
+
+<ul>
+<li>Add new matcher <code>define_enum_for</code> to test usage of the <code>enum</code> macro introduced
+in Rails 4.1.</li>
+</ul>
+
+<h3>Improvements</h3>
+
+<ul>
+<li><p><code>have_and_belongs_to_many</code> now checks to make sure that the join table
+contains the correct columns for the left- and right-hand side of the
+association.</p></li>
+<li><p>Reword failure message for <code>delegate_method</code> so that it&#39;s a little more
+helpful.</p></li>
+</ul>
+
+<h1>2.6.2</h1>
+
+<h3>Bug fixes</h3>
+
+<ul>
+<li><p>If you have a Rails &gt;= 4.1 project and you are running tests using Spring,
+matchers that depend on assertions within Rails&#39; testing layer (e.g.
+<code>render_template</code> and <code>route</code>) will no longer fail.</p></li>
+<li><p>Fix <code>permit</code> so that it can be used more than once in the same test.</p></li>
+<li><p>Revert change to <code>validate_uniqueness_of</code> made in 2.6.0 so that it no longer
+provides default values for non-primary, non-nullable columns. This approach
+was causing test failures because it makes the assumption that none of these
+columns allow only specific values, which is not true. If you get an error
+from <code>validate_uniqueness_of</code>, your best bet continues to be creating a record
+manually and calling <code>validate_uniqueness_of</code> on that instead.</p></li>
+<li><p>The majority of warnings that the gem produced have been removed. The gem
+still produces warnings under Ruby 1.9.3; we will address this in a future
+release.</p></li>
+</ul>
+
+<h1>2.6.1</h1>
+
+<h3>Bug fixes</h3>
+
+<ul>
+<li><p>Revert changes to <code>validate_numericality_of</code> made in the last release, which
+made it so that comparison qualifiers specified on the validation are tested
+using a very small decimal number offset rather than a whole number by
+default, except if the matcher was qualified with <code>only_integer</code>. This means
+that prior to 2.6.0, if your validation specified <code>only_integer</code> and you did
+not, then after 2.6.0 that test would fail. This is now fixed.</p></li>
+<li><p>Fix regression in previous release where ActiveRecord matchers would not be
+included when ActiveRecord wasn&#39;t defined (i.e. if you were using ActiveModel
+only).</p></li>
+<li><p>Revert the behavior of <code>allow_value</code> changed in 2.6.0 (it will no longer raise
+CouldNotClearAttribute). This was originally done as a part of a fix for
+<code>validate_presence_of</code> when used in conjunction with <code>has_secure_password</code>.
+That fix has been updated so that it does not affect <code>allow_value</code>.</p></li>
+<li><p>Fix callback matchers and correct test coverage.</p></li>
+<li><p>Fix <code>permit</code> so that it does not interfere with different usages of <code>params</code>
+in your controller action. Specifically, this will not raise an error:
+<code>params.fetch(:foo, {}).permit(:bar, :baz)</code> (the <code>permit</code> will have no
+problems recognizing that :bar and :baz are permitted params).</p></li>
+<li><p>Fix <code>permit</code> on Rails 4.1 to use PATCH by default for #update instead of PUT.
+Previously you had to specify this manually.</p></li>
+<li><p>Fix <code>permit</code> so that it track multiple calls to #permit in your controller
+action. Previously only the last usage of #permit would be considered in
+determining whether the matcher matched.</p></li>
+<li><p>Fix <code>permit</code> so that if the route for your action requires params (such as id)
+then you can now specify those params:
+<code>permit(:first_name, :last_name).for(:update, params: { id: 42 })</code>.</p></li>
+<li><p>Fix <code>delegate_method</code> so that it does not stub the target method forever,
+returning it to its original implementation after the match ends.</p></li>
+<li><p>Fix <code>validate_uniqueness_of</code> to work with Rails 4.1 enum columns.</p></li>
+</ul>
+
+<h3>Features</h3>
+
+<ul>
+<li>Teach <code>with_message</code> qualifier on <code>allow_value</code> to accept a hash of i18n
+interpolation values:
+<code>allow_value(&#39;foo&#39;).for(:attr).with_message(:greater_than, values: { count: 20 })</code>.</li>
+</ul>
+
+<h1>2.6.0</h1>
+
+<ul>
+<li><p>The boolean argument to <code>have_db_index</code>&#39;s <code>unique</code> option is now optional, for
+consistency with other matchers.</p></li>
+<li><p>Association matchers now test that the model being referred to (either
+implicitly or explicitly, using <code>:class_name</code>) actually exists.</p></li>
+<li><p>Add ability to test <code>:autosave</code> option on associations.</p></li>
+<li><p>Fix <code>validate_uniqueness_of(...).allow_nil</code> so that it can be used against an
+non-password attribute which is in a model that <code>has_secure_password</code>. Doing
+so previously would result in a &quot;Password digest missing on new record&quot; error.</p></li>
+<li><p>Fix description for <code>validate_numericality_of</code> so that if the matcher fails,
+the error message reported does not say the matcher accepts integer values if
+you didn&#39;t specify that.</p></li>
+<li><p>Fix <code>ensure_inclusion_of</code> so that you can use it against a boolean column
+(and pass boolean values to <code>in_array</code>). There are two caveats:</p>
+
+<ul>
+<li>You should not test that your attribute allows both true and false
+(<code>.in_array([true, false]</code>); there&#39;s no way to test that it doesn&#39;t accept
+anything other than that.</li>
+<li>You cannot test that your attribute allows nil (<code>.in_array([nil])</code>) if
+the column does not allow null values.</li>
+</ul></li>
+<li><p>Change <code>validate_uniqueness_of(...)</code> so that it provides default values for
+non-nullable attributes.</p></li>
+<li><p>Running <code>rake</code> now installs Appraisals before running the test suite.
+(Additionally, we now manage Appraisals using the <code>appraisal</code> executable in
+Appraisal 1.0.0.)</p></li>
+<li><p>Add <code>allow_nil</code> option to <code>validate_numericality_of</code> so that you can validate
+that numeric values are validated only if a value is supplied.</p></li>
+<li><p>Fix <code>validate_numericality_of</code> so that test fails when the value with
+<code>greater_than</code>, <code>greater_than_or_equal_to</code>, <code>less_than</code>, <code>less_than_or_equal_
+to</code> or <code>equal_to</code> is not appropriate.</p></li>
+<li><p>Change <code>validate_presence_of</code> under Rails 4 so that if you are using it with a
+user whose model <code>has_secure_password</code> and whose password is set to a value,
+you will be instructed to use a user whose password is blank instead. The
+reason for this change is due to the fact that Rails 4&#39;s version of
+<code>has_secure_password</code> defines #password= such that <code>nil</code> will be ignored,
+which interferes with how <code>validate_presence_of</code> works.</p></li>
+<li><p>Add ability to test <code>belongs_to</code> associations defined with <code>:inverse_of</code>.</p></li>
+<li><p>Add back matchers that were removed in 2.0.0: <code>permit</code>, for testing strong
+parameters, and <code>delegate_method</code>, for testing delegation.</p></li>
+<li><p>Add new matchers for testing controller filters: <code>before_filter</code>,
+<code>after_filter</code>, and <code>around_filter</code> (aliased to <code>before_action</code>,
+<code>after_action</code> and <code>around_action</code> for Rails 4).</p></li>
+<li><p>Fix <code>rescue_from</code> matcher so that it does not raise an error when testing
+a method handler which has been marked as protected or private.</p></li>
+<li><p>Fix compatibility issues with Rails 4.1:</p>
+
+<ul>
+<li><code>set_the_flash</code> and <code>have_and_belongs_to_many</code> no longer raise errors</li>
+<li>Minitest no longer prints warnings whenever shoulda-matchers is required</li>
+</ul></li>
+</ul>
+
+<h1>v 2.5.0</h1>
+
+<ul>
+<li><p>Fix Rails/Test::Unit integration to ensure that the test case classes we are
+re-opening actually exist.</p></li>
+<li><p>Fix <code>ensure_length_of</code> so that it uses the right message to validate when
+<code>is_equal_to</code> is specified in conjunction with a custom message.</p></li>
+<li><p>The <code>route</code> matcher now accepts specifying a controller/action pair as a
+string instead of only a hash (e.g. <code>route(...).to(&#39;posts#index&#39;)</code> instead of
+<code>route(...).to(controller: &#39;posts&#39;, action: &#39;index&#39;)</code>).</p></li>
+<li><p>The <code>ensure_inclusion_of</code> matcher now works with a decimal column.</p></li>
+<li><p>Under Rails 3, if you had an association matcher chained with the
+the <code>order</code> submatcher -- e.g. <code>should have_many(:foos).order(:bar)</code> -- and
+your association had an <code>:include</code> on it, using the matcher would raise an
+error. This has been fixed.</p></li>
+<li><p>Fix <code>validate_uniqueness_of</code> so it doesn&#39;t fail if the attribute under
+test has a limit of fewer than 16 characters.</p></li>
+<li><p>You can now test that your <code>has_many :through</code> or <code>has_one :through</code>
+associations are defined with a <code>:source</code> option.</p></li>
+<li><p>Add new matcher <code>validates_absence_of</code>.</p></li>
+<li><p>Update matchers so that they use <code>failure_message</code> and
+<code>failure_message_when_negated</code> to define error messages. These are new methods
+in the upcoming RSpec 3 release which replace <code>failure_message_for_should</code> and
+<code>failure_message_for_should_not</code>. We&#39;ve kept backward compatibility so all of
+your existing tests should still work -- this is just to make sure when RSpec
+3 is released you don&#39;t get a bunch of warnings.</p></li>
+</ul>
+
+<h1>v 2.4.0</h1>
+
+<ul>
+<li><p>Fix a bug with the <code>validate_numericality_of</code> matcher that would not allow the
+<code>with_message</code> option on certain submatchers.</p></li>
+<li><p>Fix a regression with context-dependent validations in ActiveResource</p></li>
+<li><p>shoulda-matchers is now fully compatible with Rails 4.</p></li>
+<li><p>When not using RSpec, shoulda-matchers is now auto-included into
+ActiveSupport::TestCase instead of Test::Unit::TestCase (in Rails 4
+the former no longer inherits from the latter).</p></li>
+</ul>
+
+<h1>v 2.3.0</h1>
+
+<ul>
+<li><p>Fix a bug in <code>ensure_inclusion_of</code> that would cause issues with using
+<code>in_array</code> with an integer value.</p></li>
+<li><p>Add support for PostgreSQL UUID columns to <code>validates_uniqueness_of</code> (#334).</p></li>
+<li><p>Fix <code>validates_numericality_of</code> so that <code>is_equal_to</code> submatcher works
+correctly (#326).</p></li>
+<li><p>Fix context support for validation matchers and disallowed values (#313).</p></li>
+<li><p>Add a <code>counter_cache</code> submatcher for <code>belongs_to</code> associations (#311).</p></li>
+<li><p>Add a <code>rescue_from</code> matcher for Rails controllers which checks that the
+correct ActiveSupport call has been made and that the handlers exist without
+actually throwing an exception (#287).</p></li>
+<li><p>Changed the scope of AssociationMatcher methods from protected to private.</p></li>
+<li><p>Extracted <code>#order</code>, <code>#through</code>, and <code>#dependent</code> from AssociationMatcher as
+their own submatchers.</p></li>
+</ul>
+
+<h1>v 2.2.0</h1>
+
+<ul>
+<li><p>Fix <code>have_and_belong_to_many</code> matcher issue for Rails 4.</p></li>
+<li><p>Fix <code>validate_uniqueness_of.scoped_to</code> issue when the scoped field is already
+taken (#207).</p></li>
+<li><p>Add comparison submatchers to <code>validate_numericality_of</code> to correspond to the
+comparison options you can give to <code>validates_numericality_of</code> (#244).</p></li>
+</ul>
+
+<h1>v 2.1.0</h1>
+
+<ul>
+<li><p>Add missing <code>failure_message_for_should_not</code> implementations to
+<code>validate_numericality_of</code> and its submatchers</p></li>
+<li><p>Support validation contexts for testing validations <code>on: :create</code> and when
+using custom contexts like <code>model.valid?(:my_context)</code>.</p></li>
+<li><p>Fix a bug in validations with autosaved models.</p></li>
+<li><p>Fix maximum value detection for the <code>ensure_inclusion_of</code> and
+<code>ensure_exclusion_of</code> matchers.</p></li>
+<li><p>Add <code>:odd</code> and <code>:even</code> options to the <code>validate_numericality_of</code> matcher.</p></li>
+<li><p>Add <code>:touch</code> option to AssociationMatcher.</p></li>
+<li><p>Ruby 2.0.0 is now officially supported.</p></li>
+<li><p>Fix the issue where using <code>%{attribute}</code> or <code>%{model}</code> in I18n translations
+raised exceptions.</p></li>
+<li><p>Support datetime columns in <code>validate_uniqueness_of.scoped_to</code>.</p></li>
+<li><p>Add <code>allow_nil</code> option to the <code>validate_uniqueness_of</code> matcher.</p></li>
+</ul>
+
+<h1>v 2.0.0</h1>
+
+<ul>
+<li><p>Remove the following matchers:</p>
+
+<ul>
+<li><code>assign_to</code></li>
+<li><code>respond_with_content_type</code></li>
+<li><code>query_the_database</code></li>
+<li><code>validate_format_of</code></li>
+<li><code>have_sent_email</code></li>
+<li><code>permit</code> (strong parameters matcher)</li>
+<li><code>delegate_method</code></li>
+</ul></li>
+<li><p>For more information about 2.0 changes, see:
+<a href="http://robots.thoughtbot.com/post/47031676783/shoulda-matchers-2-0">http://robots.thoughtbot.com/post/47031676783/shoulda-matchers-2-0</a>.</p></li>
+</ul>
+
+<h1>v 1.5.6</h1>
+
+<ul>
+<li>Revert previous change in AllowValueMatcher that added a check for a
+properly-set attribute.</li>
+</ul>
+
+<h1>v 1.5.5</h1>
+
+<ul>
+<li><p>AllowValueMatcher checks that the right value is used for attempts at
+setting the attribute with it.</p>
+
+<ul>
+<li>Please note that previously-passing tests might now fail. It is likely that
+it&#39;s not a bug, but please make sure that the code you&#39;re testing is written
+properly before submitting an issue.</li>
+</ul></li>
+<li><p>Use DisallowValueMatcher for <code>disallows_value_of</code> method.</p></li>
+<li><p>Assert <code>class_name</code> value on real class name for AssociationMatcher.</p></li>
+<li><p>Correct the variable used for <code>validate_confirmation_of</code> matcher description.</p></li>
+</ul>
+
+<h1>v 1.5.4</h1>
+
+<ul>
+<li>Properly-released version of 1.5.3.</li>
+</ul>
+
+<h1>v 1.5.3 - yanked due to mis-release</h1>
+
+<ul>
+<li>Alleviate the need to add <code>rspec</code> gem to your app.</li>
+</ul>
+
+<h1>v 1.5.1</h1>
+
+<ul>
+<li><p>Bump version dependency of Bourne to allow for Mocha upgrade.</p></li>
+<li><p>Should fix incompatibility with MiniTest.</p></li>
+</ul>
+
+<h1>v 1.5.0</h1>
+
+<ul>
+<li><p>Deprecate the following matchers:</p>
+
+<ul>
+<li><code>assign_to</code></li>
+<li><code>respond_with_content_type</code></li>
+<li><code>query_the_database</code></li>
+<li><code>validate_format_of</code></li>
+<li><code>have_sent_email</code></li>
+<li><code>permit</code> (strong parameters matcher)</li>
+<li><code>delegate_method</code></li>
+</ul></li>
+<li><p>Use RSpec&#39;s native <code>configure.include</code> syntax for including matchers into
+RSpec (#204).</p></li>
+<li><p>Do not force MiniTest loading when test-unit is available (this was fixed
+before 1.3.0 then reverted in 1.3.0).</p></li>
+</ul>
+
+<h1>v1.4.2</h1>
+
+<ul>
+<li>Add a new <code>delegate_method</code> matcher.</li>
+</ul>
+
+<h1>v1.4.1</h1>
+
+<ul>
+<li><p>Fix an issue when used with Test::Unit on the allow value matcher.</p></li>
+<li><p>Fix an issue with using <code>ensure_inclusion_of(:attr)</code> given an array of true or false values.</p></li>
+</ul>
+
+<h1>v1.4.0</h1>
+
+<ul>
+<li><p>Add <code>strict</code> option to validation matchers.</p></li>
+<li><p>Verify that arguments to <code>set_the_flash</code> matcher are valid.</p></li>
+<li><p>Fix issue in ValidateUniquenessMatcher that could cause an error on postgres.</p></li>
+<li><p>You can now pass an array to <code>ensure_exclusion_of</code> using <code>in_array</code>.</p></li>
+<li><p>Allow testing of <code>:foreign_key</code> option for <code>has_one</code> relationships using the association matcher.</p></li>
+<li><p>Fix bug where <code>ensure_length_of</code> would pass if the given string was too long.</p></li>
+<li><p><code>allow_blank</code> will now allow values such as: &#39; &#39;, &#39;\n&#39;, and &#39;\r&#39;.</p></li>
+<li><p>Test outside values for <code>ensure_inclusion_of</code> when given an array.</p></li>
+<li><p>Fix the output of the <code>set_the_flash</code> matcher.</p></li>
+</ul>
+
+<h1>v1.3.0</h1>
+
+<ul>
+<li><p><code>validate_format_of</code> will accept <code>allow_blank(bool)</code> and <code>allow_nil(bool)</code>.</p></li>
+<li><p>Prefer Test::Unit to MiniTest when loading integrations so that RubyMine is
+happy (#88).</p></li>
+<li><p><code>validates_uniqueness_of</code> will now create a record if one does not exist.
+Previously, users were required to create a record in the database before
+using this matcher.</p></li>
+<li><p>Fix an edge case when where the matchers weren&#39;t loaded into Test::Unit when
+mixing RSpec and Test::Unit tests and also loading both the &#39;rspec-rails&#39; gem
+and &#39;shoulda-matchers&#39; gem from the same Gemfile group, namely [:test,
+:development].</p></li>
+<li><p><code>controller.should_not render_partial</code> now correctly matches <code>render partial: &quot;partial&quot;</code>.</p></li>
+</ul>
+
+<h1>v1.2.0</h1>
+
+<ul>
+<li><p><code>ensure_inclusion_of</code> now has an <code>in_array</code> parameter:
+<code>ensure_inclusion_of(:attr).in_array([&#39;foo&#39;, &#39;bar&#39;])</code>. It cannot be used with
+the <code>.in_range</code> option. (vpereira)</p></li>
+<li><p><code>ensure_in_inclusion_of</code> with <code>in_array</code> will accept <code>allow_blank(bool)</code> and <code>allow_nil(false)</code></p></li>
+<li><p>Test against Rails 3.2.</p></li>
+<li><p>Fix <code>ensure_length_of</code> to use all possible I18n error messages.</p></li>
+<li><p><code>have_db_index.unique(nil)</code> used to function exactly the same as
+<code>have_db_index</code> with no unique option. It now functions the same as
+<code>have_db_index.unique(false)</code>.</p></li>
+<li><p>In 1.1.0, <code>have_sent_email</code> checked all emails to ensure they matched. It now
+checks that only one email matches, which restores 1.0.0 behavior.</p></li>
+</ul>
+
+<h1>v1.1.0</h1>
+
+<ul>
+<li><p>Add <code>only_integer</code> option to <code>validate_numericality_of</code>:
+<code>should validate_numericality_of(:attribute).only_integer</code></p></li>
+<li><p>Add a <code>query_the_database</code> matcher:</p>
+
+<p><code>it { should query_the_database(4.times).when_calling(:complicated_method) }</code>
+<code>it { should query_the_database(4.times).or_less.when_calling(:complicated_method) }</code>
+<code>it { should_not query_the_database.when_calling(:complicated_method) }</code></p></li>
+<li><p>Database columns are now correctly checked for primality. E.G., this works
+now: <code>it { should have_db_column(:id).with_options(:primary =&gt; true) }</code></p></li>
+<li><p>The flash matcher can check specific flash keys using [], like so:
+<code>it { should set_the_flash[:alert].to(&quot;Password doesn&#39;t match&quot;) }</code></p></li>
+<li><p>The <code>have_sent_email</code> matcher can check <code>reply_to</code>:
+<code>it { should have_sent_email.reply_to([user, other]) }</code></p></li>
+<li><p>Add <code>validates_confirmation_of</code> matcher:
+<code>it { should validate_confirmation_of(:password) }</code></p></li>
+<li><p>Add <code>serialize</code> matcher:
+<code>it { should serialize(:details).as(Hash).as_instance_of(Hash) }</code></p></li>
+<li><p>shoulda-matchers checks for all possible I18n keys, instead of just
+e.g. <code>activerecord.errors.messages.blank</code></p></li>
+<li><p>Add <code>accept_nested_attributes</code> matcher</p></li>
+<li><p>Our very first dependency: ActiveSupport &gt;= 3.0.0</p></li>
+</ul>
+</div></div>
+
+      <div id="footer">
+  Generated on
+  October 23, 2015
+  by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">YARD</a>.
+</div>
+
+    </div>
+
+  </body>
+</html>
