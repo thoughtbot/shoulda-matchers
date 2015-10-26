@@ -726,6 +726,53 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
     end
   end
 
+  context 'when the writer method for the attribute changes incoming values' do
+    context 'and the matcher knows nothing of this' do
+      it 'raises a CouldNotSetAttributeError' do
+        model = define_model_validating_uniqueness(
+          attribute_name: :name,
+          validation_options: { case_sensitive: false }
+        )
+
+        model.class_eval do
+          def name=(name)
+            super(name.upcase)
+          end
+        end
+
+        assertion = lambda do
+          expect(model.new).
+            to validate_uniqueness_of(:name).
+            case_insensitive
+        end
+
+        expect(&assertion).to raise_error(
+          Shoulda::Matchers::ActiveModel::AllowValueMatcher::CouldNotSetAttributeError
+        )
+      end
+    end
+
+    context 'and the matcher knows how given values get changed' do
+      it 'accepts (and not raise an error)' do
+        model = define_model_validating_uniqueness(
+          attribute_name: :name,
+          validation_options: { case_sensitive: false }
+        )
+
+        model.class_eval do
+          def name=(name)
+            super(name.upcase)
+          end
+        end
+
+        expect(model.new).
+          to validate_uniqueness_of(:name).
+          case_insensitive.
+          converting_values("a" => "A")
+      end
+    end
+  end
+
   let(:model_attributes) { {} }
 
   def default_attribute
@@ -846,6 +893,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
   end
 
   def define_model_validating_uniqueness(options = {}, &block)
+    attribute_name = options.fetch(:attribute_name) { self.attribute_name }
     attribute_type = options.fetch(:attribute_type, :string)
     attribute_options = options.fetch(:attribute_options, {})
     attribute = {

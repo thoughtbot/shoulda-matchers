@@ -10,6 +10,7 @@ module Shoulda
           @strict = false
           @failure_message = nil
           @failure_message_when_negated = nil
+          @allowed_value_conversions = {}
         end
 
         def on(context)
@@ -31,10 +32,16 @@ module Shoulda
           false
         end
 
+        def converting_values(value_conversions)
+          @allowed_value_conversions.merge!(value_conversions)
+          self
+        end
+
         private
 
         def allows_value_of(value, message = nil, &block)
           allow = allow_value_matcher(value, message)
+
           yield allow if block_given?
 
           if allow.matches?(@subject)
@@ -48,6 +55,7 @@ module Shoulda
 
         def disallows_value_of(value, message = nil, &block)
           disallow = disallow_value_matcher(value, message)
+
           yield disallow if block_given?
 
           if disallow.matches?(@subject)
@@ -71,6 +79,10 @@ module Shoulda
             matcher.strict
           end
 
+          unless @allowed_value_conversions.empty?
+            matcher.converting_values(@allowed_value_conversions)
+          end
+
           matcher
         end
 
@@ -84,6 +96,10 @@ module Shoulda
 
           if strict?
             matcher.strict
+          end
+
+          unless @allowed_value_conversions.empty?
+            matcher.converting_values(@allowed_value_conversions)
           end
 
           matcher

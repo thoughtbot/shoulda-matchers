@@ -384,5 +384,56 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
         end
       end
     end
+
+    context 'when the matcher knows how incoming values get changed' do
+      context 'using #allow_value' do
+        it 'accepts (and does not raise an error)' do
+          model = define_active_model_class 'Example' do
+            attr_reader :name
+
+            def name=(name)
+              @name = name.upcase
+            end
+          end
+
+          record = model.new
+
+          assertion = lambda do
+            expect(record).
+              to allow_value('another name').
+              for(:name).
+              converting_value_to('ANOTHER NAME')
+          end
+
+          expect(&assertion).not_to raise_error
+        end
+      end
+
+      context 'using #allow_values' do
+        it 'accepts (and does not raise an error)' do
+          model = define_active_model_class 'Example' do
+            attr_reader :name
+
+            def name=(name)
+              @name = name.upcase
+            end
+          end
+
+          record = model.new
+
+          assertion = lambda do
+            expect(record).
+              to allow_values('first name', 'second name').
+              for(:name).
+              converting_values(
+                'first name' => 'FIRST NAME',
+                'second name' => 'SECOND NAME'
+              )
+          end
+
+          expect(&assertion).not_to raise_error
+        end
+      end
+    end
   end
 end

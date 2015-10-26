@@ -80,16 +80,26 @@ describe Shoulda::Matchers::ActiveModel::ValidateExclusionOfMatcher, type: :mode
         to eq 'ensure exclusion of attr in [true, "dog"]'
     end
 
-    def validating_exclusion(options)
-      define_model(:example, attr: :string) do
-        validates_exclusion_of :attr, options
-      end.new
+    def define_model_validating_exclusion(options)
+      options = options.dup
+      column_type = options.delete(:column_type) { :string }
+      super options.merge(column_type: column_type)
+    end
+  end
+
+  def define_model_validating_exclusion(options)
+    options = options.dup
+    attribute_name = options.delete(:attribute_name) { :attr }
+    column_type = options.delete(:column_type) { :integer }
+
+    define_model(:example, attribute_name => column_type) do |model|
+      model.validates_exclusion_of(attribute_name, options)
     end
   end
 
   def validating_exclusion(options)
-    define_model(:example, attr: :integer) do
-      validates_exclusion_of :attr, options
-    end.new
+    define_model_validating_exclusion(options).new
   end
+
+  alias_method :build_record_validating_exclusion, :validating_exclusion
 end

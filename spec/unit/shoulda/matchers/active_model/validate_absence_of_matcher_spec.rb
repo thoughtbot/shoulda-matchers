@@ -118,14 +118,62 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
     end
   end
 
-  def validating_absence_of(attr, validation_options = {}, given_column_options = {})
+  context 'when the writer method for the attribute changes incoming values' do
+    context 'and the matcher knows nothing of this' do
+      it 'raises a CouldNotSetAttributeError' do
+        model = define_model_validating_absence_of(:name)
+
+        model.class_eval do
+          def name=(name)
+            super(name.upcase)
+          end
+        end
+
+        assertion = lambda do
+          expect(model.new).to validate_absence_of(:name)
+        end
+
+        expect(&assertion).to raise_error(
+          Shoulda::Matchers::ActiveModel::AllowValueMatcher::CouldNotSetAttributeError
+        )
+      end
+    end
+
+    context 'and the matcher knows how given values get changed' do
+      it 'accepts (and not raise an error)' do
+        model = define_model_validating_absence_of(:name)
+
+        model.class_eval do
+          def name=(name)
+            super(name.upcase)
+          end
+        end
+
+        expect(model.new).
+          to validate_absence_of(:name).
+          converting_values("an arbitrary value" => "AN ARBITRARY VALUE")
+      end
+    end
+  end
+
+  def define_model_validating_absence_of(attr, validation_options = {}, given_column_options = {})
     default_column_options = { type: :string, options: {} }
     column_options = default_column_options.merge(given_column_options)
 
     define_model :example, attr => column_options do
       validates_absence_of attr, validation_options
-    end.new
+    end
   end
+
+  def validating_absence_of(attr, validation_options = {}, given_column_options = {})
+    model = define_model_validating_absence_of(
+      attr,
+      validation_options,
+      given_column_options
+    )
+    model.new
+  end
+  alias_method :build_record_validating_absence_of, :validating_absence_of
 
   def active_model_with(attr, &block)
     define_active_model_class('Example', accessors: [attr], &block).new

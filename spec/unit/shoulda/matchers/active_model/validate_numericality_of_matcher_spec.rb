@@ -1113,6 +1113,52 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
     end
   end
 
+  context 'when the writer method for the attribute changes incoming values' do
+    context 'and the matcher knows nothing of this' do
+      it 'raises a CouldNotSetAttributeError' do
+        model = define_model_validating_numericality(attribute_name: :zip_code)
+
+        model.class_eval do
+          def zip_code=(zip_code)
+            if zip_code
+              super(zip_code.succ)
+            else
+              super(zip_code)
+            end
+          end
+        end
+
+        assertion = lambda do
+          expect(model.new).to validate_numericality_of(:zip_code)
+        end
+
+        expect(&assertion).to raise_error(
+          Shoulda::Matchers::ActiveModel::AllowValueMatcher::CouldNotSetAttributeError
+        )
+      end
+    end
+
+    context 'and the matcher knows how given values get changed' do
+      it 'accepts (and not raise an error)' do
+        model = define_model_validating_numericality(attribute_name: :zip_code)
+
+        model.class_eval do
+          def zip_code=(zip_code)
+            if zip_code
+              super(zip_code.succ)
+            else
+              super(zip_code)
+            end
+          end
+        end
+
+        expect(model.new).
+          to validate_numericality_of(:zip_code).
+          converting_values("abcd" => "abce")
+      end
+    end
+  end
+
   def build_validation_options(args)
     combination = args.fetch(:for)
 

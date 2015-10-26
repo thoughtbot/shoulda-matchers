@@ -363,6 +363,7 @@ https://github.com/thoughtbot/shoulda-matchers/issues
           self.after_setting_value_callback = -> {}
           self.validator = Validator.new
           @ignoring_interference_by_writer = false
+          @allowed_value_conversions = {}
         end
 
         def for(attribute)
@@ -397,6 +398,16 @@ https://github.com/thoughtbot/shoulda-matchers/issues
           self
         end
 
+        def converting_value_to(value_after_conversion)
+          converting_values(values_to_match.last => value_after_conversion)
+          self
+        end
+
+        def converting_values(value_conversions)
+          allowed_value_conversions.merge!(value_conversions)
+          self
+        end
+
         def _after_setting_value(&callback)
           self.after_setting_value_callback = callback
         end
@@ -425,7 +436,8 @@ https://github.com/thoughtbot/shoulda-matchers/issues
 
         protected
 
-        attr_reader :instance, :attribute_to_check_message_against
+        attr_reader :instance, :attribute_to_check_message_against,
+          :allowed_value_conversions
         attr_accessor :values_to_match, :attribute_to_set, :value,
           :matched_error, :after_setting_value_callback, :validator
 
@@ -458,7 +470,7 @@ https://github.com/thoughtbot/shoulda-matchers/issues
         def ensure_that_attribute_was_set!(expected_value)
           actual_value = instance.__send__(attribute_to_set)
 
-          if expected_value != actual_value && !ignoring_interference_by_writer?
+          if could_not_set_attribute?(expected_value, actual_value)
             raise CouldNotSetAttributeError.create(
               instance.class,
               attribute_to_set,
@@ -466,6 +478,17 @@ https://github.com/thoughtbot/shoulda-matchers/issues
               actual_value
             )
           end
+        end
+
+        def could_not_set_attribute?(expected_value, actual_value)
+          expected_value != actual_value &&
+            !ignoring_interference_by_writer? &&
+            !value_allowed_to_be_converted_to?(expected_value, actual_value)
+        end
+
+        def value_allowed_to_be_converted_to?(expected_value, actual_value)
+          allowed_value_conversions.key?(expected_value) &&
+            allowed_value_conversions[expected_value] == actual_value
         end
 
         def errors_match?
