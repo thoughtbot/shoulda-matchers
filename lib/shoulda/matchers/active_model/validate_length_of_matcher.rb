@@ -231,6 +231,7 @@ module Shoulda
           @options = {}
           @short_message = nil
           @long_message = nil
+          @ignoring_interference_by_writer = false
         end
 
         def is_at_least(length)
@@ -294,6 +295,11 @@ module Shoulda
           super(subject)
           translate_messages!
           lower_bound_matches? && upper_bound_matches?
+        end
+
+        def ignoring_interference_by_writer
+          @ignoring_interference_by_writer = true
+          self
         end
 
         private
