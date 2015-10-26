@@ -189,10 +189,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher, type: :model d
         expect {
           is_expected.to validate_length_of(:attr).is_equal_to(4).ignoring_interference_by_writer
         }.to_not raise_error(
-          # Will get the test passes with the below line commented out but it
-          # is then easy to unintentionally miss any other errors that may be
-          # happening.
-          # Shoulda::Matchers::ActiveModel::AllowValueMatcher::CouldNotSetAttributeError
+          Shoulda::Matchers::ActiveModel::AllowValueMatcher::CouldNotSetAttributeError
         )
       end
     end
