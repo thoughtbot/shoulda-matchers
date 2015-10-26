@@ -176,9 +176,21 @@ describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher, type: :model d
 
     context 'when ignoring_interference_by_writer is not specified' do
       it 'should raise CouldNotSetAttributeError' do
-        expect do
-          validate_length_of(:attr).is_equal_to(4).matches?(subject)
-        end.to raise_error(Shoulda::Matchers::ActiveModel::AllowValueMatcher::CouldNotSetAttributeError)
+        expect {
+          is_expected.to validate_length_of(:attr).is_equal_to(4)
+        }.to raise_error(
+          Shoulda::Matchers::ActiveModel::AllowValueMatcher::CouldNotSetAttributeError
+        )
+      end
+    end
+
+    context 'when ignoring_interference_by_writer is specified' do
+      it 'should not raise CouldNotSetAttributeError' do
+        expect {
+          is_expected.to validate_length_of(:attr).is_equal_to(4).ignoring_interference_by_writer
+        }.to_not raise_error(
+          # Shoulda::Matchers::ActiveModel::AllowValueMatcher::CouldNotSetAttributeError
+        )
       end
     end
   end
