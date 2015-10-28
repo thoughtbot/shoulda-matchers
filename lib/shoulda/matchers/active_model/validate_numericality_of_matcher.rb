@@ -438,7 +438,8 @@ module Shoulda
         private
 
         def column_type
-          if @subject.class.respond_to?(:columns_hash)
+          if @subject.class.respond_to?(:columns_hash) &&
+              @subject.class.columns_hash[@attribute.to_s]
             @subject.class.columns_hash[@attribute.to_s].type
           end
         end
