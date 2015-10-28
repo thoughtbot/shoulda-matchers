@@ -45,7 +45,13 @@ module Shoulda
 
           def matches?(subject)
             @subject = subject
-            @expected_value = Symbol === @value ? @subject.__send__(@value) : @value
+
+            if Symbol === @value
+              @expected_value = @subject.__send__(@value)
+            else
+              @expected_value = @value
+            end
+
             all_bounds_correct?
           end
 
@@ -81,7 +87,8 @@ module Shoulda
             @_submatchers ||=
               comparison_combos.map do |diff, submatcher_method_name|
                 matcher = __send__(submatcher_method_name, diff, nil)
-                matcher.with_message(@message, values: { count: @expected_value })
+                count = @expected_value
+                matcher.with_message(@message, values: { count: count })
                 matcher
               end
           end
@@ -124,7 +131,9 @@ module Shoulda
 
           def diffs_to_compare
             diff_to_compare = @numericality_matcher.diff_to_compare
-            values = [-1, 0, 1].map { |sign| @expected_value + (diff_to_compare * sign) }
+            values = [-1, 0, 1].map do |sign|
+              @expected_value + (diff_to_compare * sign)
+            end
 
             if @numericality_matcher.given_numeric_column?
               values
