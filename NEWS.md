@@ -17,6 +17,10 @@
   get a CouldNotSetAttributeError again.* (You may get some more information if
   a test fails, however.)
 
+* Fix `validate_numericality_of` so that it does not blow up when used against
+  a virtual attribute defined in an ActiveRecord model (that is, an attribute
+  that is not present in the database but is defined using `attr_accessor`).
+
 ### Improvements
 
 * Improve failure messages and descriptions of all matchers across the board so

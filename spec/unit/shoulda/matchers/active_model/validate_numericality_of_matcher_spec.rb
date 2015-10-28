@@ -152,6 +152,13 @@ Example did not properly validate that :attr looks like a number.
         }
       )
 
+      context 'when the attribute is a virtual attribute in an ActiveRecord model' do
+        it 'accepts' do
+          record = build_record_validating_numericality_of_virtual_attribute
+          expect(record).to validate_numericality
+        end
+      end
+
       context 'when the column is an integer column' do
         it 'accepts (and does not raise an AttributeChangedValueError)' do
           record = build_record_validating_numericality(column_type: :integer)
@@ -360,6 +367,15 @@ Example did not properly validate that :attr looks like an odd number.
         end
       end
 
+      context 'when the attribute is a virtual attribute in ActiveRecord model' do
+        it 'accepts' do
+          record = build_record_validating_numericality_of_virtual_attribute(
+            odd: true
+          )
+          expect(record).to validate_numericality.odd
+        end
+      end
+
       context 'when the column is an integer column' do
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
@@ -450,6 +466,15 @@ Example did not properly validate that :attr looks like an even number.
 
         def configure_validation_matcher(matcher)
           matcher.even
+        end
+      end
+
+      context 'when the attribute is a virtual attribute in an ActiveRecord model' do
+        it 'accepts' do
+          record = build_record_validating_numericality_of_virtual_attribute(
+            even: true,
+          )
+          expect(record).to validate_numericality.even
         end
       end
 
@@ -551,6 +576,15 @@ than or equal to 18.
         end
       end
 
+      context 'when the attribute is a virtual attribute in an ActiveRecord model' do
+        it 'accepts' do
+          record = build_record_validating_numericality_of_virtual_attribute(
+            less_than_or_equal_to: 18,
+          )
+          expect(record).to validate_numericality.is_less_than_or_equal_to(18)
+        end
+      end
+
       context 'when the column is an integer column' do
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
@@ -648,6 +682,15 @@ than 18.
         end
       end
 
+      context 'when the attribute is a virtual attribute in an ActiveRecord model' do
+        it 'accepts' do
+          record = build_record_validating_numericality_of_virtual_attribute(
+            less_than: 18,
+          )
+          expect(record).to validate_numericality.is_less_than(18)
+        end
+      end
+
       context 'when the column is an integer column' do
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
@@ -740,6 +783,15 @@ to 18.
 
         def configure_validation_matcher(matcher)
           matcher.is_equal_to(18)
+        end
+      end
+
+      context 'when the attribute is a virtual attribute in an ActiveRecord model' do
+        it 'accepts' do
+          record = build_record_validating_numericality_of_virtual_attribute(
+            equal_to: 18,
+          )
+          expect(record).to validate_numericality.is_equal_to(18)
         end
       end
 
@@ -841,6 +893,16 @@ than or equal to 18.
         end
       end
 
+      context 'when the attribute is a virtual attribute in an ActiveRecord model' do
+        it 'accepts' do
+          record = build_record_validating_numericality_of_virtual_attribute(
+            greater_than_or_equal_to: 18,
+          )
+          expect(record).to validate_numericality.
+            is_greater_than_or_equal_to(18)
+        end
+      end
+
       context 'when the column is an integer column' do
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
@@ -939,6 +1001,15 @@ than 18.
 
         def configure_validation_matcher(matcher)
           matcher.is_greater_than(18)
+        end
+      end
+
+      context 'when the attribute is a virtual attribute in an ActiveRecord model' do
+        it 'accepts' do
+          record = build_record_validating_numericality_of_virtual_attribute(
+            greater_than: 18,
+          )
+          expect(record).to validate_numericality.is_greater_than(18)
         end
       end
 
@@ -1713,6 +1784,19 @@ Example did not properly validate that :attr looks like a number.
     define_model 'Example', attribute_name => { type: column_type } do |model|
       model.validates_numericality_of(attribute_name, options)
     end
+  end
+
+  def define_model_validating_numericality_of_virtual_attribute(options = {})
+    attribute_name = options.delete(:attribute_name) { self.attribute_name }
+
+    define_model 'Example' do |model|
+      model.send(:attr_accessor, attribute_name)
+      model.validates_numericality_of(attribute_name, options)
+    end
+  end
+
+  def build_record_validating_numericality_of_virtual_attribute(options = {})
+    define_model_validating_numericality_of_virtual_attribute(options).new
   end
 
   def build_record_validating_numericality(options = {})

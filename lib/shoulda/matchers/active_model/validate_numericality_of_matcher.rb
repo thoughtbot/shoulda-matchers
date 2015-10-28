@@ -491,7 +491,8 @@ module Shoulda
         end
 
         def given_numeric_column?
-          [:integer, :float, :decimal].include?(column_type)
+          attribute_is_active_record_column? &&
+            [:integer, :float, :decimal].include?(column_type)
         end
 
         private
@@ -512,9 +513,19 @@ module Shoulda
           )
         end
 
+        def attribute_is_active_record_column?
+          columns_hash.key?(@attribute.to_s)
+        end
+
         def column_type
+          columns_hash[@attribute.to_s].type
+        end
+
+        def columns_hash
           if @subject.class.respond_to?(:columns_hash)
-            @subject.class.columns_hash[@attribute.to_s].type
+            @subject.class.columns_hash
+          else
+            {}
           end
         end
 
