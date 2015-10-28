@@ -109,7 +109,7 @@ group :test do
 end
 ```
 
-[Then, configure the gem to integrate with RSpec](#configuration).
+[Then, configure the gem to integrate with RSpec](#Configuration).
 
 Now you can use matchers in your tests. For instance a model test might look
 like this:
@@ -145,7 +145,7 @@ group :test do
 end
 ```
 
-[Then, configure the gem to integrate with Minitest](#configuration).
+[Then, configure the gem to integrate with Minitest](#Configuration).
 
 Now you can use matchers in your tests. For instance a model test might look
 like this:
