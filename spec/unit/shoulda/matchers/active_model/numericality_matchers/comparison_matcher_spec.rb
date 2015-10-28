@@ -38,6 +38,31 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
     end
   end
 
+  shared_examples_for 'value symbol' do
+    let(:record_limit) { 2 }
+
+    it do
+      record = instance_with_validations(validation_qualifier => :limit)
+      record.limit = record_limit
+      matcher = build_matcher(operator: operator, value: :limit)
+      expect(record).to matcher
+    end
+
+    it do
+      record = instance_with_validations(validation_qualifier => :limit)
+      record.limit = record_limit
+      matcher = build_matcher(operator: operator, value: record_limit)
+      expect(record).to matcher
+    end
+
+    it do
+      record = instance_with_validations(validation_qualifier => record_limit)
+      record.limit = record_limit
+      matcher = build_matcher(operator: operator, value: :limit)
+      expect(record).to matcher
+    end
+  end
+
   context 'when initialized without correct numerical matcher' do
     it 'raises an ArgumentError' do
       numericality_matcher = double
@@ -48,6 +73,7 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
 
   describe 'is_greater_than' do
     include_examples 'strict qualifier'
+    include_examples 'value symbol'
 
     it do
       record = instance_with_validations(greater_than: 1.5)
@@ -84,6 +110,7 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
 
   describe 'is_greater_than_or_equal_to' do
     include_examples 'strict qualifier'
+    include_examples 'value symbol'
 
     it do
       record = instance_with_validations(greater_than_or_equal_to: 1.5)
@@ -120,6 +147,7 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
 
   describe 'is_less_than' do
     include_examples 'strict qualifier'
+    include_examples 'value symbol'
 
     it do
       record = instance_with_validations(less_than: 1.5)
@@ -156,6 +184,7 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
 
   describe 'is_less_than_or_equal_to' do
     include_examples 'strict qualifier'
+    include_examples 'value symbol'
 
     it do
       record = instance_with_validations(less_than_or_equal_to: 1.5)
@@ -192,6 +221,7 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
 
   describe 'is_equal_to' do
     include_examples 'strict qualifier'
+    include_examples 'value symbol'
 
     it do
       record = instance_with_validations(equal_to: 1.5)
@@ -255,6 +285,10 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
 
   def model_with_validations(options = {})
     define_model :example, attribute_name => :string do |model|
+      model.instance_eval do
+        attr_accessor :limit
+      end
+
       model.validates_numericality_of(attribute_name, options)
       model.attr_accessible(attribute_name)
     end
