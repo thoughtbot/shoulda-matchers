@@ -1217,8 +1217,8 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
   end
 
   def define_model_validating_numericality_of_virtual_attribute(options = {})
-    virtual_attr = options.delete(:virtual_attribute) do
-      virtual_attribute_name
+    virtual_attr = options.delete(:attribute_name) do
+      attribute_name
     end
 
     define_model 'Example' do |model|
@@ -1248,14 +1248,10 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
   end
 
   def validate_virtual_attribute_numericality
-    validate_numericality_of(virtual_attribute_name)
+    validate_numericality_of(attribute_name)
   end
 
   def attribute_name
     :attr
-  end
-
-  def virtual_attribute_name
-    :virtual_attr
   end
 end
