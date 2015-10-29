@@ -8,15 +8,21 @@ Conduct].
 
 1. Fork the repo.
 
-2. Install [dependencies](#installing-dependencies).
+2. Install dependencies by running `bundle install`.
+If you're using Linux, you may need to [install certain
+packages](#installing-dependencies) to set up a working development
+environment.
 
-3. Run the tests. We only take pull requests with passing tests, and it's great
-to know that you have a clean slate: `bundle && bundle exec rake`
+3. All tests should be passing, but it's a good idea to run them anyway
+before starting any work: `bundle exec rake`
 
 4. If you're adding functionality or fixing a bug, add a failing test for the
 issue first.
 
 5. Make the test pass.
+
+6. We only accept pull requests with passing tests, so run the test suite
+again: `bundle exec rake`
 
 6. Finally, push to your fork and submit a pull request.
 
