@@ -130,7 +130,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
       context 'when the attribute is a virtual' do
         it 'accepts' do
           record = build_record_validating_numericality_of_virtual_attribute
-          expect(record).to validate_virtual_attribute_numericality
+          expect(record).to validate_numericality
         end
       end
 
@@ -236,7 +236,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           record = build_record_validating_numericality_of_virtual_attribute(
             odd: true,
           )
-          expect(record).to validate_virtual_attribute_numericality.odd
+          expect(record).to validate_numericality.odd
         end
       end
 
@@ -299,7 +299,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           record = build_record_validating_numericality_of_virtual_attribute(
             even: true,
           )
-          expect(record).to validate_virtual_attribute_numericality.even
+          expect(record).to validate_numericality.even
         end
       end
 
@@ -362,7 +362,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           record = build_record_validating_numericality_of_virtual_attribute(
             less_than_or_equal_to: 18,
           )
-          expect(record).to validate_virtual_attribute_numericality.
+          expect(record).to validate_numericality.
             is_less_than_or_equal_to(18)
         end
       end
@@ -430,7 +430,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           record = build_record_validating_numericality_of_virtual_attribute(
             less_than: 18,
           )
-          expect(record).to validate_virtual_attribute_numericality.
+          expect(record).to validate_numericality.
             is_less_than(18)
         end
       end
@@ -496,7 +496,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           record = build_record_validating_numericality_of_virtual_attribute(
             equal_to: 18,
           )
-          expect(record).to validate_virtual_attribute_numericality.
+          expect(record).to validate_numericality.
             is_equal_to(18)
         end
       end
@@ -564,7 +564,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           record = build_record_validating_numericality_of_virtual_attribute(
             greater_than_or_equal_to: 18,
           )
-          expect(record).to validate_virtual_attribute_numericality.
+          expect(record).to validate_numericality.
             is_greater_than_or_equal_to(18)
         end
       end
@@ -638,7 +638,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           record = build_record_validating_numericality_of_virtual_attribute(
             greater_than: 18,
           )
-          expect(record).to validate_virtual_attribute_numericality.
+          expect(record).to validate_numericality.
             is_greater_than(18)
         end
       end
@@ -1244,10 +1244,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
   end
 
   def validate_numericality
-    validate_numericality_of(attribute_name)
-  end
-
-  def validate_virtual_attribute_numericality
     validate_numericality_of(attribute_name)
   end
 
