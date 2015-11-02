@@ -46,6 +46,9 @@
 * Update `validate_numericality_of` so that it no longer raises an
   IneffectiveTestError if used against a numeric column.
 
+* Add an additional check to `define_enum_for` to ensure that the column that
+  underlies the enum attribute you're testing is an integer column.
+
 # 3.0.1
 
 ### Bug fixes
