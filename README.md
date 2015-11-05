@@ -97,7 +97,7 @@ complex, and error-prone.
   tests that an object forwards messages to other, internal objects by way of
   delegation.
 
-## Installation
+## Getting started
 
 ### RSpec
 
@@ -119,6 +119,42 @@ describe Person do
   it { should validate_presence_of(:name) }
 end
 ```
+
+#### Availability of matchers in various example groups
+
+Since shoulda-matchers provides four categories of matchers, there are four
+different levels where you can use these matchers:
+
+* ActiveRecord and ActiveModel matchers are available only in model example
+  groups, i.e., those tagged with `type: :model` or in files located under
+  `spec/models`.
+* ActionController matchers are available only in controller example groups,
+   i.e., those tagged with `type: :controller` or in files located under
+   `spec/controllers`.
+* The `route` matcher is available also in routing example groups, i.e., those
+  tagged with `type: :routing` or in files located under `spec/routing`.
+* Independent matchers are available in all example groups.
+
+**If you are using ActiveModel or ActiveRecord outside of Rails** and you want
+to use model matchers in certain example groups, you'll need to manually include
+them. Here's a good way of doing that:
+
+``` ruby
+RSpec.configure do |config|
+  config.include(Shoulda::Matchers::ActiveModel, type: :model)
+  config.include(Shoulda::Matchers::ActiveRecord, type: :model)
+end
+```
+
+Then you can say:
+
+``` ruby
+describe MyModel, type: :model do
+  # ...
+end
+```
+
+#### `should` vs `is_expected.to`
 
 Note that in this README and throughout the documentation we're using the
 `should` form of RSpec's one-liner syntax over `is_expected.to`. The `should`
