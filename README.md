@@ -144,7 +144,7 @@ Now you can use matchers in your tests. For instance a model test might look
 like this:
 
 ``` ruby
-describe Person do
+RSpec.describe Person, type: :model do
   it { should validate_presence_of(:name) }
 end
 ```
@@ -192,7 +192,7 @@ use it even when using the `expect` syntax. But if you prefer to use
 `is_expected.to`, you can do that too:
 
 ``` ruby
-describe Person do
+RSpec.describe Person, type: :model do
   it { is_expected.to validate_presence_of(:name) }
 end
 ```
