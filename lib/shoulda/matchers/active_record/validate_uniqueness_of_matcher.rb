@@ -218,6 +218,7 @@ module Shoulda
         def initialize(attribute)
           super(attribute)
           @options = {}
+          @options[:case] = :sensitive
         end
 
         def scoped_to(*scopes)
@@ -231,7 +232,7 @@ module Shoulda
         end
 
         def case_insensitive
-          @options[:case_insensitive] = true
+          @options[:case] = :insensitive
           self
         end
 
@@ -247,7 +248,10 @@ module Shoulda
 
         def description
           result = "require "
-          result << "case sensitive " unless @options[:case_insensitive]
+          case @options[:case]
+          when :sensitive
+            result << "case sensitive "
+          end
           result << "unique value for #{@attribute}"
           result << " scoped to #{@options[:scopes].join(', ')}" if @options[:scopes].present?
           result
@@ -409,9 +413,10 @@ module Shoulda
           if value.respond_to?(:swapcase)
             swapcased_value = value.swapcase
 
-            if @options[:case_insensitive]
+            case @options[:case]
+            when :insensitive
               disallows_value_of(swapcased_value, @expected_message)
-            else
+            when :sensitive
               if value == swapcased_value
                 raise NonCaseSwappableValueError.create(
                   model: @subject.class,
