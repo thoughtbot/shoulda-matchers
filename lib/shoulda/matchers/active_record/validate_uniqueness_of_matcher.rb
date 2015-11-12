@@ -167,6 +167,40 @@ module Shoulda
       #       should validate_uniqueness_of(:key).case_insensitive
       #     end
       #
+      # ##### ignoring_case_sensitivity
+      #
+      # By default, `validate_uniqueness_of` will check that the
+      # validation is case sensitive: it asserts that uniquable attributes pass
+      # validation when their values are in a different case than corresponding
+      # attributes in the pre-existing record.
+      #
+      # Use `ignoring_case_sensitivity` to skip this check. This qualifier is
+      # particularly handy if your model has somehow changed the behavior of
+      # attribute you're testing so that it modifies the case of incoming values
+      # as they are set. For instance, perhaps you've overridden the writer
+      # method or added a `before_validation` callback to normalize the
+      # attribute.
+      #
+      #     class User < ActiveRecord::Base
+      #       validates_uniqueness_of :email
+      #
+      #       def email=(value)
+      #         super(value.downcase)
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe Post do
+      #       it do
+      #         should validate_uniqueness_of(:email).ignoring_case_sensitivity
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PostTest < ActiveSupport::TestCase
+      #       should validate_uniqueness_of(:email).ignoring_case_sensitivity
+      #     end
+      #
       # ##### allow_nil
       #
       # Use `allow_nil` to assert that the attribute allows nil.
@@ -218,7 +252,9 @@ module Shoulda
         def initialize(attribute)
           super(attribute)
           @expected_message = :taken
-          @options = {}
+          @options = {
+            case_sensitivity_strategy: :sensitive
+          }
           @existing_record_created = false
           @failure_reason = nil
           @failure_reason_when_negated = nil
@@ -234,7 +270,12 @@ module Shoulda
         end
 
         def case_insensitive
-          @options[:case_insensitive] = true
+          @options[:case_sensitivity_strategy] = :insensitive
+          self
+        end
+
+        def ignoring_case_sensitivity
+          @options[:case_sensitivity_strategy] = :ignore
           self
         end
 
@@ -258,13 +299,7 @@ module Shoulda
 
         def simple_description
           description = "validate that :#{@attribute} is"
-
-          if @options[:case_insensitive]
-            description << ' case-insensitively'
-          else
-            description << ' case-sensitively'
-          end
-
+          description << description_for_case_sensitive_qualifier
           description << ' unique'
 
           if @options[:scopes].present?
@@ -304,10 +339,16 @@ module Shoulda
         def build_allow_or_disallow_value_matcher(args)
           super.tap do |matcher|
             matcher.failure_message_preface = method(:failure_message_preface)
+            matcher.attribute_changed_value_message =
+              method(:attribute_changed_value_message)
           end
         end
 
         private
+
+        def case_sensitivity_strategy
+          @options[:case_sensitivity_strategy]
+        end
 
         def new_record
           unless defined?(@new_record)
@@ -317,6 +358,17 @@ module Shoulda
           @new_record
         end
         alias_method :subject, :new_record
+
+        def description_for_case_sensitive_qualifier
+          case case_sensitivity_strategy
+          when :sensitive
+            ' case-sensitively'
+          when :insensitive
+            ' case-insensitively'
+          else
+            ''
+          end
+        end
 
         def validation
           model._validators[@attribute].detect do |validator|
@@ -535,14 +587,11 @@ module Shoulda
         end
 
         def validate_case_sensitivity?
-          value = existing_value_read
-
-          if value.respond_to?(:swapcase) && !value.empty?
+          if should_validate_case_sensitivity?
+            value = existing_value_read
             swapcased_value = value.swapcase
 
-            if @options[:case_insensitive]
-              disallows_value_of(swapcased_value, @expected_message)
-            else
+            if case_sensitivity_strategy == :sensitive
               if value == swapcased_value
                 raise NonCaseSwappableValueError.create(
                   model: model,
@@ -552,10 +601,18 @@ module Shoulda
               end
 
               allows_value_of(swapcased_value, @expected_message)
+            else
+              disallows_value_of(swapcased_value, @expected_message)
             end
           else
             true
           end
+        end
+
+        def should_validate_case_sensitivity?
+          case_sensitivity_strategy != :ignore &&
+            existing_value_read.respond_to?(:swapcase) &&
+            !existing_value_read.empty?
         end
 
         def model_class?(model_name)
@@ -774,6 +831,21 @@ module Shoulda
           prefix << ", the matcher expected the new #{model.name} to be"
 
           prefix
+        end
+
+        def attribute_changed_value_message
+          <<-MESSAGE.strip
+As indicated in the message above,
+:#{last_attribute_setter_used_on_new_record.attribute_name} seems to be
+changing certain values as they are set, and this could have something
+to do with why this test is failing. If you or something else has
+overridden the writer method for this attribute to normalize values by
+changing their case in any way (for instance, ensuring that the
+attribute is always downcased), then try adding
+`ignoring_case_sensitivity` onto the end of the uniqueness matcher.
+Otherwise, you may need to write the test yourself, or do something
+different altogether.
+          MESSAGE
         end
 
         def description_for_attribute_setter(attribute_setter, same_as_existing: nil)

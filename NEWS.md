@@ -24,6 +24,13 @@
 * Add a test for `validate_numericality_of` so that it officially supports money
   columns.
 
+### Features
+
+* Add a new qualifier, `ignoring_case_sensitivity`, to `validate_uniqueness_of`.
+  This provides a way to test uniqueness of an attribute whose case is
+  normalized, either in a custom writer method for that attribute, or in a
+  custom `before_validation` callback.
+
 ### Improvements
 
 * Improve failure messages and descriptions of all matchers across the board so

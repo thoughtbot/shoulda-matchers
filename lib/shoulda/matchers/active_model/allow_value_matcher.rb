@@ -316,7 +316,11 @@ module Shoulda
           :instance
         )
 
-        attr_writer :failure_message_preface, :values_to_preset
+        attr_writer(
+          :attribute_changed_value_message,
+          :failure_message_preface,
+          :values_to_preset,
+        )
 
         def initialize(*values)
           super
@@ -418,7 +422,7 @@ module Shoulda
           end
 
           if include_attribute_changed_value_message?
-            message << "\n\n" + attribute_changed_value_message
+            message << "\n\n" + attribute_changed_value_message.call
           end
 
           Shoulda::Matchers.word_wrap(message)
@@ -487,20 +491,10 @@ module Shoulda
           end
 
           if include_attribute_changed_value_message?
-            message << "\n\n" + attribute_changed_value_message
+            message << "\n\n" + attribute_changed_value_message.call
           end
 
           Shoulda::Matchers.word_wrap(message)
-        end
-
-        def attribute_changed_value_message
-          <<-MESSAGE.strip
-As indicated in the message above, :#{result.attribute_setter.attribute_name}
-seems to be changing certain values as they are set, and this could have
-something to do with why this test is failing. If you've overridden the writer
-method for this attribute, then you may need to change it to make this test
-pass, or do something else entirely.
-          MESSAGE
         end
 
         def description
@@ -564,6 +558,26 @@ pass, or do something else entirely.
           end
         end
 
+        def include_attribute_changed_value_message?
+          !ignore_interference_by_writer.never? &&
+            result.attribute_setter.attribute_changed_value?
+        end
+
+        def attribute_changed_value_message
+          @attribute_changed_value_message ||
+            method(:default_attribute_changed_value_message)
+        end
+
+        def default_attribute_changed_value_message
+          <<-MESSAGE.strip
+As indicated in the message above, :#{result.attribute_setter.attribute_name}
+seems to be changing certain values as they are set, and this could have
+something to do with why this test is failing. If you've overridden the writer
+method for this attribute, then you may need to change it to make this test
+pass, or do something else entirely.
+          MESSAGE
+        end
+
         def descriptions_for_preset_values
           attribute_setters_for_values_to_preset.
             map(&:attribute_setter_description)
@@ -584,11 +598,6 @@ pass, or do something else entirely.
               self,
               values_to_set.map { |value| [attribute_to_set, value] }
             )
-        end
-
-        def include_attribute_changed_value_message?
-          !ignore_interference_by_writer.never? &&
-            result.attribute_setter.attribute_changed_value?
         end
 
         def inspected_values_to_set

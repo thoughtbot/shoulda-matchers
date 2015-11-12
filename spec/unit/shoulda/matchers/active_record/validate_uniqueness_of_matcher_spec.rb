@@ -467,9 +467,13 @@ Example did not properly validate that :attr is case-sensitively unique.
 
   As indicated in the message above, :attr seems to be changing certain
   values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+  this test is failing. If you or something else has overridden the
+  writer method for this attribute to normalize values by changing their
+  case in any way (for instance, ensuring that the attribute is always
+  downcased), then try adding `ignoring_case_sensitivity` onto the end
+  of the uniqueness matcher. Otherwise, you may need to write the test
+  yourself, or do something different altogether.
+
           MESSAGE
         }
       }
@@ -769,9 +773,12 @@ unique.
 
   As indicated in the message above, :attr seems to be changing certain
   values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+  this test is failing. If you or something else has overridden the
+  writer method for this attribute to normalize values by changing their
+  case in any way (for instance, ensuring that the attribute is always
+  downcased), then try adding `ignoring_case_sensitivity` onto the end
+  of the uniqueness matcher. Otherwise, you may need to write the test
+  yourself, or do something different altogether.
             MESSAGE
           }
         }
@@ -1121,6 +1128,90 @@ Example did not properly validate that :attr is case-sensitively unique.
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)
+    end
+  end
+
+  context 'when the writer method for the attribute changes the case of incoming values' do
+    context 'when the validation is case-sensitive' do
+      context 'and the matcher is ensuring that the validation is case-sensitive' do
+        it 'rejects with an appropriate failure message' do
+          model = define_model_validating_uniqueness(
+            attribute_name: :name
+          )
+
+          model.class_eval do
+            def name=(name)
+              super(name.upcase)
+            end
+          end
+
+          assertion = lambda do
+            expect(model.new).to validate_uniqueness_of(:name)
+          end
+
+          message = <<-MESSAGE.strip
+Example did not properly validate that :name is case-sensitively unique.
+  After taking the given Example, setting its :name to ‹"an arbitrary
+  value"› (read back as ‹"AN ARBITRARY VALUE"›), and saving it as the
+  existing record, then making a new Example and setting its :name to
+  ‹"an arbitrary value"› (read back as ‹"AN ARBITRARY VALUE"›) as well,
+  the matcher expected the new Example to be valid, but it was invalid
+  instead, producing these validation errors:
+
+  * name: ["has already been taken"]
+
+  As indicated in the message above, :name seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you or something else has overridden the
+  writer method for this attribute to normalize values by changing their
+  case in any way (for instance, ensuring that the attribute is always
+  downcased), then try adding `ignoring_case_sensitivity` onto the end
+  of the uniqueness matcher. Otherwise, you may need to write the test
+  yourself, or do something different altogether.
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'and the matcher is ignoring case sensitivity' do
+        it 'accepts (and not raise an error)' do
+          model = define_model_validating_uniqueness(
+            attribute_name: :name
+          )
+
+          model.class_eval do
+            def name=(name)
+              super(name.upcase)
+            end
+          end
+
+          expect(model.new).
+            to validate_uniqueness_of(:name).
+            ignoring_case_sensitivity
+        end
+      end
+    end
+
+    context 'when the validation is case-insensitive' do
+      context 'and the matcher is ensuring that the validation is case-insensitive' do
+        it 'accepts (and does not raise an error)' do
+          model = define_model_validating_uniqueness(
+            attribute_name: :name,
+            validation_options: { case_sensitive: false },
+          )
+
+          model.class_eval do
+            def name=(name)
+              super(name.downcase)
+            end
+          end
+
+          expect(model.new).
+            to validate_uniqueness_of(:name).
+            case_insensitive
+        end
+      end
     end
   end
 

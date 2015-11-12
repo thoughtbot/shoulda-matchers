@@ -10,6 +10,7 @@ module Shoulda
         def_delegators(
           :allow_matcher,
           :_after_setting_value,
+          :attribute_changed_value_message=,
           :attribute_to_set,
           :description,
           :expects_strict?,
