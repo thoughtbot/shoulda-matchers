@@ -167,6 +167,35 @@ module Shoulda
       #       should validate_uniqueness_of(:key).case_insensitive
       #     end
       #
+      # ##### ignoring_case_sensitivity
+      #
+      # By default, `validate_uniqueness_of` will check that the
+      # validation is case sensitive: it asserts that uniquable attributes pass
+      # validation when their values are in a different case than corresponding
+      # attributes in the pre-existing record.
+      #
+      # Use `ignoring_case_sensitivity` to skip this check. Use this if the model
+      # modifies the case of the attribute before setting it on the model
+      # e.g. with a custom setter  or as part of validation.
+      #
+      #     class Post < ActiveRecord::Base
+      #       validates_uniqueness_of :key
+      #
+      #       def key=(value)
+      #         super value.downcase
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe Post do
+      #       it { should validate_uniqueness_of(:key).ignoring_case_sensitivity }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PostTest < ActiveSupport::TestCase
+      #       should validate_uniqueness_of(:key).ignoring_case_sensitivity
+      #     end
+      #
       # ##### allow_nil
       #
       # Use `allow_nil` to assert that the attribute allows nil.
@@ -233,6 +262,11 @@ module Shoulda
 
         def case_insensitive
           @options[:case] = :insensitive
+          self
+        end
+
+        def ignoring_case_sensitivity
+          @options[:case] = :ignore
           self
         end
 
@@ -426,6 +460,8 @@ module Shoulda
               end
 
               allows_value_of(swapcased_value, @expected_message)
+            else
+              true
             end
           else
             true
