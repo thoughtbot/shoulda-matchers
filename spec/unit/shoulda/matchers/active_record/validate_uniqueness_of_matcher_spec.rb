@@ -771,6 +771,24 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
           converting_values("a" => "A")
       end
     end
+
+    context 'and ignoring_case_sensitivity is specified' do
+      it 'accepts (and not raise an error)' do
+        model = define_model_validating_uniqueness(
+          attribute_name: :name,
+        )
+
+        model.class_eval do
+          def name=(name)
+            super(name.upcase)
+          end
+        end
+
+        expect(model.new).
+          to validate_uniqueness_of(:name).
+          ignoring_case_sensitivity
+      end
+    end
   end
 
   let(:model_attributes) { {} }
