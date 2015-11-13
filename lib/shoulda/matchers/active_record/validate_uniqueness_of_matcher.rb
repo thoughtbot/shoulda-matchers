@@ -282,10 +282,7 @@ module Shoulda
 
         def description
           result = "require "
-          case @options[:case]
-          when :sensitive
-            result << "case sensitive "
-          end
+          result << case_description
           result << "unique value for #{@attribute}"
           result << " scoped to #{@options[:scopes].join(', ')}" if @options[:scopes].present?
           result
@@ -309,6 +306,17 @@ module Shoulda
         end
 
         private
+
+        def case_description
+          case @options[:case]
+          when :sensitive
+            "case sensitive "
+          when :insensitive
+            "case insensitive "
+          else
+            ""
+          end
+        end
 
         def validation
           @subject.class._validators[@attribute].detect do |validator|
