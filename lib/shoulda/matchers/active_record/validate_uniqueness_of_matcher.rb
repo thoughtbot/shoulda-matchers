@@ -174,8 +174,8 @@ module Shoulda
       # validation when their values are in a different case than corresponding
       # attributes in the pre-existing record.
       #
-      # Use `ignoring_case_sensitivity` to skip this check. Use this if the model
-      # modifies the case of the attribute before setting it on the model
+      # Use `ignoring_case_sensitivity` to skip this check. Use this if the
+      # model modifies the case of the attribute before setting it on the model
       # e.g. with a custom setter  or as part of validation.
       #
       #     class Post < ActiveRecord::Base
@@ -310,9 +310,9 @@ module Shoulda
         def case_description
           case @options[:case]
           when :sensitive
-            "case sensitive "
+            'case sensitive '
           when :insensitive
-            "case insensitive "
+            'case insensitive '
           else
             ""
           end
