@@ -38,7 +38,7 @@ module Shoulda
           end
 
           def join_table_exists?
-            if connection.tables.include?(join_table_name)
+            if connection.table_exists?(join_table_name)
               true
             else
               @failure_message = missing_table_message
