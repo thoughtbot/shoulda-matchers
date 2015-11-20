@@ -60,4 +60,50 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :m
         to validate_confirmation_of(builder.attribute_to_confirm)
     end
   end
+
+  context 'when the writer method for the attribute changes incoming values' do
+    context 'and the matcher knows nothing of this' do
+      it 'raises a CouldNotSetAttributeError' do
+        builder = builder_for_record_validating_confirmation
+
+        builder.model.class_eval do
+          def password=(value)
+            super(value.upcase)
+          end
+        end
+
+        assertion = lambda do
+          expect(builder.record).to validate_confirmation_of(:password)
+        end
+
+        expect(&assertion).to raise_error(
+          Shoulda::Matchers::ActiveModel::AllowValueMatcher::CouldNotSetAttributeError
+        )
+      end
+    end
+
+    context 'and the matcher knows how given values get changed' do
+      it 'accepts (and not raise an error)' do
+        model = define_model_validating_confirmation(
+          attribute_name: :terms_of_service
+        )
+
+        model.class_eval do
+          undef_method :terms_of_service=
+
+          def terms_of_service=(value)
+            if value
+              @terms_of_service = value
+            else
+              @terms_of_service = "something different"
+            end
+          end
+        end
+
+        expect(model.new).
+          to validate_acceptance_of(:terms_of_service).
+          converting_values(false => "something different")
+      end
+    end
+  end
 end

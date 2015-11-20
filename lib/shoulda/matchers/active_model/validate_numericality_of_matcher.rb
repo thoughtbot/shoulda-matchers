@@ -315,8 +315,7 @@ module Shoulda
           @submatchers = []
           @diff_to_compare = DEFAULT_DIFF_TO_COMPARE
           @strict = false
-
-          add_disallow_value_matcher
+          @allowed_value_conversions = {}
         end
 
         def strict
@@ -390,11 +389,16 @@ module Shoulda
           self
         end
 
+        def converting_values(value_conversions)
+          @allowed_value_conversions = value_conversions
+          self
+        end
+
         def matches?(subject)
           @subject = subject
 
-          if given_numeric_column?
-            remove_disallow_value_matcher
+          unless given_numeric_column?
+            add_disallow_value_matcher
           end
 
           if @submatchers.empty?
@@ -444,18 +448,18 @@ module Shoulda
         end
 
         def add_disallow_value_matcher
-          disallow_value_matcher = DisallowValueMatcher.new(NON_NUMERIC_VALUE).
+          disallow_value_matcher = DisallowValueMatcher.
+            new(NON_NUMERIC_VALUE).
             for(@attribute).
-            with_message(:not_a_number)
+            with_message(:not_a_number).
+            converting_values(@allowed_value_conversions)
 
           add_submatcher(disallow_value_matcher)
         end
 
-        def remove_disallow_value_matcher
-          @submatchers.shift
-        end
-
         def prepare_submatcher(submatcher)
+          submatcher.converting_values(@allowed_value_conversions)
+
           add_submatcher(submatcher)
 
           if submatcher.respond_to?(:diff_to_compare)
@@ -464,9 +468,9 @@ module Shoulda
         end
 
         def comparison_matcher_for(value, operator)
-          NumericalityMatchers::ComparisonMatcher
-            .new(self, value, operator)
-            .for(@attribute)
+          NumericalityMatchers::ComparisonMatcher.new(self, value, operator).
+            for(@attribute).
+            converting_values(@allowed_value_conversions)
         end
 
         def add_submatcher(submatcher)

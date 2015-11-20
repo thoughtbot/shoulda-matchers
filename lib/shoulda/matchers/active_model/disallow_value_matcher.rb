@@ -8,6 +8,7 @@ module Shoulda
         extend Forwardable
 
         def_delegators :allow_matcher, :_after_setting_value
+
         def initialize(value)
           @allow_matcher = AllowValueMatcher.new(value)
         end
@@ -33,6 +34,11 @@ module Shoulda
 
         def ignoring_interference_by_writer
           @allow_matcher.ignoring_interference_by_writer
+          self
+        end
+
+        def converting_values(value_conversions)
+          @allow_matcher.converting_values(value_conversions)
           self
         end
 

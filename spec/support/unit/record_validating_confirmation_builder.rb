@@ -24,13 +24,12 @@ module UnitTests
       options[:message] = message
     end
 
-    def attribute_to_confirm
-      :attribute_to_confirm
+    def attribute
+      options.fetch(:attribute, :attribute)
     end
-    alias_method :attribute, :attribute_to_confirm
 
     def confirmation_attribute
-      :"#{attribute_to_confirm}_confirmation"
+      :"#{attribute}_confirmation"
     end
 
     def attribute_that_receives_error
@@ -44,7 +43,7 @@ module UnitTests
     private
 
     def create_model
-      _attribute = attribute_to_confirm
+      _attribute = attribute
       _options = options
 
       define_model(model_name, _attribute => :string) do

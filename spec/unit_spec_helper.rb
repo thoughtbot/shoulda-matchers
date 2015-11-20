@@ -9,6 +9,7 @@ require File.expand_path('../support/unit/rails_application', __FILE__)
 $test_app = UnitTests::RailsApplication.new
 $test_app.create
 $test_app.load
+require 'active_record/base'
 
 ENV['BUNDLE_GEMFILE'] ||= app.gemfile_path
 ENV['RAILS_ENV'] = 'test'
