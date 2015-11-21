@@ -310,11 +310,6 @@ EOT
           self
         end
 
-        def allow_nil(allow_nil = true)
-          @options[:allow_nil] = allow_nil
-          self
-        end
-
         def with_message(message)
           if message
             @low_message = message
@@ -366,7 +361,7 @@ EOT
         def matches_for_array?
           allows_all_values_in_array? &&
             allows_blank_value? &&
-            allows_nil_value? &&
+            allow_nil_matches? &&
             disallows_value_outside_of_array?
         end
 
@@ -374,14 +369,6 @@ EOT
           if @options.key?(:allow_blank)
             blank_values = ['', ' ', "\n", "\r", "\t", "\f"]
             @options[:allow_blank] == blank_values.all? { |value| allows_value_of(value) }
-          else
-            true
-          end
-        end
-
-        def allows_nil_value?
-          if @options.key?(:allow_nil)
-            @options[:allow_nil] == allows_value_of(nil)
           else
             true
           end

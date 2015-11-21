@@ -216,6 +216,27 @@ module Shoulda
       #         with_long_message('Secret key must be less than 100 characters')
       #     end
       #
+      # ##### allow_nil
+      #
+      # Use `allow_nil` to assert that the attribute allows nil.
+      #
+      #     class User
+      #       include ActiveModel::Model
+      #       attr_accessor :bio
+      #
+      #       validates_length_of :bio, minimum: 15, allow_nil: true
+      #     end
+      #
+      #     # RSpec
+      #     describe User do
+      #       it { should validate_length_of(:bio).is_at_least(15).allow_nil }
+      #     end
+      #
+      #     # Test::Unit
+      #     class UserTest < ActiveSupport::TestCase
+      #       should validate_length_of(:bio).is_at_least(15).allow_nil
+      #     end
+      #
       # @return [ValidateLengthOfMatcher]
       #
       def validate_length_of(attr)
@@ -228,7 +249,6 @@ module Shoulda
 
         def initialize(attribute)
           super(attribute)
-          @options = {}
           @short_message = nil
           @long_message = nil
         end
@@ -293,7 +313,7 @@ module Shoulda
         def matches?(subject)
           super(subject)
           translate_messages!
-          lower_bound_matches? && upper_bound_matches?
+          lower_bound_matches? && upper_bound_matches? && allow_nil_matches?
         end
 
         private
