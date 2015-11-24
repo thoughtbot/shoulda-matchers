@@ -167,6 +167,35 @@ module Shoulda
       #       should validate_uniqueness_of(:key).case_insensitive
       #     end
       #
+      # ##### ignoring_case_sensitivity
+      #
+      # By default, `validate_uniqueness_of` will check that the
+      # validation is case sensitive: it asserts that uniquable attributes pass
+      # validation when their values are in a different case than corresponding
+      # attributes in the pre-existing record.
+      #
+      # Use `ignoring_case_sensitivity` to skip this check. Use this if the
+      # model modifies the case of the attribute before setting it on the model
+      # e.g. with a custom setter  or as part of validation.
+      #
+      #     class Post < ActiveRecord::Base
+      #       validates_uniqueness_of :key
+      #
+      #       def key=(value)
+      #         super value.downcase
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe Post do
+      #       it { should validate_uniqueness_of(:key).ignoring_case_sensitivity }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PostTest < ActiveSupport::TestCase
+      #       should validate_uniqueness_of(:key).ignoring_case_sensitivity
+      #     end
+      #
       # ##### allow_nil
       #
       # Use `allow_nil` to assert that the attribute allows nil.
@@ -218,6 +247,7 @@ module Shoulda
         def initialize(attribute)
           super(attribute)
           @options = {}
+          @options[:case] = :sensitive
         end
 
         def scoped_to(*scopes)
@@ -231,7 +261,12 @@ module Shoulda
         end
 
         def case_insensitive
-          @options[:case_insensitive] = true
+          @options[:case] = :insensitive
+          self
+        end
+
+        def ignoring_case_sensitivity
+          @options[:case] = :ignore
           self
         end
 
@@ -247,7 +282,7 @@ module Shoulda
 
         def description
           result = "require "
-          result << "case sensitive " unless @options[:case_insensitive]
+          result << case_description
           result << "unique value for #{@attribute}"
           result << " scoped to #{@options[:scopes].join(', ')}" if @options[:scopes].present?
           result
@@ -271,6 +306,17 @@ module Shoulda
         end
 
         private
+
+        def case_description
+          case @options[:case]
+          when :sensitive
+            'case sensitive '
+          when :insensitive
+            'case insensitive '
+          else
+            ''
+          end
+        end
 
         def validation
           @subject.class._validators[@attribute].detect do |validator|
@@ -409,9 +455,10 @@ module Shoulda
           if value.respond_to?(:swapcase)
             swapcased_value = value.swapcase
 
-            if @options[:case_insensitive]
+            case @options[:case]
+            when :insensitive
               disallows_value_of(swapcased_value, @expected_message)
-            else
+            when :sensitive
               if value == swapcased_value
                 raise NonCaseSwappableValueError.create(
                   model: @subject.class,
@@ -421,6 +468,8 @@ module Shoulda
               end
 
               allows_value_of(swapcased_value, @expected_message)
+            else
+              true
             end
           else
             true
