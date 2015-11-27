@@ -39,6 +39,13 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
     end
   end
 
+  context 'an ActiveRecord class with serialized attribute' do
+    it 'accepts' do
+      expect(with_serialized_attr(Hash)).to validate_presence_of(:attr)
+      expect(with_serialized_attr(Array)).to validate_presence_of(:attr)
+    end
+  end
+
   context 'a has_many association with a presence validation' do
     it 'requires the attribute to be set' do
       expect(has_many_children(presence: true)).to validate_presence_of(:children)
@@ -207,6 +214,18 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
 
   def active_resource_model
     define_active_resource_class :foo, attr: :string do
+      validates_presence_of :attr
+    end.new
+  end
+
+  def with_serialized_attr(type = nil)
+    define_model(:example, attr: :string) do
+      if type
+        serialize :attr, type
+      else
+        serialize :attr
+      end
+
       validates_presence_of :attr
     end.new
   end
