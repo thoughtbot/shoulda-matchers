@@ -152,8 +152,10 @@ module Shoulda
         end
 
         def blank_value
-          if collection?
+          if collection? || serialization_class == Array
             []
+          elsif serialization_class == Hash
+            {}
           else
             nil
           end
@@ -170,6 +172,27 @@ module Shoulda
         def reflection
           @subject.class.respond_to?(:reflect_on_association) &&
             @subject.class.reflect_on_association(@attribute)
+        end
+
+        private
+
+        def serialization_class
+          klass = serialized_attributes[@attribute.to_s]
+          if klass.respond_to?(:object_class)
+            klass.object_class
+          end
+        end
+
+        def serialized_attributes
+          if model.respond_to?(:columns)
+            Shoulda::Matchers::RailsShim.serialized_attributes_for(model)
+          else
+            {}
+          end
+        end
+
+        def model
+          @subject.class
         end
       end
     end
