@@ -135,14 +135,14 @@ module Shoulda
 
         def secure_password_being_validated?
           defined?(::ActiveModel::SecurePassword) &&
-            @subject.class.ancestors.include?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation) &&
+            model.ancestors.include?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation) &&
             @attribute == :password
         end
 
         def disallows_and_double_checks_value_of!(value, message)
           disallows_value_of(value, message)
         rescue ActiveModel::AllowValueMatcher::CouldNotSetAttributeError
-          raise ActiveModel::CouldNotSetPasswordError.create(@subject.class)
+          raise ActiveModel::CouldNotSetPasswordError.create(model)
         end
 
         def disallows_original_or_typecast_value?(value, message)
@@ -170,8 +170,8 @@ module Shoulda
         end
 
         def reflection
-          @subject.class.respond_to?(:reflect_on_association) &&
-            @subject.class.reflect_on_association(@attribute)
+          model.respond_to?(:reflect_on_association) &&
+            model.reflect_on_association(@attribute)
         end
 
         private
