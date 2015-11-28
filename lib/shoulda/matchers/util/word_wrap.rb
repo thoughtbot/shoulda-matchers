@@ -107,10 +107,14 @@ module Shoulda
     # @private
     class Line
       TERMINAL_WIDTH = 72
+      OFFSETS = { left: -1, right: +1 }
 
-      def initialize(line)
+      def initialize(line, indent: 0)
+        @indent = indent
         @original_line = @line_to_wrap = Text.new(line)
-        @indentation = nil
+        @line_to_wrap = Text.new(line)
+        @indentation = ' ' * indent
+        @indentation_read = false
       end
 
       def wrap
@@ -120,13 +124,14 @@ module Shoulda
           lines << line_to_wrap
         else
           loop do
+            @previous_line_to_wrap = line_to_wrap
             new_line = (indentation || '') + line_to_wrap
             result = wrap_line(new_line)
             lines << result[:fitted_line].rstrip
             @indentation ||= read_indentation
             @line_to_wrap = result[:leftover]
 
-            if line_to_wrap.empty? || @original_line == @line_to_wrap
+            if line_to_wrap.to_s.empty? || previous_line_to_wrap == line_to_wrap
               break
             end
           end
@@ -137,7 +142,8 @@ module Shoulda
 
       protected
 
-      attr_reader :original_line, :line_to_wrap, :indentation
+      attr_reader :indent, :original_line, :line_to_wrap, :indentation,
+        :previous_line_to_wrap
 
       private
 
@@ -151,24 +157,35 @@ module Shoulda
         end
       end
 
-      def wrap_line(line)
+      def wrap_line(line, direction: :left)
+        index = nil
+
         if line.length > TERMINAL_WIDTH
-          index = determine_where_to_break_line(line)
-          fitted_line = line[0 .. index].rstrip
-          leftover = line[index + 1 .. -1]
-        else
+          index = determine_where_to_break_line(line, direction: :left)
+
+          if index == -1
+            index = determine_where_to_break_line(line, direction: :right)
+          end
+        end
+
+        if index.nil? || index == -1
           fitted_line = line
           leftover = ''
+        else
+          fitted_line = line[0..index].rstrip
+          leftover = line[index + 1 .. -1]
         end
 
         { fitted_line: fitted_line, leftover: leftover }
       end
 
-      def determine_where_to_break_line(line)
+      def determine_where_to_break_line(line, args)
+        direction = args.fetch(:direction)
         index = TERMINAL_WIDTH
+        offset = OFFSETS.fetch(direction)
 
-        while line[index] !~ /\s/
-          index -= 1
+        while line[index] !~ /\s/ && (0...line.length).cover?(index)
+          index += offset
         end
 
         index
