@@ -35,6 +35,17 @@ luscious, ipsum sit amet efficitur feugiat
     MESSAGE
   end
 
+  it "does not break at the maximum line length, but afterward" do
+    wrapped_message = described_class.word_wrap(<<-MESSAGE.rstrip)
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean luscius, ipsum sit amet efficitur feugiat
+    MESSAGE
+
+    expect(wrapped_message).to eq(<<-MESSAGE.rstrip)
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean luscius,
+ipsum sit amet efficitur feugiat
+    MESSAGE
+  end
+
   it "re-wraps entire paragraphs" do
     wrapped_message = described_class.word_wrap(<<-MESSAGE)
 Lorem ipsum dolor sit amet,

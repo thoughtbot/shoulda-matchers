@@ -165,7 +165,7 @@ module Shoulda
       end
 
       def determine_where_to_break_line(line)
-        index = TERMINAL_WIDTH - 1
+        index = TERMINAL_WIDTH
 
         while line[index] !~ /\s/
           index -= 1
