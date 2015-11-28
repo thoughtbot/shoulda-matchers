@@ -26,6 +26,11 @@ module UnitTests
         if @actual
           lines << 'Actually failed with:'
           lines << Shoulda::Matchers::Util.indent(@actual, 2)
+          lines << "Diff:"
+          lines << Shoulda::Matchers::Util.indent(
+            differ.diff(expected, @actual)[1..-1],
+            2
+          )
         else
           lines << 'However, the expectation did not fail.'
         end
@@ -45,6 +50,12 @@ module UnitTests
 
       def failure_message_for_should_not
         failure_message_when_negated
+      end
+
+      private
+
+      def differ
+        @_differ ||= RSpec::Support::Differ.new
       end
     end
   end
