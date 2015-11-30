@@ -24,6 +24,10 @@ EOT
       path.dirname == root.join('gemfiles')
     end
 
+    def current_or_latest_appraisal
+      current_appraisal || latest_appraisal
+    end
+
     def latest_appraisal
       available_appraisals.sort.last
     end

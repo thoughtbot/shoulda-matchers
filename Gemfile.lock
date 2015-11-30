@@ -47,6 +47,8 @@ GEM
     thor (0.19.1)
     yajl-ruby (1.1.0)
     yard (0.8.7.3)
+    zeus (0.15.4)
+      method_source (>= 0.6.7)
 
 PLATFORMS
   ruby
@@ -62,6 +64,4 @@ DEPENDENCIES
   redcarpet
   rspec (~> 3.2)
   yard
-
-BUNDLED WITH
-   1.10.6
+  zeus

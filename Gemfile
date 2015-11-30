@@ -6,6 +6,7 @@ gem 'pry', github: 'pry/pry'
 gem 'pry-byebug'
 gem 'rake', '~> 10.0'
 gem 'rspec', '~> 3.2'
+gem 'zeus'
 
 # YARD
 gem 'yard'

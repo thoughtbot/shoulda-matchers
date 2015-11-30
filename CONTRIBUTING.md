@@ -37,6 +37,13 @@ request.
    appraisal 4.2 rspec <path of test file to run>
    ```
 
+   You can also run unit tests by running `zeus start` in one shell, and then
+   running the following in another:
+
+   ```
+   zeus rspec <path of test file to run>
+   ```
+
    And to run the entire test suite again:
    
    ```
