@@ -30,6 +30,14 @@ module Shoulda
         indentation = ' ' * width
         string.split(/[\n\r]/).map { |line| indentation + line }.join("\n")
       end
+
+      def self.a_or_an(next_word)
+        if next_word =~ /\A[aeiou]/i
+          "an #{next_word}"
+        else
+          "a #{next_word}"
+        end
+      end
     end
   end
 end
