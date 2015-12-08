@@ -2,7 +2,7 @@ module Shoulda
   module Matchers
     module ActionController
       # @private
-      class FlashStore
+      class FlashStore < Store
         def self.future
           new
         end
@@ -10,8 +10,6 @@ module Shoulda
         def self.now
           new.use_now!
         end
-
-        attr_accessor :controller
 
         def initialize
           @use_now = false
@@ -25,23 +23,17 @@ module Shoulda
           end
         end
 
-        def has_key?(key)
-          values_to_check.include?(key.to_s)
-        end
-
-        def has_value?(expected_value)
-          values_to_check.values.any? do |actual_value|
-            expected_value === actual_value
-          end
-        end
-
-        def empty?
-          flash.empty?
-        end
-
         def use_now!
           @use_now = true
           self
+        end
+
+        def store
+          if @use_now
+            set_values.slice(*keys_to_discard.to_a)
+          else
+            set_values.except(*keys_to_discard.to_a)
+          end
         end
 
         private
@@ -73,14 +65,6 @@ module Shoulda
 
         def keys_to_discard
           flash.instance_variable_get('@discard')
-        end
-
-        def values_to_check
-          if @use_now
-            set_values.slice(*keys_to_discard.to_a)
-          else
-            set_values.except(*keys_to_discard.to_a)
-          end
         end
       end
     end

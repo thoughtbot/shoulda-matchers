@@ -395,8 +395,8 @@ describe Shoulda::Matchers::ActionController::SetSessionOrFlashMatcher do
             allow(store).to receive(:has_key?).
               with('the key').
               and_return(true)
-            allow(store).to receive(:has_value?).
-              with('the value').
+            expect(store).to receive(:has_value?).
+              with('the value', 'the key').
               and_return(true)
             matcher = described_class.new(store)['the key'].to('the value')
 
@@ -446,7 +446,7 @@ describe Shoulda::Matchers::ActionController::SetSessionOrFlashMatcher do
               with('the key').
               and_return(true)
             allow(store).to receive(:has_value?).
-              with('the value').
+              with('the value', 'the key').
               and_return(true)
             matcher = described_class.new(store)['the key'].to('the value')
             expected_message = 'Expected MyController not to set flash["the key"] to "the value", but it did'
@@ -479,7 +479,7 @@ describe Shoulda::Matchers::ActionController::SetSessionOrFlashMatcher do
               with('the key').
               and_return(true)
             allow(store).to receive(:has_value?).
-              with('the value').
+              with('the value', 'the key').
               and_return(true)
             context = double('context', method_in_context: 'the value')
             matcher = described_class.new(store)['the key'].
@@ -532,7 +532,7 @@ describe Shoulda::Matchers::ActionController::SetSessionOrFlashMatcher do
               with('the key').
               and_return(true)
             allow(store).to receive(:has_value?).
-              with('the value').
+              with('the value', 'the key').
               and_return(true)
             context = double('context', method_in_context: 'the value')
             matcher = described_class.new(store)['the key'].

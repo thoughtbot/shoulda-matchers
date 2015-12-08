@@ -248,6 +248,14 @@ shared_examples_for 'set session or flash matcher' do
             expect(controller).not_to set_store['the key'].to('the value')
           end
 
+          it 'rejects when the value is not present in the given key' do
+            controller = controller_with_store(
+              'the key' => 'not matching',
+              'other key' => 'the value',
+            )
+            expect(controller).not_to set_store['the key'].to('the value')
+          end
+
           it 'produces the correct failure message' do
             controller = controller_with_empty_store
             expected_message = %<Expected #{controller.class} to set #{store_name}["the key"] to "the value", but it did not>

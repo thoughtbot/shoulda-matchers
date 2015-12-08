@@ -38,7 +38,10 @@ module Shoulda
 
         def matches?(controller)
           @controller = store.controller = controller
-          !store.empty? && key_matches? && expected_value_matches?
+          return false if store.empty?
+          return expected_value_matches? if expected_value_set?
+          return key_matches? if key_set?
+          true
         end
 
         def failure_message
@@ -71,11 +74,12 @@ module Shoulda
         end
 
         def key_matches?
-          !key_set? || store.has_key?(key)
+          store.has_key?(key)
         end
 
         def expected_value_matches?
-          !expected_value_set? || store.has_value?(expected_value)
+          return store.has_value?(expected_value, key) if key_set?
+          store.has_value?(expected_value)
         end
 
         def expectation_description
