@@ -1,14 +1,15 @@
 module Shoulda
   module Matchers
     # @private
-    def self.word_wrap(document)
-      Document.new(document).wrap
+    def self.word_wrap(document, options = {})
+      Document.new(document, options).wrap
     end
 
     # @private
     class Document
-      def initialize(document)
+      def initialize(document, indent: 0)
         @document = document
+        @indent = indent
       end
 
       def wrap
@@ -17,7 +18,7 @@ module Shoulda
 
       protected
 
-      attr_reader :document
+      attr_reader :document, :indent
 
       private
 
@@ -27,7 +28,7 @@ module Shoulda
 
       def wrapped_paragraphs
         paragraphs.map do |paragraph|
-          Paragraph.new(paragraph).wrap
+          Paragraph.new(paragraph, indent: indent).wrap
         end
       end
     end
@@ -51,8 +52,9 @@ module Shoulda
 
     # @private
     class Paragraph
-      def initialize(paragraph)
+      def initialize(paragraph, indent: 0)
         @paragraph = Text.new(paragraph)
+        @indent = indent
       end
 
       def wrap
@@ -67,7 +69,7 @@ module Shoulda
 
       protected
 
-      attr_reader :paragraph
+      attr_reader :paragraph, :indent
 
       private
 
@@ -92,11 +94,11 @@ module Shoulda
       end
 
       def wrap_lines(lines)
-        lines.map { |line| Line.new(line).wrap }
+        lines.map { |line| Line.new(line, indent: indent).wrap }
       end
 
       def wrap_generic_paragraph
-        Line.new(combine_paragraph_into_one_line).wrap
+        Line.new(combine_paragraph_into_one_line, indent: indent).wrap
       end
 
       def combine_paragraph_into_one_line
@@ -112,32 +114,36 @@ module Shoulda
       def initialize(line, indent: 0)
         @indent = indent
         @original_line = @line_to_wrap = Text.new(line)
-        @line_to_wrap = Text.new(line)
         @indentation = ' ' * indent
         @indentation_read = false
       end
 
       def wrap
-        lines = []
-
         if line_to_wrap.indented?
-          lines << line_to_wrap
+          [line_to_wrap]
         else
+          lines = []
+
           loop do
             @previous_line_to_wrap = line_to_wrap
             new_line = (indentation || '') + line_to_wrap
             result = wrap_line(new_line)
-            lines << result[:fitted_line].rstrip
-            @indentation ||= read_indentation
+            lines << normalize_whitespace(result[:fitted_line])
+
+            unless @indentation_read
+              @indentation = read_indentation
+              @indentation_read = true
+            end
+
             @line_to_wrap = result[:leftover]
 
             if line_to_wrap.to_s.empty? || previous_line_to_wrap == line_to_wrap
               break
             end
           end
-        end
 
-        lines
+          lines
+        end
       end
 
       protected
@@ -148,12 +154,13 @@ module Shoulda
       private
 
       def read_indentation
+        initial_indentation = ' ' * indent
         match = line_to_wrap.match_as_list_item
 
         if match
-          ' ' * match[1].length
+          initial_indentation + (' ' * match[1].length)
         else
-          ''
+          initial_indentation
         end
       end
 
@@ -189,6 +196,10 @@ module Shoulda
         end
 
         index
+      end
+
+      def normalize_whitespace(string)
+        indentation + string.strip.squeeze(' ')
       end
     end
   end

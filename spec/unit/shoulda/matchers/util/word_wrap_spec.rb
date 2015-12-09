@@ -236,4 +236,17 @@ and something goes after this
       end
     end
   end
+
+  context "when :indent is given" do
+    it "uses the given indentation level when determining where to wrap lines" do
+      wrapped_message = described_class.word_wrap(<<-MESSAGE.strip, indent: 2)
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean luctus, ipsum sit amet efficitur feugiat
+      MESSAGE
+
+      expect(wrapped_message).to eq(<<-MESSAGE.rstrip)
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
+  luctus, ipsum sit amet efficitur feugiat
+      MESSAGE
+    end
+  end
 end
