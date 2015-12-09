@@ -3,9 +3,6 @@ module Shoulda
     module ActionController
       # @private
       class Store
-        NO_KEY_SET = Object.new
-        private_constant :NO_KEY_SET
-
         attr_accessor :controller
 
         def name
@@ -20,11 +17,13 @@ module Shoulda
           store.has_key?(key.to_s)
         end
 
-        def has_value?(expected_value, key = NO_KEY_SET)
-          values = key.equal?(NO_KEY_SET) ? store.values : [store[key.to_s]]
-          values.any? do |actual_value|
-            expected_value === actual_value
-          end
+        def has_value?(expected_value)
+          store.values.any? { |actual_value| expected_value === actual_value }
+        end
+
+        def has_key_value?(expected_key, expected_value)
+          return false unless has_key?(expected_key)
+          expected_value === store[expected_key.to_s]
         end
 
         def empty?

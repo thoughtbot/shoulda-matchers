@@ -392,11 +392,8 @@ describe Shoulda::Matchers::ActionController::SetSessionOrFlashMatcher do
           it 'accepts' do
             controller = define_class('MyController').new
             store = build_store
-            allow(store).to receive(:has_key?).
-              with('the key').
-              and_return(true)
-            expect(store).to receive(:has_value?).
-              with('the value', 'the key').
+            expect(store).to receive(:has_key_value?).
+              with('the key', 'the value').
               and_return(true)
             matcher = described_class.new(store)['the key'].to('the value')
 
@@ -408,11 +405,8 @@ describe Shoulda::Matchers::ActionController::SetSessionOrFlashMatcher do
           it 'rejects' do
             controller = define_class('MyController').new
             store = build_store
-            allow(store).to receive(:has_key?).
-              with('the key').
-              and_return(true)
-            allow(store).to receive(:has_value?).
-              with('the value').
+            allow(store).to receive(:has_key_value?).
+              with('the key', 'the value').
               and_return(false)
             matcher = described_class.new(store)['the key'].to('the value')
 
@@ -422,11 +416,8 @@ describe Shoulda::Matchers::ActionController::SetSessionOrFlashMatcher do
           it 'produces the correct failure message' do
             controller = define_class('MyController').new
             store = build_store(name: 'flash')
-            allow(store).to receive(:has_key?).
-              with('the key').
-              and_return(true)
-            allow(store).to receive(:has_value?).
-              with('the value').
+            allow(store).to receive(:has_key_value?).
+              with('the key', 'the value').
               and_return(false)
             matcher = described_class.new(store)['the key'].to('the value')
             expected_message = 'Expected MyController to set flash["the key"] to "the value", but it did not'
@@ -442,11 +433,8 @@ describe Shoulda::Matchers::ActionController::SetSessionOrFlashMatcher do
           it 'produces the correct failure message' do
             controller = define_class('MyController').new
             store = build_store(name: 'flash')
-            allow(store).to receive(:has_key?).
-              with('the key').
-              and_return(true)
-            allow(store).to receive(:has_value?).
-              with('the value', 'the key').
+            allow(store).to receive(:has_key_value?).
+              with('the key', 'the value').
               and_return(true)
             matcher = described_class.new(store)['the key'].to('the value')
             expected_message = 'Expected MyController not to set flash["the key"] to "the value", but it did'
@@ -475,11 +463,8 @@ describe Shoulda::Matchers::ActionController::SetSessionOrFlashMatcher do
           it 'accepts' do
             controller = define_class('MyController').new
             store = build_store
-            allow(store).to receive(:has_key?).
-              with('the key').
-              and_return(true)
-            allow(store).to receive(:has_value?).
-              with('the value', 'the key').
+            allow(store).to receive(:has_key_value?).
+              with('the key', 'the value').
               and_return(true)
             context = double('context', method_in_context: 'the value')
             matcher = described_class.new(store)['the key'].
@@ -494,8 +479,8 @@ describe Shoulda::Matchers::ActionController::SetSessionOrFlashMatcher do
           it 'rejects' do
             controller = define_class('MyController').new
             store = build_store
-            allow(store).to receive(:has_key?).
-              with('the key').
+            allow(store).to receive(:has_key_value?).
+              with('the key', 'the value').
               and_return(false)
             context = double('context', method_in_context: 'the value')
             matcher = described_class.new(store)['the key'].
@@ -508,8 +493,8 @@ describe Shoulda::Matchers::ActionController::SetSessionOrFlashMatcher do
           it 'produces the correct failure message' do
             controller = define_class('MyController').new
             store = build_store(name: 'flash')
-            allow(store).to receive(:has_key?).
-              with('the key').
+            allow(store).to receive(:has_key_value?).
+              with('the key', 'the value').
               and_return(false)
             context = double('context', method_in_context: 'the value')
             matcher = described_class.new(store)['the key'].
@@ -528,11 +513,8 @@ describe Shoulda::Matchers::ActionController::SetSessionOrFlashMatcher do
           it 'produces the correct failure message' do
             controller = define_class('MyController').new
             store = build_store(name: 'flash')
-            allow(store).to receive(:has_key?).
-              with('the key').
-              and_return(true)
-            allow(store).to receive(:has_value?).
-              with('the value', 'the key').
+            allow(store).to receive(:has_key_value?).
+              with('the key', 'the value').
               and_return(true)
             context = double('context', method_in_context: 'the value')
             matcher = described_class.new(store)['the key'].
@@ -554,6 +536,7 @@ describe Shoulda::Matchers::ActionController::SetSessionOrFlashMatcher do
       :controller= => nil,
       :has_key? => nil,
       :has_value? => nil,
+      :has_key_value? => nil,
       :empty? => nil,
     }
     methods = defaults.merge(overrides)

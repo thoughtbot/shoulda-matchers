@@ -78,7 +78,7 @@ module Shoulda
         end
 
         def expected_value_matches?
-          return store.has_value?(expected_value, key) if key_set?
+          return store.has_key_value?(key, expected_value) if key_set?
           store.has_value?(expected_value)
         end
 
