@@ -80,12 +80,9 @@ curl -sL https://rpm.nodesource.com/setup | bash -
 yum install -y nodejs
 ```
 
-### Installing Ruby (all platforms)
+### Ruby Version Support
 
-shoulda-matchers is only compatible with Ruby 2.x. A `.ruby-version` is included
-in the repo, so if you're using one of the Ruby version manager tools, then you
-should be using (or have been prompted to install) the latest version of Ruby.
-If not, you'll want to do that.
+shoulda-matchers is only compatible with Ruby 2.x. 
 
 [working Ruby environment]: #addendum-setting-up-your-environment
 [Code of Conduct]: https://thoughtbot.com/open-source-code-of-conduct
