@@ -9,6 +9,15 @@ describe Shoulda::Matchers::ActiveModel, type: :model do
 end
 
 describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
+  describe 'backwards compatibility' do
+    it 'responds to :failure_message_for_should_not' do
+      matcher = allow_value('foo', 'bar').for(:baz)
+
+      expect(matcher).to\
+        respond_to(:failure_message_for_should_not).with(0).arguments
+    end
+  end
+
   context "#description" do
     it 'describes itself with multiple values' do
       matcher = allow_value('foo', 'bar').for(:baz)

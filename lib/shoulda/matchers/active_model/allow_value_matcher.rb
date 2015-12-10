@@ -492,6 +492,8 @@ module Shoulda
 
           Shoulda::Matchers.word_wrap(message)
         end
+        alias_method :failure_message_for_should_not,
+          :failure_message_when_negated
 
         def attribute_changed_value_message
           <<-MESSAGE.strip
