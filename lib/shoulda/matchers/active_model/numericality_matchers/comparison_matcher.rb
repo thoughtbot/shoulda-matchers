@@ -13,6 +13,7 @@ module Shoulda
           }
 
           def initialize(numericality_matcher, value, operator)
+            super(nil)
             unless numericality_matcher.respond_to? :diff_to_compare
               raise ArgumentError, 'numericality_matcher is invalid'
             end
@@ -20,17 +21,18 @@ module Shoulda
             @value = value
             @operator = operator
             @message = ERROR_MESSAGES[operator]
-            @strict = false
           end
 
-          def description
-            message = "validate that #{@attribute} is #{comparison_expectation} #{@value}"
+          def simple_description
+            description = ''
 
-            if @strict
-              message << " strictly"
+            if expects_strict?
+              description << ' strictly'
             end
 
-            message
+            description +
+              "disallow :#{attribute} from being a number that is not " +
+              "#{comparison_expectation} #{@value}"
           end
 
           def for(attribute)
@@ -39,8 +41,13 @@ module Shoulda
           end
 
           def with_message(message)
+            @expects_custom_validation_message = true
             @message = message
             self
+          end
+
+          def expects_custom_validation_message?
+            @expects_custom_validation_message
           end
 
           def matches?(subject)

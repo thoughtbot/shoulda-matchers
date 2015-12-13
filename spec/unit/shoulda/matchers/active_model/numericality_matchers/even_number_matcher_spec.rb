@@ -4,15 +4,6 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::EvenNumberMatcher
   subject { described_class.new(numericality_matcher, :attr) }
 
   it_behaves_like 'a numerical submatcher'
-  it_behaves_like 'a numerical type submatcher'
-
-  it 'allows even number' do
-    expect(subject.allowed_type).to eq 'even numbers'
-  end
-
-  describe '#diff_to_compare' do
-    it { expect(subject.diff_to_compare).to eq 2 }
-  end
 
   context 'when the model has an even validation' do
     it 'matches' do
@@ -22,16 +13,19 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::EvenNumberMatcher
   end
 
   context 'when the model does not have an even validation' do
-    it 'does not match' do
+    it 'rejects with an appropriate failure message' do
       match = subject
-      expect(not_validating_even_number).not_to match
-    end
 
-    it 'fails with the ActiveRecord :even message' do
-      match = subject
-      expect {
+      assertion = lambda do
         expect(not_validating_even_number).to match
-      }.to fail_with_message_including('Expected errors to include "must be even"')
+      end
+
+      message = <<-MESSAGE.strip_heredoc
+After setting :attr to "1", the matcher expected the Example to be
+invalid, but it was valid instead.
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
     end
   end
 
@@ -53,7 +47,6 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::EvenNumberMatcher
 
   context 'asserting non-strict validation when validating strictly' do
     it 'rejects' do
-      pending 'This needs to be fixed'
       expect(validating_even_number(strict: true)).not_to subject
     end
   end

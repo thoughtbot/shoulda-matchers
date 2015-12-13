@@ -304,7 +304,7 @@ module Shoulda
 
       # @private
       class ValidateNumericalityOfMatcher
-        NUMERIC_NAME = 'numbers'
+        NUMERIC_NAME = 'number'
         NON_NUMERIC_VALUE = 'abcd'
         DEFAULT_DIFF_TO_COMPARE = 1
 
@@ -314,15 +314,23 @@ module Shoulda
           @attribute = attribute
           @submatchers = []
           @diff_to_compare = DEFAULT_DIFF_TO_COMPARE
-          @strict = false
+          @expects_custom_validation_message = false
+          @expects_to_allow_nil = false
+          @expects_strict = false
+          @allowed_type_adjective = nil
+          @allowed_type_name = 'number'
 
           add_disallow_value_matcher
         end
 
         def strict
-          @strict = true
+          @expects_strict = true
           @submatchers.each(&:strict)
           self
+        end
+
+        def expects_strict?
+          @expects_strict
         end
 
         def only_integer
@@ -333,12 +341,17 @@ module Shoulda
         end
 
         def allow_nil
+          @expects_to_allow_nil = true
           prepare_submatcher(
             AllowValueMatcher.new(nil)
               .for(@attribute)
               .with_message(:not_a_number)
           )
           self
+        end
+
+        def expects_to_allow_nil?
+          @expects_to_allow_nil
         end
 
         def odd
@@ -381,8 +394,13 @@ module Shoulda
         end
 
         def with_message(message)
+          @expects_custom_validation_message = true
           @submatchers.each { |matcher| matcher.with_message(message) }
           self
+        end
+
+        def expects_custom_validation_message?
+          @expects_custom_validation_message
         end
 
         def on(context)
@@ -392,6 +410,7 @@ module Shoulda
 
         def matches?(subject)
           @subject = subject
+          @number_of_submatchers = @submatchers.size
 
           if given_numeric_column?
             remove_disallow_value_matcher
@@ -408,27 +427,59 @@ module Shoulda
           first_failing_submatcher.nil?
         end
 
-        def description
-          description_parts = ["only allow #{allowed_types} for #{@attribute}"]
+        def simple_description
+          description = ''
+
+          description << "validate that :#{@attribute} looks like "
+          description << Shoulda::Matchers::Util.a_or_an(full_allowed_type)
 
           if comparison_descriptions.present?
-            description_parts << comparison_descriptions
+            description << ' ' + comparison_descriptions
           end
 
-          if @strict
-            description_parts.insert(1, 'strictly')
-            description_parts.join(', ')
-          else
-            description_parts.join(' ')
-          end
+          description
+        end
+
+        def description
+          ValidationMatcher::BuildDescription.call(self, simple_description)
         end
 
         def failure_message
-          first_failing_submatcher.failure_message
+          "#{overall_failure_message}".tap do |message|
+            failing_submatchers.each do |submatcher|
+              if number_of_submatchers_for_failure_message > 1
+                submatcher_description = submatcher.simple_description.
+                  sub(/\bvalidate that\b/, 'validates').
+                  sub(/\bdisallow\b/, 'disallows').
+                  sub(/\ballow\b/, 'allows')
+                submatcher_message =
+                  "In checking that #{model.name} #{submatcher_description}, " +
+                  submatcher.failure_message[0].downcase +
+                  submatcher.failure_message[1..-1]
+              else
+                submatcher_message = submatcher.failure_message
+              end
+
+              message << "\n"
+              message << Shoulda::Matchers.word_wrap(
+                submatcher_message,
+                indent: 2
+              )
+            end
+          end
         end
 
         def failure_message_when_negated
-          first_failing_submatcher.failure_message_when_negated
+          "#{overall_failure_message_when_negated}".tap do |message|
+            if submatcher_failure_message_when_negated.present?
+              raise "hmm, this needs to be implemented."
+              message << "\n"
+              message << Shoulda::Matchers.word_wrap(
+                submatcher_failure_message_when_negated,
+                indent: 2
+              )
+            end
+          end
         end
 
         def given_numeric_column?
@@ -436,6 +487,22 @@ module Shoulda
         end
 
         private
+
+        def model
+          @subject.class
+        end
+
+        def overall_failure_message
+          Shoulda::Matchers.word_wrap(
+            "#{model.name} did not properly #{description}."
+          )
+        end
+
+        def overall_failure_message_when_negated
+          Shoulda::Matchers.word_wrap(
+            "Expected #{model.name} not to #{description}, but it did."
+          )
+        end
 
         def column_type
           if @subject.class.respond_to?(:columns_hash)
@@ -470,7 +537,29 @@ module Shoulda
         end
 
         def add_submatcher(submatcher)
+          if submatcher.respond_to?(:allowed_type_name)
+            @allowed_type_name = submatcher.allowed_type_name
+          end
+
+          if submatcher.respond_to?(:allowed_type_adjective)
+            @allowed_type_adjective = submatcher.allowed_type_adjective
+          end
+
           @submatchers << submatcher
+        end
+
+        def number_of_submatchers_for_failure_message
+          if has_been_qualified?
+            @submatchers.size - 1
+          else
+            @submatchers.size
+          end
+        end
+
+        def has_been_qualified?
+          @submatchers.any? do |submatcher|
+            submatcher.class.parent == NumericalityMatchers
+          end
         end
 
         def update_diff_to_compare(matcher)
@@ -478,23 +567,30 @@ module Shoulda
         end
 
         def first_failing_submatcher
-          @_first_failing_submatcher ||= @submatchers.detect do |submatcher|
+          failing_submatchers.first
+        end
+
+        def failing_submatchers
+          @_failing_submatchers ||= @submatchers.select do |submatcher|
             !submatcher.matches?(@subject)
           end
         end
 
-        def allowed_types
-          allowed_array = submatcher_allowed_types
-          allowed_array.empty? ? NUMERIC_NAME : allowed_array.join(', ')
+        def submatcher_failure_message
+          first_failing_submatcher.failure_message
         end
 
-        def submatcher_allowed_types
-          @submatchers.inject([]){|m, s| m << s.allowed_type if s.respond_to?(:allowed_type); m }
+        def submatcher_failure_message_when_negated
+          first_failing_submatcher.failure_message_when_negated
+        end
+
+        def full_allowed_type
+          "#{@allowed_type_adjective} #{@allowed_type_name}".strip
         end
 
         def comparison_descriptions
           description_array = submatcher_comparison_descriptions
-          description_array.empty? ? '' : 'which are ' + submatcher_comparison_descriptions.join(' and ')
+          description_array.empty? ? '' : submatcher_comparison_descriptions.join(' and ')
         end
 
         def submatcher_comparison_descriptions
@@ -531,11 +627,7 @@ doing anything either.
           end
 
           def a_or_an(next_word)
-            if next_word =~ /[aeiou]/
-              "an #{next_word}"
-            else
-              "a #{next_word}"
-            end
+            Shoulda::Matchers::Util.a_or_an(next_word)
           end
         end
       end

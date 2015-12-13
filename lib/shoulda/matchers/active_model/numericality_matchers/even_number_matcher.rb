@@ -6,8 +6,19 @@ module Shoulda
         class EvenNumberMatcher < NumericTypeMatcher
           NON_EVEN_NUMBER_VALUE = 1
 
-          def allowed_type
-            'even numbers'
+          def simple_description
+            description = ''
+
+            if expects_strict?
+              description << 'strictly '
+            end
+
+            description +
+              "disallow :#{attribute} from being an odd number"
+          end
+
+          def allowed_type_adjective
+            'even'
           end
 
           def diff_to_compare

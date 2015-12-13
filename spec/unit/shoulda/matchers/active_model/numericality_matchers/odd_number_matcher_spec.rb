@@ -4,15 +4,6 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OddNumberMatcher 
   subject { described_class.new(numericality_matcher, :attr) }
 
   it_behaves_like 'a numerical submatcher'
-  it_behaves_like 'a numerical type submatcher'
-
-  it 'allows odd number' do
-    expect(subject.allowed_type).to eq 'odd numbers'
-  end
-
-  describe '#diff_to_compare' do
-    it { expect(subject.diff_to_compare).to eq 2 }
-  end
 
   context 'when the model has an odd validation' do
     it 'matches' do
@@ -22,16 +13,19 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OddNumberMatcher 
   end
 
   context 'when the model does not have an odd validation' do
-    it 'does not match' do
+    it 'rejects with an appropriate failure message' do
       match = subject
-      expect(not_validating_odd_number).not_to match
-    end
 
-    it 'fails with the ActiveRecord :odd message' do
-      match = subject
-      expect {
+      assertion = lambda do
         expect(not_validating_odd_number).to match
-      }.to fail_with_message_including('Expected errors to include "must be odd"')
+      end
+
+      message = <<-MESSAGE.strip_heredoc
+After setting :attr to "2", the matcher expected the Example to be
+invalid, but it was valid instead.
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
     end
   end
 
@@ -53,7 +47,6 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OddNumberMatcher 
 
   context 'asserting non-strict validation when validating strictly' do
     it 'rejects' do
-      pending 'This needs to be fixed'
       expect(validating_odd_number(strict: true)).not_to subject
     end
   end

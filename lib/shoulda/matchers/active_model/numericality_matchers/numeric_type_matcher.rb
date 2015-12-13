@@ -17,17 +17,30 @@ module Shoulda
             @options = options
             @message = nil
             @context = nil
-            @strict = false
+            @expects_strict = false
+            @expects_custom_validation_message = false
           end
 
           def with_message(message)
-            @message = message
+            if message
+              @expects_custom_validation_message = true
+              @message = message
+            end
+
             self
           end
 
+          def expects_custom_validation_message?
+            @expects_custom_validation_message
+          end
+
           def strict
-            @strict = true
+            @expects_strict = true
             self
+          end
+
+          def expects_strict?
+            @expects_strict
           end
 
           def on(context)
@@ -35,8 +48,12 @@ module Shoulda
             self
           end
 
-          def allowed_type
-            raise NotImplementedError
+          def allowed_type_name
+            'number'
+          end
+
+          def allowed_type_adjective
+            ''
           end
 
           def diff_to_compare
@@ -67,7 +84,7 @@ module Shoulda
                   matcher.with_message(@message)
                 end
 
-                if @strict
+                if expects_strict?
                   matcher.strict
                 end
 

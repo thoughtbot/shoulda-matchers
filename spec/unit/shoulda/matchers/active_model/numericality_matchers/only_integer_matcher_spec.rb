@@ -4,15 +4,6 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OnlyIntegerMatche
   subject { described_class.new(numericality_matcher, :attr) }
 
   it_behaves_like 'a numerical submatcher'
-  it_behaves_like 'a numerical type submatcher'
-
-  it 'allows integer types' do
-    expect(subject.allowed_type).to eq 'integers'
-  end
-
-  describe '#diff_to_compare' do
-    it { expect(subject.diff_to_compare).to eq 1 }
-  end
 
   context 'given an attribute that only allows integer values' do
     it 'matches' do
@@ -32,16 +23,19 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OnlyIntegerMatche
   end
 
   context 'when the model does not have an only_integer validation' do
-    it 'does not match' do
+    it 'rejects with an appropriate failure message' do
       match = subject
-      expect(not_validating_only_integer).not_to match
-    end
 
-    it 'fails with the ActiveRecord :not_an_integer message' do
-      match = subject
-      expect {
+      assertion = lambda do
         expect(not_validating_only_integer).to match
-      }.to fail_with_message_including('Expected errors to include "must be an integer"')
+      end
+
+      message = <<-MESSAGE
+After setting :attr to "0.1", the matcher expected the Example to be
+invalid, but it was valid instead.
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
     end
   end
 
@@ -53,7 +47,6 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OnlyIntegerMatche
 
   context 'asserting non-strict validation when validating strictly' do
     it 'rejects' do
-      pending 'This needs to be fixed'
       expect(validating_only_integer(strict: true)).not_to subject
     end
   end

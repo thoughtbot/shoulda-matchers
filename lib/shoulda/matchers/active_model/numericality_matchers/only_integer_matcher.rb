@@ -6,8 +6,18 @@ module Shoulda
         class OnlyIntegerMatcher < NumericTypeMatcher
           NON_INTEGER_VALUE = 0.1
 
-          def allowed_type
-            'integers'
+          def simple_description
+            description = ''
+
+            if expects_strict?
+              description << ' strictly'
+            end
+
+            description + "disallow :#{attribute} from being a decimal number"
+          end
+
+          def allowed_type_name
+            'integer'
           end
 
           def diff_to_compare

@@ -19,7 +19,6 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::ComparisonMatcher
 
     context 'asserting non-strict validation when validating strictly' do
       it 'rejects' do
-        pending 'This needs to be fixed'
         record = instance_with_validations(
           validation_qualifier => 1,
           strict: true
