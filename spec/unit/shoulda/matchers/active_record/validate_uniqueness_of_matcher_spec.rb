@@ -66,67 +66,164 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
     end
 
     context 'when too narrow of a scope is specified' do
-      it 'rejects' do
+      it 'rejects with an appropriate failure message' do
         record = build_record_validating_uniqueness(
           scopes: [
             build_attribute(name: :scope1),
-            { name: :scope2 }
+            build_attribute(name: :scope2)
           ],
+          additional_attributes: [:other]
         )
-        expect(record).
-          not_to validate_uniqueness.
-          scoped_to(:scope1, :scope2, :other)
+
+        assertion = lambda do
+          expect(record).
+            to validate_uniqueness.
+            scoped_to(:scope1, :scope2, :other)
+        end
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique
+within the scope of :scope1, :scope2, and :other.
+  Expected the validation to be scoped to :scope1, :scope2, and :other,
+  but it was scoped to :scope1 and :scope2 instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
 
     context 'when too broad of a scope is specified' do
-      it 'rejects' do
+      it 'rejects with an appropriate failure message' do
         record = build_record_validating_uniqueness(
           scopes: [
             build_attribute(name: :scope1),
-            { name: :scope2 }
+            build_attribute(name: :scope2)
           ],
         )
-        expect(record).
-          not_to validate_uniqueness.
-          scoped_to(:scope1)
+
+        assertion = lambda do
+          expect(record).
+            to validate_uniqueness.
+            scoped_to(:scope1)
+        end
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique
+within the scope of :scope1.
+  Expected the validation to be scoped to :scope1, but it was scoped to
+  :scope1 and :scope2 instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
 
     context 'when a different scope is specified' do
-      it 'rejects' do
+      it 'rejects with an appropriate failure message' do
         record = build_record_validating_uniqueness(
-          scopes: [ build_attribute(name: :scope) ],
-          additional_attributes: [:other]
+          scopes: [ build_attribute(name: :other) ],
+          additional_attributes: [:scope]
         )
-        expect(record).
-          not_to validate_uniqueness.
-          scoped_to(:other)
+        assertion = lambda do
+          expect(record).
+            to validate_uniqueness.
+            scoped_to(:scope)
+        end
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique
+within the scope of :scope.
+  Expected the validation to be scoped to :scope, but it was scoped to
+  :other instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
 
     context 'when no scope is specified' do
-      it 'rejects' do
+      it 'rejects with an appropriate failure message' do
         record = build_record_validating_uniqueness(
           scopes: [ build_attribute(name: :scope) ]
         )
-        expect(record).not_to validate_uniqueness
+
+        assertion = lambda do
+          expect(record).to validate_uniqueness
+        end
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique.
+  Expected the validation not to be scoped to anything, but it was
+  scoped to :scope instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
 
-      it 'rejects if the scope is unset beforehand' do
-        record = build_record_validating_uniqueness(
-          scopes: [ build_attribute(name: :scope, value: nil) ]
-        )
-        expect(record).not_to validate_uniqueness
+      context 'if the scope attribute is unset in the record given to the matcher' do
+        it 'rejects with an appropriate failure message' do
+          record = build_record_validating_uniqueness(
+            scopes: [ build_attribute(name: :scope, value: nil) ]
+          )
+
+          assertion = lambda do
+            expect(record).to validate_uniqueness
+          end
+
+          message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique.
+  Expected the validation not to be scoped to anything, but it was
+  scoped to :scope instead.
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
       end
     end
 
     context 'when a non-existent attribute is specified as a scope' do
-      it 'rejects' do
-        record = build_record_validating_uniqueness(
-          scopes: [ build_attribute(name: :scope) ]
-        )
-        expect(record).not_to validate_uniqueness.scoped_to(:non_existent)
+      context 'when there is one scope' do
+        it 'rejects with an appropriate failure message (and does not raise an error)' do
+          record = build_record_validating_uniqueness(
+            scopes: [ build_attribute(name: :scope) ]
+          )
+
+          assertion = lambda do
+            expect(record).to validate_uniqueness.scoped_to(:non_existent)
+          end
+
+          message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique
+within the scope of :non_existent.
+  :non_existent does not seem to be an attribute on Example.
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'when there is more than scope' do
+        it 'rejects with an appropriate failure message (and does not raise an error)' do
+          record = build_record_validating_uniqueness(
+            scopes: [ build_attribute(name: :scope) ]
+          )
+
+          assertion = lambda do
+            expect(record).to validate_uniqueness.scoped_to(
+              :non_existent1,
+              :non_existent2
+            )
+          end
+
+          message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique
+within the scope of :non_existent1 and :non_existent2.
+  :non_existent1 and :non_existent2 do not seem to be attributes on
+  Example.
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
       end
     end
 
@@ -140,14 +237,22 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
   end
 
   context 'when the model does not have a uniqueness validation' do
-    it 'rejects' do
-      model = define_model(:example, attribute_name => :string) do |m|
-        m.attr_accessible attribute_name
+    it 'rejects with an appropriate failure message' do
+      model = define_model_without_validation
+      model.create!(attribute_name => 'value')
+
+      assertion = lambda do
+        expect(model.new).to validate_uniqueness_of(attribute_name)
       end
 
-      model.create!(attr: 'value')
+      message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique.
+  Given an existing Example whose :attr is "value", after making a new
+  Example and setting its :attr to "value" as well, the matcher expected
+  the new Example to be invalid, but it was valid instead.
+      MESSAGE
 
-      expect(model.new).not_to validate_uniqueness_of(attribute_name)
+      expect(&assertion).to fail_with_message(message)
     end
   end
 
@@ -179,13 +284,25 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
       end
 
       context 'when the validation has no scope and a scope is specified' do
-        it 'rejects' do
+        it 'rejects with an appropriate failure message' do
           model = define_model_validating_uniqueness(
             additional_attributes: [:other]
           )
           create_record_from(model)
           record = build_record_from(model)
-          expect(record).not_to validate_uniqueness.scoped_to(:other)
+
+          assertion = lambda do
+            expect(record).to validate_uniqueness.scoped_to(:other)
+          end
+
+          message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique
+within the scope of :other.
+  Expected the validation to be scoped to :other, but it was not scoped
+  to anything.
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
         end
       end
     end
@@ -219,23 +336,58 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
 
     context 'and the validation has a custom message' do
       context 'when no message is specified' do
-        it 'rejects' do
+        it 'rejects with an appropriate failure message' do
           record = build_record_validating_uniqueness(
             validation_options: { message: 'bad value' }
           )
-          expect(record).not_to validate_uniqueness
+
+          assertion = lambda do
+            expect(record).to validate_uniqueness
+          end
+
+          message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique.
+  After taking the given Example, setting its :attr to "an arbitrary
+  value", and saving it as the existing record, then making a new
+  Example and setting its :attr to "an arbitrary value" as well, the
+  matcher expected the new Example to be invalid and to produce the
+  validation error "has already been taken" on :attr. The record was
+  indeed invalid, but it produced these validation errors instead:
+
+  * attr: ["bad value"]
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
         end
       end
 
       context 'given a string' do
         context 'when the given and actual messages do not match' do
-          it 'rejects' do
+          it 'rejects with an appropriate failure message' do
             record = build_record_validating_uniqueness(
-              validation_options: { message: 'bad value' }
+              validation_options: { message: 'something else entirely' }
             )
-            expect(record).
-              not_to validate_uniqueness.
-              with_message('something else entirely')
+
+            assertion = lambda do
+              expect(record).
+                to validate_uniqueness.
+                with_message('some message')
+            end
+
+            message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique,
+producing a custom validation error on failure.
+  After taking the given Example, setting its :attr to "an arbitrary
+  value", and saving it as the existing record, then making a new
+  Example and setting its :attr to "an arbitrary value" as well, the
+  matcher expected the new Example to be invalid and to produce the
+  validation error "some message" on :attr. The record was indeed
+  invalid, but it produced these validation errors instead:
+
+  * attr: ["something else entirely"]
+            MESSAGE
+
+            expect(&assertion).to fail_with_message(message)
           end
         end
 
@@ -253,13 +405,31 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
 
       context 'given a regex' do
         context 'when the given and actual messages do not match' do
-          it 'rejects' do
+          it 'rejects with an appropriate failure message' do
             record = build_record_validating_uniqueness(
-              validation_options: { message: 'Bad value' }
+              validation_options: { message: 'something else entirely' }
             )
-            expect(record).
-              not_to validate_uniqueness.
-              with_message(/something else entirely/)
+
+            assertion = lambda do
+              expect(record).
+                to validate_uniqueness.
+                with_message(/some message/)
+            end
+
+            message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique,
+producing a custom validation error on failure.
+  After taking the given Example, setting its :attr to "an arbitrary
+  value", and saving it as the existing record, then making a new
+  Example and setting its :attr to "an arbitrary value" as well, the
+  matcher expected the new Example to be invalid and to produce a
+  validation error matching /some message/ on :attr. The record was
+  indeed invalid, but it produced these validation errors instead:
+
+  * attr: ["something else entirely"]
+            MESSAGE
+
+            expect(&assertion).to fail_with_message(message)
           end
         end
 
@@ -334,27 +504,49 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
           end
 
           context 'when too narrow of a scope is specified' do
-            it 'rejects' do
+            it 'rejects with an appropriate failure message' do
               record = build_record_validating_scoped_uniqueness_with_enum(
                 enum_scope: :scope1,
                 additional_scopes: [:scope2],
                 additional_attributes: [:other]
               )
-              expect(record).
-                not_to validate_uniqueness.
-                scoped_to(:scope1, :scope2, :other)
+
+              assertion = lambda do
+                expect(record).
+                  to validate_uniqueness.
+                  scoped_to(:scope1, :scope2, :other)
+              end
+
+              message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique
+within the scope of :scope1, :scope2, and :other.
+  Expected the validation to be scoped to :scope1, :scope2, and :other,
+  but it was scoped to :scope1 and :scope2 instead.
+              MESSAGE
+
+              expect(&assertion).to fail_with_message(message)
             end
           end
 
           context 'when too broad of a scope is specified' do
-            it 'rejects' do
+            it 'rejects with an appropriate failure message' do
               record = build_record_validating_scoped_uniqueness_with_enum(
                 enum_scope: :scope1,
                 additional_scopes: [:scope2]
               )
-              expect(record).
-                not_to validate_uniqueness.
-                scoped_to(:scope1)
+
+              assertion = lambda do
+                expect(record).to validate_uniqueness.scoped_to(:scope1)
+              end
+
+              message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique
+within the scope of :scope1.
+  Expected the validation to be scoped to :scope1, but it was scoped to
+  :scope1 and :scope2 instead.
+              MESSAGE
+
+              expect(&assertion).to fail_with_message(message)
             end
           end
         end
@@ -467,26 +659,55 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
     end
 
     context 'when the matcher is qualified with case_insensitive' do
-      it 'rejects' do
+      it 'rejects with an appropriate failure message' do
         record = build_record_validating_uniqueness(
           attribute_type: :string,
           validation_options: { case_sensitive: true }
         )
 
-        expect(record).not_to validate_uniqueness.case_insensitive
+        assertion = lambda do
+          expect(record).to validate_uniqueness.case_insensitive
+        end
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr is case-insensitively
+unique.
+  After taking the given Example, setting its :attr to "an arbitrary
+  value", and saving it as the existing record, then making a new
+  Example and setting its :attr to a different value, "AN ARBITRARY
+  VALUE", the matcher expected the new Example to be invalid, but it was
+  valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
   end
 
   context 'when the model has a case-insensitive validation' do
     context 'when case_insensitive is not specified' do
-      it 'rejects' do
+      it 'rejects with an appropriate failure message' do
         record = build_record_validating_uniqueness(
           attribute_type: :string,
           validation_options: { case_sensitive: false }
         )
 
-        expect(record).not_to validate_uniqueness
+        assertion = lambda do
+          expect(record).to validate_uniqueness
+        end
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique.
+  After taking the given Example, setting its :attr to "an arbitrary
+  value", and saving it as the existing record, then making a new
+  Example and setting its :attr to a different value, "AN ARBITRARY
+  VALUE", the matcher expected the new Example to be valid, but it was
+  invalid instead, producing these validation errors:
+
+  * attr: ["has already been taken"]
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
 
@@ -543,18 +764,50 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
 
   context 'when the validation is not declared with allow_nil' do
     context 'given a new record whose attribute is nil' do
-      it 'rejects' do
+      it 'rejects with an appropriate failure message' do
         model = define_model_validating_uniqueness
         record = build_record_from(model, attribute_name => nil)
-        expect(record).not_to validate_uniqueness.allow_nil
+
+        assertion = lambda do
+          expect(record).to validate_uniqueness.allow_nil
+        end
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique,
+but only if it is not nil.
+  After taking the given Example, setting its :attr to nil, and saving
+  it as the existing record, then making a new Example and setting its
+  :attr to nil as well, the matcher expected the new Example to be
+  valid, but it was invalid instead, producing these validation errors:
+
+  * attr: ["has already been taken"]
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
 
     context 'given an existing record whose attribute is nil' do
-      it 'rejects' do
+      it 'rejects with an appropriate failure message' do
         model = define_model_validating_uniqueness
         record = create_record_from(model, attribute_name => nil)
-        expect(record).not_to validate_uniqueness.allow_nil
+
+        assertion = lambda do
+          expect(record).to validate_uniqueness.allow_nil
+        end
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique,
+but only if it is not nil.
+  Given an existing Example whose :attr is nil, after making a new
+  Example and setting its :attr to nil as well, the matcher expected the
+  new Example to be valid, but it was invalid instead, producing these
+  validation errors:
+
+  * attr: ["has already been taken"]
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
   end
@@ -640,38 +893,102 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
 
   context 'when the validation is not declared with allow_blank' do
     context 'given a new record whose attribute is nil' do
-      it 'rejects' do
+      it 'rejects with an appropriate failure message' do
         model = define_model_validating_uniqueness
         record = build_record_from(model, attribute_name => nil)
-        expect(record).not_to validate_uniqueness.allow_blank
+
+        assertion = lambda do
+          expect(record).to validate_uniqueness.allow_blank
+        end
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique,
+but only if it is not blank.
+  After taking the given Example, setting its :attr to "", and saving it
+  as the existing record, then making a new Example and setting its
+  :attr to "" as well, the matcher expected the new Example to be valid,
+  but it was invalid instead, producing these validation errors:
+
+  * attr: ["has already been taken"]
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
 
     context 'given an existing record whose attribute is nil' do
-      it 'rejects' do
+      it 'rejects with an appropriate failure message' do
         model = define_model_validating_uniqueness
         record = create_record_from(model, attribute_name => nil)
-        expect(record).not_to validate_uniqueness.allow_blank
+
+        assertion = lambda do
+          expect(record).to validate_uniqueness.allow_blank
+        end
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique,
+but only if it is not blank.
+  Given an existing Example, after setting its :attr to "", then making
+  a new Example and setting its :attr to "" as well, the matcher
+  expected the new Example to be valid, but it was invalid instead,
+  producing these validation errors:
+
+  * attr: ["has already been taken"]
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
 
     context 'given a new record whose attribute is empty' do
-      it 'rejects' do
+      it 'rejects with an appropriate failure message' do
         model = define_model_validating_uniqueness(
           attribute_type: :string
         )
         record = build_record_from(model, attribute_name => '')
-        expect(record).not_to validate_uniqueness.allow_blank
+
+        assertion = lambda do
+          expect(record).to validate_uniqueness.allow_blank
+        end
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique,
+but only if it is not blank.
+  After taking the given Example, setting its :attr to "", and saving it
+  as the existing record, then making a new Example and setting its
+  :attr to "" as well, the matcher expected the new Example to be valid,
+  but it was invalid instead, producing these validation errors:
+
+  * attr: ["has already been taken"]
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
 
     context 'given an existing record whose attribute is empty' do
-      it 'rejects' do
+      it 'rejects with an appropriate failure message' do
         model = define_model_validating_uniqueness(
           attribute_type: :string
         )
         record = create_record_from(model, attribute_name => '')
-        expect(record).not_to validate_uniqueness.allow_blank
+
+        assertion = lambda do
+          expect(record).to validate_uniqueness.allow_blank
+        end
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique,
+but only if it is not blank.
+  Given an existing Example whose :attr is "", after making a new
+  Example and setting its :attr to "" as well, the matcher expected the
+  new Example to be valid, but it was invalid instead, producing these
+  validation errors:
+
+  * attr: ["has already been taken"]
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
   end
@@ -907,6 +1224,12 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
     model.enum(enum_scope_attribute[:name] => dummy_enum_values)
 
     build_record_from(model)
+  end
+
+  def define_model_without_validation
+    define_model(:example, attribute_name => :string) do |model|
+      model.attr_accessible(attribute_name)
+    end
   end
 
   def validate_uniqueness
