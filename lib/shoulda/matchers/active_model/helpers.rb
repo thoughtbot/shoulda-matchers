@@ -3,25 +3,17 @@ module Shoulda
     module ActiveModel
       # @private
       module Helpers
-        def pretty_error_messages(obj)
-          obj.errors.map do |attribute, message|
-            full_message = message.dup.inspect
-            parenthetical_parts = []
+        def pretty_error_messages(object)
+          format_validation_errors(object.errors)
+        end
 
-            unless attribute.to_sym == :base
-              parenthetical_parts << "attribute: #{attribute}"
+        def format_validation_errors(errors)
+          list_items = errors.keys.map do |attribute|
+            messages = errors[attribute]
+            "* #{attribute}: #{messages}"
+          end
 
-              if obj.respond_to?(attribute)
-                parenthetical_parts << "value: #{obj.__send__(attribute).inspect}"
-              end
-            end
-
-            if parenthetical_parts.any?
-              full_message << " (#{parenthetical_parts.join(', ')})"
-            end
-
-            "* " + full_message
-          end.join("\n")
+          list_items.join("\n")
         end
 
         def default_error_message(type, options = {})
