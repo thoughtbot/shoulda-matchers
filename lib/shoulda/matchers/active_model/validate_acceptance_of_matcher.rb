@@ -81,21 +81,18 @@ module Shoulda
 
       # @private
       class ValidateAcceptanceOfMatcher < ValidationMatcher
-        def with_message(message)
-          if message
-            @expected_message = message
-          end
-          self
+        def initialize(attribute)
+          super
+          @expected_message = :accepted
         end
 
         def matches?(subject)
           super(subject)
-          @expected_message ||= :accepted
           disallows_value_of(false, @expected_message)
         end
 
-        def description
-          "require #{@attribute} to be accepted"
+        def simple_description
+          "validate that #{@attribute} has been set to true"
         end
       end
     end
