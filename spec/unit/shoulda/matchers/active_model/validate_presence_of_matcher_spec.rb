@@ -12,8 +12,20 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
   end
 
   context 'a model without a presence validation' do
-    it 'rejects' do
-      expect(define_model(:example, attr: :string).new).not_to matcher
+    it 'rejects with the correct failure message' do
+      record = define_model(:example, attr: :string).new
+
+      assertion = lambda do
+        expect(record).to matcher
+      end
+
+      message = <<-MESSAGE
+Example did not properly validate that :attr cannot be empty/falsy.
+  After setting :attr to nil, the matcher expected the Example to be
+  invalid, but it was valid instead.
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
     end
   end
 
@@ -28,14 +40,18 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
   end
 
   context 'an ActiveModel class without a presence validation' do
-    it 'rejects' do
-      expect(active_model).not_to matcher
-    end
+    it 'rejects with the correct failure message' do
+      assertion = lambda do
+        expect(active_model).to matcher
+      end
 
-    it 'provides the correct failure message' do
-      message = %{Expected errors to include "can't be blank" when attr is set to nil,\ngot no errors}
+      message = <<-MESSAGE
+Example did not properly validate that :attr cannot be empty/falsy.
+  After setting :attr to nil, the matcher expected the Example to be
+  invalid, but it was valid instead.
+      MESSAGE
 
-      expect { expect(active_model).to matcher }.to fail_with_message(message)
+      expect(&assertion).to fail_with_message(message)
     end
   end
 
@@ -82,8 +98,18 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
       end
     end
 
-    it 'rejects' do
-      expect(@model).not_to validate_presence_of(:children)
+    it 'rejects with the correct failure message' do
+      assertion = lambda do
+        expect(@model).to validate_presence_of(:children)
+      end
+
+      message = <<-MESSAGE
+Parent did not properly validate that :children cannot be empty/falsy.
+  After setting :children to [], the matcher expected the Parent to be
+  invalid, but it was valid instead.
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
     end
   end
 
@@ -109,8 +135,20 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
         expect(validating_presence(strict: true)).to matcher.strict
       end
 
-      it 'rejects when the :strict options do not match' do
-        expect(validating_presence(strict: false)).not_to matcher.strict
+      it 'rejects with the correct failure message when the :strict options do not match' do
+        assertion = lambda do
+          expect(validating_presence(strict: false)).to matcher.strict
+        end
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr cannot be empty/falsy,
+raising a validation exception on failure.
+  After setting :attr to nil, the matcher expected the Example to be
+  invalid and to raise a validation exception, but the record produced
+  validation errors instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
 

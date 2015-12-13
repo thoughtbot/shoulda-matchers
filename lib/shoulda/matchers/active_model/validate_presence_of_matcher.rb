@@ -111,14 +111,13 @@ module Shoulda
 
       # @private
       class ValidatePresenceOfMatcher < ValidationMatcher
-        def with_message(message)
-          @expected_message = message if message
-          self
+        def initialize(attribute)
+          super
+          @expected_message = :blank
         end
 
         def matches?(subject)
           super(subject)
-          @expected_message ||= :blank
 
           if secure_password_being_validated?
             disallows_and_double_checks_value_of!(blank_value, @expected_message)
@@ -127,8 +126,8 @@ module Shoulda
           end
         end
 
-        def description
-          "require #{@attribute} to be set"
+        def simple_description
+          "validate that :#{@attribute} cannot be empty/falsy"
         end
 
         private
