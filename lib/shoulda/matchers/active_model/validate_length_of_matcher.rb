@@ -253,40 +253,50 @@ module Shoulda
           self
         end
 
+        def with_message(message)
+          if message
+            @expects_custom_validation_message = true
+            @short_message = message
+            @long_message = message
+          end
+
+          self
+        end
+
         def with_short_message(message)
           if message
+            @expects_custom_validation_message = true
             @short_message = message
           end
+
           self
         end
 
         def with_long_message(message)
           if message
+            @expects_custom_validation_message = true
             @long_message = message
           end
+
           self
         end
 
-        def with_message(message)
-          if message
-            @short_message = message
-            @long_message = message
-          end
-          self
-        end
+        def simple_description
+          description = "validate that the length of :#{@attribute}"
 
-        def description
-          description =  "ensure #{@attribute} has a length "
           if @options.key?(:minimum) && @options.key?(:maximum)
             if @options[:minimum] == @options[:maximum]
-              description << "of exactly #{@options[:minimum]}"
+              description << " is #{@options[:minimum]}"
             else
-              description << "between #{@options[:minimum]} and #{@options[:maximum]}"
+              description << " is between #{@options[:minimum]}"
+              description << " and #{@options[:maximum]}"
             end
-          else
-            description << "of at least #{@options[:minimum]}" if @options[:minimum]
-            description << "of at most #{@options[:maximum]}" if @options[:maximum]
+          elsif @options.key?(:minimum)
+            description << " is at least #{@options[:minimum]}"
+          elsif @options.key?(:maximum)
+            description << " is at most #{@options[:maximum]}"
           end
+
           description
         end
 
