@@ -83,22 +83,17 @@ module Shoulda
         attr_reader :attribute, :confirmation_attribute
 
         def initialize(attribute)
-          super(attribute)
+          super
+          @expected_message = :confirmation
           @confirmation_attribute = "#{attribute}_confirmation"
         end
 
-        def with_message(message)
-          @message = message if message
-          self
-        end
-
-        def description
-          "require #{@confirmation_attribute} to match #{@attribute}"
+        def simple_description
+          "validate that #{@confirmation_attribute} matches #{@attribute}"
         end
 
         def matches?(subject)
           super(subject)
-          @message ||= :confirmation
 
           disallows_different_value &&
             allows_same_value &&
@@ -109,6 +104,7 @@ module Shoulda
 
         def disallows_different_value
           set_confirmation('some value')
+
           disallows_value_of('different value') do |matcher|
             qualify_matcher(matcher)
           end
@@ -116,6 +112,7 @@ module Shoulda
 
         def allows_same_value
           set_confirmation('same value')
+
           allows_value_of('same value') do |matcher|
             qualify_matcher(matcher)
           end
@@ -123,13 +120,15 @@ module Shoulda
 
         def allows_missing_confirmation
           set_confirmation(nil)
+
           allows_value_of('any value') do |matcher|
             qualify_matcher(matcher)
           end
         end
 
         def qualify_matcher(matcher)
-          matcher.with_message(@message,
+          matcher.with_message(
+            @expected_message,
             against: confirmation_attribute,
             values: { attribute: attribute }
           )
@@ -137,6 +136,7 @@ module Shoulda
 
         def set_confirmation(val)
           setter = :"#{@confirmation_attribute}="
+
           if @subject.respond_to?(setter)
             @subject.__send__(setter, val)
           end

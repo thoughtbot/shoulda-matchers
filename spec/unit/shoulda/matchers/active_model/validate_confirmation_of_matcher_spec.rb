@@ -6,7 +6,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :m
   context '#description' do
     it 'states that the confirmation must match its base attribute' do
       builder = builder_for_record_validating_confirmation
-      message = "require #{builder.confirmation_attribute} to match #{builder.attribute_to_confirm}"
+      message = "validate that #{builder.confirmation_attribute} matches #{builder.attribute_to_confirm}"
       matcher = described_class.new(builder.attribute_to_confirm)
       expect(matcher.description).to eq(message)
     end
