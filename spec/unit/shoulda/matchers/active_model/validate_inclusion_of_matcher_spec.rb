@@ -679,6 +679,50 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     end
   end
 
+  describe '#description' do
+    context 'given an array of values' do
+      context 'when there is one value' do
+        it 'returns the correct string' do
+          matcher = validate_inclusion_of(:attr).in_array([true])
+
+          expect(matcher.description).to eq(
+            'validate that :attr is true'
+          )
+        end
+      end
+
+      context 'when there are two values' do
+        it 'returns the correct string' do
+          matcher = validate_inclusion_of(:attr).in_array([true, 'dog'])
+
+          expect(matcher.description).to eq(
+            'validate that :attr is either true or "dog"'
+          )
+        end
+      end
+
+      context 'when there are three or more values' do
+        it 'returns the correct string' do
+          matcher = validate_inclusion_of(:attr).in_array([true, 'dog', 'cat'])
+
+          expect(matcher.description).to eq(
+            'validate that :attr is either true, "dog", or "cat"'
+          )
+        end
+      end
+    end
+
+    context 'given a range of values' do
+      it 'returns the correct string' do
+        matcher = validate_inclusion_of(:attr).in_range(1..10)
+
+        expect(matcher.description).to eq(
+          'validate that :attr lies inside the range 1..10'
+        )
+      end
+    end
+  end
+
   def object_builder_class
     @_object_builder_class ||= Struct.new(:attribute, :object, :validation_options)
   end

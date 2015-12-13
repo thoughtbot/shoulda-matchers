@@ -57,6 +57,14 @@ describe Shoulda::Matchers::ActiveModel::ValidateExclusionOfMatcher, type: :mode
       expect(model).to validate_exclusion_of(:attr).in_range(2...5).
         with_message(/should be out of this range/)
     end
+
+    it 'has correct description' do
+      matcher = validate_exclusion_of(:attr).in_range(1..10)
+
+      expect(matcher.description).to eq(
+        'validate that :attr lies outside the range 1..10'
+      )
+    end
   end
 
   context 'an attribute which must be excluded from an array' do
@@ -75,9 +83,31 @@ describe Shoulda::Matchers::ActiveModel::ValidateExclusionOfMatcher, type: :mode
         not_to validate_exclusion_of(:attr).in_array(%w(cat dog))
     end
 
-    it 'has correct description' do
-      expect(validate_exclusion_of(:attr).in_array([true, 'dog']).description).
-        to eq 'ensure exclusion of attr in [true, "dog"]'
+    context 'when there is one value' do
+      it 'has correct description' do
+        expect(validate_exclusion_of(:attr).in_array([true]).description).
+          to eq 'validate that :attr is not true'
+      end
+    end
+
+    context 'when there are two values' do
+      it 'has correct description' do
+        matcher = validate_exclusion_of(:attr).in_array([true, 'dog'])
+
+        expect(matcher.description).to eq(
+          'validate that :attr is neither true nor "dog"'
+        )
+      end
+    end
+
+    context 'when there are three or more values' do
+      it 'has correct description' do
+        matcher = validate_exclusion_of(:attr).in_array([true, 'dog', 'cat'])
+
+        expect(matcher.description).to eq(
+          'validate that :attr is neither true, "dog", nor "cat"'
+        )
+      end
     end
 
     def validating_exclusion(options)

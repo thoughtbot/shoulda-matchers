@@ -122,9 +122,9 @@ module Shoulda
       class ValidateExclusionOfMatcher < ValidationMatcher
         def initialize(attribute)
           super(attribute)
+          @expected_message = :exclusion
           @array = nil
           @range = nil
-          @expected_message = nil
         end
 
         def in_array(array)
@@ -139,13 +139,23 @@ module Shoulda
           self
         end
 
-        def with_message(message)
-          @expected_message = message if message
-          self
-        end
+        def simple_description
+          if @range
+            "validate that :#{@attribute} lies outside the range #{@range.inspect}"
+          else
+            description = "validate that :#{@attribute}"
 
-        def description
-          "ensure exclusion of #{@attribute} in #{inspect_message}"
+            if @array.many?
+              description << " is neither " + @array.map(&:inspect).to_sentence(
+                two_words_connector: " nor ",
+                last_word_connector: ", nor "
+              )
+            else
+              description << " is not #{@array.first.inspect}"
+            end
+
+            description
+          end
         end
 
         def matches?(subject)
@@ -165,28 +175,24 @@ module Shoulda
 
         def disallows_all_values_in_array?
           @array.all? do |value|
-            disallows_value_of(value, expected_message)
+            disallows_value_of(value, @expected_message)
           end
         end
 
         def allows_lower_value
-          @minimum == 0 || allows_value_of(@minimum - 1, expected_message)
+          @minimum == 0 || allows_value_of(@minimum - 1, @expected_message)
         end
 
         def allows_higher_value
-          allows_value_of(@maximum + 1, expected_message)
+          allows_value_of(@maximum + 1, @expected_message)
         end
 
         def disallows_minimum_value
-          disallows_value_of(@minimum, expected_message)
+          disallows_value_of(@minimum, @expected_message)
         end
 
         def disallows_maximum_value
-          disallows_value_of(@maximum, expected_message)
-        end
-
-        def expected_message
-          @expected_message || :exclusion
+          disallows_value_of(@maximum, @expected_message)
         end
 
         def inspect_message
