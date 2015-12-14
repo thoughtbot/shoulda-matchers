@@ -161,6 +161,40 @@ describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher, type: :model d
     end
   end
 
+  context 'an attribute with some type of normalization on it' do
+    subject do
+      define_model(:example, attr: :string) do
+        validates_length_of :attr, is: 4
+        validates_numericality_of :attr
+
+        def attr=(value)
+          value = value.respond_to?(:upcase) ? value.upcase : value
+          write_attribute(:attr, value)
+        end
+      end.new
+    end
+
+    context 'when ignoring_interference_by_writer is not specified' do
+      it 'should raise CouldNotSetAttributeError' do
+        expect {
+          is_expected.to validate_length_of(:attr).is_equal_to(4)
+        }.to raise_error(
+          Shoulda::Matchers::ActiveModel::AllowValueMatcher::CouldNotSetAttributeError
+        )
+      end
+    end
+
+    context 'when ignoring_interference_by_writer is specified' do
+      it 'should not raise CouldNotSetAttributeError' do
+        expect {
+          is_expected.to validate_length_of(:attr).is_equal_to(4).ignoring_interference_by_writer
+        }.to_not raise_error(
+          Shoulda::Matchers::ActiveModel::AllowValueMatcher::CouldNotSetAttributeError
+        )
+      end
+    end
+  end
+
   def validating_length(options = {})
     define_model(:example, attr: :string) do
       validates_length_of :attr, options
