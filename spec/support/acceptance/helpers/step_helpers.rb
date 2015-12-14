@@ -61,7 +61,7 @@ module AcceptanceTests
     end
 
     def create_rails_application
-      command = "bundle exec rails new #{fs.project_directory} --skip-bundle"
+      command = "bundle exec rails new #{fs.project_directory} --skip-bundle --no-rc"
 
       run_command!(command) do |runner|
         runner.directory = nil
