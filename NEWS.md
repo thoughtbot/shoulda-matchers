@@ -1,3 +1,12 @@
+# HEAD
+
+### Improvements
+
+* Improve failure messages and descriptions of all matchers across the board so
+  that it is easier to understand what the matcher was doing when it failed.
+  (You'll see a huge difference in the output of the numericality and uniqueness
+  matchers in particular.)
+
 # 3.0.1
 
 ### Bug fixes
