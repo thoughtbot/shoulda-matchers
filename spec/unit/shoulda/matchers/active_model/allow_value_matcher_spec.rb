@@ -412,7 +412,7 @@ invalid" instead.
   context 'when the attribute interferes with attempts to be set' do
     context 'when the matcher has not been qualified with #ignoring_interference_by_writer' do
       context 'when the attribute cannot be changed from nil to non-nil' do
-        it 'raises a CouldNotSetAttributeError' do
+        it 'raises an AttributeChangedValueError' do
           model = define_active_model_class 'Example' do
             attr_reader :name
 
@@ -426,13 +426,13 @@ invalid" instead.
           }
 
           expect(&assertion).to raise_error(
-            described_class::CouldNotSetAttributeError
+            described_class::AttributeChangedValueError
           )
         end
       end
 
       context 'when the attribute cannot be changed from non-nil to nil' do
-        it 'raises a CouldNotSetAttribute error' do
+        it 'raises an AttributeChangedValueError' do
           model = define_active_model_class 'Example' do
             attr_reader :name
 
@@ -448,13 +448,13 @@ invalid" instead.
           }
 
           expect(&assertion).to raise_error(
-            described_class::CouldNotSetAttributeError
+            described_class::AttributeChangedValueError
           )
         end
       end
 
       context 'when the attribute cannot be changed from a non-nil value to another non-nil value' do
-        it 'raises a CouldNotSetAttribute error' do
+        it 'raises an AttributeChangedValueError' do
           model = define_active_model_class 'Example' do
             attr_reader :name
 
@@ -470,7 +470,7 @@ invalid" instead.
           }
 
           expect(&assertion).to raise_error(
-            described_class::CouldNotSetAttributeError
+            described_class::AttributeChangedValueError
           )
         end
       end
@@ -541,6 +541,102 @@ invalid" instead.
           end
 
           expect(&assertion).not_to raise_error
+        end
+      end
+    end
+  end
+
+  context 'when the attribute does not exist on the model' do
+    context 'when the assertion is positive' do
+      it 'raises an AttributeDoesNotExistError' do
+        model = define_class('Example')
+
+        assertion = lambda do
+          expect(model.new).to allow_value('foo').for(:nonexistent)
+        end
+
+        message = <<-MESSAGE.rstrip
+The matcher attempted to set :nonexistent to "foo" on the Example, but
+that attribute does not exist.
+        MESSAGE
+
+        expect(&assertion).to raise_error(
+          described_class::AttributeDoesNotExistError,
+          message
+        )
+      end
+    end
+
+    context 'when the assertion is negative' do
+      it 'raises an AttributeDoesNotExistError' do
+        model = define_class('Example')
+
+        assertion = lambda do
+          expect(model.new).not_to allow_value('foo').for(:nonexistent)
+        end
+
+        message = <<-MESSAGE.rstrip
+The matcher attempted to set :nonexistent to "foo" on the Example, but
+that attribute does not exist.
+        MESSAGE
+
+        expect(&assertion).to raise_error(
+          described_class::AttributeDoesNotExistError,
+          message
+        )
+      end
+    end
+  end
+
+  context 'given attributes to preset on the record before validation' do
+    context 'when the assertion is positive' do
+      context 'if any attributes do not exist on the model' do
+        it 'raises an AttributeDoesNotExistError' do
+          model = define_active_model_class('Example', accessors: [:existent])
+
+          allow_value_matcher = allow_value('foo').for(:existent).tap do |matcher|
+            matcher.values_to_preset = { nonexistent: 'some value' }
+          end
+
+          assertion = lambda do
+            expect(model.new).to(allow_value_matcher)
+          end
+
+          message = <<-MESSAGE.rstrip
+The matcher attempted to set :nonexistent to "some value" on the
+Example, but that attribute does not exist.
+        MESSAGE
+
+          expect(&assertion).to raise_error(
+            described_class::AttributeDoesNotExistError,
+            message
+          )
+        end
+      end
+    end
+
+    context 'when the assertion is negative' do
+      context 'if any attributes do not exist on the model' do
+        it 'raises an AttributeDoesNotExistError' do
+          model = define_active_model_class('Example', accessors: [:existent])
+
+          allow_value_matcher = allow_value('foo').for(:existent).tap do |matcher|
+            matcher.values_to_preset = { nonexistent: 'some value' }
+          end
+
+          assertion = lambda do
+            expect(model.new).not_to(allow_value_matcher)
+          end
+
+          message = <<-MESSAGE.rstrip
+The matcher attempted to set :nonexistent to "some value" on the
+Example, but that attribute does not exist.
+        MESSAGE
+
+          expect(&assertion).to raise_error(
+            described_class::AttributeDoesNotExistError,
+            message
+          )
         end
       end
     end

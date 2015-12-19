@@ -15,14 +15,19 @@ module Shoulda
           :last_value_set,
           :simple_description,
           :failure_message_preface,
-          :failure_message_preface=
+          :failure_message_preface=,
+          :values_to_preset=
 
         def initialize(value)
           @allow_matcher = AllowValueMatcher.new(value)
         end
 
         def matches?(subject)
-          !allow_matcher.matches?(subject)
+          allow_matcher.does_not_match?(subject)
+        end
+
+        def does_not_match?(subject)
+          allow_matcher.matches?(subject)
         end
 
         def for(attribute)

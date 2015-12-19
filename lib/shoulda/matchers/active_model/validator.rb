@@ -5,56 +5,36 @@ module Shoulda
       class Validator
         include Helpers
 
-        attr_writer :context, :expects_strict
-
-        def initialize(record, attribute)
+        def initialize(record, attribute, options = {})
           @record = record
           @attribute = attribute
-          @context = context
-          @expects_strict = false
-          reset
-        end
+          @context = options[:context]
+          @expects_strict = options[:expects_strict]
+          @expected_message = options[:expected_message]
 
-        def reset
           @_validation_result = nil
           @captured_validation_exception = false
           @captured_range_error = false
         end
 
-        def messages
-          if expects_strict?
-            [validation_exception_message]
-          else
-            validation_error_messages
-          end
+        def call
+          !messages_match? && !captured_range_error?
         end
 
         def has_messages?
           messages.any?
         end
 
-        def type_of_message_matched?
-          expects_strict? == captured_validation_exception?
-        end
-
         def captured_validation_exception?
           @captured_validation_exception
         end
 
-        def captured_range_error?
-          !!@captured_range_error
-        end
-
-        def all_validation_errors
-          validation_result[:all_validation_errors]
+        def type_of_message_matched?
+          expects_strict? == captured_validation_exception?
         end
 
         def all_formatted_validation_error_messages
           format_validation_errors(all_validation_errors)
-        end
-
-        def validation_error_messages
-          validation_result[:validation_error_messages]
         end
 
         def validation_exception_message
@@ -69,6 +49,40 @@ module Shoulda
 
         def expects_strict?
           @expects_strict
+        end
+
+        def messages_match?
+          has_messages? &&
+            type_of_message_matched? &&
+            matched_messages.compact.any?
+        end
+
+        def messages
+          if expects_strict?
+            [validation_exception_message]
+          else
+            validation_error_messages
+          end
+        end
+
+        def matched_messages
+          if @expected_message
+            messages.grep(@expected_message)
+          else
+            messages
+          end
+        end
+
+        def captured_range_error?
+          !!@captured_range_error
+        end
+
+        def all_validation_errors
+          validation_result[:all_validation_errors]
+        end
+
+        def validation_error_messages
+          validation_result[:validation_error_messages]
         end
 
         def validation_result

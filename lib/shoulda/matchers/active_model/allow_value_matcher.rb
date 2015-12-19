@@ -312,50 +312,17 @@ module Shoulda
 
       # @private
       class AllowValueMatcher
-        # @private
-        class CouldNotSetAttributeError < Shoulda::Matchers::Error
-          def self.create(model, attribute, expected_value, actual_value)
-            super(
-              model: model,
-              attribute: attribute,
-              expected_value: expected_value,
-              actual_value: actual_value
-            )
-          end
-
-          attr_accessor :model, :attribute, :expected_value, :actual_value
-
-          def message
-            Shoulda::Matchers.word_wrap <<-MESSAGE
-The allow_value matcher attempted to set :#{attribute} on #{model.name} to
-#{expected_value.inspect}, but when the attribute was read back, it
-had stored #{actual_value.inspect} instead.
-
-This creates a problem because it means that the model is behaving in a way that
-is interfering with the test -- there's a mismatch between the test that was
-written and test that was actually run.
-
-There are a couple of reasons why this could be happening:
-
-* The writer method for :#{attribute} has been overridden and contains custom
-  logic to prevent certain values from being set or change which values are
-  stored.
-* ActiveRecord is typecasting the incoming value.
-
-Regardless, the fact you're seeing this message usually indicates a larger
-problem. Please file an issue on the GitHub repo for shoulda-matchers,
-including details about your model and the test you've written, and we can point
-you in the right direction:
-
-https://github.com/thoughtbot/shoulda-matchers/issues
-            MESSAGE
-          end
-        end
-
         include Helpers
 
-        attr_accessor :failure_message_preface
-        attr_reader :last_value_set
+        attr_reader(
+          :after_setting_value_callback,
+          :attribute_to_check_message_against,
+          :attribute_to_set,
+          :context,
+          :instance
+        )
+
+        attr_writer :failure_message_preface, :values_to_preset
 
         def initialize(*values)
           @values_to_set = values
@@ -365,18 +332,13 @@ https://github.com/thoughtbot/shoulda-matchers/issues
           @expects_strict = false
           @expects_custom_validation_message = false
           @context = nil
-
-          @failure_message_preface = proc do
-            <<-PREFIX.strip_heredoc.strip
-              After setting :#{attribute_to_set} to #{last_value_set.inspect},
-              the matcher expected the #{model.name} to be
-            PREFIX
-          end
+          @values_to_preset = {}
+          @failure_message_preface = nil
         end
 
-        def for(attribute)
-          @attribute_to_set = attribute
-          @attribute_to_check_message_against = attribute
+        def for(attribute_name)
+          @attribute_to_set = attribute_name
+          @attribute_to_check_message_against = attribute_name
           self
         end
 
@@ -402,6 +364,16 @@ https://github.com/thoughtbot/shoulda-matchers/issues
           self
         end
 
+        def expected_message
+          if options.key?(:expected_message)
+            if Symbol === options[:expected_message]
+              default_expected_message
+            else
+              options[:expected_message]
+            end
+          end
+        end
+
         def expects_custom_validation_message?
           @expects_custom_validation_message
         end
@@ -415,9 +387,13 @@ https://github.com/thoughtbot/shoulda-matchers/issues
           @expects_strict
         end
 
-        def ignoring_interference_by_writer
-          @ignoring_interference_by_writer = true
+        def ignoring_interference_by_writer(value = true)
+          @ignoring_interference_by_writer = value
           self
+        end
+
+        def ignoring_interference_by_writer?
+          @ignoring_interference_by_writer
         end
 
         def _after_setting_value(&callback)
@@ -426,163 +402,178 @@ https://github.com/thoughtbot/shoulda-matchers/issues
 
         def matches?(instance)
           @instance = instance
-          first_failing_value_and_validator.nil?
+          @result = run(:first_failing)
+          @result.nil?
         end
 
         def does_not_match?(instance)
           @instance = instance
-          first_passing_value_and_validator.nil?
+          @result = run(:first_passing)
+          @result.nil?
         end
 
         def failure_message
-          validator = first_failing_validator
-          message =
-            failure_message_preface.call +
-            ' valid, but it was invalid instead,'
+          attribute_setter = result.attribute_setter
 
-          if validator.captured_validation_exception?
-            message << ' raising a validation exception with the message '
-            message << validator.validation_exception_message.inspect
-            message << '.'
+          if result.attribute_setter.unsuccessfully_checked?
+            message = attribute_setter.failure_message
           else
-            message << " producing these validation errors:\n\n"
-            message << validator.all_formatted_validation_error_messages
+            validator = result.validator
+            message = failure_message_preface.call
+            message << ' valid, but it was invalid instead,'
+
+            if validator.captured_validation_exception?
+              message << ' raising a validation exception with the message '
+              message << validator.validation_exception_message.inspect
+              message << '.'
+            else
+              message << " producing these validation errors:\n\n"
+              message << validator.all_formatted_validation_error_messages
+            end
           end
 
           Shoulda::Matchers.word_wrap(message)
         end
 
         def failure_message_when_negated
-          validator = first_passing_validator
-          message = failure_message_preface.call + ' invalid'
+          attribute_setter = result.attribute_setter
 
-          if validator.type_of_message_matched?
-            if validator.has_messages?
-              message << ' and to'
+          if attribute_setter.unsuccessfully_checked?
+            message = attribute_setter.failure_message
+          else
+            validator = result.validator
+            message = failure_message_preface.call + ' invalid'
 
-              if validator.captured_validation_exception?
-                message << ' raise a validation exception with message'
-              else
-                message << ' produce'
+            if validator.type_of_message_matched?
+              if validator.has_messages?
+                message << ' and to'
 
-                if expected_message.is_a?(Regexp)
-                  message << ' a'
+                if validator.captured_validation_exception?
+                  message << ' raise a validation exception with message'
                 else
-                  message << ' the'
+                  message << ' produce'
+
+                  if expected_message.is_a?(Regexp)
+                    message << ' a'
+                  else
+                    message << ' the'
+                  end
+
+                  message << ' validation error'
                 end
 
-                message << ' validation error'
-              end
+                if expected_message.is_a?(Regexp)
+                  message << ' matching'
+                end
 
-              if expected_message.is_a?(Regexp)
-                message << ' matching'
-              end
+                message << " #{expected_message.inspect}"
 
-              message << " #{expected_message.inspect}"
+                unless validator.captured_validation_exception?
+                  message << " on :#{attribute_to_check_message_against}"
+                end
 
-              unless validator.captured_validation_exception?
-                message << " on :#{attribute_to_check_message_against}"
-              end
+                message << '. The record was indeed invalid, but'
 
-              message << '. The record was indeed invalid, but'
-
-              if validator.captured_validation_exception?
-                message << ' the exception message was '
-                message << validator.validation_exception_message.inspect
-                message << ' instead.'
+                if validator.captured_validation_exception?
+                  message << ' the exception message was '
+                  message << validator.validation_exception_message.inspect
+                  message << ' instead.'
+                else
+                  message << " it produced these validation errors instead:\n\n"
+                  message << validator.all_formatted_validation_error_messages
+                end
               else
-                message << " it produced these validation errors instead:\n\n"
-                message << validator.all_formatted_validation_error_messages
+                message << ', but it was valid instead.'
               end
+            elsif validator.captured_validation_exception?
+              message << ' and to produce validation errors, but the record'
+              message << ' raised a validation exception instead.'
             else
-              message << ', but it was valid instead.'
+              message << ' and to raise a validation exception, but the record'
+              message << ' produced validation errors instead.'
             end
-          elsif validator.captured_validation_exception?
-            message << ' and to produce validation errors, but the record'
-            message << ' raised a validation exception instead.'
-          else
-            message << ' and to raise a validation exception, but the record'
-            message << ' produced validation errors instead.'
           end
 
           Shoulda::Matchers.word_wrap(message)
-        end
-
-        def simple_description
-          "allow :#{attribute_to_set} to be #{inspected_values_to_set}"
         end
 
         def description
           ValidationMatcher::BuildDescription.call(self, simple_description)
         end
 
+        def simple_description
+          "allow :#{attribute_to_set} to be #{inspected_values_to_set}"
+        end
+
         def model
           instance.class
+        end
+
+        def last_value_set
+          result.attribute_setter.value_written
         end
 
         protected
 
         attr_reader(
-          :after_setting_value_callback,
-          :attribute_to_check_message_against,
-          :attribute_to_set,
-          :context,
-          :instance,
           :options,
+          :result,
+          :values_to_preset,
           :values_to_set,
         )
 
         private
 
-        def ignoring_interference_by_writer?
-          @ignoring_interference_by_writer
+        def run(strategy)
+          attribute_setters_for_values_to_preset.first_failing ||
+            attribute_setters_and_validators_for_values_to_set.public_send(strategy)
         end
 
-        def value_matches?(value, validator)
-          @last_value_set = value
-          set_attribute(value)
-          !errors_match?(validator) && !any_range_error_occurred?(validator)
+        def failure_message_preface
+          @failure_message_preface || method(:default_failure_message_preface)
         end
 
-        def set_attribute(value)
-          instance.__send__("#{attribute_to_set}=", value)
-          ensure_that_attribute_was_set!(value)
-          after_setting_value_callback.call
+        def default_failure_message_preface
+          ''.tap do |preface|
+            if descriptions_for_preset_values.any?
+              preface << 'After setting '
+              preface << descriptions_for_preset_values.to_sentence
+              preface << ', then '
+            else
+              preface << 'After '
+            end
+
+            preface << 'setting '
+            preface << description_for_resulting_attribute_setter
+
+            unless preface.end_with?('--')
+              preface << ','
+            end
+
+            preface << " the matcher expected the #{model.name} to be"
+          end
         end
 
-        def ensure_that_attribute_was_set!(expected_value)
-          actual_value = instance.__send__(attribute_to_set)
+        def descriptions_for_preset_values
+          attribute_setters_for_values_to_preset.
+            map(&:attribute_setter_description)
+        end
 
-          if expected_value != actual_value && !ignoring_interference_by_writer?
-            raise CouldNotSetAttributeError.create(
-              instance.class,
-              attribute_to_set,
-              expected_value,
-              actual_value
+        def description_for_resulting_attribute_setter
+          result.attribute_setter_description
+        end
+
+        def attribute_setters_for_values_to_preset
+          @_attribute_setters_for_values_to_preset ||=
+            AttributeSetters.new(self, values_to_preset)
+        end
+
+        def attribute_setters_and_validators_for_values_to_set
+          @_attribute_setters_and_validators_for_values_to_set ||=
+            AttributeSettersAndValidators.new(
+              self,
+              values_to_set.map { |value| [attribute_to_set, value] }
             )
-          end
-        end
-
-        def errors_match?(validator)
-          validator.has_messages? &&
-            validator.type_of_message_matched? &&
-            errors_for_attribute_match?(validator)
-        end
-
-        def errors_for_attribute_match?(validator)
-          matched_errors(validator).compact.any?
-        end
-
-        def matched_errors(validator)
-          if expected_message
-            validator.messages.grep(expected_message)
-          else
-            validator.messages
-          end
-        end
-
-        def any_range_error_occurred?(validator)
-          validator.captured_range_error?
         end
 
         def inspected_values_to_set
@@ -593,16 +584,6 @@ https://github.com/thoughtbot/shoulda-matchers/issues
             )
           else
             values_to_set.first.inspect
-          end
-        end
-
-        def expected_message
-          if options.key?(:expected_message)
-            if Symbol === options[:expected_message]
-              default_expected_message
-            else
-              options[:expected_message]
-            end
           end
         end
 
@@ -631,50 +612,14 @@ https://github.com/thoughtbot/shoulda-matchers/issues
           defaults.merge(options[:expected_message_values])
         end
 
-        def values_and_validators
-          @_values_and_validators ||= values_to_set.map do |value|
-            [value, build_validator]
-          end
-        end
-
-        def build_validator
-          validator = Validator.new(
-            instance,
-            attribute_to_check_message_against
-          )
-          validator.context = context
-          validator.expects_strict = expects_strict?
-          validator
-        end
-
-        def first_failing_value_and_validator
-          @_first_failing_value_and_validator ||=
-            values_and_validators.detect do |value, validator|
-              !value_matches?(value, validator)
-            end
-        end
-
-        def first_failing_validator
-          first_failing_value_and_validator[1]
-        end
-
-        def first_passing_value_and_validator
-          @_first_passing_value_and_validator ||=
-            values_and_validators.detect do |value, validator|
-              value_matches?(value, validator)
-            end
-        end
-
-        def first_passing_validator
-          first_passing_value_and_validator[1]
-        end
-
         def model_name
           instance.class.to_s.underscore
         end
 
         def human_attribute_name
-          instance.class.human_attribute_name(attribute_to_check_message_against)
+          instance.class.human_attribute_name(
+            attribute_to_check_message_against
+          )
         end
       end
     end

@@ -184,7 +184,7 @@ raising a validation exception on failure.
 
   if rails_4_x?
     context 'against a pre-set password in a model that has_secure_password' do
-      it 'raises a CouldNotSetPasswordError exception' do
+      it 'raises a CouldNotSetPasswordError' do
         user_class = define_model :user, password_digest: :string do
           has_secure_password validations: false
           validates_presence_of :password
@@ -193,10 +193,13 @@ raising a validation exception on failure.
         user = user_class.new
         user.password = 'something'
 
-        error_class = Shoulda::Matchers::ActiveModel::CouldNotSetPasswordError
-        expect do
+        assertion = lambda do
           expect(user).to validate_presence_of(:password)
-        end.to raise_error(error_class)
+        end
+
+        expect(&assertion).to raise_error(
+          Shoulda::Matchers::ActiveModel::CouldNotSetPasswordError
+        )
       end
     end
   end
