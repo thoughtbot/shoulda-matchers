@@ -28,7 +28,7 @@ module UnitTests
           lines << Shoulda::Matchers::Util.indent(@actual, 2)
           lines << "Diff:"
           lines << Shoulda::Matchers::Util.indent(
-            differ.diff(expected, @actual)[1..-1],
+            differ.diff(@actual, expected)[1..-1],
             2
           )
         else
