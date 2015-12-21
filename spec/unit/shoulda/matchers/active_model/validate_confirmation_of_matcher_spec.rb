@@ -6,7 +6,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :m
   context '#description' do
     it 'states that the confirmation must match its base attribute' do
       builder = builder_for_record_validating_confirmation
-      message = "validate that #{builder.confirmation_attribute} matches #{builder.attribute_to_confirm}"
+      message = "validate that :#{builder.confirmation_attribute} matches :#{builder.attribute_to_confirm}"
       matcher = described_class.new(builder.attribute_to_confirm)
       expect(matcher.description).to eq(message)
     end
@@ -29,11 +29,65 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :m
     end
   end
 
-  context 'when the model does not have a confirmation validation' do
-    it 'fails' do
-      model = define_model(:example, attribute_to_confirm: :string)
-      record = model.new
-      expect(record).not_to validate_confirmation_of(:attribute_to_confirm)
+  context 'when the model does not have a confirmation attribute' do
+    it 'raises an AttributeDoesNotExistError' do
+      model = define_model(:example)
+
+      assertion = lambda do
+        expect(model.new).to validate_confirmation_of(:attribute_to_confirm)
+      end
+
+      message = <<-MESSAGE.rstrip
+The matcher attempted to set :attribute_to_confirm_confirmation to "some
+value" on the Example, but that attribute does not exist.
+      MESSAGE
+
+      expect(&assertion).to raise_error(
+        Shoulda::Matchers::ActiveModel::AllowValueMatcher::AttributeDoesNotExistError,
+        message
+      )
+    end
+  end
+
+  context 'when the model does not have the attribute under test' do
+    it 'raises an AttributeDoesNotExistError' do
+      model = define_model(:example, attribute_to_confirm_confirmation: :string)
+
+      assertion = lambda do
+        expect(model.new).to validate_confirmation_of(:attribute_to_confirm)
+      end
+
+      message = <<-MESSAGE.rstrip
+The matcher attempted to set :attribute_to_confirm to "different value"
+on the Example, but that attribute does not exist.
+      MESSAGE
+
+      expect(&assertion).to raise_error(
+        Shoulda::Matchers::ActiveModel::AllowValueMatcher::AttributeDoesNotExistError,
+        message
+      )
+    end
+  end
+
+  context 'when the model has all attributes, but does not have the validation' do
+    it 'fails with an appropriate failure message' do
+      model = define_model(:example, attribute_to_confirm: :string) do
+        attr_accessor :attribute_to_confirm_confirmation
+      end
+
+      assertion = lambda do
+        expect(model.new).to validate_confirmation_of(:attribute_to_confirm)
+      end
+
+      message = <<-MESSAGE
+Example did not properly validate that
+:attribute_to_confirm_confirmation matches :attribute_to_confirm.
+  After setting :attribute_to_confirm_confirmation to "some value", then
+  setting :attribute_to_confirm to "different value", the matcher
+  expected the Example to be invalid, but it was valid instead.
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
     end
   end
 

@@ -89,7 +89,7 @@ module Shoulda
         end
 
         def simple_description
-          "validate that #{@confirmation_attribute} matches #{@attribute}"
+          "validate that :#{@confirmation_attribute} matches :#{@attribute}"
         end
 
         def matches?(subject)
@@ -103,30 +103,27 @@ module Shoulda
         private
 
         def disallows_different_value
-          set_confirmation('some value')
-
           disallows_value_of('different value') do |matcher|
-            qualify_matcher(matcher)
+            qualify_matcher(matcher, 'some value')
           end
         end
 
         def allows_same_value
-          set_confirmation('same value')
-
           allows_value_of('same value') do |matcher|
-            qualify_matcher(matcher)
+            qualify_matcher(matcher, 'same value')
           end
         end
 
         def allows_missing_confirmation
-          set_confirmation(nil)
-
           allows_value_of('any value') do |matcher|
-            qualify_matcher(matcher)
+            qualify_matcher(matcher, nil)
           end
         end
 
-        def qualify_matcher(matcher)
+        def qualify_matcher(matcher, confirmation_attribute_value)
+          matcher.values_to_preset = {
+            confirmation_attribute => confirmation_attribute_value
+          }
           matcher.with_message(
             @expected_message,
             against: confirmation_attribute,
@@ -134,12 +131,15 @@ module Shoulda
           )
         end
 
-        def set_confirmation(val)
-          setter = :"#{@confirmation_attribute}="
+        def set_confirmation(value)
+          @last_value_set_on_confirmation_attribute = value
 
-          if @subject.respond_to?(setter)
-            @subject.__send__(setter, val)
-          end
+          AttributeSetter.set(
+            matcher_name: 'confirmation',
+            object: @subject,
+            attribute_name: confirmation_attribute,
+            value: value
+          )
         end
       end
     end
