@@ -24,10 +24,10 @@ module UnitTests
         lines << Shoulda::Matchers::Util.indent(expected, 2)
 
         if @actual
-          lines << 'Actually failed with:'
+          lines << 'The full message was:'
           lines << Shoulda::Matchers::Util.indent(@actual, 2)
         else
-          lines << 'However, the expectation did not fail.'
+          lines << 'However, the expectation did not fail at all.'
         end
 
         lines.join("\n")

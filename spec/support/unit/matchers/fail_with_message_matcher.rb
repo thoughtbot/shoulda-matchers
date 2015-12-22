@@ -32,7 +32,7 @@ module UnitTests
             2
           )
         else
-          lines << 'However, the expectation did not fail.'
+          lines << 'However, the expectation did not fail at all.'
         end
 
         lines.join("\n")
