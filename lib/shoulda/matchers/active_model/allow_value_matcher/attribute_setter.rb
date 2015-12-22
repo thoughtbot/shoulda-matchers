@@ -25,11 +25,13 @@ module Shoulda
           end
 
           def description
-            description = ":#{attribute_name} to #{value_written.inspect}"
+            description = ":#{attribute_name} to "
+            description << Shoulda::Matchers::Util.inspect_value(value_written)
 
             if attribute_changed_value?
               description << " -- which was read back as "
-              description << "#{value_read.inspect} --"
+              description << Shoulda::Matchers::Util.inspect_value(value_read)
+              description << " --"
             end
 
             description

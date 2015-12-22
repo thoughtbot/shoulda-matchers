@@ -21,7 +21,7 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
 
       message = <<-MESSAGE
 Example did not properly validate that :attr cannot be empty/falsy.
-  After setting :attr to nil, the matcher expected the Example to be
+  After setting :attr to ‹nil›, the matcher expected the Example to be
   invalid, but it was valid instead.
       MESSAGE
 
@@ -47,7 +47,7 @@ Example did not properly validate that :attr cannot be empty/falsy.
 
       message = <<-MESSAGE
 Example did not properly validate that :attr cannot be empty/falsy.
-  After setting :attr to nil, the matcher expected the Example to be
+  After setting :attr to ‹nil›, the matcher expected the Example to be
   invalid, but it was valid instead.
       MESSAGE
 
@@ -105,7 +105,7 @@ Example did not properly validate that :attr cannot be empty/falsy.
 
       message = <<-MESSAGE
 Parent did not properly validate that :children cannot be empty/falsy.
-  After setting :children to [], the matcher expected the Parent to be
+  After setting :children to ‹[]›, the matcher expected the Parent to be
   invalid, but it was valid instead.
       MESSAGE
 
@@ -143,7 +143,7 @@ Parent did not properly validate that :children cannot be empty/falsy.
         message = <<-MESSAGE
 Example did not properly validate that :attr cannot be empty/falsy,
 raising a validation exception on failure.
-  After setting :attr to nil, the matcher expected the Example to be
+  After setting :attr to ‹nil›, the matcher expected the Example to be
   invalid and to raise a validation exception, but the record produced
   validation errors instead.
         MESSAGE

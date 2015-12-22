@@ -14,14 +14,14 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
       matcher = allow_value('foo', 'bar').for(:baz)
 
       expect(matcher.description).to eq(
-        'allow :baz to be "foo" or "bar"'
+        'allow :baz to be ‹"foo"› or ‹"bar"›'
       )
     end
 
     it 'describes itself with a single value' do
       matcher = allow_value('foo').for(:baz)
 
-      expect(matcher.description).to eq 'allow :baz to be "foo"'
+      expect(matcher.description).to eq 'allow :baz to be ‹"foo"›'
     end
 
     if active_model_3_2?
@@ -29,7 +29,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
         strict_matcher = allow_value('xyz').for(:attr).strict
 
         expect(strict_matcher.description).to eq(
-          'allow :attr to be "xyz", raising a validation exception on failure'
+          'allow :attr to be ‹"xyz"›, raising a validation exception on failure'
         )
       end
     end
@@ -56,7 +56,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
 
     it 'rejects a bad value with an appropriate failure message' do
       message = <<-MESSAGE
-After setting :attr to "xyz", the matcher expected the Example to be
+After setting :attr to ‹"xyz"›, the matcher expected the Example to be
 valid, but it was invalid instead, producing these validation errors:
 
 * attr: ["is invalid"]
@@ -84,7 +84,7 @@ valid, but it was invalid instead, producing these validation errors:
 
       it 'produces an appropriate failure message' do
         message = <<-MESSAGE
-After setting :attr to "zyx", the matcher expected the Example to be
+After setting :attr to ‹"zyx"›, the matcher expected the Example to be
 valid, but it was invalid instead, producing these validation errors:
 
 * attr: ["is invalid"]
@@ -110,7 +110,7 @@ valid, but it was invalid instead, producing these validation errors:
 
     it 'rejects a bad value with an appropriate failure message' do
       message = <<-MESSAGE
-After setting :attr to "xyz", the matcher expected the Example to be
+After setting :attr to ‹"xyz"›, the matcher expected the Example to be
 valid, but it was invalid instead, producing these validation errors:
 
 * attr: ["bad value"]
@@ -127,10 +127,10 @@ valid, but it was invalid instead, producing these validation errors:
     context 'when the custom messages do not match' do
       it 'rejects with an appropriate failure message' do
         message = <<-MESSAGE
-After setting :attr to "xyz", the matcher expected the Example to be
-invalid and to produce a validation error matching /different/ on :attr.
-The record was indeed invalid, but it produced these validation errors
-instead:
+After setting :attr to ‹"xyz"›, the matcher expected the Example to be
+invalid and to produce a validation error matching ‹/different/› on
+:attr. The record was indeed invalid, but it produced these validation
+errors instead:
 
 * attr: ["bad value"]
         MESSAGE
@@ -186,7 +186,7 @@ instead:
           end
 
           message = <<-MESSAGE
-After setting :attr to "xyz", the matcher expected the Example to be
+After setting :attr to ‹"xyz"›, the matcher expected the Example to be
 invalid and to produce the validation error "must be greater than 2" on
 :attr. The record was indeed invalid, but it produced these validation
 errors instead:
@@ -249,7 +249,7 @@ errors instead:
             end
 
             message = <<-MESSAGE
-After setting :#{builder.attribute_to_validate} to "#{invalid_value}", the
+After setting :#{builder.attribute_to_validate} to ‹"#{invalid_value}"›, the
 matcher expected the #{builder.model.name} to be invalid and to produce the validation
 error "some error" on :#{builder.attribute_that_receives_error}. The record was
 indeed invalid, but it produced these validation errors instead:
@@ -341,7 +341,7 @@ indeed invalid, but it produced these validation errors instead:
 
     it "does not match given good values along with bad values" do
       message = <<-MESSAGE.strip_heredoc
-After setting :attr to "12345", the matcher expected the Example to be
+After setting :attr to ‹"12345"›, the matcher expected the Example to be
 invalid, but it was valid instead.
       MESSAGE
 
@@ -375,7 +375,7 @@ invalid, but it was valid instead.
       context 'when qualified with strict' do
         it 'rejects a bad value, providing the correct failure message' do
           message = <<-MESSAGE.strip_heredoc
-After setting :attr to "xyz", the matcher expected the Example to be
+After setting :attr to ‹"xyz"›, the matcher expected the Example to be
 valid, but it was invalid instead, raising a validation exception with
 the message "Attr is invalid".
           MESSAGE
@@ -391,10 +391,10 @@ the message "Attr is invalid".
         context 'qualified with a custom message' do
           it 'rejects a bad value when the failure messages do not match' do
             message = <<-MESSAGE.strip_heredoc
-After setting :attr to "xyz", the matcher expected the Example to be
-invalid and to raise a validation exception with message matching /abc/.
-The record was indeed invalid, but the exception message was "Attr is
-invalid" instead.
+After setting :attr to ‹"xyz"›, the matcher expected the Example to be
+invalid and to raise a validation exception with message matching
+‹/abc/›. The record was indeed invalid, but the exception message was
+"Attr is invalid" instead.
             MESSAGE
 
             assertion = lambda do

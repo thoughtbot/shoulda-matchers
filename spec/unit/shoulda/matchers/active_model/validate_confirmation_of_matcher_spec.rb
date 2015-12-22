@@ -82,8 +82,8 @@ on the Example, but that attribute does not exist.
       message = <<-MESSAGE
 Example did not properly validate that
 :attribute_to_confirm_confirmation matches :attribute_to_confirm.
-  After setting :attribute_to_confirm_confirmation to "some value", then
-  setting :attribute_to_confirm to "different value", the matcher
+  After setting :attribute_to_confirm_confirmation to ‹"some value"›,
+  then setting :attribute_to_confirm to ‹"different value"›, the matcher
   expected the Example to be invalid, but it was valid instead.
       MESSAGE
 

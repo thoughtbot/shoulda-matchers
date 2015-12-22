@@ -62,7 +62,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateExclusionOfMatcher, type: :mode
       matcher = validate_exclusion_of(:attr).in_range(1..10)
 
       expect(matcher.description).to eq(
-        'validate that :attr lies outside the range 1..10'
+        'validate that :attr lies outside the range ‹1› to ‹10›'
       )
     end
   end
@@ -86,7 +86,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateExclusionOfMatcher, type: :mode
     context 'when there is one value' do
       it 'has correct description' do
         expect(validate_exclusion_of(:attr).in_array([true]).description).
-          to eq 'validate that :attr is not true'
+          to eq 'validate that :attr is not ‹true›'
       end
     end
 
@@ -95,7 +95,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateExclusionOfMatcher, type: :mode
         matcher = validate_exclusion_of(:attr).in_array([true, 'dog'])
 
         expect(matcher.description).to eq(
-          'validate that :attr is neither true nor "dog"'
+          'validate that :attr is neither ‹true› nor ‹"dog"›'
         )
       end
     end
@@ -105,7 +105,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateExclusionOfMatcher, type: :mode
         matcher = validate_exclusion_of(:attr).in_array([true, 'dog', 'cat'])
 
         expect(matcher.description).to eq(
-          'validate that :attr is neither true, "dog", nor "cat"'
+          'validate that :attr is neither ‹true›, ‹"dog"›, nor ‹"cat"›'
         )
       end
     end

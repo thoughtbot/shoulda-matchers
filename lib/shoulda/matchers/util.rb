@@ -38,6 +38,18 @@ module Shoulda
           "a #{next_word}"
         end
       end
+
+      def self.inspect_value(value)
+        "‹#{value.inspect}›"
+      end
+
+      def self.inspect_values(values)
+        values.map { |value| inspect_value(value) }
+      end
+
+      def self.inspect_range(range)
+        "#{inspect_value(range.first)} to #{inspect_value(range.last)}"
+      end
     end
   end
 end

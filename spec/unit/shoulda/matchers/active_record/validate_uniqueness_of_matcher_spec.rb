@@ -247,9 +247,9 @@ within the scope of :non_existent1 and :non_existent2.
 
       message = <<-MESSAGE
 Example did not properly validate that :attr is case-sensitively unique.
-  Given an existing Example whose :attr is "value", after making a new
-  Example and setting its :attr to "value" as well, the matcher expected
-  the new Example to be invalid, but it was valid instead.
+  Given an existing Example whose :attr is ‹"value"›, after making a new
+  Example and setting its :attr to ‹"value"› as well, the matcher
+  expected the new Example to be invalid, but it was valid instead.
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)
@@ -347,9 +347,9 @@ within the scope of :other.
 
           message = <<-MESSAGE
 Example did not properly validate that :attr is case-sensitively unique.
-  After taking the given Example, setting its :attr to "an arbitrary
-  value", and saving it as the existing record, then making a new
-  Example and setting its :attr to "an arbitrary value" as well, the
+  After taking the given Example, setting its :attr to ‹"an arbitrary
+  value"›, and saving it as the existing record, then making a new
+  Example and setting its :attr to ‹"an arbitrary value"› as well, the
   matcher expected the new Example to be invalid and to produce the
   validation error "has already been taken" on :attr. The record was
   indeed invalid, but it produced these validation errors instead:
@@ -377,9 +377,9 @@ Example did not properly validate that :attr is case-sensitively unique.
             message = <<-MESSAGE
 Example did not properly validate that :attr is case-sensitively unique,
 producing a custom validation error on failure.
-  After taking the given Example, setting its :attr to "an arbitrary
-  value", and saving it as the existing record, then making a new
-  Example and setting its :attr to "an arbitrary value" as well, the
+  After taking the given Example, setting its :attr to ‹"an arbitrary
+  value"›, and saving it as the existing record, then making a new
+  Example and setting its :attr to ‹"an arbitrary value"› as well, the
   matcher expected the new Example to be invalid and to produce the
   validation error "some message" on :attr. The record was indeed
   invalid, but it produced these validation errors instead:
@@ -419,11 +419,11 @@ producing a custom validation error on failure.
             message = <<-MESSAGE
 Example did not properly validate that :attr is case-sensitively unique,
 producing a custom validation error on failure.
-  After taking the given Example, setting its :attr to "an arbitrary
-  value", and saving it as the existing record, then making a new
-  Example and setting its :attr to "an arbitrary value" as well, the
+  After taking the given Example, setting its :attr to ‹"an arbitrary
+  value"›, and saving it as the existing record, then making a new
+  Example and setting its :attr to ‹"an arbitrary value"› as well, the
   matcher expected the new Example to be invalid and to produce a
-  validation error matching /some message/ on :attr. The record was
+  validation error matching ‹/some message/› on :attr. The record was
   indeed invalid, but it produced these validation errors instead:
 
   * attr: ["something else entirely"]
@@ -672,11 +672,11 @@ within the scope of :scope1.
         message = <<-MESSAGE
 Example did not properly validate that :attr is case-insensitively
 unique.
-  After taking the given Example, setting its :attr to "an arbitrary
-  value", and saving it as the existing record, then making a new
-  Example and setting its :attr to a different value, "AN ARBITRARY
-  VALUE", the matcher expected the new Example to be invalid, but it was
-  valid instead.
+  After taking the given Example, setting its :attr to ‹"an arbitrary
+  value"›, and saving it as the existing record, then making a new
+  Example and setting its :attr to a different value, ‹"AN ARBITRARY
+  VALUE"›, the matcher expected the new Example to be invalid, but it
+  was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -698,10 +698,10 @@ unique.
 
         message = <<-MESSAGE
 Example did not properly validate that :attr is case-sensitively unique.
-  After taking the given Example, setting its :attr to "an arbitrary
-  value", and saving it as the existing record, then making a new
-  Example and setting its :attr to a different value, "AN ARBITRARY
-  VALUE", the matcher expected the new Example to be valid, but it was
+  After taking the given Example, setting its :attr to ‹"an arbitrary
+  value"›, and saving it as the existing record, then making a new
+  Example and setting its :attr to a different value, ‹"AN ARBITRARY
+  VALUE"›, the matcher expected the new Example to be valid, but it was
   invalid instead, producing these validation errors:
 
   * attr: ["has already been taken"]
@@ -775,9 +775,9 @@ Example did not properly validate that :attr is case-sensitively unique.
         message = <<-MESSAGE
 Example did not properly validate that :attr is case-sensitively unique,
 but only if it is not nil.
-  After taking the given Example, setting its :attr to nil, and saving
+  After taking the given Example, setting its :attr to ‹nil›, and saving
   it as the existing record, then making a new Example and setting its
-  :attr to nil as well, the matcher expected the new Example to be
+  :attr to ‹nil› as well, the matcher expected the new Example to be
   valid, but it was invalid instead, producing these validation errors:
 
   * attr: ["has already been taken"]
@@ -799,10 +799,10 @@ but only if it is not nil.
         message = <<-MESSAGE
 Example did not properly validate that :attr is case-sensitively unique,
 but only if it is not nil.
-  Given an existing Example whose :attr is nil, after making a new
-  Example and setting its :attr to nil as well, the matcher expected the
-  new Example to be valid, but it was invalid instead, producing these
-  validation errors:
+  Given an existing Example whose :attr is ‹nil›, after making a new
+  Example and setting its :attr to ‹nil› as well, the matcher expected
+  the new Example to be valid, but it was invalid instead, producing
+  these validation errors:
 
   * attr: ["has already been taken"]
         MESSAGE
@@ -904,10 +904,10 @@ but only if it is not nil.
         message = <<-MESSAGE
 Example did not properly validate that :attr is case-sensitively unique,
 but only if it is not blank.
-  After taking the given Example, setting its :attr to "", and saving it
-  as the existing record, then making a new Example and setting its
-  :attr to "" as well, the matcher expected the new Example to be valid,
-  but it was invalid instead, producing these validation errors:
+  After taking the given Example, setting its :attr to ‹""›, and saving
+  it as the existing record, then making a new Example and setting its
+  :attr to ‹""› as well, the matcher expected the new Example to be
+  valid, but it was invalid instead, producing these validation errors:
 
   * attr: ["has already been taken"]
         MESSAGE
@@ -928,10 +928,10 @@ but only if it is not blank.
         message = <<-MESSAGE
 Example did not properly validate that :attr is case-sensitively unique,
 but only if it is not blank.
-  Given an existing Example, after setting its :attr to "", then making
-  a new Example and setting its :attr to "" as well, the matcher
-  expected the new Example to be valid, but it was invalid instead,
-  producing these validation errors:
+  Given an existing Example, after setting its :attr to ‹""›, then
+  making a new Example and setting its :attr to ‹""› as well, the
+  matcher expected the new Example to be valid, but it was invalid
+  instead, producing these validation errors:
 
   * attr: ["has already been taken"]
         MESSAGE
@@ -954,10 +954,10 @@ but only if it is not blank.
         message = <<-MESSAGE
 Example did not properly validate that :attr is case-sensitively unique,
 but only if it is not blank.
-  After taking the given Example, setting its :attr to "", and saving it
-  as the existing record, then making a new Example and setting its
-  :attr to "" as well, the matcher expected the new Example to be valid,
-  but it was invalid instead, producing these validation errors:
+  After taking the given Example, setting its :attr to ‹""›, and saving
+  it as the existing record, then making a new Example and setting its
+  :attr to ‹""› as well, the matcher expected the new Example to be
+  valid, but it was invalid instead, producing these validation errors:
 
   * attr: ["has already been taken"]
         MESSAGE
@@ -980,10 +980,10 @@ but only if it is not blank.
         message = <<-MESSAGE
 Example did not properly validate that :attr is case-sensitively unique,
 but only if it is not blank.
-  Given an existing Example whose :attr is "", after making a new
-  Example and setting its :attr to "" as well, the matcher expected the
-  new Example to be valid, but it was invalid instead, producing these
-  validation errors:
+  Given an existing Example whose :attr is ‹""›, after making a new
+  Example and setting its :attr to ‹""› as well, the matcher expected
+  the new Example to be valid, but it was invalid instead, producing
+  these validation errors:
 
   * attr: ["has already been taken"]
         MESSAGE

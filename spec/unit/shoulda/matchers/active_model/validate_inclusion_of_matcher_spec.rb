@@ -686,7 +686,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
           matcher = validate_inclusion_of(:attr).in_array([true])
 
           expect(matcher.description).to eq(
-            'validate that :attr is true'
+            'validate that :attr is ‹true›'
           )
         end
       end
@@ -696,7 +696,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
           matcher = validate_inclusion_of(:attr).in_array([true, 'dog'])
 
           expect(matcher.description).to eq(
-            'validate that :attr is either true or "dog"'
+            'validate that :attr is either ‹true› or ‹"dog"›'
           )
         end
       end
@@ -706,7 +706,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
           matcher = validate_inclusion_of(:attr).in_array([true, 'dog', 'cat'])
 
           expect(matcher.description).to eq(
-            'validate that :attr is either true, "dog", or "cat"'
+            'validate that :attr is either ‹true›, ‹"dog"›, or ‹"cat"›'
           )
         end
       end
@@ -717,7 +717,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         matcher = validate_inclusion_of(:attr).in_range(1..10)
 
         expect(matcher.description).to eq(
-          'validate that :attr lies inside the range 1..10'
+          'validate that :attr lies inside the range ‹1› to ‹10›'
         )
       end
     end

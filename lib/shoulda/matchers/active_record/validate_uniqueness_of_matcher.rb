@@ -682,27 +682,35 @@ module Shoulda
 
           if @existing_record_created
             prefix << "After taking the given #{model.name},"
-            prefix << " setting its :#{attribute} to"
-            prefix << " #{existing_value.inspect},"
-            prefix << " and saving it as the existing record,"
+            prefix << " setting its :#{attribute} to "
+            prefix << Shoulda::Matchers::Util.inspect_value(existing_value)
+            prefix << ", and saving it as the existing record,"
             prefix << " then"
           elsif @original_existing_value != existing_value
             prefix << "Given an existing #{model.name},"
-            prefix << " after setting its :#{attribute} to"
-            prefix << " #{existing_value.inspect}, then"
+            prefix << " after setting its :#{attribute} to "
+            prefix << Shoulda::Matchers::Util.inspect_value(existing_value)
+            prefix << ", then"
           else
             prefix << "Given an existing #{model.name} whose :#{attribute}"
-            prefix << " is #{existing_value.inspect}, after"
+            prefix << " is "
+            prefix << Shoulda::Matchers::Util.inspect_value(existing_value)
+            prefix << ", after"
           end
 
           prefix << " making a new #{model.name} and setting its"
-          prefix << " :#{attribute} to"
+          prefix << " :#{attribute} to "
 
           if last_value_set_on_new_record == existing_value
-            prefix << " #{last_value_set_on_new_record.inspect} as well"
+            prefix << Shoulda::Matchers::Util.inspect_value(
+              last_value_set_on_new_record
+            )
+            prefix << " as well"
           else
-            prefix << " a different value,"
-            prefix << " #{last_value_set_on_new_record.inspect}"
+            prefix << " a different value, "
+            prefix << Shoulda::Matchers::Util.inspect_value(
+              last_value_set_on_new_record
+            )
           end
 
           prefix << ", the matcher expected the new #{model.name} to be"

@@ -172,8 +172,8 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
 
         message = <<-MESSAGE
 Example did not properly validate that :attr looks like a number.
-  After setting :attr to "abcd", the matcher expected the Example to be
-  invalid, but it was valid instead.
+  After setting :attr to ‹"abcd"›, the matcher expected the Example to
+  be invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -200,8 +200,8 @@ Example did not properly validate that :attr looks like a number.
         message = <<-MESSAGE
 Example did not properly validate that :attr looks like a number, but
 only if it is not nil.
-  In checking that Example allows :attr to be nil, after setting :attr
-  to nil, the matcher expected the Example to be valid, but it was
+  In checking that Example allows :attr to be ‹nil›, after setting :attr
+  to ‹nil›, the matcher expected the Example to be valid, but it was
   invalid instead, producing these validation errors:
 
   * attr: ["is not a number"]
@@ -230,7 +230,7 @@ only if it is not nil.
 
         message = <<-MESSAGE
 Example did not properly validate that :attr looks like an integer.
-  After setting :attr to "0.1", the matcher expected the Example to be
+  After setting :attr to ‹"0.1"›, the matcher expected the Example to be
   invalid, but it was valid instead.
         MESSAGE
 
@@ -290,7 +290,7 @@ Example did not properly validate that :attr looks like an integer.
 
         message = <<-MESSAGE
 Example did not properly validate that :attr looks like an odd number.
-  After setting :attr to "2", the matcher expected the Example to be
+  After setting :attr to ‹"2"›, the matcher expected the Example to be
   invalid, but it was valid instead.
         MESSAGE
 
@@ -350,7 +350,7 @@ Example did not properly validate that :attr looks like an odd number.
 
         message = <<-MESSAGE
 Example did not properly validate that :attr looks like an even number.
-  After setting :attr to "1", the matcher expected the Example to be
+  After setting :attr to ‹"1"›, the matcher expected the Example to be
   invalid, but it was valid instead.
         MESSAGE
 
@@ -413,7 +413,7 @@ Example did not properly validate that :attr looks like an even number.
         message = <<-MESSAGE
 Example did not properly validate that :attr looks like a number less
 than or equal to 18.
-  After setting :attr to "19", the matcher expected the Example to be
+  After setting :attr to ‹"19"›, the matcher expected the Example to be
   invalid, but it was valid instead.
         MESSAGE
 
@@ -476,7 +476,7 @@ than or equal to 18.
         message = <<-MESSAGE
 Example did not properly validate that :attr looks like a number less
 than 18.
-  After setting :attr to "19", the matcher expected the Example to be
+  After setting :attr to ‹"19"›, the matcher expected the Example to be
   invalid, but it was valid instead.
         MESSAGE
 
@@ -537,7 +537,7 @@ than 18.
         message = <<-MESSAGE
 Example did not properly validate that :attr looks like a number equal
 to 18.
-  After setting :attr to "19", the matcher expected the Example to be
+  After setting :attr to ‹"19"›, the matcher expected the Example to be
   invalid, but it was valid instead.
         MESSAGE
 
@@ -609,7 +609,7 @@ to 18.
         message = <<-MESSAGE
 Example did not properly validate that :attr looks like a number greater
 than or equal to 18.
-  After setting :attr to "17", the matcher expected the Example to be
+  After setting :attr to ‹"17"›, the matcher expected the Example to be
   invalid, but it was valid instead.
         MESSAGE
 
@@ -678,7 +678,7 @@ than or equal to 18.
         message = <<-MESSAGE
 Example did not properly validate that :attr looks like a number greater
 than 18.
-  After setting :attr to "18", the matcher expected the Example to be
+  After setting :attr to ‹"18"›, the matcher expected the Example to be
   invalid, but it was valid instead.
         MESSAGE
 
@@ -706,10 +706,10 @@ than 18.
         message = <<-MESSAGE
 Example did not properly validate that :attr looks like a number,
 producing a custom validation error on failure.
-  After setting :attr to "abcd", the matcher expected the Example to be
-  invalid and to produce a validation error matching /wrong/ on :attr.
-  The record was indeed invalid, but it produced these validation errors
-  instead:
+  After setting :attr to ‹"abcd"›, the matcher expected the Example to
+  be invalid and to produce a validation error matching ‹/wrong/› on
+  :attr. The record was indeed invalid, but it produced these validation
+  errors instead:
 
   * attr: ["custom"]
         MESSAGE
@@ -736,8 +736,8 @@ producing a custom validation error on failure.
         message = <<-MESSAGE
 Example did not properly validate that :attr looks like a number,
 producing a custom validation error on failure.
-  After setting :attr to "abcd", the matcher expected the Example to be
-  invalid, but it was valid instead.
+  After setting :attr to ‹"abcd"›, the matcher expected the Example to
+  be invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -764,9 +764,9 @@ producing a custom validation error on failure.
         message = <<-MESSAGE
 Example did not properly validate that :attr looks like a number,
 raising a validation exception on failure.
-  After setting :attr to "abcd", the matcher expected the Example to be
-  invalid and to raise a validation exception, but the record produced
-  validation errors instead.
+  After setting :attr to ‹"abcd"›, the matcher expected the Example to
+  be invalid and to raise a validation exception, but the record
+  produced validation errors instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -798,8 +798,8 @@ raising a validation exception on failure.
 
       message = <<-MESSAGE
 Example did not properly validate that :attr looks like a number.
-  After setting :attr to "abcd", the matcher expected the Example to be
-  invalid, but it was valid instead.
+  After setting :attr to ‹"abcd"›, the matcher expected the Example to
+  be invalid, but it was valid instead.
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)
@@ -837,7 +837,7 @@ Example did not properly validate that :attr looks like a number.
 Example did not properly validate that :attr looks like an integer
 greater than 18.
   In checking that Example disallows :attr from being a decimal number,
-  after setting :attr to "0.1", the matcher expected the Example to be
+  after setting :attr to ‹"0.1"›, the matcher expected the Example to be
   invalid and to produce the validation error "must be an integer" on
   :attr. The record was indeed invalid, but it produced these validation
   errors instead:
@@ -862,7 +862,7 @@ greater than 18.
 Example did not properly validate that :attr looks like an integer
 greater than 18.
   In checking that Example disallows :attr from being a decimal number,
-  after setting :attr to "0.1", the matcher expected the Example to be
+  after setting :attr to ‹"0.1"›, the matcher expected the Example to be
   invalid and to produce the validation error "must be an integer" on
   :attr. The record was indeed invalid, but it produced these validation
   errors instead:
@@ -890,8 +890,8 @@ greater than 18.
 Example did not properly validate that :attr looks like an even number
 greater than 18.
   In checking that Example disallows :attr from being a number that is
-  not greater than 18, after setting :attr to "18", the matcher expected
-  the Example to be invalid, but it was valid instead.
+  not greater than 18, after setting :attr to ‹"18"›, the matcher
+  expected the Example to be invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -914,7 +914,7 @@ greater than 18.
 Example did not properly validate that :attr looks like an even number
 greater than 18.
   In checking that Example disallows :attr from being an odd number,
-  after setting :attr to "1", the matcher expected the Example to be
+  after setting :attr to ‹"1"›, the matcher expected the Example to be
   invalid and to produce the validation error "must be even" on :attr.
   The record was indeed invalid, but it produced these validation errors
   instead:
@@ -942,7 +942,7 @@ greater than 18.
 Example did not properly validate that :attr looks like an odd number
 less than or equal to 99.
   In checking that Example disallows :attr from being a number that is
-  not less than or equal to 99, after setting :attr to "101", the
+  not less than or equal to 99, after setting :attr to ‹"101"›, the
   matcher expected the Example to be invalid, but it was valid instead.
         MESSAGE
 
@@ -968,8 +968,8 @@ less than or equal to 99.
 Example did not properly validate that :attr looks like an integer
 greater than 18 and less than 99.
   In checking that Example disallows :attr from being a number that is
-  not greater than 18, after setting :attr to "18", the matcher expected
-  the Example to be invalid, but it was valid instead.
+  not greater than 18, after setting :attr to ‹"18"›, the matcher
+  expected the Example to be invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -995,10 +995,10 @@ greater than 18 and less than 99.
 Example did not properly validate that :attr looks like an integer
 greater than 18.
   In checking that Example disallows :attr from being a number that is
-  not greater than 18, after setting :attr to "18", the matcher expected
-  the Example to be invalid and to produce the validation error "must be
-  greater than 18" on :attr. The record was indeed invalid, but it
-  produced these validation errors instead:
+  not greater than 18, after setting :attr to ‹"18"›, the matcher
+  expected the Example to be invalid and to produce the validation error
+  "must be greater than 18" on :attr. The record was indeed invalid, but
+  it produced these validation errors instead:
 
   * attr: ["must be greater than 19"]
         MESSAGE
@@ -1023,8 +1023,8 @@ greater than 18.
 Example did not properly validate that :attr looks like an integer
 greater than 18.
   In checking that Example disallows :attr from being a number that is
-  not greater than 18, after setting :attr to "18", the matcher expected
-  the Example to be invalid, but it was valid instead.
+  not greater than 18, after setting :attr to ‹"18"›, the matcher
+  expected the Example to be invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1048,10 +1048,10 @@ greater than 18.
 Example did not properly validate that :attr looks like an even number
 greater than 18.
   In checking that Example disallows :attr from being a number that is
-  not greater than 18, after setting :attr to "18", the matcher expected
-  the Example to be invalid and to produce the validation error "must be
-  greater than 18" on :attr. The record was indeed invalid, but it
-  produced these validation errors instead:
+  not greater than 18, after setting :attr to ‹"18"›, the matcher
+  expected the Example to be invalid and to produce the validation error
+  "must be greater than 18" on :attr. The record was indeed invalid, but
+  it produced these validation errors instead:
 
   * attr: ["must be greater than 20"]
         MESSAGE
@@ -1076,8 +1076,8 @@ greater than 18.
 Example did not properly validate that :attr looks like an even number
 greater than 18.
   In checking that Example disallows :attr from being a number that is
-  not greater than 18, after setting :attr to "18", the matcher expected
-  the Example to be invalid, but it was valid instead.
+  not greater than 18, after setting :attr to ‹"18"›, the matcher
+  expected the Example to be invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1100,7 +1100,7 @@ greater than 18.
 Example did not properly validate that :attr looks like an odd number
 less than or equal to 99.
   In checking that Example disallows :attr from being a number that is
-  not less than or equal to 99, after setting :attr to "101", the
+  not less than or equal to 99, after setting :attr to ‹"101"›, the
   matcher expected the Example to be invalid, but it was valid instead.
         MESSAGE
 
@@ -1124,7 +1124,7 @@ less than or equal to 99.
 Example did not properly validate that :attr looks like an odd number
 less than or equal to 99.
   In checking that Example disallows :attr from being a number that is
-  not less than or equal to 99, after setting :attr to "101", the
+  not less than or equal to 99, after setting :attr to ‹"101"›, the
   matcher expected the Example to be invalid and to produce the
   validation error "must be less than or equal to 99" on :attr. The
   record was indeed invalid, but it produced these validation errors
@@ -1156,10 +1156,10 @@ less than or equal to 99.
 Example did not properly validate that :attr looks like an integer
 greater than 18 and less than 99.
   In checking that Example disallows :attr from being a number that is
-  not greater than 18, after setting :attr to "18", the matcher expected
-  the Example to be invalid and to produce the validation error "must be
-  greater than 18" on :attr. The record was indeed invalid, but it
-  produced these validation errors instead:
+  not greater than 18, after setting :attr to ‹"18"›, the matcher
+  expected the Example to be invalid and to produce the validation error
+  "must be greater than 18" on :attr. The record was indeed invalid, but
+  it produced these validation errors instead:
 
   * attr: ["must be greater than 19"]
         MESSAGE
@@ -1186,7 +1186,7 @@ greater than 18 and less than 99.
 Example did not properly validate that :attr looks like an integer
 greater than 18 and less than 99.
   In checking that Example disallows :attr from being a number that is
-  not less than 99, after setting :attr to "100", the matcher expected
+  not less than 99, after setting :attr to ‹"100"›, the matcher expected
   the Example to be invalid and to produce the validation error "must be
   less than 99" on :attr. The record was indeed invalid, but it produced
   these validation errors instead:

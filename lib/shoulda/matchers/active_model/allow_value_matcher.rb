@@ -463,10 +463,13 @@ module Shoulda
                 end
 
                 if expected_message.is_a?(Regexp)
-                  message << ' matching'
+                  message << ' matching '
+                  message << Shoulda::Matchers::Util.inspect_value(
+                    expected_message
+                  )
+                else
+                  message << " #{expected_message.inspect}"
                 end
-
-                message << " #{expected_message.inspect}"
 
                 unless validator.captured_validation_exception?
                   message << " on :#{attribute_to_check_message_against}"
@@ -577,14 +580,10 @@ module Shoulda
         end
 
         def inspected_values_to_set
-          if values_to_set.size > 1
-            values_to_set.map(&:inspect).to_sentence(
-              two_words_connector: " or ",
-              last_word_connector: ", or"
-            )
-          else
-            values_to_set.first.inspect
-          end
+          Shoulda::Matchers::Util.inspect_values(values_to_set).to_sentence(
+            two_words_connector: " or ",
+            last_word_connector: ", or"
+          )
         end
 
         def default_expected_message

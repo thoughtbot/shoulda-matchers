@@ -141,17 +141,15 @@ module Shoulda
 
         def simple_description
           if @range
-            "validate that :#{@attribute} lies outside the range #{@range.inspect}"
+            "validate that :#{@attribute} lies outside the range " +
+              Shoulda::Matchers::Util.inspect_range(@range)
           else
             description = "validate that :#{@attribute}"
 
             if @array.many?
-              description << " is neither " + @array.map(&:inspect).to_sentence(
-                two_words_connector: " nor ",
-                last_word_connector: ", nor "
-              )
+              description << " is neither #{inspected_array}"
             else
-              description << " is not #{@array.first.inspect}"
+              description << " is not #{inspected_array}"
             end
 
             description
@@ -201,6 +199,13 @@ module Shoulda
           else
             @array.inspect
           end
+        end
+
+        def inspected_array
+          Shoulda::Matchers::Util.inspect_values(@array).to_sentence(
+            two_words_connector: " nor ",
+            last_word_connector: ", nor "
+          )
         end
       end
     end

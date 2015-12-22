@@ -31,7 +31,7 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OnlyIntegerMatche
       end
 
       message = <<-MESSAGE
-After setting :attr to "0.1", the matcher expected the Example to be
+After setting :attr to ‹"0.1"›, the matcher expected the Example to be
 invalid, but it was valid instead.
       MESSAGE
 

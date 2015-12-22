@@ -21,7 +21,7 @@ describe Shoulda::Matchers::ActiveModel::NumericalityMatchers::OddNumberMatcher 
       end
 
       message = <<-MESSAGE.strip_heredoc
-After setting :attr to "2", the matcher expected the Example to be
+After setting :attr to ‹"2"›, the matcher expected the Example to be
 invalid, but it was valid instead.
       MESSAGE
 

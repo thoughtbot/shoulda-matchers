@@ -352,17 +352,15 @@ EOT
 
         def simple_description
           if @range
-            "validate that :#{@attribute} lies inside the range #{@range.inspect}"
+            "validate that :#{@attribute} lies inside the range " +
+              Shoulda::Matchers::Util.inspect_range(@range)
           else
             description = "validate that :#{@attribute}"
 
             if @array.many?
-              description << " is either " + @array.map(&:inspect).to_sentence(
-                two_words_connector: " or ",
-                last_word_connector: ", or "
-              )
+              description << " is either #{inspected_array}"
             else
-              description << " is #{@array.first.inspect}"
+              description << " is #{inspected_array}"
             end
 
             description
@@ -551,6 +549,13 @@ EOT
             when Time then :time
             else :unknown
           end
+        end
+
+        def inspected_array
+          Shoulda::Matchers::Util.inspect_values(@array).to_sentence(
+            two_words_connector: " or ",
+            last_word_connector: ", or "
+          )
         end
       end
     end
