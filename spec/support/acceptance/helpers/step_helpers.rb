@@ -18,6 +18,7 @@ module AcceptanceTests
     end
 
     def create_generic_bundler_project
+      fs.clean
       fs.create
       run_command! 'bundle init'
     end
@@ -61,6 +62,8 @@ module AcceptanceTests
     end
 
     def create_rails_application
+      fs.clean
+
       command = "bundle exec rails new #{fs.project_directory} --skip-bundle"
 
       run_command!(command) do |runner|
