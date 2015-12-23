@@ -14,6 +14,8 @@ RSpec.configure do |config|
     config.infer_spec_type_from_file_location!
   end
 
+  config.example_status_persistence_file_path = "spec/examples.txt"
+
   config.before(:all, type: :controller) do
     self.class.controller(ApplicationController) { }
   end
