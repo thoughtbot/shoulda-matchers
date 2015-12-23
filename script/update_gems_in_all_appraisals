@@ -4,7 +4,7 @@ SUPPORTED_VERSIONS=$(<script/SUPPORTED_VERSIONS)
 
 update-gems-for-version() {
   local version="$1"
-  (export RBENV_VERSION=$version; bundle update "${@:2}" && bundle exec appraisal update "${@:2}")
+  (export RBENV_VERSION=$version; bundle update "${@:2}"; bundle exec appraisal update "${@:2}")
 }
 
 for version in $SUPPORTED_VERSIONS; do
