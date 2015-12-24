@@ -10,16 +10,6 @@ Dir[ File.join(File.expand_path('../support/unit/**/*.rb', __FILE__)) ].sort.eac
 end
 
 RSpec.configure do |config|
-  if config.respond_to?(:infer_spec_type_from_file_location!)
-    config.infer_spec_type_from_file_location!
-  end
-
-  config.example_status_persistence_file_path = "spec/examples.txt"
-
-  config.before(:all, type: :controller) do
-    self.class.controller(ApplicationController) { }
-  end
-
   UnitTests::ActiveModelHelpers.configure_example_group(config)
   UnitTests::ActiveModelVersions.configure_example_group(config)
   UnitTests::ActiveResourceBuilder.configure_example_group(config)
@@ -35,6 +25,14 @@ RSpec.configure do |config|
   UnitTests::ColumnTypeHelpers.configure_example_group(config)
 
   config.include UnitTests::Matchers
+
+  config.infer_spec_type_from_file_location!
+  config.example_status_persistence_file_path = "spec/examples.txt"
+  config.alias_it_behaves_like_to(:it_supports, "it supports")
+
+  config.before(:all, type: :controller) do
+    self.class.controller(ApplicationController) { }
+  end
 end
 
 ActiveSupport::Deprecation.behavior = :stderr
