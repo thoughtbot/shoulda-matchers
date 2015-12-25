@@ -72,8 +72,8 @@ module Shoulda
       #
       # @return [ValidateConfirmationOfMatcher]
       #
-      def validate_confirmation_of(attr)
-        ValidateConfirmationOfMatcher.new(attr)
+      def validate_confirmation_of(attr, data_type = :string)
+        ValidateConfirmationOfMatcher.new(attr, data_type)
       end
 
       # @private
@@ -82,10 +82,11 @@ module Shoulda
 
         attr_reader :attribute, :confirmation_attribute
 
-        def initialize(attribute)
-          super
+        def initialize(attribute, data_type = :string)
+          super(attribute)
           @expected_message = :confirmation
           @confirmation_attribute = "#{attribute}_confirmation"
+          @data_type = data_type
         end
 
         def simple_description
@@ -94,10 +95,15 @@ module Shoulda
 
         def matches?(subject)
           super(subject)
-
-          disallows_different_value &&
-            allows_same_value &&
-            allows_missing_confirmation
+          if @data_type == :integer
+            disallows_different_integer_value &&
+              allows_same_integer_value &&
+              allows_missing_confirmation_for_integers
+          else
+            disallows_different_value &&
+              allows_same_value &&
+              allows_missing_confirmation
+          end
         end
 
         private
@@ -110,6 +116,14 @@ module Shoulda
           end
         end
 
+        def disallows_different_integer_value
+          set_confirmation(1)
+
+          disallows_value_of(0) do |matcher|
+            qualify_matcher(matcher)
+          end
+        end
+
         def allows_same_value
           set_confirmation('same value')
 
@@ -118,10 +132,26 @@ module Shoulda
           end
         end
 
+        def allows_same_integer_value
+          set_confirmation(1)
+
+          allows_value_of(1) do |matcher|
+            qualify_matcher(matcher)
+          end
+        end
+
         def allows_missing_confirmation
           set_confirmation(nil)
 
           allows_value_of('any value') do |matcher|
+            qualify_matcher(matcher)
+          end
+        end
+
+        def allows_missing_confirmation_for_integers
+          set_confirmation(nil)
+
+          allows_value_of(1) do |matcher|
             qualify_matcher(matcher)
           end
         end

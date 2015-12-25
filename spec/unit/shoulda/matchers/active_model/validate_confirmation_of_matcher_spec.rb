@@ -14,9 +14,15 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :m
 
   context 'when the model has a confirmation validation' do
     it 'passes' do
-      builder = builder_for_record_validating_confirmation
+      builder = builder_for_record_validating_confirmation(data_type: :string)
       expect(builder.record).
         to validate_confirmation_of(builder.attribute_to_confirm)
+    end
+
+    it 'passes for integer values' do
+      builder = builder_for_record_validating_confirmation(data_type: :integer)
+      expect(builder.record).
+        to validate_confirmation_of(builder.attribute_to_confirm, :integer)
     end
 
     context 'when a nil message is specified' do
