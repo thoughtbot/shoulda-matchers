@@ -445,32 +445,14 @@ module Shoulda
         end
 
         def failure_message
-          "#{overall_failure_message}".tap do |message|
-            failing_submatchers.each do |submatcher|
-              if number_of_submatchers_for_failure_message > 1
-                submatcher_description = submatcher.simple_description.
-                  sub(/\bvalidate that\b/, 'validates').
-                  sub(/\bdisallow\b/, 'disallows').
-                  sub(/\ballow\b/, 'allows')
-                submatcher_message =
-                  "In checking that #{model.name} #{submatcher_description}, " +
-                  submatcher.failure_message[0].downcase +
-                  submatcher.failure_message[1..-1]
-              else
-                submatcher_message = submatcher.failure_message
-              end
-
-              message << "\n"
-              message << Shoulda::Matchers.word_wrap(
-                submatcher_message,
-                indent: 2
-              )
-            end
+          overall_failure_message.dup.tap do |message|
+            message << "\n"
+            message << failure_message_for_first_failing_submatcher
           end
         end
 
         def failure_message_when_negated
-          "#{overall_failure_message_when_negated}".tap do |message|
+          overall_failure_message_when_negated.dup.tap do |message|
             if submatcher_failure_message_when_negated.present?
               raise "hmm, this needs to be implemented."
               message << "\n"
@@ -582,6 +564,25 @@ module Shoulda
 
         def submatcher_failure_message_when_negated
           first_failing_submatcher.failure_message_when_negated
+        end
+
+        def failure_message_for_first_failing_submatcher
+          submatcher = first_failing_submatcher
+
+          if number_of_submatchers_for_failure_message > 1
+            submatcher_description = submatcher.simple_description.
+              sub(/\bvalidate that\b/, 'validates').
+              sub(/\bdisallow\b/, 'disallows').
+              sub(/\ballow\b/, 'allows')
+            submatcher_message =
+              "In checking that #{model.name} #{submatcher_description}, " +
+              submatcher.failure_message[0].downcase +
+              submatcher.failure_message[1..-1]
+          else
+            submatcher_message = submatcher.failure_message
+          end
+
+          Shoulda::Matchers.word_wrap(submatcher_message, indent: 2)
         end
 
         def full_allowed_type
