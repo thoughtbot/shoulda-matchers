@@ -72,8 +72,8 @@ module Shoulda
       #
       # @return [ValidateConfirmationOfMatcher]
       #
-      def validate_confirmation_of(attr, data_type = :string)
-        ValidateConfirmationOfMatcher.new(attr, data_type)
+      def validate_confirmation_of(attr)
+        ValidateConfirmationOfMatcher.new(attr)
       end
 
       # @private
@@ -82,8 +82,8 @@ module Shoulda
 
         attr_reader :attribute, :confirmation_attribute
 
-        def initialize(attribute, data_type = :string)
-          super(attribute)
+        def initialize(attribute)
+          super
           @expected_message = :confirmation
           @confirmation_attribute = "#{attribute}_confirmation"
         end
