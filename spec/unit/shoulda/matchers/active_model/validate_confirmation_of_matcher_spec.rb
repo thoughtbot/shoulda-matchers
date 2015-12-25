@@ -14,8 +14,9 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :m
 
   context 'when the model has a confirmation validation' do
     [:string, :integer].each do |column_data_type|
-      it "passes when data type is #{column_data_type}"  do
-        builder = builder_for_record_validating_confirmation(data_type: column_data_type)
+      it "passes when data type is #{column_data_type}" do
+        builder =
+        builder_for_record_validating_confirmation(data_type: column_data_type)
         expect(builder.record).
           to validate_confirmation_of(builder.attribute_to_confirm)
       end

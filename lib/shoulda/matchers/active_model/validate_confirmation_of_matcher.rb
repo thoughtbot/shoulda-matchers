@@ -112,19 +112,19 @@ module Shoulda
 
         def get_confirmation_value
           case @data_type
-            when :string
-              'some value'
-            when :integer
-              1
+          when :string
+            'some value'
+          when :integer
+            1
           end
         end
 
         def get_mismatching_confirmation_value
           case @data_type
-            when :string
-              'different value'
-            when :integer
-              0
+          when :string
+            'different value'
+          when :integer
+            0
           end
         end
 
