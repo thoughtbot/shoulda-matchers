@@ -86,7 +86,6 @@ module Shoulda
           super(attribute)
           @expected_message = :confirmation
           @confirmation_attribute = "#{attribute}_confirmation"
-          @data_type = data_type
         end
 
         def simple_description
@@ -95,47 +94,44 @@ module Shoulda
 
         def matches?(subject)
           super(subject)
-          if @data_type == :integer
-            disallows_different_integer_value &&
-              allows_same_integer_value &&
-              allows_missing_confirmation_for_integers
-          else
-            disallows_different_value &&
-              allows_same_value &&
-              allows_missing_confirmation
-          end
+          @data_type = @subject.class.columns_hash[@attribute.to_s].type
+          disallows_different_value &&
+            allows_same_value &&
+            allows_missing_confirmation
         end
 
         private
 
         def disallows_different_value
-          set_confirmation('some value')
+          set_confirmation(get_confirmation_value)
 
-          disallows_value_of('different value') do |matcher|
+          disallows_value_of(get_mismatching_confirmation_value) do |matcher|
             qualify_matcher(matcher)
           end
         end
 
-        def disallows_different_integer_value
-          set_confirmation(1)
+        def get_confirmation_value
+          case @data_type
+            when :string
+              'some value'
+            when :integer
+              1
+          end
+        end
 
-          disallows_value_of(0) do |matcher|
-            qualify_matcher(matcher)
+        def get_mismatching_confirmation_value
+          case @data_type
+            when :string
+              'different value'
+            when :integer
+              0
           end
         end
 
         def allows_same_value
-          set_confirmation('same value')
+          set_confirmation(get_confirmation_value)
 
-          allows_value_of('same value') do |matcher|
-            qualify_matcher(matcher)
-          end
-        end
-
-        def allows_same_integer_value
-          set_confirmation(1)
-
-          allows_value_of(1) do |matcher|
+          allows_value_of(get_confirmation_value) do |matcher|
             qualify_matcher(matcher)
           end
         end
@@ -143,15 +139,7 @@ module Shoulda
         def allows_missing_confirmation
           set_confirmation(nil)
 
-          allows_value_of('any value') do |matcher|
-            qualify_matcher(matcher)
-          end
-        end
-
-        def allows_missing_confirmation_for_integers
-          set_confirmation(nil)
-
-          allows_value_of(1) do |matcher|
+          allows_value_of(get_confirmation_value) do |matcher|
             qualify_matcher(matcher)
           end
         end
