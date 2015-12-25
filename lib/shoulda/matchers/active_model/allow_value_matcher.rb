@@ -582,7 +582,7 @@ module Shoulda
         def inspected_values_to_set
           Shoulda::Matchers::Util.inspect_values(values_to_set).to_sentence(
             two_words_connector: " or ",
-            last_word_connector: ", or"
+            last_word_connector: ", or "
           )
         end
 

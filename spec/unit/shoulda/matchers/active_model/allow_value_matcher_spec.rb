@@ -10,11 +10,19 @@ end
 
 describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
   context "#description" do
-    it 'describes itself with multiple values' do
+    it 'describes itself with two values' do
       matcher = allow_value('foo', 'bar').for(:baz)
 
       expect(matcher.description).to eq(
         'allow :baz to be ‹"foo"› or ‹"bar"›'
+      )
+    end
+
+    it 'describes itself with more than two values' do
+      matcher = allow_value('foo', 'bar', 'qux').for(:baz)
+
+      expect(matcher.description).to eq(
+        'allow :baz to be ‹"foo"›, ‹"bar"›, or ‹"qux"›'
       )
     end
 
