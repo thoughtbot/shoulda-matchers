@@ -6,7 +6,6 @@ module UnitTests
 
     def initialize(options)
       @options = options
-      @data_type = options[:data_type].nil? ? :string : options[:data_type]
     end
 
     def model
@@ -48,9 +47,13 @@ module UnitTests
       _attribute = attribute_to_confirm
       _options = options
 
-      define_model(model_name, _attribute => @data_type.to_sym) do
+      define_model(model_name, _attribute => column_type.to_sym) do
         validates_confirmation_of(_attribute, _options)
       end
+    end
+
+    def column_type
+      options.fetch(:column_type, :string)
     end
   end
 end

@@ -3,6 +3,21 @@ require 'unit_spec_helper'
 describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :model do
   include UnitTests::ConfirmationMatcherHelpers
 
+  def self.available_column_types
+    [
+      :string,
+      :text,
+      :integer,
+      :float,
+      :decimal,
+      :datetime,
+      :timestamp,
+      :time,
+      :date,
+      :binary
+    ]
+  end
+
   context '#description' do
     it 'states that the confirmation must match its base attribute' do
       builder = builder_for_record_validating_confirmation
@@ -13,13 +28,19 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :m
   end
 
   context 'when the model has a confirmation validation' do
-    [:string, :integer].each do |column_data_type|
-      it "passes when data type is #{column_data_type}" do
-        builder =
-        builder_for_record_validating_confirmation(data_type: column_data_type)
+    available_column_types.each do |column_type|
+      it "passes when the column is of type #{column_type}" do
+        builder = builder_for_record_validating_confirmation(
+          column_type: column_type
+        )
         expect(builder.record).
           to validate_confirmation_of(builder.attribute_to_confirm)
       end
+    end
+
+    it 'passes for an ActiveModel class' do
+      expect(active_model_validating_confirmation_of(:attr)).
+        to validate_confirmation_of(:attr)
     end
 
     context 'when a nil message is specified' do

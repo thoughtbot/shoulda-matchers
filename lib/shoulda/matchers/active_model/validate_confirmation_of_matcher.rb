@@ -94,13 +94,18 @@ module Shoulda
 
         def matches?(subject)
           super(subject)
-          @data_type = @subject.class.columns_hash[@attribute.to_s].type
           disallows_different_value &&
             allows_same_value &&
             allows_missing_confirmation
         end
 
         private
+
+        def column_type
+          @subject.class.respond_to?(:columns_hash) &&
+            @subject.class.columns_hash[@attribute.to_s].respond_to?(:type) &&
+            @subject.class.columns_hash[@attribute.to_s].type
+        end
 
         def disallows_different_value
           set_confirmation(get_confirmation_value)
@@ -111,20 +116,24 @@ module Shoulda
         end
 
         def get_confirmation_value
-          case @data_type
-          when :string
-            'some value'
-          when :integer
-            1
+          case column_type
+          when :integer, :float then 1
+          when :decimal then BigDecimal.new(1, 0)
+          when :datetime, :time, :timestamp then Time.new(2015, 12, 25, 10, 10, 10)
+          when :date then Date.new(2015, 12, 25)
+          when :binary then '0'
+          else 'some value'
           end
         end
 
         def get_mismatching_confirmation_value
-          case @data_type
-          when :string
-            'different value'
-          when :integer
-            0
+          case column_type
+          when :integer, :float then 2
+          when :decimal then BigDecimal.new(2, 0)
+          when :datetime, :time, :timestamp then Time.new(2015, 12, 26, 10, 10, 10)
+          when :date then Date.new(2015, 12, 26)
+          when :binary then '1'
+          else 'different value'
           end
         end
 
