@@ -14,7 +14,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :m
       :timestamp,
       :time,
       :date,
-      :binary
+      :binary,
     ]
   end
 
@@ -31,7 +31,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :m
     available_column_types.each do |column_type|
       it "passes when the column is of type #{column_type}" do
         builder = builder_for_record_validating_confirmation(
-          column_type: column_type
+          column_type: column_type,
         )
         expect(builder.record).
           to validate_confirmation_of(builder.attribute_to_confirm)

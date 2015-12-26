@@ -11,7 +11,7 @@ module UnitTests
       builder = builder_for_record_validating_confirmation(options)
       RecordBuilderWithI18nValidationMessage.new(builder,
         validation_message_key: :confirmation
-        )
+      )
     end
 
     def active_model_validating_confirmation_of(attr)
