@@ -549,11 +549,7 @@ module Shoulda
         end
 
         def first_failing_submatcher
-          failing_submatchers.first
-        end
-
-        def failing_submatchers
-          @_failing_submatchers ||= @submatchers.select do |submatcher|
+          @_failing_submatchers ||= @submatchers.detect do |submatcher|
             !submatcher.matches?(@subject)
           end
         end
