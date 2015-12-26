@@ -319,13 +319,12 @@ module Shoulda
           @expects_strict = false
           @allowed_type_adjective = nil
           @allowed_type_name = 'number'
-
-          add_disallow_value_matcher
+          @context = nil
+          @expected_message = nil
         end
 
         def strict
           @expects_strict = true
-          @submatchers.each(&:strict)
           self
         end
 
@@ -395,7 +394,7 @@ module Shoulda
 
         def with_message(message)
           @expects_custom_validation_message = true
-          @submatchers.each { |matcher| matcher.with_message(message) }
+          @expected_message = message
           self
         end
 
@@ -404,7 +403,7 @@ module Shoulda
         end
 
         def on(context)
-          @submatchers.each { |matcher| matcher.on(context) }
+          @context = context
           self
         end
 
@@ -412,8 +411,8 @@ module Shoulda
           @subject = subject
           @number_of_submatchers = @submatchers.size
 
-          if given_numeric_column?
-            remove_disallow_value_matcher
+          unless given_numeric_column?
+            add_disallow_value_matcher
           end
 
           if @submatchers.empty?
@@ -424,6 +423,7 @@ module Shoulda
             )
           end
 
+          qualify_submatchers
           first_failing_submatcher.nil?
         end
 
@@ -493,15 +493,12 @@ module Shoulda
         end
 
         def add_disallow_value_matcher
-          disallow_value_matcher = DisallowValueMatcher.new(NON_NUMERIC_VALUE).
+          disallow_value_matcher = DisallowValueMatcher.
+            new(NON_NUMERIC_VALUE).
             for(@attribute).
             with_message(:not_a_number)
 
           add_submatcher(disallow_value_matcher)
-        end
-
-        def remove_disallow_value_matcher
-          @submatchers.shift
         end
 
         def prepare_submatcher(submatcher)
@@ -528,6 +525,22 @@ module Shoulda
           end
 
           @submatchers << submatcher
+        end
+
+        def qualify_submatchers
+          @submatchers.each do |submatcher|
+            if @expects_strict
+              submatcher.strict(@expects_strict)
+            end
+
+            if @expected_message.present?
+              submatcher.with_message(@expected_message)
+            end
+
+            if @context
+              submatcher.on(@context)
+            end
+          end
         end
 
         def number_of_submatchers_for_failure_message
