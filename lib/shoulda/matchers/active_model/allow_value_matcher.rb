@@ -589,7 +589,7 @@ https://github.com/thoughtbot/shoulda-matchers/issues
           if values_to_set.size > 1
             values_to_set.map(&:inspect).to_sentence(
               two_words_connector: " or ",
-              last_word_connector: ", or"
+              last_word_connector: ", or "
             )
           else
             values_to_set.first.inspect
