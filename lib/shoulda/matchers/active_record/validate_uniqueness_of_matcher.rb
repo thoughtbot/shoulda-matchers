@@ -591,20 +591,7 @@ module Shoulda
         end
 
         def dummy_scalar_value_for(column)
-          case column.type
-          when :integer
-            0
-          when :date
-            Date.today
-          when :datetime
-            DateTime.now
-          when :uuid
-            SecureRandom.uuid
-          when :boolean
-            true
-          else
-            'dummy value'
-          end
+          Shoulda::Matchers::Util.dummy_value_for(column.type)
         end
 
         def next_value_for(scope, previous_value)
