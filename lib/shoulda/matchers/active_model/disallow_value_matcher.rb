@@ -11,6 +11,7 @@ module Shoulda
           :_after_setting_value,
           :attribute_to_set,
           :description,
+          :expects_strict?,
           :model,
           :last_value_set,
           :simple_description,
