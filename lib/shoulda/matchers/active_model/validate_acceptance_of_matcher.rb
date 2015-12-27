@@ -92,7 +92,7 @@ module Shoulda
         end
 
         def simple_description
-          "validate that #{@attribute} has been set to true"
+          %(validate that :#{@attribute} has been set to "1")
         end
       end
     end
