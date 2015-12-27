@@ -119,13 +119,8 @@ module Shoulda
           case column_type
           when :integer, :float then 1
           when :decimal then BigDecimal.new(1, 0)
-          when :datetime, :time, :timestamp then Time.new(2015,
-                                                          12,
-                                                          25,
-                                                          10,
-                                                          10,
-                                                          10,
-                                                         )
+          when :datetime, :time, :timestamp then
+            Time.new(2015, 12, 25, 10, 10, 10)
           when :date then Date.new(2015, 12, 25)
           when :binary then '0'
           else 'some value'
@@ -136,13 +131,8 @@ module Shoulda
           case column_type
           when :integer, :float then 2
           when :decimal then BigDecimal.new(2, 0)
-          when :datetime, :time, :timestamp then Time.new(2015,
-                                                          12,
-                                                          26,
-                                                          10,
-                                                          10,
-                                                          10,
-                                                         )
+          when :datetime, :time, :timestamp then
+            Time.new(2015, 12, 26, 10, 10, 10)
           when :date then Date.new(2015, 12, 26)
           when :binary then '1'
           else 'different value'
