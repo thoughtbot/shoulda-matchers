@@ -503,16 +503,13 @@ module Shoulda
 
         def prepare_submatcher(submatcher)
           add_submatcher(submatcher)
-
-          if submatcher.respond_to?(:diff_to_compare)
-            update_diff_to_compare(submatcher)
-          end
+          submatcher
         end
 
         def comparison_matcher_for(value, operator)
-          NumericalityMatchers::ComparisonMatcher
-            .new(self, value, operator)
-            .for(@attribute)
+          NumericalityMatchers::ComparisonMatcher.
+            new(self, value, operator).
+            for(@attribute)
         end
 
         def add_submatcher(submatcher)
@@ -522,6 +519,10 @@ module Shoulda
 
           if submatcher.respond_to?(:allowed_type_adjective)
             @allowed_type_adjective = submatcher.allowed_type_adjective
+          end
+
+          if submatcher.respond_to?(:diff_to_compare)
+            @diff_to_compare = [@diff_to_compare, submatcher.diff_to_compare].max
           end
 
           @submatchers << submatcher
@@ -555,10 +556,6 @@ module Shoulda
           @submatchers.any? do |submatcher|
             submatcher.class.parent == NumericalityMatchers
           end
-        end
-
-        def update_diff_to_compare(matcher)
-          @diff_to_compare = [@diff_to_compare, matcher.diff_to_compare].max
         end
 
         def first_failing_submatcher
