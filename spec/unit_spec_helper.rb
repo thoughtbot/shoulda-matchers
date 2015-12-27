@@ -23,6 +23,7 @@ RSpec.configure do |config|
   UnitTests::ActiveModelVersions.configure_example_group(config)
   UnitTests::DatabaseHelpers.configure_example_group(config)
   UnitTests::ColumnTypeHelpers.configure_example_group(config)
+  UnitTests::ValidationMatcherScenarioHelpers.configure_example_group(config)
 
   config.include UnitTests::Matchers
 
