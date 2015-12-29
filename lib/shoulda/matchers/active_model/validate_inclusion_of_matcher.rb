@@ -1,4 +1,5 @@
 require 'bigdecimal'
+require 'date'
 
 module Shoulda
   module Matchers
