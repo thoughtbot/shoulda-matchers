@@ -1,5 +1,17 @@
 # HEAD
 
+### Bug fixes
+
+* Update `validate_numericality_of` so that submatchers are applied lazily
+  instead of immediately. Previously, qualifiers were order-dependent, meaning
+  that if you used `strict` before you used, say, `odd`, then `strict` wouldn't
+  actually apply to `odd`. Now the order that you specify qualifiers doesn't
+  matter.
+
+* Fix `allow_value` so that it does not raise an AttributeChangedValueError
+  (formerly CouldNotSetAttributeError) when used against an attribute that is an
+  enum in an ActiveRecord model.
+
 ### Improvements
 
 * Improve failure messages and descriptions of all matchers across the board so
@@ -7,14 +19,11 @@
   (You'll see a huge difference in the output of the numericality and uniqueness
   matchers in particular.)
 
+* The CouldNotSetAttributeError that you have probably seen is now called
+  AttributeChangedValueError.
+
 * Matchers now raise an error if any attributes that the matcher is attempting
   to set do not exist on the model.
-
-* Update `validate_numericality_of` so that submatchers are applied lazily
-  instead of immediately. Previously, qualifiers were order-dependent, meaning
-  that if you used `strict` before you used, say, `odd`, then `strict` wouldn't
-  actually apply to `odd`. Now the order that you specify qualifiers doesn't
-  matter.
 
 * Update `validate_numericality_of` so that it doesn't always run all of the
   submatchers, but stops on the first one that fails. Since failure messages
