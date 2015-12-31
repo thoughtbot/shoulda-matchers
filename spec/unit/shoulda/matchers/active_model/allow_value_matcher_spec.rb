@@ -435,7 +435,7 @@ invalid and to raise a validation exception with message matching
         it 'raises an AttributeChangedValueError' do
           model = define_active_model_class 'Example', accessors: [:name] do
             def name=(value)
-              unless value.nil?
+              if value
                 super(value)
               end
             end

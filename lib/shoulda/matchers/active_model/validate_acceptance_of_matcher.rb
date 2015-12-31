@@ -73,6 +73,39 @@ module Shoulda
       #         with_message('You must accept the terms of service')
       #     end
       #
+      # ##### ignoring_interference_by_writer
+      #
+      # Use `ignoring_interference_by_writer` when the attribute you're testing
+      # changes incoming values. This qualifier will instruct the matcher to
+      # suppress raising an AttributeValueChangedError, as long as changing the
+      # doesn't also change the outcome of the test and cause it to fail. See
+      # the documentation for `allow_value` for more information on this.
+      #
+      #     class Registration
+      #       include ActiveModel::Model
+      #       attr_accessor :terms_of_service
+      #
+      #       validates_acceptance_of :terms_of_service
+      #
+      #       def terms_of_service=(value)
+      #         @terms_of_service = value || 'something else'
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe Registration do
+      #       it do
+      #         should validate_acceptance_of(:terms_of_service).
+      #           ignoring_interference_by_writer
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class RegistrationTest < ActiveSupport::TestCase
+      #       should validate_acceptance_of(:terms_of_service).
+      #         ignoring_interference_by_writer
+      #     end
+      #
       # @return [ValidateAcceptanceOfMatcher]
       #
       def validate_acceptance_of(attr)

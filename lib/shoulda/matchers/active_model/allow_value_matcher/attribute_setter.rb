@@ -8,16 +8,23 @@ module Shoulda
             new(args).set
           end
 
-          attr_reader :result_of_checking, :result_of_setting,
-            :value_written
+          attr_reader(
+            :attribute_name,
+            :result_of_checking,
+            :result_of_setting,
+            :value_written,
+          )
 
           def initialize(args)
+            @args = args
             @matcher_name = args.fetch(:matcher_name)
             @object = args.fetch(:object)
             @attribute_name = args.fetch(:attribute_name)
             @value_written = args.fetch(:value)
-            @ignoring_interference_by_writer =
-              args.fetch(:ignoring_interference_by_writer, false)
+            @ignore_interference_by_writer = args.fetch(
+              :ignore_interference_by_writer,
+              Qualifiers::IgnoreInterferenceByWriter.new
+            )
             @after_set_callback = args.fetch(:after_set_callback, -> { })
 
             @result_of_checking = nil
@@ -125,10 +132,17 @@ module Shoulda
             set? && result_of_setting.successful?
           end
 
+          def value_read
+            @_value_read ||= object.public_send(attribute_name)
+          end
+
+          def attribute_changed_value?
+            value_written != value_read
+          end
+
           protected
 
-          attr_reader :matcher_name, :object, :attribute_name,
-            :after_set_callback
+          attr_reader :args, :matcher_name, :object, :after_set_callback
 
           private
 
@@ -144,22 +158,14 @@ module Shoulda
             end
           end
 
-          def attribute_changed_value?
-            value_written != value_read
-          end
-
-          def value_read
-            @_value_read ||= object.public_send(attribute_name)
-          end
-
-          def ignoring_interference_by_writer?
-            !!@ignoring_interference_by_writer
+          def ignore_interference_by_writer
+            @ignore_interference_by_writer
           end
 
           def raise_attribute_changed_value_error?
             attribute_changed_value? &&
               !(attribute_is_an_enum? && value_read_is_expected_for_an_enum?) &&
-              !ignoring_interference_by_writer?
+              !ignore_interference_by_writer.considering?(value_read)
           end
 
           def attribute_is_an_enum?

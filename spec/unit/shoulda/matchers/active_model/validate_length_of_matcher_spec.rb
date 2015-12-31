@@ -21,6 +21,44 @@ describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher, type: :model d
       expect(validating_length(minimum: 4)).
         to validate_length_of(:attr).is_at_least(4).with_short_message(nil)
     end
+
+    it_supports(
+      'ignoring_interference_by_writer',
+      tests: {
+        raise_if_not_qualified: {
+          changing_values_with: :upcase,
+        },
+        accept_if_qualified_but_changing_value_does_not_interfere: {
+          changing_values_with: :upcase,
+        },
+        reject_if_qualified_but_changing_value_interferes: {
+          model_name: 'Example',
+          attribute_name: :attr,
+          changing_values_with: :add_character,
+          expected_message: <<-MESSAGE.strip
+Example did not properly validate that the length of :attr is at least
+4.
+  After setting :attr to ‹"xxx"› -- which was read back as ‹"xxxa"› --
+  the matcher expected the Example to be invalid, but it was valid
+  instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+          MESSAGE
+        }
+      }
+    ) do
+      def validation_matcher_scenario_args
+        super.deep_merge(validation_options: { minimum: 4 })
+      end
+
+      def configure_validation_matcher(matcher)
+        matcher.is_at_least(4)
+      end
+    end
   end
 
   context 'an attribute with a minimum length validation of 0' do
@@ -50,6 +88,43 @@ describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher, type: :model d
       expect(validating_length(maximum: 4)).
         to validate_length_of(:attr).is_at_most(4).with_long_message(nil)
     end
+
+    it_supports(
+      'ignoring_interference_by_writer',
+      tests: {
+        raise_if_not_qualified: {
+          changing_values_with: :upcase,
+        },
+        accept_if_qualified_but_changing_value_does_not_interfere: {
+          changing_values_with: :upcase,
+        },
+        reject_if_qualified_but_changing_value_interferes: {
+          model_name: 'Example',
+          attribute_name: :attr,
+          changing_values_with: :remove_character,
+          expected_message: <<-MESSAGE.strip
+Example did not properly validate that the length of :attr is at most 4.
+  After setting :attr to ‹"xxxxx"› -- which was read back as ‹"xxxx"› --
+  the matcher expected the Example to be invalid, but it was valid
+  instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+          MESSAGE
+        }
+      }
+    ) do
+      def validation_matcher_scenario_args
+        super.deep_merge(validation_options: { maximum: 4 })
+      end
+
+      def configure_validation_matcher(matcher)
+        matcher.is_at_most(4)
+      end
+    end
   end
 
   context 'an attribute with a required exact length' do
@@ -71,6 +146,43 @@ describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher, type: :model d
     it 'does not override the default message with a blank' do
       expect(validating_length(is: 4)).
         to validate_length_of(:attr).is_equal_to(4).with_message(nil)
+    end
+
+    it_supports(
+      'ignoring_interference_by_writer',
+      tests: {
+        raise_if_not_qualified: {
+          changing_values_with: :upcase,
+        },
+        accept_if_qualified_but_changing_value_does_not_interfere: {
+          changing_values_with: :upcase,
+        },
+        reject_if_qualified_but_changing_value_interferes: {
+          model_name: 'Example',
+          attribute_name: :attr,
+          changing_values_with: :add_character,
+          expected_message: <<-MESSAGE.strip
+Example did not properly validate that the length of :attr is 4.
+  After setting :attr to ‹"xxx"› -- which was read back as ‹"xxxa"› --
+  the matcher expected the Example to be invalid, but it was valid
+  instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+          MESSAGE
+        }
+      }
+    ) do
+      def validation_matcher_scenario_args
+        super.deep_merge(validation_options: { is: 4 })
+      end
+
+      def configure_validation_matcher(matcher)
+        matcher.is_equal_to(4)
+      end
     end
   end
 
@@ -161,9 +273,25 @@ describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher, type: :model d
     end
   end
 
+  def define_model_validating_length(options = {})
+    options = options.dup
+    attribute_name = options.delete(:attribute_name) { :attr }
+
+    define_model(:example, attribute_name => :string) do |model|
+      model.validates_length_of(attribute_name, options)
+    end
+  end
+
   def validating_length(options = {})
-    define_model(:example, attr: :string) do
-      validates_length_of :attr, options
-    end.new
+    define_model_validating_length(options).new
+  end
+
+  alias_method :build_record_validating_length, :validating_length
+
+  def validation_matcher_scenario_args
+    super.deep_merge(
+      matcher_name: :validate_length_of,
+      model_creator: :active_model
+    )
   end
 end

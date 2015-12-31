@@ -13,21 +13,22 @@ module Shoulda
       #       include ActiveModel::Model
       #       attr_accessor :state
       #
-      #       validates_inclusion_of :state, in: %w(open resolved unresolved)
+      #       validates_inclusion_of :state,
+      #         in: ['open', 'resolved', 'unresolved']
       #     end
       #
       #     # RSpec
       #     describe Issue do
       #       it do
       #         should validate_inclusion_of(:state).
-      #           in_array(%w(open resolved unresolved))
+      #           in_array(['open', 'resolved', 'unresolved'])
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
       #     class IssueTest < ActiveSupport::TestCase
       #       should validate_inclusion_of(:state).
-      #         in_array(%w(open resolved unresolved))
+      #         in_array(['open', 'resolved', 'unresolved'])
       #     end
       #
       # If your whitelist is a range of values, use `in_range`:
@@ -57,7 +58,10 @@ module Shoulda
       # one of these three values. That means there isn't any way we can refute
       # this logic in a test. Hence, this will produce a warning:
       #
-      #     it { should validate_inclusion_of(:imported).in_array([true, false]) }
+      #     it do
+      #       should validate_inclusion_of(:imported).
+      #         in_array([true, false])
+      #     end
       #
       # The only case where `validate_inclusion_of` *could* be appropriate is
       # for ensuring that a boolean column accepts nil, but we recommend
@@ -205,7 +209,7 @@ module Shoulda
       #
       #       validates_presence_of :state
       #       validates_inclusion_of :state,
-      #         in: %w(open resolved unresolved),
+      #         in: ['open', 'resolved', 'unresolved'],
       #         allow_nil: true
       #     end
       #
@@ -213,7 +217,7 @@ module Shoulda
       #     describe Issue do
       #       it do
       #         should validate_inclusion_of(:state).
-      #           in_array(%w(open resolved unresolved)).
+      #           in_array(['open', 'resolved', 'unresolved']).
       #           allow_nil
       #       end
       #     end
@@ -221,7 +225,7 @@ module Shoulda
       #     # Minitest (Shoulda)
       #     class IssueTest < ActiveSupport::TestCase
       #       should validate_inclusion_of(:state).
-      #         in_array(%w(open resolved unresolved)).
+      #         in_array(['open', 'resolved', 'unresolved']).
       #         allow_nil
       #     end
       #
@@ -235,7 +239,7 @@ module Shoulda
       #
       #       validates_presence_of :state
       #       validates_inclusion_of :state,
-      #         in: %w(open resolved unresolved),
+      #         in: ['open', 'resolved', 'unresolved'],
       #         allow_blank: true
       #     end
       #
@@ -243,7 +247,7 @@ module Shoulda
       #     describe Issue do
       #       it do
       #         should validate_inclusion_of(:state).
-      #           in_array(%w(open resolved unresolved)).
+      #           in_array(['open', 'resolved', 'unresolved']).
       #           allow_blank
       #       end
       #     end
@@ -251,8 +255,44 @@ module Shoulda
       #     # Minitest (Shoulda)
       #     class IssueTest < ActiveSupport::TestCase
       #       should validate_inclusion_of(:state).
-      #         in_array(%w(open resolved unresolved)).
+      #         in_array(['open', 'resolved', 'unresolved']).
       #         allow_blank
+      #     end
+      #
+      # ##### ignoring_interference_by_writer
+      #
+      # Use `ignoring_interference_by_writer` when the attribute you're testing
+      # changes incoming values. This qualifier will instruct the matcher to
+      # suppress raising an AttributeValueChangedError, as long as changing the
+      # doesn't also change the outcome of the test and cause it to fail. See
+      # the documentation for `allow_value` for more information on this.
+      #
+      #     class Issue
+      #       include ActiveModel::Model
+      #       attr_accessor :state
+      #
+      #       validates_inclusion_of :state,
+      #         in: ['open', 'resolved', 'unresolved']
+      #
+      #       def state=(value)
+      #         @state = 'open'
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe Issue do
+      #       it do
+      #         should validate_inclusion_of(:state).
+      #           in_array(['open', 'resolved', 'unresolved']).
+      #           ignoring_interference_by_writer
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class IssueTest < ActiveSupport::TestCase
+      #       should validate_inclusion_of(:state).
+      #         in_array(['open', 'resolved', 'unresolved']).
+      #         ignoring_interference_by_writer
       #     end
       #
       # @return [ValidateInclusionOfMatcher]

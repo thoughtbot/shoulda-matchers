@@ -25,6 +25,7 @@ describe 'shoulda-matchers integrates with multiple libraries' do
 
     add_rspec_file 'spec/models/user_spec.rb', <<-FILE
       describe User do
+        subject { User.new(name: "John Smith") }
         it { should validate_presence_of(:name) }
         it { should validate_uniqueness_of(:name) }
       end

@@ -182,7 +182,7 @@ Example did not properly validate that :attr is case-sensitively unique.
     end
 
     context 'when a non-existent attribute is specified as a scope' do
-      context 'when there is one scope' do
+      context 'when there is more than one scope' do
         it 'rejects with an appropriate failure message (and does not raise an error)' do
           record = build_record_validating_uniqueness(
             scopes: [ build_attribute(name: :scope) ]
@@ -192,7 +192,7 @@ Example did not properly validate that :attr is case-sensitively unique.
             expect(record).to validate_uniqueness.scoped_to(:non_existent)
           end
 
-          message = <<-MESSAGE
+          message = <<-MESSAGE.strip
 Example did not properly validate that :attr is case-sensitively unique
 within the scope of :non_existent.
   :non_existent does not seem to be an attribute on Example.
@@ -202,7 +202,7 @@ within the scope of :non_existent.
         end
       end
 
-      context 'when there is more than scope' do
+      context 'when there is more than one scope' do
         it 'rejects with an appropriate failure message (and does not raise an error)' do
           record = build_record_validating_uniqueness(
             scopes: [ build_attribute(name: :scope) ]
@@ -215,7 +215,7 @@ within the scope of :non_existent.
             )
           end
 
-          message = <<-MESSAGE
+          message = <<-MESSAGE.strip
 Example did not properly validate that :attr is case-sensitively unique
 within the scope of :non_existent1 and :non_existent2.
   :non_existent1 and :non_existent2 do not seem to be attributes on
@@ -228,10 +228,10 @@ within the scope of :non_existent1 and :non_existent2.
     end
 
     define_method(:build_attribute) do |attribute_options|
-      attribute_options.merge(
+      attribute_options.deep_merge(
         column_type: column_type,
         value_type: value_type,
-        array: array
+        options: { array: array }
       )
     end
   end
@@ -338,6 +338,7 @@ within the scope of :other.
       context 'when no message is specified' do
         it 'rejects with an appropriate failure message' do
           record = build_record_validating_uniqueness(
+            attribute_value: 'some value',
             validation_options: { message: 'bad value' }
           )
 
@@ -347,12 +348,12 @@ within the scope of :other.
 
           message = <<-MESSAGE
 Example did not properly validate that :attr is case-sensitively unique.
-  After taking the given Example, setting its :attr to ‹"an arbitrary
-  value"›, and saving it as the existing record, then making a new
-  Example and setting its :attr to ‹"an arbitrary value"› as well, the
-  matcher expected the new Example to be invalid and to produce the
-  validation error "has already been taken" on :attr. The record was
-  indeed invalid, but it produced these validation errors instead:
+  After taking the given Example, whose :attr is ‹"some value"›, and
+  saving it as the existing record, then making a new Example and
+  setting its :attr to ‹"some value"› as well, the matcher expected the
+  new Example to be invalid and to produce the validation error "has
+  already been taken" on :attr. The record was indeed invalid, but it
+  produced these validation errors instead:
 
   * attr: ["bad value"]
           MESSAGE
@@ -365,6 +366,7 @@ Example did not properly validate that :attr is case-sensitively unique.
         context 'when the given and actual messages do not match' do
           it 'rejects with an appropriate failure message' do
             record = build_record_validating_uniqueness(
+              attribute_value: 'some value',
               validation_options: { message: 'something else entirely' }
             )
 
@@ -377,12 +379,12 @@ Example did not properly validate that :attr is case-sensitively unique.
             message = <<-MESSAGE
 Example did not properly validate that :attr is case-sensitively unique,
 producing a custom validation error on failure.
-  After taking the given Example, setting its :attr to ‹"an arbitrary
-  value"›, and saving it as the existing record, then making a new
-  Example and setting its :attr to ‹"an arbitrary value"› as well, the
-  matcher expected the new Example to be invalid and to produce the
-  validation error "some message" on :attr. The record was indeed
-  invalid, but it produced these validation errors instead:
+  After taking the given Example, whose :attr is ‹"some value"›, and
+  saving it as the existing record, then making a new Example and
+  setting its :attr to ‹"some value"› as well, the matcher expected the
+  new Example to be invalid and to produce the validation error "some
+  message" on :attr. The record was indeed invalid, but it produced
+  these validation errors instead:
 
   * attr: ["something else entirely"]
             MESSAGE
@@ -407,6 +409,7 @@ producing a custom validation error on failure.
         context 'when the given and actual messages do not match' do
           it 'rejects with an appropriate failure message' do
             record = build_record_validating_uniqueness(
+              attribute_value: 'some value',
               validation_options: { message: 'something else entirely' }
             )
 
@@ -419,12 +422,12 @@ producing a custom validation error on failure.
             message = <<-MESSAGE
 Example did not properly validate that :attr is case-sensitively unique,
 producing a custom validation error on failure.
-  After taking the given Example, setting its :attr to ‹"an arbitrary
-  value"›, and saving it as the existing record, then making a new
-  Example and setting its :attr to ‹"an arbitrary value"› as well, the
-  matcher expected the new Example to be invalid and to produce a
-  validation error matching ‹/some message/› on :attr. The record was
-  indeed invalid, but it produced these validation errors instead:
+  After taking the given Example, whose :attr is ‹"some value"›, and
+  saving it as the existing record, then making a new Example and
+  setting its :attr to ‹"some value"› as well, the matcher expected the
+  new Example to be invalid and to produce a validation error matching
+  ‹/some message/› on :attr. The record was indeed invalid, but it
+  produced these validation errors instead:
 
   * attr: ["something else entirely"]
             MESSAGE
@@ -445,6 +448,36 @@ producing a custom validation error on failure.
         end
       end
     end
+
+    it_supports(
+      'ignoring_interference_by_writer',
+      tests: {
+        raise_if_not_qualified: {
+          attribute_name: :attr,
+          changing_values_with: :next_value,
+        },
+        reject_if_qualified_but_changing_value_interferes: {
+          model_name: 'Example',
+          attribute_name: :attr,
+          default_value: 'some value',
+          changing_values_with: :next_value,
+          expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr is case-sensitively unique.
+  After taking the given Example, whose :attr is ‹"some valuf"›, and
+  saving it as the existing record, then making a new Example and
+  setting its :attr to ‹"some valuf"› (read back as ‹"some valug"›) as
+  well, the matcher expected the new Example to be invalid, but it was
+  valid instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+          MESSAGE
+        }
+      }
+    )
   end
 
   context 'when the model has a scoped uniqueness validation' do
@@ -662,6 +695,7 @@ within the scope of :scope1.
       it 'rejects with an appropriate failure message' do
         record = build_record_validating_uniqueness(
           attribute_type: :string,
+          attribute_value: 'some value',
           validation_options: { case_sensitive: true }
         )
 
@@ -672,11 +706,10 @@ within the scope of :scope1.
         message = <<-MESSAGE
 Example did not properly validate that :attr is case-insensitively
 unique.
-  After taking the given Example, setting its :attr to ‹"an arbitrary
-  value"›, and saving it as the existing record, then making a new
-  Example and setting its :attr to a different value, ‹"AN ARBITRARY
-  VALUE"›, the matcher expected the new Example to be invalid, but it
-  was valid instead.
+  After taking the given Example, whose :attr is ‹"some value"›, and
+  saving it as the existing record, then making a new Example and
+  setting its :attr to a different value, ‹"SOME VALUE"›, the matcher
+  expected the new Example to be invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -719,6 +752,45 @@ Example did not properly validate that :attr is case-sensitively unique.
         )
 
         expect(record).to validate_uniqueness.case_insensitive
+      end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          raise_if_not_qualified: {
+            attribute_name: :attr,
+            changing_values_with: :next_value,
+          },
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            default_value: 'some value',
+            changing_values_with: :next_value,
+            expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr is case-insensitively
+unique.
+  After taking the given Example, whose :attr is ‹"some valuf"›, and
+  saving it as the existing record, then making a new Example and
+  setting its :attr to ‹"some valuf"› (read back as ‹"some valug"›) as
+  well, the matcher expected the new Example to be invalid, but it was
+  valid instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      )
+
+      def validation_matcher_scenario_args
+        super.deep_merge(validation_options: { case_sensitive: false })
+      end
+
+      def configure_validation_matcher(matcher)
+        super(matcher).case_insensitive
       end
     end
   end
@@ -799,10 +871,10 @@ but only if it is not nil.
         message = <<-MESSAGE
 Example did not properly validate that :attr is case-sensitively unique,
 but only if it is not nil.
-  Given an existing Example whose :attr is ‹nil›, after making a new
-  Example and setting its :attr to ‹nil› as well, the matcher expected
-  the new Example to be valid, but it was invalid instead, producing
-  these validation errors:
+  Given an existing Example, after setting its :attr to ‹nil›, then
+  making a new Example and setting its :attr to ‹nil› as well, the
+  matcher expected the new Example to be valid, but it was invalid
+  instead, producing these validation errors:
 
   * attr: ["has already been taken"]
         MESSAGE
@@ -980,10 +1052,10 @@ but only if it is not blank.
         message = <<-MESSAGE
 Example did not properly validate that :attr is case-sensitively unique,
 but only if it is not blank.
-  Given an existing Example whose :attr is ‹""›, after making a new
-  Example and setting its :attr to ‹""› as well, the matcher expected
-  the new Example to be valid, but it was invalid instead, producing
-  these validation errors:
+  Given an existing Example, after setting its :attr to ‹""›, then
+  making a new Example and setting its :attr to ‹""› as well, the
+  matcher expected the new Example to be valid, but it was invalid
+  instead, producing these validation errors:
 
   * attr: ["has already been taken"]
         MESSAGE
@@ -1043,26 +1115,45 @@ but only if it is not blank.
     end
   end
 
+  context 'when the model does not have the attribute being tested' do
+    it 'fails with an appropriate failure message' do
+      model = define_model(:example)
+
+      assertion = lambda do
+        expect(model.new).to validate_uniqueness_of(:attr)
+      end
+
+      message = <<-MESSAGE.strip
+Example did not properly validate that :attr is case-sensitively unique.
+  :attr does not seem to be an attribute on Example.
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
+    end
+  end
+
   let(:model_attributes) { {} }
 
   def default_attribute
     {
       value_type: :string,
       column_type: :string,
-      array: false
+      options: { array: false, null: true }
     }
   end
 
   def normalize_attribute(attribute)
     if attribute.is_a?(Hash)
-      if attribute.key?(:type)
-        attribute[:value_type] = attribute[:type]
-        attribute[:column_type] = attribute[:type]
+      attribute_copy = attribute.dup
+
+      if attribute_copy.key?(:type)
+        attribute_copy[:value_type] = attribute_copy[:type]
+        attribute_copy[:column_type] = attribute_copy[:type]
       end
 
-      default_attribute.merge(attribute)
+      default_attribute.deep_merge(attribute_copy)
     else
-      default_attribute.merge(name: attribute)
+      default_attribute.deep_merge(name: attribute)
     end
   end
 
@@ -1074,15 +1165,10 @@ but only if it is not blank.
 
   def column_options_from(attributes)
     attributes.inject({}) do |options, attribute|
-      options_for_attribute = options[attribute[:name]] = {
+      options[attribute[:name]] = {
         type: attribute[:column_type],
         options: attribute.fetch(:options, {})
       }
-
-      if attribute[:array]
-        options_for_attribute[:options][:array] = attribute[:array]
-      end
-
       options
     end
   end
@@ -1090,10 +1176,14 @@ but only if it is not blank.
   def attributes_with_values_for(model)
     model_attributes[model].each_with_object({}) do |attribute, attrs|
       attrs[attribute[:name]] = attribute.fetch(:value) do
-        dummy_value_for(
-          attribute[:value_type],
-          array: attribute[:array]
-        )
+        if attribute[:options][:null]
+          nil
+        else
+          dummy_value_for(
+            attribute[:value_type],
+            array: attribute[:options][:array]
+          )
+        end
       end
     end
   end
@@ -1152,25 +1242,21 @@ but only if it is not blank.
     end
   end
 
-  def determine_scope_attribute_names_from(scope_attributes)
-    scope_attributes.map do |attribute|
-      if attribute.is_a?(Hash)
-        attribute[:name]
-      else
-        attribute
-      end
-    end
-  end
-
   def define_model_validating_uniqueness(options = {}, &block)
+    attribute_name = options.fetch(:attribute_name) { self.attribute_name }
     attribute_type = options.fetch(:attribute_type, :string)
     attribute_options = options.fetch(:attribute_options, {})
-    attribute = {
+    attribute = normalize_attribute(
       name: attribute_name,
       value_type: attribute_type,
       column_type: attribute_type,
       options: attribute_options
-    }
+    )
+
+    if options.key?(:attribute_value)
+      attribute[:value] = options[:attribute_value]
+    end
+
     scope_attributes = normalize_attributes(options.fetch(:scopes, []))
     scope_attribute_names = scope_attributes.map { |attr| attr[:name] }
     additional_attributes = normalize_attributes(
@@ -1238,5 +1324,12 @@ but only if it is not blank.
 
   def attribute_name
     :attr
+  end
+
+  def validation_matcher_scenario_args
+    super.deep_merge(
+      matcher_name: :validate_uniqueness_of,
+      model_creator: :"active_record/uniqueness_matcher"
+    )
   end
 end

@@ -27,6 +27,37 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :m
           with_message(nil)
       end
     end
+
+    it_supports(
+      'ignoring_interference_by_writer',
+      tests: {
+        raise_if_not_qualified: {
+          changing_values_with: :next_value,
+        },
+        reject_if_qualified_but_changing_value_interferes: {
+          model_name: 'Example',
+          attribute_name: :password,
+          changing_values_with: :next_value,
+          expected_message: <<-MESSAGE.strip
+Example did not properly validate that :password_confirmation matches
+:password.
+  After setting :password_confirmation to ‹"same value"›, then setting
+  :password to ‹"same value"› -- which was read back as ‹"same valuf"›
+  -- the matcher expected the Example to be valid, but it was invalid
+  instead, producing these validation errors:
+
+  * password_confirmation: ["doesn't match Password"]
+
+  As indicated in the message above, :password seems to be changing
+  certain values as they are set, and this could have something to do
+  with why this test is failing. If you've overridden the writer method
+  for this attribute, then you may need to change it to make this test
+  pass, or do something else entirely.
+          MESSAGE
+        },
+      },
+      model_creator: :active_model
+    )
   end
 
   context 'when the model does not have a confirmation attribute' do
@@ -113,5 +144,9 @@ Example did not properly validate that
       expect(builder.record).
         to validate_confirmation_of(builder.attribute_to_confirm)
     end
+  end
+
+  def validation_matcher_scenario_args
+    super.deep_merge(matcher_name: :validate_confirmation_of)
   end
 end

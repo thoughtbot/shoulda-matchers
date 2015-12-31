@@ -219,11 +219,13 @@ module Shoulda
           super(attribute)
           @expected_message = :taken
           @options = {}
-          @existing_record = nil
           @existing_record_created = false
-          @original_existing_value = nil
           @failure_reason = nil
           @failure_reason_when_negated = nil
+          @attribute_setters = {
+            existing_record: [],
+            new_record: []
+          }
         end
 
         def scoped_to(*scopes)
@@ -277,9 +279,10 @@ module Shoulda
           @all_records = model.all
 
           existing_record_valid? &&
+            validate_attribute_present? &&
             validate_scopes_present? &&
             scopes_match? &&
-            validate_everything_except_duplicate_nils_or_blanks? &&
+            validate_two_records_with_same_non_blank_value_cannot_coexist? &&
             validate_case_sensitivity? &&
             validate_after_scope_change? &&
             allows_nil? &&
@@ -307,7 +310,11 @@ module Shoulda
         private
 
         def new_record
-          @_new_record ||= build_new_record
+          unless defined?(@new_record)
+            build_new_record
+          end
+
+          @new_record
         end
         alias_method :subject, :new_record
 
@@ -362,7 +369,7 @@ module Shoulda
 
         def allows_nil?
           if expects_to_allow_nil?
-            update_existing_record(nil)
+            update_existing_record!(nil)
             allows_value_of(nil, @expected_message)
           else
             true
@@ -371,7 +378,7 @@ module Shoulda
 
         def allows_blank?
           if expects_to_allow_blank?
-            update_existing_record('')
+            update_existing_record!('')
             allows_value_of('', @expected_message)
           else
             true
@@ -383,64 +390,57 @@ module Shoulda
             true
           else
             @failure_reason =
-              "Given record could not be set to #{value.inspect}: " +
-              existing_record.errors.full_messages
+              "The record you provided could not be created, " +
+              "as it failed with the following validation errors:\n\n" +
+              format_validation_errors(existing_record.errors)
             false
           end
         end
 
         def existing_record
-          @existing_record ||= find_or_create_existing_record
+          unless defined?(@existing_record)
+            find_or_create_existing_record
+          end
+
+          @existing_record
         end
 
         def find_or_create_existing_record
-          if find_existing_record
-            find_existing_record
-          else
-            create_existing_record.tap do |existing_record|
-              @existing_record_created = true
-            end
+          @existing_record = find_existing_record
+
+          unless @existing_record
+            @existing_record = create_existing_record
+            @existing_record_created = true
           end
         end
 
         def find_existing_record
           record = model.first
 
-          if valid_existing_record?(record)
-            record.tap do |existing_record|
-              @original_existing_value = existing_record.public_send(@attribute)
-            end
+          if record.present?
+            record
           else
             nil
           end
         end
 
-        def valid_existing_record?(record)
-          record.present? &&
-            record_has_nil_when_required?(record) &&
-            record_has_blank_when_required?(record)
-        end
-
-        def record_has_nil_when_required?(record)
-          !expects_to_allow_nil? || record.public_send(@attribute).nil?
-        end
-
-        def record_has_blank_when_required?(record)
-          !expects_to_allow_blank? ||
-            record.public_send(@attribute).to_s.strip.empty?
-        end
-
         def create_existing_record
           @given_record.tap do |existing_record|
-            @original_existing_value = value = arbitrary_non_blank_value
-            existing_record.public_send("#{@attribute}=", value)
             ensure_secure_password_set(existing_record)
             existing_record.save
           end
         end
 
-        def update_existing_record(value)
-          existing_record.update_column(attribute, value)
+        def update_existing_record!(value)
+          if existing_value_read != value
+            set_attribute_on!(
+              :existing_record,
+              existing_record,
+              @attribute,
+              value
+            )
+            existing_record.save!
+          end
         end
 
         def ensure_secure_password_set(instance)
@@ -468,15 +468,25 @@ module Shoulda
         end
 
         def build_new_record
-          existing_record.dup.tap do |new_record|
-            new_record.public_send("#{@attribute}=", existing_value)
+          @new_record = existing_record.dup
 
-            expected_scopes.each do |scope|
-              new_record.public_send(
-                "#{scope}=",
-                existing_record.public_send(scope)
-              )
-            end
+          attribute_names_under_test.each do |attribute_name|
+            set_attribute_on_new_record!(
+              attribute_name,
+              existing_record.public_send(attribute_name)
+            )
+          end
+
+          @new_record
+        end
+
+        def validate_attribute_present?
+          if model.method_defined?("#{attribute}=")
+            true
+          else
+            @failure_reason =
+              ":#{attribute} does not seem to be an attribute on #{model.name}."
+            false
           end
         end
 
@@ -486,9 +496,9 @@ module Shoulda
           else
             reason = ''
 
-            reason << inspected_missing_scopes.to_sentence
+            reason << inspected_scopes_missing_on_model.to_sentence
 
-            if inspected_missing_scopes.many?
+            if inspected_scopes_missing_on_model.many?
               reason << " do not seem to be attributes"
             else
               reason << " does not seem to be an attribute"
@@ -503,29 +513,29 @@ module Shoulda
         end
 
         def all_scopes_present_on_model?
-          missing_scopes.none?
+          scopes_missing_on_model.none?
         end
 
-        def missing_scopes
+        def scopes_missing_on_model
           @_missing_scopes ||= expected_scopes.select do |scope|
-            !@given_record.respond_to?("#{scope}=")
+            !model.method_defined?("#{scope}=")
           end
         end
 
-        def inspected_missing_scopes
-          missing_scopes.map(&:inspect)
+        def inspected_scopes_missing_on_model
+          scopes_missing_on_model.map(&:inspect)
         end
 
-        def validate_everything_except_duplicate_nils_or_blanks?
-          if existing_value.nil? || (expects_to_allow_blank? && existing_value.blank?)
-            update_existing_record(arbitrary_non_blank_value)
+        def validate_two_records_with_same_non_blank_value_cannot_coexist?
+          if existing_value_read.blank?
+            update_existing_record!(arbitrary_non_blank_value)
           end
 
-          disallows_value_of(existing_value, @expected_message)
+          disallows_value_of(existing_value_read, @expected_message)
         end
 
         def validate_case_sensitivity?
-          value = existing_value
+          value = existing_value_read
 
           if value.respond_to?(:swapcase) && !value.empty?
             swapcased_value = value.swapcase
@@ -568,10 +578,10 @@ module Shoulda
                   next_value_for(scope, previous_value)
                 end
 
-              new_record.public_send("#{scope}=", next_value)
+              set_attribute_on_new_record!(scope, next_value)
 
-              if allows_value_of(existing_value, @expected_message)
-                new_record.public_send("#{scope}=", previous_value)
+              if allows_value_of(existing_value_read, @expected_message)
+                set_attribute_on_new_record!(scope, previous_value)
                 true
               else
                 false
@@ -648,12 +658,63 @@ module Shoulda
           end
         end
 
-        def existing_value
+        def set_attribute_on!(record_type, record, attribute_name, value)
+          attribute_setter = build_attribute_setter(
+            record,
+            attribute_name,
+            value
+          )
+          attribute_setter.set!
+
+          @attribute_setters[record_type] << attribute_setter
+        end
+
+        def set_attribute_on_existing_record!(attribute_name, value)
+          set_attribute_on!(
+            :existing_record,
+            existing_record,
+            attribute_name,
+            value
+          )
+        end
+
+        def set_attribute_on_new_record!(attribute_name, value)
+          set_attribute_on!(
+            :new_record,
+            new_record,
+            attribute_name,
+            value
+          )
+        end
+
+        def attribute_setter_for_existing_record
+          @attribute_setters[:existing_record].last
+        end
+
+        def attribute_names_under_test
+          [@attribute] + expected_scopes
+        end
+
+        def build_attribute_setter(record, attribute_name, value)
+          Shoulda::Matchers::ActiveModel::AllowValueMatcher::AttributeSetter.new(
+            matcher_name: :validate_uniqueness_of,
+            object: record,
+            attribute_name: attribute_name,
+            value: value,
+            ignore_interference_by_writer: ignore_interference_by_writer
+          )
+        end
+
+        def existing_value_read
           existing_record.public_send(@attribute)
         end
 
-        def model
-          @given_record.class
+        def existing_value_written
+          if attribute_setter_for_existing_record
+            attribute_setter_for_existing_record.value_written
+          else
+            existing_value_read
+          end
         end
 
         def column_for(scope)
@@ -664,45 +725,89 @@ module Shoulda
           column_for(attribute).try(:limit)
         end
 
+        def model
+          @given_record.class
+        end
+
         def failure_message_preface
           prefix = ''
 
           if @existing_record_created
-            prefix << "After taking the given #{model.name},"
-            prefix << " setting its :#{attribute} to "
-            prefix << Shoulda::Matchers::Util.inspect_value(existing_value)
-            prefix << ", and saving it as the existing record,"
-            prefix << " then"
-          elsif @original_existing_value != existing_value
-            prefix << "Given an existing #{model.name},"
-            prefix << " after setting its :#{attribute} to "
-            prefix << Shoulda::Matchers::Util.inspect_value(existing_value)
-            prefix << ", then"
+            prefix << "After taking the given #{model.name}"
+
+            if attribute_setter_for_existing_record
+              prefix << ', setting its '
+              prefix << description_for_attribute_setter(
+                attribute_setter_for_existing_record
+              )
+            else
+              prefix << ", whose :#{attribute} is "
+              prefix << "‹#{existing_value_read.inspect}›"
+            end
+
+            prefix << ", and saving it as the existing record, then"
           else
-            prefix << "Given an existing #{model.name} whose :#{attribute}"
-            prefix << " is "
-            prefix << Shoulda::Matchers::Util.inspect_value(existing_value)
-            prefix << ", after"
+            if attribute_setter_for_existing_record
+              prefix << "Given an existing #{model.name},"
+              prefix << ' after setting its '
+              prefix << description_for_attribute_setter(
+                attribute_setter_for_existing_record
+              )
+              prefix << ', then'
+            else
+              prefix << "Given an existing #{model.name} whose :#{attribute}"
+              prefix << ' is '
+              prefix << Shoulda::Matchers::Util.inspect_value(
+                existing_value_read
+              )
+              prefix << ', after'
+            end
           end
 
-          prefix << " making a new #{model.name} and setting its"
-          prefix << " :#{attribute} to "
+          prefix << " making a new #{model.name} and setting its "
 
-          if last_value_set_on_new_record == existing_value
-            prefix << Shoulda::Matchers::Util.inspect_value(
-              last_value_set_on_new_record
-            )
-            prefix << " as well"
-          else
-            prefix << " a different value, "
-            prefix << Shoulda::Matchers::Util.inspect_value(
-              last_value_set_on_new_record
-            )
-          end
+          prefix << description_for_attribute_setter(
+            last_attribute_setter_used_on_new_record,
+            same_as_existing: existing_and_new_values_are_same?
+          )
 
           prefix << ", the matcher expected the new #{model.name} to be"
 
           prefix
+        end
+
+        def description_for_attribute_setter(attribute_setter, same_as_existing: nil)
+          description = ":#{attribute_setter.attribute_name} to "
+
+          if same_as_existing == false
+            description << 'a different value, '
+          end
+
+          description << Shoulda::Matchers::Util.inspect_value(
+            attribute_setter.value_written
+          )
+
+          if attribute_setter.attribute_changed_value?
+            description << ' (read back as '
+            description << Shoulda::Matchers::Util.inspect_value(
+              attribute_setter.value_read
+            )
+            description << ')'
+          end
+
+          if same_as_existing == true
+            description << ' as well'
+          end
+
+          description
+        end
+
+        def existing_and_new_values_are_same?
+          last_value_set_on_new_record == existing_value_written
+        end
+
+        def last_attribute_setter_used_on_new_record
+          last_submatcher_run.last_attribute_setter_used
         end
 
         def last_value_set_on_new_record
