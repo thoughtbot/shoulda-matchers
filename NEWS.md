@@ -7,6 +7,20 @@
   (You'll see a huge difference in the output of the numericality and uniqueness
   matchers in particular.)
 
+* Matchers now raise an error if any attributes that the matcher is attempting
+  to set do not exist on the model.
+
+* Update `validate_numericality_of` so that submatchers are applied lazily
+  instead of immediately. Previously, qualifiers were order-dependent, meaning
+  that if you used `strict` before you used, say, `odd`, then `strict` wouldn't
+  actually apply to `odd`. Now the order that you specify qualifiers doesn't
+  matter.
+
+* Update `validate_numericality_of` so that it doesn't always run all of the
+  submatchers, but stops on the first one that fails. Since failure messages
+  now contain information as to what value the matcher set on the attribute when
+  it failed, this change guarantees that the correct value will be shown.
+
 # 3.0.1
 
 ### Bug fixes
