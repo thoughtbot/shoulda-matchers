@@ -279,7 +279,7 @@ module Shoulda
       #
       # Use `allow_nil` to assert that the attribute allows nil.
       #
-      #     class Age
+      #     class Post
       #       include ActiveModel::Model
       #       attr_accessor :age
       #
@@ -296,6 +296,39 @@ module Shoulda
       #       should validate_numericality_of(:age).allow_nil
       #     end
       #
+      # ##### ignoring_interference_by_writer
+      #
+      # Use `ignoring_interference_by_writer` when the attribute you're testing
+      # changes incoming values. This qualifier will instruct the matcher to
+      # suppress raising an AttributeValueChangedError, as long as changing the
+      # doesn't also change the outcome of the test and cause it to fail. See
+      # the documentation for `allow_value` for more information on this.
+      #
+      # Here, `gpa` is an integer column, so it will typecast all values to
+      # integers. We need to use `ignoring_interference_by_writer` because the
+      # `only_integer` qualifier will attempt to set `gpa` to a float and assert
+      # that it makes the record invalid.
+      #
+      #     class Person < ActiveRecord::Base
+      #       validates_numericality_of :gpa, only_integer: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Person do
+      #       it do
+      #         should validate_numericality_of(:gpa).
+      #           only_integer.
+      #           ignoring_interference_by_writer
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_numericality_of(:gpa).
+      #         only_integer.
+      #         ignoring_interference_by_writer
+      #     end
+      #
       # @return [ValidateNumericalityOfMatcher]
       #
       def validate_numericality_of(attr)
@@ -308,9 +341,12 @@ module Shoulda
         NON_NUMERIC_VALUE = 'abcd'
         DEFAULT_DIFF_TO_COMPARE = 1
 
+        include Qualifiers::IgnoringInterferenceByWriter
+
         attr_reader :diff_to_compare
 
         def initialize(attribute)
+          super
           @attribute = attribute
           @submatchers = []
           @diff_to_compare = DEFAULT_DIFF_TO_COMPARE
@@ -541,6 +577,10 @@ module Shoulda
             if @context
               submatcher.on(@context)
             end
+
+            submatcher.ignoring_interference_by_writer(
+              ignore_interference_by_writer
+            )
           end
         end
 

@@ -12,6 +12,12 @@
   (formerly CouldNotSetAttributeError) when used against an attribute that is an
   enum in an ActiveRecord model.
 
+### Features
+
+* Add `ignoring_interference_by_writer` to all matchers, not just `allow_value`.
+  This makes it possible to get around CouldNotSetAttributeErrors that you are
+  probably used to seeing.
+
 ### Improvements
 
 * Improve failure messages and descriptions of all matchers across the board so

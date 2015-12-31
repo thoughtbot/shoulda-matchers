@@ -3,13 +3,20 @@ module Shoulda
     module ActiveModel
       # @private
       class ValidationMatcher
+        include Qualifiers::IgnoringInterferenceByWriter
+
         def initialize(attribute)
+          super
           @attribute = attribute
           @expects_strict = false
           @subject = nil
           @last_submatcher_run = nil
           @expected_message = nil
           @expects_custom_validation_message = false
+        end
+
+        def description
+          ValidationMatcher::BuildDescription.call(self, simple_description)
         end
 
         def on(context)
@@ -26,11 +33,6 @@ module Shoulda
           @expects_strict
         end
 
-        def matches?(subject)
-          @subject = subject
-          false
-        end
-
         def with_message(expected_message)
           if expected_message
             @expects_custom_validation_message = true
@@ -44,8 +46,9 @@ module Shoulda
           @expects_custom_validation_message
         end
 
-        def description
-          ValidationMatcher::BuildDescription.call(self, simple_description)
+        def matches?(subject)
+          @subject = subject
+          false
         end
 
         def failure_message
@@ -139,7 +142,8 @@ module Shoulda
             for(attribute).
             with_message(message).
             on(context).
-            strict(expects_strict?)
+            strict(expects_strict?).
+            ignoring_interference_by_writer(ignore_interference_by_writer)
 
           yield matcher if block_given?
 

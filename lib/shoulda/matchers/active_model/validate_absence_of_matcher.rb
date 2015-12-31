@@ -4,21 +4,21 @@ module Shoulda
       # The `validate_absence_of` matcher tests the usage of the
       # `validates_absence_of` validation.
       #
-      #     class Artillery
+      #     class PowerHungryCountry
       #       include ActiveModel::Model
-      #       attr_accessor :arms
+      #       attr_accessor :nuclear_weapons
       #
-      #       validates_absence_of :arms
+      #       validates_absence_of :nuclear_weapons
       #     end
       #
       #     # RSpec
-      #     describe Artillery do
-      #       it { should validate_absence_of(:arms) }
+      #     describe PowerHungryCountry do
+      #       it { should validate_absence_of(:nuclear_weapons) }
       #     end
       #
       #     # Minitest (Shoulda)
-      #     class ArtilleryTest < ActiveSupport::TestCase
-      #       should validate_absence_of(:arms)
+      #     class PowerHungryCountryTest < ActiveSupport::TestCase
+      #       should validate_absence_of(:nuclear_weapons)
       #     end
       #
       # #### Qualifiers
@@ -27,47 +27,80 @@ module Shoulda
       #
       # Use `on` if your validation applies only under a certain context.
       #
-      #     class Artillery
+      #     class PowerHungryCountry
       #       include ActiveModel::Model
-      #       attr_accessor :arms
+      #       attr_accessor :nuclear_weapons
       #
-      #       validates_absence_of :arms, on: :create
+      #       validates_absence_of :nuclear_weapons, on: :create
       #     end
       #
       #     # RSpec
-      #     describe Artillery do
-      #       it { should validate_absence_of(:arms).on(:create) }
+      #     describe PowerHungryCountry do
+      #       it { should validate_absence_of(:nuclear_weapons).on(:create) }
       #     end
       #
       #     # Minitest (Shoulda)
-      #     class ArtilleryTest < ActiveSupport::TestCase
-      #       should validate_absence_of(:arms).on(:create)
+      #     class PowerHungryCountryTest < ActiveSupport::TestCase
+      #       should validate_absence_of(:nuclear_weapons).on(:create)
       #     end
       #
       # ##### with_message
       #
       # Use `with_message` if you are using a custom validation message.
       #
-      #     class Artillery
+      #     class PowerHungryCountry
       #       include ActiveModel::Model
-      #       attr_accessor :arms
+      #       attr_accessor :nuclear_weapons
       #
-      #       validates_absence_of :arms,
-      #         message: "We're fresh outta arms here, soldier!"
+      #       validates_absence_of :nuclear_weapons,
+      #         message: "there shall be peace on Earth"
       #     end
       #
       #     # RSpec
-      #     describe Artillery do
+      #     describe PowerHungryCountry do
       #       it do
-      #         should validate_absence_of(:arms).
-      #           with_message("We're fresh outta arms here, soldier!")
+      #         should validate_absence_of(:nuclear_weapons).
+      #           with_message("there shall be peace on Earth")
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
-      #     class ArtilleryTest < ActiveSupport::TestCase
-      #       should validate_absence_of(:arms).
-      #         with_message("We're fresh outta arms here, soldier!")
+      #     class PowerHungryCountryTest < ActiveSupport::TestCase
+      #       should validate_absence_of(:nuclear_weapons).
+      #         with_message("there shall be peace on Earth")
+      #     end
+      #
+      # ##### ignoring_interference_by_writer
+      #
+      # Use `ignoring_interference_by_writer` when the attribute you're testing
+      # changes incoming values. This qualifier will instruct the matcher to
+      # suppress raising an AttributeValueChangedError, as long as changing the
+      # doesn't also change the outcome of the test and causes it to fail. See
+      # the documentation for `allow_value` for more information on this.
+      #
+      #     class PowerHungryCountry
+      #       include ActiveModel::Model
+      #       attr_accessor :nuclear_weapons
+      #
+      #       validates_absence_of :nuclear_weapons
+      #
+      #       def nuclear_weapons=(value)
+      #         @nuclear_weapons = value + [:hidden_weapon]
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe PowerHungryCountry do
+      #       it do
+      #         should validate_absence_of(:nuclear_weapons).
+      #           ignoring_interference_by_writer
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PowerHungryCountryTest < ActiveSupport::TestCase
+      #       should validate_absence_of(:nuclear_weapons).
+      #         ignoring_interference_by_writer
       #     end
       #
       # @return [ValidateAbsenceOfMatcher}

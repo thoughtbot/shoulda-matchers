@@ -433,11 +433,11 @@ invalid and to raise a validation exception with message matching
 
       context 'when the attribute cannot be changed from non-nil to nil' do
         it 'raises an AttributeChangedValueError' do
-          model = define_active_model_class 'Example' do
-            attr_reader :name
-
+          model = define_active_model_class 'Example', accessors: [:name] do
             def name=(value)
-              @name = value unless value.nil?
+              if value
+                super(value)
+              end
             end
           end
 

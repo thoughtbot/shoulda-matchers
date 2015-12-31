@@ -58,7 +58,7 @@ module Shoulda
       # #### Caveats
       #
       # When using `allow_value` or any matchers that depend on it, you may
-      # encounter a CouldNotSetAttributeError. This exception is raised if the
+      # encounter an AttributeChangedValueError. This exception is raised if the
       # matcher, in attempting to set a value on the attribute, detects that
       # the value set is different from the value that the attribute returns
       # upon reading it back.
@@ -86,7 +86,7 @@ module Shoulda
       #           it do
       #             foo = Foo.new
       #             foo.bar = "baz"
-      #             # This will raise a CouldNotSetAttributeError since `foo.bar` is now "123"
+      #             # This will raise an AttributeChangedValueError since `foo.bar` is now "123"
       #             expect(foo).not_to allow_value(nil).for(:bar)
       #           end
       #         end
@@ -108,7 +108,7 @@ module Shoulda
       #         describe Foo do
       #           it do
       #             foo = Foo.new
-      #             # This will raise a CouldNotSetAttributeError since `foo.bar` is now "123"
+      #             # This will raise an AttributeChangedValueError since `foo.bar` is now "123"
       #             expect(foo).not_to allow_value("abc123").for(:bar)
       #           end
       #         end
@@ -118,15 +118,13 @@ module Shoulda
       #
       #         describe Foo do
       #           # Assume that `attr` is a string
-      #           # This will raise a CouldNotSetAttributeError since `attr` typecasts `[]` to `"[]"`
+      #           # This will raise an AttributeChangedValueError since `attr` typecasts `[]` to `"[]"`
       #           it { should_not allow_value([]).for(:attr) }
       #         end
       #
-      # So when you encounter this exception, you have a couple of options:
-      #
-      # * If you understand the problem and wish to override this behavior to
-      #   get around this exception, you can add the
-      #   `ignoring_interference_by_writer` qualifier like so:
+      # Fortunately, if you understand why this is happening, and wish to get
+      # around this exception, it is possible to do so. You can use the
+      # `ignoring_interference_by_writer` qualifier like so:
       #
       #         it do
       #           should_not allow_value([]).
@@ -134,16 +132,11 @@ module Shoulda
       #             ignoring_interference_by_writer
       #         end
       #
-      # * Note, however, that the above option will not always cause the test to
-      #   pass. In this case, this is telling you that you don't need to use
-      #   `allow_value`, or quite possibly even the validation that you're
-      #   testing altogether. In any case, we would probably make the argument
-      #   that since it's clear that something is responsible for sanitizing
-      #   incoming data before it's stored in your model, there's no need to
-      #   ensure that sanitization places the model in a valid state, if such
-      #   sanitization creates valid data. In terms of testing, the sanitization
-      #   code should probably be tested, but not the effects of that
-      #   sanitization on the validness of the model.
+      # Please note, however, that this qualifier won't magically cause your
+      # test to pass. It may just so happen that the final value that ends up
+      # being set causes the model to fail validation. In that case, you'll have
+      # to figure out what to do. You may need to write your own test, or
+      # perhaps even remove your test altogether.
       #
       # #### Qualifiers
       #
@@ -274,9 +267,9 @@ module Shoulda
       #
       # ##### ignoring_interference_by_writer
       #
-      # Use `ignoring_interference_by_writer` if you've encountered a
-      # CouldNotSetAttributeError and wish to ignore it. Please read the Caveats
-      # section above for more information.
+      # Use `ignoring_interference_by_writer` to bypass an
+      # AttributeChangedValueError that you have encountered. Please read the
+      # Caveats section above for more information.
       #
       #     class Address < ActiveRecord::Base
       #       # Address has a zip_code field which is a string
@@ -286,16 +279,16 @@ module Shoulda
       #     describe Address do
       #       it do
       #         should_not allow_value([]).
-      #         for(:zip_code).
-      #         ignoring_interference_by_writer
+      #           for(:zip_code).
+      #           ignoring_interference_by_writer
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
       #     class AddressTest < ActiveSupport::TestCase
       #       should_not allow_value([]).
-      #       for(:zip_code).
-      #       ignoring_interference_by_writer
+      #         for(:zip_code).
+      #         ignoring_interference_by_writer
       #     end
       #
       # @return [AllowValueMatcher]
@@ -313,6 +306,7 @@ module Shoulda
       # @private
       class AllowValueMatcher
         include Helpers
+        include Qualifiers::IgnoringInterferenceByWriter
 
         attr_reader(
           :after_setting_value_callback,
@@ -325,10 +319,10 @@ module Shoulda
         attr_writer :failure_message_preface, :values_to_preset
 
         def initialize(*values)
+          super
           @values_to_set = values
           @options = {}
           @after_setting_value_callback = -> {}
-          @ignoring_interference_by_writer = false
           @expects_strict = false
           @expects_custom_validation_message = false
           @context = nil
@@ -387,15 +381,6 @@ module Shoulda
           @expects_strict
         end
 
-        def ignoring_interference_by_writer(value = true)
-          @ignoring_interference_by_writer = value
-          self
-        end
-
-        def ignoring_interference_by_writer?
-          @ignoring_interference_by_writer
-        end
-
         def _after_setting_value(&callback)
           @after_setting_value_callback = callback
         end
@@ -430,6 +415,10 @@ module Shoulda
               message << " producing these validation errors:\n\n"
               message << validator.all_formatted_validation_error_messages
             end
+          end
+
+          if include_attribute_changed_value_message?
+            message << "\n\n" + attribute_changed_value_message
           end
 
           Shoulda::Matchers.word_wrap(message)
@@ -497,7 +486,21 @@ module Shoulda
             end
           end
 
+          if include_attribute_changed_value_message?
+            message << "\n\n" + attribute_changed_value_message
+          end
+
           Shoulda::Matchers.word_wrap(message)
+        end
+
+        def attribute_changed_value_message
+          <<-MESSAGE.strip
+As indicated in the message above, :#{result.attribute_setter.attribute_name}
+seems to be changing certain values as they are set, and this could have
+something to do with why this test is failing. If you've overridden the writer
+method for this attribute, then you may need to change it to make this test
+pass, or do something else entirely.
+          MESSAGE
         end
 
         def description
@@ -512,8 +515,12 @@ module Shoulda
           instance.class
         end
 
+        def last_attribute_setter_used
+          result.attribute_setter
+        end
+
         def last_value_set
-          result.attribute_setter.value_written
+          last_attribute_setter_used.value_written
         end
 
         protected
@@ -577,6 +584,11 @@ module Shoulda
               self,
               values_to_set.map { |value| [attribute_to_set, value] }
             )
+        end
+
+        def include_attribute_changed_value_message?
+          !ignore_interference_by_writer.never? &&
+            result.attribute_setter.attribute_changed_value?
         end
 
         def inspected_values_to_set
