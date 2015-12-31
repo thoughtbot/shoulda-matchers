@@ -556,7 +556,7 @@ invalid and to raise a validation exception with message matching
         end
 
         message = <<-MESSAGE.rstrip
-The matcher attempted to set :nonexistent to "foo" on the Example, but
+The matcher attempted to set :nonexistent on the Example to "foo", but
 that attribute does not exist.
         MESSAGE
 
@@ -576,7 +576,7 @@ that attribute does not exist.
         end
 
         message = <<-MESSAGE.rstrip
-The matcher attempted to set :nonexistent to "foo" on the Example, but
+The matcher attempted to set :nonexistent on the Example to "foo", but
 that attribute does not exist.
         MESSAGE
 
@@ -603,8 +603,8 @@ that attribute does not exist.
           end
 
           message = <<-MESSAGE.rstrip
-The matcher attempted to set :nonexistent to "some value" on the
-Example, but that attribute does not exist.
+The matcher attempted to set :nonexistent on the Example to "some
+value", but that attribute does not exist.
         MESSAGE
 
           expect(&assertion).to raise_error(
@@ -629,8 +629,8 @@ Example, but that attribute does not exist.
           end
 
           message = <<-MESSAGE.rstrip
-The matcher attempted to set :nonexistent to "some value" on the
-Example, but that attribute does not exist.
+The matcher attempted to set :nonexistent on the Example to "some
+value", but that attribute does not exist.
         MESSAGE
 
           expect(&assertion).to raise_error(

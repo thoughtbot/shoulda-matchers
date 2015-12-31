@@ -38,8 +38,8 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :m
       end
 
       message = <<-MESSAGE.rstrip
-The matcher attempted to set :attribute_to_confirm_confirmation to "some
-value" on the Example, but that attribute does not exist.
+The matcher attempted to set :attribute_to_confirm_confirmation on the
+Example to "some value", but that attribute does not exist.
       MESSAGE
 
       expect(&assertion).to raise_error(
@@ -58,8 +58,8 @@ value" on the Example, but that attribute does not exist.
       end
 
       message = <<-MESSAGE.rstrip
-The matcher attempted to set :attribute_to_confirm to "different value"
-on the Example, but that attribute does not exist.
+The matcher attempted to set :attribute_to_confirm on the Example to
+"different value", but that attribute does not exist.
       MESSAGE
 
       expect(&assertion).to raise_error(
