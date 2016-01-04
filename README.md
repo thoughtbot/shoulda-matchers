@@ -129,8 +129,8 @@ different levels where you can use these matchers:
   groups, i.e., those tagged with `type: :model` or in files located under
   `spec/models`.
 * ActionController matchers are available only in controller example groups,
-   i.e., those tagged with `type: :controller` or in files located under
-   `spec/controllers`.
+  i.e., those tagged with `type: :controller` or in files located under
+  `spec/controllers`.
 * The `route` matcher is available also in routing example groups, i.e., those
   tagged with `type: :routing` or in files located under `spec/routing`.
 * Independent matchers are available in all example groups.
@@ -172,8 +172,8 @@ end
 
 Shoulda Matchers was originally a component of [Shoulda][shoulda], a gem that
 also provides `should` and `context` syntax via
-[`shoulda-context`][shoulda-context]. For this reason you'll want to include this
-gem in your Gemfile instead:
+[`shoulda-context`][shoulda-context]. For this reason you'll want to include
+this gem in your Gemfile instead:
 
 ```ruby
 group :test do
@@ -200,7 +200,8 @@ Before you can use Shoulda Matchers, you'll need to tell it a couple of things:
 * Which portion of the matchers you want to use
 
 You can supply this information by using a configuration block. Place the
-following in your test or spec helper:
+following in `rails_helper.rb` (if you're using RSpec) or `test_helper.rb` (if
+you're using Minitest):
 
 ``` ruby
 Shoulda::Matchers.configure do |config|
@@ -294,7 +295,7 @@ pull request.
 ## Compatibility
 
 Shoulda Matchers is tested and supported against Rails 4.x, RSpec 3.x, Minitest
-5, and Ruby 2.x.
+5, Minitest 4, and Ruby 2.x.
 
 ## Versioning
 
@@ -303,7 +304,7 @@ Shoulda Matchers follows Semantic Versioning 2.0 as defined at
 
 ## License
 
-Shoulda Matchers is copyright © 2006-2015
+Shoulda Matchers is copyright © 2006-2016
 [thoughtbot, inc](https://thoughtbot.com/). It is free software,
 and may be redistributed under the terms specified in the
 [MIT-LICENSE](MIT-LICENSE) file.
