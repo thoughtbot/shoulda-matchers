@@ -452,10 +452,6 @@ producing a custom validation error on failure.
     it_supports(
       'ignoring_interference_by_writer',
       tests: {
-        raise_if_not_qualified: {
-          attribute_name: :attr,
-          changing_values_with: :next_value,
-        },
         reject_if_qualified_but_changing_value_interferes: {
           model_name: 'Example',
           attribute_name: :attr,
@@ -757,10 +753,6 @@ Example did not properly validate that :attr is case-sensitively unique.
       it_supports(
         'ignoring_interference_by_writer',
         tests: {
-          raise_if_not_qualified: {
-            attribute_name: :attr,
-            changing_values_with: :next_value,
-          },
           reject_if_qualified_but_changing_value_interferes: {
             model_name: 'Example',
             attribute_name: :attr,

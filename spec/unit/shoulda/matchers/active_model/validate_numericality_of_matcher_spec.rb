@@ -130,9 +130,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
       it_supports(
         'ignoring_interference_by_writer',
         tests: {
-          raise_if_not_qualified: {
-            changing_values_with: :next_value,
-          },
           accept_if_qualified_but_changing_value_does_not_interfere: {
             changing_values_with: :next_value,
           },
@@ -219,9 +216,6 @@ Example did not properly validate that :attr looks like a number.
       it_supports(
         'ignoring_interference_by_writer',
         tests: {
-          raise_if_not_qualified: {
-            changing_values_with: :next_value_or_numeric_value,
-          },
           accept_if_qualified_but_changing_value_does_not_interfere: {
             changing_values_with: :next_value_or_numeric_value,
           },
@@ -291,9 +285,6 @@ only if it is not nil.
       it_supports(
         'ignoring_interference_by_writer',
         tests: {
-          raise_if_not_qualified: {
-            changing_values_with: :next_value,
-          },
           accept_if_qualified_but_changing_value_does_not_interfere: {
             changing_values_with: :next_value,
           },
@@ -354,9 +345,6 @@ Example did not properly validate that :attr looks like an integer.
       it_supports(
         'ignoring_interference_by_writer',
         tests: {
-          raise_if_not_qualified: {
-            changing_values_with: :next_next_value,
-          },
           accept_if_qualified_but_changing_value_does_not_interfere: {
             changing_values_with: :next_next_value,
           },
@@ -450,9 +438,6 @@ Example did not properly validate that :attr looks like an odd number.
       it_supports(
         'ignoring_interference_by_writer',
         tests: {
-          raise_if_not_qualified: {
-            changing_values_with: :next_next_value,
-          },
           accept_if_qualified_but_changing_value_does_not_interfere: {
             changing_values_with: :next_next_value,
           },
@@ -548,9 +533,6 @@ Example did not properly validate that :attr looks like an even number.
       it_supports(
         'ignoring_interference_by_writer',
         tests: {
-          raise_if_not_qualified: {
-            changing_values_with: :next_value,
-          },
           reject_if_qualified_but_changing_value_interferes: {
             model_name: 'Example',
             attribute_name: :attr,
@@ -650,9 +632,6 @@ than or equal to 18.
       it_supports(
         'ignoring_interference_by_writer',
         tests: {
-          raise_if_not_qualified: {
-            changing_values_with: :next_value,
-          },
           reject_if_qualified_but_changing_value_interferes: {
             model_name: 'Example',
             attribute_name: :attr,
@@ -748,9 +727,6 @@ than 18.
       it_supports(
         'ignoring_interference_by_writer',
         tests: {
-          raise_if_not_qualified: {
-            changing_values_with: :next_value,
-          },
           reject_if_qualified_but_changing_value_interferes: {
             model_name: 'Example',
             attribute_name: :attr,
@@ -850,9 +826,6 @@ to 18.
       it_supports(
         'ignoring_interference_by_writer',
         tests: {
-          raise_if_not_qualified: {
-            changing_values_with: :next_value,
-          },
           reject_if_qualified_but_changing_value_interferes: {
             model_name: 'Example',
             attribute_name: :attr,
@@ -956,9 +929,6 @@ than or equal to 18.
       it_supports(
         'ignoring_interference_by_writer',
         tests: {
-          raise_if_not_qualified: {
-            changing_values_with: :next_value,
-          },
           reject_if_qualified_but_changing_value_interferes: {
             model_name: 'Example',
             attribute_name: :attr,
@@ -1616,9 +1586,6 @@ greater than 18 and less than 99.
     it_supports(
       'ignoring_interference_by_writer',
       tests: {
-        raise_if_not_qualified: {
-          changing_values_with: :next_value,
-        },
         accept_if_qualified_but_changing_value_does_not_interfere: {
           changing_values_with: :next_value,
         },

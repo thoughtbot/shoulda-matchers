@@ -36,9 +36,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
           it_supports(
             'ignoring_interference_by_writer',
             tests: {
-              raise_if_not_qualified: {
-                changing_values_with: :next_value
-              },
               accept_if_qualified_but_changing_value_does_not_interfere: {
                 changing_values_with: :next_value
               },
@@ -86,9 +83,6 @@ Example did not properly validate that :attr is empty/falsy.
       it_supports(
         'ignoring_interference_by_writer',
         tests: {
-          raise_if_not_qualified: {
-            changing_values_with: :upcase
-          },
           accept_if_qualified_but_changing_value_does_not_interfere: {
             changing_values_with: :upcase
           },
@@ -124,9 +118,6 @@ Example did not properly validate that :attr is empty/falsy.
       it_supports(
         'ignoring_interference_by_writer',
         tests: {
-          raise_if_not_qualified: {
-            changing_values_with: :next_value
-          },
           accept_if_qualified_but_changing_value_does_not_interfere: {
             changing_values_with: :next_value
           },
@@ -154,9 +145,6 @@ Example did not properly validate that :attr is empty/falsy.
       it_supports(
         'ignoring_interference_by_writer',
         tests: {
-          raise_if_not_qualified: {
-            changing_values_with: :next_value
-          },
           accept_if_qualified_but_changing_value_does_not_interfere: {
             changing_values_with: :next_value
           },

@@ -269,9 +269,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     it_supports(
       'ignoring_interference_by_writer',
       tests: {
-        raise_if_not_qualified: {
-          changing_values_with: :next_value,
-        },
         accept_if_qualified_but_changing_value_does_not_interfere: {
           changing_values_with: -> (value) { value || valid_values.first }
         },
@@ -327,9 +324,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     it_supports(
       'ignoring_interference_by_writer',
       tests: {
-        raise_if_not_qualified: {
-          changing_values_with: :next_value,
-        },
         accept_if_qualified_but_changing_value_does_not_interfere: {
           changing_values_with: -> (value) {
             value.presence || valid_values.first
@@ -526,9 +520,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     it_supports(
       'ignoring_interference_by_writer',
       tests: {
-        raise_if_not_qualified: {
-          changing_values_with: :next_value,
-        },
         reject_if_qualified_but_changing_value_interferes: {
           attribute_name: :attr,
           changing_values_with: :next_value,
@@ -649,9 +640,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     it_supports(
       'ignoring_interference_by_writer',
       tests: {
-        raise_if_not_qualified: {
-          changing_values_with: :next_value,
-        },
         reject_if_qualified_but_changing_value_interferes: {
           attribute_name: :attr,
           changing_values_with: :next_value,

@@ -13,9 +13,6 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
     it_supports(
       'ignoring_interference_by_writer',
       tests: {
-        raise_if_not_qualified: {
-          changing_values_with: :never_falsy
-        },
         accept_if_qualified_but_changing_value_does_not_interfere: {
           changing_values_with: :nil_to_blank
         },
@@ -70,9 +67,6 @@ Example did not properly validate that :attr cannot be empty/falsy.
     it_supports(
       'ignoring_interference_by_writer',
       tests: {
-        raise_if_not_qualified: {
-          changing_values_with: :never_falsy
-        },
         accept_if_qualified_but_changing_value_does_not_interfere: {
           changing_values_with: :nil_to_blank
         },
@@ -125,9 +119,6 @@ Example did not properly validate that :attr cannot be empty/falsy.
     it_supports(
       'ignoring_interference_by_writer',
       tests: {
-        raise_if_not_qualified: {
-          changing_values_with: :never_falsy
-        },
         accept_if_qualified_but_changing_value_does_not_interfere: {
           changing_values_with: :nil_to_blank
         },
@@ -186,9 +177,6 @@ Example did not properly validate that :attr cannot be empty/falsy.
     it_supports(
       'ignoring_interference_by_writer',
       tests: {
-        raise_if_not_qualified: {
-          changing_values_with: :never_falsy
-        },
         accept_if_qualified_but_changing_value_does_not_interfere: {
           changing_values_with: :nil_to_blank
         },

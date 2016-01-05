@@ -31,9 +31,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :m
     it_supports(
       'ignoring_interference_by_writer',
       tests: {
-        raise_if_not_qualified: {
-          changing_values_with: :next_value,
-        },
         reject_if_qualified_but_changing_value_interferes: {
           model_name: 'Example',
           attribute_name: :password,

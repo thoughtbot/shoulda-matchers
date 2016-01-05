@@ -25,9 +25,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher, type: :model d
     it_supports(
       'ignoring_interference_by_writer',
       tests: {
-        raise_if_not_qualified: {
-          changing_values_with: :upcase,
-        },
         accept_if_qualified_but_changing_value_does_not_interfere: {
           changing_values_with: :upcase,
         },
@@ -92,9 +89,6 @@ Example did not properly validate that the length of :attr is at least
     it_supports(
       'ignoring_interference_by_writer',
       tests: {
-        raise_if_not_qualified: {
-          changing_values_with: :upcase,
-        },
         accept_if_qualified_but_changing_value_does_not_interfere: {
           changing_values_with: :upcase,
         },
@@ -151,9 +145,6 @@ Example did not properly validate that the length of :attr is at most 4.
     it_supports(
       'ignoring_interference_by_writer',
       tests: {
-        raise_if_not_qualified: {
-          changing_values_with: :upcase,
-        },
         accept_if_qualified_but_changing_value_does_not_interfere: {
           changing_values_with: :upcase,
         },

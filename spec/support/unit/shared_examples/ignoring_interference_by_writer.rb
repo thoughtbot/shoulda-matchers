@@ -1,6 +1,5 @@
 shared_examples_for 'ignoring_interference_by_writer' do |common_config|
   valid_tests = [
-    :raise_if_not_qualified,
     :accept_if_qualified_but_changing_value_does_not_interfere,
     :reject_if_qualified_but_changing_value_interferes
   ]
@@ -10,11 +9,25 @@ shared_examples_for 'ignoring_interference_by_writer' do |common_config|
   define_method(:common_config) { common_config }
 
   context 'when the writer method for the attribute changes incoming values' do
-    context 'and the matcher has not been qualified with ignoring_interference_by_writer' do
-      config_for_test = tests[:raise_if_not_qualified]
+    context 'and the value change does not cause a test failure' do
+      config_for_test = tests[:accept_if_qualified_but_changing_value_does_not_interfere]
 
       if config_for_test
-        it 'raises an AttributeChangedValueError' do
+        it 'accepts (and does not raise an error)' do
+          args = build_args(config_for_test)
+          scenario = build_scenario_for_validation_matcher(args)
+          matcher = matcher_from(scenario)
+
+          expect(scenario.record).to matcher
+        end
+      end
+    end
+
+    context 'and the value change causes a test failure' do
+      config_for_test = tests[:reject_if_qualified_but_changing_value_interferes]
+
+      if config_for_test
+        it 'lists how the value got changed in the failure message' do
           args = build_args(config_for_test)
           scenario = build_scenario_for_validation_matcher(args)
           matcher = matcher_from(scenario)
@@ -23,48 +36,12 @@ shared_examples_for 'ignoring_interference_by_writer' do |common_config|
             expect(scenario.record).to matcher
           end
 
-          expect(&assertion).to raise_error(
-            Shoulda::Matchers::ActiveModel::AllowValueMatcher::AttributeChangedValueError
-          )
-        end
-      end
-    end
-
-    context 'and the matcher has been qualified with ignoring_interference_by_writer' do
-      context 'and the value change does not cause a test failure' do
-        config_for_test = tests[:accept_if_qualified_but_changing_value_does_not_interfere]
-
-        if config_for_test
-          it 'accepts (and does not raise an error)' do
-            args = build_args(config_for_test)
-            scenario = build_scenario_for_validation_matcher(args)
-            matcher = matcher_from(scenario)
-
-            expect(scenario.record).to matcher.ignoring_interference_by_writer
-          end
-        end
-      end
-
-      context 'and the value change causes a test failure' do
-        config_for_test = tests[:reject_if_qualified_but_changing_value_interferes]
-
-        if config_for_test
-          it 'lists how the value got changed in the failure message' do
-            args = build_args(config_for_test)
-            scenario = build_scenario_for_validation_matcher(args)
-            matcher = matcher_from(scenario)
-
-            assertion = lambda do
-              expect(scenario.record).to matcher.ignoring_interference_by_writer
-            end
-
-            if config_for_test.key?(:expected_message_includes)
-              message = config_for_test[:expected_message_includes]
-              expect(&assertion).to fail_with_message_including(message)
-            else
-              message = config_for_test.fetch(:expected_message)
-              expect(&assertion).to fail_with_message(message)
-            end
+          if config_for_test.key?(:expected_message_includes)
+            message = config_for_test[:expected_message_includes]
+            expect(&assertion).to fail_with_message_including(message)
+          else
+            message = config_for_test.fetch(:expected_message)
+            expect(&assertion).to fail_with_message(message)
           end
         end
       end

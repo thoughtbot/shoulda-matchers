@@ -12,11 +12,10 @@
   (formerly CouldNotSetAttributeError) when used against an attribute that is an
   enum in an ActiveRecord model.
 
-### Features
-
 * Add a `ignoring_interference_by_writer` qualifier to all matchers, not just
-  `allow_value`. This makes it possible to get around CouldNotSetAttributeErrors
-  (now AttributeChangedValueErrors) that you are probably well acquainted with.
+  `allow_value`. *This is enabled by default, which means that you should never
+  get a CouldNotSetAttributeError again.* (You may get some more information if
+  a test fails, however.)
 
 ### Improvements
 
@@ -25,9 +24,6 @@
   (You'll see a huge difference in the output of the numericality and uniqueness
   matchers in particular.)
 
-* The CouldNotSetAttributeError that you have probably seen is now called
-  AttributeChangedValueError.
-
 * Matchers now raise an error if any attributes that the matcher is attempting
   to set do not exist on the model.
 
@@ -35,6 +31,10 @@
   submatchers, but stops on the first one that fails. Since failure messages
   now contain information as to what value the matcher set on the attribute when
   it failed, this change guarantees that the correct value will be shown.
+
+* Continue to detect if attributes change incoming values, but now instead of
+  immediately seeing a CouldNotSetAttributeError, you will only be informed
+  about it if the test you've written fails.
 
 # 3.0.1
 

@@ -6,7 +6,7 @@ module Shoulda
         class IgnoreInterferenceByWriter
           attr_reader :setting, :condition
 
-          def initialize(argument = :never)
+          def initialize(argument = :always)
             set(argument)
             @changed = false
           end
@@ -57,6 +57,10 @@ module Shoulda
             when :never then false
             else condition_matches?(value)
             end
+          end
+
+          def always?
+            setting == :always
           end
 
           def never?

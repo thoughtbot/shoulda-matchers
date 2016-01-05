@@ -410,29 +410,55 @@ invalid and to raise a validation exception with message matching
   end
 
   context 'when the attribute interferes with attempts to be set' do
-    context 'when the matcher has not been qualified with #ignoring_interference_by_writer' do
-      context 'when the attribute cannot be changed from nil to non-nil' do
-        it 'raises an AttributeChangedValueError' do
-          model = define_active_model_class 'Example' do
-            attr_reader :name
+    context 'when the attribute cannot be changed from nil to non-nil' do
+      context 'and the record remains valid' do
+        it 'accepts (and does not raise an AttributeChangedValueError)' do
+          model = define_active_model_class 'Example', accessors: [:name] do
+            def name=(_value)
+              nil
+            end
+          end
+
+          expect(model.new).to allow_value('anything').for(:name)
+        end
+      end
+
+      context 'and the record becomes invalid' do
+        it 'rejects with an appropriate failure message' do
+          model = define_active_model_class 'Example', accessors: [:name] do
+            validates_presence_of :name
 
             def name=(_value)
               nil
             end
           end
 
-          assertion = -> {
+          assertion = lambda do
             expect(model.new).to allow_value('anything').for(:name)
-          }
+          end
 
-          expect(&assertion).to raise_error(
-            described_class::AttributeChangedValueError
-          )
+          message = <<-MESSAGE.strip
+After setting :name to ‹"anything"› -- which was read back as ‹nil› --
+the matcher expected the Example to be valid, but it was invalid
+instead, producing these validation errors:
+
+* name: ["can't be blank"]
+
+As indicated in the message above, :name seems to be changing certain
+values as they are set, and this could have something to do with why
+this test is failing. If you've overridden the writer method for this
+attribute, then you may need to change it to make this test pass, or do
+something else entirely.
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
         end
       end
+    end
 
-      context 'when the attribute cannot be changed from non-nil to nil' do
-        it 'raises an AttributeChangedValueError' do
+    context 'when the attribute cannot be changed from non-nil to nil' do
+      context 'and the record remains valid' do
+        it 'accepts (and does not raise an AttributeChangedValueError)' do
           model = define_active_model_class 'Example', accessors: [:name] do
             def name=(value)
               if value
@@ -443,104 +469,93 @@ invalid and to raise a validation exception with message matching
 
           record = model.new(name: 'some name')
 
-          assertion = -> {
-            expect(record).to allow_value(nil).for(:name)
-          }
-
-          expect(&assertion).to raise_error(
-            described_class::AttributeChangedValueError
-          )
+          expect(record).to allow_value(nil).for(:name)
         end
       end
 
-      context 'when the attribute cannot be changed from a non-nil value to another non-nil value' do
-        it 'raises an AttributeChangedValueError' do
-          model = define_active_model_class 'Example' do
-            attr_reader :name
+      context 'and the record becomes invalid' do
+        it 'rejects with an appropriate failure message' do
+          model = define_active_model_class 'Example', accessors: [:name] do
+            validates_absence_of :name
 
-            def name=(_value)
-              @name = 'constant name'
+            def name=(value)
+              if value
+                super(value)
+              end
             end
           end
 
           record = model.new(name: 'some name')
 
-          assertion = -> {
-            expect(record).to allow_value('another name').for(:name)
-          }
+          assertion = lambda do
+            expect(record).to allow_value(nil).for(:name)
+          end
 
-          expect(&assertion).to raise_error(
-            described_class::AttributeChangedValueError
-          )
+          message = <<-MESSAGE.strip
+After setting :name to ‹nil› -- which was read back as ‹"some name"› --
+the matcher expected the Example to be valid, but it was invalid
+instead, producing these validation errors:
+
+* name: ["must be blank"]
+
+As indicated in the message above, :name seems to be changing certain
+values as they are set, and this could have something to do with why
+this test is failing. If you've overridden the writer method for this
+attribute, then you may need to change it to make this test pass, or do
+something else entirely.
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
         end
       end
     end
 
-    context 'when the matcher has been qualified with #ignoring_interference_by_writer' do
-      context 'when the attribute cannot be changed from nil to non-nil' do
-        it 'does not raise an error at all' do
-          model = define_active_model_class 'Example' do
-            attr_reader :name
-
+    context 'when the attribute cannot be changed from a non-nil value to another non-nil value' do
+      context 'and the record remains valid' do
+        it 'accepts (and does not raise an AttributeChangedValueError)' do
+          model = define_active_model_class 'Example', accessors: [:name] do
             def name=(_value)
-              nil
+              super('constant name')
             end
           end
 
-          assertion = lambda do
-            expect(model.new).
-              to allow_value('anything').
-              for(:name).
-              ignoring_interference_by_writer
-          end
+          record = model.new(name: 'some name')
 
-          expect(&assertion).not_to raise_error
+          expect(record).to allow_value('another name').for(:name)
         end
       end
 
-      context 'when the attribute cannot be changed from non-nil to nil' do
-        it 'does not raise an error at all' do
-          model = define_active_model_class 'Example' do
-            attr_reader :name
+      context 'and the record becomes invalid' do
+        it 'rejects with an appropriate failure message' do
+          model = define_active_model_class 'Example', accessors: [:name] do
+            validates_format_of :name, with: /another name/
 
             def name=(value)
-              @name = value unless value.nil?
+              super('constant name')
             end
           end
 
           record = model.new(name: 'some name')
 
           assertion = lambda do
-            expect(record).
-              to allow_value(nil).
-              for(:name).
-              ignoring_interference_by_writer
+            expect(record).to allow_value('another name').for(:name)
           end
 
-          expect(&assertion).not_to raise_error
-        end
-      end
+          message = <<-MESSAGE.strip
+After setting :name to ‹"another name"› -- which was read back as
+‹"constant name"› -- the matcher expected the Example to be valid, but
+it was invalid instead, producing these validation errors:
 
-      context 'when the attribute cannot be changed from a non-nil value to another non-nil value' do
-        it 'does not raise an error at all' do
-          model = define_active_model_class 'Example' do
-            attr_reader :name
+* name: ["is invalid"]
 
-            def name=(_value)
-              @name = 'constant name'
-            end
-          end
+As indicated in the message above, :name seems to be changing certain
+values as they are set, and this could have something to do with why
+this test is failing. If you've overridden the writer method for this
+attribute, then you may need to change it to make this test pass, or do
+something else entirely.
+          MESSAGE
 
-          record = model.new(name: 'some name')
-
-          assertion = lambda do
-            expect(record).
-              to allow_value('another name').
-              for(:name).
-              ignoring_interference_by_writer
-          end
-
-          expect(&assertion).not_to raise_error
+          expect(&assertion).to fail_with_message(message)
         end
       end
     end

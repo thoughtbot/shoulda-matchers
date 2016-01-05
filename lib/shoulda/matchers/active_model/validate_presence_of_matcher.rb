@@ -147,14 +147,13 @@ module Shoulda
         def initialize(attribute)
           super
           @expected_message = :blank
-          @ignore_interference_by_writer =
-            Qualifiers::IgnoreInterferenceByWriter.new(when: :blank?)
         end
 
         def matches?(subject)
           super(subject)
 
           if secure_password_being_validated?
+            ignore_interference_by_writer.default_to(when: :blank?)
             disallows_and_double_checks_value_of!(blank_value, @expected_message)
           else
             disallows_original_or_typecast_value?(blank_value, @expected_message)
