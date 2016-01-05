@@ -108,4 +108,8 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher, type: :mo
       end
     end
   end
+
+  def define_model(name, columns, &block)
+    super(name, columns, whitelist_attributes: false, &block)
+  end
 end

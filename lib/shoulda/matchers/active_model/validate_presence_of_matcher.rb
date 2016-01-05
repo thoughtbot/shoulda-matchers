@@ -103,6 +103,39 @@ module Shoulda
       #         with_message('Robot has no legs')
       #     end
       #
+      # ##### ignoring_interference_by_writer
+      #
+      # Use `ignoring_interference_by_writer` when the attribute you're testing
+      # changes incoming values. This qualifier will instruct the matcher to
+      # suppress raising an AttributeValueChangedError, as long as changing the
+      # doesn't also change the outcome of the test and cause it to fail. See
+      # the documentation for `allow_value` for more information on this.
+      #
+      #     class Robot
+      #       include ActiveModel::Model
+      #       attr_accessor :name
+      #
+      #       validates_presence_of :name
+      #
+      #       def name=(name)
+      #         @name = name.to_s
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe Robot do
+      #       it do
+      #         should validate_presence_of(:name).
+      #           ignoring_interference_by_writer
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class RobotTest < ActiveSupport::TestCase
+      #       should validate_presence_of(:name).
+      #         ignoring_interference_by_writer
+      #     end
+      #
       # @return [ValidatePresenceOfMatcher]
       #
       def validate_presence_of(attr)
@@ -114,6 +147,8 @@ module Shoulda
         def initialize(attribute)
           super
           @expected_message = :blank
+          @ignore_interference_by_writer =
+            Qualifiers::IgnoreInterferenceByWriter.new(when: :blank?)
         end
 
         def matches?(subject)
@@ -146,8 +181,6 @@ module Shoulda
 
         def disallows_original_or_typecast_value?(value, message)
           disallows_value_of(blank_value, @expected_message)
-        rescue ActiveModel::AllowValueMatcher::AttributeChangedValueError => error
-          error.value_read.blank?
         end
 
         def blank_value

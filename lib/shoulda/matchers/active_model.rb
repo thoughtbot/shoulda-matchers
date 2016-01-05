@@ -1,4 +1,5 @@
 require 'shoulda/matchers/active_model/helpers'
+require 'shoulda/matchers/active_model/qualifiers'
 require 'shoulda/matchers/active_model/validation_matcher'
 require 'shoulda/matchers/active_model/validation_matcher/build_description'
 require 'shoulda/matchers/active_model/validator'

@@ -127,6 +127,34 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
         expect(record).to validate_numericality
       end
 
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          raise_if_not_qualified: {
+            changing_values_with: :next_value,
+          },
+          accept_if_qualified_but_changing_value_does_not_interfere: {
+            changing_values_with: :next_value,
+          },
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :numeric_value,
+            expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like a number.
+  After setting :attr to ‹"abcd"› -- which was read back as ‹"1"› -- the
+  matcher expected the Example to be invalid, but it was valid instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      )
+
       context 'when the column is an integer column' do
         it 'raises an IneffectiveTestError' do
           record = build_record_validating_numericality(
@@ -187,6 +215,47 @@ Example did not properly validate that :attr looks like a number.
         record = build_record_validating_numericality(allow_nil: true)
         expect(record).to validate_numericality.allow_nil
       end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          raise_if_not_qualified: {
+            changing_values_with: :next_value_or_numeric_value,
+          },
+          accept_if_qualified_but_changing_value_does_not_interfere: {
+            changing_values_with: :next_value_or_numeric_value,
+          },
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :next_value_or_non_numeric_value,
+            expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like a number, but
+only if it is not nil.
+  In checking that Example allows :attr to be ‹nil›, after setting :attr
+  to ‹nil› -- which was read back as ‹"a"› -- the matcher expected the
+  Example to be valid, but it was invalid instead, producing these
+  validation errors:
+
+  * attr: ["is not a number"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      ) do
+        def validation_matcher_scenario_args
+          super.deep_merge(validation_options: { allow_nil: true })
+        end
+
+        def configure_validation_matcher(matcher)
+          matcher.allow_nil
+        end
+      end
     end
 
     context 'and not validating with allow_nil' do
@@ -218,6 +287,42 @@ only if it is not nil.
         record = build_record_validating_numericality(only_integer: true)
         expect(record).to validate_numericality.only_integer
       end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          raise_if_not_qualified: {
+            changing_values_with: :next_value,
+          },
+          accept_if_qualified_but_changing_value_does_not_interfere: {
+            changing_values_with: :next_value,
+          },
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :numeric_value,
+            expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like an integer.
+  After setting :attr to ‹"0.1"› -- which was read back as ‹"1"› -- the
+  matcher expected the Example to be invalid, but it was valid instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      ) do
+        def validation_matcher_scenario_args
+          super.deep_merge(validation_options: { only_integer: true })
+        end
+
+        def configure_validation_matcher(matcher)
+          matcher.only_integer
+        end
+      end
     end
 
     context 'and not validating with only_integer' do
@@ -244,6 +349,42 @@ Example did not properly validate that :attr looks like an integer.
       it 'accepts' do
         record = build_record_validating_numericality(odd: true)
         expect(record).to validate_numericality.odd
+      end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          raise_if_not_qualified: {
+            changing_values_with: :next_next_value,
+          },
+          accept_if_qualified_but_changing_value_does_not_interfere: {
+            changing_values_with: :next_next_value,
+          },
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :next_value,
+            expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like an odd number.
+  After setting :attr to ‹"2"› -- which was read back as ‹"3"› -- the
+  matcher expected the Example to be invalid, but it was valid instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      ) do
+        def validation_matcher_scenario_args
+          super.deep_merge(validation_options: { odd: true })
+        end
+
+        def configure_validation_matcher(matcher)
+          matcher.odd
+        end
       end
 
       context 'when the column is an integer column' do
@@ -306,6 +447,42 @@ Example did not properly validate that :attr looks like an odd number.
         expect(record).to validate_numericality.even
       end
 
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          raise_if_not_qualified: {
+            changing_values_with: :next_next_value,
+          },
+          accept_if_qualified_but_changing_value_does_not_interfere: {
+            changing_values_with: :next_next_value,
+          },
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :next_value,
+            expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like an even number.
+  After setting :attr to ‹"1"› -- which was read back as ‹"2"› -- the
+  matcher expected the Example to be invalid, but it was valid instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      ) do
+        def validation_matcher_scenario_args
+          super.deep_merge(validation_options: { even: true })
+        end
+
+        def configure_validation_matcher(matcher)
+          matcher.even
+        end
+      end
+
       context 'when the column is an integer column' do
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
@@ -366,6 +543,45 @@ Example did not properly validate that :attr looks like an even number.
           less_than_or_equal_to: 18
         )
         expect(record).to validate_numericality.is_less_than_or_equal_to(18)
+      end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          raise_if_not_qualified: {
+            changing_values_with: :next_value,
+          },
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :next_value,
+            expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like a number less
+than or equal to 18.
+  After setting :attr to ‹"18"› -- which was read back as ‹"19"› -- the
+  matcher expected the Example to be valid, but it was invalid instead,
+  producing these validation errors:
+
+  * attr: ["must be less than or equal to 18"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      ) do
+        def validation_matcher_scenario_args
+          super.deep_merge(
+            validation_options: { less_than_or_equal_to: 18 }
+          )
+        end
+
+        def configure_validation_matcher(matcher)
+          matcher.is_less_than_or_equal_to(18)
+        end
       end
 
       context 'when the column is an integer column' do
@@ -431,6 +647,43 @@ than or equal to 18.
           is_less_than(18)
       end
 
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          raise_if_not_qualified: {
+            changing_values_with: :next_value,
+          },
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :next_value,
+            expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like a number less
+than 18.
+  After setting :attr to ‹"17"› -- which was read back as ‹"18"› -- the
+  matcher expected the Example to be valid, but it was invalid instead,
+  producing these validation errors:
+
+  * attr: ["must be less than 18"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      ) do
+        def validation_matcher_scenario_args
+          super.deep_merge(validation_options: { less_than: 18 })
+        end
+
+        def configure_validation_matcher(matcher)
+          matcher.is_less_than(18)
+        end
+      end
+
       context 'when the column is an integer column' do
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
@@ -490,6 +743,43 @@ than 18.
       it 'accepts' do
         record = build_record_validating_numericality(equal_to: 18)
         expect(record).to validate_numericality.is_equal_to(18)
+      end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          raise_if_not_qualified: {
+            changing_values_with: :next_value,
+          },
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :next_value,
+            expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like a number equal
+to 18.
+  After setting :attr to ‹"18"› -- which was read back as ‹"19"› -- the
+  matcher expected the Example to be valid, but it was invalid instead,
+  producing these validation errors:
+
+  * attr: ["must be equal to 18"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      ) do
+        def validation_matcher_scenario_args
+          super.deep_merge(validation_options: { equal_to: 18 })
+        end
+
+        def configure_validation_matcher(matcher)
+          matcher.is_equal_to(18)
+        end
       end
 
       context 'when the column is an integer column' do
@@ -555,6 +845,42 @@ to 18.
         expect(record).
           to validate_numericality.
           is_greater_than_or_equal_to(18)
+      end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          raise_if_not_qualified: {
+            changing_values_with: :next_value,
+          },
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :next_value,
+            expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like a number greater
+than or equal to 18.
+  After setting :attr to ‹"17"› -- which was read back as ‹"18"› -- the
+  matcher expected the Example to be invalid, but it was valid instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      ) do
+        def validation_matcher_scenario_args
+          super.deep_merge(
+            validation_options: { greater_than_or_equal_to: 18 }
+          )
+        end
+
+        def configure_validation_matcher(matcher)
+          matcher.is_greater_than_or_equal_to(18)
+        end
       end
 
       context 'when the column is an integer column' do
@@ -625,6 +951,40 @@ than or equal to 18.
         expect(record).
           to validate_numericality.
           is_greater_than(18)
+      end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          raise_if_not_qualified: {
+            changing_values_with: :next_value,
+          },
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :next_value,
+            expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like a number greater
+than 18.
+  After setting :attr to ‹"18"› -- which was read back as ‹"19"› -- the
+  matcher expected the Example to be invalid, but it was valid instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      ) do
+        def validation_matcher_scenario_args
+          super.deep_merge(validation_options: { greater_than: 18 })
+        end
+
+        def configure_validation_matcher(matcher)
+          matcher.is_greater_than(18)
+        end
       end
 
       context 'when the column is an integer column' do
@@ -1252,6 +1612,38 @@ greater than 18 and less than 99.
 
       expect(model.new).to validate_numericality_of(:attr)
     end
+
+    it_supports(
+      'ignoring_interference_by_writer',
+      tests: {
+        raise_if_not_qualified: {
+          changing_values_with: :next_value,
+        },
+        accept_if_qualified_but_changing_value_does_not_interfere: {
+          changing_values_with: :next_value,
+        },
+        reject_if_qualified_but_changing_value_interferes: {
+          model_name: 'Example',
+          attribute_name: :attr,
+          changing_values_with: :numeric_value,
+          expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like a number.
+  After setting :attr to ‹"abcd"› -- which was read back as ‹1› -- the
+  matcher expected the Example to be invalid, but it was valid instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+          MESSAGE
+        }
+      }
+    )
+
+    def validation_matcher_scenario_args
+      super.deep_merge(model_creator: :active_model)
+    end
   end
 
   describe '#description' do
@@ -1389,5 +1781,12 @@ greater than 18 and less than 99.
 
   def attribute_name
     :attr
+  end
+
+  def validation_matcher_scenario_args
+    super.deep_merge(
+      matcher_name: :validate_numericality_of,
+      model_creator: :active_record
+    )
   end
 end

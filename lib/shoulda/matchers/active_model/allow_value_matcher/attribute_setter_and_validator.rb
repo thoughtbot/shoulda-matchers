@@ -15,7 +15,7 @@ module Shoulda
             :context,
             :expected_message,
             :expects_strict?,
-            :ignoring_interference_by_writer?,
+            :ignore_interference_by_writer,
             :instance,
           )
 
@@ -33,7 +33,7 @@ module Shoulda
               object: instance,
               attribute_name: attribute_name,
               value: value,
-              ignoring_interference_by_writer: ignoring_interference_by_writer?,
+              ignore_interference_by_writer: ignore_interference_by_writer,
               after_set_callback: after_setting_value_callback
             )
           end

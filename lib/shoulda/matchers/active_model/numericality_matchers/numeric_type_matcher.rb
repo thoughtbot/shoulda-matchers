@@ -14,6 +14,8 @@ module Shoulda
             :expects_strict?,
             :failure_message,
             :failure_message_when_negated,
+            :ignore_interference_by_writer,
+            :ignoring_interference_by_writer,
             :matches?,
             :on,
             :strict,

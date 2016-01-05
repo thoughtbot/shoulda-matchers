@@ -433,11 +433,11 @@ invalid and to raise a validation exception with message matching
 
       context 'when the attribute cannot be changed from non-nil to nil' do
         it 'raises an AttributeChangedValueError' do
-          model = define_active_model_class 'Example' do
-            attr_reader :name
-
+          model = define_active_model_class 'Example', accessors: [:name] do
             def name=(value)
-              @name = value unless value.nil?
+              if value
+                super(value)
+              end
             end
           end
 
@@ -638,6 +638,18 @@ value", but that attribute does not exist.
             message
           )
         end
+      end
+    end
+  end
+
+  context 'given an ActiveRecord model' do
+    context 'where the attribute under test is an enum and the given value is a value in that enum' do
+      it 'accepts' do
+        model = define_model('Shipment', status: :integer) do
+          enum status: { pending: 1, shipped: 2, delivered: 3 }
+        end
+
+        expect(model.new).to allow_value(1).for(:status)
       end
     end
   end

@@ -112,6 +112,41 @@ module Shoulda
       #         with_message('You chose a puny weapon')
       #     end
       #
+      # ##### ignoring_interference_by_writer
+      #
+      # Use `ignoring_interference_by_writer` when the attribute you're testing
+      # changes incoming values. This qualifier will instruct the matcher to
+      # suppress raising an AttributeValueChangedError, as long as changing the
+      # doesn't also change the outcome of the test and cause it to fail. See
+      # the documentation for `allow_value` for more information on this.
+      #
+      #     class Game < ActiveRecord::Base
+      #       include ActiveModel::Model
+      #       attr_accessor :weapon
+      #
+      #       validates_exclusion_of :weapon
+      #
+      #       def weapon=(value)
+      #         @weapon = value.gsub(' ', '')
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe Game do
+      #       it do
+      #         should validate_exclusion_of(:weapon).
+      #           in_array(['pistol', 'paintball gun', 'stick']).
+      #           ignoring_interference_by_writer
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class GameTest < ActiveSupport::TestCase
+      #       should validate_exclusion_of(:weapon).
+      #         in_array(['pistol', 'paintball gun', 'stick']).
+      #         ignoring_interference_by_writer
+      #     end
+      #
       # @return [ValidateExclusionOfMatcher]
       #
       def validate_exclusion_of(attr)
