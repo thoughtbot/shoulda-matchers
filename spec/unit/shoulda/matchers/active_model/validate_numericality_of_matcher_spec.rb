@@ -153,38 +153,23 @@ Example did not properly validate that :attr looks like a number.
       )
 
       context 'when the column is an integer column' do
-        it 'raises an IneffectiveTestError' do
-          record = build_record_validating_numericality(
-            column_type: :integer
-          )
-          assertion = -> { expect(record).to validate_numericality }
-
-          expect(&assertion).
-            to raise_error(described_class::IneffectiveTestError)
+        it 'accepts (and does not raise an AttributeChangedValueError)' do
+          record = build_record_validating_numericality(column_type: :integer)
+          expect(record).to validate_numericality
         end
       end
 
       context 'when the column is a float column' do
-        it 'raises an IneffectiveTestError' do
-          record = build_record_validating_numericality(
-            column_type: :float
-          )
-          assertion = -> { expect(record).to validate_numericality }
-
-          expect(&assertion).
-            to raise_error(described_class::IneffectiveTestError)
+        it 'accepts (and does not raise an AttributeChangedValueError)' do
+          record = build_record_validating_numericality(column_type: :float)
+          expect(record).to validate_numericality
         end
       end
 
       context 'when the column is a decimal column' do
-        it 'raises an IneffectiveTestError' do
-          record = build_record_validating_numericality(
-            column_type: :decimal,
-          )
-          assertion = -> { expect(record).to validate_numericality }
-
-          expect(&assertion).
-            to raise_error(described_class::IneffectiveTestError)
+        it 'accepts (and does not raise an AttributeChangedValueError)' do
+          record = build_record_validating_numericality(column_type: :decimal)
+          expect(record).to validate_numericality
         end
       end
     end

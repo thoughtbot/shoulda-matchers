@@ -36,6 +36,9 @@
   immediately seeing a CouldNotSetAttributeError, you will only be informed
   about it if the test you've written fails.
 
+* Update `validate_numericality_of` so that it no longer raises an
+  IneffectiveTestError if used against a numeric column.
+
 # 3.0.1
 
 ### Bug fixes

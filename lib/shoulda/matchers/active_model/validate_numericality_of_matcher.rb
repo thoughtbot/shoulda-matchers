@@ -447,19 +447,9 @@ module Shoulda
           @subject = subject
           @number_of_submatchers = @submatchers.size
 
-          unless given_numeric_column?
-            add_disallow_value_matcher
-          end
-
-          if @submatchers.empty?
-            raise IneffectiveTestError.create(
-              model: @subject.class,
-              attribute: @attribute,
-              column_type: column_type
-            )
-          end
-
+          add_disallow_value_matcher
           qualify_submatchers
+
           first_failing_submatcher.nil?
         end
 
@@ -646,35 +636,6 @@ module Shoulda
               arr << submatcher.comparison_description
             end
             arr
-          end
-        end
-
-        class IneffectiveTestError < Shoulda::Matchers::Error
-          attr_accessor :model, :attribute, :column_type
-
-          def message
-            Shoulda::Matchers.word_wrap <<-MESSAGE
-You are attempting to use validate_numericality_of, but the attribute you're
-testing, :#{attribute}, is #{a_or_an(column_type)} column. One of the things
-that the numericality matcher does is to assert that setting :#{attribute} to a
-string that doesn't look like #{a_or_an(column_type)} will cause your
-#{humanized_model_name} to become invalid. In this case, it's impossible to make
-this assertion since :#{attribute} will typecast any incoming value to
-#{a_or_an(column_type)}. This means that it's already guaranteed to be numeric!
-Since this matcher isn't doing anything, you can remove it from your model
-tests, and in fact, you can remove the validation from your model as it isn't
-doing anything either.
-            MESSAGE
-          end
-
-          private
-
-          def humanized_model_name
-            model.name.humanize.downcase
-          end
-
-          def a_or_an(next_word)
-            Shoulda::Matchers::Util.a_or_an(next_word)
           end
         end
       end
