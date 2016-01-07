@@ -13,9 +13,7 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
-  if config.files_to_run.one?
-    config.default_formatter = 'doc'
-  end
+  config.default_formatter = 'doc'
 
   config.mock_with :rspec
 end
