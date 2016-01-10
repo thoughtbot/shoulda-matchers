@@ -21,6 +21,9 @@
   a virtual attribute defined in an ActiveRecord model (that is, an attribute
   that is not present in the database but is defined using `attr_accessor`).
 
+* Add a test for `validate_numericality_of` so that it officially supports money
+  columns.
+
 ### Improvements
 
 * Improve failure messages and descriptions of all matchers across the board so

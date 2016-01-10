@@ -179,6 +179,15 @@ Example did not properly validate that :attr looks like a number.
           expect(record).to validate_numericality
         end
       end
+
+      if database_supports_money_columns?
+        context 'when the column is a money column' do
+          it 'accepts (and does not raise an AttributeChangedValueError)' do
+            record = build_record_validating_numericality(column_type: :money)
+            expect(record).to validate_numericality
+          end
+        end
+      end
     end
 
     context 'and not validating anything' do
