@@ -47,14 +47,7 @@ module UnitTests
           column_options = {}
         end
 
-        begin
-          table.__send__(column_type, column_name, column_options)
-        rescue NoMethodError
-          raise ColumnNotSupportedError.new(
-            "#{Tests::Database.instance.adapter_class} does not support " +
-            ":#{column_type} columns."
-          )
-        end
+        table.column(column_name, column_type, column_options)
       end
     end
   end

@@ -72,8 +72,6 @@ module UnitTests
       def whitelist_attributes?
         options.fetch(:whitelist_attributes, true)
       end
-
-      ColumnNotSupportedError = Class.new(StandardError)
     end
   end
 end
