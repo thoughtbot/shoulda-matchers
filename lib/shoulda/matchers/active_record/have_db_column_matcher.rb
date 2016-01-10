@@ -52,7 +52,7 @@ module Shoulda
       #
       # Use `with_options` to assert that a column has been defined with
       # certain options (`:precision`, `:limit`, `:default`, `:null`, `:scale`,
-      # or `:primary`).
+      # or `:primary`, `:array`).
       #
       #     class CreatePhones < ActiveRecord::Migration
       #       def change
@@ -95,7 +95,7 @@ module Shoulda
         end
 
         def with_options(opts = {})
-          %w(precision limit default null scale primary).each do |attribute|
+          %w(precision limit default null scale primary array).each do |attribute|
             if opts.key?(attribute.to_sym)
               @options[attribute.to_sym] = opts[attribute.to_sym]
             end
@@ -112,7 +112,8 @@ module Shoulda
             correct_default? &&
             correct_null? &&
             correct_scale? &&
-            correct_primary?
+            correct_primary? &&
+            correct_array?
         end
 
         def failure_message
@@ -130,8 +131,9 @@ module Shoulda
           desc << " of limit #{@options[:limit]}"         if @options.key?(:limit)
           desc << " of default #{@options[:default]}"     if @options.key?(:default)
           desc << " of null #{@options[:null]}"           if @options.key?(:null)
-          desc << " of primary #{@options[:primary]}"     if @options.key?(:primary)
           desc << " of scale #{@options[:scale]}"         if @options.key?(:scale)
+          desc << " of primary #{@options[:primary]}"     if @options.key?(:primary)
+          desc << " of array #{@options[:array]}"         if @options.key?(:array)
           desc
         end
 
@@ -234,6 +236,19 @@ module Shoulda
             else
               @missing << 'that is primary, but should not be'
             end
+            false
+          end
+        end
+
+        def correct_array?
+          return true unless @options.key?(:array)
+
+          if matched_column.array.to_s == @options[:array].to_s
+            true
+          else
+            @missing = "#{model_class} has a db column named #{@column} " <<
+                       "of array #{matched_column.array}, " <<
+                       "not #{@options[:array]}."
             false
           end
         end

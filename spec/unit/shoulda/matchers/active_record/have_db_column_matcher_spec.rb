@@ -98,6 +98,18 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbColumnMatcher, type: :model do
     end
   end
 
+  context 'with array option' do
+    it 'accepts a column of correct array' do
+      expect(with_table(:phones, :string, array: false)).
+        to have_db_column(:phones).with_options(array: false)
+    end
+
+    it 'rejects a column of wrong array' do
+      expect(with_table(:phones, :string, array: true)).
+        not_to have_db_column(:phones).with_options(array: false)
+    end
+  end
+
   def model(options = {})
     define_model(:employee, options).new
   end
