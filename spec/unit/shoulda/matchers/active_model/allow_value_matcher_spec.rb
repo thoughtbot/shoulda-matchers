@@ -50,54 +50,191 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
   end
 
   context 'an attribute with a validation' do
-    it 'allows a good value' do
-      expect(validating_format(with: /abc/)).to allow_value('abcde').for(:attr)
+    context 'given one good value' do
+      context 'when used in the positive' do
+        it 'accepts' do
+          expect(validating_format(with: /abc/)).
+            to allow_value('abcde').for(:attr)
+        end
+      end
+
+      context 'when used in the negative' do
+        it 'rejects with an appropriate failure message' do
+          assertion = lambda do
+            expect(validating_format(with: /abc/)).
+              not_to allow_value('abcde').for(:attr)
+          end
+
+          message = <<-MESSAGE
+After setting :attr to ‹"abcde"›, the matcher expected the Example to be
+invalid, but it was valid instead.
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
     end
 
-    it 'rejects a bad value with an appropriate failure message' do
-      message = <<-MESSAGE
+    context 'given several good values' do
+      context 'when used in the positive' do
+        it 'accepts' do
+          expect(validating_format(with: /abc/)).
+            to allow_value('abcde', 'deabc').for(:attr)
+        end
+      end
+
+      context 'when used in the negative' do
+        it 'rejects with an appropriate failure message' do
+          assertion = lambda do
+            expect(validating_format(with: /abc/)).
+              not_to allow_value('abcde', 'deabc').for(:attr)
+          end
+
+          message = <<-MESSAGE
+After setting :attr to ‹"abcde"›, the matcher expected the Example to be
+invalid, but it was valid instead.
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+    end
+
+    context 'given one bad value' do
+      context 'when used in the positive' do
+        it 'rejects with an appropriate failure message' do
+          assertion = lambda do
+            expect(validating_format(with: /abc/)).
+              to allow_value('xyz').for(:attr)
+          end
+
+          message = <<-MESSAGE
 After setting :attr to ‹"xyz"›, the matcher expected the Example to be
 valid, but it was invalid instead, producing these validation errors:
 
 * attr: ["is invalid"]
-      MESSAGE
+          MESSAGE
 
-      assertion = lambda do
-        expect(validating_format(with: /abc/)).to allow_value('xyz').for(:attr)
+          expect(&assertion).to fail_with_message(message)
+        end
       end
 
-      expect(&assertion).to fail_with_message(message)
-    end
-
-    it 'allows several good values' do
-      expect(validating_format(with: /abc/)).
-        to allow_value('abcde', 'deabc').for(:attr)
+      context 'when used in the negative' do
+        it 'accepts' do
+          expect(validating_format(with: /abc/)).
+            not_to allow_value('xyz').for(:attr)
+        end
+      end
     end
 
     context 'given several bad values' do
-      it 'rejects' do
-        expect(validating_format(with: /abc/)).
-          not_to allow_value('xyz', 'zyx', nil, []).
-          for(:attr).
-          ignoring_interference_by_writer
-      end
+      context 'when used in the positive' do
+        it 'rejects with an appropriate failure message' do
+          assertion = lambda do
+            expect(validating_format(with: /abc/)).
+              to allow_value('xyz', 'zyx', nil, []).
+              for(:attr).
+              ignoring_interference_by_writer
+          end
 
-      it 'produces an appropriate failure message' do
-        message = <<-MESSAGE
-After setting :attr to ‹"zyx"›, the matcher expected the Example to be
+          message = <<-MESSAGE
+After setting :attr to ‹"xyz"›, the matcher expected the Example to be
 valid, but it was invalid instead, producing these validation errors:
 
 * attr: ["is invalid"]
-        MESSAGE
+          MESSAGE
 
-        assertion = lambda do
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'when used in the negative' do
+        it 'accepts' do
           expect(validating_format(with: /abc/)).
-            to allow_value('abc', 'abcde', 'zyx', nil, []).
+            not_to allow_value('xyz', 'zyx', nil, []).
             for(:attr).
             ignoring_interference_by_writer
         end
+      end
+    end
 
-        expect(&assertion).to fail_with_message(message)
+    context 'given good values along with bad values' do
+      context 'when used in the positive' do
+        it 'rejects with an appropriate failure message' do
+          assertion = lambda do
+            expect(validating_format(with: /abc/)).
+              to allow_value('abc', 'xyz').
+              for(:attr).
+              ignoring_interference_by_writer
+          end
+
+          message = <<-MESSAGE
+After setting :attr to ‹"xyz"›, the matcher expected the Example to be
+valid, but it was invalid instead, producing these validation errors:
+
+* attr: ["is invalid"]
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'when used in the negative' do
+        it 'rejects with an appropriate failure message' do
+          assertion = lambda do
+            expect(validating_format(with: /abc/)).
+              not_to allow_value('abc', 'xyz').
+              for(:attr).
+              ignoring_interference_by_writer
+          end
+
+          message = <<-MESSAGE
+After setting :attr to ‹"abc"›, the matcher expected the Example to be
+invalid, but it was valid instead.
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+    end
+
+    context 'given bad values along with good values' do
+      context 'when used in the positive' do
+        it 'rejects with an appropriate failure message' do
+          assertion = lambda do
+            expect(validating_format(with: /abc/)).
+              to allow_value('xyz', 'abc').
+              for(:attr).
+              ignoring_interference_by_writer
+          end
+
+          message = <<-MESSAGE
+After setting :attr to ‹"xyz"›, the matcher expected the Example to be
+valid, but it was invalid instead, producing these validation errors:
+
+* attr: ["is invalid"]
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'when used in the negative' do
+        it 'rejects with an appropriate failure message' do
+          assertion = lambda do
+            expect(validating_format(with: /abc/)).
+              not_to allow_value('xyz', 'abc').
+              for(:attr).
+              ignoring_interference_by_writer
+          end
+
+          message = <<-MESSAGE
+After setting :attr to ‹"abc"›, the matcher expected the Example to be
+invalid, but it was valid instead.
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
       end
     end
   end
@@ -347,6 +484,19 @@ invalid, but it was valid instead.
 
       assertion = lambda do
         expect(model).not_to allow_value('12345', *bad_values).for(:attr)
+      end
+
+      expect(&assertion).to fail_with_message(message)
+    end
+
+    it "does not match given bad values along with good values" do
+      message = <<-MESSAGE.strip_heredoc
+After setting :attr to ‹"12345"›, the matcher expected the Example to be
+invalid, but it was valid instead.
+      MESSAGE
+
+      assertion = lambda do
+        expect(model).not_to allow_value(*bad_values, '12345').for(:attr)
       end
 
       expect(&assertion).to fail_with_message(message)
