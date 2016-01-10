@@ -172,12 +172,15 @@ end
 
 Shoulda Matchers was originally a component of [Shoulda][shoulda], a gem that
 also provides `should` and `context` syntax via
-[`shoulda-context`][shoulda-context]. For this reason you'll want to include
-this gem in your Gemfile instead:
+[`shoulda-context`][shoulda-context].
+
+At the moment, `shoulda` has not been updated to support `shoulda-matchers` 3.0,
+so you'll want to add the following to your Gemfile:
 
 ```ruby
 group :test do
   gem 'shoulda', '~> 3.5'
+  gem 'shoulda-matchers', '~> 2.0'
 end
 ```
 
