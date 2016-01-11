@@ -8,21 +8,52 @@
   actually apply to `odd`. Now the order that you specify qualifiers doesn't
   matter.
 
+  * *Source: [6c67a5e]*
+
 * Fix `allow_value` so that it does not raise an AttributeChangedValueError
   (formerly CouldNotSetAttributeError) when used against an attribute that is an
   enum in an ActiveRecord model.
+
+  * *Source: [9e8603e]*
 
 * Add a `ignoring_interference_by_writer` qualifier to all matchers, not just
   `allow_value`. *This is enabled by default, which means that you should never
   get a CouldNotSetAttributeError again.* (You may get some more information if
   a test fails, however.)
 
+  * *Source: [1189934], [5532f43]*
+  * *Fixes: [#786], [#799], [#801], [#804], [#817], [#841], [#849], [#872],
+    [#873], and [#874]*
+
 * Fix `validate_numericality_of` so that it does not blow up when used against
   a virtual attribute defined in an ActiveRecord model (that is, an attribute
   that is not present in the database but is defined using `attr_accessor`).
 
-* Add a test for `validate_numericality_of` so that it officially supports money
-  columns.
+  * *Source: [#822]*
+
+* Update `validate_numericality_of` so that it no longer raises an
+  IneffectiveTestError if used against a numeric column.
+
+  * *Source: [5ed0362]*
+  * *Fixes: [#832]*
+
+[6c67a5e]: https://github.com/thoughtbot/shoulda-matchers/commit/6c67a5eb0df265d3a565aa7d1a7e2b645051eb5a
+[9e8603e]: https://github.com/thoughtbot/shoulda-matchers/commit/9e8603eb745bfa2a5aea6dfef85adf680d447151
+[1189934]: https://github.com/thoughtbot/shoulda-matchers/commit/118993480604d39c73687d069f7af3726f3e3f3e
+[5532f43]: https://github.com/thoughtbot/shoulda-matchers/commit/5532f4359aa332b10de7d46f876eaffd4a95b5b6
+[#786]: https://github.com/thoughtbot/shoulda-matchers/issues/786
+[#799]: https://github.com/thoughtbot/shoulda-matchers/issues/799
+[#801]: https://github.com/thoughtbot/shoulda-matchers/issues/801
+[#804]: https://github.com/thoughtbot/shoulda-matchers/issues/804
+[#817]: https://github.com/thoughtbot/shoulda-matchers/issues/817
+[#841]: https://github.com/thoughtbot/shoulda-matchers/issues/841
+[#849]: https://github.com/thoughtbot/shoulda-matchers/issues/849
+[#872]: https://github.com/thoughtbot/shoulda-matchers/issues/872
+[#873]: https://github.com/thoughtbot/shoulda-matchers/issues/873
+[#874]: https://github.com/thoughtbot/shoulda-matchers/issues/874
+[#822]: https://github.com/thoughtbot/shoulda-matchers/pull/822
+[5ed0362]: https://github.com/thoughtbot/shoulda-matchers/commit/5ed03624197314865ff5463e473e5e84bb91d9ea
+[#832]: https://github.com/thoughtbot/shoulda-matchers/issues/832
 
 ### Features
 
@@ -30,6 +61,12 @@
   This provides a way to test uniqueness of an attribute whose case is
   normalized, either in a custom writer method for that attribute, or in a
   custom `before_validation` callback.
+
+  * *Source: [#840]*
+  * *Fixes: [#836]*
+
+[#840]: https://github.com/thoughtbot/shoulda-matchers/pull/840
+[#836]: https://github.com/thoughtbot/shoulda-matchers/issues/836
 
 ### Improvements
 
@@ -41,20 +78,36 @@
 * Matchers now raise an error if any attributes that the matcher is attempting
   to set do not exist on the model.
 
+  * *Source: [2962112]*
+
 * Update `validate_numericality_of` so that it doesn't always run all of the
   submatchers, but stops on the first one that fails. Since failure messages
   now contain information as to what value the matcher set on the attribute when
   it failed, this change guarantees that the correct value will be shown.
 
+  * *Source: [8e24a6e]*
+
 * Continue to detect if attributes change incoming values, but now instead of
   immediately seeing a CouldNotSetAttributeError, you will only be informed
   about it if the test you've written fails.
 
-* Update `validate_numericality_of` so that it no longer raises an
-  IneffectiveTestError if used against a numeric column.
+  * *Source: [1189934]*
 
 * Add an additional check to `define_enum_for` to ensure that the column that
   underlies the enum attribute you're testing is an integer column.
+
+  * *Source: [68dd70a]*
+
+* Add a test for `validate_numericality_of` so that it officially supports money
+  columns.
+
+  * *Source: [a559713]*
+  * *Refs: [#841]*
+
+[2962112]: https://github.com/thoughtbot/shoulda-matchers/commit/296211211497e624dde87adae68b385ad4cdae3a
+[8e24a6e]: https://github.com/thoughtbot/shoulda-matchers/commit/8e24a6e9b2b147f2c51fb03aa02543f213acab34
+[68dd70a]: https://github.com/thoughtbot/shoulda-matchers/commit/68dd70a23d8997a490683adcd2108a4a5cadf8ba
+[a559713]: https://github.com/thoughtbot/shoulda-matchers/commit/a559713f96303414551c0bc1767fb11eb19bcc5d
 
 # 3.0.1
 
