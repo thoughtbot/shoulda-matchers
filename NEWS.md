@@ -1,3 +1,12 @@
+# HEAD
+
+### Bug fixes
+
+* Some matchers make use of ActiveSupport's `in?` method, but do not include the
+  file where this is defined in ActiveSupport. This causes problems with
+  projects using shoulda-matchers that do not include all of ActiveSupport by
+  default. To fix this, replace `in?` with Ruby's builtin `include?`.
+
 # 3.1.0
 
 ### Bug fixes
