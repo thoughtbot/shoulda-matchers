@@ -42,7 +42,7 @@ module Shoulda
         end
 
         def symbolize_or_stringify(key, value)
-          if key.in?(PARAMS_TO_SYMBOLIZE)
+          if PARAMS_TO_SYMBOLIZE.include?(key)
             value.to_sym
           else
             stringify(value)

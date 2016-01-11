@@ -697,7 +697,7 @@ module Shoulda
         end
 
         def boolean_value?(value)
-          value.in?([true, false])
+          [true, false].include?(value)
         end
 
         def defined_as_enum?(scope)

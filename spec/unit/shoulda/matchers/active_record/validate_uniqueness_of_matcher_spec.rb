@@ -1307,7 +1307,7 @@ Example did not properly validate that :name is case-sensitively unique.
       SecureRandom.uuid
     elsif value.is_a?(Time)
       value + 1
-    elsif value.in?([true, false])
+    elsif [true, false].include?(value)
       !value
     elsif value.respond_to?(:next)
       value.next
