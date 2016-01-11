@@ -1,4 +1,4 @@
-# HEAD
+# 3.1.0
 
 ### Bug fixes
 
