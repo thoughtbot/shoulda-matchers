@@ -259,42 +259,6 @@ module Shoulda
       #         allow_blank
       #     end
       #
-      # ##### ignoring_interference_by_writer
-      #
-      # Use `ignoring_interference_by_writer` when the attribute you're testing
-      # changes incoming values. This qualifier will instruct the matcher to
-      # suppress raising an AttributeValueChangedError, as long as changing the
-      # doesn't also change the outcome of the test and cause it to fail. See
-      # the documentation for `allow_value` for more information on this.
-      #
-      #     class Issue
-      #       include ActiveModel::Model
-      #       attr_accessor :state
-      #
-      #       validates_inclusion_of :state,
-      #         in: ['open', 'resolved', 'unresolved']
-      #
-      #       def state=(value)
-      #         @state = 'open'
-      #       end
-      #     end
-      #
-      #     # RSpec
-      #     describe Issue do
-      #       it do
-      #         should validate_inclusion_of(:state).
-      #           in_array(['open', 'resolved', 'unresolved']).
-      #           ignoring_interference_by_writer
-      #       end
-      #     end
-      #
-      #     # Minitest (Shoulda)
-      #     class IssueTest < ActiveSupport::TestCase
-      #       should validate_inclusion_of(:state).
-      #         in_array(['open', 'resolved', 'unresolved']).
-      #         ignoring_interference_by_writer
-      #     end
-      #
       # @return [ValidateInclusionOfMatcher]
       #
       def validate_inclusion_of(attr)

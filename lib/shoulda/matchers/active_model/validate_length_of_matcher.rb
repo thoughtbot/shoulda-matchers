@@ -216,41 +216,6 @@ module Shoulda
       #         with_long_message('Secret key must be less than 100 characters')
       #     end
       #
-      # ##### ignoring_interference_by_writer
-      #
-      # Use `ignoring_interference_by_writer` when the attribute you're testing
-      # changes incoming values. This qualifier will instruct the matcher to
-      # suppress raising an AttributeValueChangedError, as long as changing the
-      # doesn't also change the outcome of the test and cause it to fail. See
-      # the documentation for `allow_value` for more information on this.
-      #
-      #     class User
-      #       include ActiveModel::Model
-      #       attr_accessor :password
-      #
-      #       validates_length_of :password, minimum: 10
-      #
-      #       def password=(value)
-      #         @password = value.upcase
-      #       end
-      #     end
-      #
-      #     # RSpec
-      #     describe User do
-      #       it do
-      #         should validate_length_of(:password).
-      #           is_at_least(10).
-      #           ignoring_interference_by_writer
-      #       end
-      #     end
-      #
-      #     # Minitest (Shoulda)
-      #     class UserTest < ActiveSupport::TestCase
-      #       should validate_length_of(:password).
-      #         is_at_least(10).
-      #         ignoring_interference_by_writer
-      #     end
-      #
       # @return [ValidateLengthOfMatcher]
       #
       def validate_length_of(attr)

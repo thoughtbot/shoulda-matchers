@@ -70,39 +70,6 @@ module Shoulda
       #         with_message("there shall be peace on Earth")
       #     end
       #
-      # ##### ignoring_interference_by_writer
-      #
-      # Use `ignoring_interference_by_writer` when the attribute you're testing
-      # changes incoming values. This qualifier will instruct the matcher to
-      # suppress raising an AttributeValueChangedError, as long as changing the
-      # doesn't also change the outcome of the test and causes it to fail. See
-      # the documentation for `allow_value` for more information on this.
-      #
-      #     class PowerHungryCountry
-      #       include ActiveModel::Model
-      #       attr_accessor :nuclear_weapons
-      #
-      #       validates_absence_of :nuclear_weapons
-      #
-      #       def nuclear_weapons=(value)
-      #         @nuclear_weapons = value + [:hidden_weapon]
-      #       end
-      #     end
-      #
-      #     # RSpec
-      #     describe PowerHungryCountry do
-      #       it do
-      #         should validate_absence_of(:nuclear_weapons).
-      #           ignoring_interference_by_writer
-      #       end
-      #     end
-      #
-      #     # Minitest (Shoulda)
-      #     class PowerHungryCountryTest < ActiveSupport::TestCase
-      #       should validate_absence_of(:nuclear_weapons).
-      #         ignoring_interference_by_writer
-      #     end
-      #
       # @return [ValidateAbsenceOfMatcher}
       #
       def validate_absence_of(attr)
