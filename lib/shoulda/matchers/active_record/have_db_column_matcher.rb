@@ -52,7 +52,7 @@ module Shoulda
       #
       # Use `with_options` to assert that a column has been defined with
       # certain options (`:precision`, `:limit`, `:default`, `:null`, `:scale`,
-      # or `:primary`, `:array`).
+      # `:primary`, or `:array`).
       #
       #     class CreatePhones < ActiveRecord::Migration
       #       def change
