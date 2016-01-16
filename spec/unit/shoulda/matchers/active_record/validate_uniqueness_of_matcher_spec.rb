@@ -327,18 +327,39 @@ Example did not properly validate that :attr is case-sensitively unique.
           end
         end
 
-        context 'and the table has non-nullable columns other than the attribute being validated, set beforehand' do
-          it 'can save the subject without the attributes being set' do
-            options = {
-              additional_attributes: [
-                { name: :required_attribute, options: { null: false } }
-              ]
-            }
-            model = define_model_validating_uniqueness(options)
-            record = model.new
-            record.required_attribute = 'something'
+        context 'and the table has non-nullable columns other than the attribute being validated' do
+          context 'which are set beforehand' do
+            it 'can save the subject' do
+              options = {
+                additional_attributes: [
+                  { name: :required_attribute, options: { null: false } }
+                ]
+              }
+              model = define_model_validating_uniqueness(options)
+              record = model.new
+              record.required_attribute = 'something'
 
-            expect(record).to validate_uniqueness
+              expect(record).to validate_uniqueness
+            end
+          end
+
+          context 'which are not set beforehand' do
+            it 'raises a useful exception' do
+              options = {
+                additional_attributes: [
+                  { name: :required_attribute, options: { null: false } }
+                ]
+              }
+              model = define_model_validating_uniqueness(options)
+
+              assertion = lambda do
+                expect(model.new).to validate_uniqueness
+              end
+
+              expect(&assertion).to raise_error(
+                described_class::ExistingRecordInvalid
+              )
+            end
           end
         end
 

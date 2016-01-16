@@ -53,23 +53,34 @@ module Shoulda
       #       it { should validate_uniqueness_of(:title) }
       #     end
       #
-      # However, running this test will fail with something like:
+      # However, running this test will fail with an exception such as:
       #
-      #     Failures:
+      #     Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher::ExistingRecordInvalid:
+      #       validate_uniqueness_of works by matching a new record against an
+      #       existing record. If there is no existing record, it will create one
+      #       using the record you provide.
       #
-      #       1) Post should validate :title to be case-sensitively unique
-      #          Failure/Error: it { should validate_uniqueness_of(:title) }
-      #          ActiveRecord::StatementInvalid:
-      #            SQLite3::ConstraintException: posts.content may not be NULL: INSERT INTO "posts" ("title") VALUES (?)
+      #       While doing this, the following error was raised:
+      #
+      #         PG::NotNullViolation: ERROR:  null value in column "content" violates not-null constraint
+      #         DETAIL:  Failing row contains (1, null, null).
+      #         : INSERT INTO "posts" DEFAULT VALUES RETURNING "id"
+      #
+      #       The best way to fix this is to provide the matcher with a record where
+      #       any required attributes are filled in with valid values beforehand.
+      #
+      # (The exact error message will differ depending on which database you're
+      # using, but you get the idea.)
       #
       # This happens because `validate_uniqueness_of` tries to create a new post
       # but cannot do so because of the `content` attribute: though unrelated to
-      # this test, it nevertheless needs to be filled in. The solution is to
-      # build a custom Post object ahead of time with `content` filled in:
+      # this test, it nevertheless needs to be filled in. As indicated at the
+      # end of the error message, the solution is to build a custom Post object
+      # ahead of time with `content` filled in:
       #
       #     describe Post do
       #       describe "validations" do
-      #         subject { Post.new(content: 'Here is the content') }
+      #         subject { Post.new(content: "Here is the content") }
       #         it { should validate_uniqueness_of(:title) }
       #       end
       #     end
@@ -468,6 +479,8 @@ module Shoulda
             ensure_secure_password_set(existing_record)
             existing_record.save(validate: false)
           end
+        rescue ::ActiveRecord::StatementInvalid => error
+          raise ExistingRecordInvalid.create(underlying_exception: error)
         end
 
         def ensure_secure_password_set(instance)
@@ -893,6 +906,27 @@ b) If you meant for the validation to be case-insensitive, then you need to
 For more information, please see:
 
 http://matchers.shoulda.io/docs/v#{Shoulda::Matchers::VERSION}/file.NonCaseSwappableValueError.html
+            MESSAGE
+          end
+        end
+
+        class ExistingRecordInvalid < Shoulda::Matchers::Error
+          include Shoulda::Matchers::ActiveModel::Helpers
+
+          attr_accessor :underlying_exception
+
+          def message
+            <<-MESSAGE.strip
+validate_uniqueness_of works by matching a new record against an
+existing record. If there is no existing record, it will create one
+using the record you provide.
+
+While doing this, the following error was raised:
+
+#{Shoulda::Matchers::Util.indent(underlying_exception.message, 2)}
+
+The best way to fix this is to provide the matcher with a record where
+any required attributes are filled in with valid values beforehand.
             MESSAGE
           end
         end
