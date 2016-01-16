@@ -324,8 +324,8 @@ module Shoulda
           @given_record = given_record
           @all_records = model.all
 
-          validate_attribute_present? &&
-            validate_scopes_present? &&
+          validate_attribute_present_on_model? &&
+            validate_scopes_present_on_model? &&
             scopes_match? &&
             validate_two_records_with_same_non_blank_value_cannot_coexist? &&
             validate_case_sensitivity? &&
@@ -529,8 +529,8 @@ module Shoulda
           @new_record
         end
 
-        def validate_attribute_present?
-          if model.method_defined?("#{attribute}=")
+        def validate_attribute_present_on_model?
+          if attribute_present_on_model?
             true
           else
             @failure_reason =
@@ -539,7 +539,12 @@ module Shoulda
           end
         end
 
-        def validate_scopes_present?
+        def attribute_present_on_model?
+          model.method_defined?("#{attribute}=") ||
+            model.columns_hash.key?(attribute.to_s)
+        end
+
+        def validate_scopes_present_on_model?
           if all_scopes_present_on_model?
             true
           else
