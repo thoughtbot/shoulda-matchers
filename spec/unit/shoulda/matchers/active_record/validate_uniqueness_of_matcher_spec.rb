@@ -268,7 +268,7 @@ Example did not properly validate that :attr is case-sensitively unique.
       end
     end
 
-    context 'when the record is created beforehand' do
+    context 'when the existing record was created beforehand' do
       context 'when the subject is a new record' do
         it 'accepts' do
           create_record_validating_uniqueness
@@ -277,60 +277,145 @@ Example did not properly validate that :attr is case-sensitively unique.
         end
       end
 
-      context 'when the subject is an existing record' do
+      context 'when the subject is itself the existing record' do
         it 'accepts' do
           expect(existing_record_validating_uniqueness).to validate_uniqueness
         end
       end
+    end
 
-      context 'when the validation has no scope and a scope is specified' do
-        it 'rejects with an appropriate failure message' do
-          model = define_model_validating_uniqueness(
-            additional_attributes: [:other]
-          )
-          create_record_from(model)
-          record = build_record_from(model)
+    context 'when the existing record was not created beforehand' do
+      context 'and the subject is empty' do
+        context 'and the attribute being tested is required' do
+          it 'can save the subject without the attribute being set' do
+            options = { attribute_name: :attr }
+            model = define_model_validating_uniqueness(options) do |m|
+              m.validates_presence_of :attr
+            end
 
-          assertion = lambda do
-            expect(record).to validate_uniqueness.scoped_to(:other)
+            record = model.new
+
+            expect(record).to validate_uniqueness
           end
+        end
 
-          message = <<-MESSAGE
-Example did not properly validate that :attr is case-sensitively unique
-within the scope of :other.
-  Expected the validation to be scoped to :other, but it was not scoped
-  to anything.
-          MESSAGE
+        context 'and the attribute being tested are required along with other attributes' do
+          it 'can save the subject without the attributes being set' do
+            options = {
+              attribute_name: :attr,
+              additional_attributes: [:required_attribute]
+            }
+            model = define_model_validating_uniqueness(options) do |m|
+              m.validates_presence_of :attr
+              m.validates_presence_of :required_attribute
+            end
 
-          expect(&assertion).to fail_with_message(message)
+            expect(model.new).to validate_uniqueness
+          end
+        end
+
+        context 'and the attribute being tested has other validations on it' do
+          it 'can save the subject without it being completely valid' do
+            options = { attribute_name: :attr }
+
+            model = define_model_validating_uniqueness(options) do |m|
+              m.validates_presence_of :attr
+              m.validates_numericality_of :attr
+            end
+
+            expect(model.new).to validate_uniqueness
+          end
+        end
+
+        context 'and the table has non-nullable columns other than the attribute being validated, set beforehand' do
+          it 'can save the subject without the attributes being set' do
+            options = {
+              additional_attributes: [
+                { name: :required_attribute, options: { null: false } }
+              ]
+            }
+            model = define_model_validating_uniqueness(options)
+            record = model.new
+            record.required_attribute = 'something'
+
+            expect(record).to validate_uniqueness
+          end
+        end
+
+        context 'and the model has required attributes other than the attribute being validated' do
+          it 'can save the subject without the attributes being set' do
+            options = {
+              additional_attributes: [:required_attribute]
+            }
+            model = define_model_validating_uniqueness(options) do |m|
+              m.validates_presence_of :required_attribute
+            end
+
+            expect(model.new).to validate_uniqueness
+          end
+        end
+      end
+
+      context 'and the subject is not empty' do
+        it 'creates the record automatically from the subject' do
+          model = define_model_validating_uniqueness
+          assertion = -> {
+            record = build_record_from(model)
+            expect(record).to validate_uniqueness
+          }
+          expect(&assertion).to change(model, :count).from(0).to(1)
+        end
+
+        context 'and the table has required attributes other than the attribute being validated, set beforehand' do
+          it 'can save the subject' do
+            options = {
+              additional_attributes: [
+                { name: :required_attribute, options: { null: false } }
+              ]
+            }
+            model = define_model_validating_uniqueness(options)
+
+            record = build_record_from(model, required_attribute: 'something')
+            expect(record).to validate_uniqueness
+          end
+        end
+
+        context 'and the model has required attributes other than the attribute being validated, set beforehand' do
+          it 'can save the subject' do
+            options = {
+              additional_attributes: [:required_attribute]
+            }
+            model = define_model_validating_uniqueness(options) do |m|
+              m.validates_presence_of :required_attribute
+            end
+
+            record = build_record_from(model, required_attribute: 'something')
+            expect(record).to validate_uniqueness
+          end
         end
       end
     end
 
-    context 'when the record is not created beforehand' do
-      it 'creates the record automatically' do
-        model = define_model_validating_uniqueness
-        assertion = -> {
-          record = build_record_from(model)
-          expect(record).to validate_uniqueness
-        }
-        expect(&assertion).to change(model, :count).from(0).to(1)
-      end
+    context 'when the validation has no scope and a scope is specified' do
+      it 'rejects with an appropriate failure message' do
+        model = define_model_validating_uniqueness(
+          additional_attributes: [:other]
+        )
+        create_record_from(model)
+        record = build_record_from(model)
 
-      context 'and the table has required attributes other than the attribute being validated, set beforehand' do
-        it 'does not require the record to be persisted' do
-          options = {
-            additional_attributes: [
-              { name: :required_attribute, options: { null: false } }
-            ]
-          }
-          model = define_model_validating_uniqueness(options) do |m|
-            m.validates_presence_of :required_attribute
-          end
-
-          record = build_record_from(model, required_attribute: 'something')
-          expect(record).to validate_uniqueness
+        assertion = lambda do
+          expect(record).to validate_uniqueness.scoped_to(:other)
         end
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr is case-sensitively unique
+within the scope of :other.
+  Expected the validation to be scoped to :other, but it was not scoped
+  to anything.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
 

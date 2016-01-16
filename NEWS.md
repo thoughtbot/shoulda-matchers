@@ -7,6 +7,16 @@
   projects using shoulda-matchers that do not include all of ActiveSupport by
   default. To fix this, replace `in?` with Ruby's builtin `include?`.
 
+* `validate_uniqueness_of` works by creating a record if it doesn't exist, and
+  then testing against a new record with various attributes set that are equal
+  to (or different than) corresponding attributes in the existing record. In
+  3.1.0 a change was made whereby when the uniqueness matcher is given a new
+  record and creates an existing record out of it, it ensures that the record is
+  valid before continuing on. This created a problem because if the subject,
+  before it was saved, was empty and therefore in an invalid state, it could not
+  effectively be saved. While ideally this should be enforced, doing so would be
+  a backward-incompatible change, so this behavior has been rolled back.
+
 # 3.1.0
 
 ### Bug fixes

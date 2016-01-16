@@ -313,8 +313,7 @@ module Shoulda
           @given_record = given_record
           @all_records = model.all
 
-          existing_record_valid? &&
-            validate_attribute_present? &&
+          validate_attribute_present? &&
             validate_scopes_present? &&
             scopes_match? &&
             validate_two_records_with_same_non_blank_value_cannot_coexist? &&
@@ -437,18 +436,6 @@ module Shoulda
           end
         end
 
-        def existing_record_valid?
-          if existing_record.valid?
-            true
-          else
-            @failure_reason =
-              "The record you provided could not be created, " +
-              "as it failed with the following validation errors:\n\n" +
-              format_validation_errors(existing_record.errors)
-            false
-          end
-        end
-
         def existing_record
           unless defined?(@existing_record)
             find_or_create_existing_record
@@ -479,19 +466,7 @@ module Shoulda
         def create_existing_record
           @given_record.tap do |existing_record|
             ensure_secure_password_set(existing_record)
-            existing_record.save
-          end
-        end
-
-        def update_existing_record!(value)
-          if existing_value_read != value
-            set_attribute_on!(
-              :existing_record,
-              existing_record,
-              @attribute,
-              value
-            )
-            existing_record.save!
+            existing_record.save(validate: false)
           end
         end
 
@@ -499,6 +474,15 @@ module Shoulda
           if has_secure_password?
             instance.password = "password"
             instance.password_confirmation = "password"
+          end
+        end
+
+        def update_existing_record!(value)
+          if existing_value_read != value
+            set_attribute_on_existing_record!(@attribute, value)
+            # It would be nice if we could ensure that the record was valid,
+            # but that would break users' existing tests
+            existing_record.save(validate: false)
           end
         end
 
