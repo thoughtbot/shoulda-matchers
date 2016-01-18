@@ -7,6 +7,8 @@
   projects using shoulda-matchers that do not include all of ActiveSupport by
   default. To fix this, replace `in?` with Ruby's builtin `include?`.
 
+  * *Pull request: [#879]*
+
 * `validate_uniqueness_of` works by creating a record if it doesn't exist, and
   then testing against a new record with various attributes set that are equal
   to (or different than) corresponding attributes in the existing record. In
@@ -16,6 +18,25 @@
   before it was saved, was empty and therefore in an invalid state, it could not
   effectively be saved. While ideally this should be enforced, doing so would be
   a backward-incompatible change, so this behavior has been rolled back.
+  ([#880], [#884], [#885])
+
+  * *Commits: [45de869]*
+  * *Fixes: [#880], [#884], [#885]*
+
+### Improvements
+
+* Update `validate_uniqueness_of` so that if an existing record fails to be
+  created because a column is non-nullable and was not filled in, raise an
+  ExistingRecordInvalid exception with details on how to fix the test.
+
+  * *Commits: [78ccfc5]*
+
+[#879]: https://github.com/thoughtbot/shoulda-matchers/issues/879
+[45de869]: https://github.com/thoughtbot/shoulda-matchers/commit/45de8698487d57f559c5bf35818d1c1ee82b0e77
+[#880]: https://github.com/thoughtbot/shoulda-matchers/issues/880
+[#884]: https://github.com/thoughtbot/shoulda-matchers/issues/884
+[#885]: https://github.com/thoughtbot/shoulda-matchers/issues/885
+[78ccfc5]: https://github.com/thoughtbot/shoulda-matchers/commit/78ccfc50b52fa686c109d614df66744b0da65380
 
 # 3.1.0
 
