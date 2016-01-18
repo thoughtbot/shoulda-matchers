@@ -895,7 +895,7 @@ different altogether.
 Your #{model.name} model has a uniqueness validation on :#{attribute} which is
 declared to be case-sensitive, but the value the uniqueness matcher used,
 #{value.inspect}, doesn't contain any alpha characters, so using it to
-to test the case-sensitivity part of the validation is ineffective. There are
+test the case-sensitivity part of the validation is ineffective. There are
 two possible solutions for this depending on what you're trying to do here:
 
 a) If you meant for the validation to be case-sensitive, then you need to give
