@@ -37,6 +37,27 @@ Example did not properly validate that :attr cannot be empty/falsy.
     )
   end
 
+  context 'a model with a private setter method' do
+    let(:record) do
+      class ModelWithPrivateAttribute
+        include ActiveModel::Validations
+        validates :attr, presence: true
+        def initialize(options = {})
+          self.attr = options.fetch(:attr)
+        end
+        attr_accessor :attr
+        private :attr=
+      end.new(:attr => 'hello')
+    end
+    it 'will not throw an exception' do
+      assertion = lambda do
+        expect(record).to matcher
+      end
+
+      expect(&assertion).to_not raise_error
+    end
+  end
+
   context 'a model without a presence validation' do
     it 'rejects with the correct failure message' do
       record = define_model(:example, attr: :string).new

@@ -80,7 +80,7 @@ module Shoulda
           end
 
           def set
-            object.public_send("#{attribute_name}=", value_written)
+            object.__send__("#{attribute_name}=", value_written)
             after_set_callback.call
 
             @result_of_checking = successful_check
@@ -154,7 +154,7 @@ module Shoulda
             if active_resource_object?
               object.known_attributes.include?(attribute_name.to_s)
             else
-              object.respond_to?("#{attribute_name}=")
+              object.respond_to?("#{attribute_name}=", true)
             end
           end
 
