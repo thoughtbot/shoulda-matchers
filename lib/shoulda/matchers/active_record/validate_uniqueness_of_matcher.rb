@@ -649,18 +649,22 @@ module Shoulda
           end
         end
 
-        def dummy_value_for(scope)
-          column = column_for(scope)
+        def dummy_value_for(attribute_name)
+          reflection = model.reflect_on_association(attribute_name)
 
-          if column.respond_to?(:array) && column.array
-            [ dummy_scalar_value_for(column) ]
+          if reflection
+            if reflection.macro == :belongs_to
+              reflection.klass.new
+            else
+              raise <<-MESSAGE
+Could not find dummy value for :#{attribute_name}, as it is of an
+unsupported association type :#{reflection.macro}.
+              MESSAGE
+            end
           else
-            dummy_scalar_value_for(column)
+            column = column_for(attribute_name)
+            Shoulda::Matchers::Util.dummy_value_for(column.type)
           end
-        end
-
-        def dummy_scalar_value_for(column)
-          Shoulda::Matchers::Util.dummy_value_for(column.type)
         end
 
         def next_value_for(scope, previous_value)

@@ -5,6 +5,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
     column_type = options.fetch(:column_type)
     value_type = options.fetch(:value_type, column_type)
     array = options.fetch(:array, false)
+    association_type = options[:association_type]
 
     context 'when the correct scope is specified' do
       context 'when the subject is a new record' do
@@ -231,7 +232,8 @@ within the scope of :non_existent1 and :non_existent2.
       attribute_options.deep_merge(
         column_type: column_type,
         value_type: value_type,
-        options: { array: array }
+        options: { array: array },
+        association_type: association_type
       )
     end
   end
@@ -759,7 +761,13 @@ within the scope of :scope1.
       end
     end
 
-    context "when an existing record that is not the first has a nil value for the scoped attribute" do
+    context 'when one of the scoped attributes is a belongs_to association' do
+      include_examples 'it supports scoped attributes of a certain type',
+        column_type: :integer,
+        association_type: :belongs_to
+    end
+
+    context 'when an existing record that is not the first has a nil value for the scoped attribute' do
       it 'still works' do
         model = define_model_validating_uniqueness(scopes: [:scope])
         create_record_from(model, scope: 'some value')
@@ -1327,23 +1335,40 @@ Example did not properly validate that :name is case-sensitively unique.
     {
       value_type: :string,
       column_type: :string,
-      options: { array: false, null: true }
+      options: { array: false, null: true },
+      association_type: nil
     }
   end
 
   def normalize_attribute(attribute)
-    if attribute.is_a?(Hash)
-      attribute_copy = attribute.dup
+    normalized_attribute =
+      if attribute.is_a?(Hash)
+        attribute_copy = attribute.dup
 
-      if attribute_copy.key?(:type)
-        attribute_copy[:value_type] = attribute_copy[:type]
-        attribute_copy[:column_type] = attribute_copy[:type]
+        if attribute_copy.key?(:type)
+          type = attribute_copy.delete(:type)
+          attribute_copy[:value_type] = type
+          attribute_copy[:column_type] = type
+        end
+
+        default_attribute.deep_merge(attribute_copy)
+      else
+        default_attribute.deep_merge(name: attribute)
       end
 
-      default_attribute.deep_merge(attribute_copy)
-    else
-      default_attribute.deep_merge(name: attribute)
+    if normalized_attribute.key?(:name)
+      name = normalized_attribute.delete(:name)
+
+      if normalized_attribute[:association_type] == :belongs_to
+        normalized_attribute[:attribute_name] = name
+        normalized_attribute[:column_name] = (name.to_s + '_id').to_sym
+      else
+        normalized_attribute[:attribute_name] = name
+        normalized_attribute[:column_name] = name
+      end
     end
+
+    normalized_attribute
   end
 
   def normalize_attributes(attributes)
@@ -1354,7 +1379,7 @@ Example did not properly validate that :name is case-sensitively unique.
 
   def column_options_from(attributes)
     attributes.inject({}) do |options, attribute|
-      options[attribute[:name]] = {
+      options[attribute[:column_name]] = {
         type: attribute[:column_type],
         options: attribute.fetch(:options, {})
       }
@@ -1364,7 +1389,7 @@ Example did not properly validate that :name is case-sensitively unique.
 
   def attributes_with_values_for(model)
     model_attributes[model].each_with_object({}) do |attribute, attrs|
-      attrs[attribute[:name]] = attribute.fetch(:value) do
+      attrs[attribute[:attribute_name]] = attribute.fetch(:value) do
         if attribute[:options][:null]
           nil
         else
@@ -1447,20 +1472,37 @@ Example did not properly validate that :name is case-sensitively unique.
     end
 
     scope_attributes = normalize_attributes(options.fetch(:scopes, []))
-    scope_attribute_names = scope_attributes.map { |attr| attr[:name] }
+    scope_attribute_names = scope_attributes.map do |attribute|
+      attribute[:attribute_name]
+    end
+
     additional_attributes = normalize_attributes(
       options.fetch(:additional_attributes, [])
     )
     attributes = [attribute] + scope_attributes + additional_attributes
+    association_attributes = attributes.select do |attr|
+      attr[:association_type]
+    end
+
     validation_options = options.fetch(:validation_options, {})
     column_options = column_options_from(attributes)
 
+    association_attributes.each do |att|
+      define_model(attr[:attribute_name])
+    end
+
     model = define_model(:example, column_options) do |m|
-      m.validates_uniqueness_of attribute_name,
+      m.validates_uniqueness_of(
+        attribute_name,
         validation_options.merge(scope: scope_attribute_names)
+      )
 
       attributes.each do |attr|
-        m.attr_accessible(attr[:name])
+        if attr[:association_type]
+          m.public_send(attr[:association_type], attr[:attribute_name])
+        else
+          m.attr_accessible(attr[:attribute_name])
+        end
       end
 
       block.call(m) if block
@@ -1496,7 +1538,7 @@ Example did not properly validate that :name is case-sensitively unique.
     dummy_enum_values = [:foo, :bar]
 
     model = define_model_validating_uniqueness(options)
-    model.enum(enum_scope_attribute[:name] => dummy_enum_values)
+    model.enum(enum_scope_attribute[:attribute_name] => dummy_enum_values)
 
     build_record_from(model)
   end
