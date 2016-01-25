@@ -270,8 +270,8 @@ module Shoulda
           @failure_reason = nil
           @failure_reason_when_negated = nil
           @attribute_setters = {
-            existing_record: [],
-            new_record: []
+            existing_record: AttributeSetters.new,
+            new_record: AttributeSetters.new
           }
         end
 
@@ -750,6 +750,11 @@ module Shoulda
           @attribute_setters[:existing_record].last
         end
 
+        def attribute_setters_for_new_record
+          @attribute_setters[:new_record] +
+            [last_attribute_setter_used_on_new_record]
+        end
+
         def attribute_names_under_test
           [@attribute] + expected_scopes
         end
@@ -795,7 +800,7 @@ module Shoulda
             prefix << "After taking the given #{model.name}"
 
             if attribute_setter_for_existing_record
-              prefix << ', setting its '
+              prefix << ', setting '
               prefix << description_for_attribute_setter(
                 attribute_setter_for_existing_record
               )
@@ -808,7 +813,7 @@ module Shoulda
           else
             if attribute_setter_for_existing_record
               prefix << "Given an existing #{model.name},"
-              prefix << ' after setting its '
+              prefix << ' after setting '
               prefix << description_for_attribute_setter(
                 attribute_setter_for_existing_record
               )
@@ -823,12 +828,9 @@ module Shoulda
             end
           end
 
-          prefix << " making a new #{model.name} and setting its "
+          prefix << " making a new #{model.name} and setting "
 
-          prefix << description_for_attribute_setter(
-            last_attribute_setter_used_on_new_record,
-            same_as_existing: existing_and_new_values_are_same?
-          )
+          prefix << descriptions_for_attribute_setters_for_new_record
 
           prefix << ", the matcher expected the new #{model.name} to be"
 
@@ -851,7 +853,7 @@ different altogether.
         end
 
         def description_for_attribute_setter(attribute_setter, same_as_existing: nil)
-          description = ":#{attribute_setter.attribute_name} to "
+          description = "its :#{attribute_setter.attribute_name} to "
 
           if same_as_existing == false
             description << 'a different value, '
@@ -876,6 +878,23 @@ different altogether.
           description
         end
 
+        def descriptions_for_attribute_setters_for_new_record
+          attribute_setter_descriptions_for_new_record.to_sentence
+        end
+
+        def attribute_setter_descriptions_for_new_record
+          attribute_setters_for_new_record.map do |attribute_setter|
+            same_as_existing = (
+              attribute_setter.value_written ==
+              existing_value_written
+            )
+            description_for_attribute_setter(
+              attribute_setter,
+              same_as_existing: same_as_existing
+            )
+          end
+        end
+
         def existing_and_new_values_are_same?
           last_value_set_on_new_record == existing_value_written
         end
@@ -886,6 +905,50 @@ different altogether.
 
         def last_value_set_on_new_record
           last_submatcher_run.last_value_set
+        end
+
+        # @private
+        class AttributeSetters
+          include Enumerable
+
+          def initialize
+            @attribute_setters = []
+          end
+
+          def <<(given_attribute_setter)
+            index = find_index_of(given_attribute_setter)
+
+            if index
+              @attribute_setters[index] = given_attribute_setter
+            else
+              @attribute_setters << given_attribute_setter
+            end
+          end
+
+          def +(other_attribute_setters)
+            dup.tap do |attribute_setters|
+              other_attribute_setters.each do |attribute_setter|
+                attribute_setters << attribute_setter
+              end
+            end
+          end
+
+          def each(&block)
+            @attribute_setters.each(&block)
+          end
+
+          def last
+            @attribute_setters.last
+          end
+
+          private
+
+          def find_index_of(given_attribute_setter)
+            @attribute_setters.find_index do |attribute_setter|
+              attribute_setter.attribute_name ==
+                given_attribute_setter.attribute_name
+            end
+          end
         end
 
         # @private
@@ -915,6 +978,7 @@ http://matchers.shoulda.io/docs/v#{Shoulda::Matchers::VERSION}/file.NonCaseSwapp
           end
         end
 
+        # @private
         class ExistingRecordInvalid < Shoulda::Matchers::Error
           include Shoulda::Matchers::ActiveModel::Helpers
 
