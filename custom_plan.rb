@@ -1,12 +1,27 @@
-require 'zeus/rails'
+require 'zeus'
+require 'zeus/plan'
 require_relative 'spec/support/tests/current_bundle'
 
-class CustomPlan < Zeus::Plan
-  def initialize
-    super
-    @rails_plan = Zeus::Rails.new
-  end
+class CouldNotBootZeusError < StandardError
+  def self.create(underlying_error:)
+    new(<<-MESSAGE)
+Couldn't boot Zeus.
 
+Bundler tried to load a gem that has already been loaded (but the
+versions are different).
+
+Note that Appraisal requires Rake, and so you'll want to make sure that
+the Gemfile is pointing to the same version of Rake that you have
+installed locally.
+
+The original message is as follows:
+
+#{underlying_error.message}
+    MESSAGE
+  end
+end
+
+class CustomPlan < Zeus::Plan
   def boot
     ENV['BUNDLE_GEMFILE'] = File.expand_path(
       "../gemfiles/#{latest_appraisal}.gemfile",
@@ -19,10 +34,11 @@ class CustomPlan < Zeus::Plan
     $LOAD_PATH << File.expand_path('../spec', __FILE__)
 
     require_relative 'spec/support/unit/load_environment'
+  rescue Gem::LoadError => error
+    raise CouldNotBootZeusError.create(underlying_error: error)
   end
 
   def after_fork
-    # @rails_plan.reconnect_activerecord
   end
 
   def test_environment
