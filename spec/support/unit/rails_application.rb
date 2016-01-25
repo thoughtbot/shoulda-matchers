@@ -20,6 +20,7 @@ module UnitTests
       fs.within_project do
         install_gems
         remove_unwanted_gems
+        raise_errors_on_mass_assignment_violations
       end
     end
 
@@ -117,6 +118,14 @@ end
         bundle.remove_gem 'byebug'
         bundle.remove_gem 'web-console'
       end
+    end
+
+    def raise_errors_on_mass_assignment_violations
+      fs.write 'config/initializers/protected_attributes.rb', <<-CONTENT
+        Rails.application.configure do
+          config.active_record.mass_assignment_sanitizer = :strict
+        end
+      CONTENT
     end
 
     def run_command!(*args)

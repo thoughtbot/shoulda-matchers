@@ -691,6 +691,8 @@ unsupported association type :#{reflection.macro}.
             previous_value.to_datetime.next
           elsif boolean_value?(previous_value)
             !previous_value
+          elsif previous_value.is_a?(ActiveRecord::Base)
+            previous_value.class.new
           else
             previous_value.to_s.next
           end
