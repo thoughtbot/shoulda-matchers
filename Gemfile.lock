@@ -28,7 +28,7 @@ GEM
     pygments.rb (0.3.7)
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.1.0)
-    rake (10.4.2)
+    rake (10.5.0)
     redcarpet (3.0.0)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
@@ -60,11 +60,11 @@ DEPENDENCIES
   pry!
   pry-byebug
   pygments.rb
-  rake (~> 10.0)
+  rake (>= 10.5.0, < 11)
   redcarpet
   rspec (~> 3.2)
   yard
   zeus
 
 BUNDLED WITH
-   1.11.1
+   1.11.2

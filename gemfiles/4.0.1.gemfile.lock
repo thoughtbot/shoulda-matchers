@@ -117,7 +117,7 @@ GEM
       activesupport (= 4.0.1)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
-    rake (10.4.2)
+    rake (10.5.0)
     rdoc (4.2.0)
     redcarpet (3.3.2)
     rspec (3.4.0)
@@ -205,7 +205,7 @@ DEPENDENCIES
   pry-byebug
   pygments.rb
   rails (= 4.0.1)
-  rake (~> 10.0)
+  rake (>= 10.5.0, < 11)
   redcarpet
   rspec (~> 3.2)
   rspec-rails (>= 3.2.0, < 4)
@@ -222,4 +222,4 @@ DEPENDENCIES
   zeus
 
 BUNDLED WITH
-   1.11.1
+   1.11.2
