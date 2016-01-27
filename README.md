@@ -4,7 +4,7 @@ Shoulda Matchers provides RSpec- and Minitest-compatible one-liners that test
 common Rails functionality. These tests would otherwise be much longer, more
 complex, and error-prone.
 
-[View the official documentation for the latest version (3.0.0).][rubydocs]
+[View the official documentation for the latest version (3.1.1).][rubydocs]
 
 ----
 
@@ -105,7 +105,7 @@ Include `shoulda-matchers` in your Gemfile:
 
 ``` ruby
 group :test do
-  gem 'shoulda-matchers', '~> 3.0'
+  gem 'shoulda-matchers', '~> 3.1'
 end
 ```
 
@@ -199,7 +199,7 @@ Shoulda Matchers was originally a component of [Shoulda][shoulda], a gem that
 also provides `should` and `context` syntax via
 [`shoulda-context`][shoulda-context].
 
-At the moment, `shoulda` has not been updated to support `shoulda-matchers` 3.0,
+At the moment, `shoulda` has not been updated to support `shoulda-matchers` 3.x,
 so you'll want to add the following to your Gemfile:
 
 ```ruby
