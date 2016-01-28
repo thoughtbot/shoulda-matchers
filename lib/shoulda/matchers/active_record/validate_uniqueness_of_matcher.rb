@@ -326,7 +326,7 @@ module Shoulda
 
           validate_attribute_present_on_model? &&
             validate_scopes_present_on_model? &&
-            scopes_match? &&
+            validate_scopes_match? &&
             validate_two_records_with_same_non_blank_value_cannot_coexist? &&
             validate_case_sensitivity? &&
             validate_after_scope_change? &&
@@ -380,14 +380,14 @@ module Shoulda
           end
         end
 
-        def validation
-          model._validators[@attribute].detect do |validator|
+        def validations
+          model._validators[@attribute].select do |validator|
             validator.is_a?(::ActiveRecord::Validations::UniquenessValidator)
           end
         end
 
-        def scopes_match?
-          if expected_scopes == actual_scopes
+        def validate_scopes_match?
+          if scopes_match?
             true
           else
             @failure_reason = 'Expected the validation'
@@ -398,7 +398,7 @@ module Shoulda
               @failure_reason << " to be scoped to #{inspected_expected_scopes}"
             end
 
-            if actual_scopes.empty?
+            if actual_sets_of_scopes.empty?
               @failure_reason << ', but it was not scoped to anything.'
             else
               @failure_reason << ', but it was scoped to '
@@ -409,24 +409,42 @@ module Shoulda
           end
         end
 
-        def expected_scopes
-          Array.wrap(@options[:scopes])
+        def scopes_match?
+          actual_sets_of_scopes.empty? && expected_scopes.empty? ||
+            actual_sets_of_scopes.any? { |scopes| scopes == expected_scopes }
         end
 
         def inspected_expected_scopes
           expected_scopes.map(&:inspect).to_sentence
         end
 
-        def actual_scopes
-          if validation
-            Array.wrap(validation.options[:scope])
+        def inspected_actual_scopes
+          inspected_actual_sets_of_scopes.to_sentence(
+            words_connector: " or ",
+            last_word_connector: ", or"
+          )
+        end
+
+        def inspected_actual_sets_of_scopes
+          inspected_sets_of_scopes = actual_sets_of_scopes.map do |scopes|
+            scopes.map(&:inspect)
+          end
+
+          if inspected_sets_of_scopes.many?
+            inspected_sets_of_scopes.map { |x| "(#{x.to_sentence})" }
           else
-            []
+            inspected_sets_of_scopes.map(&:to_sentence)
           end
         end
 
-        def inspected_actual_scopes
-          actual_scopes.map(&:inspect).to_sentence
+        def expected_scopes
+          Array.wrap(@options[:scopes])
+        end
+
+        def actual_sets_of_scopes
+          validations.map do |validation|
+            Array.wrap(validation.options[:scope])
+          end.reject(&:empty?)
         end
 
         def allows_nil?

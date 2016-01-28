@@ -227,6 +227,94 @@ within the scope of :non_existent1 and :non_existent2.
       end
     end
 
+    context 'when there is more than one validation on the same attribute with different scopes' do
+      context 'when a record exists beforehand, where all scopes are set' do
+        if column_type != :boolean
+          context 'when each validation has the same (default) message' do
+            it 'accepts' do
+              pending 'this needs another qualifier to properly fix'
+
+              model = define_model(
+                'Example',
+                attribute_name => :string,
+                scope1: column_type,
+                scope2: column_type
+              ) do |m|
+                m.validates_uniqueness_of(attribute_name, scope: [:scope1])
+                m.validates_uniqueness_of(attribute_name, scope: [:scope2])
+              end
+
+              model.create!(
+                attribute_name => dummy_value_for(:string),
+                scope1: dummy_value_for(column_type),
+                scope2: dummy_value_for(column_type)
+              )
+
+              expect(model.new).to validate_uniqueness.scoped_to(:scope1)
+              expect(model.new).to validate_uniqueness.scoped_to(:scope2)
+            end
+          end
+        end
+
+        context 'when each validation has a different message' do
+          it 'accepts' do
+            model = define_model(
+              'Example',
+              attribute_name => :string,
+              scope1: column_type,
+              scope2: column_type
+            ) do |m|
+              m.validates_uniqueness_of(
+                attribute_name,
+                scope: [:scope1],
+                message: 'first message'
+              )
+              m.validates_uniqueness_of(
+                attribute_name,
+                scope: [:scope2],
+                message: 'second message'
+              )
+            end
+
+            model.create!(
+              attribute_name => dummy_value_for(:string),
+              scope1: dummy_value_for(column_type),
+              scope2: dummy_value_for(column_type)
+            )
+
+            expect(model.new).
+              to validate_uniqueness.
+              scoped_to(:scope1).
+              with_message('first message')
+
+            expect(model.new).
+              to validate_uniqueness.
+              scoped_to(:scope2).
+              with_message('second message')
+          end
+        end
+      end
+
+      context 'when no record exists beforehand' do
+        it 'accepts' do
+          pending 'this needs another qualifier to properly fix'
+
+          model = define_model(
+            'Example',
+            attribute_name => :string,
+            scope1: column_type,
+            scope2: column_type
+          ) do |m|
+            m.validates_uniqueness_of(attribute_name, scope: [:scope1])
+            m.validates_uniqueness_of(attribute_name, scope: [:scope2])
+          end
+
+          expect(model.new).to validate_uniqueness.scoped_to(:scope1)
+          expect(model.new).to validate_uniqueness.scoped_to(:scope2)
+        end
+      end
+    end
+
     define_method(:build_attribute) do |attribute_options|
       attribute_options.deep_merge(
         column_type: column_type,

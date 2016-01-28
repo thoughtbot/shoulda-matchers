@@ -23,6 +23,15 @@
   * *Commits: [45de869]*
   * *Fixes: [#880], [#884], [#885]*
 
+* Fix an issue with `validate_uniqueness_of` + `scoped_to` when used against a
+  model where the attribute has multiple uniqueness validations and each
+  validation has a different set of scopes. In this case, a test written for the
+  first validation (and its scopes) would pass, but tests for the other
+  validations (and their scopes) would not, as the matcher only considered the
+  first set of scopes as the *actual* set of scopes.
+
+  * *References: [#830]*
+
 ### Improvements
 
 * Update `validate_uniqueness_of` so that if an existing record fails to be
@@ -37,6 +46,7 @@
 [#884]: https://github.com/thoughtbot/shoulda-matchers/issues/884
 [#885]: https://github.com/thoughtbot/shoulda-matchers/issues/885
 [78ccfc5]: https://github.com/thoughtbot/shoulda-matchers/commit/78ccfc50b52fa686c109d614df66744b0da65380
+[#830]: https://github.com/thoughtbot/shoulda-matchers/issues/830
 
 # 3.1.0
 
