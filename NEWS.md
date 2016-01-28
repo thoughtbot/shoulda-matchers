@@ -21,7 +21,7 @@
   ([#880], [#884], [#885])
 
   * *Commits: [45de869]*
-  * *Fixes: [#880], [#884], [#885]*
+  * *Issues: [#880], [#884], [#885]*
 
 * Fix an issue with `validate_uniqueness_of` + `scoped_to` when used against a
   model where the attribute has multiple uniqueness validations and each
@@ -30,7 +30,8 @@
   validations (and their scopes) would not, as the matcher only considered the
   first set of scopes as the *actual* set of scopes.
 
-  * *References: [#830]*
+  * *Commits: [28bd9a1]*
+  * *Issues: [#830]*
 
 ### Improvements
 
@@ -46,6 +47,7 @@
 [#884]: https://github.com/thoughtbot/shoulda-matchers/issues/884
 [#885]: https://github.com/thoughtbot/shoulda-matchers/issues/885
 [78ccfc5]: https://github.com/thoughtbot/shoulda-matchers/commit/78ccfc50b52fa686c109d614df66744b0da65380
+[28bd9a1]: https://github.com/thoughtbot/shoulda-matchers/commit/28bd9a10c71af4d541b692d6204163c394ebd33c
 [#830]: https://github.com/thoughtbot/shoulda-matchers/issues/830
 
 # 3.1.0
