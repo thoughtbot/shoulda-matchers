@@ -20,7 +20,7 @@
   a backward-incompatible change, so this behavior has been rolled back.
   ([#880], [#884], [#885])
 
-  * *Commits: [45de869]*
+  * *Commit: [45de869]*
   * *Issues: [#880], [#884], [#885]*
 
 * Fix an issue with `validate_uniqueness_of` + `scoped_to` when used against a
@@ -30,7 +30,7 @@
   validations (and their scopes) would not, as the matcher only considered the
   first set of scopes as the *actual* set of scopes.
 
-  * *Commits: [28bd9a1]*
+  * *Commit: [28bd9a1]*
   * *Issues: [#830]*
 
 ### Improvements
@@ -39,7 +39,7 @@
   created because a column is non-nullable and was not filled in, raise an
   ExistingRecordInvalid exception with details on how to fix the test.
 
-  * *Commits: [78ccfc5]*
+  * *Commit: [78ccfc5]*
 
 [#879]: https://github.com/thoughtbot/shoulda-matchers/issues/879
 [45de869]: https://github.com/thoughtbot/shoulda-matchers/commit/45de8698487d57f559c5bf35818d1c1ee82b0e77
