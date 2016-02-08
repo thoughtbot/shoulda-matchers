@@ -1,3 +1,5 @@
+require 'active_support/core_ext/object/try'
+
 require 'shoulda/matchers/configuration'
 require 'shoulda/matchers/doublespeak'
 require 'shoulda/matchers/error'
