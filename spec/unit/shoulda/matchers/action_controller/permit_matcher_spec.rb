@@ -180,6 +180,16 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
       for(:show, verb: :get, params: { slug: 'foo' })
   end
 
+  it 'works when #fetch is used instead of #require (issue #495)' do
+    define_controller_with_strong_parameters(action: :create) do
+      params.fetch(:order, {}).permit(:eta, :diner_id)
+    end
+
+    expect(controller).
+      to permit(:eta, :diner_id).
+      for(:create)
+  end
+
   it 'works with #update specifically' do
     define_controller_with_strong_parameters(action: :update) do
       params.permit(:name)
@@ -191,17 +201,6 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
   end
 
   describe '#matches?' do
-    it 'does not raise an error when #fetch was used instead of #require (issue #495)' do
-      matcher = permit(:eta, :diner_id).for(:create)
-      matching = -> { matcher.matches?(controller) }
-
-      define_controller_with_strong_parameters(action: :create) do
-        params.fetch(:order, {}).permit(:eta, :diner_id)
-      end
-
-      expect(&matching).not_to raise_error
-    end
-
     context 'stubbing params on the controller' do
       it 'still allows the original params hash to be modified and accessed prior to the call to #require' do
         actual_user_params = nil
