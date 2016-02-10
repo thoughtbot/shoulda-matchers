@@ -187,7 +187,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
 
     expect(controller).
       to permit(:eta, :diner_id).
-      for(:create)
+      for(:create, params: { order: { foo: '' } })
   end
 
   it 'works with #update specifically' do
