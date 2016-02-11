@@ -336,7 +336,7 @@ module Shoulda
         # @private
         class CompositeParametersDoubleRegistry
           def initialize
-            @parameters_double_registries_by_params = {}
+            @parameters_double_registries = []
           end
 
           def register
@@ -347,20 +347,19 @@ module Shoulda
               params = call.return_value
               parameters_double_registry = ParametersDoubleRegistry.new(params)
               parameters_double_registry.register
-              parameters_double_registries_by_params[params] =
-                parameters_double_registry
+              parameters_double_registries << parameters_double_registry
             end
           end
 
           def permitted_parameter_names(options = {})
-            parameters_double_registries_by_params.flat_map do |params, double_registry|
+            parameters_double_registries.flat_map do |double_registry|
               double_registry.permitted_parameter_names(options)
             end
           end
 
           protected
 
-          attr_reader :parameters_double_registries_by_params
+          attr_reader :parameters_double_registries
         end
 
         # @private
