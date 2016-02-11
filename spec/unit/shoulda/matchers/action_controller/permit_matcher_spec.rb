@@ -190,6 +190,15 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
       for(:update, params: { id: 1 })
   end
 
+  it 'works when multiple ActionController::Parameters were instantiated' do
+    define_controller_with_strong_parameters(action: :create) do
+      params.permit(:name)
+      params.dup
+    end
+
+    expect(controller).to permit(:name).for(:create)
+  end
+
   describe '#matches?' do
     it 'does not raise an error when #fetch was used instead of #require (issue #495)' do
       matcher = permit(:eta, :diner_id).for(:create)
