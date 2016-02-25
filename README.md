@@ -8,6 +8,10 @@ complex, and error-prone.
 
 ----
 
+**NOTE: Shoulda Matchers is currently undergoing a changing of the guard. We will not be as responsive to answer questions or issues while we make this transition. Sorry about that.**
+
+----
+
 ### ActiveModel matchers
 
 * **[allow_mass_assignment_of](lib/shoulda/matchers/active_model/allow_mass_assignment_of_matcher.rb)**
