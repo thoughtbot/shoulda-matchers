@@ -18,6 +18,7 @@ require "shoulda/matchers/active_record/accept_nested_attributes_for_matcher"
 require "shoulda/matchers/active_record/define_enum_for_matcher"
 require "shoulda/matchers/active_record/uniqueness"
 require "shoulda/matchers/active_record/validate_uniqueness_of_matcher"
+require "shoulda/matchers/active_record/have_secure_token_matcher"
 
 module Shoulda
   module Matchers
