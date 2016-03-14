@@ -291,16 +291,6 @@ raising a validation exception on failure.
     end
   end
 
-  context 'an active_resource model' do
-    context 'with the validation context' do
-      it 'does not raise an exception' do
-        expect {
-          expect(active_resource_model).to validate_presence_of(:attr)
-        }.to_not raise_exception
-      end
-    end
-  end
-
   if rails_4_x?
     context 'against a pre-set password in a model that has_secure_password' do
       it 'raises a CouldNotSetPasswordError' do
@@ -362,12 +352,6 @@ raising a validation exception on failure.
       if options[:presence]
         validates_presence_of :children
       end
-    end.new
-  end
-
-  def active_resource_model
-    define_active_resource_class :foo, attr: :string do
-      validates_presence_of :attr
     end.new
   end
 

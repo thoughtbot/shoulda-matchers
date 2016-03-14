@@ -25,7 +25,7 @@ rails_4 = proc do
   gem 'jquery-rails'
   gem 'turbolinks'
   gem 'sdoc'
-  gem 'activeresource', '4.0.0'
+  gem 'activeresource'
   # Test suite makes heavy use of attr_accessible
   gem 'protected_attributes'
   gem 'minitest-reporters'
@@ -70,4 +70,28 @@ appraise '4.2' do
   gem 'bcrypt', '~> 3.1.7'
   gem 'spring'
   gem 'protected_attributes', "~> 1.0.6"
+end
+
+appraise '5.0.0.beta2' do
+  gem "rspec", :github => "rspec/rspec"
+  gem "rspec-core", :github => "rspec/rspec-core"
+  gem "rspec-expectations", :github => "rspec/rspec-expectations"
+  gem "rspec-mocks", :github => "rspec/rspec-mocks"
+  gem "rspec-support", :github => "rspec/rspec-support"
+  gem "rspec-rails", :github => "rspec/rspec-rails"
+  gem 'shoulda-context'
+  gem 'rails-controller-testing'
+  gem 'sqlite3', platform: :ruby
+  gem 'pg', platform: :ruby
+  gem 'activerecord-jdbc-adapter', platform: :jruby
+  gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
+  gem 'jdbc-sqlite3', platform: :jruby
+  gem 'jruby-openssl', platform: :jruby
+  gem 'therubyrhino', platform: :jruby
+  gem 'rails', '~> 5.0.0.beta2'
+  gem 'sass-rails', '~> 5.0'
+  gem 'jbuilder', '~> 2.0'
+  gem 'sdoc', '~> 0.4.0'
+  gem 'bcrypt', '~> 3.1.7'
+  gem 'spring'
 end

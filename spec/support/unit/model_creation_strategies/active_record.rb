@@ -42,10 +42,6 @@ module UnitTests
           run_block(model, block)
         end
 
-        if whitelist_attributes?
-          model.attr_accessible(*columns.keys)
-        end
-
         model.table_name = table_name
 
         model

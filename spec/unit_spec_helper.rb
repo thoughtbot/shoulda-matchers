@@ -12,7 +12,6 @@ end
 RSpec.configure do |config|
   UnitTests::ActiveModelHelpers.configure_example_group(config)
   UnitTests::ActiveModelVersions.configure_example_group(config)
-  UnitTests::ActiveResourceBuilder.configure_example_group(config)
   UnitTests::ClassBuilder.configure_example_group(config)
   UnitTests::ControllerBuilder.configure_example_group(config)
   UnitTests::I18nFaker.configure_example_group(config)

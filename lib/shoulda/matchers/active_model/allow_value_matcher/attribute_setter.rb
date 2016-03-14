@@ -151,11 +151,7 @@ module Shoulda
           end
 
           def attribute_exists?
-            if active_resource_object?
-              object.known_attributes.include?(attribute_name.to_s)
-            else
-              object.respond_to?("#{attribute_name}=")
-            end
+            object.respond_to?("#{attribute_name}=")
           end
 
           def ignore_interference_by_writer
@@ -220,10 +216,6 @@ module Shoulda
               attribute_name: attribute_name,
               value: value_written
             )
-          end
-
-          def active_resource_object?
-            object.respond_to?(:known_attributes)
           end
 
           def model

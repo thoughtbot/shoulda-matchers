@@ -71,14 +71,15 @@ module UnitTests
       def possibly_override_attribute_writer_method_for(model)
         all_attribute_overrides.each do |attribute_name, overrides|
           if overrides.key?(:changing_values_with)
-            _change_value = method(:change_value)
+            change_value = method(:change_value)
 
             model.send(:define_method, "#{attribute_name}=") do |value|
-              new_value = _change_value.call(
+              new_value = change_value.call(
                 value,
                 overrides[:changing_values_with]
               )
 
+              binding.pry
               if respond_to?(:write_attribute)
                 write_attribute(new_value)
               else
