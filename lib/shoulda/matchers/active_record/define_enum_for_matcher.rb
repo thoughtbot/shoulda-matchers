@@ -11,7 +11,6 @@ module Shoulda
       #     # RSpec
       #     describe Process do
       #       it { should define_enum_for(:status) }
-      #       end
       #     end
       #
       #     # Minitest (Shoulda)
