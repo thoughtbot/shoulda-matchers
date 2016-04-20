@@ -38,7 +38,7 @@ appraise '4.0.0' do
   gem 'rails', '4.0.0'
   gem 'jbuilder', '~> 1.2'
   gem 'sass-rails', '~> 4.0.0'
-  gem 'bcrypt-ruby', '~> 3.0.0'
+  gem 'bcrypt', '~> 3.1.0'
 end
 
 appraise '4.0.1' do
@@ -46,7 +46,7 @@ appraise '4.0.1' do
   gem 'rails', '4.0.1'
   gem 'jbuilder', '~> 1.2'
   gem 'sass-rails', '~> 4.0.0'
-  gem 'bcrypt-ruby', '~> 3.1.2'
+  gem 'bcrypt', '~> 3.1.2'
 end
 
 appraise '4.1' do

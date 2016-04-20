@@ -44,7 +44,7 @@ GEM
       rake
       thor (>= 0.14.0)
     arel (4.0.2)
-    bcrypt-ruby (3.0.1)
+    bcrypt (3.1.11)
     builder (3.1.4)
     byebug (5.0.0)
       columnize (= 0.9.0)
@@ -188,7 +188,7 @@ DEPENDENCIES
   activerecord-jdbcsqlite3-adapter
   activeresource (= 4.0.0)
   appraisal (~> 2.0)
-  bcrypt-ruby (~> 3.0.0)
+  bcrypt (~> 3.1.0)
   bundler (~> 1.1)
   coffee-rails (~> 4.0.0)
   fssm
