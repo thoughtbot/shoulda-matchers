@@ -486,6 +486,24 @@ module Shoulda
       #       should have_many(:games).autosave(true)
       #     end
       #
+      # ##### inverse_of
+      #
+      # Use `inverse_of` to assert that the `:inverse_of` option was specified.
+      #
+      #     class Organization < ActiveRecord::Base
+      #       has_many :employees, inverse_of: :company
+      #     end
+      #
+      #     # RSpec
+      #     describe Organization
+      #       it { should have_many(:employees).inverse_of(:company) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class OrganizationTest < ActiveSupport::TestCase
+      #       should have_many(:employees).inverse_of(:company)
+      #     end
+      #
       # @return [AssociationMatcher]
       #
       def have_many(name)
