@@ -6,7 +6,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
       it 'rejects' do
         record = record_with_array_values
         plural_enum_attribute = enum_attribute.to_s.pluralize
-        message = "Expected #{record.class} to define :#{plural_enum_attribute} as an enum and store the value in a column with an integer type"
+        message = "Expected #{record.class} to define :#{plural_enum_attribute} as an enum"
 
         assertion = lambda do
           expect(record).to define_enum_for(plural_enum_attribute)
@@ -22,7 +22,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
           def self.statuses; end
         end
 
-        message = "Expected #{model} to define :statuses as an enum and store the value in a column with an integer type"
+        message = "Expected #{model} to define :statuses as an enum"
 
         assertion = lambda do
           expect(model.new).to define_enum_for(:statuses)
@@ -38,7 +38,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
       end
 
       it "rejects a record where the attribute is not defined as an enum" do
-        message = "Expected #{record_with_array_values.class} to define :#{non_enum_attribute} as an enum and store the value in a column with an integer type"
+        message = "Expected #{record_with_array_values.class} to define :#{non_enum_attribute} as an enum"
 
         assertion = lambda do
           expect(record_with_array_values).
@@ -49,7 +49,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
       end
 
       it "rejects a record where the attribute is not defined as an enum with should not" do
-        message = "Did not expect #{record_with_array_values.class} to define :#{enum_attribute} as an enum and store the value in a column with an integer type"
+        message = "Did not expect #{record_with_array_values.class} to define :#{enum_attribute} as an enum"
 
         assertion = lambda do
           expect(record_with_array_values).
@@ -62,7 +62,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
       context 'if the column storing the attribute is not an integer type' do
         it 'rejects' do
           record = record_with_array_values(column_type: :string)
-          message = "Expected #{record.class} to define :statuses as an enum and store the value in a column with an integer type"
+          message = "Expected #{record.class} to define :statuses as an enum"
 
           assertion = lambda do
             expect(record).to define_enum_for(:statuses)
@@ -81,7 +81,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
         end
 
         it "accepts a record where the attribute is not defined as an enum" do
-          message = %{Expected #{record_with_array_values.class} to define :#{non_enum_attribute} as an enum with ["open", "close"] and store the value in a column with an integer type}
+          message = %{Expected #{record_with_array_values.class} to define :#{non_enum_attribute} as an enum with ["open", "close"]}
 
           assertion = lambda do
             expect(record_with_array_values).
@@ -92,7 +92,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
         end
 
         it "accepts a record where the attribute is defined as an enum but the enum values do not match" do
-          message = %{Expected #{record_with_array_values.class} to define :#{enum_attribute} as an enum with ["open", "close"] and store the value in a column with an integer type}
+          message = %{Expected #{record_with_array_values.class} to define :#{enum_attribute} as an enum with ["open", "close"]}
 
           assertion = lambda do
             expect(record_with_array_values).
@@ -114,7 +114,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
         end
 
         it "accepts a record where the attribute is defined as an enum but the enum values do not match" do
-          message = %{Expected #{record_with_hash_values.class} to define :#{enum_attribute} as an enum with {:active=>5, :archived=>10} and store the value in a column with an integer type}
+          message = %{Expected #{record_with_hash_values.class} to define :#{enum_attribute} as an enum with {:active=>5, :archived=>10}}
 
           assertion = lambda do
             expect(record_with_hash_values).
@@ -126,7 +126,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
         end
 
         it "rejects a record where the attribute is not defined as an enum" do
-          message = %{Expected #{record_with_hash_values.class} to define :record_with_hash_values as an enum with {:active=>5, :archived=>10} and store the value in a column with an integer type}
+          message = %{Expected #{record_with_hash_values.class} to define :record_with_hash_values as an enum with {:active=>5, :archived=>10}}
 
           assertion = lambda do
             expect(record_with_hash_values).
