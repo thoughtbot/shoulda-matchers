@@ -90,6 +90,7 @@ module Shoulda
         end
 
         def perform_validation
+          record.errors.clear
           if context
             record.valid?(context)
           else
