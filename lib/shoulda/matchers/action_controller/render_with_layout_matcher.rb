@@ -11,7 +11,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe PostsController do
+      #     RSpec.describe PostsController, type: :controller do
       #       describe 'GET #show' do
       #         before { get :show }
       #
@@ -38,7 +38,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe PostsController do
+      #     RSpec.describe PostsController, type: :controller do
       #       describe 'GET #sidebar' do
       #         before { get :sidebar }
       #

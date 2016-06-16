@@ -12,7 +12,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should validate_numericality_of(:gpa) }
       #     end
       #
@@ -35,7 +35,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should validate_numericality_of(:number_of_dependents).
       #           on(:create)
@@ -61,7 +61,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should validate_numericality_of(:age).only_integer }
       #     end
       #
@@ -85,7 +85,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should validate_numericality_of(:number_of_cars).
       #           is_less_than(2)
@@ -113,7 +113,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should validate_numericality_of(:birth_year).
       #           is_less_than_or_equal_to(1987)
@@ -140,7 +140,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should validate_numericality_of(:weight).is_equal_to(150) }
       #     end
       #
@@ -164,7 +164,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should validate_numericality_of(:height).
       #           is_greater_than_or_equal_to(55)
@@ -191,7 +191,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should validate_numericality_of(:legal_age).
       #           is_greater_than(21)
@@ -217,7 +217,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should validate_numericality_of(:birth_month).even }
       #     end
       #
@@ -240,7 +240,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should validate_numericality_of(:birth_day).odd }
       #     end
       #
@@ -262,7 +262,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should validate_numericality_of(:number_of_dependents).
       #           with_message('Number of dependents must be a number')
@@ -287,7 +287,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       it { should validate_numericality_of(:age).allow_nil }
       #     end
       #

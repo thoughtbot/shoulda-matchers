@@ -12,7 +12,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Registration do
+      #     RSpec.describe Registration, type: :model do
       #       it { should validate_acceptance_of(:eula) }
       #     end
       #
@@ -35,7 +35,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Registration do
+      #     RSpec.describe Registration, type: :model do
       #       it do
       #         should validate_acceptance_of(:terms_of_service).
       #           on(:create)
@@ -60,7 +60,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Registration do
+      #     RSpec.describe Registration, type: :model do
       #       it do
       #         should validate_acceptance_of(:terms_of_service).
       #           with_message('You must accept the terms of service')

@@ -16,7 +16,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Game do
+      #     RSpec.describe Game, type: :model do
       #       it do
       #         should validate_exclusion_of(:supported_os).
       #           in_array(['Mac', 'Linux'])
@@ -39,7 +39,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Game do
+      #     RSpec.describe Game, type: :model do
       #       it do
       #         should validate_exclusion_of(:floors_with_enemies).
       #           in_range(5..8)
@@ -68,7 +68,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Game do
+      #     RSpec.describe Game, type: :model do
       #       it do
       #         should validate_exclusion_of(:weapon).
       #           in_array(['pistol', 'paintball gun', 'stick']).
@@ -97,7 +97,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Game do
+      #     RSpec.describe Game, type: :model do
       #       it do
       #         should validate_exclusion_of(:weapon).
       #           in_array(['pistol', 'paintball gun', 'stick']).

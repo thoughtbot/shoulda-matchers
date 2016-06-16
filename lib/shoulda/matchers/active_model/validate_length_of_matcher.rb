@@ -17,7 +17,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it do
       #         should validate_length_of(:password).
       #           is_at_least(10).
@@ -47,7 +47,7 @@ module Shoulda
       #
       #     # RSpec
       #
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it { should validate_length_of(:bio).is_at_least(15) }
       #     end
       #
@@ -71,7 +71,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it { should validate_length_of(:status_update).is_at_most(140) }
       #     end
       #
@@ -94,7 +94,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it { should validate_length_of(:favorite_superhero).is_equal_to(6) }
       #     end
       #
@@ -116,7 +116,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it do
       #         should validate_length_of(:password).
       #           is_at_least(5).is_at_most(30)
@@ -143,7 +143,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it do
       #         should validate_length_of(:password).
       #           is_at_least(10).
@@ -172,7 +172,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it do
       #         should validate_length_of(:secret_key).
       #           is_at_least(15).
@@ -201,7 +201,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it do
       #         should validate_length_of(:secret_key).
       #           is_at_most(100).

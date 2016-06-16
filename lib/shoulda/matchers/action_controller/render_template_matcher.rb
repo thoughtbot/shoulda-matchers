@@ -15,7 +15,7 @@ module Shoulda
       #     <%= render 'sidebar' %>
       #
       #     # RSpec
-      #     describe PostsController do
+      #     RSpec.describe PostsController, type: :controller do
       #       describe 'GET #show' do
       #         before { get :show }
       #

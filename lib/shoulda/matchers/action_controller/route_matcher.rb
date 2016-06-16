@@ -24,7 +24,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe PostsController do
+      #     RSpec.describe PostsController, type: :controller do
       #       it { should route(:get, '/posts').to(action: :index) }
       #       it { should route(:get, '/posts/1').to(action: :show, id: 1) }
       #     end
@@ -38,7 +38,7 @@ module Shoulda
       # Or you could place the tests along with other route tests:
       #
       #     # RSpec
-      #     describe 'Routing' do
+      #     describe 'Routing', type: :routing do
       #       it do
       #         should route(:get, '/posts').
       #           to(controller: :posts, action: :index)

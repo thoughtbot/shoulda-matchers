@@ -13,7 +13,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe PostsController do
+      #     RSpec.describe PostsController, type: :controller do
       #       describe 'GET #index' do
       #         before { get :index }
       #
@@ -39,7 +39,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe PostsController do
+      #     RSpec.describe PostsController, type: :controller do
       #       describe 'DELETE #destroy' do
       #         before { delete :destroy }
       #
@@ -65,7 +65,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe PostsController do
+      #     RSpec.describe PostsController, type: :controller do
       #       describe 'GET #show' do
       #         before { get :show }
       #

@@ -23,11 +23,11 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       it { should allow_mass_assignment_of(:title) }
       #     end
       #
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it { should_not allow_mass_assignment_of(:encrypted_password) }
       #     end
       #
@@ -56,7 +56,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       it { should allow_mass_assignment_of(:title).as(:admin) }
       #     end
       #

@@ -12,7 +12,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it { should validate_confirmation_of(:email) }
       #     end
       #
@@ -35,7 +35,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it { should validate_confirmation_of(:password).on(:create) }
       #     end
       #
@@ -57,7 +57,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it do
       #         should validate_confirmation_of(:password).
       #           with_message('Please re-enter your password')

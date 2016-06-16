@@ -60,7 +60,7 @@ module Shoulda
     #     end
     #
     #     # RSpec
-    #     describe User do
+    #     RSpec.describe User, type: :model do
     #       context "when an admin" do
     #         subject { User.new(admin: true) }
     #

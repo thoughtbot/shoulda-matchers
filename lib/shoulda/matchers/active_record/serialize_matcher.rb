@@ -8,7 +8,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Product do
+      #     RSpec.describe Product, type: :model do
       #       it { should serialize(:customizations) }
       #     end
       #
@@ -38,7 +38,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Product do
+      #     RSpec.describe Product, type: :model do
       #       it do
       #         should serialize(:specifications).
       #           as(ProductSpecsSerializer)
@@ -70,7 +70,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Product do
+      #     RSpec.describe Product, type: :model do
       #       it do
       #         should serialize(:options).
       #           as_instance_of(ProductOptionsSerializer)

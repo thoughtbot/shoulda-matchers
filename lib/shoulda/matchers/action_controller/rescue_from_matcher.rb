@@ -16,7 +16,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe ApplicationController do
+      #     RSpec.describe ApplicationController, type: :controller do
       #       it do
       #         should rescue_from(ActiveRecord::RecordNotFound).
       #           with(:handle_not_found)

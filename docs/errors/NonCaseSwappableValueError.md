@@ -46,7 +46,7 @@ error message explains, you have two options:
         end
 
         # RSpec
-        describe User do
+        RSpec.describe User, type: :model do
           context "validations" do
             subject do
               # Note that "123" == "123".swapcase. This is a problem!
@@ -87,7 +87,7 @@ error message explains, you have two options:
         end
         
         # RSpec
-        describe User do
+        RSpec.describe User, type: :model do
           context "validations" do
             subject do
               # Note that "123" == "123".swapcase, but it's okay

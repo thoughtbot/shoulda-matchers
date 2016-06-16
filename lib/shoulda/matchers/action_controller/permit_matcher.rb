@@ -35,7 +35,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe UsersController do
+      #     RSpec.describe UsersController, type: :controller do
       #       it do
       #         params = {
       #           user: {
@@ -96,7 +96,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe UsersController do
+      #     RSpec.describe UsersController, type: :controller do
       #       before do
       #         create(:user, id: 1)
       #       end
@@ -170,7 +170,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe UsersController do
+      #     RSpec.describe UsersController, type: :controller do
       #       before do
       #         create(:user, id: 1)
       #       end

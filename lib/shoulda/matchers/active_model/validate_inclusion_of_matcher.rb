@@ -19,7 +19,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Issue do
+      #     RSpec.describe Issue, type: :model do
       #       it do
       #         should validate_inclusion_of(:state).
       #           in_array(['open', 'resolved', 'unresolved'])
@@ -42,7 +42,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Issue do
+      #     RSpec.describe Issue, type: :model do
       #       it { should validate_inclusion_of(:state).in_range(1..5) }
       #     end
       #
@@ -84,7 +84,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Issue do
+      #     RSpec.describe Issue, type: :model do
       #       it do
       #         should validate_inclusion_of(:severity).
       #           in_array(%w(low medium high)).
@@ -113,7 +113,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Issue do
+      #     RSpec.describe Issue, type: :model do
       #       it do
       #         should validate_inclusion_of(:severity).
       #           in_array(%w(low medium high)).
@@ -149,7 +149,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should validate_inclusion_of(:age).
       #           in_range(0..65).
@@ -185,7 +185,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should validate_inclusion_of(:age).
       #           in_range(0..21).
@@ -215,7 +215,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Issue do
+      #     RSpec.describe Issue, type: :model do
       #       it do
       #         should validate_inclusion_of(:state).
       #           in_array(['open', 'resolved', 'unresolved']).
@@ -245,7 +245,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Issue do
+      #     RSpec.describe Issue, type: :model do
       #       it do
       #         should validate_inclusion_of(:state).
       #           in_array(['open', 'resolved', 'unresolved']).

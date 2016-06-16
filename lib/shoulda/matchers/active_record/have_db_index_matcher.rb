@@ -15,7 +15,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Blog do
+      #     RSpec.describe Blog, type: :model do
       #       it { should have_db_index(:user_id) }
       #     end
       #
@@ -41,7 +41,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Blog do
+      #     RSpec.describe Blog, type: :model do
       #       it { should have_db_index(:name).unique(true) }
       #     end
       #
@@ -54,7 +54,7 @@ module Shoulda
       # leave off the argument to save some keystrokes:
       #
       #     # RSpec
-      #     describe Blog do
+      #     RSpec.describe Blog, type: :model do
       #       it { should have_db_index(:name).unique }
       #     end
       #

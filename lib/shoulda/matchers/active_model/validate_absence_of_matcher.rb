@@ -12,7 +12,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe PowerHungryCountry do
+      #     RSpec.describe PowerHungryCountry, type: :model do
       #       it { should validate_absence_of(:nuclear_weapons) }
       #     end
       #
@@ -35,7 +35,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe PowerHungryCountry do
+      #     RSpec.describe PowerHungryCountry, type: :model do
       #       it { should validate_absence_of(:nuclear_weapons).on(:create) }
       #     end
       #
@@ -57,7 +57,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe PowerHungryCountry do
+      #     RSpec.describe PowerHungryCountry, type: :model do
       #       it do
       #         should validate_absence_of(:nuclear_weapons).
       #           with_message("there shall be peace on Earth")

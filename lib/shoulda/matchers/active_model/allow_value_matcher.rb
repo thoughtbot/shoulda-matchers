@@ -17,7 +17,7 @@ module Shoulda
       # You can use `allow_value` to test one value at a time:
       #
       #     # RSpec
-      #     describe UserProfile do
+      #     RSpec.describe UserProfile, type: :model do
       #       it { should allow_value('http://foo.com').for(:website_url) }
       #       it { should allow_value('http://bar.com').for(:website_url) }
       #     end
@@ -34,7 +34,7 @@ module Shoulda
       # that none of the values cause the record to be valid:
       #
       #     # RSpec
-      #     describe UserProfile do
+      #     RSpec.describe UserProfile, type: :model do
       #       it do
       #         should allow_values('http://foo.com', 'http://bar.com').
       #           for(:website_url)
@@ -82,7 +82,7 @@ module Shoulda
       #           end
       #         end
       #
-      #         describe Foo do
+      #         RSpec.describe Foo, type: :model do
       #           it do
       #             foo = Foo.new
       #             foo.bar = "baz"
@@ -105,7 +105,7 @@ module Shoulda
       #           end
       #         end
       #
-      #         describe Foo do
+      #         RSpec.describe Foo, type: :model do
       #           it do
       #             foo = Foo.new
       #             # This will raise an AttributeChangedValueError since `foo.bar` is now "123"
@@ -116,7 +116,7 @@ module Shoulda
       # * You're passing a value to `allow_value` that the model typecasts into
       #   another value:
       #
-      #         describe Foo do
+      #         RSpec.describe Foo, type: :model do
       #           # Assume that `attr` is a string
       #           # This will raise an AttributeChangedValueError since `attr` typecasts `[]` to `"[]"`
       #           it { should_not allow_value([]).for(:attr) }
@@ -154,7 +154,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe UserProfile do
+      #     RSpec.describe UserProfile, type: :model do
       #       it do
       #         should allow_value('2013-01-01').
       #           for(:birthday_as_string).
@@ -183,7 +183,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe UserProfile do
+      #     RSpec.describe UserProfile, type: :model do
       #       it do
       #         should allow_value('open', 'closed').
       #           for(:state).
@@ -210,7 +210,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe UserProfile do
+      #     RSpec.describe UserProfile, type: :model do
       #       it do
       #         should allow_value('open', 'closed').
       #           for(:state).
@@ -246,7 +246,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe UserProfile do
+      #     RSpec.describe UserProfile, type: :model do
       #       it do
       #         should allow_value('Broncos', 'Titans').
       #           for(:sports_team).
@@ -276,7 +276,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Address do
+      #     RSpec.describe Address, type: :model do
       #       it do
       #         should_not allow_value([]).
       #           for(:zip_code).

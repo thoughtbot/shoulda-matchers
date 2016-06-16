@@ -11,7 +11,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should belong_to(:organization) }
       #     end
       #
@@ -28,7 +28,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Comment do
+      #     RSpec.describe Comment, type: :model do
       #       it { should belong_to(:commentable) }
       #     end
       #
@@ -49,7 +49,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should belong_to(:family).
       #           conditions(everyone_is_perfect: false)
@@ -72,7 +72,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should belong_to(:previous_company).order('hired_on desc') }
       #     end
       #
@@ -91,7 +91,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should belong_to(:ancient_city).class_name('City') }
       #     end
       #
@@ -109,7 +109,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should belong_to(:great_country).
       #           with_primary_key('country_id')
@@ -131,7 +131,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should belong_to(:great_country).
       #           with_foreign_key('country_id')
@@ -153,7 +153,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should belong_to(:world).dependent(:destroy) }
       #     end
       #
@@ -165,7 +165,7 @@ module Shoulda
       # To assert that *any* `:dependent` option was specified, use `true`:
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should belong_to(:world).dependent(true) }
       #     end
       #
@@ -176,7 +176,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should belong_to(:company).dependent(false) }
       #     end
       #
@@ -190,7 +190,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should belong_to(:organization).counter_cache(true) }
       #     end
       #
@@ -208,7 +208,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should belong_to(:organization).touch(true) }
       #     end
       #
@@ -226,7 +226,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Account do
+      #     RSpec.describe Account, type: :model do
       #       it { should belong_to(:bank).autosave(true) }
       #     end
       #
@@ -267,7 +267,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should have_many(:friends) }
       #     end
       #
@@ -284,7 +284,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should have_many(:pictures) }
       #     end
       #
@@ -305,7 +305,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should have_many(:coins).conditions(quality: 'mint') }
       #     end
       #
@@ -324,7 +324,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should have_many(:shirts).order('color') }
       #     end
       #
@@ -343,7 +343,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should have_many(:hopes).class_name('Dream') }
       #     end
       #
@@ -361,7 +361,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should have_many(:worries).with_primary_key('worrier_id') }
       #     end
       #
@@ -379,7 +379,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should have_many(:worries).with_foreign_key('worrier_id') }
       #     end
       #
@@ -397,7 +397,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should have_many(:secret_documents).dependent(:destroy) }
       #     end
       #
@@ -416,7 +416,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should have_many(:acquaintances).through(:friends) }
       #     end
       #
@@ -435,7 +435,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should have_many(:job_offers).
       #           through(:friends).
@@ -459,7 +459,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should have_many(:ideas).validate(false) }
       #     end
       #
@@ -477,7 +477,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Player do
+      #     RSpec.describe Player, type: :model do
       #       it { should have_many(:games).autosave(true) }
       #     end
       #
@@ -500,7 +500,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should have_one(:partner) }
       #     end
       #
@@ -521,7 +521,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should have_one(:pet).conditions('weight < 80') }
       #     end
       #
@@ -540,7 +540,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should have_one(:focus).order('priority desc') }
       #     end
       #
@@ -559,7 +559,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should have_one(:chance).class_name('Opportunity') }
       #     end
       #
@@ -577,7 +577,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should have_one(:contract).dependent(:nullify) }
       #     end
       #
@@ -595,7 +595,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should have_one(:job).with_primary_key('worker_id') }
       #     end
       #
@@ -613,7 +613,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should have_one(:job).with_foreign_key('worker_id') }
       #     end
       #
@@ -632,7 +632,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should have_one(:life).through(:partner) }
       #     end
       #
@@ -651,7 +651,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should have_one(:car).through(:partner).source(:vehicle) }
       #     end
       #
@@ -669,7 +669,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should have_one(:parking_card).validate(false) }
       #     end
       #
@@ -687,7 +687,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Account do
+      #     RSpec.describe Account, type: :model do
       #       it { should have_one(:bank).autosave(true) }
       #     end
       #
@@ -711,7 +711,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should have_and_belong_to_many(:awards) }
       #     end
       #
@@ -732,7 +732,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should have_and_belong_to_many(:issues).
       #           conditions(difficulty: 'hard')
@@ -755,7 +755,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should have_and_belong_to_many(:projects).
       #           order('time_spent')
@@ -778,7 +778,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should have_and_belong_to_many(:places_visited).
       #           class_name('City')
@@ -801,7 +801,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should have_and_belong_to_many(:issues).
       #           join_table('people_tickets')
@@ -823,7 +823,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should have_and_belong_to_many(:interviews).
       #           validate(false)
@@ -845,7 +845,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Publisher do
+      #     RSpec.describe Publisher, type: :model do
       #       it { should have_and_belong_to_many(:advertisers).autosave(true) }
       #     end
       #

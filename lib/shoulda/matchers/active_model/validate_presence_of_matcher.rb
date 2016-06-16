@@ -12,7 +12,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Robot do
+      #     RSpec.describe Robot, type: :model do
       #       it { should validate_presence_of(:arms) }
       #     end
       #
@@ -36,7 +36,7 @@ module Shoulda
       #       validates_presence_of :password
       #     end
       #
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       subject { User.new(password: '123456') }
       #
       #       it { should validate_presence_of(:password) }
@@ -69,7 +69,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Robot do
+      #     RSpec.describe Robot, type: :model do
       #       it { should validate_presence_of(:arms).on(:create) }
       #     end
       #
@@ -90,7 +90,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Robot do
+      #     RSpec.describe Robot, type: :model do
       #       it do
       #         should validate_presence_of(:legs).
       #           with_message('Robot has no legs')

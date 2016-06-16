@@ -14,7 +14,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       it { should validate_uniqueness_of(:permalink) }
       #     end
       #
@@ -49,7 +49,7 @@ module Shoulda
       #
       # You may be tempted to test the model like this:
       #
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       it { should validate_uniqueness_of(:title) }
       #     end
       #
@@ -78,7 +78,7 @@ module Shoulda
       # end of the error message, the solution is to build a custom Post object
       # ahead of time with `content` filled in:
       #
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       describe "validations" do
       #         subject { Post.new(content: "Here is the content") }
       #         it { should validate_uniqueness_of(:title) }
@@ -90,7 +90,7 @@ module Shoulda
       # `post` factory defined which automatically fills in `content`, you can
       # say:
       #
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       describe "validations" do
       #         subject { FactoryGirl.build(:post) }
       #         it { should validate_uniqueness_of(:title) }
@@ -106,7 +106,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       it { should validate_uniqueness_of(:title).on(:create) }
       #     end
       #
@@ -124,7 +124,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       it do
       #         should validate_uniqueness_of(:title).
       #           with_message('Please choose another title')
@@ -148,7 +148,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       it { should validate_uniqueness_of(:slug).scoped_to(:journal_id) }
       #     end
       #
@@ -169,7 +169,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       it { should validate_uniqueness_of(:key).case_insensitive }
       #     end
       #
@@ -201,7 +201,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       it do
       #         should validate_uniqueness_of(:email).ignoring_case_sensitivity
       #       end
@@ -221,7 +221,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       it { should validate_uniqueness_of(:author_id).allow_nil }
       #     end
       #
@@ -241,7 +241,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       it { should validate_uniqueness_of(:author_id).allow_blank }
       #     end
       #
