@@ -359,7 +359,7 @@ EOT
           if @range
             "validate that :#{@attribute} lies inside the range " +
               Shoulda::Matchers::Util.inspect_range(@range)
-          else
+          elsif @array
             description = "validate that :#{@attribute}"
 
             if @array.many?
@@ -386,6 +386,8 @@ EOT
               @failure_message = "#{@array} doesn't match array in validation"
               false
             end
+          else
+            raise NoRangeOrArrayDefinedForInclusionError.create(@attribute)
           end
         end
 

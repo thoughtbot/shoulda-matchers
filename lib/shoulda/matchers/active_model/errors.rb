@@ -47,6 +47,23 @@ Please use a #{record_name} with an empty `password` instead.
           model_name.humanize.downcase
         end
       end
+
+      # @private
+      class NoRangeOrArrayDefinedForInclusionError < Shoulda::Matchers::Error
+        def self.create(attribute)
+          super(attribute: attribute)
+        end
+
+        attr_accessor :attribute
+
+        def message
+          <<-EOT.strip
+You are using the `validate_inclusion_of` matcher without specifying the values that the matcher should use to test the inclusion validation. You'll need to provide the matcher with either a range or an array. For instance:
+  should validate_inclusion_of(:#{attribute}).in_range(0..10)
+  should validate_inclusion_of(:#{attribute}).in_array(['one', 'two', 'three'])
+          EOT
+        end
+      end
     end
   end
 end
