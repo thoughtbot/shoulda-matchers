@@ -548,18 +548,13 @@ module Shoulda
         end
 
         def validate_attribute_present_on_model?
-          if attribute_present_on_model?
+          if attribute_present_on_model?(attribute)
             true
           else
             @failure_reason =
               ":#{attribute} does not seem to be an attribute on #{model.name}."
             false
           end
-        end
-
-        def attribute_present_on_model?
-          model.method_defined?("#{attribute}=") ||
-            model.columns_hash.key?(attribute.to_s)
         end
 
         def validate_scopes_present_on_model?
@@ -590,12 +585,17 @@ module Shoulda
 
         def scopes_missing_on_model
           @_missing_scopes ||= expected_scopes.select do |scope|
-            !model.method_defined?("#{scope}=")
+            !attribute_present_on_model?(scope)
           end
         end
 
         def inspected_scopes_missing_on_model
           scopes_missing_on_model.map(&:inspect)
+        end
+
+        def attribute_present_on_model?(attr)
+          model.method_defined?("#{attr}=") ||
+            model.columns_hash.key?(attr.to_s)
         end
 
         def validate_two_records_with_same_non_blank_value_cannot_coexist?
