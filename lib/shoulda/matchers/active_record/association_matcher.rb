@@ -1149,19 +1149,6 @@ module Shoulda
           end
         end
 
-        def optional_correct?
-          if options.key?(:optional)
-            if option_verifier.correct_for_boolean?(:optional, options[:optional])
-              true
-            else
-              @missing = "#{name} should have optional set to #{options[:optional]}"
-              false
-            end
-          else
-            true
-          end
-        end
-
         def conditions_correct?
           if options.key?(:conditions)
             if option_verifier.correct_for_relation_clause?(:conditions, options[:conditions])

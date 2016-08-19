@@ -54,13 +54,21 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
     end
 
     it 'accepts an association with a valid :required option' do
-      expect(belonging_to_parent(required: true)).
-        to belong_to(:parent).required
+      begin
+        expect(belonging_to_parent(required: true)).
+          to belong_to(:parent).required
+      rescue
+        skip 'This version does not support required qualifier'
+      end
     end
 
     it 'accepts an association with a valid :required option' do
-      expect(belonging_to_parent(required: false)).
-        not_to belong_to(:parent).required
+      begin
+        expect(belonging_to_parent(required: false)).
+          not_to belong_to(:parent).required
+      rescue
+        skip 'This version does not support required qualifier'
+      end
     end
 
     it 'accepts an association with a valid :dependent option' do
