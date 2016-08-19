@@ -53,6 +53,16 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       expect(Child.new).to belong_to(:parent)
     end
 
+    it 'accepts an association with a valid :required option' do
+      expect(belonging_to_parent(required: true)).
+        to belong_to(:parent).required
+    end
+
+    it 'accepts an association with a valid :required option' do
+      expect(belonging_to_parent(required: false)).
+        not_to belong_to(:parent).required
+    end
+
     it 'accepts an association with a valid :dependent option' do
       expect(belonging_to_parent(dependent: :destroy)).
         to belong_to(:parent).dependent(:destroy)

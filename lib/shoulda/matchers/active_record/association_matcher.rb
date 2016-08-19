@@ -937,6 +937,11 @@ module Shoulda
           self
         end
 
+        def required(required = true)
+          @options[:required] = required
+          self
+        end
+
         def validate(validate = true)
           @options[:validate] = validate
           self
@@ -975,6 +980,7 @@ module Shoulda
             primary_key_exists? &&
             class_name_correct? &&
             join_table_correct? &&
+            required_correct? &&
             autosave_correct? &&
             conditions_correct? &&
             validate_correct? &&
@@ -1123,6 +1129,32 @@ module Shoulda
               true
             else
               @missing = "#{name} should have autosave set to #{options[:autosave]}"
+              false
+            end
+          else
+            true
+          end
+        end
+
+        def required_correct?
+          if options.key?(:required)
+            if option_verifier.correct_for_boolean?(:required, options[:required])
+              true
+            else
+              @missing = "#{name} should have required set to #{options[:required]}"
+              false
+            end
+          else
+            true
+          end
+        end
+
+        def optional_correct?
+          if options.key?(:optional)
+            if option_verifier.correct_for_boolean?(:optional, options[:optional])
+              true
+            else
+              @missing = "#{name} should have optional set to #{options[:optional]}"
               false
             end
           else
