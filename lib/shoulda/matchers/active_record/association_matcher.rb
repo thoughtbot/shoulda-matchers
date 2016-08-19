@@ -943,6 +943,11 @@ module Shoulda
           self
         end
 
+        def optional(optional = true)
+          @options[:optional] = optional
+          self
+        end
+
         def validate(validate = true)
           @options[:validate] = validate
           self
@@ -982,6 +987,7 @@ module Shoulda
             class_name_correct? &&
             join_table_correct? &&
             required_correct? && # TODO: Removed when Rails 4.x support is finished.
+            optional_correct? &&
             autosave_correct? &&
             conditions_correct? &&
             validate_correct? &&
@@ -1144,6 +1150,19 @@ module Shoulda
               true
             else
               @missing = "#{name} should have required set to #{options[:required]}"
+              false
+            end
+          else
+            true
+          end
+        end
+
+        def optional_correct?
+          if options.key?(:optional)
+            if option_verifier.correct_for_boolean?(:optional, options[:optional])
+              true
+            else
+              @missing = "#{name} should have optional set to #{options[:optional]}"
               false
             end
           else
