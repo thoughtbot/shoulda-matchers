@@ -53,6 +53,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       expect(Child.new).to belong_to(:parent)
     end
 
+    # TODO: Removed when Rails 4.x support is finished.
     it 'accepts an association with a valid :required option' do
       begin
         expect(belonging_to_parent(required: true)).
@@ -62,6 +63,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       end
     end
 
+    # TODO: Removed when Rails 4.x support is finished.
     it 'accepts an association with a valid :required option' do
       begin
         expect(belonging_to_parent(required: false)).
