@@ -255,6 +255,46 @@ module Shoulda
       #
       # @return [AssociationMatcher]
       #
+      # ##### required
+      #
+      # Use `required` to assert that the `:required` option was specified.
+      #
+      #     class Person < ActiveRecord::Base
+      #       belongs_to :organization, required: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Person
+      #       it { should belong_to(:organization).required }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should belong_to(:organization).required
+      #     end
+      #
+      # @return [AssociationMatcher]
+      #
+      # ##### optional
+      #
+      # Use `optional` to assert that the `:optional` option was specified.
+      #
+      #     class Person < ActiveRecord::Base
+      #       belongs_to :organization, optional: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Person
+      #       it { should belong_to(:organization).optional }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should belong_to(:organization).optional
+      #     end
+      #
+      # @return [AssociationMatcher]
+      #
       def belong_to(name)
         AssociationMatcher.new(:belongs_to, name)
       end
