@@ -42,7 +42,7 @@ module UnitTests
           run_block(model, block)
         end
 
-        if whitelist_attributes?
+        if whitelist_attributes? && model.respond_to?(:attr_accessible)
           model.attr_accessible(*columns.keys)
         end
 
