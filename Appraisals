@@ -31,6 +31,11 @@ rails_4 = proc do
   gem 'minitest-reporters'
 end
 
+rails_5 = proc do
+  instance_eval(&shared_dependencies)
+  instance_eval(&spring)
+end
+
 #---
 
 appraise '4.0.0' do
@@ -65,9 +70,22 @@ appraise '4.2' do
   gem 'rails', '~> 4.2.0'
   gem 'sass-rails', '~> 5.0'
   gem 'coffee-rails', '~> 4.1.0'
-  gem 'jbuilder', '~> 2.0'
-  gem 'sdoc', '~> 0.4.0'
+  # gem 'jbuilder', '~> 2.0'
+  # gem 'sdoc', '~> 0.4.0'
   gem 'bcrypt', '~> 3.1.7'
-  gem 'spring'
+  # gem 'spring'
   gem 'protected_attributes', "~> 1.0.6"
+end
+
+appraise '5.0' do
+  instance_eval(&rails_5)
+  gem 'rails', '~> 5.0.0', '>= 5.0.0.1'
+  # gem 'sass-rails', '~> 5.0'
+  # gem 'coffee-rails', '~> 4.2'
+  # gem 'jbuilder', '~> 2.5'
+  # gem 'sdoc', '~> 0.4.0'
+  gem 'bcrypt', '~> 3.1.7'
+  gem 'listen', '~> 3.0.5'
+  # gem 'spring'
+  # gem 'spring-watcher-listen', '~> 2.0.0'
 end
