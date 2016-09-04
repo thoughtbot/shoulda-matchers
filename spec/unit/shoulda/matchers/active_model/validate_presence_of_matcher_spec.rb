@@ -291,12 +291,14 @@ raising a validation exception on failure.
     end
   end
 
-  context 'an active_resource model' do
-    context 'with the validation context' do
-      it 'does not raise an exception' do
-        expect {
-          expect(active_resource_model).to validate_presence_of(:attr)
-        }.to_not raise_exception
+  if rails_lte_4?
+    context 'an active_resource model' do
+      context 'with the validation context' do
+        it 'does not raise an exception' do
+          expect {
+            expect(active_resource_model).to validate_presence_of(:attr)
+          }.to_not raise_exception
+        end
       end
     end
   end
