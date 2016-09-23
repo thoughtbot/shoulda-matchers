@@ -250,7 +250,10 @@ module Shoulda
           parameters_double_registry.register
 
           Doublespeak.with_doubles_activated do
-            context.__send__(verb, action, request_params)
+            scoped = ::ActionPack::VERSION::MAJOR >= 5
+            params = scoped ? { params: request_params } : request_params
+
+            context.__send__(verb, action, params)
           end
 
           unpermitted_parameter_names.empty?
