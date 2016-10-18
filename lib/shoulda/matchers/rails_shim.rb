@@ -23,9 +23,11 @@ module Shoulda
         if defined?(::ActiveRecord::Type::Serialized)
           # Rails 5+
           model.columns.select do |column|
-            column.cast_type.is_a?(::ActiveRecord::Type::Serialized)
+            model.type_for_attribute(column.name).is_a?(
+              ::ActiveRecord::Type::Serialized,
+            )
           end.inject({}) do |hash, column|
-            hash[column.name.to_s] = column.cast_type.coder
+            hash[column.name.to_s] = model.type_for_attribute(column.name).coder
             hash
           end
         else
