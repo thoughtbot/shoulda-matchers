@@ -1,3 +1,17 @@
+# 3.1.2
+
+### Bug fixes
+
+* When the `permit` matcher was used without `#on`, the controller did not use
+  `params#require`, the params object was duplicated, and the matcher did not
+  recognize the `#permit` call inside the controller. This behavior happened
+  because the matcher overwrote double registries with the same parameter hash
+  whenever ActionController::Parameters was instantiated.
+
+  * *Commit: [44c019]*
+  * *Issue: [#899]*
+  * *Pull request: [#902]*
+
 # 3.1.1
 
 ### Bug fixes
