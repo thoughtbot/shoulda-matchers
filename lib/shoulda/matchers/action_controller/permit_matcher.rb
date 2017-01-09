@@ -250,7 +250,12 @@ module Shoulda
           parameters_double_registry.register
 
           Doublespeak.with_doubles_activated do
-            context.__send__(verb, action, request_params)
+            Shoulda::Matchers::RailsShim.make_controller_request(
+              context,
+              verb,
+              action,
+              request_params,
+            )
           end
 
           unpermitted_parameter_names.empty?

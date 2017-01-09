@@ -498,7 +498,12 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
 
         matcher.matches?(controller)
 
-        expect(context).to have_received(:post).with(:create, {})
+        expect_to_have_made_controller_request(
+          verb: :post,
+          action: :create,
+          params: {},
+          context: context,
+        )
       end
     end
 
@@ -511,7 +516,12 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
 
           matcher.matches?(controller)
 
-          expect(context).to have_received(:patch).with(:update, {})
+          expect_to_have_made_controller_request(
+            verb: :patch,
+            action: :update,
+            params: {},
+            context: context,
+          )
         end
       else
         it 'PUTs to the controller' do
@@ -521,7 +531,12 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
 
           matcher.matches?(controller)
 
-          expect(context).to have_received(:put).with(:update, {})
+          expect_to_have_made_controller_request(
+            verb: :put,
+            action: :update,
+            params: {},
+            context: context,
+          )
         end
       end
     end
@@ -536,7 +551,12 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
 
         matcher.matches?(controller)
 
-        expect(context).to have_received(:delete).with(:hide, {})
+        expect_to_have_made_controller_request(
+          verb: :delete,
+          action: :hide,
+          params: {},
+          context: context,
+        )
       end
     end
   end
@@ -597,5 +617,13 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
 
   def build_context
     double('context', post: nil, put: nil, patch: nil, delete: nil)
+  end
+
+  def expect_to_have_made_controller_request(context:, verb:, action:, params:)
+    if action_pack_gte_5?
+      expect(context).to have_received(verb).with(action, params: params)
+    else
+      expect(context).to have_received(verb).with(action, params)
+    end
   end
 end

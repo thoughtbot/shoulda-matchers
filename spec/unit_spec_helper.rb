@@ -10,6 +10,7 @@ Dir[ File.join(File.expand_path('../support/unit/**/*.rb', __FILE__)) ].sort.eac
 end
 
 RSpec.configure do |config|
+  UnitTests::ActionPackVersions.configure_example_group(config)
   UnitTests::ActiveModelHelpers.configure_example_group(config)
   UnitTests::ActiveModelVersions.configure_example_group(config)
   UnitTests::ClassBuilder.configure_example_group(config)

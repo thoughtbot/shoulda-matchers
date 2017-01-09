@@ -7,6 +7,10 @@ module Shoulda
           Gem::Requirement.new('>= 4.1').satisfied_by?(action_pack_version)
         end
 
+        def action_pack_gte_5?
+          Gem::Requirement.new('>= 5').satisfied_by?(action_pack_version)
+        end
+
         def action_pack_version
           Gem::Version.new(::ActionPack::VERSION::STRING)
         end
@@ -43,7 +47,7 @@ module Shoulda
 
         def make_controller_request(context, verb, action, request_params)
           params =
-            if active_record_major_version >= 5
+            if action_pack_gte_5?
               { params: request_params }
             else
               request_params
@@ -122,17 +126,6 @@ module Shoulda
             { default: default_translation_keys }.merge(options)
           I18n.translate(primary_translation_key, translate_options)
         end
-      end
-
-      def self.make_controller_request(context, verb, action, request_params)
-        params =
-          if active_record_major_version >= 5
-            { params: request_params }
-          else
-            request_params
-          end
-
-        context.__send__(verb, action, params)
       end
     end
   end
