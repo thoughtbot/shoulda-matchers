@@ -1004,22 +1004,68 @@ Expected Parent to have a has_many association called children through conceptio
       expect(matcher.failure_message).to match(/children should be ordered by id/)
     end
 
-    it 'accepts an association with a valid :conditions option' do
-      define_model :child, parent_id: :integer, adopted: :boolean
-      define_model(:parent).tap do |model|
-        define_association_with_conditions(model, :has_many, :children, adopted: true)
+    context 'if the association has a scope block' do
+      context 'and the block does not take an argument' do
+        context 'and the matcher is given conditions that match the conditions used in the scope' do
+          it 'matches' do
+            define_model :Child, parent_id: :integer, adopted: :boolean
+            define_model(:Parent) do
+              has_many :children, -> { where(adopted: true) }
+            end
+
+            expect(Parent.new).
+              to have_many(:children).
+              conditions(adopted: true)
+          end
+        end
+
+        context 'and the matcher is given conditions that do not match the conditions used in the scope' do
+          it 'rejects an association with a bad :conditions option' do
+            define_model :Child, parent_id: :integer, adopted: :boolean
+            define_model :Parent do
+              has_many :children
+            end
+
+            expect(Parent.new).
+              not_to have_many(:children).
+              conditions(adopted: true)
+          end
+        end
       end
 
-      expect(Parent.new).to have_many(:children).conditions(adopted: true)
-    end
+      context 'and the block takes an argument' do
+        context 'and the matcher is given conditions that match the scope' do
+          it 'matches' do
+            define_model :Wheel, bike_id: :integer, tire_id: :integer
+            define_model :Tire
+            define_model :Bike, default_tire_id: :integer do
+              has_many :wheels, -> (bike) do
+                where(tire_id: bike.default_tire_id)
+              end
+              belongs_to :default_tire, class_name: 'Tire'
+            end
 
-    it 'rejects an association with a bad :conditions option' do
-      define_model :child, parent_id: :integer, adopted: :boolean
-      define_model :parent do
-        has_many :children
+            expect(Bike.new(default_tire_id: 42)).
+              to have_many(:wheels).conditions(tire_id: 42)
+          end
+        end
+
+        context 'and the matcher is given conditions that do not match the scope' do
+          it 'matches' do
+            define_model :Wheel, bike_id: :integer, tire_id: :integer
+            define_model :Tire
+            define_model :Bike, default_tire_id: :integer do
+              has_many :wheels, -> (bike) do
+                where(tire_id: bike.default_tire_id)
+              end
+              belongs_to :default_tire, class_name: 'Tire'
+            end
+
+            expect(Bike.new(default_tire_id: 42)).
+              not_to have_many(:wheels).conditions(tire_id: 10)
+          end
+        end
       end
-
-      expect(Parent.new).not_to have_many(:children).conditions(adopted: true)
     end
 
     it 'accepts an association without a :class_name option' do

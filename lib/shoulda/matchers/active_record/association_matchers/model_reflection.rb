@@ -35,12 +35,12 @@ module Shoulda
             join_table_name.to_s
           end
 
-          def association_relation
+          def association_relation(related_instance)
             relation = associated_class.all
 
             if reflection.scope
               # Source: AR::Associations::AssociationScope#eval_scope
-              relation.instance_exec(subject, &reflection.scope)
+              relation.instance_exec(related_instance, &reflection.scope)
             else
               relation
             end
