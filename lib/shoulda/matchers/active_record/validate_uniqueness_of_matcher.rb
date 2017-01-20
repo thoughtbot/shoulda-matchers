@@ -396,7 +396,7 @@ module Shoulda
         end
 
         def validations
-          model._validators[@attribute].select do |validator|
+          model.validators_on(@attribute).select do |validator|
             validator.is_a?(::ActiveRecord::Validations::UniquenessValidator)
           end
         end
