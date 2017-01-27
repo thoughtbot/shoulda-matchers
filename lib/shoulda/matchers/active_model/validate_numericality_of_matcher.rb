@@ -497,6 +497,7 @@ module Shoulda
         end
 
         def add_disallow_value_matcher
+          return if column_type == :decimal
           disallow_value_matcher = DisallowValueMatcher.
             new(NON_NUMERIC_VALUE).
             for(@attribute).
