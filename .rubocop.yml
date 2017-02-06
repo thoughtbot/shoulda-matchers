@@ -1,0 +1,13 @@
+inherit_from: .hound/ruby.yml
+Style/AlignParameters:
+  EnforcedStyle: with_fixed_indentation
+Style/CollectionMethods:
+  PreferredMethods:
+    find: detect
+    reduce: inject
+    collect: map
+    find_all: select
+Style/FrozenStringLiteralComment:
+  Enabled: false
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
