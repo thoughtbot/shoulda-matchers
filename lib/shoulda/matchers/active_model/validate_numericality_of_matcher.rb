@@ -395,6 +395,11 @@ module Shoulda
           self
         end
 
+        def is_other_than(value)
+          prepare_submatcher(comparison_matcher_for(value, :!=).for(@attribute))
+          self
+        end
+
         def with_message(message)
           @expects_custom_validation_message = true
           @expected_message = message

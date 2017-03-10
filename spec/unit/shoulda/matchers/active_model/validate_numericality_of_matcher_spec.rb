@@ -40,6 +40,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           validation_value: 1,
         },
         {
+          category: :comparison,
+          name: :is_other_than,
+          argument: 1,
+          validation_name: :other_than,
+          validation_value: 1,
+        },
+        {
           category: :cardinality,
           name: :odd,
           validation_name: :odd,
