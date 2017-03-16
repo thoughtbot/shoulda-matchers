@@ -10,7 +10,7 @@ module Shoulda
             :< => :less_than,
             :<= => :less_than_or_equal_to,
             :== => :equal_to,
-            :!= => :other_than
+            :!= => :other_than,
           }
 
           def initialize(numericality_matcher, value, operator)
@@ -144,12 +144,12 @@ module Shoulda
 
           def comparison_expectation
             case @operator
-              when :> then "greater than"
-              when :>= then "greater than or equal to"
-              when :== then "equal to"
-              when :< then "less than"
-              when :<= then "less than or equal to"
-              when :!= then "other than"
+            when :> then 'greater than'
+            when :>= then 'greater than or equal to'
+            when :== then 'equal to'
+            when :< then 'less than'
+            when :<= then 'less than or equal to'
+            when :!= then 'other than'
             end
           end
         end
