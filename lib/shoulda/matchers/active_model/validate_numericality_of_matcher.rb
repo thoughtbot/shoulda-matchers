@@ -204,6 +204,33 @@ module Shoulda
       #         is_greater_than(21)
       #     end
       #
+      # ##### is_other_than
+      #
+      # Use `is_other_than` to test usage of the `:other_than` option.
+      # This asserts that the attribute can take a number which is not equal to
+      # the given value.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attr_accessor :legal_age
+      #
+      #       validates_numericality_of :legal_age, other_than: 21
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Person, type: :model do
+      #       it do
+      #         should validate_numericality_of(:legal_age).
+      #           is_other_than(21)
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_numericality_of(:legal_age).
+      #         is_other_than(21)
+      #     end
+      #
       # ##### even
       #
       # Use `even` to test usage of the `:even` option. This asserts that the
