@@ -109,8 +109,18 @@ module Shoulda
         end
 
         def allows_same_value
+          allows_same_value_as_int || allows_same_value_as_string
+        end
+
+        def allows_same_value_as_string
           allows_value_of('same value') do |matcher|
             qualify_matcher(matcher, 'same value')
+          end
+        end
+
+        def allows_same_value_as_int
+          allows_value_of(2) do |matcher|
+            qualify_matcher(matcher, 2)
           end
         end
 
