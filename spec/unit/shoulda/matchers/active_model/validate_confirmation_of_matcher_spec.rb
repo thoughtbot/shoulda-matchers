@@ -146,4 +146,14 @@ Example did not properly validate that
   def validation_matcher_scenario_args
     super.deep_merge(matcher_name: :validate_confirmation_of)
   end
+
+  context 'when attribute to confirm is type integer' do
+    context 'when the model has a confirmation validation' do
+      it 'passes' do
+         builder = builder_for_record_validating_confirmation(type: :integer)
+      expect(builder.record).
+        to validate_confirmation_of(builder.attribute_to_confirm)
+      end
+    end
+  end 
 end
