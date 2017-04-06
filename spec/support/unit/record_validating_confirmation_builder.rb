@@ -43,7 +43,8 @@ module UnitTests
     private
 
     def create_model
-      define_model(model_name, attribute_to_confirm => :string) do |model|
+      type = options[:type] || :string
+      define_model(model_name, attribute_to_confirm => type) do |model|
         model.validates_confirmation_of(attribute_to_confirm, options)
       end
     end
