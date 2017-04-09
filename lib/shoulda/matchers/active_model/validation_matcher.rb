@@ -24,8 +24,8 @@ module Shoulda
           self
         end
 
-        def strict
-          @expects_strict = true
+        def strict(expects_strict = true)
+          @expects_strict = expects_strict
           self
         end
 

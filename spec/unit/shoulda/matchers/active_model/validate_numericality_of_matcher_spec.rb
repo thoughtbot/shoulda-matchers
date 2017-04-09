@@ -60,7 +60,12 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           name: :on,
           argument: :customizable,
           validation_name: :on,
-          validation_value: :customizable
+          validation_value: :customizable,
+        },
+        {
+          name: :strict,
+          validation_name: :strict,
+          validation_value: true,
         }
       ]
     end
