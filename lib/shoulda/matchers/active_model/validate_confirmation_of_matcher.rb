@@ -94,38 +94,48 @@ module Shoulda
 
         def matches?(subject)
           super(subject)
-
-          disallows_different_value &&
-            allows_same_value &&
-            allows_missing_confirmation
+          type = find_type(subject)
+          disallows_different_value(type) &&
+            allows_same_value(type) &&
+            allows_missing_confirmation(type)
         end
 
         private
 
-        def disallows_different_value
-          disallows_value_of('different value') do |matcher|
-            qualify_matcher(matcher, 'some value')
+        def find_type(subject)
+          subject.class.columns_hash['attribute_to_confirm'].type rescue :string
+        end
+
+        def different_value
+          { integer: 3, string: 'different value' }
+        end
+
+        def some_value
+          { integer: 2, string: 'some value' }
+        end
+
+        def same_value
+          { integer: 2, string: 'same value' }
+        end
+
+        def any_value
+          { integer: 2, string: 'any value' }
+        end
+
+        def disallows_different_value(type)
+          disallows_value_of(different_value[type]) do |matcher|
+            qualify_matcher(matcher, some_value[type])
           end
         end
 
-        def allows_same_value
-          allows_same_value_as_int || allows_same_value_as_string
-        end
-
-        def allows_same_value_as_string
-          allows_value_of('same value') do |matcher|
-            qualify_matcher(matcher, 'same value')
+        def allows_same_value(type)
+          allows_value_of(same_value[type]) do |matcher|
+            qualify_matcher(matcher, same_value[type])
           end
         end
 
-        def allows_same_value_as_int
-          allows_value_of(2) do |matcher|
-            qualify_matcher(matcher, 2)
-          end
-        end
-
-        def allows_missing_confirmation
-          allows_value_of('any value') do |matcher|
+        def allows_missing_confirmation(type)
+          allows_value_of(any_value[type]) do |matcher|
             qualify_matcher(matcher, nil)
           end
         end
