@@ -155,5 +155,27 @@ Example did not properly validate that
         to validate_confirmation_of(builder.attribute_to_confirm)
       end
     end
+
+    context 'when the model has all attributes, but does not have the confirmation'do
+      it 'fails with an appropriate error message' do
+         model = define_model(:example, attribute_to_confirm: :integer) do
+        attr_accessor :attribute_to_confirm_confirmation
+      end
+
+      assertion = lambda do
+        expect(model.new).to validate_confirmation_of(:attribute_to_confirm)
+      end
+
+message = <<-MESSAGE
+Example did not properly validate that
+:attribute_to_confirm_confirmation matches :attribute_to_confirm.
+  After setting :attribute_to_confirm_confirmation to ‹2›, then setting
+  :attribute_to_confirm to ‹3›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
+      end
+    end
   end 
 end
