@@ -548,7 +548,7 @@ EOT
           case value
             when true, false then :boolean
             when BigDecimal then :decimal
-            when Fixnum then :fixnum
+            when Integer then :fixnum
             when Date then :date
             when DateTime then :datetime
             when Time then :time
