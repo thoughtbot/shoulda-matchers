@@ -63,6 +63,9 @@ GEM
     globalid (0.4.0)
       activesupport (>= 4.2.0)
     i18n (0.8.1)
+    jbuilder (2.6.3)
+      activesupport (>= 3.0.0, < 5.2)
+      multi_json (~> 1.2)
     listen (3.0.8)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -76,6 +79,7 @@ GEM
     mime-types-data (3.2016.0521)
     mini_portile2 (2.1.0)
     minitest (5.10.1)
+    multi_json (1.12.1)
     nio4r (2.0.0)
     nokogiri (1.7.1)
       mini_portile2 (~> 2.1.0)
@@ -177,6 +181,7 @@ DEPENDENCIES
   bcrypt (~> 3.1.7)
   bundler (~> 1.1)
   fssm
+  jbuilder (~> 2.5)
   jdbc-sqlite3
   jruby-openssl
   listen (~> 3.0.5)
@@ -184,7 +189,7 @@ DEPENDENCIES
   pry!
   pry-byebug
   pygments.rb
-  rails (= 5.0.2)
+  rails (~> 5.0.2)
   rails-controller-testing (>= 1.0.1)
   rake (>= 10.5.0, < 11)
   redcarpet
