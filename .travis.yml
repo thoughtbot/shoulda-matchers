@@ -26,3 +26,7 @@ matrix:
     gemfile: gemfiles/5.0.gemfile
   - rvm: 2.1
     gemfile: gemfiles/5.0.gemfile
+  - rvm: 2.3.3
+    gemfile: gemfiles/4.0.0.gemfile
+  - rvm: 2.3.3
+    gemfile: gemfiles/4.0.1.gemfile
