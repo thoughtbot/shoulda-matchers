@@ -19,3 +19,10 @@ gemfile:
   - gemfiles/4.1.gemfile
   - gemfiles/4.2.gemfile
   - gemfiles/5.0.gemfile
+
+matrix:
+  exclude:
+  - rvm: 2.0
+    gemfile: gemfiles/5.0.gemfile
+  - rvm: 2.1
+    gemfile: gemfiles/5.0.gemfile
