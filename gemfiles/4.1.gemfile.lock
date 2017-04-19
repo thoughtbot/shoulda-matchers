@@ -1,11 +1,10 @@
 GIT
-  remote: git://github.com/pry/pry.git
-  revision: 3c138cbf94a44f7a6696afdab1ab5149d7541974
+  remote: https://github.com/pry/pry.git
+  revision: 1f64463184e0a160d0b41d1a1f92b8e2f230278c
   specs:
-    pry (0.10.1)
+    pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
-      slop (~> 3.4)
 
 GEM
   remote: https://rubygems.org/
@@ -50,7 +49,7 @@ GEM
     builder (3.2.2)
     byebug (5.0.0)
       columnize (= 0.9.0)
-    coderay (1.1.0)
+    coderay (1.1.1)
     coffee-rails (4.0.1)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0, < 5.0)
@@ -148,7 +147,6 @@ GEM
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
     shoulda-context (1.2.1)
-    slop (3.6.0)
     spring (1.4.0)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
@@ -217,4 +215,4 @@ DEPENDENCIES
   zeus
 
 BUNDLED WITH
-   1.11.2
+   1.14.6
