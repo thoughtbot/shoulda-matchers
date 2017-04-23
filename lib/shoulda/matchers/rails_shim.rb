@@ -55,6 +55,14 @@ module Shoulda
         I18n.translate(primary_translation_key, translate_options)
       end
 
+      def self.tables_and_views(connection)
+        if active_record_major_version >= 5
+          connection.data_sources
+        else
+          connection.tables
+        end
+      end
+
       def self.active_record_major_version
         ::ActiveRecord::VERSION::MAJOR
       end
