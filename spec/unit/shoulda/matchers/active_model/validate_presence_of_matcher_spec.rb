@@ -295,9 +295,9 @@ raising a validation exception on failure.
     context 'an active_resource model' do
       context 'with the validation context' do
         it 'does not raise an exception' do
-          expect {
+          expect do
             expect(active_resource_model).to validate_presence_of(:attr)
-          }.to_not raise_exception
+          end.to_not raise_exception
         end
       end
     end
