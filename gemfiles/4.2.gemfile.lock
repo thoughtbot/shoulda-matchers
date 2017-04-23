@@ -1,11 +1,10 @@
 GIT
-  remote: git://github.com/pry/pry.git
-  revision: 3c138cbf94a44f7a6696afdab1ab5149d7541974
+  remote: https://github.com/pry/pry.git
+  revision: 1f64463184e0a160d0b41d1a1f92b8e2f230278c
   specs:
-    pry (0.10.1)
+    pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
-      slop (~> 3.4)
 
 GEM
   remote: https://rubygems.org/
@@ -59,7 +58,7 @@ GEM
     builder (3.2.2)
     byebug (5.0.0)
       columnize (= 0.9.0)
-    coderay (1.1.0)
+    coderay (1.1.1)
     coffee-rails (4.1.0)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0, < 5.0)
@@ -75,8 +74,8 @@ GEM
     globalid (0.3.6)
       activesupport (>= 4.1.0)
     i18n (0.7.0)
-    jbuilder (2.3.1)
-      activesupport (>= 3.0.0, < 5)
+    jbuilder (2.6.3)
+      activesupport (>= 3.0.0, < 5.2)
       multi_json (~> 1.2)
     jquery-rails (4.0.5)
       rails-dom-testing (~> 1.0)
@@ -96,7 +95,7 @@ GEM
       builder
       minitest (>= 5.0)
       ruby-progressbar
-    multi_json (1.11.2)
+    multi_json (1.12.1)
     nokogiri (1.6.7.1)
       mini_portile2 (~> 2.0.0.rc2)
     pg (0.18.3)
@@ -174,7 +173,6 @@ GEM
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
     shoulda-context (1.2.1)
-    slop (3.6.0)
     spring (1.4.0)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
@@ -228,7 +226,7 @@ DEPENDENCIES
   rspec (~> 3.2)
   rspec-rails (>= 3.2.0, < 4)
   sass-rails (~> 5.0)
-  sdoc (~> 0.4.0)
+  sdoc
   shoulda-context (~> 1.2.0)
   spring
   spring-commands-rspec
@@ -240,4 +238,4 @@ DEPENDENCIES
   zeus
 
 BUNDLED WITH
-   1.11.2
+   1.14.6

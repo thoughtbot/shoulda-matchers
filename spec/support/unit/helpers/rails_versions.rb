@@ -1,5 +1,7 @@
 module UnitTests
   module RailsVersions
+    extend self
+
     def self.configure_example_group(example_group)
       example_group.include(self)
       example_group.extend(self)
@@ -15,6 +17,10 @@ module UnitTests
 
     def rails_4_x?
       rails_version =~ '~> 4.0'
+    end
+    j
+    def rails_lte_4?
+      rails_version <= 4
     end
 
     def rails_gte_4_1?
