@@ -1013,3 +1013,18 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     super.deep_merge(matcher_name: :validate_inclusion_of)
   end
 end
+
+class Person
+  include ActiveModel::Model
+
+  attr_accessor :sex
+
+  # Spec works correctly if the following line is uncommented.
+  # validates :sex, inclusion: %w[male female]
+end
+
+RSpec.describe Person, type: :model do
+  it do
+    is_expected.to validate_inclusion_of(:sex).in_array(%w[male female])
+  end
+end
