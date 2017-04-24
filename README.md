@@ -71,7 +71,7 @@ complex, and error-prone.
 * **[serialize](lib/shoulda/matchers/active_record/serialize_matcher.rb)** tests
   usage of the `serialize` macro.
 * **[validate_uniqueness_of](lib/shoulda/matchers/active_record/validate_uniqueness_of_matcher.rb)**
-  tests usage of `validates_uniqueness_of`.
+  tests usage of `validate_uniqueness_of`.
 
 ### ActionController matchers
 
