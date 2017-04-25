@@ -57,6 +57,28 @@ module Shoulda
       #
       # #### Qualifiers
       #
+      # ##### allow_nil
+      #
+      # Use `allow_nil` if you want to allow a nil value
+      #
+      #     class User < ActiveRecord:Base; end
+      #
+      #     class Document < ActiveRecord:Base
+      #       belongs_to :user
+      #
+      #       validates :user, :presence => true, :allow_nil
+      #     end
+      #
+      #     # RSpec
+      #     describe Document do
+      #       it { should validate_presence_of(:user).allow_nil }
+      #     end
+      #
+      #     # Test::Unit
+      #     class DocumentTest < ActiveSupport::TestCase
+      #       should validate_presence_of(:user).allow_nil
+      #     end
+      #
       # ##### on
       #
       # Use `on` if your validation applies only under a certain context.
@@ -116,12 +138,19 @@ module Shoulda
           @expected_message = :blank
         end
 
+        def allow_nil(allow_nil = true)
+          @allow_nil = allow_nil
+          self
+        end
+
         def matches?(subject)
           super(subject)
 
           if secure_password_being_validated?
             ignore_interference_by_writer.default_to(when: :blank?)
             disallows_and_double_checks_value_of!(blank_value, @expected_message)
+          elsif @allow_nil
+            allows_value_of(nil)
           else
             disallows_original_or_typecast_value?(blank_value, @expected_message)
           end
