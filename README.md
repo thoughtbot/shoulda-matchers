@@ -117,9 +117,19 @@ complex, and error-prone.
 
 Include `shoulda-matchers` in your Gemfile:
 
+For Rails 4.x:
+
 ``` ruby
 group :test do
   gem 'shoulda-matchers', '~> 3.1'
+end
+```
+
+For Rails 5.0:
+
+``` ruby
+group :test do
+  gem 'shoulda-matchers', git: 'https://github.com/thoughtbot/shoulda-matchers.git', branch: 'rails-5'
 end
 ```
 
