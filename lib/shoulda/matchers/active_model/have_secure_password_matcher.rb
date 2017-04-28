@@ -58,7 +58,7 @@ module Shoulda
         def matches?(subject)
           @subject = subject
 
-          if failure = validate
+          if failure == validate
             key, params = failure
             @failure_message = MESSAGES[key] % { subject: subject.class }.merge(params)
           end
