@@ -368,15 +368,19 @@ module Shoulda
         end
 
         def allows_length_of?(length, message)
-          allows_value_of(string_of_length(length), message)
+          allows_value_of(string_or_array_of_length(length), message)
         end
 
         def disallows_length_of?(length, message)
-          disallows_value_of(string_of_length(length), message)
+          disallows_value_of(string_or_array_of_length(length), message)
         end
 
-        def string_of_length(length)
-          'x' * length
+        def string_or_array_of_length(length)
+          if @attribute.is_a? String
+            'x' * length
+          else
+            ['x'] * length
+          end
         end
       end
     end
