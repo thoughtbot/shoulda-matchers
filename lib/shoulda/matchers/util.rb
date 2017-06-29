@@ -27,6 +27,7 @@ module Shoulda
       end
 
       def self.indent(string, width)
+        return if !string
         indentation = ' ' * width
         string.split(/[\n\r]/).map { |line| indentation + line }.join("\n")
       end
