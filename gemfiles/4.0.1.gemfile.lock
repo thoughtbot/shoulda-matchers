@@ -196,6 +196,7 @@ DEPENDENCIES
   jdbc-sqlite3
   jquery-rails
   jruby-openssl
+  json (~> 1.4)
   minitest-reporters
   pg
   protected_attributes
