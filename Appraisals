@@ -26,7 +26,6 @@ rails_4 = proc do
   gem 'turbolinks'
   gem 'sdoc'
   gem 'activeresource', '4.0.0'
-  # Test suite makes heavy use of attr_accessible
   gem 'protected_attributes'
   gem 'minitest-reporters'
 end
@@ -78,6 +77,18 @@ appraise '4.2' do
   gem 'protected_attributes', "~> 1.0.6"
 end
 
+appraise '4.2_ruby2.4' do
+  instance_eval(&rails_4)
+  gem 'rails', '~> 4.2.9'
+  gem 'sass-rails', '~> 5.0'
+  gem 'coffee-rails', '~> 4.1.0'
+  gem 'jbuilder', '~> 2.0'
+  gem 'json', '~> 1.4'
+  gem 'nokogiri', '~> 1.8'
+  gem 'bcrypt', '~> 3.1.7'
+  gem 'protected_attributes', "~> 1.0.6"
+end
+
 appraise '5.0' do
   instance_eval(&rails_5)
   gem 'rails', '~> 5.0.4'
@@ -85,5 +96,15 @@ appraise '5.0' do
   gem 'jbuilder', '~> 2.5'
   gem 'bcrypt', '~> 3.1.7'
   gem 'listen', '~> 3.0.5'
-  # gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'nokogiri', '~> 1.6.8'
+end
+
+appraise '5.0_ruby2.4' do
+  instance_eval(&rails_5)
+  gem 'rails', '~> 5.0.4'
+  gem 'rails-controller-testing', '>= 1.0.1'
+  gem 'jbuilder', '~> 2.5'
+  gem 'bcrypt', '~> 3.1.7'
+  gem 'listen', '~> 3.0.5'
+  gem 'nokogiri', '~> 1.8'
 end
