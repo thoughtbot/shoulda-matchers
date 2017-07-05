@@ -77,12 +77,12 @@ GEM
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
-    mini_portile2 (2.1.0)
+    mini_portile2 (2.2.0)
     minitest (5.10.2)
     multi_json (1.12.1)
     nio4r (2.1.0)
-    nokogiri (1.6.8.1)
-      mini_portile2 (~> 2.1.0)
+    nokogiri (1.8.0)
+      mini_portile2 (~> 2.2.0)
     pg (0.18.4)
     posix-spawn (0.3.11)
     pry-byebug (3.4.0)
@@ -166,7 +166,7 @@ GEM
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
-    yajl-ruby (1.2.1)
+    yajl-ruby (1.2.2)
     yard (0.9.5)
     zeus (0.15.10)
       method_source (>= 0.6.7)
@@ -185,7 +185,7 @@ DEPENDENCIES
   jdbc-sqlite3
   jruby-openssl
   listen (~> 3.0.5)
-  nokogiri (~> 1.6.8)
+  nokogiri (~> 1.8)
   pg
   pry!
   pry-byebug

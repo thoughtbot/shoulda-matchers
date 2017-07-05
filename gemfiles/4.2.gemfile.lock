@@ -90,7 +90,7 @@ GEM
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
-    mini_portile2 (2.1.0)
+    mini_portile2 (2.2.0)
     minitest (5.10.2)
     minitest-reporters (1.1.2)
       ansi
@@ -98,8 +98,8 @@ GEM
       minitest (>= 5.0)
       ruby-progressbar
     multi_json (1.12.1)
-    nokogiri (1.6.8.1)
-      mini_portile2 (~> 2.1.0)
+    nokogiri (1.8.0)
+      mini_portile2 (~> 2.2.0)
     pg (0.18.3)
     posix-spawn (0.3.11)
     protected_attributes (1.0.9)
@@ -196,7 +196,7 @@ GEM
     uglifier (2.7.2)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
-    yajl-ruby (1.2.1)
+    yajl-ruby (1.2.2)
     yard (0.8.7.6)
     zeus (0.15.4)
       method_source (>= 0.6.7)
@@ -219,7 +219,7 @@ DEPENDENCIES
   jruby-openssl
   json (~> 1.4)
   minitest-reporters
-  nokogiri (~> 1.6.8)
+  nokogiri (~> 1.8)
   pg
   protected_attributes (~> 1.0.6)
   pry!
