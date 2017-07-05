@@ -60,6 +60,7 @@ appraise '4.1' do
   gem 'jbuilder', '~> 2.0'
   gem 'sass-rails', '~> 4.0.3'
   gem 'sdoc', '~> 0.4.0'
+  gem 'json', '~> 1.4'
   gem 'bcrypt', '~> 3.1.7'
   gem 'protected_attributes', "~> 1.0.6"
   gem 'spring'
@@ -71,9 +72,8 @@ appraise '4.2' do
   gem 'sass-rails', '~> 5.0'
   gem 'coffee-rails', '~> 4.1.0'
   gem 'jbuilder', '~> 2.0'
-  # gem 'sdoc', '~> 0.4.0'
+  gem 'json', '~> 1.4'
   gem 'bcrypt', '~> 3.1.7'
-  # gem 'spring'
   gem 'protected_attributes', "~> 1.0.6"
 end
 
