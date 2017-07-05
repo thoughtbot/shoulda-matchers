@@ -25,6 +25,7 @@ rails_4 = proc do
   gem 'jquery-rails'
   gem 'turbolinks'
   gem 'sdoc'
+  gem 'json', '~> 1.4'
   gem 'activeresource', '4.0.0'
   gem 'protected_attributes'
   gem 'minitest-reporters'
@@ -59,7 +60,6 @@ appraise '4.1' do
   gem 'jbuilder', '~> 2.0'
   gem 'sass-rails', '~> 4.0.3'
   gem 'sdoc', '~> 0.4.0'
-  gem 'json', '~> 1.4'
   gem 'bcrypt', '~> 3.1.7'
   gem 'protected_attributes', "~> 1.0.6"
   gem 'spring'
@@ -71,7 +71,6 @@ appraise '4.2' do
   gem 'sass-rails', '~> 5.0'
   gem 'coffee-rails', '~> 4.1.0'
   gem 'jbuilder', '~> 2.0'
-  gem 'json', '~> 1.4'
   gem 'nokogiri', '~> 1.6.8'
   gem 'bcrypt', '~> 3.1.7'
   gem 'protected_attributes', "~> 1.0.6"
@@ -83,7 +82,6 @@ appraise '4.2_ruby2.4' do
   gem 'sass-rails', '~> 5.0'
   gem 'coffee-rails', '~> 4.1.0'
   gem 'jbuilder', '~> 2.0'
-  gem 'json', '~> 1.4'
   gem 'nokogiri', '~> 1.8'
   gem 'bcrypt', '~> 3.1.7'
   gem 'protected_attributes', "~> 1.0.6"
