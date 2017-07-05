@@ -1,5 +1,3 @@
-ruby_version = Gem::Version.new(RUBY_VERSION + '')
-
 shared_dependencies = proc do
   gem 'rspec-rails', '>= 3.2.0', '< 4'
   gem 'shoulda-context', '~> 1.2.0'
@@ -17,11 +15,10 @@ spring = proc do
   gem 'spring-commands-rspec'
 end
 
-rails_4 = proc do
+appraise '4.2' do
   instance_eval(&shared_dependencies)
   instance_eval(&spring)
   gem 'uglifier', '>= 1.3.0'
-  gem 'coffee-rails', '~> 4.0.0'
   gem 'jquery-rails'
   gem 'turbolinks'
   gem 'sdoc'
@@ -29,55 +26,6 @@ rails_4 = proc do
   gem 'activeresource', '4.0.0'
   gem 'protected_attributes'
   gem 'minitest-reporters'
-end
-
-rails_5 = proc do
-  instance_eval(&shared_dependencies)
-  instance_eval(&spring)
-end
-
-#---
-
-appraise '4.0.0' do
-  instance_eval(&rails_4)
-  gem 'rails', '4.0.0'
-  gem 'jbuilder', '~> 1.2'
-  gem 'sass-rails', '~> 4.0.0'
-  gem 'bcrypt-ruby', '~> 3.0.0'
-end
-
-appraise '4.0.1' do
-  instance_eval(&rails_4)
-  gem 'rails', '4.0.1'
-  gem 'jbuilder', '~> 1.2'
-  gem 'sass-rails', '~> 4.0.0'
-  gem 'bcrypt-ruby', '~> 3.1.2'
-end
-
-appraise '4.1' do
-  instance_eval(&rails_4)
-  gem 'rails', '~> 4.1.0'
-  gem 'jbuilder', '~> 2.0'
-  gem 'sass-rails', '~> 4.0.3'
-  gem 'sdoc', '~> 0.4.0'
-  gem 'bcrypt', '~> 3.1.7'
-  gem 'protected_attributes', "~> 1.0.6"
-  gem 'spring'
-end
-
-appraise '4.2' do
-  instance_eval(&rails_4)
-  gem 'rails', '~> 4.2.9'
-  gem 'sass-rails', '~> 5.0'
-  gem 'coffee-rails', '~> 4.1.0'
-  gem 'jbuilder', '~> 2.0'
-  gem 'nokogiri', '~> 1.6.8'
-  gem 'bcrypt', '~> 3.1.7'
-  gem 'protected_attributes', "~> 1.0.6"
-end
-
-appraise '4.2_ruby2.4' do
-  instance_eval(&rails_4)
   gem 'rails', '~> 4.2.9'
   gem 'sass-rails', '~> 5.0'
   gem 'coffee-rails', '~> 4.1.0'
@@ -88,17 +36,8 @@ appraise '4.2_ruby2.4' do
 end
 
 appraise '5.0' do
-  instance_eval(&rails_5)
-  gem 'rails', '~> 5.0.4'
-  gem 'rails-controller-testing', '>= 1.0.1'
-  gem 'jbuilder', '~> 2.5'
-  gem 'bcrypt', '~> 3.1.7'
-  gem 'listen', '~> 3.0.5'
-  gem 'nokogiri', '~> 1.6.8'
-end
-
-appraise '5.0_ruby2.4' do
-  instance_eval(&rails_5)
+  instance_eval(&shared_dependencies)
+  instance_eval(&spring)
   gem 'rails', '~> 5.0.4'
   gem 'rails-controller-testing', '>= 1.0.1'
   gem 'jbuilder', '~> 2.5'
