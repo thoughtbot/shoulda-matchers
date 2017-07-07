@@ -1,5 +1,7 @@
 # Shoulda Matchers [![Gem Version][version-badge]][rubygems] [![Build Status][travis-badge]][travis] ![Downloads][downloads-badge]
 
+[![Join the chat at https://gitter.im/shoulda-matchers/Lobby](https://badges.gitter.im/shoulda-matchers/Lobby.svg)](https://gitter.im/shoulda-matchers/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Shoulda Matchers provides RSpec- and Minitest-compatible one-liners that test
 common Rails functionality. These tests would otherwise be much longer, more
 complex, and error-prone.
