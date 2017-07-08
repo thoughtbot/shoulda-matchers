@@ -27,9 +27,7 @@ RSpec.configure do |config|
   UnitTests::ValidationMatcherScenarioHelpers.configure_example_group(config)
 
   config.include UnitTests::Matchers
-<<<<<<< HEAD
   config.include RSpec::Matchers::FailMatchers
-=======
 
   config.infer_spec_type_from_file_location!
   config.example_status_persistence_file_path = "spec/examples.txt"
@@ -38,7 +36,6 @@ RSpec.configure do |config|
   config.before(:all, type: :controller) do
     self.class.controller(ApplicationController) { }
   end
->>>>>>> master
 end
 
 ActiveSupport::Deprecation.behavior = :stderr
