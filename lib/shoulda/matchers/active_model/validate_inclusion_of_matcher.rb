@@ -1,4 +1,5 @@
 require 'bigdecimal'
+require 'date'
 
 module Shoulda
   module Matchers
@@ -13,21 +14,22 @@ module Shoulda
       #       include ActiveModel::Model
       #       attr_accessor :state
       #
-      #       validates_inclusion_of :state, in: %w(open resolved unresolved)
+      #       validates_inclusion_of :state,
+      #         in: ['open', 'resolved', 'unresolved']
       #     end
       #
       #     # RSpec
-      #     describe Issue do
+      #     RSpec.describe Issue, type: :model do
       #       it do
       #         should validate_inclusion_of(:state).
-      #           in_array(%w(open resolved unresolved))
+      #           in_array(['open', 'resolved', 'unresolved'])
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
       #     class IssueTest < ActiveSupport::TestCase
       #       should validate_inclusion_of(:state).
-      #         in_array(%w(open resolved unresolved))
+      #         in_array(['open', 'resolved', 'unresolved'])
       #     end
       #
       # If your whitelist is a range of values, use `in_range`:
@@ -40,7 +42,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Issue do
+      #     RSpec.describe Issue, type: :model do
       #       it { should validate_inclusion_of(:state).in_range(1..5) }
       #     end
       #
@@ -57,7 +59,10 @@ module Shoulda
       # one of these three values. That means there isn't any way we can refute
       # this logic in a test. Hence, this will produce a warning:
       #
-      #     it { should validate_inclusion_of(:imported).in_array([true, false]) }
+      #     it do
+      #       should validate_inclusion_of(:imported).
+      #         in_array([true, false])
+      #     end
       #
       # The only case where `validate_inclusion_of` *could* be appropriate is
       # for ensuring that a boolean column accepts nil, but we recommend
@@ -79,7 +84,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Issue do
+      #     RSpec.describe Issue, type: :model do
       #       it do
       #         should validate_inclusion_of(:severity).
       #           in_array(%w(low medium high)).
@@ -108,7 +113,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Issue do
+      #     RSpec.describe Issue, type: :model do
       #       it do
       #         should validate_inclusion_of(:severity).
       #           in_array(%w(low medium high)).
@@ -144,7 +149,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should validate_inclusion_of(:age).
       #           in_range(0..65).
@@ -180,7 +185,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should validate_inclusion_of(:age).
       #           in_range(0..21).
@@ -205,15 +210,15 @@ module Shoulda
       #
       #       validates_presence_of :state
       #       validates_inclusion_of :state,
-      #         in: %w(open resolved unresolved),
+      #         in: ['open', 'resolved', 'unresolved'],
       #         allow_nil: true
       #     end
       #
       #     # RSpec
-      #     describe Issue do
+      #     RSpec.describe Issue, type: :model do
       #       it do
       #         should validate_inclusion_of(:state).
-      #           in_array(%w(open resolved unresolved)).
+      #           in_array(['open', 'resolved', 'unresolved']).
       #           allow_nil
       #       end
       #     end
@@ -221,7 +226,7 @@ module Shoulda
       #     # Minitest (Shoulda)
       #     class IssueTest < ActiveSupport::TestCase
       #       should validate_inclusion_of(:state).
-      #         in_array(%w(open resolved unresolved)).
+      #         in_array(['open', 'resolved', 'unresolved']).
       #         allow_nil
       #     end
       #
@@ -235,15 +240,15 @@ module Shoulda
       #
       #       validates_presence_of :state
       #       validates_inclusion_of :state,
-      #         in: %w(open resolved unresolved),
+      #         in: ['open', 'resolved', 'unresolved'],
       #         allow_blank: true
       #     end
       #
       #     # RSpec
-      #     describe Issue do
+      #     RSpec.describe Issue, type: :model do
       #       it do
       #         should validate_inclusion_of(:state).
-      #           in_array(%w(open resolved unresolved)).
+      #           in_array(['open', 'resolved', 'unresolved']).
       #           allow_blank
       #       end
       #     end
@@ -251,7 +256,7 @@ module Shoulda
       #     # Minitest (Shoulda)
       #     class IssueTest < ActiveSupport::TestCase
       #       should validate_inclusion_of(:state).
-      #         in_array(%w(open resolved unresolved)).
+      #         in_array(['open', 'resolved', 'unresolved']).
       #         allow_blank
       #     end
       #
@@ -310,31 +315,61 @@ EOT
           self
         end
 
+        def expects_to_allow_blank?
+          @options[:allow_blank]
+        end
+
         def allow_nil(allow_nil = true)
           @options[:allow_nil] = allow_nil
           self
         end
 
+        def expects_to_allow_nil?
+          @options[:allow_nil]
+        end
+
         def with_message(message)
           if message
+            @expects_custom_validation_message = true
             @low_message = message
             @high_message = message
           end
+
           self
         end
 
         def with_low_message(message)
-          @low_message = message if message
+          if message
+            @expects_custom_validation_message = true
+            @low_message = message
+          end
+
           self
         end
 
         def with_high_message(message)
-          @high_message = message if message
+          if message
+            @high_message = message
+          end
+
           self
         end
 
-        def description
-          "ensure inclusion of #{@attribute} in #{inspect_message}"
+        def simple_description
+          if @range
+            "validate that :#{@attribute} lies inside the range " +
+              Shoulda::Matchers::Util.inspect_range(@range)
+          else
+            description = "validate that :#{@attribute}"
+
+            if @array.many?
+              description << " is either #{inspected_array}"
+            else
+              description << " is #{inspected_array}"
+            end
+
+            description
+          end
         end
 
         def matches?(subject)
@@ -398,7 +433,9 @@ EOT
         end
 
         def disallows_lower_value
-          @minimum == 0 || disallows_value_of(@minimum - 1, @low_message)
+          @minimum.nil? ||
+            @minimum == 0 ||
+            disallows_value_of(@minimum - 1, @low_message)
         end
 
         def disallows_higher_value
@@ -517,6 +554,13 @@ EOT
             when Time then :time
             else :unknown
           end
+        end
+
+        def inspected_array
+          Shoulda::Matchers::Util.inspect_values(@array).to_sentence(
+            two_words_connector: " or ",
+            last_word_connector: ", or "
+          )
         end
       end
     end

@@ -9,10 +9,12 @@ module UnitTests
       Tests::Database.instance.adapter_name
     end
 
-    def database_supports_uuid_columns?
+    def postgresql?
       database_adapter == :postgresql
     end
-    alias_method :database_supports_array_columns?,
-      :database_supports_uuid_columns?
+
+    alias_method :database_supports_array_columns?, :postgresql?
+    alias_method :database_supports_uuid_columns?, :postgresql?
+    alias_method :database_supports_money_columns?, :postgresql?
   end
 end

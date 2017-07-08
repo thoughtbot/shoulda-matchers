@@ -12,7 +12,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it { should validate_confirmation_of(:email) }
       #     end
       #
@@ -35,7 +35,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it { should validate_confirmation_of(:password).on(:create) }
       #     end
       #
@@ -57,7 +57,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it do
       #         should validate_confirmation_of(:password).
       #           with_message('Please re-enter your password')
@@ -83,22 +83,17 @@ module Shoulda
         attr_reader :attribute, :confirmation_attribute
 
         def initialize(attribute)
-          super(attribute)
+          super
+          @expected_message = :confirmation
           @confirmation_attribute = "#{attribute}_confirmation"
         end
 
-        def with_message(message)
-          @message = message if message
-          self
-        end
-
-        def description
-          "require #{@confirmation_attribute} to match #{@attribute}"
+        def simple_description
+          "validate that :#{@confirmation_attribute} matches :#{@attribute}"
         end
 
         def matches?(subject)
           super(subject)
-          @message ||= :confirmation
 
           disallows_different_value &&
             allows_same_value &&
@@ -108,38 +103,43 @@ module Shoulda
         private
 
         def disallows_different_value
-          set_confirmation('some value')
           disallows_value_of('different value') do |matcher|
-            qualify_matcher(matcher)
+            qualify_matcher(matcher, 'some value')
           end
         end
 
         def allows_same_value
-          set_confirmation('same value')
           allows_value_of('same value') do |matcher|
-            qualify_matcher(matcher)
+            qualify_matcher(matcher, 'same value')
           end
         end
 
         def allows_missing_confirmation
-          set_confirmation(nil)
           allows_value_of('any value') do |matcher|
-            qualify_matcher(matcher)
+            qualify_matcher(matcher, nil)
           end
         end
 
-        def qualify_matcher(matcher)
-          matcher.with_message(@message,
+        def qualify_matcher(matcher, confirmation_attribute_value)
+          matcher.values_to_preset = {
+            confirmation_attribute => confirmation_attribute_value
+          }
+          matcher.with_message(
+            @expected_message,
             against: confirmation_attribute,
             values: { attribute: attribute }
           )
         end
 
-        def set_confirmation(val)
-          setter = :"#{@confirmation_attribute}="
-          if @subject.respond_to?(setter)
-            @subject.__send__(setter, val)
-          end
+        def set_confirmation(value)
+          @last_value_set_on_confirmation_attribute = value
+
+          AttributeSetter.set(
+            matcher_name: 'confirmation',
+            object: @subject,
+            attribute_name: confirmation_attribute,
+            value: value
+          )
         end
       end
     end

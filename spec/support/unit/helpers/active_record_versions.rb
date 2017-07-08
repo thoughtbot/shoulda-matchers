@@ -6,7 +6,7 @@ module UnitTests
     end
 
     def active_record_version
-      Tests::Version.new(ActiveRecord::VERSION::STRING)
+      Tests::Version.new(::ActiveRecord::VERSION::STRING)
     end
 
     def active_record_supports_enum?

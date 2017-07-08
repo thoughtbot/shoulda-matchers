@@ -1,8 +1,17 @@
 require 'shoulda/matchers/active_model/helpers'
+require 'shoulda/matchers/active_model/qualifiers'
 require 'shoulda/matchers/active_model/validation_matcher'
+require 'shoulda/matchers/active_model/validation_matcher/build_description'
 require 'shoulda/matchers/active_model/validator'
-require 'shoulda/matchers/active_model/strict_validator'
 require 'shoulda/matchers/active_model/allow_value_matcher'
+require 'shoulda/matchers/active_model/allow_value_matcher/attribute_changed_value_error'
+require 'shoulda/matchers/active_model/allow_value_matcher/attribute_does_not_exist_error'
+require 'shoulda/matchers/active_model/allow_value_matcher/attribute_setter'
+require 'shoulda/matchers/active_model/allow_value_matcher/attribute_setter_and_validator'
+require 'shoulda/matchers/active_model/allow_value_matcher/attribute_setters'
+require 'shoulda/matchers/active_model/allow_value_matcher/attribute_setters_and_validators'
+require 'shoulda/matchers/active_model/allow_value_matcher/successful_check'
+require 'shoulda/matchers/active_model/allow_value_matcher/successful_setting'
 require 'shoulda/matchers/active_model/disallow_value_matcher'
 require 'shoulda/matchers/active_model/validate_length_of_matcher'
 require 'shoulda/matchers/active_model/validate_inclusion_of_matcher'
@@ -51,7 +60,7 @@ module Shoulda
     #     end
     #
     #     # RSpec
-    #     describe User do
+    #     RSpec.describe User, type: :model do
     #       context "when an admin" do
     #         subject { User.new(admin: true) }
     #

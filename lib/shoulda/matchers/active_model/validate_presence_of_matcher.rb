@@ -12,7 +12,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Robot do
+      #     RSpec.describe Robot, type: :model do
       #       it { should validate_presence_of(:arms) }
       #     end
       #
@@ -36,7 +36,7 @@ module Shoulda
       #       validates_presence_of :password
       #     end
       #
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       subject { User.new(password: '123456') }
       #
       #       it { should validate_presence_of(:password) }
@@ -69,7 +69,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Robot do
+      #     RSpec.describe Robot, type: :model do
       #       it { should validate_presence_of(:arms).on(:create) }
       #     end
       #
@@ -90,7 +90,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Robot do
+      #     RSpec.describe Robot, type: :model do
       #       it do
       #         should validate_presence_of(:legs).
       #           with_message('Robot has no legs')
@@ -111,24 +111,24 @@ module Shoulda
 
       # @private
       class ValidatePresenceOfMatcher < ValidationMatcher
-        def with_message(message)
-          @expected_message = message if message
-          self
+        def initialize(attribute)
+          super
+          @expected_message = :blank
         end
 
         def matches?(subject)
           super(subject)
-          @expected_message ||= :blank
 
           if secure_password_being_validated?
+            ignore_interference_by_writer.default_to(when: :blank?)
             disallows_and_double_checks_value_of!(blank_value, @expected_message)
           else
             disallows_original_or_typecast_value?(blank_value, @expected_message)
           end
         end
 
-        def description
-          "require #{@attribute} to be set"
+        def simple_description
+          "validate that :#{@attribute} cannot be empty/falsy"
         end
 
         private
@@ -141,14 +141,12 @@ module Shoulda
 
         def disallows_and_double_checks_value_of!(value, message)
           disallows_value_of(value, message)
-        rescue ActiveModel::AllowValueMatcher::CouldNotSetAttributeError
+        rescue ActiveModel::AllowValueMatcher::AttributeChangedValueError
           raise ActiveModel::CouldNotSetPasswordError.create(@subject.class)
         end
 
         def disallows_original_or_typecast_value?(value, message)
           disallows_value_of(blank_value, @expected_message)
-        rescue ActiveModel::AllowValueMatcher::CouldNotSetAttributeError => error
-          error.actual_value.blank?
         end
 
         def blank_value

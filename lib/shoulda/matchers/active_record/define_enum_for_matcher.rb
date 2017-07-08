@@ -9,9 +9,8 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Process do
+      #     RSpec.describe Process, type: :model do
       #       it { should define_enum_for(:status) }
-      #       end
       #     end
       #
       #     # Minitest (Shoulda)
@@ -31,7 +30,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Process do
+      #     RSpec.describe Process, type: :model do
       #       it do
       #         should define_enum_for(:status).
       #           with([:running, :stopped, :suspended])
@@ -63,8 +62,8 @@ module Shoulda
         end
 
         def matches?(subject)
-          @model = subject
-          enum_defined? && enum_values_match?
+          @record = subject
+          enum_defined? && enum_values_match? && column_type_is_integer?
         end
 
         def failure_message
@@ -84,15 +83,17 @@ module Shoulda
             desc << " with #{options[:expected_enum_values]}"
           end
 
+          desc << " and store the value in a column with an integer type"
+
           desc
         end
 
         protected
 
-        attr_reader :model, :attribute_name, :options
+        attr_reader :record, :attribute_name, :options
 
         def expectation
-          "#{model.class.name} to #{description}"
+          "#{model.name} to #{description}"
         end
 
         def expected_enum_values
@@ -100,7 +101,7 @@ module Shoulda
         end
 
         def actual_enum_values
-          model.class.send(attribute_name.to_s.pluralize)
+          model.send(attribute_name.to_s.pluralize)
         end
 
         def enum_defined?
@@ -109,6 +110,18 @@ module Shoulda
 
         def enum_values_match?
           expected_enum_values.empty? || actual_enum_values == expected_enum_values
+        end
+
+        def column_type_is_integer?
+          column.type == :integer
+        end
+
+        def column
+          model.columns_hash[attribute_name.to_s]
+        end
+
+        def model
+          record.class
         end
 
         def hashify(value)

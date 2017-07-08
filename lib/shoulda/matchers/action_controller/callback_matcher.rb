@@ -9,7 +9,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe UsersController do
+      #     RSpec.describe UsersController, type: :controller do
       #       it { should use_before_filter(:authenticate_user!) }
       #       it { should_not use_before_filter(:prevent_ssl) }
       #     end
@@ -34,7 +34,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe IssuesController do
+      #     RSpec.describe IssuesController, type: :controller do
       #       it { should use_after_filter(:log_activity) }
       #       it { should_not use_after_filter(:destroy_user) }
       #     end
@@ -59,7 +59,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe UsersController do
+      #     RSpec.describe UsersController, type: :controller do
       #       it { should use_before_action(:authenticate_user!) }
       #       it { should_not use_before_action(:prevent_ssl) }
       #     end
@@ -84,7 +84,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe IssuesController do
+      #     RSpec.describe IssuesController, type: :controller do
       #       it { should use_after_action(:log_activity) }
       #       it { should_not use_after_action(:destroy_user) }
       #     end
@@ -109,7 +109,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe ChangesController do
+      #     RSpec.describe ChangesController, type: :controller do
       #       it { should use_around_filter(:wrap_in_transaction) }
       #       it { should_not use_around_filter(:save_view_context) }
       #     end
@@ -134,7 +134,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe ChangesController do
+      #     RSpec.describe ChangesController, type: :controller do
       #       it { should use_around_action(:wrap_in_transaction) }
       #       it { should_not use_around_action(:save_view_context) }
       #     end

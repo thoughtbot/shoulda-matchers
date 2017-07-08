@@ -12,7 +12,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Registration do
+      #     RSpec.describe Registration, type: :model do
       #       it { should validate_acceptance_of(:eula) }
       #     end
       #
@@ -35,7 +35,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Registration do
+      #     RSpec.describe Registration, type: :model do
       #       it do
       #         should validate_acceptance_of(:terms_of_service).
       #           on(:create)
@@ -60,7 +60,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Registration do
+      #     RSpec.describe Registration, type: :model do
       #       it do
       #         should validate_acceptance_of(:terms_of_service).
       #           with_message('You must accept the terms of service')
@@ -81,21 +81,18 @@ module Shoulda
 
       # @private
       class ValidateAcceptanceOfMatcher < ValidationMatcher
-        def with_message(message)
-          if message
-            @expected_message = message
-          end
-          self
+        def initialize(attribute)
+          super
+          @expected_message = :accepted
         end
 
         def matches?(subject)
           super(subject)
-          @expected_message ||= :accepted
           disallows_value_of(false, @expected_message)
         end
 
-        def description
-          "require #{@attribute} to be accepted"
+        def simple_description
+          %(validate that :#{@attribute} has been set to "1")
         end
       end
     end

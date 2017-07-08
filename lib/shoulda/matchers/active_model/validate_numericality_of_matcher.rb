@@ -12,7 +12,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should validate_numericality_of(:gpa) }
       #     end
       #
@@ -35,7 +35,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should validate_numericality_of(:number_of_dependents).
       #           on(:create)
@@ -61,7 +61,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should validate_numericality_of(:age).only_integer }
       #     end
       #
@@ -85,7 +85,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should validate_numericality_of(:number_of_cars).
       #           is_less_than(2)
@@ -113,7 +113,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should validate_numericality_of(:birth_year).
       #           is_less_than_or_equal_to(1987)
@@ -140,7 +140,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should validate_numericality_of(:weight).is_equal_to(150) }
       #     end
       #
@@ -164,7 +164,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should validate_numericality_of(:height).
       #           is_greater_than_or_equal_to(55)
@@ -179,7 +179,7 @@ module Shoulda
       #
       # ##### is_greater_than
       #
-      # Use `is_greater_than` to test usage of tthe `:greater_than` option.
+      # Use `is_greater_than` to test usage of the `:greater_than` option.
       # This asserts that the attribute can take a number which is greater than
       # the given value and cannot take a number less than or equal to it.
       #
@@ -191,7 +191,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should validate_numericality_of(:legal_age).
       #           is_greater_than(21)
@@ -217,7 +217,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should validate_numericality_of(:birth_month).even }
       #     end
       #
@@ -240,7 +240,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it { should validate_numericality_of(:birth_day).odd }
       #     end
       #
@@ -262,7 +262,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Person do
+      #     RSpec.describe Person, type: :model do
       #       it do
       #         should validate_numericality_of(:number_of_dependents).
       #           with_message('Number of dependents must be a number')
@@ -279,7 +279,7 @@ module Shoulda
       #
       # Use `allow_nil` to assert that the attribute allows nil.
       #
-      #     class Age
+      #     class Post
       #       include ActiveModel::Model
       #       attr_accessor :age
       #
@@ -287,7 +287,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       it { should validate_numericality_of(:age).allow_nil }
       #     end
       #
@@ -304,34 +304,46 @@ module Shoulda
 
       # @private
       class ValidateNumericalityOfMatcher
-        NUMERIC_NAME = 'numbers'
+        NUMERIC_NAME = 'number'
         NON_NUMERIC_VALUE = 'abcd'
         DEFAULT_DIFF_TO_COMPARE = 1
+
+        include Qualifiers::IgnoringInterferenceByWriter
 
         attr_reader :diff_to_compare
 
         def initialize(attribute)
+          super
           @attribute = attribute
           @submatchers = []
           @diff_to_compare = DEFAULT_DIFF_TO_COMPARE
-          @strict = false
-          add_disallow_value_matcher
+          @expects_custom_validation_message = false
+          @expects_to_allow_nil = false
+          @expects_strict = false
+          @allowed_type_adjective = nil
+          @allowed_type_name = 'number'
+          @context = nil
+          @expected_message = nil
         end
 
         def strict
-          @submatchers.each(&:strict)
-          @strict = true
+          @expects_strict = true
           self
+        end
+
+        def expects_strict?
+          @expects_strict
         end
 
         def only_integer
           prepare_submatcher(
-            NumericalityMatchers::OnlyIntegerMatcher.new(@attribute)
+            NumericalityMatchers::OnlyIntegerMatcher.new(self, @attribute)
           )
           self
         end
 
         def allow_nil
+          @expects_to_allow_nil = true
           prepare_submatcher(
             AllowValueMatcher.new(nil)
               .for(@attribute)
@@ -340,16 +352,20 @@ module Shoulda
           self
         end
 
+        def expects_to_allow_nil?
+          @expects_to_allow_nil
+        end
+
         def odd
           prepare_submatcher(
-            NumericalityMatchers::OddNumberMatcher.new(@attribute)
+            NumericalityMatchers::OddNumberMatcher.new(self, @attribute)
           )
           self
         end
 
         def even
           prepare_submatcher(
-            NumericalityMatchers::EvenNumberMatcher.new(@attribute)
+            NumericalityMatchers::EvenNumberMatcher.new(self, @attribute)
           )
           self
         end
@@ -380,47 +396,109 @@ module Shoulda
         end
 
         def with_message(message)
-          @submatchers.each { |matcher| matcher.with_message(message) }
+          @expects_custom_validation_message = true
+          @expected_message = message
           self
         end
 
+        def expects_custom_validation_message?
+          @expects_custom_validation_message
+        end
+
         def on(context)
-          @submatchers.each { |matcher| matcher.on(context) }
+          @context = context
           self
         end
 
         def matches?(subject)
           @subject = subject
+          @number_of_submatchers = @submatchers.size
+
+          add_disallow_value_matcher
+          qualify_submatchers
+
           first_failing_submatcher.nil?
         end
 
-        def description
-          description_parts = ["only allow #{allowed_types} for #{@attribute}"]
+        def simple_description
+          description = ''
+
+          description << "validate that :#{@attribute} looks like "
+          description << Shoulda::Matchers::Util.a_or_an(full_allowed_type)
 
           if comparison_descriptions.present?
-            description_parts << comparison_descriptions
+            description << ' ' + comparison_descriptions
           end
 
-          if @strict
-            description_parts.insert(1, 'strictly')
-            description_parts.join(', ')
-          else
-            description_parts.join(' ')
-          end
+          description
+        end
+
+        def description
+          ValidationMatcher::BuildDescription.call(self, simple_description)
         end
 
         def failure_message
-          first_failing_submatcher.failure_message
+          overall_failure_message.dup.tap do |message|
+            message << "\n"
+            message << failure_message_for_first_failing_submatcher
+          end
         end
 
         def failure_message_when_negated
-          first_failing_submatcher.failure_message_when_negated
+          overall_failure_message_when_negated.dup.tap do |message|
+            if submatcher_failure_message_when_negated.present?
+              raise "hmm, this needs to be implemented."
+              message << "\n"
+              message << Shoulda::Matchers.word_wrap(
+                submatcher_failure_message_when_negated,
+                indent: 2
+              )
+            end
+          end
+        end
+
+        def given_numeric_column?
+          attribute_is_active_record_column? &&
+            [:integer, :float, :decimal].include?(column_type)
         end
 
         private
 
+        def model
+          @subject.class
+        end
+
+        def overall_failure_message
+          Shoulda::Matchers.word_wrap(
+            "#{model.name} did not properly #{description}."
+          )
+        end
+
+        def overall_failure_message_when_negated
+          Shoulda::Matchers.word_wrap(
+            "Expected #{model.name} not to #{description}, but it did."
+          )
+        end
+
+        def attribute_is_active_record_column?
+          columns_hash.key?(@attribute.to_s)
+        end
+
+        def column_type
+          columns_hash[@attribute.to_s].type
+        end
+
+        def columns_hash
+          if @subject.class.respond_to?(:columns_hash)
+            @subject.class.columns_hash
+          else
+            {}
+          end
+        end
+
         def add_disallow_value_matcher
-          disallow_value_matcher = DisallowValueMatcher.new(NON_NUMERIC_VALUE).
+          disallow_value_matcher = DisallowValueMatcher.
+            new(NON_NUMERIC_VALUE).
             for(@attribute).
             with_message(:not_a_number)
 
@@ -429,43 +507,105 @@ module Shoulda
 
         def prepare_submatcher(submatcher)
           add_submatcher(submatcher)
-          if submatcher.respond_to?(:diff_to_compare)
-            update_diff_to_compare(submatcher)
-          end
+          submatcher
         end
 
         def comparison_matcher_for(value, operator)
-          NumericalityMatchers::ComparisonMatcher
-            .new(self, value, operator)
-            .for(@attribute)
+          NumericalityMatchers::ComparisonMatcher.
+            new(self, value, operator).
+            for(@attribute)
         end
 
         def add_submatcher(submatcher)
+          if submatcher.respond_to?(:allowed_type_name)
+            @allowed_type_name = submatcher.allowed_type_name
+          end
+
+          if submatcher.respond_to?(:allowed_type_adjective)
+            @allowed_type_adjective = submatcher.allowed_type_adjective
+          end
+
+          if submatcher.respond_to?(:diff_to_compare)
+            @diff_to_compare = [@diff_to_compare, submatcher.diff_to_compare].max
+          end
+
           @submatchers << submatcher
         end
 
-        def update_diff_to_compare(matcher)
-          @diff_to_compare = [@diff_to_compare, matcher.diff_to_compare].max
+        def qualify_submatchers
+          @submatchers.each do |submatcher|
+            if @expects_strict
+              submatcher.strict(@expects_strict)
+            end
+
+            if @expected_message.present?
+              submatcher.with_message(@expected_message)
+            end
+
+            if @context
+              submatcher.on(@context)
+            end
+
+            submatcher.ignoring_interference_by_writer(
+              ignore_interference_by_writer
+            )
+          end
+        end
+
+        def number_of_submatchers_for_failure_message
+          if has_been_qualified?
+            @submatchers.size - 1
+          else
+            @submatchers.size
+          end
+        end
+
+        def has_been_qualified?
+          @submatchers.any? do |submatcher|
+            submatcher.class.parent == NumericalityMatchers
+          end
         end
 
         def first_failing_submatcher
-          @_first_failing_submatcher ||= @submatchers.detect do |submatcher|
+          @_failing_submatchers ||= @submatchers.detect do |submatcher|
             !submatcher.matches?(@subject)
           end
         end
 
-        def allowed_types
-          allowed_array = submatcher_allowed_types
-          allowed_array.empty? ? NUMERIC_NAME : allowed_array.join(', ')
+        def submatcher_failure_message
+          first_failing_submatcher.failure_message
         end
 
-        def submatcher_allowed_types
-          @submatchers.inject([]){|m, s| m << s.allowed_type if s.respond_to?(:allowed_type); m }
+        def submatcher_failure_message_when_negated
+          first_failing_submatcher.failure_message_when_negated
+        end
+
+        def failure_message_for_first_failing_submatcher
+          submatcher = first_failing_submatcher
+
+          if number_of_submatchers_for_failure_message > 1
+            submatcher_description = submatcher.simple_description.
+              sub(/\bvalidate that\b/, 'validates').
+              sub(/\bdisallow\b/, 'disallows').
+              sub(/\ballow\b/, 'allows')
+            submatcher_message =
+              "In checking that #{model.name} #{submatcher_description}, " +
+              submatcher.failure_message[0].downcase +
+              submatcher.failure_message[1..-1]
+          else
+            submatcher_message = submatcher.failure_message
+          end
+
+          Shoulda::Matchers.word_wrap(submatcher_message, indent: 2)
+        end
+
+        def full_allowed_type
+          "#{@allowed_type_adjective} #{@allowed_type_name}".strip
         end
 
         def comparison_descriptions
           description_array = submatcher_comparison_descriptions
-          description_array.empty? ? '' : 'which are ' + submatcher_comparison_descriptions.join(' and ')
+          description_array.empty? ? '' : submatcher_comparison_descriptions.join(' and ')
         end
 
         def submatcher_comparison_descriptions

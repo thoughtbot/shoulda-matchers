@@ -43,3 +43,20 @@ ul, ol {
   margin-left: 1em;
   padding-left: 1em;
 }
+
+p, blockquote {
+  margin-bottom: 1.25em;
+}
+
+blockquote {
+  font-style: italic;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 1em;
+}
+
+blockquote p {
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}

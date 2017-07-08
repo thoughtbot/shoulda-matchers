@@ -9,7 +9,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Car do
+      #     RSpec.describe Car, type: :model do
       #       it { should accept_nested_attributes_for(:doors) }
       #     end
       #
@@ -30,7 +30,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Car do
+      #     RSpec.describe Car, type: :model do
       #       it do
       #         should accept_nested_attributes_for(:mirrors).
       #           allow_destroy(true)
@@ -52,7 +52,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Car do
+      #     RSpec.describe Car, type: :model do
       #       it do
       #         should accept_nested_attributes_for(:windows).
       #           limit(3)
@@ -75,7 +75,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Car do
+      #     RSpec.describe Car, type: :model do
       #       it do
       #         should accept_nested_attributes_for(:engine).
       #           update_only(true)

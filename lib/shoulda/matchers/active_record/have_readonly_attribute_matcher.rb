@@ -9,7 +9,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it { should have_readonly_attribute(:password) }
       #     end
       #

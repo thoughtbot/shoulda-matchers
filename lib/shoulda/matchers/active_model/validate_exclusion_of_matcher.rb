@@ -16,7 +16,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Game do
+      #     RSpec.describe Game, type: :model do
       #       it do
       #         should validate_exclusion_of(:supported_os).
       #           in_array(['Mac', 'Linux'])
@@ -39,7 +39,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Game do
+      #     RSpec.describe Game, type: :model do
       #       it do
       #         should validate_exclusion_of(:floors_with_enemies).
       #           in_range(5..8)
@@ -68,7 +68,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Game do
+      #     RSpec.describe Game, type: :model do
       #       it do
       #         should validate_exclusion_of(:weapon).
       #           in_array(['pistol', 'paintball gun', 'stick']).
@@ -97,7 +97,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Game do
+      #     RSpec.describe Game, type: :model do
       #       it do
       #         should validate_exclusion_of(:weapon).
       #           in_array(['pistol', 'paintball gun', 'stick']).
@@ -122,9 +122,9 @@ module Shoulda
       class ValidateExclusionOfMatcher < ValidationMatcher
         def initialize(attribute)
           super(attribute)
+          @expected_message = :exclusion
           @array = nil
           @range = nil
-          @expected_message = nil
         end
 
         def in_array(array)
@@ -139,13 +139,21 @@ module Shoulda
           self
         end
 
-        def with_message(message)
-          @expected_message = message if message
-          self
-        end
+        def simple_description
+          if @range
+            "validate that :#{@attribute} lies outside the range " +
+              Shoulda::Matchers::Util.inspect_range(@range)
+          else
+            description = "validate that :#{@attribute}"
 
-        def description
-          "ensure exclusion of #{@attribute} in #{inspect_message}"
+            if @array.many?
+              description << " is neither #{inspected_array}"
+            else
+              description << " is not #{inspected_array}"
+            end
+
+            description
+          end
         end
 
         def matches?(subject)
@@ -165,28 +173,24 @@ module Shoulda
 
         def disallows_all_values_in_array?
           @array.all? do |value|
-            disallows_value_of(value, expected_message)
+            disallows_value_of(value, @expected_message)
           end
         end
 
         def allows_lower_value
-          @minimum == 0 || allows_value_of(@minimum - 1, expected_message)
+          @minimum == 0 || allows_value_of(@minimum - 1, @expected_message)
         end
 
         def allows_higher_value
-          allows_value_of(@maximum + 1, expected_message)
+          allows_value_of(@maximum + 1, @expected_message)
         end
 
         def disallows_minimum_value
-          disallows_value_of(@minimum, expected_message)
+          disallows_value_of(@minimum, @expected_message)
         end
 
         def disallows_maximum_value
-          disallows_value_of(@maximum, expected_message)
-        end
-
-        def expected_message
-          @expected_message || :exclusion
+          disallows_value_of(@maximum, @expected_message)
         end
 
         def inspect_message
@@ -195,6 +199,13 @@ module Shoulda
           else
             @array.inspect
           end
+        end
+
+        def inspected_array
+          Shoulda::Matchers::Util.inspect_values(@array).to_sentence(
+            two_words_connector: " nor ",
+            last_word_connector: ", nor "
+          )
         end
       end
     end

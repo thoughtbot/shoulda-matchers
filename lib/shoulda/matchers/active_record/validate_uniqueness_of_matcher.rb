@@ -14,7 +14,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       it { should validate_uniqueness_of(:permalink) }
       #     end
       #
@@ -49,27 +49,38 @@ module Shoulda
       #
       # You may be tempted to test the model like this:
       #
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       it { should validate_uniqueness_of(:title) }
       #     end
       #
-      # However, running this test will fail with something like:
+      # However, running this test will fail with an exception such as:
       #
-      #     Failures:
+      #     Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher::ExistingRecordInvalid:
+      #       validate_uniqueness_of works by matching a new record against an
+      #       existing record. If there is no existing record, it will create one
+      #       using the record you provide.
       #
-      #       1) Post should require case sensitive unique value for title
-      #          Failure/Error: it { should validate_uniqueness_of(:title) }
-      #          ActiveRecord::StatementInvalid:
-      #            SQLite3::ConstraintException: posts.content may not be NULL: INSERT INTO "posts" ("title") VALUES (?)
+      #       While doing this, the following error was raised:
+      #
+      #         PG::NotNullViolation: ERROR:  null value in column "content" violates not-null constraint
+      #         DETAIL:  Failing row contains (1, null, null).
+      #         : INSERT INTO "posts" DEFAULT VALUES RETURNING "id"
+      #
+      #       The best way to fix this is to provide the matcher with a record where
+      #       any required attributes are filled in with valid values beforehand.
+      #
+      # (The exact error message will differ depending on which database you're
+      # using, but you get the idea.)
       #
       # This happens because `validate_uniqueness_of` tries to create a new post
       # but cannot do so because of the `content` attribute: though unrelated to
-      # this test, it nevertheless needs to be filled in. The solution is to
-      # build a custom Post object ahead of time with `content` filled in:
+      # this test, it nevertheless needs to be filled in. As indicated at the
+      # end of the error message, the solution is to build a custom Post object
+      # ahead of time with `content` filled in:
       #
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       describe "validations" do
-      #         subject { Post.new(content: 'Here is the content') }
+      #         subject { Post.new(content: "Here is the content") }
       #         it { should validate_uniqueness_of(:title) }
       #       end
       #     end
@@ -79,7 +90,7 @@ module Shoulda
       # `post` factory defined which automatically fills in `content`, you can
       # say:
       #
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       describe "validations" do
       #         subject { FactoryGirl.build(:post) }
       #         it { should validate_uniqueness_of(:title) }
@@ -95,7 +106,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       it { should validate_uniqueness_of(:title).on(:create) }
       #     end
       #
@@ -113,7 +124,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       it do
       #         should validate_uniqueness_of(:title).
       #           with_message('Please choose another title')
@@ -133,11 +144,11 @@ module Shoulda
       # unique, but the scoped attributes are not unique either.
       #
       #     class Post < ActiveRecord::Base
-      #       validates_uniqueness_of :slug, scope: :user_id
+      #       validates_uniqueness_of :slug, scope: :journal_id
       #     end
       #
       #     # RSpec
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       it { should validate_uniqueness_of(:slug).scoped_to(:journal_id) }
       #     end
       #
@@ -158,13 +169,47 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       it { should validate_uniqueness_of(:key).case_insensitive }
       #     end
       #
       #     # Minitest (Shoulda)
       #     class PostTest < ActiveSupport::TestCase
       #       should validate_uniqueness_of(:key).case_insensitive
+      #     end
+      #
+      # ##### ignoring_case_sensitivity
+      #
+      # By default, `validate_uniqueness_of` will check that the
+      # validation is case sensitive: it asserts that uniquable attributes pass
+      # validation when their values are in a different case than corresponding
+      # attributes in the pre-existing record.
+      #
+      # Use `ignoring_case_sensitivity` to skip this check. This qualifier is
+      # particularly handy if your model has somehow changed the behavior of
+      # attribute you're testing so that it modifies the case of incoming values
+      # as they are set. For instance, perhaps you've overridden the writer
+      # method or added a `before_validation` callback to normalize the
+      # attribute.
+      #
+      #     class User < ActiveRecord::Base
+      #       validates_uniqueness_of :email
+      #
+      #       def email=(value)
+      #         super(value.downcase)
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Post, type: :model do
+      #       it do
+      #         should validate_uniqueness_of(:email).ignoring_case_sensitivity
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PostTest < ActiveSupport::TestCase
+      #       should validate_uniqueness_of(:email).ignoring_case_sensitivity
       #     end
       #
       # ##### allow_nil
@@ -176,7 +221,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       it { should validate_uniqueness_of(:author_id).allow_nil }
       #     end
       #
@@ -196,7 +241,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Post do
+      #     RSpec.describe Post, type: :model do
       #       it { should validate_uniqueness_of(:author_id).allow_blank }
       #     end
       #
@@ -217,7 +262,17 @@ module Shoulda
 
         def initialize(attribute)
           super(attribute)
-          @options = {}
+          @expected_message = :taken
+          @options = {
+            case_sensitivity_strategy: :sensitive
+          }
+          @existing_record_created = false
+          @failure_reason = nil
+          @failure_reason_when_negated = nil
+          @attribute_setters = {
+            existing_record: AttributeSetters.new,
+            new_record: AttributeSetters.new
+          }
         end
 
         def scoped_to(*scopes)
@@ -225,13 +280,13 @@ module Shoulda
           self
         end
 
-        def with_message(message)
-          @expected_message = message
+        def case_insensitive
+          @options[:case_sensitivity_strategy] = :insensitive
           self
         end
 
-        def case_insensitive
-          @options[:case_insensitive] = true
+        def ignoring_case_sensitivity
+          @options[:case_sensitivity_strategy] = :ignore
           self
         end
 
@@ -240,28 +295,39 @@ module Shoulda
           self
         end
 
+        def expects_to_allow_nil?
+          @options[:allow_nil]
+        end
+
         def allow_blank
           @options[:allow_blank] = true
           self
         end
 
-        def description
-          result = "require "
-          result << "case sensitive " unless @options[:case_insensitive]
-          result << "unique value for #{@attribute}"
-          result << " scoped to #{@options[:scopes].join(', ')}" if @options[:scopes].present?
-          result
+        def expects_to_allow_blank?
+          @options[:allow_blank]
         end
 
-        def matches?(subject)
-          @original_subject = subject
-          @subject = subject.class.new
-          @expected_message ||= :taken
-          @all_records = @subject.class.all
+        def simple_description
+          description = "validate that :#{@attribute} is"
+          description << description_for_case_sensitive_qualifier
+          description << ' unique'
 
-          scopes_match? &&
-            set_scoped_attributes &&
-            validate_everything_except_duplicate_nils_or_blanks? &&
+          if @options[:scopes].present?
+            description << " within the scope of #{inspected_expected_scopes}"
+          end
+
+          description
+        end
+
+        def matches?(given_record)
+          @given_record = given_record
+          @all_records = model.all
+
+          validate_attribute_present_on_model? &&
+            validate_scopes_present_on_model? &&
+            validate_scopes_match? &&
+            validate_two_records_with_same_non_blank_value_cannot_coexist? &&
             validate_case_sensitivity? &&
             validate_after_scope_change? &&
             allows_nil? &&
@@ -270,42 +336,120 @@ module Shoulda
           Uniqueness::TestModels.remove_all
         end
 
+        protected
+
+        def failure_reason
+          @failure_reason || super
+        end
+
+        def failure_reason_when_negated
+          @failure_reason_when_negated || super
+        end
+
+        def build_allow_or_disallow_value_matcher(args)
+          super.tap do |matcher|
+            matcher.failure_message_preface = method(:failure_message_preface)
+            matcher.attribute_changed_value_message =
+              method(:attribute_changed_value_message)
+          end
+        end
+
         private
 
-        def validation
-          @subject.class._validators[@attribute].detect do |validator|
+        def case_sensitivity_strategy
+          @options[:case_sensitivity_strategy]
+        end
+
+        def new_record
+          unless defined?(@new_record)
+            build_new_record
+          end
+
+          @new_record
+        end
+        alias_method :subject, :new_record
+
+        def description_for_case_sensitive_qualifier
+          case case_sensitivity_strategy
+          when :sensitive
+            ' case-sensitively'
+          when :insensitive
+            ' case-insensitively'
+          else
+            ''
+          end
+        end
+
+        def validations
+          model._validators[@attribute].select do |validator|
             validator.is_a?(::ActiveRecord::Validations::UniquenessValidator)
           end
         end
 
-        def scopes_match?
-          expected_scopes = Array.wrap(@options[:scopes])
-
-          if validation
-            actual_scopes = Array.wrap(validation.options[:scope])
-          else
-            actual_scopes = []
-          end
-
-          if expected_scopes == actual_scopes
+        def validate_scopes_match?
+          if scopes_match?
             true
           else
-            @failure_message = "Expected validation to be scoped to " +
-              "#{expected_scopes}"
+            @failure_reason = 'Expected the validation'
 
-            if actual_scopes.present?
-              @failure_message << ", but it was scoped to #{actual_scopes}."
+            if expected_scopes.empty?
+              @failure_reason << ' not to be scoped to anything'
             else
-              @failure_message << ", but it was not scoped to anything."
+              @failure_reason << " to be scoped to #{inspected_expected_scopes}"
+            end
+
+            if actual_sets_of_scopes.empty?
+              @failure_reason << ', but it was not scoped to anything.'
+            else
+              @failure_reason << ', but it was scoped to '
+              @failure_reason << "#{inspected_actual_scopes} instead."
             end
 
             false
           end
         end
 
+        def scopes_match?
+          actual_sets_of_scopes.empty? && expected_scopes.empty? ||
+            actual_sets_of_scopes.any? { |scopes| scopes == expected_scopes }
+        end
+
+        def inspected_expected_scopes
+          expected_scopes.map(&:inspect).to_sentence
+        end
+
+        def inspected_actual_scopes
+          inspected_actual_sets_of_scopes.to_sentence(
+            words_connector: " or ",
+            last_word_connector: ", or"
+          )
+        end
+
+        def inspected_actual_sets_of_scopes
+          inspected_sets_of_scopes = actual_sets_of_scopes.map do |scopes|
+            scopes.map(&:inspect)
+          end
+
+          if inspected_sets_of_scopes.many?
+            inspected_sets_of_scopes.map { |x| "(#{x.to_sentence})" }
+          else
+            inspected_sets_of_scopes.map(&:to_sentence)
+          end
+        end
+
+        def expected_scopes
+          Array.wrap(@options[:scopes])
+        end
+
+        def actual_sets_of_scopes
+          validations.map do |validation|
+            Array.wrap(validation.options[:scope])
+          end.reject(&:empty?)
+        end
+
         def allows_nil?
-          if @options[:allow_nil]
-            ensure_nil_record_in_database
+          if expects_to_allow_nil?
+            update_existing_record!(nil)
             allows_value_of(nil, @expected_message)
           else
             true
@@ -313,8 +457,8 @@ module Shoulda
         end
 
         def allows_blank?
-          if @options[:allow_blank]
-            ensure_blank_record_in_database
+          if expects_to_allow_blank?
+            update_existing_record!('')
             allows_value_of('', @expected_message)
           else
             true
@@ -322,40 +466,39 @@ module Shoulda
         end
 
         def existing_record
-          @existing_record ||= first_instance
+          unless defined?(@existing_record)
+            find_or_create_existing_record
+          end
+
+          @existing_record
         end
 
-        def first_instance
-          @subject.class.first || create_record_in_database
-        end
+        def find_or_create_existing_record
+          @existing_record = find_existing_record
 
-        def ensure_nil_record_in_database
-          unless existing_record_is_nil?
-            create_record_in_database(nil_value: true)
+          unless @existing_record
+            @existing_record = create_existing_record
+            @existing_record_created = true
           end
         end
 
-        def ensure_blank_record_in_database
-          unless existing_record_is_blank?
-            create_record_in_database(blank_value: true)
+        def find_existing_record
+          record = model.first
+
+          if record.present?
+            record
+          else
+            nil
           end
         end
 
-        def existing_record_is_nil?
-          @existing_record.present? && existing_value.nil?
-        end
-
-        def existing_record_is_blank?
-          @existing_record.present? && existing_value.strip == ''
-        end
-
-        def create_record_in_database(options = {})
-          @original_subject.tap do |instance|
-            instance.__send__("#{@attribute}=", value_for_new_record(options))
-            ensure_secure_password_set(instance)
-            instance.save(validate: false)
-            @created_record = instance
+        def create_existing_record
+          @given_record.tap do |existing_record|
+            ensure_secure_password_set(existing_record)
+            existing_record.save(validate: false)
           end
+        rescue ::ActiveRecord::StatementInvalid => error
+          raise ExistingRecordInvalid.create(underlying_exception: error)
         end
 
         def ensure_secure_password_set(instance)
@@ -365,62 +508,131 @@ module Shoulda
           end
         end
 
-        def value_for_new_record(options = {})
-          case
-            when options[:nil_value] then nil
-            when options[:blank_value] then ''
-            else 'a'
+        def update_existing_record!(value)
+          if existing_value_read != value
+            set_attribute_on_existing_record!(@attribute, value)
+            # It would be nice if we could ensure that the record was valid,
+            # but that would break users' existing tests
+            existing_record.save(validate: false)
+          end
+        end
+
+        def arbitrary_non_blank_value
+          limit = column_limit_for(@attribute)
+          non_blank_value = 'an arbitrary value'
+
+          if limit && limit < non_blank_value.length
+            'x' * limit
+          else
+            non_blank_value
           end
         end
 
         def has_secure_password?
-          @subject.class.ancestors.map(&:to_s).include?('ActiveModel::SecurePassword::InstanceMethodsOnActivation')
+          model.ancestors.map(&:to_s).include?(
+            'ActiveModel::SecurePassword::InstanceMethodsOnActivation'
+          )
         end
 
-        def set_scoped_attributes
-          if @options[:scopes].present?
-            @options[:scopes].all? do |scope|
-              setter = :"#{scope}="
-              if @subject.respond_to?(setter)
-                @subject.__send__(setter, existing_record.__send__(scope))
-                true
-              else
-                @failure_message = "#{class_name} doesn't seem to have a #{scope} attribute."
-                false
-              end
-            end
-          else
+        def build_new_record
+          @new_record = existing_record.dup
+
+          attribute_names_under_test.each do |attribute_name|
+            set_attribute_on_new_record!(
+              attribute_name,
+              existing_record.public_send(attribute_name)
+            )
+          end
+
+          @new_record
+        end
+
+        def validate_attribute_present_on_model?
+          if attribute_present_on_model?
             true
+          else
+            @failure_reason =
+              ":#{attribute} does not seem to be an attribute on #{model.name}."
+            false
           end
         end
 
-        def validate_everything_except_duplicate_nils_or_blanks?
-          if (@options[:allow_nil] && existing_value.nil?) ||
-             (@options[:allow_blank] && existing_value.blank?)
-            create_record_with_value
+        def attribute_present_on_model?
+          model.method_defined?("#{attribute}=") ||
+            model.columns_hash.key?(attribute.to_s)
+        end
+
+        def validate_scopes_present_on_model?
+          if all_scopes_present_on_model?
+            true
+          else
+            reason = ''
+
+            reason << inspected_scopes_missing_on_model.to_sentence
+
+            if inspected_scopes_missing_on_model.many?
+              reason << " do not seem to be attributes"
+            else
+              reason << " does not seem to be an attribute"
+            end
+
+            reason << " on #{model.name}."
+
+            @failure_reason = reason
+
+            false
+          end
+        end
+
+        def all_scopes_present_on_model?
+          scopes_missing_on_model.none?
+        end
+
+        def scopes_missing_on_model
+          @_missing_scopes ||= expected_scopes.select do |scope|
+            !model.method_defined?("#{scope}=")
+          end
+        end
+
+        def inspected_scopes_missing_on_model
+          scopes_missing_on_model.map(&:inspect)
+        end
+
+        def validate_two_records_with_same_non_blank_value_cannot_coexist?
+          if existing_value_read.blank?
+            update_existing_record!(arbitrary_non_blank_value)
           end
 
-          disallows_value_of(existing_value, @expected_message)
+          disallows_value_of(existing_value_read, @expected_message)
         end
 
         def validate_case_sensitivity?
-          value = existing_value
-
-          if value.respond_to?(:swapcase)
+          if should_validate_case_sensitivity?
+            value = existing_value_read
             swapcased_value = value.swapcase
 
-            if @options[:case_insensitive]
-              disallows_value_of(swapcased_value, @expected_message)
-            else
+            if case_sensitivity_strategy == :sensitive
+              if value == swapcased_value
+                raise NonCaseSwappableValueError.create(
+                  model: model,
+                  attribute: @attribute,
+                  value: value
+                )
+              end
+
               allows_value_of(swapcased_value, @expected_message)
+            else
+              disallows_value_of(swapcased_value, @expected_message)
             end
           else
             true
           end
         end
 
-        def create_record_with_value
-          @existing_record = create_record_in_database
+        def should_validate_case_sensitivity?
+          case_sensitivity_strategy != :ignore &&
+            existing_value_read.respond_to?(:swapcase) &&
+            !existing_value_read.empty?
         end
 
         def model_class?(model_name)
@@ -430,10 +642,10 @@ module Shoulda
         end
 
         def validate_after_scope_change?
-          if @options[:scopes].blank? || all_scopes_are_booleans?
+          if expected_scopes.empty? || all_scopes_are_booleans?
             true
           else
-            @options[:scopes].all? do |scope|
+            expected_scopes.all? do |scope|
               previous_value = @all_records.map(&scope).compact.max
 
               next_value =
@@ -443,16 +655,12 @@ module Shoulda
                   next_value_for(scope, previous_value)
                 end
 
-              @subject.__send__("#{scope}=", next_value)
+              set_attribute_on_new_record!(scope, next_value)
 
-              if allows_value_of(existing_value, @expected_message)
-                @subject.__send__("#{scope}=", previous_value)
-
-                @failure_message_when_negated <<
-                  " (with different value of #{scope})"
+              if allows_value_of(existing_value_read, @expected_message)
+                set_attribute_on_new_record!(scope, previous_value)
                 true
               else
-                @failure_message << " (with different value of #{scope})"
                 false
               end
             end
@@ -470,20 +678,7 @@ module Shoulda
         end
 
         def dummy_scalar_value_for(column)
-          case column.type
-          when :integer
-            0
-          when :date
-            Date.today
-          when :datetime
-            DateTime.now
-          when :uuid
-            SecureRandom.uuid
-          when :boolean
-            true
-          else
-            'dummy value'
-          end
+          Shoulda::Matchers::Util.dummy_value_for(column.type)
         end
 
         def next_value_for(scope, previous_value)
@@ -522,12 +717,12 @@ module Shoulda
         end
 
         def boolean_value?(value)
-          value.in?([true, false])
+          [true, false].include?(value)
         end
 
         def defined_as_enum?(scope)
-          @subject.class.respond_to?(:defined_enums) &&
-            @subject.defined_enums[scope.to_s]
+          model.respond_to?(:defined_enums) &&
+            new_record.defined_enums[scope.to_s]
         end
 
         def polymorphic_type_attribute?(scope, previous_value)
@@ -535,21 +730,292 @@ module Shoulda
         end
 
         def available_enum_values_for(scope, previous_value)
-          @subject.defined_enums[scope.to_s].reject do |key, _|
+          new_record.defined_enums[scope.to_s].reject do |key, _|
             key == previous_value
           end
         end
 
-        def existing_value
-          existing_record.__send__(@attribute)
+        def set_attribute_on!(record_type, record, attribute_name, value)
+          attribute_setter = build_attribute_setter(
+            record,
+            attribute_name,
+            value
+          )
+          attribute_setter.set!
+
+          @attribute_setters[record_type] << attribute_setter
         end
 
-        def class_name
-          @subject.class.name
+        def set_attribute_on_existing_record!(attribute_name, value)
+          set_attribute_on!(
+            :existing_record,
+            existing_record,
+            attribute_name,
+            value
+          )
+        end
+
+        def set_attribute_on_new_record!(attribute_name, value)
+          set_attribute_on!(
+            :new_record,
+            new_record,
+            attribute_name,
+            value
+          )
+        end
+
+        def attribute_setter_for_existing_record
+          @attribute_setters[:existing_record].last
+        end
+
+        def attribute_setters_for_new_record
+          @attribute_setters[:new_record] +
+            [last_attribute_setter_used_on_new_record]
+        end
+
+        def attribute_names_under_test
+          [@attribute] + expected_scopes
+        end
+
+        def build_attribute_setter(record, attribute_name, value)
+          Shoulda::Matchers::ActiveModel::AllowValueMatcher::AttributeSetter.new(
+            matcher_name: :validate_uniqueness_of,
+            object: record,
+            attribute_name: attribute_name,
+            value: value,
+            ignore_interference_by_writer: ignore_interference_by_writer
+          )
+        end
+
+        def existing_value_read
+          existing_record.public_send(@attribute)
+        end
+
+        def existing_value_written
+          if attribute_setter_for_existing_record
+            attribute_setter_for_existing_record.value_written
+          else
+            existing_value_read
+          end
         end
 
         def column_for(scope)
-          @subject.class.columns_hash[scope.to_s]
+          model.columns_hash[scope.to_s]
+        end
+
+        def column_limit_for(attribute)
+          column_for(attribute).try(:limit)
+        end
+
+        def model
+          @given_record.class
+        end
+
+        def failure_message_preface
+          prefix = ''
+
+          if @existing_record_created
+            prefix << "After taking the given #{model.name}"
+
+            if attribute_setter_for_existing_record
+              prefix << ', setting '
+              prefix << description_for_attribute_setter(
+                attribute_setter_for_existing_record
+              )
+            else
+              prefix << ", whose :#{attribute} is "
+              prefix << "‹#{existing_value_read.inspect}›"
+            end
+
+            prefix << ", and saving it as the existing record, then"
+          else
+            if attribute_setter_for_existing_record
+              prefix << "Given an existing #{model.name},"
+              prefix << ' after setting '
+              prefix << description_for_attribute_setter(
+                attribute_setter_for_existing_record
+              )
+              prefix << ', then'
+            else
+              prefix << "Given an existing #{model.name} whose :#{attribute}"
+              prefix << ' is '
+              prefix << Shoulda::Matchers::Util.inspect_value(
+                existing_value_read
+              )
+              prefix << ', after'
+            end
+          end
+
+          prefix << " making a new #{model.name} and setting "
+
+          prefix << descriptions_for_attribute_setters_for_new_record
+
+          prefix << ", the matcher expected the new #{model.name} to be"
+
+          prefix
+        end
+
+        def attribute_changed_value_message
+          <<-MESSAGE.strip
+As indicated in the message above,
+:#{last_attribute_setter_used_on_new_record.attribute_name} seems to be
+changing certain values as they are set, and this could have something
+to do with why this test is failing. If you or something else has
+overridden the writer method for this attribute to normalize values by
+changing their case in any way (for instance, ensuring that the
+attribute is always downcased), then try adding
+`ignoring_case_sensitivity` onto the end of the uniqueness matcher.
+Otherwise, you may need to write the test yourself, or do something
+different altogether.
+          MESSAGE
+        end
+
+        def description_for_attribute_setter(attribute_setter, same_as_existing: nil)
+          description = "its :#{attribute_setter.attribute_name} to "
+
+          if same_as_existing == false
+            description << 'a different value, '
+          end
+
+          description << Shoulda::Matchers::Util.inspect_value(
+            attribute_setter.value_written
+          )
+
+          if attribute_setter.attribute_changed_value?
+            description << ' (read back as '
+            description << Shoulda::Matchers::Util.inspect_value(
+              attribute_setter.value_read
+            )
+            description << ')'
+          end
+
+          if same_as_existing == true
+            description << ' as well'
+          end
+
+          description
+        end
+
+        def descriptions_for_attribute_setters_for_new_record
+          attribute_setter_descriptions_for_new_record.to_sentence
+        end
+
+        def attribute_setter_descriptions_for_new_record
+          attribute_setters_for_new_record.map do |attribute_setter|
+            same_as_existing = (
+              attribute_setter.value_written ==
+              existing_value_written
+            )
+            description_for_attribute_setter(
+              attribute_setter,
+              same_as_existing: same_as_existing
+            )
+          end
+        end
+
+        def existing_and_new_values_are_same?
+          last_value_set_on_new_record == existing_value_written
+        end
+
+        def last_attribute_setter_used_on_new_record
+          last_submatcher_run.last_attribute_setter_used
+        end
+
+        def last_value_set_on_new_record
+          last_submatcher_run.last_value_set
+        end
+
+        # @private
+        class AttributeSetters
+          include Enumerable
+
+          def initialize
+            @attribute_setters = []
+          end
+
+          def <<(given_attribute_setter)
+            index = find_index_of(given_attribute_setter)
+
+            if index
+              @attribute_setters[index] = given_attribute_setter
+            else
+              @attribute_setters << given_attribute_setter
+            end
+          end
+
+          def +(other_attribute_setters)
+            dup.tap do |attribute_setters|
+              other_attribute_setters.each do |attribute_setter|
+                attribute_setters << attribute_setter
+              end
+            end
+          end
+
+          def each(&block)
+            @attribute_setters.each(&block)
+          end
+
+          def last
+            @attribute_setters.last
+          end
+
+          private
+
+          def find_index_of(given_attribute_setter)
+            @attribute_setters.find_index do |attribute_setter|
+              attribute_setter.attribute_name ==
+                given_attribute_setter.attribute_name
+            end
+          end
+        end
+
+        # @private
+        class NonCaseSwappableValueError < Shoulda::Matchers::Error
+          attr_accessor :model, :attribute, :value
+
+          def message
+            Shoulda::Matchers.word_wrap <<-MESSAGE
+Your #{model.name} model has a uniqueness validation on :#{attribute} which is
+declared to be case-sensitive, but the value the uniqueness matcher used,
+#{value.inspect}, doesn't contain any alpha characters, so using it to
+test the case-sensitivity part of the validation is ineffective. There are
+two possible solutions for this depending on what you're trying to do here:
+
+a) If you meant for the validation to be case-sensitive, then you need to give
+   the uniqueness matcher a saved instance of #{model.name} with a value for
+   :#{attribute} that contains alpha characters.
+
+b) If you meant for the validation to be case-insensitive, then you need to
+   add `case_sensitive: false` to the validation and add `case_insensitive` to
+   the matcher.
+
+For more information, please see:
+
+http://matchers.shoulda.io/docs/v#{Shoulda::Matchers::VERSION}/file.NonCaseSwappableValueError.html
+            MESSAGE
+          end
+        end
+
+        # @private
+        class ExistingRecordInvalid < Shoulda::Matchers::Error
+          include Shoulda::Matchers::ActiveModel::Helpers
+
+          attr_accessor :underlying_exception
+
+          def message
+            <<-MESSAGE.strip
+validate_uniqueness_of works by matching a new record against an
+existing record. If there is no existing record, it will create one
+using the record you provide.
+
+While doing this, the following error was raised:
+
+#{Shoulda::Matchers::Util.indent(underlying_exception.message, 2)}
+
+The best way to fix this is to provide the matcher with a record where
+any required attributes are filled in with valid values beforehand.
+            MESSAGE
+          end
         end
       end
     end

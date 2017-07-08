@@ -35,7 +35,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe UsersController do
+      #     RSpec.describe UsersController, type: :controller do
       #       it do
       #         params = {
       #           user: {
@@ -62,9 +62,10 @@ module Shoulda
       #             password: 'password'
       #           }
       #         }
-      #         should permit(:first_name, :last_name, :email, :password).
+      #         matcher = permit(:first_name, :last_name, :email, :password).
       #           for(:create, params: params).
       #           on(:user)
+      #         assert_accepts matcher, subject
       #       end
       #     end
       #
@@ -95,7 +96,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe UsersController do
+      #     RSpec.describe UsersController, type: :controller do
       #       before do
       #         create(:user, id: 1)
       #       end
@@ -132,9 +133,10 @@ module Shoulda
       #             password: 'password'
       #           }
       #         }
-      #         should permit(:first_name, :last_name, :email, :password).
+      #         matcher = permit(:first_name, :last_name, :email, :password).
       #           for(:update, params: params).
       #           on(:user)
+      #         assert_accepts matcher, subject
       #       end
       #     end
       #
@@ -168,7 +170,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe UsersController do
+      #     RSpec.describe UsersController, type: :controller do
       #       before do
       #         create(:user, id: 1)
       #       end
@@ -189,9 +191,10 @@ module Shoulda
       #
       #       should "(for PUT #toggle) restrict parameters on :user to :activated" do
       #         params = { id: 1, user: { activated: true } }
-      #         should permit(:activated).
+      #         matcher = permit(:activated).
       #           for(:toggle, params: params, verb: :put).
       #           on(:user)
+      #         assert_accepts matcher, subject
       #       end
       #     end
       #
@@ -305,16 +308,8 @@ module Shoulda
           end
         end
 
-        def permit_called?
-          actual_permitted_parameter_names.any?
-        end
-
         def unpermitted_parameter_names
           expected_permitted_parameter_names - actual_permitted_parameter_names
-        end
-
-        def verified_permitted_parameter_names
-          expected_permitted_parameter_names & actual_permitted_parameter_names
         end
 
         def ensure_action_and_verb_present!
@@ -341,7 +336,7 @@ module Shoulda
         # @private
         class CompositeParametersDoubleRegistry
           def initialize
-            @parameters_double_registries_by_params = {}
+            @parameters_double_registries = []
           end
 
           def register
@@ -352,20 +347,19 @@ module Shoulda
               params = call.return_value
               parameters_double_registry = ParametersDoubleRegistry.new(params)
               parameters_double_registry.register
-              parameters_double_registries_by_params[params] =
-                parameters_double_registry
+              parameters_double_registries << parameters_double_registry
             end
           end
 
           def permitted_parameter_names(options = {})
-            parameters_double_registries_by_params.flat_map do |params, double_registry|
+            parameters_double_registries.flat_map do |double_registry|
               double_registry.permitted_parameter_names(options)
             end
           end
 
           protected
 
-          attr_reader :parameters_double_registries_by_params
+          attr_reader :parameters_double_registries
         end
 
         # @private

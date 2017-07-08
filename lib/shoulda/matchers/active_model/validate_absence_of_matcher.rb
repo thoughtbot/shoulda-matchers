@@ -4,21 +4,21 @@ module Shoulda
       # The `validate_absence_of` matcher tests the usage of the
       # `validates_absence_of` validation.
       #
-      #     class Artillery
+      #     class PowerHungryCountry
       #       include ActiveModel::Model
-      #       attr_accessor :arms
+      #       attr_accessor :nuclear_weapons
       #
-      #       validates_absence_of :arms
+      #       validates_absence_of :nuclear_weapons
       #     end
       #
       #     # RSpec
-      #     describe Artillery do
-      #       it { should validate_absence_of(:arms) }
+      #     RSpec.describe PowerHungryCountry, type: :model do
+      #       it { should validate_absence_of(:nuclear_weapons) }
       #     end
       #
       #     # Minitest (Shoulda)
-      #     class ArtilleryTest < ActiveSupport::TestCase
-      #       should validate_absence_of(:arms)
+      #     class PowerHungryCountryTest < ActiveSupport::TestCase
+      #       should validate_absence_of(:nuclear_weapons)
       #     end
       #
       # #### Qualifiers
@@ -27,47 +27,47 @@ module Shoulda
       #
       # Use `on` if your validation applies only under a certain context.
       #
-      #     class Artillery
+      #     class PowerHungryCountry
       #       include ActiveModel::Model
-      #       attr_accessor :arms
+      #       attr_accessor :nuclear_weapons
       #
-      #       validates_absence_of :arms, on: :create
+      #       validates_absence_of :nuclear_weapons, on: :create
       #     end
       #
       #     # RSpec
-      #     describe Artillery do
-      #       it { should validate_absence_of(:arms).on(:create) }
+      #     RSpec.describe PowerHungryCountry, type: :model do
+      #       it { should validate_absence_of(:nuclear_weapons).on(:create) }
       #     end
       #
       #     # Minitest (Shoulda)
-      #     class ArtilleryTest < ActiveSupport::TestCase
-      #       should validate_absence_of(:arms).on(:create)
+      #     class PowerHungryCountryTest < ActiveSupport::TestCase
+      #       should validate_absence_of(:nuclear_weapons).on(:create)
       #     end
       #
       # ##### with_message
       #
       # Use `with_message` if you are using a custom validation message.
       #
-      #     class Artillery
+      #     class PowerHungryCountry
       #       include ActiveModel::Model
-      #       attr_accessor :arms
+      #       attr_accessor :nuclear_weapons
       #
-      #       validates_absence_of :arms,
-      #         message: "We're fresh outta arms here, soldier!"
+      #       validates_absence_of :nuclear_weapons,
+      #         message: "there shall be peace on Earth"
       #     end
       #
       #     # RSpec
-      #     describe Artillery do
+      #     RSpec.describe PowerHungryCountry, type: :model do
       #       it do
-      #         should validate_absence_of(:arms).
-      #           with_message("We're fresh outta arms here, soldier!")
+      #         should validate_absence_of(:nuclear_weapons).
+      #           with_message("there shall be peace on Earth")
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
-      #     class ArtilleryTest < ActiveSupport::TestCase
-      #       should validate_absence_of(:arms).
-      #         with_message("We're fresh outta arms here, soldier!")
+      #     class PowerHungryCountryTest < ActiveSupport::TestCase
+      #       should validate_absence_of(:nuclear_weapons).
+      #         with_message("there shall be peace on Earth")
       #     end
       #
       # @return [ValidateAbsenceOfMatcher}
@@ -78,20 +78,18 @@ module Shoulda
 
       # @private
       class ValidateAbsenceOfMatcher < ValidationMatcher
-        def with_message(message)
-          @expected_message = message
-          self
+        def initialize(attribute)
+          super
+          @expected_message = :present
         end
 
         def matches?(subject)
           super(subject)
-          @expected_message ||= :present
-
           disallows_value_of(value, @expected_message)
         end
 
-        def description
-          "require #{@attribute} to not be set"
+        def simple_description
+          "validate that :#{@attribute} is empty/falsy"
         end
 
         private
@@ -110,7 +108,7 @@ module Shoulda
             when :decimal then BigDecimal.new(1, 0)
             when :datetime, :time, :timestamp then Time.now
             when :date then Date.new
-            when :binary then "0"
+            when :binary then '0'
             else 'an arbitrary value'
             end
           end

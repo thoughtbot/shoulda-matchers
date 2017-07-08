@@ -9,11 +9,49 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
     it 'does not override the default message with a blank' do
       expect(validating_presence).to matcher.with_message(nil)
     end
+
+    it_supports(
+      'ignoring_interference_by_writer',
+      tests: {
+        accept_if_qualified_but_changing_value_does_not_interfere: {
+          changing_values_with: :nil_to_blank
+        },
+        reject_if_qualified_but_changing_value_interferes: {
+          model_name: 'Example',
+          attribute_name: :attr,
+          changing_values_with: :never_falsy,
+          expected_message: <<-MESSAGE
+Example did not properly validate that :attr cannot be empty/falsy.
+  After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
+  -- the matcher expected the Example to be invalid, but it was valid
+  instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+          MESSAGE
+        }
+      }
+    )
   end
 
   context 'a model without a presence validation' do
-    it 'rejects' do
-      expect(define_model(:example, attr: :string).new).not_to matcher
+    it 'rejects with the correct failure message' do
+      record = define_model(:example, attr: :string).new
+
+      assertion = lambda do
+        expect(record).to matcher
+      end
+
+      message = <<-MESSAGE
+Example did not properly validate that :attr cannot be empty/falsy.
+  After setting :attr to ‹nil›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
     end
   end
 
@@ -25,23 +63,87 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
     it 'does not override the default message with a blank' do
       expect(active_model_validating_presence).to matcher.with_message(nil)
     end
+
+    it_supports(
+      'ignoring_interference_by_writer',
+      tests: {
+        accept_if_qualified_but_changing_value_does_not_interfere: {
+          changing_values_with: :nil_to_blank
+        },
+        reject_if_qualified_but_changing_value_interferes: {
+          model_name: 'Example',
+          attribute_name: :attr,
+          changing_values_with: :never_falsy,
+          expected_message: <<-MESSAGE
+Example did not properly validate that :attr cannot be empty/falsy.
+  After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
+  -- the matcher expected the Example to be invalid, but it was valid
+  instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+          MESSAGE
+        }
+      }
+    )
+
+    def model_creator
+      :active_model
+    end
   end
 
   context 'an ActiveModel class without a presence validation' do
-    it 'rejects' do
-      expect(active_model).not_to matcher
-    end
+    it 'rejects with the correct failure message' do
+      assertion = lambda do
+        expect(active_model).to matcher
+      end
 
-    it 'provides the correct failure message' do
-      message = %{Expected errors to include "can't be blank" when attr is set to nil,\ngot no errors}
+      message = <<-MESSAGE
+Example did not properly validate that :attr cannot be empty/falsy.
+  After setting :attr to ‹nil›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+      MESSAGE
 
-      expect { expect(active_model).to matcher }.to fail_with_message(message)
+      expect(&assertion).to fail_with_message(message)
     end
   end
 
   context 'a has_many association with a presence validation' do
     it 'requires the attribute to be set' do
       expect(has_many_children(presence: true)).to validate_presence_of(:children)
+    end
+
+    it_supports(
+      'ignoring_interference_by_writer',
+      tests: {
+        accept_if_qualified_but_changing_value_does_not_interfere: {
+          changing_values_with: :nil_to_blank
+        },
+        reject_if_qualified_but_changing_value_interferes: {
+          model_name: 'Example',
+          attribute_name: :attr,
+          changing_values_with: :never_falsy,
+          expected_message: <<-MESSAGE
+Example did not properly validate that :attr cannot be empty/falsy.
+  After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
+  -- the matcher expected the Example to be invalid, but it was valid
+  instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+          MESSAGE
+        }
+      }
+    )
+
+    def model_creator
+      :"active_record/has_many"
     end
   end
 
@@ -53,20 +155,53 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
   end
 
   context 'a required has_and_belongs_to_many association' do
-    before do
-      define_model :child
-      @model = define_model :parent do
-        has_and_belongs_to_many :children
-        validates_presence_of :children
-      end.new
+    it 'accepts' do
+      expect(build_record_having_and_belonging_to_many).
+        to validate_presence_of(:children)
+    end
+
+    def build_record_having_and_belonging_to_many
       create_table 'children_parents', id: false do |t|
         t.integer :child_id
         t.integer :parent_id
       end
+
+      define_model :child
+
+      define_model :parent do
+        has_and_belongs_to_many :children
+        validates_presence_of :children
+      end.new
     end
 
-    it 'accepts' do
-      expect(@model).to validate_presence_of(:children)
+    it_supports(
+      'ignoring_interference_by_writer',
+      tests: {
+        accept_if_qualified_but_changing_value_does_not_interfere: {
+          changing_values_with: :nil_to_blank
+        },
+        reject_if_qualified_but_changing_value_interferes: {
+          model_name: 'Example',
+          attribute_name: :attr,
+          changing_values_with: :never_falsy,
+          expected_message: <<-MESSAGE
+Example did not properly validate that :attr cannot be empty/falsy.
+  After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
+  -- the matcher expected the Example to be invalid, but it was valid
+  instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+          MESSAGE
+        }
+      }
+    )
+
+    def model_creator
+      :"active_record/has_and_belongs_to_many"
     end
   end
 
@@ -82,8 +217,18 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
       end
     end
 
-    it 'rejects' do
-      expect(@model).not_to validate_presence_of(:children)
+    it 'rejects with the correct failure message' do
+      assertion = lambda do
+        expect(@model).to validate_presence_of(:children)
+      end
+
+      message = <<-MESSAGE
+Parent did not properly validate that :children cannot be empty/falsy.
+  After setting :children to ‹[]›, the matcher expected the Parent to be
+  invalid, but it was valid instead.
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
     end
   end
 
@@ -109,8 +254,20 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
         expect(validating_presence(strict: true)).to matcher.strict
       end
 
-      it 'rejects when the :strict options do not match' do
-        expect(validating_presence(strict: false)).not_to matcher.strict
+      it 'rejects with the correct failure message when the :strict options do not match' do
+        assertion = lambda do
+          expect(validating_presence(strict: false)).to matcher.strict
+        end
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr cannot be empty/falsy,
+raising a validation exception on failure.
+  After setting :attr to ‹nil›, the matcher expected the Example to be
+  invalid and to raise a validation exception, but the record produced
+  validation errors instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
 
@@ -146,7 +303,7 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
 
   if rails_4_x?
     context 'against a pre-set password in a model that has_secure_password' do
-      it 'raises a CouldNotSetPasswordError exception' do
+      it 'raises a CouldNotSetPasswordError' do
         user_class = define_model :user, password_digest: :string do
           has_secure_password validations: false
           validates_presence_of :password
@@ -155,21 +312,24 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
         user = user_class.new
         user.password = 'something'
 
-        error_class = Shoulda::Matchers::ActiveModel::CouldNotSetPasswordError
-        expect do
+        assertion = lambda do
           expect(user).to validate_presence_of(:password)
-        end.to raise_error(error_class)
+        end
+
+        expect(&assertion).to raise_error(
+          Shoulda::Matchers::ActiveModel::CouldNotSetPasswordError
+        )
       end
     end
   end
 
-  context 'when the attribute typecasts nil to an empty array' do
-    it 'accepts' do
-      model = define_active_model_class :example do
-        attr_reader :foo
+  context 'when the attribute typecasts nil to another blank value, such as an empty array' do
+    it 'accepts (and does not raise an AttributeChangedValueError)' do
+      model = define_active_model_class :example, accessors: [:foo] do
+        validates_presence_of :foo
 
         def foo=(value)
-          @foo = Array.wrap(value)
+          super(Array.wrap(value))
         end
       end
 
@@ -209,5 +369,12 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
     define_active_resource_class :foo, attr: :string do
       validates_presence_of :attr
     end.new
+  end
+
+  def validation_matcher_scenario_args
+    super.deep_merge(
+      matcher_name: :validate_presence_of,
+      model_creator: :active_record
+    )
   end
 end

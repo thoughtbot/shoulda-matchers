@@ -126,15 +126,83 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
         record = build_record_validating_numericality
         expect(record).to validate_numericality
       end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          accept_if_qualified_but_changing_value_does_not_interfere: {
+            changing_values_with: :next_value,
+          },
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :numeric_value,
+            expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like a number.
+  After setting :attr to ‹"abcd"› -- which was read back as ‹"1"› -- the
+  matcher expected the Example to be invalid, but it was valid instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      )
+
+      context 'when the attribute is a virtual attribute in an ActiveRecord model' do
+        it 'accepts' do
+          record = build_record_validating_numericality_of_virtual_attribute
+          expect(record).to validate_numericality
+        end
+      end
+
+      context 'when the column is an integer column' do
+        it 'accepts (and does not raise an AttributeChangedValueError)' do
+          record = build_record_validating_numericality(column_type: :integer)
+          expect(record).to validate_numericality
+        end
+      end
+
+      context 'when the column is a float column' do
+        it 'accepts (and does not raise an AttributeChangedValueError)' do
+          record = build_record_validating_numericality(column_type: :float)
+          expect(record).to validate_numericality
+        end
+      end
+
+      context 'when the column is a decimal column' do
+        it 'accepts (and does not raise an AttributeChangedValueError)' do
+          record = build_record_validating_numericality(column_type: :decimal)
+          expect(record).to validate_numericality
+        end
+      end
+
+      if database_supports_money_columns?
+        context 'when the column is a money column' do
+          it 'accepts (and does not raise an AttributeChangedValueError)' do
+            record = build_record_validating_numericality(column_type: :money)
+            expect(record).to validate_numericality
+          end
+        end
+      end
     end
 
     context 'and not validating anything' do
       it 'rejects since it does not disallow non-numbers' do
         record = build_record_validating_nothing
+
         assertion = -> { expect(record).to validate_numericality }
-        expect(&assertion).to fail_with_message_including(
-          'Expected errors to include "is not a number"'
-        )
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like a number.
+  After setting :attr to ‹"abcd"›, the matcher expected the Example to
+  be invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
   end
@@ -145,17 +213,65 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
         record = build_record_validating_numericality(allow_nil: true)
         expect(record).to validate_numericality.allow_nil
       end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          accept_if_qualified_but_changing_value_does_not_interfere: {
+            changing_values_with: :next_value_or_numeric_value,
+          },
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :next_value_or_non_numeric_value,
+            expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like a number, but
+only if it is not nil.
+  In checking that Example allows :attr to be ‹nil›, after setting :attr
+  to ‹nil› -- which was read back as ‹"a"› -- the matcher expected the
+  Example to be valid, but it was invalid instead, producing these
+  validation errors:
+
+  * attr: ["is not a number"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      ) do
+        def validation_matcher_scenario_args
+          super.deep_merge(validation_options: { allow_nil: true })
+        end
+
+        def configure_validation_matcher(matcher)
+          matcher.allow_nil
+        end
+      end
     end
 
     context 'and not validating with allow_nil' do
       it 'rejects since it tries to treat nil as a number' do
         record = build_record_validating_numericality
+
         assertion = lambda do
           expect(record).to validate_numericality.allow_nil
         end
-        expect(&assertion).to fail_with_message_including(
-          %[Did not expect errors to include "is not a number" when #{attribute_name} is set to nil]
-        )
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like a number, but
+only if it is not nil.
+  In checking that Example allows :attr to be ‹nil›, after setting :attr
+  to ‹nil›, the matcher expected the Example to be valid, but it was
+  invalid instead, producing these validation errors:
+
+  * attr: ["is not a number"]
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
   end
@@ -166,17 +282,56 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
         record = build_record_validating_numericality(only_integer: true)
         expect(record).to validate_numericality.only_integer
       end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          accept_if_qualified_but_changing_value_does_not_interfere: {
+            changing_values_with: :next_value,
+          },
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :numeric_value,
+            expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like an integer.
+  After setting :attr to ‹"0.1"› -- which was read back as ‹"1"› -- the
+  matcher expected the Example to be invalid, but it was valid instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      ) do
+        def validation_matcher_scenario_args
+          super.deep_merge(validation_options: { only_integer: true })
+        end
+
+        def configure_validation_matcher(matcher)
+          matcher.only_integer
+        end
+      end
     end
 
     context 'and not validating with only_integer' do
       it 'rejects since it does not disallow non-integers' do
         record = build_record_validating_numericality
+
         assertion = lambda do
           expect(record).to validate_numericality.only_integer
         end
-        expect(&assertion).to fail_with_message_including(
-          'Expected errors to include "must be an integer"'
-        )
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like an integer.
+  After setting :attr to ‹"0.1"›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
   end
@@ -187,36 +342,200 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
         record = build_record_validating_numericality(odd: true)
         expect(record).to validate_numericality.odd
       end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          accept_if_qualified_but_changing_value_does_not_interfere: {
+            changing_values_with: :next_next_value,
+          },
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :next_value,
+            expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like an odd number.
+  After setting :attr to ‹"2"› -- which was read back as ‹"3"› -- the
+  matcher expected the Example to be invalid, but it was valid instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      ) do
+        def validation_matcher_scenario_args
+          super.deep_merge(validation_options: { odd: true })
+        end
+
+        def configure_validation_matcher(matcher)
+          matcher.odd
+        end
+      end
+
+      context 'when the attribute is a virtual attribute in ActiveRecord model' do
+        it 'accepts' do
+          record = build_record_validating_numericality_of_virtual_attribute(
+            odd: true
+          )
+          expect(record).to validate_numericality.odd
+        end
+      end
+
+      context 'when the column is an integer column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :integer,
+            odd: true
+          )
+
+          expect(record).to validate_numericality.odd
+        end
+      end
+
+      context 'when the column is a float column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :float,
+            odd: true
+          )
+
+          expect(record).to validate_numericality.odd
+        end
+      end
+
+      context 'when the column is a decimal column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :decimal,
+            odd: true,
+          )
+
+          expect(record).to validate_numericality.odd
+        end
+      end
     end
 
     context 'and not validating with odd' do
       it 'rejects since it does not disallow even numbers' do
         record = build_record_validating_numericality
+
         assertion = lambda do
           expect(record).to validate_numericality.odd
         end
-        expect(&assertion).to fail_with_message_including(
-          'Expected errors to include "must be odd"'
-        )
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like an odd number.
+  After setting :attr to ‹"2"›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
   end
 
   context 'qualified with even' do
     context 'and validating with even' do
-      it 'allows even number values for that attribute' do
+      it 'accepts' do
         record = build_record_validating_numericality(even: true)
         expect(record).to validate_numericality.even
+      end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          accept_if_qualified_but_changing_value_does_not_interfere: {
+            changing_values_with: :next_next_value,
+          },
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :next_value,
+            expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like an even number.
+  After setting :attr to ‹"1"› -- which was read back as ‹"2"› -- the
+  matcher expected the Example to be invalid, but it was valid instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      ) do
+        def validation_matcher_scenario_args
+          super.deep_merge(validation_options: { even: true })
+        end
+
+        def configure_validation_matcher(matcher)
+          matcher.even
+        end
+      end
+
+      context 'when the attribute is a virtual attribute in an ActiveRecord model' do
+        it 'accepts' do
+          record = build_record_validating_numericality_of_virtual_attribute(
+            even: true,
+          )
+          expect(record).to validate_numericality.even
+        end
+      end
+
+      context 'when the column is an integer column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :integer,
+            even: true
+          )
+
+          expect(record).to validate_numericality.even
+        end
+      end
+
+      context 'when the column is a float column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :float,
+            even: true
+          )
+
+          expect(record).to validate_numericality.even
+        end
+      end
+
+      context 'when the column is a decimal column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :decimal,
+            even: true,
+          )
+
+          expect(record).to validate_numericality.even
+        end
       end
     end
 
     context 'and not validating with even' do
       it 'rejects since it does not disallow odd numbers' do
         record = build_record_validating_numericality
-        assertion = -> { expect(record).to validate_numericality.even }
-        expect(&assertion).to fail_with_message_including(
-          'Expected errors to include "must be even"'
-        )
+
+        assertion = lambda do
+          expect(record).to validate_numericality.even
+        end
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like an even number.
+  After setting :attr to ‹"1"›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
   end
@@ -229,19 +548,102 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
         )
         expect(record).to validate_numericality.is_less_than_or_equal_to(18)
       end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :next_value,
+            expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like a number less
+than or equal to 18.
+  After setting :attr to ‹"18"› -- which was read back as ‹"19"› -- the
+  matcher expected the Example to be valid, but it was invalid instead,
+  producing these validation errors:
+
+  * attr: ["must be less than or equal to 18"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      ) do
+        def validation_matcher_scenario_args
+          super.deep_merge(
+            validation_options: { less_than_or_equal_to: 18 }
+          )
+        end
+
+        def configure_validation_matcher(matcher)
+          matcher.is_less_than_or_equal_to(18)
+        end
+      end
+
+      context 'when the attribute is a virtual attribute in an ActiveRecord model' do
+        it 'accepts' do
+          record = build_record_validating_numericality_of_virtual_attribute(
+            less_than_or_equal_to: 18,
+          )
+          expect(record).to validate_numericality.is_less_than_or_equal_to(18)
+        end
+      end
+
+      context 'when the column is an integer column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :integer,
+            less_than_or_equal_to: 18
+          )
+
+          expect(record).to validate_numericality.is_less_than_or_equal_to(18)
+        end
+      end
+
+      context 'when the column is a float column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :float,
+            less_than_or_equal_to: 18
+          )
+
+          expect(record).to validate_numericality.is_less_than_or_equal_to(18)
+        end
+      end
+
+      context 'when the column is a decimal column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :decimal,
+            less_than_or_equal_to: 18,
+          )
+
+          expect(record).to validate_numericality.is_less_than_or_equal_to(18)
+        end
+      end
     end
 
     context 'and not validating with less_than_or_equal_to' do
       it 'rejects since it does not disallow numbers greater than the value' do
         record = build_record_validating_numericality
+
         assertion = lambda do
-          expect(record).
-            to validate_numericality.
-            is_less_than_or_equal_to(18)
+          expect(record).to validate_numericality.is_less_than_or_equal_to(18)
         end
-        expect(&assertion).to fail_with_message_including(
-          'Expected errors to include "must be less than or equal to 18"'
-        )
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like a number less
+than or equal to 18.
+  After setting :attr to ‹"19"›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
   end
@@ -254,19 +656,100 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           to validate_numericality.
           is_less_than(18)
       end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :next_value,
+            expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like a number less
+than 18.
+  After setting :attr to ‹"17"› -- which was read back as ‹"18"› -- the
+  matcher expected the Example to be valid, but it was invalid instead,
+  producing these validation errors:
+
+  * attr: ["must be less than 18"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      ) do
+        def validation_matcher_scenario_args
+          super.deep_merge(validation_options: { less_than: 18 })
+        end
+
+        def configure_validation_matcher(matcher)
+          matcher.is_less_than(18)
+        end
+      end
+
+      context 'when the attribute is a virtual attribute in an ActiveRecord model' do
+        it 'accepts' do
+          record = build_record_validating_numericality_of_virtual_attribute(
+            less_than: 18,
+          )
+          expect(record).to validate_numericality.is_less_than(18)
+        end
+      end
+
+      context 'when the column is an integer column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :integer,
+            less_than: 18
+          )
+
+          expect(record).to validate_numericality.is_less_than(18)
+        end
+      end
+
+      context 'when the column is a float column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :float,
+            less_than: 18
+          )
+
+          expect(record).to validate_numericality.is_less_than(18)
+        end
+      end
+
+      context 'when the column is a decimal column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :decimal,
+            less_than: 18,
+          )
+
+          expect(record).to validate_numericality.is_less_than(18)
+        end
+      end
     end
 
     context 'and not validating with less_than' do
       it 'rejects since it does not disallow numbers greater than or equal to the value' do
         record = build_record_validating_numericality
+
         assertion = lambda do
-          expect(record).
-            to validate_numericality.
-            is_less_than(18)
+          expect(record).to validate_numericality.is_less_than(18)
         end
-        expect(&assertion).to fail_with_message_including(
-          'Expected errors to include "must be less than 18"'
-        )
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like a number less
+than 18.
+  After setting :attr to ‹"19"›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
   end
@@ -277,17 +760,100 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
         record = build_record_validating_numericality(equal_to: 18)
         expect(record).to validate_numericality.is_equal_to(18)
       end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :next_value,
+            expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like a number equal
+to 18.
+  After setting :attr to ‹"18"› -- which was read back as ‹"19"› -- the
+  matcher expected the Example to be valid, but it was invalid instead,
+  producing these validation errors:
+
+  * attr: ["must be equal to 18"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      ) do
+        def validation_matcher_scenario_args
+          super.deep_merge(validation_options: { equal_to: 18 })
+        end
+
+        def configure_validation_matcher(matcher)
+          matcher.is_equal_to(18)
+        end
+      end
+
+      context 'when the attribute is a virtual attribute in an ActiveRecord model' do
+        it 'accepts' do
+          record = build_record_validating_numericality_of_virtual_attribute(
+            equal_to: 18,
+          )
+          expect(record).to validate_numericality.is_equal_to(18)
+        end
+      end
+
+      context 'when the column is an integer column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :integer,
+            equal_to: 18
+          )
+
+          expect(record).to validate_numericality.is_equal_to(18)
+        end
+      end
+
+      context 'when the column is a float column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :float,
+            equal_to: 18
+          )
+
+          expect(record).to validate_numericality.is_equal_to(18)
+        end
+      end
+
+      context 'when the column is a decimal column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :decimal,
+            equal_to: 18,
+          )
+
+          expect(record).to validate_numericality.is_equal_to(18)
+        end
+      end
     end
 
     context 'and not validating with equal_to' do
       it 'rejects since it does not disallow numbers that are not the value' do
         record = build_record_validating_numericality
+
         assertion = lambda do
           expect(record).to validate_numericality.is_equal_to(18)
         end
-        expect(&assertion).to fail_with_message_including(
-          'Expected errors to include "must be equal to 18"'
-        )
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like a number equal
+to 18.
+  After setting :attr to ‹"19"›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
   end
@@ -302,19 +868,107 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           to validate_numericality.
           is_greater_than_or_equal_to(18)
       end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :next_value,
+            expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like a number greater
+than or equal to 18.
+  After setting :attr to ‹"17"› -- which was read back as ‹"18"› -- the
+  matcher expected the Example to be invalid, but it was valid instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      ) do
+        def validation_matcher_scenario_args
+          super.deep_merge(
+            validation_options: { greater_than_or_equal_to: 18 }
+          )
+        end
+
+        def configure_validation_matcher(matcher)
+          matcher.is_greater_than_or_equal_to(18)
+        end
+      end
+
+      context 'when the attribute is a virtual attribute in an ActiveRecord model' do
+        it 'accepts' do
+          record = build_record_validating_numericality_of_virtual_attribute(
+            greater_than_or_equal_to: 18,
+          )
+          expect(record).to validate_numericality.
+            is_greater_than_or_equal_to(18)
+        end
+      end
+
+      context 'when the column is an integer column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :integer,
+            greater_than_or_equal_to: 18
+          )
+
+          expect(record).
+            to validate_numericality.
+            is_greater_than_or_equal_to(18)
+        end
+      end
+
+      context 'when the column is a float column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :float,
+            greater_than_or_equal_to: 18
+          )
+
+          expect(record).
+            to validate_numericality.
+            is_greater_than_or_equal_to(18)
+        end
+      end
+
+      context 'when the column is a decimal column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :decimal,
+            greater_than_or_equal_to: 18,
+          )
+
+          expect(record).
+            to validate_numericality.
+            is_greater_than_or_equal_to(18)
+        end
+      end
     end
 
     context 'not validating with greater_than_or_equal_to' do
       it 'rejects since it does not disallow numbers that are less than the value' do
         record = build_record_validating_numericality
+
         assertion = lambda do
-          expect(record).
-            to validate_numericality.
+          expect(record).to validate_numericality.
             is_greater_than_or_equal_to(18)
         end
-        expect(&assertion).to fail_with_message_including(
-          'Expected errors to include "must be greater than or equal to 18"'
-        )
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like a number greater
+than or equal to 18.
+  After setting :attr to ‹"17"›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
   end
@@ -327,19 +981,103 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           to validate_numericality.
           is_greater_than(18)
       end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :next_value,
+            expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like a number greater
+than 18.
+  After setting :attr to ‹"18"› -- which was read back as ‹"19"› -- the
+  matcher expected the Example to be invalid, but it was valid instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      ) do
+        def validation_matcher_scenario_args
+          super.deep_merge(validation_options: { greater_than: 18 })
+        end
+
+        def configure_validation_matcher(matcher)
+          matcher.is_greater_than(18)
+        end
+      end
+
+      context 'when the attribute is a virtual attribute in an ActiveRecord model' do
+        it 'accepts' do
+          record = build_record_validating_numericality_of_virtual_attribute(
+            greater_than: 18,
+          )
+          expect(record).to validate_numericality.is_greater_than(18)
+        end
+      end
+
+      context 'when the column is an integer column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :integer,
+            greater_than: 18
+          )
+
+          expect(record).
+            to validate_numericality.
+            is_greater_than(18)
+        end
+      end
+
+      context 'when the column is a float column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :float,
+            greater_than: 18
+          )
+
+          expect(record).
+            to validate_numericality.
+            is_greater_than(18)
+        end
+      end
+
+      context 'when the column is a decimal column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :decimal,
+            greater_than: 18,
+          )
+
+          expect(record).
+            to validate_numericality.
+            is_greater_than(18)
+        end
+      end
     end
 
     context 'and not validating with greater_than' do
       it 'rejects since it does not disallow numbers that are less than or equal to the value' do
         record = build_record_validating_numericality
+
         assertion = lambda do
-          expect(record).
-            to validate_numericality.
-            is_greater_than(18)
+          expect(record).to validate_numericality.is_greater_than(18)
         end
-        expect(&assertion).to fail_with_message_including(
-          'Expected errors to include "must be greater than 18"'
-        )
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like a number greater
+than 18.
+  After setting :attr to ‹"18"›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
   end
@@ -353,9 +1091,25 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
     end
 
     context 'and validating with a different message' do
-      it 'rejects' do
+      it 'rejects with the correct failure message' do
         record = build_record_validating_numericality(message: 'custom')
-        expect(record).not_to validate_numericality.with_message(/wrong/)
+
+        assertion = lambda do
+          expect(record).to validate_numericality.with_message(/wrong/)
+        end
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like a number,
+producing a custom validation error on failure.
+  After setting :attr to ‹"abcd"›, the matcher expected the Example to
+  be invalid and to produce a validation error matching ‹/wrong/› on
+  :attr. The record was indeed invalid, but it produced these validation
+  errors instead:
+
+  * attr: ["custom"]
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
 
@@ -363,6 +1117,25 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
       it 'ignores the qualifier' do
         record = build_record_validating_numericality
         expect(record).to validate_numericality.with_message(nil)
+      end
+    end
+
+    context 'and the validation is missing from the model' do
+      it 'rejects with the correct failure message' do
+        model = define_model_validating_nothing
+
+        assertion = lambda do
+          expect(model.new).to validate_numericality.with_message(/wrong/)
+        end
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like a number,
+producing a custom validation error on failure.
+  After setting :attr to ‹"abcd"›, the matcher expected the Example to
+  be invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
   end
@@ -378,12 +1151,20 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
     context 'and not validating strictly' do
       it 'rejects since ActiveModel::StrictValidationFailed is never raised' do
         record = build_record_validating_numericality(attribute_name: :attr)
+
         assertion = lambda do
           expect(record).to validate_numericality_of(:attr).strict
         end
-        expect(&assertion).to fail_with_message_including(
-          'Expected exception to include "Attr is not a number"'
-        )
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like a number,
+raising a validation exception on failure.
+  After setting :attr to ‹"abcd"›, the matcher expected the Example to
+  be invalid and to raise a validation exception, but the record
+  produced validation errors instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
   end
@@ -405,12 +1186,18 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
   context 'not qualified with on but validating with on' do
     it 'rejects since the validation never runs' do
       record = build_record_validating_numericality(on: :customizable)
+
       assertion = lambda do
         expect(record).to validate_numericality
       end
-      expect(&assertion).to fail_with_message_including(
-        'Expected errors to include "is not a number"'
-      )
+
+      message = <<-MESSAGE
+Example did not properly validate that :attr looks like a number.
+  After setting :attr to ‹"abcd"›, the matcher expected the Example to
+  be invalid, but it was valid instead.
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
     end
   end
 
@@ -433,33 +1220,51 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           even: true,
           greater_than: 18
         )
+
         assertion = lambda do
           expect(record).
             to validate_numericality.
             only_integer.
             is_greater_than(18)
         end
-        message = <<-MESSAGE.strip_heredoc
-          Expected errors to include "must be an integer" when attr is set to "0.1",
-          got errors:
-          * "must be greater than 18" (attribute: attr, value: "0.1")
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like an integer
+greater than 18.
+  In checking that Example disallows :attr from being a decimal number,
+  after setting :attr to ‹"0.1"›, the matcher expected the Example to be
+  invalid and to produce the validation error "must be an integer" on
+  :attr. The record was indeed invalid, but it produced these validation
+  errors instead:
+
+  * attr: ["must be greater than 18"]
         MESSAGE
+
         expect(&assertion).to fail_with_message(message)
       end
 
       specify 'such as not validating only_integer but testing that only_integer is validated' do
         record = build_record_validating_numericality(greater_than: 18)
+
         assertion = lambda do
           expect(record).
             to validate_numericality.
             only_integer.
             is_greater_than(18)
         end
+
         message = <<-MESSAGE.strip_heredoc
-          Expected errors to include "must be an integer" when attr is set to "0.1",
-          got errors:
-          * "must be greater than 18" (attribute: attr, value: "0.1")
+Example did not properly validate that :attr looks like an integer
+greater than 18.
+  In checking that Example disallows :attr from being a decimal number,
+  after setting :attr to ‹"0.1"›, the matcher expected the Example to be
+  invalid and to produce the validation error "must be an integer" on
+  :attr. The record was indeed invalid, but it produced these validation
+  errors instead:
+
+  * attr: ["must be greater than 18"]
         MESSAGE
+
         expect(&assertion).to fail_with_message(message)
       end
 
@@ -468,16 +1273,22 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           even: true,
           greater_than_or_equal_to: 18
         )
+
         assertion = lambda do
           expect(record).
             to validate_numericality.
             even.
             is_greater_than(18)
         end
-        message = <<-MESSAGE.strip_heredoc
-          Expected errors to include "must be greater than 18" when attr is set to "18",
-          got no errors
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like an even number
+greater than 18.
+  In checking that Example disallows :attr from being a number that is
+  not greater than 18, after setting :attr to ‹"18"›, the matcher
+  expected the Example to be invalid, but it was valid instead.
         MESSAGE
+
         expect(&assertion).to fail_with_message(message)
       end
 
@@ -486,17 +1297,26 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           odd: true,
           greater_than: 18
         )
+
         assertion = lambda do
           expect(record).
             to validate_numericality.
             even.
             is_greater_than(18)
         end
-        message = <<-MESSAGE.strip_heredoc
-          Expected errors to include "must be even" when attr is set to "1",
-          got errors:
-          * "must be greater than 18" (attribute: attr, value: "1")
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like an even number
+greater than 18.
+  In checking that Example disallows :attr from being an odd number,
+  after setting :attr to ‹"1"›, the matcher expected the Example to be
+  invalid and to produce the validation error "must be even" on :attr.
+  The record was indeed invalid, but it produced these validation errors
+  instead:
+
+  * attr: ["must be greater than 18"]
         MESSAGE
+
         expect(&assertion).to fail_with_message(message)
       end
 
@@ -505,16 +1325,22 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           odd: true,
           greater_than_or_equal_to: 99
         )
+
         assertion = lambda do
           expect(record).
             to validate_numericality.
             odd.
             is_less_than_or_equal_to(99)
         end
-        message = <<-MESSAGE.strip_heredoc
-          Expected errors to include "must be less than or equal to 99" when attr is set to "101",
-          got no errors
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like an odd number
+less than or equal to 99.
+  In checking that Example disallows :attr from being a number that is
+  not less than or equal to 99, after setting :attr to ‹"101"›, the
+  matcher expected the Example to be invalid, but it was valid instead.
         MESSAGE
+
         expect(&assertion).to fail_with_message(message)
       end
 
@@ -524,6 +1350,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           greater_than_or_equal_to: 18,
           less_than: 99
         )
+
         assertion = lambda do
           expect(record).
             to validate_numericality.
@@ -531,10 +1358,15 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
             is_greater_than(18).
             is_less_than(99)
         end
-        message = <<-MESSAGE.strip_heredoc
-          Expected errors to include "must be greater than 18" when attr is set to "18",
-          got no errors
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like an integer
+greater than 18 and less than 99.
+  In checking that Example disallows :attr from being a number that is
+  not greater than 18, after setting :attr to ‹"18"›, the matcher
+  expected the Example to be invalid, but it was valid instead.
         MESSAGE
+
         expect(&assertion).to fail_with_message(message)
       end
     end
@@ -545,17 +1377,27 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           only_integer: true,
           greater_than: 19
         )
+
         assertion = lambda do
           expect(record).
             to validate_numericality.
             only_integer.
             is_greater_than(18)
         end
-        message = <<-MESSAGE.strip_heredoc
-          Expected errors to include "must be greater than 18" when attr is set to "18",
-          got errors:
-          * "must be greater than 19" (attribute: attr, value: "19")
+
+        # why is value "19" here?
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like an integer
+greater than 18.
+  In checking that Example disallows :attr from being a number that is
+  not greater than 18, after setting :attr to ‹"18"›, the matcher
+  expected the Example to be invalid and to produce the validation error
+  "must be greater than 18" on :attr. The record was indeed invalid, but
+  it produced these validation errors instead:
+
+  * attr: ["must be greater than 19"]
         MESSAGE
+
         expect(&assertion).to fail_with_message(message)
       end
 
@@ -564,16 +1406,22 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           only_integer: true,
           greater_than: 17
         )
+
         assertion = lambda do
           expect(record).
             to validate_numericality.
             only_integer.
             is_greater_than(18)
         end
-        message = <<-MESSAGE.strip_heredoc
-          Expected errors to include "must be greater than 18" when attr is set to "18",
-          got no errors
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like an integer
+greater than 18.
+  In checking that Example disallows :attr from being a number that is
+  not greater than 18, after setting :attr to ‹"18"›, the matcher
+  expected the Example to be invalid, but it was valid instead.
         MESSAGE
+
         expect(&assertion).to fail_with_message(message)
       end
 
@@ -582,17 +1430,27 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           even: true,
           greater_than: 20
         )
+
         assertion = lambda do
           expect(record).
             to validate_numericality.
             even.
             is_greater_than(18)
         end
-        message = <<-MESSAGE.strip_heredoc
-          Expected errors to include "must be greater than 18" when attr is set to "18",
-          got errors:
-          * "must be greater than 20" (attribute: attr, value: "20")
+
+         # why is value "20" here?
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like an even number
+greater than 18.
+  In checking that Example disallows :attr from being a number that is
+  not greater than 18, after setting :attr to ‹"18"›, the matcher
+  expected the Example to be invalid and to produce the validation error
+  "must be greater than 18" on :attr. The record was indeed invalid, but
+  it produced these validation errors instead:
+
+  * attr: ["must be greater than 20"]
         MESSAGE
+
         expect(&assertion).to fail_with_message(message)
       end
 
@@ -601,16 +1459,22 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           even: true,
           greater_than: 16
         )
+
         assertion = lambda do
           expect(record).
             to validate_numericality.
             even.
             is_greater_than(18)
         end
-        message = <<-MESSAGE.strip_heredoc
-          Expected errors to include "must be greater than 18" when attr is set to "18",
-          got no errors
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like an even number
+greater than 18.
+  In checking that Example disallows :attr from being a number that is
+  not greater than 18, after setting :attr to ‹"18"›, the matcher
+  expected the Example to be invalid, but it was valid instead.
         MESSAGE
+
         expect(&assertion).to fail_with_message(message)
       end
 
@@ -619,16 +1483,22 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           odd: true,
           less_than_or_equal_to: 101
         )
+
         assertion = lambda do
           expect(record).
             to validate_numericality.
             odd.
             is_less_than_or_equal_to(99)
         end
-        message = <<-MESSAGE.strip_heredoc
-          Expected errors to include "must be less than or equal to 99" when attr is set to "101",
-          got no errors
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like an odd number
+less than or equal to 99.
+  In checking that Example disallows :attr from being a number that is
+  not less than or equal to 99, after setting :attr to ‹"101"›, the
+  matcher expected the Example to be invalid, but it was valid instead.
         MESSAGE
+
         expect(&assertion).to fail_with_message(message)
       end
 
@@ -637,17 +1507,27 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           odd: true,
           less_than_or_equal_to: 97
         )
+
         assertion = lambda do
           expect(record).
             to validate_numericality.
             odd.
             is_less_than_or_equal_to(99)
         end
-        message = <<-MESSAGE.strip_heredoc
-          Expected errors to include "must be less than or equal to 99" when attr is set to "101",
-          got errors:
-          * "must be less than or equal to 97" (attribute: attr, value: "101")
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like an odd number
+less than or equal to 99.
+  In checking that Example disallows :attr from being a number that is
+  not less than or equal to 99, after setting :attr to ‹"101"›, the
+  matcher expected the Example to be invalid and to produce the
+  validation error "must be less than or equal to 99" on :attr. The
+  record was indeed invalid, but it produced these validation errors
+  instead:
+
+  * attr: ["must be less than or equal to 97"]
         MESSAGE
+
         expect(&assertion).to fail_with_message(message)
       end
 
@@ -657,6 +1537,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           greater_than: 19,
           less_than: 99
         )
+
         assertion = lambda do
           expect(record).
             to validate_numericality.
@@ -664,11 +1545,20 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
             is_greater_than(18).
             is_less_than(99)
         end
-        message = <<-MESSAGE.strip_heredoc
-          Expected errors to include "must be greater than 18" when attr is set to "18",
-          got errors:
-          * "must be greater than 19" (attribute: attr, value: "19")
+
+        # why is value "19" here?
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like an integer
+greater than 18 and less than 99.
+  In checking that Example disallows :attr from being a number that is
+  not greater than 18, after setting :attr to ‹"18"›, the matcher
+  expected the Example to be invalid and to produce the validation error
+  "must be greater than 18" on :attr. The record was indeed invalid, but
+  it produced these validation errors instead:
+
+  * attr: ["must be greater than 19"]
         MESSAGE
+
         expect(&assertion).to fail_with_message(message)
       end
 
@@ -678,6 +1568,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           greater_than: 18,
           less_than: 100
         )
+
         assertion = lambda do
           expect(record).
             to validate_numericality.
@@ -685,11 +1576,19 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
             is_greater_than(18).
             is_less_than(99)
         end
-        message = <<-MESSAGE.strip_heredoc
-          Expected errors to include "must be less than 99" when attr is set to "100",
-          got errors:
-          * "must be less than 100" (attribute: attr, value: "100")
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr looks like an integer
+greater than 18 and less than 99.
+  In checking that Example disallows :attr from being a number that is
+  not less than 99, after setting :attr to ‹"100"›, the matcher expected
+  the Example to be invalid and to produce the validation error "must be
+  less than 99" on :attr. The record was indeed invalid, but it produced
+  these validation errors instead:
+
+  * attr: ["must be less than 100"]
         MESSAGE
+
         expect(&assertion).to fail_with_message(message)
       end
     end
@@ -740,18 +1639,61 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
     end
   end
 
+  context 'against an ActiveModel model' do
+    it 'accepts' do
+      model = define_active_model_class :example, accessors: [:attr] do
+        validates_numericality_of :attr
+      end
+
+      expect(model.new).to validate_numericality_of(:attr)
+    end
+
+    it_supports(
+      'ignoring_interference_by_writer',
+      tests: {
+        accept_if_qualified_but_changing_value_does_not_interfere: {
+          changing_values_with: :next_value,
+        },
+        reject_if_qualified_but_changing_value_interferes: {
+          model_name: 'Example',
+          attribute_name: :attr,
+          changing_values_with: :numeric_value,
+          expected_message: <<-MESSAGE.strip
+Example did not properly validate that :attr looks like a number.
+  After setting :attr to ‹"abcd"› -- which was read back as ‹"1"› -- the
+  matcher expected the Example to be invalid, but it was valid instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+          MESSAGE
+        }
+      }
+    )
+
+    def validation_matcher_scenario_args
+      super.deep_merge(model_creator: :active_model)
+    end
+  end
+
   describe '#description' do
     context 'qualified with nothing' do
       it 'describes that it allows numbers' do
         matcher = validate_numericality_of(:attr)
-        expect(matcher.description).to eq 'only allow numbers for attr'
+        expect(matcher.description).to eq(
+          'validate that :attr looks like a number'
+        )
       end
     end
 
     context 'qualified with only_integer' do
       it 'describes that it allows integers' do
         matcher = validate_numericality_of(:attr).only_integer
-        expect(matcher.description).to eq 'only allow integers for attr'
+        expect(matcher.description).to eq(
+          'validate that :attr looks like an integer'
+        )
       end
     end
 
@@ -759,8 +1701,9 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
       context "qualified with #{qualifier[:name]}" do
         it "describes that it allows #{qualifier[:name]} numbers" do
           matcher = validate_numericality_of(:attr).__send__(qualifier[:name])
-          expect(matcher.description).
-            to eq "only allow #{qualifier[:name]} numbers for attr"
+          expect(matcher.description).to eq(
+            "validate that :attr looks like an #{qualifier[:name]} number"
+          )
         end
       end
     end
@@ -774,7 +1717,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
             __send__(qualifier[:name], 18)
 
           expect(matcher.description).to eq(
-            "only allow numbers for attr which are #{comparison_phrase} 18"
+            "validate that :attr looks like a number #{comparison_phrase} 18"
           )
         end
       end
@@ -787,7 +1730,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           is_greater_than_or_equal_to(18)
 
         expect(matcher.description).to eq(
-          'only allow odd numbers for attr which are greater than or equal to 18'
+          'validate that :attr looks like an odd number greater than or equal to 18'
         )
       end
     end
@@ -800,7 +1743,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           is_less_than_or_equal_to(100)
 
         expect(matcher.description).to eq(
-          'only allow integers for attr which are greater than 18 and less than or equal to 100'
+          'validate that :attr looks like an integer greater than 18 and less than or equal to 100'
         )
       end
     end
@@ -809,7 +1752,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
       it 'describes that it relies upon a strict validation' do
         matcher = validate_numericality_of(:attr).strict
         expect(matcher.description).to eq(
-          'only allow numbers for attr, strictly'
+          'validate that :attr looks like a number, raising a validation exception on failure'
         )
       end
 
@@ -817,7 +1760,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
         it 'places the comparison description after "strictly"' do
           matcher = validate_numericality_of(:attr).is_less_than(18).strict
           expect(matcher.description).to eq(
-            'only allow numbers for attr, strictly, which are less than 18'
+            'validate that :attr looks like a number less than 18, raising a validation exception on failure'
           )
         end
       end
@@ -845,10 +1788,24 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
 
   def define_model_validating_numericality(options = {})
     attribute_name = options.delete(:attribute_name) { self.attribute_name }
+    column_type = options.delete(:column_type) { :string }
 
-    define_model 'Example', attribute_name => :string do |model|
+    define_model 'Example', attribute_name => { type: column_type } do |model|
       model.validates_numericality_of(attribute_name, options)
     end
+  end
+
+  def define_model_validating_numericality_of_virtual_attribute(options = {})
+    attribute_name = options.delete(:attribute_name) { self.attribute_name }
+
+    define_model 'Example' do |model|
+      model.send(:attr_accessor, attribute_name)
+      model.validates_numericality_of(attribute_name, options)
+    end
+  end
+
+  def build_record_validating_numericality_of_virtual_attribute(options = {})
+    define_model_validating_numericality_of_virtual_attribute(options).new
   end
 
   def build_record_validating_numericality(options = {})
@@ -869,5 +1826,12 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
 
   def attribute_name
     :attr
+  end
+
+  def validation_matcher_scenario_args
+    super.deep_merge(
+      matcher_name: :validate_numericality_of,
+      model_creator: :active_record
+    )
   end
 end

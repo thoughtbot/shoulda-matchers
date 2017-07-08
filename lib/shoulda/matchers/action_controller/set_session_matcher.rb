@@ -16,7 +16,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe PostsController do
+      #     RSpec.describe PostsController, type: :controller do
       #       describe 'GET #index' do
       #         before { get :index }
       #
@@ -58,7 +58,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe PostsController do
+      #     RSpec.describe PostsController, type: :controller do
       #       describe 'GET #index' do
       #         before { get :index }
       #
@@ -89,7 +89,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe PostsController do
+      #     RSpec.describe PostsController, type: :controller do
       #       describe 'GET #index' do
       #         before { get :index }
       #

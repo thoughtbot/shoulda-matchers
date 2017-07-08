@@ -17,7 +17,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it do
       #         should validate_length_of(:password).
       #           is_at_least(10).
@@ -47,7 +47,7 @@ module Shoulda
       #
       #     # RSpec
       #
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it { should validate_length_of(:bio).is_at_least(15) }
       #     end
       #
@@ -71,7 +71,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it { should validate_length_of(:status_update).is_at_most(140) }
       #     end
       #
@@ -94,7 +94,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it { should validate_length_of(:favorite_superhero).is_equal_to(6) }
       #     end
       #
@@ -116,7 +116,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it do
       #         should validate_length_of(:password).
       #           is_at_least(5).is_at_most(30)
@@ -143,7 +143,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it do
       #         should validate_length_of(:password).
       #           is_at_least(10).
@@ -172,7 +172,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it do
       #         should validate_length_of(:secret_key).
       #           is_at_least(15).
@@ -201,7 +201,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe User do
+      #     RSpec.describe User, type: :model do
       #       it do
       #         should validate_length_of(:secret_key).
       #           is_at_most(100).
@@ -253,40 +253,50 @@ module Shoulda
           self
         end
 
+        def with_message(message)
+          if message
+            @expects_custom_validation_message = true
+            @short_message = message
+            @long_message = message
+          end
+
+          self
+        end
+
         def with_short_message(message)
           if message
+            @expects_custom_validation_message = true
             @short_message = message
           end
+
           self
         end
 
         def with_long_message(message)
           if message
+            @expects_custom_validation_message = true
             @long_message = message
           end
+
           self
         end
 
-        def with_message(message)
-          if message
-            @short_message = message
-            @long_message = message
-          end
-          self
-        end
+        def simple_description
+          description = "validate that the length of :#{@attribute}"
 
-        def description
-          description =  "ensure #{@attribute} has a length "
           if @options.key?(:minimum) && @options.key?(:maximum)
             if @options[:minimum] == @options[:maximum]
-              description << "of exactly #{@options[:minimum]}"
+              description << " is #{@options[:minimum]}"
             else
-              description << "between #{@options[:minimum]} and #{@options[:maximum]}"
+              description << " is between #{@options[:minimum]}"
+              description << " and #{@options[:maximum]}"
             end
-          else
-            description << "of at least #{@options[:minimum]}" if @options[:minimum]
-            description << "of at most #{@options[:maximum]}" if @options[:maximum]
+          elsif @options.key?(:minimum)
+            description << " is at least #{@options[:minimum]}"
+          elsif @options.key?(:maximum)
+            description << " is at most #{@options[:maximum]}"
           end
+
           description
         end
 

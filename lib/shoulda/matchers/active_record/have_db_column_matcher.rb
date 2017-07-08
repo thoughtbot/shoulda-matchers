@@ -13,7 +13,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Phone do
+      #     RSpec.describe Phone, type: :model do
       #       it { should have_db_column(:supported_ios_version) }
       #     end
       #
@@ -37,7 +37,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Phone do
+      #     RSpec.describe Phone, type: :model do
       #       it do
       #         should have_db_column(:camera_aperture).of_type(:decimal)
       #       end
@@ -63,7 +63,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe Phone do
+      #     RSpec.describe Phone, type: :model do
       #       it do
       #         should have_db_column(:camera_aperture).
       #           with_options(precision: 1, null: false)

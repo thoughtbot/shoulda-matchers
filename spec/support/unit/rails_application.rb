@@ -78,7 +78,7 @@ module UnitTests
     end
 
     def rails_new
-      run_command! %W(rails new #{fs.project_directory} --skip-bundle)
+      run_command! %W(rails new #{fs.project_directory} --skip-bundle --no-rc)
     end
 
     def fix_available_locales_warning

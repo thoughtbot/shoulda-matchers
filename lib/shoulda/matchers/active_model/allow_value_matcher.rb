@@ -17,7 +17,7 @@ module Shoulda
       # You can use `allow_value` to test one value at a time:
       #
       #     # RSpec
-      #     describe UserProfile do
+      #     RSpec.describe UserProfile, type: :model do
       #       it { should allow_value('http://foo.com').for(:website_url) }
       #       it { should allow_value('http://bar.com').for(:website_url) }
       #     end
@@ -34,7 +34,7 @@ module Shoulda
       # that none of the values cause the record to be valid:
       #
       #     # RSpec
-      #     describe UserProfile do
+      #     RSpec.describe UserProfile, type: :model do
       #       it do
       #         should allow_values('http://foo.com', 'http://bar.com').
       #           for(:website_url)
@@ -58,7 +58,7 @@ module Shoulda
       # #### Caveats
       #
       # When using `allow_value` or any matchers that depend on it, you may
-      # encounter a CouldNotSetAttributeError. This exception is raised if the
+      # encounter an AttributeChangedValueError. This exception is raised if the
       # matcher, in attempting to set a value on the attribute, detects that
       # the value set is different from the value that the attribute returns
       # upon reading it back.
@@ -82,18 +82,18 @@ module Shoulda
       #           end
       #         end
       #
-      #         describe Foo do
+      #         RSpec.describe Foo, type: :model do
       #           it do
       #             foo = Foo.new
       #             foo.bar = "baz"
-      #             # This will raise a CouldNotSetAttributeError since `foo.bar` is now "123"
+      #             # This will raise an AttributeChangedValueError since `foo.bar` is now "123"
       #             expect(foo).not_to allow_value(nil).for(:bar)
       #           end
       #         end
       #
-      # * You're attempting to assert that an numeric attribute should not allow a
-      #   string that contains non-numeric characters, yet the writer method for
-      #   that attribute strips out non-numeric characters:
+      # * You're attempting to assert that a numeric attribute should not allow
+      #   a string that contains non-numeric characters, yet the writer method
+      #   for that attribute strips out non-numeric characters:
       #
       #         class Foo
       #           include ActiveModel::Model
@@ -105,10 +105,10 @@ module Shoulda
       #           end
       #         end
       #
-      #         describe Foo do
+      #         RSpec.describe Foo, type: :model do
       #           it do
       #             foo = Foo.new
-      #             # This will raise a CouldNotSetAttributeError since `foo.bar` is now "123"
+      #             # This will raise an AttributeChangedValueError since `foo.bar` is now "123"
       #             expect(foo).not_to allow_value("abc123").for(:bar)
       #           end
       #         end
@@ -116,17 +116,15 @@ module Shoulda
       # * You're passing a value to `allow_value` that the model typecasts into
       #   another value:
       #
-      #         describe Foo do
+      #         RSpec.describe Foo, type: :model do
       #           # Assume that `attr` is a string
-      #           # This will raise a CouldNotSetAttributeError since `attr` typecasts `[]` to `"[]"`
+      #           # This will raise an AttributeChangedValueError since `attr` typecasts `[]` to `"[]"`
       #           it { should_not allow_value([]).for(:attr) }
       #         end
       #
-      # So when you encounter this exception, you have a couple of options:
-      #
-      # * If you understand the problem and wish to override this behavior to
-      #   get around this exception, you can add the
-      #   `ignoring_interference_by_writer` qualifier like so:
+      # Fortunately, if you understand why this is happening, and wish to get
+      # around this exception, it is possible to do so. You can use the
+      # `ignoring_interference_by_writer` qualifier like so:
       #
       #         it do
       #           should_not allow_value([]).
@@ -134,16 +132,11 @@ module Shoulda
       #             ignoring_interference_by_writer
       #         end
       #
-      # * Note, however, that the above option will not always cause the test to
-      #   pass. In this case, this is telling you that you don't need to use
-      #   `allow_value`, or quite possibly even the validation that you're
-      #   testing altogether. In any case, we would probably make the argument
-      #   that since it's clear that something is responsible for sanitizing
-      #   incoming data before it's stored in your model, there's no need to
-      #   ensure that sanitization places the model in a valid state, if such
-      #   sanitization creates valid data. In terms of testing, the sanitization
-      #   code should probably be tested, but not the effects of that
-      #   sanitization on the validness of the model.
+      # Please note, however, that this qualifier won't magically cause your
+      # test to pass. It may just so happen that the final value that ends up
+      # being set causes the model to fail validation. In that case, you'll have
+      # to figure out what to do. You may need to write your own test, or
+      # perhaps even remove your test altogether.
       #
       # #### Qualifiers
       #
@@ -161,7 +154,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe UserProfile do
+      #     RSpec.describe UserProfile, type: :model do
       #       it do
       #         should allow_value('2013-01-01').
       #           for(:birthday_as_string).
@@ -190,7 +183,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe UserProfile do
+      #     RSpec.describe UserProfile, type: :model do
       #       it do
       #         should allow_value('open', 'closed').
       #           for(:state).
@@ -217,7 +210,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe UserProfile do
+      #     RSpec.describe UserProfile, type: :model do
       #       it do
       #         should allow_value('open', 'closed').
       #           for(:state).
@@ -253,7 +246,7 @@ module Shoulda
       #     end
       #
       #     # RSpec
-      #     describe UserProfile do
+      #     RSpec.describe UserProfile, type: :model do
       #       it do
       #         should allow_value('Broncos', 'Titans').
       #           for(:sports_team).
@@ -274,28 +267,28 @@ module Shoulda
       #
       # ##### ignoring_interference_by_writer
       #
-      # Use `ignoring_interference_by_writer` if you've encountered a
-      # CouldNotSetAttributeError and wish to ignore it. Please read the Caveats
-      # section above for more information.
+      # Use `ignoring_interference_by_writer` to bypass an
+      # AttributeChangedValueError that you have encountered. Please read the
+      # Caveats section above for more information.
       #
       #     class Address < ActiveRecord::Base
       #       # Address has a zip_code field which is a string
       #     end
       #
       #     # RSpec
-      #     describe Address do
+      #     RSpec.describe Address, type: :model do
       #       it do
       #         should_not allow_value([]).
-      #         for(:zip_code).
-      #         ignoring_interference_by_writer
+      #           for(:zip_code).
+      #           ignoring_interference_by_writer
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
       #     class AddressTest < ActiveSupport::TestCase
       #       should_not allow_value([]).
-      #       for(:zip_code).
-      #       ignoring_interference_by_writer
+      #         for(:zip_code).
+      #         ignoring_interference_by_writer
       #     end
       #
       # @return [AllowValueMatcher]
@@ -312,199 +305,61 @@ module Shoulda
 
       # @private
       class AllowValueMatcher
-        # @private
-        class CouldNotSetAttributeError < Shoulda::Matchers::Error
-          def self.create(model, attribute, expected_value, actual_value)
-            super(
-              model: model,
-              attribute: attribute,
-              expected_value: expected_value,
-              actual_value: actual_value
-            )
-          end
-
-          attr_accessor :model, :attribute, :expected_value, :actual_value
-
-          def message
-            "Expected #{model.class} to be able to set #{attribute} to #{expected_value.inspect}, but got #{actual_value.inspect} instead."
-          end
-        end
-
         include Helpers
+        include Qualifiers::IgnoringInterferenceByWriter
 
-        attr_accessor :attribute_with_message
-        attr_accessor :options
+        attr_reader(
+          :after_setting_value_callback,
+          :attribute_to_check_message_against,
+          :attribute_to_set,
+          :context,
+          :instance
+        )
+
+        attr_writer(
+          :attribute_changed_value_message,
+          :failure_message_preface,
+          :values_to_preset,
+        )
 
         def initialize(*values)
-          self.values_to_match = values
-          self.options = {}
-          self.after_setting_value_callback = -> {}
-          self.validator = Validator.new
-          @ignoring_interference_by_writer = false
+          super
+          @values_to_set = values
+          @options = {}
+          @after_setting_value_callback = -> {}
+          @expects_strict = false
+          @expects_custom_validation_message = false
+          @context = nil
+          @values_to_preset = {}
+          @failure_message_preface = nil
         end
 
-        def for(attribute)
-          self.attribute_to_set = attribute
-          self.attribute_to_check_message_against = attribute
+        def for(attribute_name)
+          @attribute_to_set = attribute_name
+          @attribute_to_check_message_against = attribute_name
           self
         end
 
         def on(context)
-          validator.context = context
-          self
-        end
-
-        def with_message(message, options={})
-          self.options[:expected_message] = message
-          self.options[:expected_message_values] = options.fetch(:values, {})
-
-          if options.key?(:against)
-            self.attribute_to_check_message_against = options[:against]
+          if context.present?
+            @context = context
           end
 
           self
         end
 
-        def strict
-          validator.strict = true
+        def with_message(message, given_options = {})
+          if message.present?
+            @expects_custom_validation_message = true
+            options[:expected_message] = message
+            options[:expected_message_values] = given_options.fetch(:values, {})
+
+            if given_options.key?(:against)
+              @attribute_to_check_message_against = given_options[:against]
+            end
+          end
+
           self
-        end
-
-        def ignoring_interference_by_writer
-          @ignoring_interference_by_writer = true
-          self
-        end
-
-        def _after_setting_value(&callback)
-          self.after_setting_value_callback = callback
-        end
-
-        def matches?(instance)
-          self.instance = instance
-          values_to_match.all? { |value| value_matches?(value) }
-        end
-
-        def does_not_match?(instance)
-          self.instance = instance
-          values_to_match.all? { |value| !value_matches?(value) }
-        end
-
-        def failure_message
-          "Did not expect #{expectation},\ngot#{error_description}"
-        end
-
-        def failure_message_when_negated
-          "Expected #{expectation},\ngot#{error_description}"
-        end
-
-        def description
-          validator.allow_description(allowed_values)
-        end
-
-        protected
-
-        attr_reader :instance, :attribute_to_check_message_against
-        attr_accessor :values_to_match, :attribute_to_set, :value,
-          :matched_error, :after_setting_value_callback, :validator
-
-        def instance=(instance)
-          @instance = instance
-          validator.record = instance
-        end
-
-        def attribute_to_check_message_against=(attribute)
-          @attribute_to_check_message_against = attribute
-          validator.attribute = attribute
-        end
-
-        def ignoring_interference_by_writer?
-          @ignoring_interference_by_writer
-        end
-
-        def value_matches?(value)
-          self.value = value
-          set_attribute(value)
-          !(errors_match? || any_range_error_occurred?)
-        end
-
-        def set_attribute(value)
-          instance.__send__("#{attribute_to_set}=", value)
-          ensure_that_attribute_was_set!(value)
-          after_setting_value_callback.call
-        end
-
-        def ensure_that_attribute_was_set!(expected_value)
-          actual_value = instance.__send__(attribute_to_set)
-
-          if expected_value != actual_value && !ignoring_interference_by_writer?
-            raise CouldNotSetAttributeError.create(
-              instance.class,
-              attribute_to_set,
-              expected_value,
-              actual_value
-            )
-          end
-        end
-
-        def errors_match?
-          has_messages? && errors_for_attribute_match?
-        end
-
-        def has_messages?
-          validator.has_messages?
-        end
-
-        def errors_for_attribute_match?
-          if expected_message
-            self.matched_error = errors_match_regexp? || errors_match_string?
-          else
-            errors_for_attribute.compact.any?
-          end
-        end
-
-        def errors_for_attribute
-          validator.formatted_messages
-        end
-
-        def errors_match_regexp?
-          if Regexp === expected_message
-            errors_for_attribute.detect { |e| e =~ expected_message }
-          end
-        end
-
-        def errors_match_string?
-          if errors_for_attribute.include?(expected_message)
-            expected_message
-          end
-        end
-
-        def any_range_error_occurred?
-          validator.captured_range_error?
-        end
-
-        def expectation
-          parts = [
-            expected_messages_description,
-            "when #{attribute_to_set} is set to #{value.inspect}"
-          ]
-
-          parts.join(' ').squeeze(' ')
-        end
-
-        def expected_messages_description
-          validator.expected_messages_description(expected_message)
-        end
-
-        def error_description
-          validator.messages_description
-        end
-
-        def allowed_values
-          if values_to_match.length > 1
-            "any of [#{values_to_match.map(&:inspect).join(', ')}]"
-          else
-            values_to_match.first.inspect
-          end
         end
 
         def expected_message
@@ -517,8 +372,247 @@ module Shoulda
           end
         end
 
+        def expects_custom_validation_message?
+          @expects_custom_validation_message
+        end
+
+        def strict(expects_strict = true)
+          @expects_strict = expects_strict
+          self
+        end
+
+        def expects_strict?
+          @expects_strict
+        end
+
+        def _after_setting_value(&callback)
+          @after_setting_value_callback = callback
+        end
+
+        def matches?(instance)
+          @instance = instance
+          @result = run(:first_failing)
+          @result.nil?
+        end
+
+        def does_not_match?(instance)
+          @instance = instance
+          @result = run(:first_passing)
+          @result.nil?
+        end
+
+        def failure_message
+          attribute_setter = result.attribute_setter
+
+          if result.attribute_setter.unsuccessfully_checked?
+            message = attribute_setter.failure_message
+          else
+            validator = result.validator
+            message = failure_message_preface.call
+            message << ' valid, but it was invalid instead,'
+
+            if validator.captured_validation_exception?
+              message << ' raising a validation exception with the message '
+              message << validator.validation_exception_message.inspect
+              message << '.'
+            else
+              message << " producing these validation errors:\n\n"
+              message << validator.all_formatted_validation_error_messages
+            end
+          end
+
+          if include_attribute_changed_value_message?
+            message << "\n\n" + attribute_changed_value_message.call
+          end
+
+          Shoulda::Matchers.word_wrap(message)
+        end
+
+        def failure_message_when_negated
+          attribute_setter = result.attribute_setter
+
+          if attribute_setter.unsuccessfully_checked?
+            message = attribute_setter.failure_message
+          else
+            validator = result.validator
+            message = failure_message_preface.call + ' invalid'
+
+            if validator.type_of_message_matched?
+              if validator.has_messages?
+                message << ' and to'
+
+                if validator.captured_validation_exception?
+                  message << ' raise a validation exception with message'
+                else
+                  message << ' produce'
+
+                  if expected_message.is_a?(Regexp)
+                    message << ' a'
+                  else
+                    message << ' the'
+                  end
+
+                  message << ' validation error'
+                end
+
+                if expected_message.is_a?(Regexp)
+                  message << ' matching '
+                  message << Shoulda::Matchers::Util.inspect_value(
+                    expected_message
+                  )
+                else
+                  message << " #{expected_message.inspect}"
+                end
+
+                unless validator.captured_validation_exception?
+                  message << " on :#{attribute_to_check_message_against}"
+                end
+
+                message << '. The record was indeed invalid, but'
+
+                if validator.captured_validation_exception?
+                  message << ' the exception message was '
+                  message << validator.validation_exception_message.inspect
+                  message << ' instead.'
+                else
+                  message << " it produced these validation errors instead:\n\n"
+                  message << validator.all_formatted_validation_error_messages
+                end
+              else
+                message << ', but it was valid instead.'
+              end
+            elsif validator.captured_validation_exception?
+              message << ' and to produce validation errors, but the record'
+              message << ' raised a validation exception instead.'
+            else
+              message << ' and to raise a validation exception, but the record'
+              message << ' produced validation errors instead.'
+            end
+          end
+
+          if include_attribute_changed_value_message?
+            message << "\n\n" + attribute_changed_value_message.call
+          end
+
+          Shoulda::Matchers.word_wrap(message)
+        end
+
+        def description
+          ValidationMatcher::BuildDescription.call(self, simple_description)
+        end
+
+        def simple_description
+          "allow :#{attribute_to_set} to be #{inspected_values_to_set}"
+        end
+
+        def model
+          instance.class
+        end
+
+        def last_attribute_setter_used
+          result.attribute_setter
+        end
+
+        def last_value_set
+          last_attribute_setter_used.value_written
+        end
+
+        protected
+
+        attr_reader(
+          :options,
+          :result,
+          :values_to_preset,
+          :values_to_set,
+        )
+
+        private
+
+        def run(strategy)
+          attribute_setters_for_values_to_preset.first_failing ||
+            attribute_setters_and_validators_for_values_to_set.public_send(strategy)
+        end
+
+        def failure_message_preface
+          @failure_message_preface || method(:default_failure_message_preface)
+        end
+
+        def default_failure_message_preface
+          ''.tap do |preface|
+            if descriptions_for_preset_values.any?
+              preface << 'After setting '
+              preface << descriptions_for_preset_values.to_sentence
+              preface << ', then '
+            else
+              preface << 'After '
+            end
+
+            preface << 'setting '
+            preface << description_for_resulting_attribute_setter
+
+            unless preface.end_with?('--')
+              preface << ','
+            end
+
+            preface << " the matcher expected the #{model.name} to be"
+          end
+        end
+
+        def include_attribute_changed_value_message?
+          !ignore_interference_by_writer.never? &&
+            result.attribute_setter.attribute_changed_value?
+        end
+
+        def attribute_changed_value_message
+          @attribute_changed_value_message ||
+            method(:default_attribute_changed_value_message)
+        end
+
+        def default_attribute_changed_value_message
+          <<-MESSAGE.strip
+As indicated in the message above, :#{result.attribute_setter.attribute_name}
+seems to be changing certain values as they are set, and this could have
+something to do with why this test is failing. If you've overridden the writer
+method for this attribute, then you may need to change it to make this test
+pass, or do something else entirely.
+          MESSAGE
+        end
+
+        def descriptions_for_preset_values
+          attribute_setters_for_values_to_preset.
+            map(&:attribute_setter_description)
+        end
+
+        def description_for_resulting_attribute_setter
+          result.attribute_setter_description
+        end
+
+        def attribute_setters_for_values_to_preset
+          @_attribute_setters_for_values_to_preset ||=
+            AttributeSetters.new(self, values_to_preset)
+        end
+
+        def attribute_setters_and_validators_for_values_to_set
+          @_attribute_setters_and_validators_for_values_to_set ||=
+            AttributeSettersAndValidators.new(
+              self,
+              values_to_set.map { |value| [attribute_to_set, value] }
+            )
+        end
+
+        def inspected_values_to_set
+          Shoulda::Matchers::Util.inspect_values(values_to_set).to_sentence(
+            two_words_connector: " or ",
+            last_word_connector: ", or "
+          )
+        end
+
         def default_expected_message
-          validator.expected_message_from(default_attribute_message)
+          if expects_strict?
+            "#{human_attribute_name} #{default_attribute_message}"
+          else
+            default_attribute_message
+          end
         end
 
         def default_attribute_message
@@ -540,6 +634,12 @@ module Shoulda
 
         def model_name
           instance.class.to_s.underscore
+        end
+
+        def human_attribute_name
+          instance.class.human_attribute_name(
+            attribute_to_check_message_against
+          )
         end
       end
     end

@@ -1,11 +1,10 @@
 GIT
-  remote: git://github.com/pry/pry.git
-  revision: f0cbec507111743fdbc273735ea4f0f6164a5b21
+  remote: https://github.com/pry/pry.git
+  revision: 1f64463184e0a160d0b41d1a1f92b8e2f230278c
   specs:
-    pry (0.10.1)
+    pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
-      slop (~> 3.4)
 
 GEM
   remote: https://rubygems.org/
@@ -14,32 +13,36 @@ GEM
       bundler
       rake
       thor (>= 0.14.0)
-    byebug (4.0.4)
-      columnize (= 0.9.0)
-    coderay (1.1.0)
-    columnize (0.9.0)
+    byebug (9.0.6)
+    coderay (1.1.1)
     diff-lcs (1.2.5)
     fssm (0.2.10)
     method_source (0.8.2)
-    posix-spawn (0.3.8)
-    pry-byebug (3.1.0)
-      byebug (~> 4.0)
+    multi_json (1.12.1)
+    pry-byebug (3.4.2)
+      byebug (~> 9.0)
       pry (~> 0.10)
-    pygments.rb (0.3.7)
-      posix-spawn (~> 0.3.6)
-      yajl-ruby (~> 1.1.0)
-    rake (10.4.2)
-    redcarpet (3.0.0)
-    rspec-core (3.3.2)
-      rspec-support (~> 3.3.0)
-    rspec-expectations (3.3.1)
+    pygments.rb (1.1.1)
+      multi_json (>= 1.0.0)
+    rake (10.5.0)
+    redcarpet (3.4.0)
+    rspec (3.5.0)
+      rspec-core (~> 3.5.0)
+      rspec-expectations (~> 3.5.0)
+      rspec-mocks (~> 3.5.0)
+    rspec-core (3.5.4)
+      rspec-support (~> 3.5.0)
+    rspec-expectations (3.5.0)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.3.0)
-    rspec-support (3.3.0)
-    slop (3.6.0)
-    thor (0.19.1)
-    yajl-ruby (1.1.0)
-    yard (0.8.7.3)
+      rspec-support (~> 3.5.0)
+    rspec-mocks (3.5.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.5.0)
+    rspec-support (3.5.0)
+    thor (0.19.4)
+    yard (0.9.6)
+    zeus (0.15.12)
+      method_source (>= 0.6.7)
 
 PLATFORMS
   ruby
@@ -51,8 +54,11 @@ DEPENDENCIES
   pry!
   pry-byebug
   pygments.rb
-  rake (~> 10.0)
+  rake (>= 10.5.0, < 11)
   redcarpet
-  rspec-core (>= 3.3.0, < 4)
-  rspec-expectations (>= 3.3.0, < 4)
+  rspec (~> 3.2)
   yard
+  zeus
+
+BUNDLED WITH
+   1.13.6

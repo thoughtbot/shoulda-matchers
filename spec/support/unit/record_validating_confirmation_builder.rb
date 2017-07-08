@@ -25,9 +25,8 @@ module UnitTests
     end
 
     def attribute_to_confirm
-      :attribute_to_confirm
+      options.fetch(:attribute, :attribute_to_confirm)
     end
-    alias_method :attribute, :attribute_to_confirm
 
     def confirmation_attribute
       :"#{attribute_to_confirm}_confirmation"
@@ -44,11 +43,8 @@ module UnitTests
     private
 
     def create_model
-      _attribute = attribute_to_confirm
-      _options = options
-
-      define_model(model_name, _attribute => :string) do
-        validates_confirmation_of(_attribute, _options)
+      define_model(model_name, attribute_to_confirm => :string) do |model|
+        model.validates_confirmation_of(attribute_to_confirm, options)
       end
     end
   end

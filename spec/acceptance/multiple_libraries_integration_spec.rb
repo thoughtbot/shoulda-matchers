@@ -25,6 +25,7 @@ describe 'shoulda-matchers integrates with multiple libraries' do
 
     add_rspec_file 'spec/models/user_spec.rb', <<-FILE
       describe User do
+        subject { User.new(name: "John Smith") }
         it { should validate_presence_of(:name) }
         it { should validate_uniqueness_of(:name) }
       end
@@ -43,9 +44,11 @@ describe 'shoulda-matchers integrates with multiple libraries' do
     it 'allows the use of matchers from both libraries' do
       result = run_rspec_suite
       expect(result).to have_output('2 examples, 0 failures')
-      expect(result).to have_output('should require name to be set')
       expect(result).to have_output(
-        'should require case sensitive unique value for name'
+        'should validate that :name cannot be empty/falsy'
+      )
+      expect(result).to have_output(
+        'should validate that :name is case-sensitively unique'
       )
     end
   end

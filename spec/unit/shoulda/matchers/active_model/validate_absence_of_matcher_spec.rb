@@ -32,14 +32,42 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
             expect(validating_absence_of(:attr, {}, type: type)).
               to validate_absence_of(:attr)
           end
+
+          it_supports(
+            'ignoring_interference_by_writer',
+            tests: {
+              accept_if_qualified_but_changing_value_does_not_interfere: {
+                changing_values_with: :next_value
+              },
+            }
+          )
+
+          define_method(:validation_matcher_scenario_args) do |*args|
+            super(*args).deep_merge(column_type: type)
+          end
         end
+      end
+
+      def validation_matcher_scenario_args
+        super.deep_merge(model_creator: :active_record)
       end
     end
 
     context 'a model without an absence validation' do
-      it 'rejects' do
-        model = define_model(:example, attr: :string).new
-        expect(model).not_to validate_absence_of(:attr)
+      it 'rejects with the correct failure message' do
+        record = define_model(:example, attr: :string).new
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr is empty/falsy.
+  After setting :attr to ‹"an arbitrary value"›, the matcher expected
+  the Example to be invalid, but it was valid instead.
+        MESSAGE
+
+        assertion = lambda do
+          expect(record).to validate_absence_of(:attr)
+        end
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
 
@@ -51,23 +79,53 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
       it 'does not override the default message with a blank' do
         expect(active_model_validating_absence_of(:attr)).to validate_absence_of(:attr).with_message(nil)
       end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          accept_if_qualified_but_changing_value_does_not_interfere: {
+            changing_values_with: :upcase
+          },
+        }
+      )
+
+      def validation_matcher_scenario_args
+        super.deep_merge(model_creator: :active_model)
+      end
     end
 
     context 'an ActiveModel class without an absence validation' do
-      it 'rejects' do
-        expect(active_model_with(:attr)).not_to validate_absence_of(:attr)
-      end
+      it 'rejects with the correct failure message' do
+        message = <<-MESSAGE
+Example did not properly validate that :attr is empty/falsy.
+  After setting :attr to ‹"an arbitrary value"›, the matcher expected
+  the Example to be invalid, but it was valid instead.
+        MESSAGE
 
-      it 'provides the correct failure message' do
-        message = %{Expected errors to include "must be blank" when attr is set to "an arbitrary value",\ngot no errors}
+        assertion = lambda do
+          expect(active_model_with(:attr)).to validate_absence_of(:attr)
+        end
 
-        expect { expect(active_model_with(:attr)).to validate_absence_of(:attr) }.to fail_with_message(message)
+        expect(&assertion).to fail_with_message(message)
       end
     end
 
     context 'a has_many association with an absence validation' do
       it 'requires the attribute to not be set' do
         expect(having_many(:children, absence: true)).to validate_absence_of(:children)
+      end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          accept_if_qualified_but_changing_value_does_not_interfere: {
+            changing_values_with: :next_value
+          },
+        }
+      )
+
+      def validation_matcher_scenario_args
+        super.deep_merge(model_creator: :"active_record/has_many")
       end
     end
 
@@ -83,12 +141,36 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
         model = having_and_belonging_to_many(:children, absence: true)
         expect(model).to validate_absence_of(:children)
       end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          accept_if_qualified_but_changing_value_does_not_interfere: {
+            changing_values_with: :next_value
+          },
+        }
+      )
+
+      def validation_matcher_scenario_args
+        super.deep_merge(model_creator: :"active_record/habtm")
+      end
     end
 
     context 'a non-absent has_and_belongs_to_many association' do
-      it 'rejects' do
+      it 'rejects with the correct failure message' do
         model = having_and_belonging_to_many(:children, absence: false)
-        expect(model).not_to validate_absence_of(:children)
+
+        message = <<-MESSAGE
+Parent did not properly validate that :children is empty/falsy.
+  After setting :children to ‹[#<Child id: nil>]›, the matcher expected
+  the Parent to be invalid, but it was valid instead.
+        MESSAGE
+
+        assertion = lambda do
+          expect(model).to validate_absence_of(:children)
+        end
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
 
@@ -119,14 +201,28 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
       end
     end
 
-    def validating_absence_of(attr, validation_options = {}, given_column_options = {})
+    def define_model_validating_absence_of(attr, validation_options = {}, given_column_options = {})
       default_column_options = { type: :string, options: {} }
       column_options = default_column_options.merge(given_column_options)
 
-      define_model :example, attr => column_options do
-        validates_absence_of attr, validation_options
-      end.new
+      define_model :example, attr => column_options do |model|
+        model.validates_absence_of(attr, validation_options)
+
+        if block_given?
+          yield model
+        end
+      end
     end
+
+    def validating_absence_of(attr, validation_options = {}, given_column_options = {})
+      model = define_model_validating_absence_of(
+        attr,
+        validation_options,
+        given_column_options
+      )
+      model.new
+    end
+    alias_method :build_record_validating_absence_of, :validating_absence_of
 
     def active_model_with(attr, &block)
       define_active_model_class('Example', accessors: [attr], &block).new
@@ -161,6 +257,10 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
           validates_absence_of plural_name
         end
       end.new
+    end
+
+    def validation_matcher_scenario_args
+      super.deep_merge(matcher_name: :validate_absence_of)
     end
   end
 end

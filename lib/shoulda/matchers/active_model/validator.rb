@@ -5,99 +5,118 @@ module Shoulda
       class Validator
         include Helpers
 
-        attr_writer :attribute, :context, :record
+        def initialize(record, attribute, options = {})
+          @record = record
+          @attribute = attribute
+          @context = options[:context]
+          @expects_strict = options[:expects_strict]
+          @expected_message = options[:expected_message]
 
-        def initialize
-          reset
+          @_validation_result = nil
+          @captured_validation_exception = false
+          @captured_range_error = false
         end
 
-        def reset
-          @messages = nil
-        end
-
-        def strict=(strict)
-          @strict = strict
-
-          if strict
-            extend StrictValidator
-          end
-        end
-
-        def allow_description(allowed_values)
-          "allow #{attribute} to be set to #{allowed_values}"
-        end
-
-        def expected_message_from(attribute_message)
-          attribute_message
-        end
-
-        def messages
-          @messages ||= collect_messages
-        end
-
-        def formatted_messages
-          messages
+        def call
+          !messages_match? && !captured_range_error?
         end
 
         def has_messages?
           messages.any?
         end
 
-        def messages_description
-          if has_messages?
-            " errors:\n#{pretty_error_messages(record)}"
-          else
-            ' no errors'
-          end
+        def captured_validation_exception?
+          @captured_validation_exception
         end
 
-        def expected_messages_description(expected_message)
-          if expected_message
-            "errors to include #{expected_message.inspect}"
-          else
-            'errors'
-          end
+        def type_of_message_matched?
+          expects_strict? == captured_validation_exception?
         end
 
-        def captured_range_error?
-          !!captured_range_error
+        def all_formatted_validation_error_messages
+          format_validation_errors(all_validation_errors)
+        end
+
+        def validation_exception_message
+          validation_result[:validation_exception_message]
         end
 
         protected
 
-        attr_reader :attribute, :context, :strict, :record,
-          :captured_range_error
-
-        def collect_messages
-          validation_errors
-        end
+        attr_reader :attribute, :context, :record
 
         private
 
-        def strict?
-          !!@strict
+        def expects_strict?
+          @expects_strict
         end
 
-        def collect_errors_or_exceptions
-          collect_messages
+        def messages_match?
+          has_messages? &&
+            type_of_message_matched? &&
+            matched_messages.compact.any?
         end
 
-        def validation_errors
+        def messages
+          if expects_strict?
+            [validation_exception_message]
+          else
+            validation_error_messages
+          end
+        end
+
+        def matched_messages
+          if @expected_message
+            messages.grep(@expected_message)
+          else
+            messages
+          end
+        end
+
+        def captured_range_error?
+          !!@captured_range_error
+        end
+
+        def all_validation_errors
+          validation_result[:all_validation_errors]
+        end
+
+        def validation_error_messages
+          validation_result[:validation_error_messages]
+        end
+
+        def validation_result
+          @_validation_result ||= perform_validation
+        end
+
+        def perform_validation
           if context
             record.valid?(context)
           else
             record.valid?
           end
 
-          if record.errors.respond_to?(:[])
-            record.errors[attribute]
-          else
-            record.errors.on(attribute)
-          end
-        end
+          all_validation_errors = record.errors.dup
 
-        def human_attribute_name
-          record.class.human_attribute_name(attribute)
+          validation_error_messages =
+            if record.errors.respond_to?(:[])
+              record.errors[attribute]
+            else
+              record.errors.on(attribute)
+            end
+
+          {
+            all_validation_errors: all_validation_errors,
+            validation_error_messages: validation_error_messages,
+            validation_exception_message: nil
+          }
+        rescue ::ActiveModel::StrictValidationFailed => exception
+          @captured_validation_exception = true
+          {
+            all_validation_errors: nil,
+            validation_error_messages: [],
+            validation_exception_message: exception.message
+          }
         end
       end
     end

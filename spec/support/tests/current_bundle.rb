@@ -8,21 +8,33 @@ module Tests
     include Singleton
 
     def assert_appraisal!
-      unless appraisal?
+      unless appraisal_in_use?
         message = <<EOT
 
 
 Please run tests starting with `appraisal <appraisal_name>`.
-Possible appraisals are: #{possible_appraisals}
+Possible appraisals are: #{available_appraisals}
 
 EOT
         raise AppraisalNotSpecified, message
       end
     end
 
+    def appraisal_in_use?
+      path.dirname == root.join('gemfiles')
+    end
+
+    def current_or_latest_appraisal
+      current_appraisal || latest_appraisal
+    end
+
+    def latest_appraisal
+      available_appraisals.sort.last
+    end
+
     private
 
-    def possible_appraisals
+    def available_appraisals
       appraisals = []
 
       Appraisal::File.each do |appraisal|
@@ -32,12 +44,14 @@ EOT
       appraisals
     end
 
-    def path
-      Bundler.default_gemfile
+    def current_appraisal
+      if appraisal_in_use?
+        File.basename(path, ".gemfile")
+      end
     end
 
-    def appraisal?
-      path.dirname == root.join('gemfiles')
+    def path
+      Bundler.default_gemfile
     end
 
     def root

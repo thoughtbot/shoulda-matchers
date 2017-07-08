@@ -4,6 +4,7 @@ require 'rspec/core/rake_task'
 require 'appraisal'
 require_relative 'tasks/documentation'
 require_relative 'spec/support/tests/database'
+require_relative 'spec/support/tests/current_bundle'
 
 RSpec::Core::RakeTask.new('spec:unit') do |t|
   t.ruby_opts = '-w -r ./spec/report_warnings'
@@ -20,16 +21,17 @@ RSpec::Core::RakeTask.new('spec:acceptance') do |t|
 end
 
 task :default do
-  if ENV['BUNDLE_GEMFILE'] =~ /gemfiles/
-    sh 'rake spec:unit'
-    sh 'rake spec:acceptance'
+  if Tests::CurrentBundle.instance.appraisal_in_use?
+    sh 'rake spec:unit --trace'
+    sh 'rake spec:acceptance --trace'
   else
-    Rake::Task['appraise'].invoke
+    if ENV['CI']
+      exec "appraisal install && appraisal rake --trace"
+    else
+      appraisal = Tests::CurrentBundle.instance.latest_appraisal
+      exec "appraisal install && appraisal #{appraisal} rake --trace"
+    end
   end
-end
-
-task :appraise do
-  exec 'appraisal install && appraisal rake'
 end
 
 Shoulda::Matchers::DocumentationTasks.create

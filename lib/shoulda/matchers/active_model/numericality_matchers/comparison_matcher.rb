@@ -13,6 +13,7 @@ module Shoulda
           }
 
           def initialize(numericality_matcher, value, operator)
+            super(nil)
             unless numericality_matcher.respond_to? :diff_to_compare
               raise ArgumentError, 'numericality_matcher is invalid'
             end
@@ -20,18 +21,18 @@ module Shoulda
             @value = value
             @operator = operator
             @message = ERROR_MESSAGES[operator]
-            @comparison_combos = comparison_combos
-            @strict = false
           end
 
-          def description
-            message = "validate that #{@attribute} is #{comparison_expectation} #{@value}"
+          def simple_description
+            description = ''
 
-            if @strict
-              message << " strictly"
+            if expects_strict?
+              description << ' strictly'
             end
 
-            message
+            description +
+              "disallow :#{attribute} from being a number that is not " +
+              "#{comparison_expectation} #{@value}"
           end
 
           def for(attribute)
@@ -40,8 +41,13 @@ module Shoulda
           end
 
           def with_message(message)
+            @expects_custom_validation_message = true
             @message = message
             self
+          end
+
+          def expects_custom_validation_message?
+            @expects_custom_validation_message
           end
 
           def matches?(subject)
@@ -80,11 +86,7 @@ module Shoulda
           def submatchers
             @_submatchers ||=
               comparison_combos.map do |diff, submatcher_method_name|
-                matcher = __send__(
-                  submatcher_method_name,
-                  (@value + diff).to_s,
-                  nil
-                )
+                matcher = __send__(submatcher_method_name, diff, nil)
                 matcher.with_message(@message, values: { count: @value })
                 matcher
               end
@@ -127,8 +129,14 @@ module Shoulda
           end
 
           def diffs_to_compare
-            diff = @numericality_matcher.diff_to_compare
-            [-diff, 0, diff]
+            diff_to_compare = @numericality_matcher.diff_to_compare
+            values = [-1, 0, 1].map { |sign| @value + (diff_to_compare * sign) }
+
+            if @numericality_matcher.given_numeric_column?
+              values
+            else
+              values.map(&:to_s)
+            end
           end
 
           def comparison_expectation

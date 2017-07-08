@@ -1,50 +1,16 @@
-require_relative 'support/tests/current_bundle'
-
-Tests::CurrentBundle.instance.assert_appraisal!
-
-#---
-
-require File.expand_path('../support/unit/rails_application', __FILE__)
-
-$test_app = UnitTests::RailsApplication.new
-$test_app.create
-$test_app.load
-
-ENV['BUNDLE_GEMFILE'] ||= app.gemfile_path
-ENV['RAILS_ENV'] = 'test'
+require_relative 'support/unit/load_environment'
 
 require 'rspec/rails'
 require 'rspec/matchers/fail_matchers'
 require 'shoulda-matchers'
 
-PROJECT_ROOT = File.expand_path('../..', __FILE__)
-$LOAD_PATH << File.join(PROJECT_ROOT, 'lib')
+require 'spec_helper'
 
 Dir[ File.join(File.expand_path('../support/unit/**/*.rb', __FILE__)) ].sort.each do |file|
   require file
 end
 
 RSpec.configure do |config|
-  config.order = :random
-
-  config.expect_with :rspec do |c|
-    c.syntax = :expect
-  end
-
-  if config.files_to_run.one?
-    config.default_formatter = 'doc'
-  end
-
-  config.mock_with :rspec
-
-  if config.respond_to?(:infer_spec_type_from_file_location!)
-    config.infer_spec_type_from_file_location!
-  end
-
-  config.before(:all, type: :controller) do
-    self.class.controller(ApplicationController) { }
-  end
-
   UnitTests::ActiveModelHelpers.configure_example_group(config)
   UnitTests::ActiveModelVersions.configure_example_group(config)
   UnitTests::ActiveResourceBuilder.configure_example_group(config)
@@ -58,9 +24,21 @@ RSpec.configure do |config|
   UnitTests::ActiveModelVersions.configure_example_group(config)
   UnitTests::DatabaseHelpers.configure_example_group(config)
   UnitTests::ColumnTypeHelpers.configure_example_group(config)
+  UnitTests::ValidationMatcherScenarioHelpers.configure_example_group(config)
 
   config.include UnitTests::Matchers
+<<<<<<< HEAD
   config.include RSpec::Matchers::FailMatchers
+=======
+
+  config.infer_spec_type_from_file_location!
+  config.example_status_persistence_file_path = "spec/examples.txt"
+  config.alias_it_behaves_like_to(:it_supports, "it supports")
+
+  config.before(:all, type: :controller) do
+    self.class.controller(ApplicationController) { }
+  end
+>>>>>>> master
 end
 
 ActiveSupport::Deprecation.behavior = :stderr
@@ -71,5 +49,3 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
-
-$VERBOSE = true

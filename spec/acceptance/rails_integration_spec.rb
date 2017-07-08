@@ -124,7 +124,9 @@ describe 'shoulda-matchers integrates with Rails' do
     result = run_n_unit_test_suite
 
     expect(result).to indicate_that_tests_were_run(unit: 1, functional: 1)
-    expect(result).to have_output('User should require name to be set')
+    expect(result).to have_output(
+      'User should validate that :name cannot be empty/falsy'
+    )
     expect(result).to have_output('should respond with 200')
   end
 
@@ -146,7 +148,9 @@ describe 'shoulda-matchers integrates with Rails' do
     result = run_rspec_suite
 
     expect(result).to have_output('2 examples, 0 failures')
-    expect(result).to have_output('should require name to be set')
+    expect(result).to have_output(
+      'should validate that :name cannot be empty/falsy'
+    )
     expect(result).to have_output('should respond with 200')
   end
 end
