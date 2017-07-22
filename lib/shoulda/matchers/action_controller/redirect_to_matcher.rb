@@ -18,7 +18,7 @@ module Shoulda
       #       describe 'GET #show' do
       #         before { get :show }
       #
-      #         it { should redirect_to('/posts', posts_path) }
+      #         it { should redirect_to(posts_path) }
       #         it { should redirect_to(action: :index) }
       #       end
       #     end
