@@ -94,8 +94,13 @@ module Shoulda
           @status = symbol_to_status_code(status)
         end
 
-        def matches?(controller)
-          @controller = controller
+        def matches?(subject)
+          if subject.is_a? Proc
+            @response = subject.call
+          else
+            @response = subject.response
+          end
+
           correct_status_code? || correct_status_code_range?
         end
 
@@ -123,7 +128,7 @@ module Shoulda
         end
 
         def response_code
-          @controller.response.response_code
+          @response.response_code
         end
 
         def symbol_to_status_code(potential_symbol)
