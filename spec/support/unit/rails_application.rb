@@ -104,10 +104,10 @@ end
 
     def add_initializer_for_time_zone_aware_types
       path = 'config/initializers/configure_time_zone_aware_types.rb'
-      fs.write(path, <<~TEXT)
-        Rails.application.configure do
-          config.active_record.time_zone_aware_types = [:datetime, :time]
-        end
+      fs.write(path, <<-TEXT)
+Rails.application.configure do
+  config.active_record.time_zone_aware_types = [:datetime, :time]
+end
       TEXT
     end
 
