@@ -22,7 +22,7 @@ module UnitTests
     def build_fake_response(opts = {}, &block)
       action = opts[:action] || 'example'
       partial = opts[:partial] || '_partial'
-      block ||= lambda { render nothing: true }
+      block ||= lambda { head :ok }
       controller_class = define_controller('Examples') do
         layout false
         define_method(action, &block)

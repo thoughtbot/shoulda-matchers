@@ -69,7 +69,7 @@ describe Shoulda::Matchers::ActionController::RenderTemplateMatcher, type: :cont
 
   context 'a controller that does not render a template' do
     it 'rejects rendering a template' do
-      expect(build_fake_response { render nothing: true }).
+      expect(build_fake_response { head :ok }).
         not_to render_template(:show)
     end
   end
