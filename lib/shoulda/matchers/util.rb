@@ -4,6 +4,8 @@ module Shoulda
   module Matchers
     # @private
     module Util
+      MAXIMUM_LENGTH_OF_VALUE_TO_DISPLAY = 500
+
       def self.deconstantize(path)
         if defined?(ActiveSupport::Inflector) &&
           ActiveSupport::Inflector.respond_to?(:deconstantize)
@@ -47,7 +49,12 @@ module Shoulda
         when Range
           inspect_range(value)
         else
-          "‹#{value.inspect}›"
+          inspected_value = value.inspect
+          if inspected_value.length > MAXIMUM_LENGTH_OF_VALUE_TO_DISPLAY
+            "‹#{inspected_value[0, MAXIMUM_LENGTH_OF_VALUE_TO_DISPLAY]}...›"
+          else
+            "‹#{inspected_value}›"
+          end
         end
       end
 
