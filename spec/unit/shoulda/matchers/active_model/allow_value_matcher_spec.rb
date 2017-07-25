@@ -41,6 +41,12 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
         )
       end
     end
+
+    it 'truncates the description when long' do
+      matcher = allow_value("A" * 10000).for(:baz)
+
+      expect(matcher.description).to eq "allow :baz to be ‹\"#{"A" * 499}...›"
+    end
   end
 
   describe '#_after_setting_value' do
