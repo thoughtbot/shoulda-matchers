@@ -1,5 +1,5 @@
 shared_dependencies = proc do
-  gem 'rspec-rails', '>= 3.2.0', '< 4'
+  gem 'rspec-rails', '~> 3.6'
   gem 'shoulda-context', '~> 1.2.0'
   gem 'sqlite3', platform: :ruby
   gem 'pg', platform: :ruby
@@ -20,7 +20,7 @@ appraise '4.2' do
   instance_eval(&spring)
   gem 'uglifier', '>= 1.3.0'
   gem 'jquery-rails'
-  gem 'turbolinks'
+  gem 'turbolinks', '2.5.3'
   gem 'sdoc'
   gem 'json', '~> 1.4'
   gem 'activeresource', '4.0.0'
