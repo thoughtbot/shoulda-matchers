@@ -1,11 +1,3 @@
-GIT
-  remote: https://github.com/pry/pry.git
-  revision: 1f64463184e0a160d0b41d1a1f92b8e2f230278c
-  specs:
-    pry (0.10.4)
-      coderay (~> 1.1.0)
-      method_source (~> 0.8.1)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -53,7 +45,7 @@ GEM
     arel (7.1.4)
     bcrypt (3.1.11)
     builder (3.2.3)
-    byebug (9.0.5)
+    byebug (9.0.6)
     coderay (1.1.1)
     concurrent-ruby (1.0.5)
     diff-lcs (1.2.5)
@@ -85,7 +77,11 @@ GEM
       mini_portile2 (~> 2.2.0)
     pg (0.18.4)
     posix-spawn (0.3.11)
-    pry-byebug (3.4.0)
+    pry (0.10.4)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
+    pry-byebug (3.4.2)
       byebug (~> 9.0)
       pry (~> 0.10)
     pygments.rb (0.6.3)
@@ -148,6 +144,7 @@ GEM
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
     shoulda-context (1.2.1)
+    slop (3.6.0)
     spring (1.7.2)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
@@ -168,7 +165,7 @@ GEM
     websocket-extensions (0.1.2)
     yajl-ruby (1.2.2)
     yard (0.9.5)
-    zeus (0.15.10)
+    zeus (0.15.14)
       method_source (>= 0.6.7)
 
 PLATFORMS
@@ -187,7 +184,7 @@ DEPENDENCIES
   listen (~> 3.0.5)
   nokogiri (~> 1.8)
   pg
-  pry!
+  pry
   pry-byebug
   pygments.rb
   rails (~> 5.0.4)
