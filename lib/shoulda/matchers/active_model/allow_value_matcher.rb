@@ -332,6 +332,7 @@ module Shoulda
           @context = nil
           @values_to_preset = {}
           @failure_message_preface = nil
+          @attribute_changed_value_message = nil
         end
 
         def for(attribute_name)
