@@ -18,6 +18,10 @@ module Shoulda
           true
         end
 
+        def respond_to_missing?(name, include_all)
+          true
+        end
+
         def method_missing(method_name, *args, &block)
           call = MethodCall.new(
             method_name: method_name,
