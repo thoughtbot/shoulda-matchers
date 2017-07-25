@@ -10,3 +10,5 @@ pkg
 source
 spec/examples.txt
 tmp
+.ruby-gemset
+.ruby-version

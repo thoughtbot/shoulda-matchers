@@ -1,7 +1,7 @@
 ruby_version = Gem::Version.new(RUBY_VERSION + '')
 
 shared_dependencies = proc do
-  gem 'rspec-rails', '>= 3.2.0', '< 4'
+  gem 'rspec-rails', '>= 3.3.0', '< 4'
   gem 'shoulda-context', '~> 1.2.0'
   gem 'sqlite3', platform: :ruby
   gem 'pg', platform: :ruby

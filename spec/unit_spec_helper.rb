@@ -1,6 +1,7 @@
 require_relative 'support/unit/load_environment'
 
 require 'rspec/rails'
+require 'rspec/matchers/fail_matchers'
 require 'shoulda-matchers'
 
 require 'spec_helper'
@@ -26,6 +27,7 @@ RSpec.configure do |config|
   UnitTests::ValidationMatcherScenarioHelpers.configure_example_group(config)
 
   config.include UnitTests::Matchers
+  config.include RSpec::Matchers::FailMatchers
 
   config.infer_spec_type_from_file_location!
   config.example_status_persistence_file_path = "spec/examples.txt"
