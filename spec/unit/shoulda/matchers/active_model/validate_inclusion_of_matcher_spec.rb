@@ -25,7 +25,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       it_behaves_like 'it supports in_array',
         possible_values: (1..5).to_a,
         zero: 0,
-        reserved_outside_value: described_class::ARBITRARY_OUTSIDE_FIXNUM
+        reserved_outside_value: described_class::ARBITRARY_OUTSIDE_INTEGER
 
       it_behaves_like 'it supports in_range',
         possible_values: 1..5,
@@ -82,7 +82,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       it_behaves_like 'it supports in_array',
         possible_values: [1.0, 2.0, 3.0, 4.0, 5.0],
         zero: 0.0,
-        reserved_outside_value: described_class::ARBITRARY_OUTSIDE_FIXNUM
+        reserved_outside_value: described_class::ARBITRARY_OUTSIDE_INTEGER
 
       it_behaves_like 'it supports in_range',
         possible_values: 1.0..5.0,

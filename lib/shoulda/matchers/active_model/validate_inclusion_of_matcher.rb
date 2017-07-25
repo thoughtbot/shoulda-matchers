@@ -269,7 +269,7 @@ module Shoulda
       # @private
       class ValidateInclusionOfMatcher < ValidationMatcher
         ARBITRARY_OUTSIDE_STRING = 'shoulda-matchers test string'
-        ARBITRARY_OUTSIDE_FIXNUM = 123456789
+        ARBITRARY_OUTSIDE_INTEGER = 123456789
         ARBITRARY_OUTSIDE_DECIMAL = BigDecimal.new('0.123456789')
         ARBITRARY_OUTSIDE_DATE = Date.jd(9999999)
         ARBITRARY_OUTSIDE_DATETIME = DateTime.jd(9999999)
@@ -483,8 +483,8 @@ EOT
           case attribute_type
           when :boolean
             boolean_outside_values
-          when :fixnum
-            [ARBITRARY_OUTSIDE_FIXNUM]
+          when :integer
+            [ARBITRARY_OUTSIDE_INTEGER]
           when :decimal
             [ARBITRARY_OUTSIDE_DECIMAL]
           when :date
@@ -538,7 +538,7 @@ EOT
 
         def column_type_to_attribute_type(type)
           case type
-            when :integer, :float then :fixnum
+            when :float then :integer
             when :timestamp then :datetime
             else type
           end
@@ -548,7 +548,7 @@ EOT
           case value
             when true, false then :boolean
             when BigDecimal then :decimal
-            when Integer then :fixnum
+            when Integer then :integer
             when Date then :date
             when DateTime then :datetime
             when Time then :time
