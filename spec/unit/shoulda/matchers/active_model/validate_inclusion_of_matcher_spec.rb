@@ -192,20 +192,19 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     end
 
     context 'against a time attribute' do
-      now = Time.now
+      default_time = Time.zone.local(2000, 1, 1)
 
-      define_method(:now) { now }
+      define_method(:default_time) { default_time }
 
       it_behaves_like 'it supports in_array',
-        possible_values: (1..5).map { |n| now + n },
-        reserved_outside_value: described_class::ARBITRARY_OUTSIDE_TIME
+        possible_values: (1..3).map { |hour| default_time.change(hour: hour) }
 
       it_behaves_like 'it supports in_range',
-        possible_values: (now .. now + 5)
+        possible_values: (default_time.change(hour: 1) .. default_time.change(hour: 3))
 
       define_method :build_object do |options = {}, &block|
         build_object_with_generic_attribute(
-          options.merge(column_type: :time, value: now),
+          options.merge(column_type: :time, value: default_time),
           &block
         )
       end
@@ -215,7 +214,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       end
 
       def validation_matcher_scenario_args
-        super.deep_merge(column_type: :time, default_value: now)
+        super.deep_merge(column_type: :time, default_value: default_time)
       end
     end
 
@@ -434,7 +433,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
   shared_examples_for 'it supports in_array' do |args|
     possible_values = args.fetch(:possible_values)
     zero = args[:zero]
-    reserved_outside_value = args.fetch(:reserved_outside_value)
+    reserved_outside_value = args[:reserved_outside_value]
 
     define_method(:valid_values) { args.fetch(:possible_values) }
 
@@ -466,12 +465,14 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       expect_not_to_match_on_values(builder, add_outside_value_to(possible_values))
     end
 
-    it 'raises an error when valid and given value is our test outside value' do
-      error_class = Shoulda::Matchers::ActiveModel::CouldNotDetermineValueOutsideOfArray
-      builder = build_object_allowing([reserved_outside_value])
+    if reserved_outside_value
+      it 'raises an error when valid and given value is our test outside value' do
+        error_class = Shoulda::Matchers::ActiveModel::CouldNotDetermineValueOutsideOfArray
+        builder = build_object_allowing([reserved_outside_value])
 
-      expect { expect_to_match_on_values(builder, [reserved_outside_value]) }.
-        to raise_error(error_class)
+        expect { expect_to_match_on_values(builder, [reserved_outside_value]) }.
+          to raise_error(error_class)
+      end
     end
 
     it_behaves_like 'it supports allow_nil', valid_values: possible_values
