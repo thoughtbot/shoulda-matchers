@@ -1,7 +1,5 @@
 module UnitTests
   class Attribute
-    attr_reader :name, :column_type, :column_options
-
     DEFAULT_COLUMN_TYPE = :string
     DEFAULT_COLUMN_OPTIONS = {
       null: false,
