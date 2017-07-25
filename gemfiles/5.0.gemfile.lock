@@ -38,6 +38,7 @@ GEM
       i18n (~> 0.7)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
+    ansi (1.5.0)
     appraisal (2.1.0)
       bundler
       rake
@@ -71,6 +72,11 @@ GEM
     mime-types-data (3.2016.0521)
     mini_portile2 (2.2.0)
     minitest (5.10.3)
+    minitest-reporters (1.1.14)
+      ansi
+      builder
+      minitest (>= 5.0)
+      ruby-progressbar
     multi_json (1.12.1)
     nio4r (2.1.0)
     nokogiri (1.8.0)
@@ -84,6 +90,7 @@ GEM
     pry-byebug (3.4.2)
       byebug (~> 9.0)
       pry (~> 0.10)
+    puma (3.9.1)
     pygments.rb (0.6.3)
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.2.0)
@@ -143,6 +150,7 @@ GEM
       rspec-mocks (~> 3.6.0)
       rspec-support (~> 3.6.0)
     rspec-support (3.6.0)
+    ruby-progressbar (1.8.1)
     shoulda-context (1.2.1)
     slop (3.6.0)
     spring (1.7.2)
@@ -182,10 +190,12 @@ DEPENDENCIES
   jdbc-sqlite3
   jruby-openssl
   listen (~> 3.0.5)
+  minitest-reporters
   nokogiri (~> 1.8)
   pg
   pry
   pry-byebug
+  puma (~> 3.0)
   pygments.rb
   rails (~> 5.0.4)
   rails-controller-testing (>= 1.0.1)

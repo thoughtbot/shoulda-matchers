@@ -44,4 +44,6 @@ appraise '5.0' do
   gem 'bcrypt', '~> 3.1.7'
   gem 'listen', '~> 3.0.5'
   gem 'nokogiri', '~> 1.8'
+  gem 'minitest-reporters'
+  gem 'puma', '~> 3.0'
 end
