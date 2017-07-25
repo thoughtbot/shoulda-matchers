@@ -1210,7 +1210,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
   def define_association_with_conditions(model, macro, name, conditions, other_options={})
     args = []
     options = {}
-    if Shoulda::Matchers::RailsShim.active_record_major_version == 4
+    if active_record_supports_relations?
       args << proc { where(conditions) }
     else
       options[:conditions] = conditions
@@ -1222,7 +1222,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
   def define_association_with_order(model, macro, name, order, other_options={})
     args = []
     options = {}
-    if Shoulda::Matchers::RailsShim.active_record_major_version == 4
+    if active_record_supports_relations?
       args << proc { order(order) }
     else
       options[:order] = order
@@ -1232,11 +1232,10 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
   end
 
   def dependent_options
-    case Rails.version
-    when /\A3/
-      [:destroy, :delete, :nullify, :restrict]
-    when /\A4/
+    if active_record_supports_more_dependent_options?
       [:destroy, :delete, :nullify, :restrict_with_exception, :restrict_with_error]
+    else
+      [:destroy, :delete, :nullify, :restrict]
     end
   end
 end
