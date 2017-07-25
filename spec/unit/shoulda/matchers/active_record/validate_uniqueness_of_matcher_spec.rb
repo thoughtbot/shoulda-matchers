@@ -1266,7 +1266,10 @@ but only if it is not blank.
         favoriteable_type: { type: :string, options: { null: false } }
       }
       favorite_model = define_model 'Favorite', favorite_columns do
-        attr_accessible :favoriteable
+        if respond_to?(:attr_accessible)
+          attr_accessible :favoriteable
+        end
+
         belongs_to :favoriteable, polymorphic: true
         validates :favoriteable, presence: true
         validates :favoriteable_id, uniqueness: { scope: :favoriteable_type }
@@ -1291,7 +1294,10 @@ but only if it is not blank.
           favoriteable_type: { type: :string, options: { null: false } }
         }
         favorite_model = define_model 'Models::Favorite', favorite_columns do
-          attr_accessible :favoriteable
+          if respond_to?(:attr_accessible)
+            attr_accessible :favoriteable
+          end
+
           belongs_to :favoriteable, polymorphic: true
           validates :favoriteable, presence: true
           validates :favoriteable_id, uniqueness: { scope: :favoriteable_type }
@@ -1547,8 +1553,10 @@ Example did not properly validate that :name is case-sensitively unique.
       m.validates_uniqueness_of attribute_name,
         validation_options.merge(scope: scope_attribute_names)
 
-      attributes.each do |attr|
-        m.attr_accessible(attr[:name])
+      if m.respond_to?(:attr_accessible)
+        attributes.each do |attr|
+          m.attr_accessible(attr[:name])
+        end
       end
 
       block.call(m) if block
@@ -1591,7 +1599,9 @@ Example did not properly validate that :name is case-sensitively unique.
 
   def define_model_without_validation
     define_model(:example, attribute_name => :string) do |model|
-      model.attr_accessible(attribute_name)
+      if model.respond_to?(:attr_accessible)
+        model.attr_accessible(attribute_name)
+      end
     end
   end
 
