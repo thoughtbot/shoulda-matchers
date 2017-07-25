@@ -4,8 +4,6 @@ module UnitTests
   class ValidationMatcherScenario
     extend Forwardable
 
-    attr_reader :matcher
-
     def initialize(arguments)
       @arguments = arguments.dup
       @matcher_proc = @arguments.delete(:matcher_proc)
