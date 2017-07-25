@@ -33,10 +33,8 @@ module Shoulda::Matchers::Doublespeak
         block_called = false
         double_collections = Array.new(3) { build_double_collection }
         double_collections.each do |double_collection|
-          allow(double_collection).to receive(:activate).ordered
-        end
-        double_collections.each do |double_collection|
-          allow(double_collection).to receive(:deactivate).ordered
+          allow(double_collection).to receive(:activate)
+          allow(double_collection).to receive(:deactivate)
         end
         klasses = Array.new(3) { |i| "Klass #{i}" }
         world = described_class.new
