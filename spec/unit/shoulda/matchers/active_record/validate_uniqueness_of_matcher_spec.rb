@@ -808,7 +808,11 @@ within the scope of :scope1.
       end
     end
 
-    if database_supports_array_columns? && active_record_supports_array_columns?
+    if (
+      database_supports_array_columns? &&
+      active_record_supports_array_columns? &&
+      active_record_uniqueness_supports_array_columns?
+    )
       context 'when one of the scoped attributes is a array-of-string column' do
         include_examples 'it supports scoped attributes of a certain type',
           column_type: :string,
