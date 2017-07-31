@@ -2,6 +2,7 @@ require_relative '../tests/bundle'
 require_relative '../tests/command_runner'
 require_relative '../tests/database'
 require_relative '../tests/filesystem'
+require_relative 'helpers/rails_versions'
 
 require 'yaml'
 
@@ -75,6 +76,10 @@ module UnitTests
       rails_new
       fix_available_locales_warning
       write_database_configuration
+
+      if bundle.version_of("rails") >= 5
+        add_initializer_for_time_zone_aware_types
+      end
     end
 
     def rails_new
@@ -95,6 +100,15 @@ end
 
     def write_database_configuration
       YAML.dump(database.config.to_hash, fs.open('config/database.yml', 'w'))
+    end
+
+    def add_initializer_for_time_zone_aware_types
+      path = 'config/initializers/configure_time_zone_aware_types.rb'
+      fs.write(path, <<-TEXT)
+Rails.application.configure do
+  config.active_record.time_zone_aware_types = [:datetime, :time]
+end
+      TEXT
     end
 
     def load_environment

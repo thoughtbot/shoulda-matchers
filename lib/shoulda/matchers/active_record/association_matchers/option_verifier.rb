@@ -34,15 +34,16 @@ module Shoulda
 
           def correct_for?(*args)
             expected_value, name, type = args.reverse
+
             if expected_value.nil?
               true
             else
-              expected_value = type_cast(
+              type_cast_expected_value = type_cast(
                 type,
                 expected_value_for(type, name, expected_value)
               )
               actual_value = type_cast(type, actual_value_for(name))
-              expected_value == actual_value
+              type_cast_expected_value == actual_value
             end
           end
 
@@ -65,10 +66,14 @@ module Shoulda
 
           def type_cast(type, value)
             case type
-              when :string, :relation_clause then value.to_s
-              when :boolean                  then !!value
-              when :hash                     then Hash(value).stringify_keys
-              else                                value
+            when :string, :relation_clause
+              value.to_s
+            when :boolean
+              !!value
+            when :hash
+              Hash(value).stringify_keys
+            else
+              value
             end
           end
 

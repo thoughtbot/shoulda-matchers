@@ -80,7 +80,7 @@ module UnitTests
               )
 
               if respond_to?(:write_attribute)
-                write_attribute(new_value)
+                write_attribute(attribute_name, new_value)
               else
                 super(new_value)
               end

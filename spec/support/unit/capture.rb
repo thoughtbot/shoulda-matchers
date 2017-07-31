@@ -2,7 +2,9 @@ module Kernel
   # #capture, #silence_stream, and #silence_stderr are deprecated after Rails
   # 4.2 and will be removed in 5.0, so just override them completely here
 
-  undef_method :capture
+  if method_defined?(:capture)
+    undef_method :capture
+  end
 
   def capture(stream)
     stream = stream.to_s
@@ -20,7 +22,9 @@ module Kernel
     stream_io.reopen(origin_stream)
   end
 
-  undef_method :silence_stream
+  if method_defined?(:silence_stream)
+    undef_method :silence_stream
+  end
 
   def silence_stream(stream)
     old_stream = stream.dup
@@ -32,7 +36,9 @@ module Kernel
     old_stream.close
   end
 
-  undef_method :silence_stderr
+  if method_defined?(:silence_stderr)
+    undef_method :silence_stderr
+  end
 
   def silence_stderr
     silence_stream(STDERR) { yield }

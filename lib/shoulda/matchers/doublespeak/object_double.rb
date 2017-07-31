@@ -14,7 +14,11 @@ module Shoulda
           @calls_by_method_name[method_name] || []
         end
 
-        def respond_to?(name, include_private = nil)
+        def respond_to?(_name, _include_private = nil)
+          true
+        end
+
+        def respond_to_missing?(_name, _include_all)
           true
         end
 

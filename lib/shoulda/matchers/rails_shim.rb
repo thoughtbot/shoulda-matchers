@@ -23,9 +23,11 @@ module Shoulda
         if defined?(::ActiveRecord::Type::Serialized)
           # Rails 5+
           model.columns.select do |column|
-            column.cast_type.is_a?(::ActiveRecord::Type::Serialized)
+            model.type_for_attribute(column.name).is_a?(
+              ::ActiveRecord::Type::Serialized,
+            )
           end.inject({}) do |hash, column|
-            hash[column.name.to_s] = column.cast_type.coder
+            hash[column.name.to_s] = model.type_for_attribute(column.name).coder
             hash
           end
         else
@@ -53,6 +55,14 @@ module Shoulda
         primary_translation_key = :"activerecord.errors.models.#{model_name}.attributes.#{attribute}.#{type}"
         translate_options = { default: default_translation_keys }.merge(options)
         I18n.translate(primary_translation_key, translate_options)
+      end
+
+      def self.tables_and_views(connection)
+        if active_record_major_version >= 5
+          connection.data_sources
+        else
+          connection.tables
+        end
       end
 
       def self.active_record_major_version
