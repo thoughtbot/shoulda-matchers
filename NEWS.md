@@ -1,8 +1,81 @@
+# 4.0.0 (unreleased)
+
+This release mainly brings the gem up to date with modern versions of Ruby and
+Rails and drops support for older, unsupported versions. The compatibility list
+is now:
+
+* **Ruby:** 2.4.1, 2.3.4, 2.2.7
+* **Rails:** 5.1.4, 5.0.4, 4.2.9
+
+### Backward-incompatible changes
+
+* Drop support for Rails 4.0 and 4.1 as well as Ruby 2.0 and 2.1, since they've
+  been end-of-lifed. The gem now supports Ruby 2.2+ and Rails 4.2+.
+
+### Bug fixes
+
+* Fix association matchers when used under Rails 5.x so that they make use of
+  `ActiveRecord::Base.connection.data_sources` instead of
+  `ActiveRecord::Base.connection.tables`, which was deprecated.
+
+  * *Commit: [61c3654]*
+  * *PR: [#943]*
+  * *Original issue: [#933]*
+
+* Fix the `serialize` matcher so that it works with Rails 5.x.
+
+  * *Commit: [df04f87]*
+  * *PR: [#965]*
+  * *Original issue: [#913]*
+
+* Fix our custom mocking library Doublespeak, which is used by
+  `delegate_method`, so that it does not produce a warning under Ruby 2.4.
+
+  * *Commit: [8d7dcb8]*
+  * *PR: [#1038]*
+  * *Original issue: [#1006]*
+
+* Fix `permit` matcher so that it uses the correct method signature to call the
+  controller action with params in order to prevent a warning under Rails 5.x.
+
+  * *Commit: [ce9624b]*
+  * *PRs: [#989], [#964], [#917]*
+  * *Original issue: [#867]*
+
+[a6d09aa]: https://github.com/thoughtbot/shoulda-matchers/commit/a6d09aa5de0d546367e7b3d7177dfde6c66f7f05
+[#943]: https://github.com/thoughtbot/shoulda-matchers/pulls/943
+[#933]: https://github.com/thoughtbot/shoulda-matchers/issues/933
+[df04f87]: https://github.com/thoughtbot/shoulda-matchers/commit/df04f8704abc3754c63c488433dac8c30573da6b
+[#965]: https://github.com/thoughtbot/shoulda-matchers/pulls/965
+[#913]: https://github.com/thoughtbot/shoulda-matchers/issues/913
+[8d7dcb8]: https://github.com/thoughtbot/shoulda-matchers/commit/8d7dcb88c3bae8315e4107a39ae17fe19a4b6786
+[#1038]: https://github.com/thoughtbot/shoulda-matchers/pulls/1038
+[#1006]: httpce9624b3c5a08b9134150e228440c771d95782b7s://github.com/thoughtbot/shoulda-matchers/issues/1006
+[ce9624b]: https://github.com/thoughtbot/shoulda-matchers/commit/ce9624b3c5a08b9134150e228440c771d95782b7
+[#989]: https://github.com/thoughtbot/shoulda-matchers/pulls/989
+[#964]: https://github.com/thoughtbot/shoulda-matchers/pulls/964
+[#917]: https://github.com/thoughtbot/shoulda-matchers/pulls/917
+[#867]: https://github.com/thoughtbot/shoulda-matchers/issues/867
+
+### Improvements
+
+* Replace usage of Fixnum with Integer to prevent Ruby 2.4 from emitting
+  deprecation warnings.
+
+  * Commit: [61c3654]
+  * PR: [#1009]
+  * Original issue: [#1001]
+
+[61c3654]: https://github.com/thoughtbot/shoulda-matchers/commit/61c365416a09c5cffd7fcb774a07de4abf8e9afd
+[#1009]: https://github.com/thoughtbot/shoulda-matchers/pulls/1009
+[#1001]: https://github.com/thoughtbot/shoulda-matchers/issues/1001
+
 # 3.1.2
 
 ### Deprecations
 
-* This is the **last version** that supports Rails 4.0 and 4.1 and Ruby 2.0 and 2.1.
+* This is the **last version** that supports Rails 4.0 and 4.1 and Ruby 2.0 and
+  2.1.
 
 ### Bug fixes
 
@@ -15,6 +88,10 @@
   * *Commit: [44c019]*
   * *Issue: [#899]*
   * *Pull request: [#902]*
+
+[44c019]: https://github.com/thoughtbot/shoulda-matchers/commit/44c0198830921650af3b4a56f5d72aaae2168480
+[#899]: https://github.com/thoughtbot/shoulda-matchers/issues/899
+[#902]: https://github.com/thoughtbot/shoulda-matchers/pulls/902
 
 # 3.1.1
 
