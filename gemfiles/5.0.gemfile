@@ -13,17 +13,18 @@ gem "yard"
 gem "redcarpet"
 gem "pygments.rb"
 gem "fssm"
-gem "rspec-rails", "~> 3.6"
-gem "shoulda-context", "~> 1.2.0"
-gem "sqlite3", :platform => :ruby
-gem "pg", :platform => :ruby
 gem "activerecord-jdbc-adapter", :platform => :jruby
 gem "activerecord-jdbcsqlite3-adapter", :platform => :jruby
 gem "jdbc-sqlite3", :platform => :jruby
 gem "jruby-openssl", :platform => :jruby
 gem "therubyrhino", :platform => :jruby
+gem "sqlite3", :platform => :ruby
+gem "pg", :platform => :ruby
 gem "spring"
 gem "spring-commands-rspec"
+gem "minitest-reporters"
+gem "rspec-rails", "~> 3.6"
+gem "shoulda-context", "~> 1.2.0"
 gem "rails", "~> 5.0.4"
 gem "rails-controller-testing", ">= 1.0.1"
 gem "puma", "~> 3.0"
@@ -34,5 +35,3 @@ gem "jbuilder", "~> 2.5"
 gem "bcrypt", "~> 3.1.7"
 gem "listen", "~> 3.0.5"
 gem "spring-watcher-listen", "~> 2.0.0"
-gem "nokogiri", "~> 1.8"
-gem "minitest-reporters"
