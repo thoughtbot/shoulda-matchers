@@ -1,5 +1,9 @@
 # 3.1.2
 
+### Deprecations
+
+* This is the **last version** that supports Rails 4.0 and 4.1 and Ruby 2.0 and 2.1.
+
 ### Bug fixes
 
 * When the `permit` matcher was used without `#on`, the controller did not use
