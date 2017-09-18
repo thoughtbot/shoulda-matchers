@@ -38,27 +38,26 @@ end
 appraise '4.2' do
   instance_eval(&shared_dependencies)
 
-  gem 'uglifier', '>= 1.3.0'
-  gem 'jquery-rails'
-  gem 'turbolinks', '2.5.3'
-  gem 'sdoc'
-  gem 'json', '~> 1.4'
-  gem 'activeresource', '4.0.0'
-  gem 'protected_attributes'
-  gem 'minitest-reporters'
   gem 'rails', '~> 4.2.9'
   gem 'sass-rails', '~> 5.0'
+  gem 'uglifier', '>= 1.3.0'
   gem 'coffee-rails', '~> 4.1.0'
+  gem 'jquery-rails'
+  gem 'turbolinks'
   gem 'jbuilder', '~> 2.0'
-  gem 'nokogiri', '~> 1.8'
+  gem 'sdoc', '~> 0.4.0', group: :doc
   gem 'bcrypt', '~> 3.1.7'
+
+  # Other dependencies we use
+  gem 'activeresource', '4.0.0'
+  gem 'json', '~> 1.4'
   gem 'protected_attributes', '~> 1.0.6'
 end
 
 appraise '5.0' do
   instance_eval(&shared_dependencies)
 
-  gem 'rails', '~> 5.0.4'
+  gem 'rails', '~> 5.0.6'
   gem 'rails-controller-testing', '>= 1.0.1'
   gem 'puma', '~> 3.0'
   gem 'sass-rails', '~> 5.0'
