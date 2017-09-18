@@ -31,7 +31,7 @@ module UnitTests
       rails_version >= 4.2
     end
 
-    def rails_lte_5?
+    def rails_lt_5?
       rails_version < 5
     end
   end

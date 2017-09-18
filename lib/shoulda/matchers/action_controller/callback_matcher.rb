@@ -20,10 +20,14 @@ module Shoulda
       #       should_not use_before_filter(:prevent_ssl)
       #     end
       #
+      # @note This method is only available when using shoulda-matchers under
+      # Rails 4.x.
       # @return [CallbackMatcher]
       #
-      def use_before_filter(callback)
-        CallbackMatcher.new(callback, :before, :filter)
+      if RailsShim.action_pack_lt_5?
+        def use_before_filter(callback)
+          CallbackMatcher.new(callback, :before, :filter)
+        end
       end
 
       # The `use_after_filter` matcher is used to test that an after_filter
@@ -45,10 +49,14 @@ module Shoulda
       #       should_not use_after_filter(:destroy_user)
       #     end
       #
+      # @note This method is only available when using shoulda-matchers under
+      # Rails 4.x.
       # @return [CallbackMatcher]
       #
-      def use_after_filter(callback)
-        CallbackMatcher.new(callback, :after, :filter)
+      if RailsShim.action_pack_lt_5?
+        def use_after_filter(callback)
+          CallbackMatcher.new(callback, :after, :filter)
+        end
       end
 
       # The `use_before_action` matcher is used to test that a before_action
@@ -120,10 +128,14 @@ module Shoulda
       #       should_not use_around_filter(:save_view_context)
       #     end
       #
+      # @note This method is only available when using shoulda-matchers under
+      # Rails 4.x.
       # @return [CallbackMatcher]
       #
-      def use_around_filter(callback)
-        CallbackMatcher.new(callback, :around, :filter)
+      if RailsShim.action_pack_lt_5?
+        def use_around_filter(callback)
+          CallbackMatcher.new(callback, :around, :filter)
+        end
       end
 
       # The `use_around_action` matcher is used to test that an around_action
