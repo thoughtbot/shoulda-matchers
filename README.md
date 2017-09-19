@@ -1,26 +1,19 @@
 # Shoulda Matchers [![Gem Version][version-badge]][rubygems] [![Build Status][travis-badge]][travis] ![Downloads][downloads-badge]
 
-[![Join the chat at https://gitter.im/shoulda-matchers/Lobby](https://badges.gitter.im/shoulda-matchers/Lobby.svg)](https://gitter.im/shoulda-matchers/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 Shoulda Matchers provides RSpec- and Minitest-compatible one-liners that test
 common Rails functionality. These tests would otherwise be much longer, more
 complex, and error-prone.
 
 [View the official documentation for the latest version (3.1.1).][rubydocs]
 
-----
+### This is the master branch
 
-### Note from the maintainer
+We are currently working on shoulda-matchers 4.0, which will support Ruby 2.4
+and Rails 5.x. We don't have a date on when this will be released, but you can
+stay up to date on the progress by monitoring [the milestone][4-0-milestone].
+Use this branch at your discretion!
 
-> Are you a fan of Shoulda Matchers? Are you interested in maintaining a popular
-> open-source project? If so, please contact me. Don't misunderstand me -- I
-> still use Shoulda Matchers on every project, but unfortunately, it has been a
-> long while since I've been able to give it the love it deserves, and I'd like
-> to hand the reins over to someone else who is able to do that. If you're
-> interested, I can be reached on Twitter as @mcmire or at
-> <elliot.winkler@gmail.com>. Thanks!
->
-> -- Elliot
+[4-0-milestone]: https://github.com/thoughtbot/shoulda-matchers/milestone/13
 
 ----
 
@@ -119,19 +112,9 @@ complex, and error-prone.
 
 Include `shoulda-matchers` in your Gemfile:
 
-For Rails 4.x:
-
 ``` ruby
 group :test do
   gem 'shoulda-matchers', '~> 3.1'
-end
-```
-
-For Rails 5.0:
-
-``` ruby
-group :test do
-  gem 'shoulda-matchers', git: 'https://github.com/thoughtbot/shoulda-matchers.git', branch: 'rails-5'
 end
 ```
 
@@ -326,7 +309,7 @@ Shoulda Matchers follows Semantic Versioning 2.0 as defined at
 
 ## License
 
-Shoulda Matchers is copyright © 2006-2016
+Shoulda Matchers is copyright © 2006-2017
 [thoughtbot, inc](https://thoughtbot.com/). It is free software,
 and may be redistributed under the terms specified in the
 [MIT-LICENSE](MIT-LICENSE) file.
