@@ -26,7 +26,7 @@ describe 'shoulda-matchers integrates with Rails' do
       class ExamplesController < ApplicationController
         def show
           @example = 'hello'
-          render nothing: true
+          head :ok
         end
       end
     FILE

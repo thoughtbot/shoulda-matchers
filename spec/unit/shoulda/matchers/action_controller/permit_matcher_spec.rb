@@ -586,7 +586,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
           end
         end
 
-        render nothing: true
+        head :ok
       end
     end
 
