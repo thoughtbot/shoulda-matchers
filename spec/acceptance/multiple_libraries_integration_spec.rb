@@ -5,7 +5,7 @@ describe 'shoulda-matchers integrates with multiple libraries' do
     create_rails_application
 
     write_file 'db/migrate/1_create_users.rb', <<-FILE
-      class CreateUsers < ActiveRecord::Migration
+      class CreateUsers < #{migration_class_name}
         def self.up
           create_table :users do |t|
             t.string :name
