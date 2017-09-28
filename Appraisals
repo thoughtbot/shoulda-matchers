@@ -79,6 +79,8 @@ appraise '5.1' do
   gem 'turbolinks', '~> 5'
   gem 'jbuilder', '~> 2.5'
   gem 'bcrypt', '~> 3.1.7'
+  gem 'capybara', '~> 2.13'
+  gem 'selenium-webdriver'
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
