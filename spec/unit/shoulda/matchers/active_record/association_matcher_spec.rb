@@ -82,18 +82,18 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
     end
 
     it 'accepts an association with a valid :inverse_of option' do
-      expect(belonging_to_parent(inverse_of: :children))
-        .to belong_to(:parent).inverse_of(:children)
+      expect(belonging_to_with_inverse(:parent, :children)).
+        to belong_to(:parent).inverse_of(:children)
     end
 
     it 'rejects an association with a bad :inverse_of option' do
-      expect(belonging_to_parent(inverse_of: :other_children))
-        .not_to belong_to(:parent).inverse_of(:children)
+      expect(belonging_to_with_inverse(:parent, :other_children)).
+        not_to belong_to(:parent).inverse_of(:children)
     end
 
     it 'rejects an association that has no :inverse_of option' do
-      expect(belonging_to_parent)
-        .not_to belong_to(:parent).inverse_of(:children)
+      expect(belonging_to_parent).
+        not_to belong_to(:parent).inverse_of(:children)
     end
 
     it 'accepts an association with a valid :conditions option' do
@@ -279,11 +279,90 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       end
     end
 
-    def belonging_to_parent(options = {})
-      define_model :parent
+    context 'given an association with neither :required nor :optional specified' do
+      if active_record_supports_required_for_associations?
+        it 'assumes it is required' do
+          expect(belonging_to_parent).to belong_to(:parent).required
+        end
+      else
+        it 'assumes it is optional' do
+          expect(belonging_to_parent).to belong_to(:parent).optional
+        end
+      end
+    end
+
+    context 'given an association with a matching :required option' do
+      it 'passes' do
+        expect(belonging_to_parent(required: true)).
+          to belong_to(:parent).required
+      end
+    end
+
+    context 'given an association with a non-matching :required option' do
+      it 'fails with an appropriate message' do
+        assertion = lambda do
+          expect(belonging_to_parent(required: false)).
+            to belong_to(:parent).required
+        end
+
+        message =
+          'Expected Child to have a belongs_to association called parent ' +
+          '(the association should have been defined with `required: true`, ' +
+          'but was not)'
+
+        expect(&assertion).to fail_with_message(message)
+      end
+    end
+
+    if active_record_supports_required_for_associations?
+      context 'given an association with a matching :optional option' do
+        it 'passes' do
+          expect(belonging_to_parent(optional: true)).
+            to belong_to(:parent).optional
+        end
+      end
+
+      context 'given an association with a non-matching :optional option' do
+        it 'fails with an appropriate message' do
+          assertion = lambda do
+            expect(belonging_to_parent(optional: false)).
+              to belong_to(:parent).optional
+          end
+
+          message =
+            'Expected Child to have a belongs_to association called parent ' +
+            '(the association should have been defined with `optional: ' +
+            'true`, but was not)'
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+    end
+
+    def belonging_to_parent(options = {}, parent_options = {})
+      define_model :parent, parent_options
       define_model :child, parent_id: :integer do
         belongs_to :parent, options
       end.new
+    end
+
+    def belonging_to_with_inverse(association, inverse_association)
+      parent_model_name = association.to_s.singularize
+      child_model_name = inverse_association.to_s.singularize
+      parent_foreign_key = "#{parent_model_name}_id"
+
+      define_model parent_model_name do
+        has_many inverse_association
+      end
+
+      child_model = define_model(
+        child_model_name,
+        parent_foreign_key => :integer,
+      ) do
+        belongs_to association, inverse_of: inverse_association
+      end
+
+      child_model.new
     end
 
     def belonging_to_non_existent_class(model_name, assoc_name, options = {})
@@ -823,6 +902,31 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
 
       it 'matches validate(false) to having no validate option specified' do
         expect(having_one_detail).to have_one(:detail).validate(false)
+      end
+    end
+
+    if active_record_supports_required_for_associations?
+      context 'given an association with a matching :required option' do
+        it 'passes' do
+          expect(having_one_detail(required: true)).
+            to have_one(:detail).required
+        end
+      end
+    end
+
+    context 'given an association with a non-matching :required option' do
+      it 'fails with an appropriate message' do
+        assertion = lambda do
+          expect(having_one_detail(required: false)).
+            to have_one(:detail).required
+        end
+
+        message =
+          'Expected Person to have a has_one association called detail ' +
+          '(the association should have been defined with `required: true`, ' +
+          'but was not)'
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
 

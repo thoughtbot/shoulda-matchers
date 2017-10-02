@@ -32,5 +32,9 @@ module UnitTests
     def active_record_uniqueness_supports_array_columns?
       active_record_version < 5
     end
+
+    def active_record_supports_required_for_associations?
+      active_record_version >= 5
+    end
   end
 end

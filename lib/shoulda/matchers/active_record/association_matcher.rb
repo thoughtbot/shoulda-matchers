@@ -255,6 +255,48 @@ module Shoulda
       #
       # @return [AssociationMatcher]
       #
+      # ##### required
+      #
+      # Use `required` to assert that the association is not allowed to be nil.
+      # (Enabled by default in Rails 5+.)
+      #
+      #     class Person < ActiveRecord::Base
+      #       belongs_to :organization, required: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Person
+      #       it { should belong_to(:organization).required }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should belong_to(:organization).required
+      #     end
+      #
+      # @return [AssociationMatcher]
+      #
+      # ##### optional
+      #
+      # Use `optional` to assert that the association is allowed to be nil.
+      # (Rails 5+ only.)
+      #
+      #     class Person < ActiveRecord::Base
+      #       belongs_to :organization, optional: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Person
+      #       it { should belong_to(:organization).optional }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should belong_to(:organization).optional
+      #     end
+      #
+      # @return [AssociationMatcher]
+      #
       def belong_to(name)
         AssociationMatcher.new(:belongs_to, name)
       end
@@ -714,6 +756,25 @@ module Shoulda
       #       should have_one(:bank).autosave(true)
       #     end
       #
+      # ##### required
+      #
+      # Use `required` to assert that the association is not allowed to be nil.
+      # (Rails 5+ only.)
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_one :brain, required: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Person
+      #       it { should have_one(:brain).required }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_one(:brain).required
+      #     end
+      #
       # @return [AssociationMatcher]
       #
       def have_one(name)
@@ -891,42 +952,67 @@ module Shoulda
           @options = {}
           @submatchers = []
           @missing = ''
+
+          if macro == :belongs_to
+            if RailsShim.active_record_gte_5?
+              required
+            else
+              optional
+            end
+          end
         end
 
         def through(through)
-          through_matcher = AssociationMatchers::ThroughMatcher.new(through, name)
-          add_submatcher(through_matcher)
+          add_submatcher(
+            AssociationMatchers::ThroughMatcher,
+            through,
+            name,
+          )
           self
         end
 
         def dependent(dependent)
-          dependent_matcher = AssociationMatchers::DependentMatcher.new(dependent, name)
-          add_submatcher(dependent_matcher)
+          add_submatcher(
+            AssociationMatchers::DependentMatcher,
+            dependent,
+            name,
+          )
           self
         end
 
         def order(order)
-          order_matcher = AssociationMatchers::OrderMatcher.new(order, name)
-          add_submatcher(order_matcher)
+          add_submatcher(
+            AssociationMatchers::OrderMatcher,
+            order,
+            name,
+          )
           self
         end
 
         def counter_cache(counter_cache = true)
-          counter_cache_matcher = AssociationMatchers::CounterCacheMatcher.new(counter_cache, name)
-          add_submatcher(counter_cache_matcher)
+          add_submatcher(
+            AssociationMatchers::CounterCacheMatcher,
+            counter_cache,
+            name,
+          )
           self
         end
 
         def inverse_of(inverse_of)
-          inverse_of_matcher =
-            AssociationMatchers::InverseOfMatcher.new(inverse_of, name)
-          add_submatcher(inverse_of_matcher)
+          add_submatcher(
+            AssociationMatchers::InverseOfMatcher,
+            inverse_of,
+            name,
+          )
           self
         end
 
         def source(source)
-          source_matcher = AssociationMatchers::SourceMatcher.new(source, name)
-          add_submatcher(source_matcher)
+          add_submatcher(
+            AssociationMatchers::SourceMatcher,
+            source,
+            name,
+          )
           self
         end
 
@@ -952,6 +1038,26 @@ module Shoulda
 
         def with_primary_key(primary_key)
           @options[:primary_key] = primary_key
+          self
+        end
+
+        def required(required = true)
+          remove_submatcher(AssociationMatchers::OptionalMatcher)
+          add_submatcher(
+            AssociationMatchers::RequiredMatcher,
+            name,
+            required,
+          )
+          self
+        end
+
+        def optional(optional = true)
+          remove_submatcher(AssociationMatchers::RequiredMatcher)
+          add_submatcher(
+            AssociationMatchers::OptionalMatcher,
+            name,
+            optional,
+          )
           self
         end
 
@@ -1016,8 +1122,15 @@ module Shoulda
           @reflector ||= AssociationMatchers::ModelReflector.new(subject, name)
         end
 
-        def add_submatcher(matcher)
-          @submatchers << matcher
+        def add_submatcher(matcher_class, *args)
+          remove_submatcher(matcher_class)
+          submatchers << matcher_class.new(*args)
+        end
+
+        def remove_submatcher(matcher_class)
+          submatchers.delete_if do |submatcher|
+            submatcher.is_a?(matcher_class)
+          end
         end
 
         def macro_description
@@ -1039,7 +1152,7 @@ module Shoulda
 
         def missing_options
           missing_options = [missing, missing_options_for_failing_submatchers]
-          missing_options.flatten.compact.join(', ')
+          missing_options.flatten.select(&:present?).join(', ')
         end
 
         def failing_submatchers
