@@ -69,11 +69,14 @@ is now:
 * Replace usage of Fixnum with Integer to prevent Ruby 2.4 from emitting
   deprecation warnings.
 
-  * Commit: [61c3654]
-  * PR: [#1009]
+  * Commits: [61c3654], [03a1d21]
+  * PRs: [#1040], [#1031], [#1009]
   * Original issue: [#1001]
 
 [61c3654]: https://github.com/thoughtbot/shoulda-matchers/commit/61c365416a09c5cffd7fcb774a07de4abf8e9afd
+[03a1d21]: https://github.com/thoughtbot/shoulda-matchers/commit/03a1d213805a44a0aec99857e01cab8524aa0c05
+[#1040]: https://github.com/thoughtbot/shoulda-matchers/pulls/1040
+[#1031]: https://github.com/thoughtbot/shoulda-matchers/pulls/1031
 [#1009]: https://github.com/thoughtbot/shoulda-matchers/pulls/1009
 [#1001]: https://github.com/thoughtbot/shoulda-matchers/issues/1001
 
