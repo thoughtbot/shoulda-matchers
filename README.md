@@ -19,8 +19,6 @@ Use this branch at your discretion!
 
 ### ActiveModel matchers
 
-* **[allow_mass_assignment_of](lib/shoulda/matchers/active_model/allow_mass_assignment_of_matcher.rb)**
-  tests usage of Rails 3's `attr_accessible` and `attr_protected` macros.
 * **[allow_value](lib/shoulda/matchers/active_model/allow_value_matcher.rb)**
   tests that an attribute is valid or invalid if set to one or more values.
   *(Aliased as #allow_values.)*
@@ -91,14 +89,11 @@ Use this branch at your discretion!
 * **[set_flash](lib/shoulda/matchers/action_controller/set_flash_matcher.rb)**
   makes assertions on the `flash` hash.
 * **[use_after_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L79)**
-  tests that an `after_action` callback is defined in your controller. *(Aliased
-  as #use_after_filter.)*
+  tests that an `after_action` callback is defined in your controller.
 * **[use_around_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L129)**
-  tests that an `around_action` callback is defined in your controller. *(Aliased
-  as #use_around_filter.)*
+  tests that an `around_action` callback is defined in your controller.
 * **[use_before_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L54)**
-  tests that a `before_action` callback is defined in your controller. *(Aliased
-  as #use_before_filter.)*
+  tests that a `before_action` callback is defined in your controller.
 
 ### Independent matchers
 
@@ -155,7 +150,7 @@ Shoulda::Matchers.configure do |config|
 end
 ```
 
-Now you can use matchers in your tests. For instance a model test might look
+Now you can use matchers in your tests. For instance, a model test might look
 like this:
 
 ``` ruby
@@ -272,7 +267,7 @@ rspec spec/acceptance/active_model_integration_spec.rb
 Instead, you need to say
 
 ```
-bundle exec appraisal 4.2 rspec spec/acceptance/active_model_integration_spec.rb
+bundle exec appraisal 5.1 rspec spec/acceptance/active_model_integration_spec.rb
 ```
 
 ### All tests
@@ -309,8 +304,8 @@ pull request.
 
 ## Compatibility
 
-Shoulda Matchers is tested and supported against Rails 4.x, RSpec 3.x, Minitest
-5, Minitest 4, and Ruby 2.x.
+Shoulda Matchers is tested and supported against Rails 5.x, Rails 4.2+, RSpec
+3.x, Minitest 5, Minitest 4, and Ruby 2.2+.
 
 ## Versioning
 
@@ -328,12 +323,11 @@ and may be redistributed under the terms specified in the
 
 ![thoughtbot](http://presskit.thoughtbot.com/images/thoughtbot-logo-for-readmes.svg)
 
-Shoulda Matchers is maintained and funded by thoughtbot, inc.
-The names and logos for thoughtbot are trademarks of thoughtbot, inc.
+Shoulda Matchers is maintained and funded by thoughtbot, inc. The names and
+logos for thoughtbot are trademarks of thoughtbot, inc.
 
-We are passionate about open source software.
-See [our other projects][community].
-We are [available for hire][hire].
+We are passionate about open source software. See [our other
+projects][community]. We are [available for hire][hire].
 
 [community]: https://thoughtbot.com/community?utm_source=github
 [hire]: https://thoughtbot.com?utm_source=github
