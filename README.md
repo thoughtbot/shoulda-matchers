@@ -110,11 +110,21 @@ Use this branch at your discretion!
 
 ### RSpec
 
-Include `shoulda-matchers` in your Gemfile:
+Start by including `shoulda-matchers` in your Gemfile:
 
 ``` ruby
 group :test do
   gem 'shoulda-matchers', '~> 3.1'
+end
+```
+
+We typically use `rspec-rails` alongside `shoulda-matchers`, but if for some
+reason you do not want to do this, and your app is on Rails 5+, you'll want to
+add the `rails-controller-testing` gem as well:
+
+``` ruby
+group :test do
+  gem 'rails-controller-testing'
 end
 ```
 
