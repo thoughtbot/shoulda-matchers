@@ -134,7 +134,7 @@ GEM
       activesupport (= 4.2.10)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
-    rake (10.5.0)
+    rake (12.1.0)
     rb-fsevent (0.10.2)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
@@ -228,7 +228,7 @@ DEPENDENCIES
   pry-byebug
   pygments.rb
   rails (~> 4.2.9)
-  rake (>= 10.5.0, < 11)
+  rake (= 12.1.0)
   redcarpet
   rspec (~> 3.6)
   rspec-rails (~> 3.6)
