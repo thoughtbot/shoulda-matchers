@@ -17,6 +17,10 @@ module UnitTests
       active_record_version >= 3.1
     end
 
+    def active_record_supports_has_secure_token?
+      active_record_version >= 5.0
+    end
+
     def active_record_supports_array_columns?
       active_record_version > 4.2
     end
