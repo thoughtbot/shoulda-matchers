@@ -53,6 +53,44 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       expect(Child.new).to belong_to(:parent)
     end
 
+    # TODO: Removed when Rails 4.2 support finished.
+    it 'accepts an association with a valid :required option' do
+      begin
+        expect(belonging_to_parent(required: true)).
+          to belong_to(:parent).required
+      rescue
+        skip 'This version does not support required qualifier'
+      end
+    end
+
+    # TODO: Removed when Rails 4.2 support finished.
+    it 'accepts an association with a valid :required option' do
+      begin
+        expect(belonging_to_parent(required: false)).
+          not_to belong_to(:parent).required
+      rescue
+        skip 'This version does not support required qualifier'
+      end
+    end
+
+    it 'accepts an association with a valid :optional option' do
+      begin
+        expect(belonging_to_parent(optional: true)).
+          to belong_to(:parent).optional
+      rescue
+        skip 'This version does not support optional qualifier'
+      end
+    end
+
+    it 'accepts an association with a valid :optional option' do
+      begin
+        expect(belonging_to_parent(optional: false)).
+          not_to belong_to(:parent).optional
+      rescue
+        skip 'This version does not support optional qualifier'
+      end
+    end
+
     it 'accepts an association with a valid :dependent option' do
       expect(belonging_to_parent(dependent: :destroy)).
         to belong_to(:parent).dependent(:destroy)
