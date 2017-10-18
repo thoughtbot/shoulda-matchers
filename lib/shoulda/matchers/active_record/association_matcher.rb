@@ -217,7 +217,7 @@ module Shoulda
       #       should belong_to(:organization).touch(true)
       #     end
       #
-      # #### autosave
+      # ##### autosave
       #
       # Use `autosave` to assert that the `:autosave` option was specified.
       #
@@ -510,7 +510,7 @@ module Shoulda
       #       should have_many(:ideas).validate(false)
       #     end
       #
-      # #### autosave
+      # ##### autosave
       #
       # Use `autosave` to assert that the `:autosave` option was specified.
       #
@@ -738,7 +738,7 @@ module Shoulda
       #       should have_one(:parking_card).validate(false)
       #     end
       #
-      # #### autosave
+      # ##### autosave
       #
       # Use `autosave` to assert that the `:autosave` option was specified.
       #
@@ -915,7 +915,7 @@ module Shoulda
       #         validate(false)
       #     end
       #
-      # #### autosave
+      # ##### autosave
       #
       # Use `autosave` to assert that the `:autosave` option was specified.
       #
