@@ -24,13 +24,15 @@ module UnitTests
         lines << Shoulda::Matchers::Util.indent(expected, 2)
 
         if @actual
+          diff = differ.diff(@actual, expected)[1..-1]
+
           lines << 'Actually failed with:'
           lines << Shoulda::Matchers::Util.indent(@actual, 2)
-          lines << "Diff:"
-          lines << Shoulda::Matchers::Util.indent(
-            differ.diff(@actual, expected)[1..-1],
-            2
-          )
+
+          if diff
+            lines << 'Diff:'
+            lines << Shoulda::Matchers::Util.indent(diff, 2)
+          end
         else
           lines << 'However, the expectation did not fail at all.'
         end

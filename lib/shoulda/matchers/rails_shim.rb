@@ -21,8 +21,12 @@ module Shoulda
           Gem::Version.new('0')
         end
 
-        def active_record_major_version
-          ::ActiveRecord::VERSION::MAJOR
+        def active_record_gte_5?
+          Gem::Requirement.new('>= 5').satisfied_by?(active_record_version)
+        end
+
+        def active_record_version
+          Gem::Version.new(::ActiveRecord::VERSION::STRING)
         rescue NameError
           Gem::Version.new('0')
         end
@@ -92,7 +96,7 @@ module Shoulda
         end
 
         def tables_and_views(connection)
-          if active_record_major_version >= 5
+          if active_record_gte_5?
             connection.data_sources
           else
             connection.tables
@@ -104,6 +108,14 @@ module Shoulda
             :patch
           else
             :put
+          end
+        end
+
+        def validation_message_key_for_association_required_option
+          if active_record_gte_5?
+            :required
+          else
+            :blank
           end
         end
 

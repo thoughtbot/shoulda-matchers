@@ -48,6 +48,15 @@ is now:
   * *PRs: [#989], [#964], [#917]*
   * *Original issue: [#867]*
 
+### Features
+
+* Add `required` and `optional` qualifiers to `belong_to` and `have_one`
+  matchers. (When using the `belong_to` matcher under Rails 5+, `required` is
+  assumed unless overridden.)
+
+  * *Original PR: [#956]*
+  * *Original issues: [#870], [#861]*
+
 [a6d09aa]: https://github.com/thoughtbot/shoulda-matchers/commit/a6d09aa5de0d546367e7b3d7177dfde6c66f7f05
 [#943]: https://github.com/thoughtbot/shoulda-matchers/pulls/943
 [#933]: https://github.com/thoughtbot/shoulda-matchers/issues/933
