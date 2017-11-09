@@ -82,7 +82,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       it_behaves_like 'it supports in_array',
         possible_values: [1.0, 2.0, 3.0, 4.0, 5.0],
         zero: 0.0,
-        reserved_outside_value: described_class::ARBITRARY_OUTSIDE_INTEGER
+        reserved_outside_value: described_class::ARBITRARY_OUTSIDE_DECIMAL
 
       it_behaves_like 'it supports in_range',
         possible_values: 1.0..5.0,
@@ -264,28 +264,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       end
     end
 
-=begin
-    it_supports(
-      'ignoring_interference_by_writer',
-      tests: {
-        accept_if_qualified_but_changing_value_does_not_interfere: {
-          changing_values_with: -> (value) { value || valid_values.first }
-        },
-        reject_if_qualified_but_changing_value_interferes: {
-          attribute_name: :attr,
-          changing_values_with: :never_falsy,
-          expected_message_includes: <<-MESSAGE.strip
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
-          MESSAGE
-        }
-      }
-    )
-=end
-
     def validation_matcher_scenario_args
       super.deep_merge(validation_options: { allow_nil: true })
     end
@@ -319,29 +297,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       end
     end
 
-=begin
-    it_supports(
-      'ignoring_interference_by_writer',
-      tests: {
-        accept_if_qualified_but_changing_value_does_not_interfere: {
-          changing_values_with: -> (value) {
-            value.presence || valid_values.first
-          }
-        },
-        reject_if_qualified_but_changing_value_interferes: {
-          attribute_name: :attr,
-          changing_values_with: :never_blank,
-          expected_message_includes: <<-MESSAGE.strip
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
-          MESSAGE
-        }
-      }
-    )
-=end
 
     def validation_matcher_scenario_args
       super.deep_merge(validation_options: { allow_blank: true })
@@ -535,13 +490,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         reject_if_qualified_but_changing_value_interferes: {
           attribute_name: :attr,
           changing_values_with: :next_value,
-          expected_message_includes: <<-MESSAGE.strip
+          expected_message_includes: "
   As indicated in the message above, :attr seems to be changing certain
   values as they are set, and this could have something to do with why
   this test is failing. If you've overridden the writer method for this
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
-          MESSAGE
+          ".strip
         }
       }
     )
@@ -655,13 +610,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         reject_if_qualified_but_changing_value_interferes: {
           attribute_name: :attr,
           changing_values_with: :next_value,
-          expected_message_includes: <<-MESSAGE.strip
+          expected_message_includes: "
   As indicated in the message above, :attr seems to be changing certain
   values as they are set, and this could have something to do with why
   this test is failing. If you've overridden the writer method for this
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
-          MESSAGE
+          ".strip
         }
       }
     )
@@ -969,6 +924,9 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     matcher = validate_inclusion_of(builder.attribute)
     yield matcher if block_given?
     expect(builder.object).not_to(matcher)
+  rescue => error
+    Pry::ColorPrinter.pp(matcher)
+    raise error
   end
 
   def expect_to_match_in_array(builder, array)

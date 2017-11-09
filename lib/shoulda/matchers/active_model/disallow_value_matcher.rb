@@ -12,7 +12,7 @@ module Shoulda
           :_after_setting_value,
           :attribute_changed_value_message=,
           :attribute_to_set,
-          :description,
+          # :description,
           :expects_strict?,
           :failure_message_preface,
           :failure_message_preface=,
@@ -20,20 +20,30 @@ module Shoulda
           :last_attribute_setter_used,
           :last_value_set,
           :model,
-          :simple_description,
+          # :simple_description,
           :values_to_preset=,
         )
 
         def initialize(value)
-          @allow_matcher = AllowValueMatcher.new(value)
+          @allow_matcher = AllowValueMatcher.new(value, will_be_negated: true)
+        end
+
+        def description
+          ValidationMatcher::BuildDescription.call(self, simple_description)
+        end
+
+        def simple_description
+          "not #{allow_matcher.simple_description}"
         end
 
         def matches?(subject)
           allow_matcher.does_not_match?(subject)
+          # !allow_matcher.matches?(subject)
         end
 
         def does_not_match?(subject)
           allow_matcher.matches?(subject)
+          # !allow_matcher.does_not_match?(subject)
         end
 
         def for(attribute)

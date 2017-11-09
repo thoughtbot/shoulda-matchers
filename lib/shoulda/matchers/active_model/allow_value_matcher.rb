@@ -322,7 +322,7 @@ module Shoulda
           :values_to_preset,
         )
 
-        def initialize(*values)
+        def initialize(*values, will_be_negated: nil)
           super
           @values_to_set = values
           @options = {}
@@ -333,6 +333,8 @@ module Shoulda
           @values_to_preset = {}
           @failure_message_preface = nil
           @attribute_changed_value_message = nil
+          @will_be_negated = will_be_negated
+          @was_negated = nil
         end
 
         def for(attribute_name)
@@ -392,22 +394,22 @@ module Shoulda
 
         def matches?(instance)
           @instance = instance
-          @result = run(:first_failing)
+          @was_negated = false
+          @result = run(:first_to_unexpectedly_not_pass)
           @result.nil?
         end
 
         def does_not_match?(instance)
           @instance = instance
-          @result = run(:first_passing)
+          @was_negated = true
+          @result = run(:first_to_unexpectedly_not_fail)
           @result.nil?
         end
 
         def failure_message
           attribute_setter = result.attribute_setter
 
-          if result.attribute_setter.unsuccessfully_checked?
-            message = attribute_setter.failure_message
-          else
+          if result.attribute_setter.successfully_checked?
             validator = result.validator
             message = failure_message_preface.call
             message << ' valid, but it was invalid instead,'
@@ -420,6 +422,8 @@ module Shoulda
               message << " producing these validation errors:\n\n"
               message << validator.all_formatted_validation_error_messages
             end
+          else
+            message = attribute_setter.failure_message
           end
 
           if include_attribute_changed_value_message?
@@ -432,9 +436,7 @@ module Shoulda
         def failure_message_when_negated
           attribute_setter = result.attribute_setter
 
-          if attribute_setter.unsuccessfully_checked?
-            message = attribute_setter.failure_message
-          else
+          if attribute_setter.successfully_checked?
             validator = result.validator
             message = failure_message_preface.call + ' invalid'
 
@@ -489,6 +491,8 @@ module Shoulda
               message << ' and to raise a validation exception, but the record'
               message << ' produced validation errors instead.'
             end
+          else
+            message = attribute_setter.failure_message
           end
 
           if include_attribute_changed_value_message?
@@ -496,6 +500,14 @@ module Shoulda
           end
 
           Shoulda::Matchers.word_wrap(message)
+        end
+
+        def will_be_negated?
+          @will_be_negated
+        end
+
+        def was_negated?
+          @was_negated
         end
 
         def description
@@ -518,6 +530,20 @@ module Shoulda
           last_attribute_setter_used.value_written
         end
 
+        def pretty_print(pp)
+          Shoulda::Matchers::Util.pretty_print(self, pp, {
+            will_be_negated: will_be_negated?,
+            was_negated: was_negated?,
+            attribute_to_set: attribute_to_set,
+            attribute_to_check_message_against: attribute_to_check_message_against,
+            values_to_set: values_to_set,
+            expected_message: expected_message,
+            expects_strict: expects_strict?,
+            instance: instance,
+            attribute_setters_and_validators_for_values_to_set: attribute_setters_and_validators_for_values_to_set,
+          })
+        end
+
         protected
 
         attr_reader(
@@ -530,7 +556,7 @@ module Shoulda
         private
 
         def run(strategy)
-          attribute_setters_for_values_to_preset.first_failing ||
+          attribute_setters_for_values_to_preset.first_to_unexpectedly_not_pass ||
             attribute_setters_and_validators_for_values_to_set.public_send(strategy)
         end
 

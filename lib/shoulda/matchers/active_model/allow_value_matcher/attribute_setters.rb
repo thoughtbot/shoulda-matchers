@@ -20,8 +20,8 @@ module Shoulda
             tuples.each(&block)
           end
 
-          def first_failing
-            tuples.detect(&method(:does_not_match?))
+          def first_to_unexpectedly_not_pass
+            tuples.detect(&method(:fails_to_pass?))
           end
 
           protected
@@ -30,7 +30,7 @@ module Shoulda
 
           private
 
-          def does_not_match?(tuple)
+          def fails_to_pass?(tuple)
             !tuple.attribute_setter.set!
           end
         end

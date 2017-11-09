@@ -27,6 +27,7 @@ module Shoulda
             )
             @after_set_callback = args.fetch(:after_set_callback, -> { })
 
+            @value_read = nil
             @result_of_checking = nil
             @result_of_setting = nil
           end
@@ -81,6 +82,7 @@ module Shoulda
 
           def set
             object.public_send("#{attribute_name}=", value_written)
+            read_value
             after_set_callback.call
 
             @result_of_checking = successful_check
@@ -117,11 +119,11 @@ module Shoulda
           end
 
           def successfully_checked?
-            checked? && result_of_checking.successful?
-          end
-
-          def unsuccessfully_checked?
-            !successfully_checked?
+            if checked?
+              result_of_checking.successful?
+            else
+              nil
+            end
           end
 
           def set?
@@ -129,20 +131,40 @@ module Shoulda
           end
 
           def successfully_set?
-            set? && result_of_setting.successful?
+            if set?
+              result_of_setting.successful?
+            else
+              nil
+            end
           end
 
-          def value_read
-            @_value_read ||= object.public_send(attribute_name)
+          def read_value
+            @value_read = object.public_send(attribute_name)
           end
 
           def attribute_changed_value?
             value_written != value_read
           end
 
+          def pretty_print(pp)
+            Shoulda::Matchers::Util.pretty_print(self, pp, {
+              object: object,
+              attribute_name: attribute_name,
+              value_written: value_written,
+              value_read: value_read,
+              successfully_set: successfully_set?,
+            })
+          end
+
           protected
 
-          attr_reader :args, :matcher_name, :object, :after_set_callback
+          attr_reader(
+            :args,
+            :matcher_name,
+            :object,
+            :after_set_callback,
+            :value_read,
+          )
 
           private
 

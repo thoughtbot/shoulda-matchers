@@ -52,6 +52,15 @@ module Shoulda
             )
           end
 
+          def pretty_print(pp)
+            Shoulda::Matchers::Util.pretty_print(self, pp, {
+              attribute_name: attribute_name,
+              value: value,
+              attribute_setter: attribute_setter,
+              validator: validator,
+            })
+          end
+
           protected
 
           attr_reader :allow_value_matcher, :attribute_name, :value

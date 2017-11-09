@@ -305,6 +305,8 @@ EOT
 
         def in_range(range)
           @range = range
+          @low_message  ||= :inclusion
+          @high_message ||= :inclusion
           @minimum = range.first
           @maximum = range.max
           self
@@ -357,15 +359,15 @@ EOT
 
         def simple_description
           if @range
-            "validate that :#{@attribute} lies inside the range " +
+            "allow :#{@attribute} to lie inside the range " +
               Shoulda::Matchers::Util.inspect_range(@range)
           else
-            description = "validate that :#{@attribute}"
+            description = "allow :#{@attribute} to be "
 
             if @array.many?
-              description << " is either #{inspected_array}"
+              description << "either #{inspected_array}"
             else
-              description << " is #{inspected_array}"
+              description << inspected_array
             end
 
             description
@@ -375,82 +377,93 @@ EOT
         def matches?(subject)
           super(subject)
 
-          if @range
-            @low_message  ||= :inclusion
-            @high_message ||= :inclusion
-            matches_for_range?
-          elsif @array
-            if matches_for_array?
-              true
-            else
-              @failure_message = "#{@array} doesn't match array in validation"
-              false
-            end
+          if @array
+            add_submatchers_to_test_array
+          elsif @range
+            add_submatchers_to_test_range
           end
+
+          all_submatchers_match?
+        end
+
+        def pretty_print(pp)
+          Shoulda::Matchers::Util.pretty_print(self, pp, {
+            was_negated: was_negated?,
+            range: @range,
+            array: @array,
+            attribute: @attribute,
+            subject: subject,
+            last_submatcher_run: last_submatcher_run,
+          })
         end
 
         private
 
-        def matches_for_range?
-          disallows_lower_value &&
-            allows_minimum_value &&
-            disallows_higher_value &&
-            allows_maximum_value
+        def add_submatchers_to_test_range
+          add_matcher_disallowing_lower_value
+          add_matcher_allowing_minimum_value
+          add_matcher_disallowing_higher_value
+          add_matcher_allowing_maximum_value
         end
 
-        def matches_for_array?
-          allows_all_values_in_array? &&
-            allows_blank_value? &&
-            allows_nil_value? &&
-            disallows_value_outside_of_array?
+        def add_submatchers_to_test_array
+          add_matcher_allowing_all_values_in_array
+          add_matcher_allowing_blank
+          add_matcher_allowing_nil
+          add_matcher_disallowing_values_outside_of_array
         end
 
-        def allows_blank_value?
+        def add_matcher_allowing_blank
           if @options.key?(:allow_blank)
             blank_values = ['', ' ', "\n", "\r", "\t", "\f"]
-            @options[:allow_blank] == blank_values.all? { |value| allows_value_of(value) }
-          else
-            true
+
+            if @options[:allow_blank]
+              blank_values.each do |value|
+                add_matcher_allowing(value)
+              end
+            else
+              blank_values.each do |value|
+                add_matcher_disallowing(value)
+              end
+            end
           end
         end
 
-        def allows_nil_value?
+        def add_matcher_allowing_nil
           if @options.key?(:allow_nil)
-            @options[:allow_nil] == allows_value_of(nil)
-          else
-            true
+            if @options[:allow_nil]
+              add_matcher_allowing(nil)
+            else
+              add_matcher_disallowing(nil)
+            end
           end
         end
 
-        def inspect_message
-          @range.nil? ? @array.inspect : @range.inspect
-        end
-
-        def allows_all_values_in_array?
-          @array.all? do |value|
-            allows_value_of(value, @low_message)
+        def add_matcher_allowing_all_values_in_array
+          @array.each do |value|
+            add_matcher_allowing(value).with_message(@low_message)
           end
         end
 
-        def disallows_lower_value
-          @minimum.nil? ||
-            @minimum == 0 ||
-            disallows_value_of(@minimum - 1, @low_message)
+        def add_matcher_disallowing_lower_value
+          if !@minimum.nil? && @minimum > 0
+            add_matcher_disallowing(@minimum - 1).with_message(@low_message)
+          end
         end
 
-        def disallows_higher_value
-          disallows_value_of(@maximum + 1, @high_message)
+        def add_matcher_disallowing_higher_value
+          add_matcher_disallowing(@maximum + 1).with_message(@high_message)
         end
 
-        def allows_minimum_value
-          allows_value_of(@minimum, @low_message)
+        def add_matcher_allowing_minimum_value
+          add_matcher_allowing(@minimum).with_message(@low_message)
         end
 
-        def allows_maximum_value
-          allows_value_of(@maximum, @high_message)
+        def add_matcher_allowing_maximum_value
+          add_matcher_allowing(@maximum).with_message(@high_message)
         end
 
-        def disallows_value_outside_of_array?
+        def add_matcher_disallowing_values_outside_of_array
           if attribute_type == :boolean
             case @array
             when [false, true], [true, false]
@@ -466,13 +479,13 @@ EOT
             end
           end
 
-          !values_outside_of_array.any? do |value|
-            allows_value_of(value, @low_message)
+          values_outside_of_array.each do |value|
+            add_matcher_disallowing(value).with_message(@low_message)
           end
         end
 
         def values_outside_of_array
-          if !(@array & outside_values).empty?
+          if @array.any? { |value| outside_values.include?(value) }
             raise CouldNotDetermineValueOutsideOfArray
           else
             outside_values
@@ -518,7 +531,7 @@ EOT
           if attribute_column
             column_type_to_attribute_type(attribute_column.type)
           else
-            value_to_attribute_type(@subject.__send__(@attribute))
+            value_to_attribute_type(subject.__send__(@attribute))
           end
         end
 
@@ -531,14 +544,14 @@ EOT
         end
 
         def attribute_column
-          if @subject.class.respond_to?(:columns_hash)
-            @subject.class.columns_hash[@attribute.to_s]
+          if subject.class.respond_to?(:columns_hash)
+            subject.class.columns_hash[@attribute.to_s]
           end
         end
 
         def column_type_to_attribute_type(type)
           case type
-            when :float then :integer
+            when :float then :decimal
             when :timestamp then :datetime
             else type
           end
@@ -547,8 +560,8 @@ EOT
         def value_to_attribute_type(value)
           case value
             when true, false then :boolean
-            when BigDecimal then :decimal
             when Integer then :integer
+            when BigDecimal, Float then :decimal
             when Date then :date
             when DateTime then :datetime
             when Time then :time

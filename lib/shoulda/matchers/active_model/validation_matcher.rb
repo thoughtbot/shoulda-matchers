@@ -10,9 +10,10 @@ module Shoulda
           @attribute = attribute
           @expects_strict = false
           @subject = nil
-          @last_submatcher_run = nil
+          @submatchers = []
           @expected_message = nil
           @expects_custom_validation_message = false
+          @was_negated = nil
         end
 
         def description
@@ -48,64 +49,114 @@ module Shoulda
 
         def matches?(subject)
           @subject = subject
+          @was_negated = false
           false
         end
 
+        def does_not_match?(subject)
+          @subject = subject
+          !matches?(subject)
+          @was_negated = true
+        end
+
         def failure_message
-          overall_failure_message.dup.tap do |message|
-            if failure_reason.present?
-              message << "\n"
-              message << Shoulda::Matchers.word_wrap(
-                failure_reason,
-                indent: 2
-              )
-            end
-          end
+          overall_failure_message + submatchers_report
         end
 
         def failure_message_when_negated
-          overall_failure_message_when_negated.dup.tap do |message|
-            if failure_reason_when_negated.present?
-              message << "\n"
-              message << Shoulda::Matchers.word_wrap(
-                failure_reason_when_negated,
-                indent: 2
+          overall_failure_message_when_negated + submatchers_report
+        end
+
+        def submatchers_report
+          message = "\n\n"
+
+          if was_negated?
+            message << 'At least one of these submatchers should have failed:'
+          else
+            message << 'All of these submatchers should have passed:'
+          end
+
+          message << "\n\n"
+
+          list = submatcher_results.map do |submatcher, matched|
+            icon = if matched then '✔︎' else '✘' end
+            submessage = "#{icon} should #{submatcher.description}"
+
+            if !matched
+              sub_failure_message =
+                if submatcher.was_negated?
+                  submatcher.failure_message_when_negated
+                else
+                  submatcher.failure_message
+                end
+
+              submessage << "\n\n"
+              submessage << Shoulda::Matchers.word_wrap(
+                "#{sub_failure_message}\n",
+                indent: 2,
               )
             end
+
+            submessage
           end
+
+          message << Shoulda::Matchers.word_wrap(list.join("\n"))
+        end
+
+        def was_negated?
+          @was_negated
         end
 
         protected
 
-        attr_reader :attribute, :context, :subject, :last_submatcher_run
+        attr_reader :attribute, :context, :subject, :submatchers,
+          :first_failing_submatcher
 
         def model
           subject.class
         end
 
-        def allows_value_of(value, message = nil, &block)
-          matcher = allow_value_matcher(value, message, &block)
-          run_allow_or_disallow_matcher(matcher)
+        def add_submatcher(submatcher)
+          submatchers << submatcher
         end
 
-        def disallows_value_of(value, message = nil, &block)
-          matcher = disallow_value_matcher(value, message, &block)
-          run_allow_or_disallow_matcher(matcher)
+        def allows_value_of(value_or_values, message = nil, &block)
+          matcher =
+            if value_or_values.is_a?(Array)
+              allow_value_matcher(*value_or_values, message: message, &block)
+            else
+              allow_value_matcher(value_or_values, message: message, &block)
+            end
+          add_submatcher(matcher)
+          matcher
         end
+        alias_method :add_matcher_allowing, :allows_value_of
 
-        def allow_value_matcher(value, message = nil, &block)
+        def disallows_value_of(value_or_values, message: nil, &block)
+          matcher =
+            if value_or_values.is_a?(Array)
+              disallow_value_matcher(*value_or_values, message: message, &block)
+            else
+              disallow_value_matcher(value_or_values, message: message, &block)
+            end
+          add_submatcher(matcher)
+          matcher
+        end
+        alias_method :add_matcher_disallowing, :disallows_value_of
+
+        def allow_value_matcher(*values, message: nil, &block)
           build_allow_or_disallow_value_matcher(
             matcher_class: AllowValueMatcher,
-            value: value,
+            values: values,
             message: message,
             &block
           )
         end
 
-        def disallow_value_matcher(value, message = nil, &block)
+        def disallow_value_matcher(*values, message: nil, &block)
           build_allow_or_disallow_value_matcher(
             matcher_class: DisallowValueMatcher,
-            value: value,
+            values: values,
             message: message,
             &block
           )
@@ -114,9 +165,11 @@ module Shoulda
         private
 
         def overall_failure_message
-          Shoulda::Matchers.word_wrap(
-            "#{model.name} did not properly #{description}."
-          )
+          message =
+            "Expected #{model.name} to #{description}, " +
+            "but there were some issues."
+
+          Shoulda::Matchers.word_wrap(message)
         end
 
         def overall_failure_message_when_negated
@@ -125,20 +178,39 @@ module Shoulda
           )
         end
 
-        def failure_reason
-          last_submatcher_run.try(:failure_message)
+        def indented_failure_message_for_first_failing_submatcher
+          if failure_message_for_first_failing_submatcher.present?
+            "\n" + Shoulda::Matchers.word_wrap(
+              failure_message_for_first_failing_submatcher,
+              indent: 2
+            )
+          end
         end
 
-        def failure_reason_when_negated
-          last_submatcher_run.try(:failure_message_when_negated)
+        def failure_message_for_first_failing_submatcher
+          first_failing_submatcher.try(:failure_message)
         end
 
-        def build_allow_or_disallow_value_matcher(args)
-          matcher_class = args.fetch(:matcher_class)
-          value = args.fetch(:value)
-          message = args[:message]
+        def all_submatchers_match?
+          submatcher_results.all? { |submatcher, matched| matched }
+        end
 
-          matcher = matcher_class.new(value).
+        def first_failing_submatcher
+          tuple = submatcher_results.detect { |submatcher, matched | !matched }
+
+          if tuple
+            tuple.first
+          end
+        end
+
+        def submatcher_results
+          @_submatcher_results ||= submatchers.map do |submatcher|
+            [submatcher, submatcher.matches?(subject)]
+          end
+        end
+
+        def build_allow_or_disallow_value_matcher(matcher_class:, values:, message:)
+          matcher = matcher_class.new(*values).
             for(attribute).
             with_message(message).
             on(context).
@@ -148,11 +220,6 @@ module Shoulda
           yield matcher if block_given?
 
           matcher
-        end
-
-        def run_allow_or_disallow_matcher(matcher)
-          @last_submatcher_run = matcher
-          matcher.matches?(subject)
         end
       end
     end
