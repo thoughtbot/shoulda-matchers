@@ -2,9 +2,9 @@ require 'fileutils'
 
 module Tests
   class Filesystem
-    PROJECT_NAME = 'test-project'
+    PROJECT_NAME = 'test-project'.freeze
     ROOT_DIRECTORY = Pathname.new('../../../..').expand_path(__FILE__)
-    TEMP_DIRECTORY = ROOT_DIRECTORY.join('tmp/acceptance')
+    TEMP_DIRECTORY = Pathname.new('/tmp/shoulda-matchers-acceptance')
     PROJECT_DIRECTORY = TEMP_DIRECTORY.join(PROJECT_NAME)
 
     def root_directory

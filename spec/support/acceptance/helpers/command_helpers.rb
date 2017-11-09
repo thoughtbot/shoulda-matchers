@@ -20,14 +20,27 @@ module AcceptanceTests
       end
     end
 
-    def run_command_within_bundle(*args)
+    def run_command_isolated_from_bundle(*args)
       run_command(*args) do |runner|
-        runner.command_prefix = 'bundle exec'
-        runner.env['BUNDLE_GEMFILE'] = fs.find_in_project('Gemfile').to_s
-
         runner.around_command do |run_command|
           Bundler.with_clean_env(&run_command)
         end
+
+        yield runner if block_given?
+      end
+    end
+
+    def run_command_isolated_from_bundle!(*args)
+      run_command_isolated_from_bundle(*args) do |runner|
+        runner.run_successfully = true
+        yield runner if block_given?
+      end
+    end
+
+    def run_command_within_bundle(*args)
+      run_command_isolated_from_bundle(*args) do |runner|
+        runner.command_prefix = 'bundle exec'
+        runner.env['BUNDLE_GEMFILE'] = fs.find_in_project('Gemfile').to_s
 
         yield runner if block_given?
       end
