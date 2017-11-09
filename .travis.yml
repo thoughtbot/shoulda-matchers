@@ -2,6 +2,7 @@ language: ruby
 sudo: false
 cache: bundler
 script: "bundle exec rake"
+install: "bundle install --jobs=3 --retry=3"
 
 env:
   - DATABASE_ADAPTER=sqlite3
