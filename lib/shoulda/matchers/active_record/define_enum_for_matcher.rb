@@ -88,7 +88,7 @@ module Shoulda
             desc << " with #{options[:expected_enum_values]}"
           end
 
-          desc << " and store the value in a column with an #{expected_column_type} type"
+          desc << " and store the value in a column of type #{expected_column_type}"
 
           desc
         end
