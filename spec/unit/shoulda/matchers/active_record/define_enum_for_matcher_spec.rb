@@ -139,6 +139,29 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
       end
     end
 
+    describe 'with the backing column specified to be a string type' do
+      context 'if the column storing the attribute is a string type' do
+        it 'accepts' do
+          record = record_with_array_values(column_type: :string)
+
+          expect(record).to define_enum_for(enum_attribute).backed_by_column_of_type(:string)
+        end
+      end
+
+      context 'if the column storing the attribute is an integer type' do
+        it 'rejects' do
+          record = record_with_array_values(column_type: :integer)
+          message = "Expected #{record.class} to define :#{enum_attribute} as an enum and store the value in a column with an string type"
+
+          assertion = lambda do
+            expect(record).to define_enum_for(enum_attribute).backed_by_column_of_type(:string)
+          end
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+    end
+
     def enum_attribute
       :status
     end

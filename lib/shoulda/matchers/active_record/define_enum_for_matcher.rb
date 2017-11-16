@@ -61,9 +61,14 @@ module Shoulda
           self
         end
 
+        def backed_by_column_of_type(expected_column_type)
+          options[:expected_column_type] = expected_column_type
+          self
+        end
+
         def matches?(subject)
           @record = subject
-          enum_defined? && enum_values_match? && column_type_is_integer?
+          enum_defined? && enum_values_match? && column_type_matches?
         end
 
         def failure_message
@@ -83,7 +88,7 @@ module Shoulda
             desc << " with #{options[:expected_enum_values]}"
           end
 
-          desc << " and store the value in a column with an integer type"
+          desc << " and store the value in a column with an #{expected_column_type} type"
 
           desc
         end
@@ -112,8 +117,12 @@ module Shoulda
           expected_enum_values.empty? || actual_enum_values == expected_enum_values
         end
 
-        def column_type_is_integer?
-          column.type == :integer
+        def expected_column_type
+          options[:expected_column_type] || :integer
+        end
+
+        def column_type_matches?
+          column.type == expected_column_type.to_sym
         end
 
         def column
