@@ -21,15 +21,19 @@ describe Shoulda::Matchers::ActiveModel::ValidateAcceptanceOfMatcher, type: :mod
           attribute_name: :attr,
           changing_values_with: :always_nil,
           expected_message: <<-MESSAGE.strip
-Example did not properly validate that :attr has been set to "1".
-  After setting :attr to ‹false› -- which was read back as ‹nil› -- the
-  matcher expected the Example to be invalid, but it was valid instead.
+Your test expecting Example to validate acceptance of :attr didn't pass.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+All of these subtests should have passed:
+
+* After setting :attr to ‹false› -- which was read back as ‹nil› -- the
+  matcher expected the Example to be invalid, but it was valid instead.
+  (✘)
+
+As indicated above, :attr seems to be changing certain values as they
+are set, and this could have something to do with why this test is
+failing. If you've overridden the writer method for this attribute, then
+you may need to change it to make this test pass. Otherwise, you may
+need to do something else entirely.
           MESSAGE
         },
       },

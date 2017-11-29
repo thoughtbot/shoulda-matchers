@@ -8,6 +8,7 @@ AllCops:
   - "db/**/*"
   DisplayCopNames: false
   StyleGuideCopsOnly: false
+  TargetRubyVersion: 2.4
 Naming/AccessorMethodName:
   Description: Check the naming of accessor methods for get_/set_.
   Enabled: false
@@ -22,7 +23,6 @@ Naming/BinaryOperatorParameterName:
 Naming/ClassAndModuleCamelCase:
   Description: Use CamelCase for classes and modules.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#camelcase-classes
-  Enabled: true
 Naming/ConstantName:
   Description: Constants should use SCREAMING_SNAKE_CASE.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#screaming-snake-case

@@ -20,7 +20,7 @@ module Shoulda
           :values_to_preset,
         )
 
-        def initialize(*values)
+        def initialize(*values, part_of_larger_matcher: false)
           super
           @values_to_set = values
           @options = {}
@@ -32,6 +32,7 @@ module Shoulda
           @failure_message_preface = nil
           @attribute_changed_value_message = nil
           @was_negated = nil
+          @part_of_larger_matcher = part_of_larger_matcher
         end
 
         def for(attribute_name)
@@ -91,6 +92,19 @@ module Shoulda
 
         def was_negated?
           @was_negated
+        end
+
+        def part_of_larger_matcher?
+          @part_of_larger_matcher
+        end
+
+        def include_attribute_changed_value_message?
+          !ignore_interference_by_writer.never? &&
+            result.attribute_setter.attribute_changed_value?
+        end
+
+        def attribute_changed_value_message
+          stored_attribute_changed_value_message.call
         end
 
         def description
@@ -163,8 +177,8 @@ module Shoulda
             message = attribute_setter.failure_message
           end
 
-          if include_attribute_changed_value_message?
-            message << "\n\n" + attribute_changed_value_message.call
+          if !part_of_larger_matcher? && include_attribute_changed_value_message?
+            message << "\n\n" + attribute_changed_value_message
           end
 
           Shoulda::Matchers.word_wrap(message)
@@ -232,8 +246,8 @@ module Shoulda
             message = attribute_setter.failure_message
           end
 
-          if include_attribute_changed_value_message?
-            message << "\n\n" + attribute_changed_value_message.call
+          if !part_of_larger_matcher? && include_attribute_changed_value_message?
+            message << "\n\n" + attribute_changed_value_message
           end
 
           Shoulda::Matchers.word_wrap(message)
@@ -271,23 +285,18 @@ module Shoulda
           end
         end
 
-        def include_attribute_changed_value_message?
-          !ignore_interference_by_writer.never? &&
-            result.attribute_setter.attribute_changed_value?
-        end
-
-        def attribute_changed_value_message
+        def stored_attribute_changed_value_message
           @attribute_changed_value_message ||
             method(:default_attribute_changed_value_message)
         end
 
         def default_attribute_changed_value_message
           <<-MESSAGE.strip
-As indicated in the message above, :#{result.attribute_setter.attribute_name}
-seems to be changing certain values as they are set, and this could have
-something to do with why this test is failing. If you've overridden the writer
-method for this attribute, then you may need to change it to make this test
-pass, or do something else entirely.
+As indicated above, :#{result.attribute_setter.attribute_name} seems to be
+changing certain values as they are set, and this could have something to do
+with why this test is failing. If you've overridden the writer method for this
+attribute, then you may need to change it to make this test pass. Otherwise, you
+may need to do something else entirely.
           MESSAGE
         end
 

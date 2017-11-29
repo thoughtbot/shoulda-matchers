@@ -84,7 +84,8 @@ module Shoulda
         end
 
         def simple_description
-          "fail validation when :#{attribute} is empty/falsy"
+          # "fail validation when :#{attribute} is empty/falsy"
+          "validate absence of :#{attribute}"
         end
 
         protected
@@ -118,9 +119,9 @@ module Shoulda
         end
 
         def column_type
-          subject.class.respond_to?(:columns_hash) &&
-            subject.class.columns_hash[attribute.to_s].respond_to?(:type) &&
-            subject.class.columns_hash[attribute.to_s].type
+          record.class.respond_to?(:columns_hash) &&
+            record.class.columns_hash[attribute.to_s].respond_to?(:type) &&
+            record.class.columns_hash[attribute.to_s].type
         end
 
         def collection?
@@ -132,8 +133,8 @@ module Shoulda
         end
 
         def reflection
-          subject.class.respond_to?(:reflect_on_association) &&
-            subject.class.reflect_on_association(attribute)
+          record.class.respond_to?(:reflect_on_association) &&
+            record.class.reflect_on_association(attribute)
         end
       end
     end

@@ -81,36 +81,34 @@ module Shoulda
           message = "\n\n"
 
           if was_negated?
-            message << 'At least one of these submatchers should have failed:'
+            message << 'At least one of these subtests should have failed:'
           else
-            message << 'All of these submatchers should have passed:'
+            message << 'All of these subtests should have passed:'
           end
 
           message << "\n\n"
 
-          list = submatcher_results.map do |submatcher, matched|
-            icon = if matched then '✔︎' else '✘' end
-            submessage = "#{icon} should #{submatcher.description}"
+          list = submatcher_results.map do |result|
+            item = ''
 
-            if !matched
-              sub_failure_message =
-                if submatcher.was_negated?
-                  submatcher.failure_message_when_negated
-                else
-                  submatcher.failure_message
-                end
-
-              submessage << "\n\n"
-              submessage << Shoulda::Matchers.word_wrap(
-                "#{sub_failure_message}\n",
-                indent: 2,
-              )
+            if result.expected?
+              item << "* #{result.submatcher_expectation} (✔︎)"
+            elsif result.matched?
+              item << "* #{result.submatcher_expectation} (PASSED ✘)"
+            else
+              item << "* #{result.submatcher_failure_message} (✘)"
             end
 
-            submessage
+            item
           end
 
-          message << Shoulda::Matchers.word_wrap(list.join("\n"))
+          message << list.join("\n")
+
+          if submatcher_result_with_attribute_changed_value_message.present?
+            message << "\n\n#{submatcher_result_with_attribute_changed_value_message.submatcher_attribute_changed_value_message}"
+          end
+
+          Shoulda::Matchers.word_wrap(message)
         end
 
         def was_negated?
@@ -178,24 +176,24 @@ module Shoulda
         private
 
         def overall_failure_message
-          message =
-            "Expected #{model.name} to #{description}, " +
-            "but there were some issues."
-
-          Shoulda::Matchers.word_wrap(message)
+          Shoulda::Matchers.word_wrap(<<~MESSAGE)
+            Your test expecting #{model.name} to #{simple_description} didn't
+            pass.
+          MESSAGE
         end
 
         def overall_failure_message_when_negated
-          Shoulda::Matchers.word_wrap(
-            "Expected #{model.name} not to #{description}, but it did."
-          )
+          Shoulda::Matchers.word_wrap(<<~MESSAGE)
+            Your test expecting #{model.name} not to #{simple_description}
+            didn't pass.
+          MESSAGE
         end
 
         def indented_failure_message_for_first_failing_submatcher
           if failure_message_for_first_failing_submatcher.present?
             "\n" + Shoulda::Matchers.word_wrap(
               failure_message_for_first_failing_submatcher,
-              indent: 2
+              indent: 2,
             )
           end
         end
@@ -205,25 +203,39 @@ module Shoulda
         end
 
         def all_submatchers_match?
-          submatcher_results.all? { |submatcher, matched| matched }
+          submatcher_results.all?(&:expected?)
         end
 
         def first_failing_submatcher
-          tuple = submatcher_results.detect { |submatcher, matched | !matched }
+          tuple = submatcher_results.detect(&:unexpected?)
 
           if tuple
             tuple.first
           end
         end
 
+        def submatcher_result_with_attribute_changed_value_message
+          unexpected_submatcher_results.detect do |result|
+            result.submatcher_includes_attribute_changed_value_message?
+          end
+        end
+
+        def unexpected_submatcher_results
+          submatcher_results.select(&:unexpected?)
+        end
+
         def submatcher_results
           @_submatcher_results ||= submatchers.map do |submatcher|
-            [submatcher, submatcher.matches?(subject)]
+            SubmatcherResult.new(
+              submatcher,
+              submatcher.matches?(subject),
+              was_negated?,
+            )
           end
         end
 
         def build_allow_or_disallow_value_matcher(matcher_class:, values:, message:)
-          matcher = matcher_class.new(*values).
+          matcher = matcher_class.new(*values, part_of_larger_matcher: true).
             for(attribute).
             with_message(message).
             on(context).
@@ -233,6 +245,63 @@ module Shoulda
           yield matcher if block_given?
 
           matcher
+        end
+
+        class SubmatcherResult
+          def initialize(submatcher, matched, parent_was_negated)
+            @submatcher = submatcher
+            @matched = matched
+            @parent_was_negated = parent_was_negated
+          end
+
+          def matched?
+            @matched
+          end
+
+          def expected?
+            (!parent_was_negated? && matched?) ||
+              (parent_was_negated? && !matched?)
+          end
+
+          def unexpected?
+            !expected?
+          end
+
+          def submatcher_model
+            submatcher.model
+          end
+
+          def submatcher_description
+            submatcher.description
+          end
+
+          def submatcher_failure_message
+            submatcher.failure_message
+          end
+
+          def submatcher_expectation
+            if submatcher.was_negated?
+              "Expected #{submatcher.model} not to #{submatcher.description}"
+            else
+              "Expected #{submatcher.model} to #{submatcher.description}"
+            end
+          end
+
+          def submatcher_includes_attribute_changed_value_message?
+            submatcher.include_attribute_changed_value_message?
+          end
+
+          def submatcher_attribute_changed_value_message
+            submatcher.attribute_changed_value_message
+          end
+
+          private
+
+          attr_reader :submatcher
+
+          def parent_was_negated?
+            @parent_was_negated
+          end
         end
       end
     end

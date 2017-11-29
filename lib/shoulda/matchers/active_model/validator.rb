@@ -30,7 +30,7 @@ module Shoulda
 
         def fails?
           perform_validation
-          validation_messages.any? || validation_messages_match?
+          validation_messages_match?
         end
 
         def captured_validation_exception?
