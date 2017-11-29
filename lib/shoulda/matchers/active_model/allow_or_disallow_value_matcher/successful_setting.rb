@@ -1,7 +1,7 @@
 module Shoulda
   module Matchers
     module ActiveModel
-      class AllowValueMatcher
+      class AllowOrDisallowValueMatcher
         # @private
         class SuccessfulSetting
           def successful?

@@ -41,6 +41,10 @@ module Shoulda
           expects_strict? == captured_validation_exception?
         end
 
+        def has_matching_validation_messages?
+          matched_validation_messages.compact.any?
+        end
+
         def all_formatted_validation_error_messages
           format_validation_errors(all_validation_errors)
         end
@@ -100,10 +104,7 @@ module Shoulda
         end
 
         def validation_messages_match?
-          validation_message_type_matches? && (
-            validation_messages.none? ||
-            matched_validation_messages.compact.any?
-          )
+          validation_message_type_matches? && has_matching_validation_messages?
         end
 
         def validation_messages

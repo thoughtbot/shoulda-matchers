@@ -1,7 +1,7 @@
 module Shoulda
   module Matchers
     module ActiveModel
-      class AllowValueMatcher
+      class AllowOrDisallowValueMatcher
         # @private
         class AttributeDoesNotExistError < Shoulda::Matchers::Error
           attr_accessor :model, :attribute_name, :value

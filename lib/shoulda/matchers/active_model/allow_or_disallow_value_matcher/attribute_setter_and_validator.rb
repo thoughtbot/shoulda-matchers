@@ -3,7 +3,7 @@ require 'forwardable'
 module Shoulda
   module Matchers
     module ActiveModel
-      class AllowValueMatcher
+      class AllowOrDisallowValueMatcher
         # @private
         class AttributeSetterAndValidator
           extend Forwardable
@@ -16,7 +16,7 @@ module Shoulda
             :expected_message,
             :expects_strict?,
             :ignore_interference_by_writer,
-            :instance,
+            :subject,
           )
 
           def initialize(allow_value_matcher, attribute_name, value)
@@ -30,7 +30,7 @@ module Shoulda
           def attribute_setter
             @_attribute_setter ||= AttributeSetter.new(
               matcher_name: :allow_value,
-              object: instance,
+              object: subject,
               attribute_name: attribute_name,
               value: value,
               ignore_interference_by_writer: ignore_interference_by_writer,
@@ -44,7 +44,7 @@ module Shoulda
 
           def validator
             @_validator ||= Validator.new(
-              instance,
+              subject,
               attribute_to_check_message_against,
               context: context,
               expects_strict: expects_strict?,

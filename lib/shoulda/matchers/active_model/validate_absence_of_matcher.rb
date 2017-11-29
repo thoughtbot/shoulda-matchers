@@ -79,20 +79,23 @@ module Shoulda
       # @private
       class ValidateAbsenceOfMatcher < ValidationMatcher
         def initialize(attribute)
-          super
+          super(attribute)
           @expected_message = :present
         end
 
-        def matches?(subject)
-          super(subject)
-          disallows_value_of(value, @expected_message)
+        def simple_description
+          "fail validation when :#{attribute} is empty/falsy"
         end
 
-        def simple_description
-          "validate that :#{@attribute} is empty/falsy"
+        protected
+
+        def add_submatchers
+          add_matcher_disallowing([value], expected_message)
         end
 
         private
+
+        attr_reader :expected_message
 
         def value
           if reflection
@@ -115,9 +118,9 @@ module Shoulda
         end
 
         def column_type
-          @subject.class.respond_to?(:columns_hash) &&
-            @subject.class.columns_hash[@attribute.to_s].respond_to?(:type) &&
-            @subject.class.columns_hash[@attribute.to_s].type
+          subject.class.respond_to?(:columns_hash) &&
+            subject.class.columns_hash[attribute.to_s].respond_to?(:type) &&
+            subject.class.columns_hash[attribute.to_s].type
         end
 
         def collection?
@@ -129,8 +132,8 @@ module Shoulda
         end
 
         def reflection
-          @subject.class.respond_to?(:reflect_on_association) &&
-            @subject.class.reflect_on_association(@attribute)
+          subject.class.respond_to?(:reflect_on_association) &&
+            subject.class.reflect_on_association(attribute)
         end
       end
     end

@@ -144,7 +144,7 @@ module Shoulda
           ]
           translate_options =
             { default: default_translation_keys }.merge(options)
-          I18n.translate(primary_translation_key, translate_options)
+          I18n.translate(primary_translation_key.join('.'), translate_options)
         end
       end
     end

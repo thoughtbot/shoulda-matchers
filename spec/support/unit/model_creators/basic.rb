@@ -79,7 +79,7 @@ module UnitTests
                 overrides[:changing_values_with]
               )
 
-              if respond_to?(:write_attribute)
+              if respond_to?(:write_attribute) && attribute_names.include?(attribute_name)
                 write_attribute(attribute_name, new_value)
               else
                 super(new_value)

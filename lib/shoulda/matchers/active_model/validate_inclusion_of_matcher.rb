@@ -375,15 +375,13 @@ EOT
         end
 
         def matches?(subject)
-          super(subject)
-
           if @array
             add_submatchers_to_test_array
           elsif @range
             add_submatchers_to_test_range
           end
 
-          all_submatchers_match?
+          super(subject)
         end
 
         def pretty_print(pp)

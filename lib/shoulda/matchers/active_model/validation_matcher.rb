@@ -13,6 +13,7 @@ module Shoulda
           @submatchers = []
           @expected_message = nil
           @expects_custom_validation_message = false
+          @_submatchers_added = false
           @was_negated = nil
         end
 
@@ -49,14 +50,23 @@ module Shoulda
 
         def matches?(subject)
           @subject = subject
-          @was_negated = false
-          false
+
+          if !@_submatchers_added
+            add_submatchers
+            @_submatchers_added = true
+          end
+
+          all_submatchers_match?.tap do
+            @was_negated = false
+          end
         end
 
         def does_not_match?(subject)
           @subject = subject
-          !matches?(subject)
-          @was_negated = true
+
+          !matches?(subject).tap do
+            @was_negated = true
+          end
         end
 
         def failure_message
@@ -116,6 +126,9 @@ module Shoulda
           subject.class
         end
 
+        def add_submatchers
+        end
+
         def add_submatcher(submatcher)
           submatchers << submatcher
         end
@@ -132,7 +145,7 @@ module Shoulda
         end
         alias_method :add_matcher_allowing, :allows_value_of
 
-        def disallows_value_of(value_or_values, message: nil, &block)
+        def disallows_value_of(value_or_values, message = nil, &block)
           matcher =
             if value_or_values.is_a?(Array)
               disallow_value_matcher(*value_or_values, message: message, &block)

@@ -18,7 +18,7 @@ module Shoulda
 
         def default_error_message(type, options = {})
           model_name = options.delete(:model_name)
-          attribute = options.delete(:attribute)
+          attribute = options.fetch(:attribute)
           instance = options.delete(:instance)
 
           RailsShim.generate_validation_message(

@@ -1,7 +1,7 @@
 module Shoulda
   module Matchers
     module ActiveModel
-      class AllowValueMatcher
+      class AllowOrDisallowValueMatcher
         # @private
         class AttributeSettersAndValidators
           include Enumerable
@@ -51,7 +51,7 @@ module Shoulda
             # binding.pry
             tuple.attribute_setter.set!
             # -- BEFORE: -- !tuple.validator.does_not_pass?
-            # tuple.validator.passes?
+            # -- ALSO: -- tuple.validator.passes?
             !tuple.validator.fails?
           end
         end

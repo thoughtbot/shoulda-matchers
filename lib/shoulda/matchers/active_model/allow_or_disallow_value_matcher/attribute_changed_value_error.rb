@@ -1,7 +1,7 @@
 module Shoulda
   module Matchers
     module ActiveModel
-      class AllowValueMatcher
+      class AllowOrDisallowValueMatcher
         # @private
         class AttributeChangedValueError < Shoulda::Matchers::Error
           attr_accessor :matcher_name, :model, :attribute_name, :value_written,

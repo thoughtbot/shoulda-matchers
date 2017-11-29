@@ -57,9 +57,16 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
       record = define_model(:example, attr: :string).new
 
       message = <<-MESSAGE
-Example did not properly validate that :attr is empty/falsy.
-After setting :attr to ‹"an arbitrary value"›, the matcher expected
-the Example to be invalid, but it was valid instead.
+Expected Example to fail validation when :attr is empty/falsy, but there
+were some issues.
+
+All of these submatchers should have passed:
+
+✘ should fail validation when :attr is set to ‹"an arbitrary value"›,
+  producing a custom validation error
+
+  After setting :attr to ‹"an arbitrary value"›, the matcher expected
+  the Example to be invalid, but it was valid instead.
       MESSAGE
 
       assertion = lambda do
@@ -96,9 +103,16 @@ the Example to be invalid, but it was valid instead.
   context 'an ActiveModel class without an absence validation' do
     it 'rejects with the correct failure message' do
       message = <<-MESSAGE
-Example did not properly validate that :attr is empty/falsy.
-After setting :attr to ‹"an arbitrary value"›, the matcher expected
-the Example to be invalid, but it was valid instead.
+Expected Example to fail validation when :attr is empty/falsy, but there
+were some issues.
+
+All of these submatchers should have passed:
+
+✘ should fail validation when :attr is set to ‹"an arbitrary value"›,
+  producing a custom validation error
+
+  After setting :attr to ‹"an arbitrary value"›, the matcher expected
+  the Example to be invalid, but it was valid instead.
       MESSAGE
 
       assertion = lambda do
@@ -160,9 +174,16 @@ the Example to be invalid, but it was valid instead.
       model = having_and_belonging_to_many(:children, absence: false)
 
       message = <<-MESSAGE
-Parent did not properly validate that :children is empty/falsy.
-After setting :children to ‹[#<Child id: nil>]›, the matcher expected
-the Parent to be invalid, but it was valid instead.
+Expected Parent to fail validation when :children is empty/falsy, but
+there were some issues.
+
+All of these submatchers should have passed:
+
+✘ should fail validation when :children is set to ‹[#<Child id: nil>]›,
+  producing a custom validation error
+
+  After setting :children to ‹[#<Child id: nil>]›, the matcher expected
+  the Parent to be invalid, but it was valid instead.
       MESSAGE
 
       assertion = lambda do
