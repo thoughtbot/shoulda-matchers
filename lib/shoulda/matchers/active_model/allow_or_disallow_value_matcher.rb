@@ -160,6 +160,14 @@ module Shoulda
         def positive_failure_message
           attribute_setter = result.attribute_setter
 
+          message =
+            if result.attribute_setter.successfully_checked?
+              "Expected #{model} to #{expectation}, but it did not."
+            else
+              attribute_setter.failure_message
+            end
+
+=begin
           if result.attribute_setter.successfully_checked?
             validator = result.validator
             message = failure_message_preface.call
@@ -176,6 +184,7 @@ module Shoulda
           else
             message = attribute_setter.failure_message
           end
+=end
 
           if !part_of_larger_matcher? && include_attribute_changed_value_message?
             message << "\n\n" + attribute_changed_value_message
@@ -187,6 +196,14 @@ module Shoulda
         def negative_failure_message
           attribute_setter = result.attribute_setter
 
+          message =
+            if result.attribute_setter.successfully_checked?
+              "Expected #{model} not to #{expectation}, but it did."
+            else
+              attribute_setter.failure_message
+            end
+
+=begin
           if attribute_setter.successfully_checked?
             validator = result.validator
             message = failure_message_preface.call + ' invalid'
@@ -245,6 +262,7 @@ module Shoulda
           else
             message = attribute_setter.failure_message
           end
+=end
 
           if !part_of_larger_matcher? && include_attribute_changed_value_message?
             message << "\n\n" + attribute_changed_value_message

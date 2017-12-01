@@ -41,17 +41,12 @@ module Shoulda
           private
 
           def fails_to_pass?(tuple)
-            # binding.pry
             tuple.attribute_setter.set!
-            # tuple.validator.does_not_pass?
             !tuple.validator.passes?
           end
 
           def fails_to_fail?(tuple)
-            # binding.pry
             tuple.attribute_setter.set!
-            # -- BEFORE: -- !tuple.validator.does_not_pass?
-            # -- ALSO: -- tuple.validator.passes?
             !tuple.validator.fails?
           end
         end

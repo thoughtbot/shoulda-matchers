@@ -15,9 +15,7 @@ module Shoulda
 
           def call
             if description_clauses_for_qualifiers.any?
-              main_description +
-                ', ' +
-                description_clauses_for_qualifiers.to_sentence
+              [main_description, description_clauses_for_qualifiers].join(', ')
             else
               main_description
             end
@@ -33,23 +31,33 @@ module Shoulda
             description_clauses = []
 
             if matcher.try(:expects_to_allow_blank?)
-              description_clauses << 'but only if it is not blank'
+              description_clauses << 'only if it is not blank'
             elsif matcher.try(:expects_to_allow_nil?)
-              description_clauses << 'but only if it is not nil'
+              description_clauses << 'only if it is not nil'
             end
 
             if matcher.try(:expects_strict?)
-              description_clauses << 'raising a validation exception'
+              clause = ''
 
               if matcher.try(:expects_custom_validation_message?)
-                description_clauses.last << ' with a custom message'
+                clause << 'raising a validation exception '
+                clause << matcher.expected_message.inspect
+              else
+                clause << 'raising a validation exception'
               end
+
+              clause << ' on failure'
+
+              description_clauses << clause
             elsif matcher.try(:expects_custom_validation_message?)
-              description_clauses <<
-                'producing a custom validation error'
+              clause = ''
+              clause << 'producing a validation error '
+              clause << matcher.expected_message.inspect
+              clause << 'on failure'
+              description_clauses << clause
             end
 
-            description_clauses
+            description_clauses.join(', and')
           end
         end
       end

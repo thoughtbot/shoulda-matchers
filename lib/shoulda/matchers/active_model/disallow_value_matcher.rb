@@ -4,8 +4,12 @@ module Shoulda
       # @private
       class DisallowValueMatcher < AllowOrDisallowValueMatcher
         def simple_description
-          "fail validation when :#{attribute_to_set} is set to " +
+          "fail validation with :#{attribute_to_set} set to " +
             "#{inspected_values_to_set}"
+        end
+
+        def expectation
+          simple_description
         end
 
         def matches?(subject)

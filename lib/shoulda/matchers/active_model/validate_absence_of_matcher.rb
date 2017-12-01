@@ -84,7 +84,6 @@ module Shoulda
         end
 
         def simple_description
-          # "fail validation when :#{attribute} is empty/falsy"
           "validate absence of :#{attribute}"
         end
 

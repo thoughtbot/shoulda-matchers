@@ -81,9 +81,16 @@ module Shoulda
           message = "\n\n"
 
           if was_negated?
-            message << 'At least one of these subtests should have failed:'
+            message << Shoulda::Matchers.word_wrap(
+              'The following subtests were run. ' +
+              'All passed, but at least one of them should have failed:',
+            )
           else
-            message << 'All of these subtests should have passed:'
+            message << Shoulda::Matchers.word_wrap(
+              'The following subtests were run. ' +
+              'The tests indicated with (✘) failed when they should have ' +
+              'passed:',
+            )
           end
 
           message << "\n\n"
@@ -91,13 +98,14 @@ module Shoulda
           list = submatcher_results.map do |result|
             item = ''
 
-            if result.expected?
-              item << "#{result.submatcher_expectation} (✔︎)"
-            elsif result.matched?
-              item << "#{result.submatcher_expectation} (PASSED ✘)"
-            else
-              item << "#{result.submatcher_failure_message} (✘)"
-            end
+            item <<
+              if result.expected?
+                "#{result.submatcher_expectation} (✔︎)"
+              elsif result.matched?
+                "#{result.submatcher_expectation}"
+              else
+                "#{result.submatcher_expectation} (✘)"
+              end
 
             indented_item = Shoulda::Matchers.word_wrap(item, indent: 2)
             indented_item[0] = '*'
@@ -287,9 +295,9 @@ module Shoulda
 
           def submatcher_expectation
             if submatcher.was_negated?
-              "Expected #{submatcher.model} not to #{submatcher.description}"
+              "Expected #{submatcher.model} not to #{submatcher.expectation}"
             else
-              "Expected #{submatcher.model} to #{submatcher.description}"
+              "Expected #{submatcher.model} to #{submatcher.expectation}"
             end
           end
 

@@ -86,14 +86,14 @@ module Shoulda
           @expected_message = :accepted
         end
 
-        def matches?(record)
-          add_matcher_disallowing(false, expected_message)
-          super(record)
+        def simple_description
+          "validate acceptance of :#{attribute}"
         end
 
-        def simple_description
-          # "fail validation when :#{attribute} is not set to a true-like value"
-          "validate acceptance of :#{attribute}"
+        protected
+
+        def add_submatchers
+          add_matcher_disallowing(false, expected_message)
         end
 
         private

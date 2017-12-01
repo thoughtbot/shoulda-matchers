@@ -4,10 +4,10 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :m
   include UnitTests::ConfirmationMatcherHelpers
 
   context '#description' do
-    it 'states that the confirmation must match its base attribute' do
+    it 'includes the name of the attribute which is being confirmed' do
       builder = builder_for_record_validating_confirmation
-      message = "validate that :#{builder.confirmation_attribute} matches :#{builder.attribute_to_confirm}"
       matcher = described_class.new(builder.attribute_to_confirm)
+      message = "validate confirmation of :#{builder.attribute_to_confirm}"
       expect(matcher.description).to eq(message)
     end
   end

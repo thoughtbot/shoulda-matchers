@@ -89,56 +89,47 @@ module Shoulda
         end
 
         def simple_description
-          "validate that :#{@confirmation_attribute} matches :#{@attribute}"
+          "validate confirmation of :#{attribute}"
         end
 
-        def matches?(subject)
-          super(subject)
+        protected
 
-          disallows_different_value &&
-            allows_same_value &&
-            allows_missing_confirmation
+        def add_submatchers
+          add_matcher_disallowing_different_value
+          add_matcher_allowing_same_value
+          add_matcher_allowing_missing_confirmation
         end
 
         private
 
-        def disallows_different_value
-          disallows_value_of('different value') do |matcher|
+        attr_reader :expected_message, :confirmation_attribute
+
+        def add_matcher_disallowing_different_value
+          add_matcher_disallowing('different value') do |matcher|
             qualify_matcher(matcher, 'some value')
           end
         end
 
-        def allows_same_value
-          allows_value_of('same value') do |matcher|
+        def add_matcher_allowing_same_value
+          add_matcher_allowing('same value') do |matcher|
             qualify_matcher(matcher, 'same value')
           end
         end
 
-        def allows_missing_confirmation
-          allows_value_of('any value') do |matcher|
+        def add_matcher_allowing_missing_confirmation
+          add_matcher_allowing('any value') do |matcher|
             qualify_matcher(matcher, nil)
           end
         end
 
         def qualify_matcher(matcher, confirmation_attribute_value)
           matcher.values_to_preset = {
-            confirmation_attribute => confirmation_attribute_value
+            confirmation_attribute => confirmation_attribute_value,
           }
           matcher.with_message(
-            @expected_message,
+            expected_message,
             against: confirmation_attribute,
-            values: { attribute: attribute }
-          )
-        end
-
-        def set_confirmation(value)
-          @last_value_set_on_confirmation_attribute = value
-
-          AttributeSetter.set(
-            matcher_name: 'confirmation',
-            object: @subject,
-            attribute_name: confirmation_attribute,
-            value: value
+            values: { attribute: attribute },
           )
         end
       end
