@@ -347,19 +347,19 @@ may need to do something else entirely.
         def default_attribute_message_values
           defaults = {
             model_name: model_name,
-            model: subject,
-            attribute: attribute_to_check_message_against,
+            model: model,
+            attribute: human_attribute_name,
           }
 
           defaults.merge(options[:expected_message_values])
         end
 
         def model_name
-          subject.class.to_s.underscore
+          model.to_s.underscore
         end
 
         def human_attribute_name
-          subject.class.human_attribute_name(attribute_to_check_message_against)
+          model.human_attribute_name(attribute_to_check_message_against)
         end
       end
     end

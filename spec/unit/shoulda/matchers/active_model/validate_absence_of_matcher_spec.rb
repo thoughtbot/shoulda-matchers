@@ -57,8 +57,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
       record = define_model(:example, attr: :string).new
 
       message = <<-MESSAGE
-Expected Example to validate absence of :attr, but there were some
-issues.
+Your test expecting Example to validate absence of :attr didn't pass.
 
 All of these subtests should have passed:
 
@@ -100,8 +99,7 @@ All of these subtests should have passed:
   context 'an ActiveModel class without an absence validation' do
     it 'rejects with the correct failure message' do
       message = <<-MESSAGE
-Expected Example to validate absence of :attr, but there were some
-issues.
+Your test expecting Example to validate absence of :attr didn't pass.
 
 All of these subtests should have passed:
 
@@ -168,8 +166,7 @@ All of these subtests should have passed:
       model = having_and_belonging_to_many(:children, absence: false)
 
       message = <<-MESSAGE
-Expected Parent to validate absence of :children, but there were some
-issues.
+Your test expecting Parent to validate absence of :children didn't pass.
 
 All of these subtests should have passed:
 
@@ -192,9 +189,9 @@ All of these subtests should have passed:
       stub_translation("activerecord.errors.messages.present",
                        "%{attribute} must be blank in a %{model}")
 
-      expect {
+      # expect {
         expect(validating_absence_of(:attr)).to validate_absence_of(:attr)
-      }.to_not raise_exception
+      # }.to_not raise_exception
     end
   end
 

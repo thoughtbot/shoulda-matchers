@@ -9,7 +9,7 @@ module Shoulda
           super
           @attribute = attribute
           @expects_strict = false
-          @subject = nil
+          @record = nil
           @submatchers = []
           @expected_message = nil
           @expects_custom_validation_message = false
@@ -48,8 +48,8 @@ module Shoulda
           @expects_custom_validation_message
         end
 
-        def matches?(subject)
-          @subject = subject
+        def matches?(record)
+          @record = record
 
           if !@_submatchers_added
             add_submatchers
@@ -61,10 +61,10 @@ module Shoulda
           end
         end
 
-        def does_not_match?(subject)
-          @subject = subject
+        def does_not_match?(record)
+          @record = record
 
-          !matches?(subject).tap do
+          !matches?(record).tap do
             @was_negated = true
           end
         end
@@ -92,23 +92,29 @@ module Shoulda
             item = ''
 
             if result.expected?
-              item << "* #{result.submatcher_expectation} (✔︎)"
+              item << "#{result.submatcher_expectation} (✔︎)"
             elsif result.matched?
-              item << "* #{result.submatcher_expectation} (PASSED ✘)"
+              item << "#{result.submatcher_expectation} (PASSED ✘)"
             else
-              item << "* #{result.submatcher_failure_message} (✘)"
+              item << "#{result.submatcher_failure_message} (✘)"
             end
 
-            item
+            indented_item = Shoulda::Matchers.word_wrap(item, indent: 2)
+            indented_item[0] = '*'
+            indented_item
           end
 
           message << list.join("\n")
 
           if submatcher_result_with_attribute_changed_value_message.present?
-            message << "\n\n#{submatcher_result_with_attribute_changed_value_message.submatcher_attribute_changed_value_message}"
+            attribute_changed_value_message = Shoulda::Matchers.word_wrap(
+              submatcher_result_with_attribute_changed_value_message.
+                submatcher_attribute_changed_value_message,
+            )
+            message << "\n\n#{attribute_changed_value_message}"
           end
 
-          Shoulda::Matchers.word_wrap(message)
+          message
         end
 
         def was_negated?
@@ -117,11 +123,11 @@ module Shoulda
 
         protected
 
-        attr_reader :attribute, :context, :subject, :submatchers,
+        attr_reader :attribute, :context, :record, :submatchers,
           :first_failing_submatcher
 
         def model
-          subject.class
+          record.class
         end
 
         def add_submatchers
@@ -228,7 +234,7 @@ module Shoulda
           @_submatcher_results ||= submatchers.map do |submatcher|
             SubmatcherResult.new(
               submatcher,
-              submatcher.matches?(subject),
+              submatcher.matches?(record),
               was_negated?,
             )
           end
