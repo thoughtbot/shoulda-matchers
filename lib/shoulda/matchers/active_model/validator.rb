@@ -18,7 +18,8 @@ module Shoulda
 
         def passes?
           perform_validation
-          validation_messages.none?
+          # validation_messages.none?
+          !validation_messages_match?
         end
 
         def fails?
@@ -36,6 +37,10 @@ module Shoulda
 
         def has_matching_validation_messages?
           matched_validation_messages.compact.any?
+        end
+
+        def has_validation_messages?
+          validation_messages.any?
         end
 
         def all_formatted_validation_error_messages

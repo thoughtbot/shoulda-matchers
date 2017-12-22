@@ -88,11 +88,11 @@ module Shoulda
           @confirmation_attribute = "#{attribute}_confirmation"
         end
 
+        protected
+
         def simple_description
           "validate confirmation of :#{attribute}"
         end
-
-        protected
 
         def add_submatchers
           add_submatcher_disallowing_different_value

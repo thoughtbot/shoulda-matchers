@@ -4,33 +4,40 @@ module Shoulda
       class ValidationMatcher
         # @private
         class BuildExpectation
-          def self.call(matcher, preface)
-            new(matcher, preface).call
+          def self.call(matcher, preface, **options)
+            new(matcher, preface, **options).call
           end
 
-          def initialize(matcher, preface)
+          def initialize(matcher, preface, state:)
             @matcher = matcher
             @preface = preface
-            @build_description = BuildDescription.new(matcher)
+
+            @build_description = BuildDescription.new(
+              matcher,
+              expectation_state: state,
+            )
           end
 
           def call
-            parts.join(' ')
+            parts = [
+              [preface, 'with', clauses].join(' '),
+              build_description.description_clauses_for_qualifiers,
+            ]
+
+            parts.select(&:present?).join(', ')
           end
 
           private
 
-          attr_reader :preface, :matcher
-
-          def parts
-            [preface, 'with', clauses.select(&:present?).join(' and ')]
-          end
+          attr_reader :preface, :matcher, :build_description
 
           def clauses
-            [
+            clauses = [
               expectation_clauses_for_values_to_preset,
               expectation_clauses_for_values_to_set,
             ]
+
+            clauses.select(&:present?).join(' and ')
           end
 
           def expectation_clauses_for_values_to_preset

@@ -139,6 +139,8 @@ module Shoulda
           self
         end
 
+        protected
+
         def simple_description
           if @range
             "validate that :#{@attribute} lies outside the range " +

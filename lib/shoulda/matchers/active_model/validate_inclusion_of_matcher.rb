@@ -313,21 +313,21 @@ EOT
         end
 
         def allow_blank(allow_blank = true)
-          @options[:allow_blank] = allow_blank
+          options[:allow_blank] = allow_blank
           self
         end
 
         def expects_to_allow_blank?
-          @options[:allow_blank]
+          options[:allow_blank]
         end
 
         def allow_nil(allow_nil = true)
-          @options[:allow_nil] = allow_nil
+          options[:allow_nil] = allow_nil
           self
         end
 
         def expects_to_allow_nil?
-          @options[:allow_nil]
+          options[:allow_nil]
         end
 
         def with_message(message)
@@ -357,6 +357,19 @@ EOT
           self
         end
 
+        def pretty_print(pp)
+          Shoulda::Matchers::Util.pretty_print(self, pp, {
+            was_negated: was_negated?,
+            range: range,
+            array: array,
+            attribute: attribute,
+            record: record,
+            last_submatcher_run: last_submatcher_run,
+          })
+        end
+
+        protected
+
         def simple_description
           if range
             "validate that :#{attribute} lies inside the range " +
@@ -382,20 +395,10 @@ EOT
           end
         end
 
-        def pretty_print(pp)
-          Shoulda::Matchers::Util.pretty_print(self, pp, {
-            was_negated: was_negated?,
-            range: range,
-            array: array,
-            attribute: attribute,
-            record: record,
-            last_submatcher_run: last_submatcher_run,
-          })
-        end
-
         private
 
-        attr_reader :range, :array
+        attr_reader :options, :array, :range, :minimum, :maximum, :low_message,
+          :high_message
 
         def add_submatchers_for_range
           add_submatcher_disallowing_lower_value
@@ -412,10 +415,10 @@ EOT
         end
 
         def add_submatcher_allowing_blank
-          if @options.key?(:allow_blank)
+          if options.key?(:allow_blank)
             blank_values = ['', ' ', "\n", "\r", "\t", "\f"]
 
-            if @options[:allow_blank]
+            if options[:allow_blank]
               blank_values.each do |value|
                 add_submatcher_allowing(value)
               end
@@ -428,8 +431,8 @@ EOT
         end
 
         def add_submatcher_allowing_nil
-          if @options.key?(:allow_nil)
-            if @options[:allow_nil]
+          if options.key?(:allow_nil)
+            if options[:allow_nil]
               add_submatcher_allowing(nil)
             else
               add_submatcher_disallowing(nil)
@@ -439,26 +442,26 @@ EOT
 
         def add_submatcher_allowing_all_values_in_array
           array.each do |value|
-            add_submatcher_allowing(value).with_message(@low_message)
+            add_submatcher_allowing(value).with_message(low_message)
           end
         end
 
         def add_submatcher_disallowing_lower_value
-          if !@minimum.nil? && @minimum > 0
-            add_submatcher_disallowing(@minimum - 1).with_message(@low_message)
+          if !minimum.nil? && minimum > 0
+            add_submatcher_disallowing(minimum - 1).with_message(low_message)
           end
         end
 
         def add_submatcher_disallowing_higher_value
-          add_submatcher_disallowing(@maximum + 1).with_message(@high_message)
+          add_submatcher_disallowing(maximum + 1).with_message(high_message)
         end
 
         def add_submatcher_allowing_minimum_value
-          add_submatcher_allowing(@minimum).with_message(@low_message)
+          add_submatcher_allowing(minimum).with_message(low_message)
         end
 
         def add_submatcher_allowing_maximum_value
-          add_submatcher_allowing(@maximum).with_message(@high_message)
+          add_submatcher_allowing(maximum).with_message(high_message)
         end
 
         def add_submatcher_disallowing_values_outside_of_array
@@ -478,7 +481,7 @@ EOT
           end
 
           values_outside_of_array.each do |value|
-            add_submatcher_disallowing(value).with_message(@low_message)
+            add_submatcher_disallowing(value).with_message(low_message)
           end
         end
 

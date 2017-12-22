@@ -255,33 +255,27 @@ module Shoulda
         end
 
         def is_at_least(length)
-          @options[:minimum] = length
+          options[:minimum] = length
           @short_message ||= :too_short
           self
         end
 
         def is_at_most(length)
-          @options[:maximum] = length
+          options[:maximum] = length
           @long_message ||= :too_long
           self
         end
 
         def is_equal_to(length)
-          @options[:minimum] = length
-          @options[:maximum] = length
+          options[:minimum] = length
+          options[:maximum] = length
           @short_message ||= :wrong_length
           @long_message ||= :wrong_length
           self
         end
 
         def with_message(message)
-          if message
-            @expects_custom_validation_message = true
-            @short_message = message
-            @long_message = message
-          end
-
-          self
+          with_short_message(message).with_long_message(message)
         end
 
         def with_short_message(message)
@@ -303,114 +297,127 @@ module Shoulda
         end
 
         def allow_nil
-          @options[:allow_nil] = true
+          options[:allow_nil] = true
           self
         end
 
-        def simple_description
-          description = "validate that the length of :#{@attribute}"
+        protected
 
-          if @options.key?(:minimum) && @options.key?(:maximum)
-            if @options[:minimum] == @options[:maximum]
-              description << " is #{@options[:minimum]}"
+        def simple_description
+          description = "validate that the length of :#{attribute}"
+
+          if options.key?(:minimum) && options.key?(:maximum)
+            if options[:minimum] == options[:maximum]
+              description << " is #{options[:minimum]}"
             else
-              description << " is between #{@options[:minimum]}"
-              description << " and #{@options[:maximum]}"
+              description << " is between #{options[:minimum]}"
+              description << " and #{options[:maximum]}"
             end
-          elsif @options.key?(:minimum)
-            description << " is at least #{@options[:minimum]}"
-          elsif @options.key?(:maximum)
-            description << " is at most #{@options[:maximum]}"
+          elsif options.key?(:minimum)
+            description << " is at least #{options[:minimum]}"
+          elsif options.key?(:maximum)
+            description << " is at most #{options[:maximum]}"
           end
 
           description
         end
 
-        def matches?(subject)
-          super(subject)
-          translate_messages!
-          lower_bound_matches? && upper_bound_matches? && allow_nil_matches?
+        def add_submatchers
+          add_submatchers_for_lower_bound
+          add_submatchers_for_upper_bound
+          add_submatcher_for_allow_nil
         end
 
         private
 
+        attr_reader :options, :short_message, :long_message
+
         def expects_to_allow_nil?
-          @options[:allow_nil]
+          options[:allow_nil]
         end
 
-        def translate_messages!
-          if Symbol === @short_message
-            @short_message = default_error_message(@short_message,
-                                                   model_name: @subject.class.to_s.underscore,
-                                                   instance: @subject,
-                                                   attribute: @attribute,
-                                                   count: @options[:minimum])
-          end
-
-          if Symbol === @long_message
-            @long_message = default_error_message(@long_message,
-                                                  model_name: @subject.class.to_s.underscore,
-                                                  instance: @subject,
-                                                  attribute: @attribute,
-                                                  count: @options[:maximum])
-          end
+        def add_submatchers_for_lower_bound
+          add_submatcher_disallowing_lower_length
+          add_submatcher_allowing_minimum_length
         end
 
-        def lower_bound_matches?
-          disallows_lower_length? && allows_minimum_length?
+        def add_submatchers_for_upper_bound
+          add_submatcher_disallowing_higher_length
+          add_submatcher_allowing_maximum_length
         end
 
-        def upper_bound_matches?
-          disallows_higher_length? && allows_maximum_length?
-        end
-
-        def disallows_lower_length?
-          if @options.key?(:minimum)
-            @options[:minimum] == 0 ||
-              disallows_length_of?(@options[:minimum] - 1, @short_message)
-          else
-            true
+        def add_submatcher_disallowing_lower_length
+          if options.key?(:minimum) && options[:minimum] != 0
+            add_submatcher_disallowing_length_of(options[:minimum] - 1) do |matcher|
+              qualify_with_short_message(matcher)
+            end
           end
         end
 
-        def disallows_higher_length?
-          if @options.key?(:maximum)
-            disallows_length_of?(@options[:maximum] + 1, @long_message)
-          else
-            true
+        def add_submatcher_disallowing_higher_length
+          if options.key?(:maximum)
+            add_submatcher_disallowing_length_of(options[:maximum] + 1) do |matcher|
+              qualify_with_long_message(matcher)
+            end
           end
         end
 
-        def allows_minimum_length?
-          if @options.key?(:minimum)
-            allows_length_of?(@options[:minimum], @short_message)
-          else
-            true
+        def add_submatcher_allowing_minimum_length
+          if options.key?(:minimum)
+            add_submatcher_allowing_length_of(options[:minimum]) do |matcher|
+              qualify_with_short_message(matcher)
+            end
           end
         end
 
-        def allows_maximum_length?
-          if @options.key?(:maximum)
-            allows_length_of?(@options[:maximum], @long_message)
-          else
-            true
+        def add_submatcher_allowing_maximum_length
+          if options.key?(:maximum)
+            add_submatcher_allowing_length_of(options[:maximum]) do |matcher|
+              qualify_with_long_message(matcher)
+            end
           end
         end
 
-        def allows_length_of?(length, message)
-          allows_value_of(string_of_length(length), message)
+        def add_submatcher_allowing_length_of(length, &block)
+          add_submatcher_allowing(string_of_length(length), &block)
         end
 
-        def disallows_length_of?(length, message)
-          disallows_value_of(string_of_length(length), message)
+        def add_submatcher_disallowing_length_of(length, &block)
+          add_submatcher_disallowing(string_of_length(length), &block)
+        end
+
+        def add_submatcher_for_allow_nil
+          if expects_to_allow_nil?
+            add_submatcher_allowing(nil)
+          end
+        end
+
+        def qualify_with_short_message(matcher)
+          matcher.with_message(short_message, values: short_message_values)
+        end
+
+        def qualify_with_long_message(matcher)
+          matcher.with_message(long_message, values: long_message_values)
+        end
+
+        def short_message_values
+          message_values.merge(count: options[:minimum])
+        end
+
+        def long_message_values
+          message_values.merge(count: options[:maximum])
+        end
+
+        def message_values
+          {
+            model_name: model.name.underscore,
+            instance: record,
+            attribute: model.human_attribute_name(attribute),
+          }
         end
 
         def string_of_length(length)
           'x' * length
-        end
-
-        def allow_nil_matches?
-          !expects_to_allow_nil? || allows_value_of(nil)
         end
       end
     end

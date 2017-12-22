@@ -83,11 +83,11 @@ module Shoulda
           @expected_message = :present
         end
 
+        protected
+
         def simple_description
           "validate absence of :#{attribute}"
         end
-
-        protected
 
         def add_submatchers
           add_submatcher_disallowing([value], expected_message)

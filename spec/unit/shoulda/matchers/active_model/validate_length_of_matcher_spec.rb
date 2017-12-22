@@ -33,17 +33,25 @@ describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher, type: :model d
           attribute_name: :attr,
           changing_values_with: :add_character,
           expected_message: <<-MESSAGE.strip
-Example did not properly validate that the length of :attr is at least
-4.
-  After setting :attr to ‹"xxx"› -- which was read back as ‹"xxxa"› --
-  the matcher expected the Example to be invalid, but it was valid
-  instead.
+Your test expecting Example to validate that the length of :attr is at
+least 4 didn't pass.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+The matcher ran the following subtests. Those indicated with ✘ failed
+when they should have passed:
+
+✘ Expected Example to produce the validation error "is too short
+  (minimum is 4 characters)" with :attr set to ‹"xxx"› (which was read
+  back as ‹"xxxa"›). However, no such error was found.
+
+✔︎ Expected Example not to produce the validation error "is too short
+  (minimum is 4 characters)" with :attr set to ‹"xxxx"› (which was read
+  back as ‹"xxxxa"›).
+
+As indicated above, :attr seems to be changing certain values as they
+are set, and this could have something to do with why this matcher is
+failing. If you've overridden the writer method for this attribute, then
+you may need to change it to make this matcher pass. Otherwise, you may
+need to do something else entirely.
           MESSAGE
         }
       }
@@ -97,16 +105,25 @@ Example did not properly validate that the length of :attr is at least
           attribute_name: :attr,
           changing_values_with: :remove_character,
           expected_message: <<-MESSAGE.strip
-Example did not properly validate that the length of :attr is at most 4.
-  After setting :attr to ‹"xxxxx"› -- which was read back as ‹"xxxx"› --
-  the matcher expected the Example to be invalid, but it was valid
-  instead.
+Your test expecting Example to validate that the length of :attr is at
+most 4 didn't pass.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+The matcher ran the following subtests. Those indicated with ✘ failed
+when they should have passed:
+
+✘ Expected Example to produce the validation error "is too long (maximum
+  is 4 characters)" with :attr set to ‹"xxxxx"› (which was read back as
+  ‹"xxxx"›). However, no such error was found.
+
+✔︎ Expected Example not to produce the validation error "is too long
+  (maximum is 4 characters)" with :attr set to ‹"xxxx"› (which was read
+  back as ‹"xxx"›).
+
+As indicated above, :attr seems to be changing certain values as they
+are set, and this could have something to do with why this matcher is
+failing. If you've overridden the writer method for this attribute, then
+you may need to change it to make this matcher pass. Otherwise, you may
+need to do something else entirely.
           MESSAGE
         }
       }
@@ -153,16 +170,39 @@ Example did not properly validate that the length of :attr is at most 4.
           attribute_name: :attr,
           changing_values_with: :add_character,
           expected_message: <<-MESSAGE.strip
-Example did not properly validate that the length of :attr is 4.
-  After setting :attr to ‹"xxx"› -- which was read back as ‹"xxxa"› --
-  the matcher expected the Example to be invalid, but it was valid
-  instead.
+Your test expecting Example to validate that the length of :attr is 4
+didn't pass.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+The matcher ran the following subtests. Those indicated with ✘ failed
+when they should have passed:
+
+✘ Expected Example to produce the validation error "is the wrong length
+  (should be 4 characters)" with :attr set to ‹"xxx"› (which was read
+  back as ‹"xxxa"›). However, no such error was found.
+
+✘ Expected Example not to produce the validation error "is the wrong
+  length (should be 4 characters)" with :attr set to ‹"xxxx"› (which was
+  read back as ‹"xxxxa"›). However, it produced these validation
+  errors:
+
+  * attr: ["is the wrong length (should be 4 characters)"]
+
+✔︎ Expected Example to produce the validation error "is the wrong length
+  (should be 4 characters)" with :attr set to ‹"xxxxx"› (which was read
+  back as ‹"xxxxxa"›).
+
+✘ Expected Example not to produce the validation error "is the wrong
+  length (should be 4 characters)" with :attr set to ‹"xxxx"› (which was
+  read back as ‹"xxxxa"›). However, it produced these validation
+  errors:
+
+  * attr: ["is the wrong length (should be 4 characters)"]
+
+As indicated above, :attr seems to be changing certain values as they
+are set, and this could have something to do with why this matcher is
+failing. If you've overridden the writer method for this attribute, then
+you may need to change it to make this matcher pass. Otherwise, you may
+need to do something else entirely.
           MESSAGE
         }
       }
@@ -227,10 +267,10 @@ Example did not properly validate that the length of :attr is 4.
       end
 
       it "does not raise an exception" do
-        expect {
+        # expect {
           expect(validating_length(maximum: 4)).
             to validate_length_of(:attr).is_at_most(4)
-        }.to_not raise_exception
+        # }.to_not raise_exception
       end
     end
 

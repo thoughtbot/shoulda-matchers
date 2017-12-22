@@ -4,12 +4,13 @@ module Shoulda
       class ValidationMatcher
         # @private
         class BuildDescription
-          def self.call(matcher, main_description)
-            new(matcher).call(main_description)
+          def self.call(matcher, main_description, **options)
+            new(matcher, **options).call(main_description)
           end
 
-          def initialize(matcher)
+          def initialize(matcher, expectation_state: :agnostic)
             @matcher = matcher
+            @expectation_state = expectation_state
           end
 
           def call(main_description)
@@ -31,7 +32,7 @@ module Shoulda
 
           protected
 
-          attr_reader :matcher
+          attr_reader :matcher, :expectation_state
 
           private
 
@@ -44,10 +45,12 @@ module Shoulda
           end
 
           def description_clause_for_strict_or_custom_validation_message
-            if expects_strict?
-              description_clause_for_strict
-            elsif expects_custom_validation_message?
-              description_clause_for_custom_validation_message
+            if expectation_state == :agnostic
+              if expects_strict?
+                description_clause_for_strict
+              elsif expects_custom_validation_message?
+                description_clause_for_custom_validation_message
+              end
             end
           end
 
@@ -68,7 +71,9 @@ module Shoulda
               parts << matcher.expected_message.inspect
             end
 
-            parts << 'on failure'
+            if expectation_state == :agnostic
+              parts << 'on failure'
+            end
 
             parts.join(' ')
           end
@@ -77,8 +82,11 @@ module Shoulda
             parts = [
               'producing a validation error',
               matcher.expected_message.inspect,
-              'on failure',
             ]
+
+            if expectation_state == :agnostic
+              parts << 'on failure'
+            end
 
             parts.join(' ')
           end

@@ -310,27 +310,33 @@ module Shoulda
         # end
 
         def expectation
-          ValidationMatcher::BuildExpectation.call(self, 'be valid')
+          error_type_clause =
+            if expects_strict?
+              'raise a validation exception'
+            else
+              'produce the validation error'
+            end
+
+          if expected_message
+            ValidationMatcher::BuildExpectation.call(
+              self,
+              "not to #{error_type_clause} #{expected_message.inspect}",
+              state: :valid,
+            )
+          else
+            ValidationMatcher::BuildExpectation.call(
+              self,
+              'to be valid',
+              state: :valid,
+            )
+          end
         end
 
         def aberration_description
           if was_negated?
-            'However, it was valid.'
+            positive_aberration_description
           else
-            validator = result.validator
-
-            description = 'However, '
-
-            if validator.captured_validation_exception?
-              description << ' it raised a validation exception with the message '
-              description << validator.validation_exception_message.inspect
-              description << '.'
-            else
-              description << " it produced these validation errors:\n\n"
-              description << validator.all_formatted_validation_error_messages
-            end
-
-            description
+            negative_aberration_description
           end
         end
 

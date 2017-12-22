@@ -112,11 +112,59 @@ module Shoulda
         end
 
         def expectation_description
-          if was_negated?
-            "Expected #{model} not to #{expectation}."
+          "Expected #{model} #{expectation}."
+        end
+
+        def positive_aberration_description
+          validator = result.validator
+          message = ''
+
+          if validator.validation_message_type_matches?
+            if validator.has_validation_messages?
+              message << 'The record was invalid, but'
+
+              if validator.captured_validation_exception?
+                message << ' the exception message was '
+                message << validator.validation_exception_message.inspect
+                message << ' instead.'
+              else
+                message << " it produced these validation errors instead:\n\n"
+                message << validator.all_formatted_validation_error_messages
+              end
+            elsif expects_strict?
+              message << 'However, no such exception was raised.'
+            else
+              message << 'However, no such error was found.'
+            end
+          elsif validator.captured_validation_exception?
+            message << 'The record was invalid, but it'
+            message << ' raised a validation exception '
+            message << validator.validation_exception_message.inspect
+            message << ' instead.'
           else
-            "Expected #{model} to #{expectation}."
+            message << 'The record was invalid, but '
+            message << " it produced these validation errors instead:\n\n"
+            message << validator.all_formatted_validation_error_messages
           end
+
+          message
+        end
+
+        def negative_aberration_description
+          validator = result.validator
+
+          description = 'However, '
+
+          if validator.captured_validation_exception?
+            description << ' it raised a validation exception with the message '
+            description << validator.validation_exception_message.inspect
+            description << '.'
+          else
+            description << " it produced these validation errors:\n\n"
+            description << validator.all_formatted_validation_error_messages
+          end
+
+          description
         end
 
         def expectation_clauses_for_values_to_preset
@@ -182,7 +230,7 @@ module Shoulda
 
           message =
             if result.attribute_setter.successfully_checked?
-              "Expected #{model} to #{expectation}, but it did not."
+              "Expected #{model} #{expectation}, but it did not."
             else
               attribute_setter.failure_message
             end
@@ -218,7 +266,7 @@ module Shoulda
 
           message =
             if result.attribute_setter.successfully_checked?
-              "Expected #{model} not to #{expectation}, but it did."
+              "Expected #{model} #{expectation}, but it did."
             else
               attribute_setter.failure_message
             end

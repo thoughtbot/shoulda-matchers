@@ -86,11 +86,11 @@ module Shoulda
           @expected_message = :accepted
         end
 
+        protected
+
         def simple_description
           "validate acceptance of :#{attribute}"
         end
-
-        protected
 
         def add_submatchers
           add_submatcher_disallowing(false, expected_message)
