@@ -59,10 +59,11 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
       message = <<-MESSAGE
 Your test expecting Example to validate absence of :attr didn't pass.
 
-All of these subtests should have passed:
+The matcher ran the following subtests. Those indicated with ✘ failed
+when they should have passed:
 
-* After setting :attr to ‹"an arbitrary value"›, the matcher expected
-  the Example to be invalid, but it was valid instead. (✘)
+✘ Expected Example to be invalid with :attr set to ‹"an arbitrary
+  value"›. However, it was valid.
       MESSAGE
 
       assertion = lambda do
@@ -101,10 +102,11 @@ All of these subtests should have passed:
       message = <<-MESSAGE
 Your test expecting Example to validate absence of :attr didn't pass.
 
-All of these subtests should have passed:
+The matcher ran the following subtests. Those indicated with ✘ failed
+when they should have passed:
 
-* After setting :attr to ‹"an arbitrary value"›, the matcher expected
-  the Example to be invalid, but it was valid instead. (✘)
+✘ Expected Example to be invalid with :attr set to ‹"an arbitrary
+  value"›. However, it was valid.
       MESSAGE
 
       assertion = lambda do
@@ -168,10 +170,11 @@ All of these subtests should have passed:
       message = <<-MESSAGE
 Your test expecting Parent to validate absence of :children didn't pass.
 
-All of these subtests should have passed:
+The matcher ran the following subtests. Those indicated with ✘ failed
+when they should have passed:
 
-* After setting :children to ‹[#<Child id: nil>]›, the matcher expected
-  the Parent to be invalid, but it was valid instead. (✘)
+✘ Expected Parent to be invalid with :children set to ‹[#<Child id:
+  nil>]›. However, it was valid.
       MESSAGE
 
       assertion = lambda do

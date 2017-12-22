@@ -21,6 +21,14 @@ module Shoulda
           ValidationMatcher::BuildDescription.call(self, simple_description)
         end
 
+        def expectation_description
+          if was_negated?
+            "Expected #{model} not to #{expectation}."
+          else
+            "Expected #{model} to #{expectation}."
+          end
+        end
+
         def on(context)
           @context = context
           self
@@ -82,13 +90,13 @@ module Shoulda
 
           if was_negated?
             message << Shoulda::Matchers.word_wrap(
-              'The following subtests were run. ' +
+              'The matcher ran the following subtests. ' +
               'All passed, but at least one of them should have failed:',
             )
           else
             message << Shoulda::Matchers.word_wrap(
-              'The following subtests were run. ' +
-              'The tests indicated with (✘) failed when they should have ' +
+              'The matcher ran the following subtests. ' +
+              'Those indicated with ✘ failed when they should have ' +
               'passed:',
             )
           end
@@ -97,18 +105,23 @@ module Shoulda
 
           list = submatcher_results.map do |result|
             item = ''
+            item << result.submatcher_expectation_description
 
-            item <<
-              if result.expected?
-                "#{result.submatcher_expectation} (✔︎)"
-              elsif result.matched?
-                "#{result.submatcher_expectation}"
-              else
-                "#{result.submatcher_expectation} (✘)"
-              end
+            if !result.expected? && result.submatcher_aberration_description.present?
+              item << ' ' + result.submatcher_aberration_description
+            end
 
             indented_item = Shoulda::Matchers.word_wrap(item, indent: 2)
-            indented_item[0] = '*'
+
+            indented_item[0] =
+              if result.expected?
+                '✔︎'
+              elsif result.matched?
+                '*'
+              else
+                '✘'
+              end
+
             indented_item
           end
 
@@ -293,12 +306,12 @@ module Shoulda
             submatcher.failure_message
           end
 
-          def submatcher_expectation
-            if submatcher.was_negated?
-              "Expected #{submatcher.model} not to #{submatcher.expectation}"
-            else
-              "Expected #{submatcher.model} to #{submatcher.expectation}"
-            end
+          def submatcher_expectation_description
+            submatcher.expectation_description
+          end
+
+          def submatcher_aberration_description
+            submatcher.aberration_description
           end
 
           def submatcher_includes_attribute_changed_value_message?

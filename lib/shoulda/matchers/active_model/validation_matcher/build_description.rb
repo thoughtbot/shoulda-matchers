@@ -5,59 +5,98 @@ module Shoulda
         # @private
         class BuildDescription
           def self.call(matcher, main_description)
-            new(matcher, main_description).call
+            new(matcher).call(main_description)
           end
 
-          def initialize(matcher, main_description)
+          def initialize(matcher)
             @matcher = matcher
-            @main_description = main_description
           end
 
-          def call
-            if description_clauses_for_qualifiers.any?
+          def call(main_description)
+            if description_clauses_for_qualifiers.present?
               [main_description, description_clauses_for_qualifiers].join(', ')
             else
               main_description
             end
           end
 
+          def description_clauses_for_qualifiers
+            parts = [
+              description_clause_for_allow_blank_or_nil,
+              description_clause_for_strict_or_custom_validation_message,
+            ]
+
+            parts.select(&:present?).join(', and')
+          end
+
           protected
 
-          attr_reader :matcher, :main_description
+          attr_reader :matcher
 
           private
 
-          def description_clauses_for_qualifiers
-            description_clauses = []
+          def description_clause_for_allow_blank_or_nil
+            if expects_to_allow_blank?
+              description_clause_for_allow_blank
+            elsif expects_to_allow_nil?
+              description_clause_for_allow_nil
+            end
+          end
 
-            if matcher.try(:expects_to_allow_blank?)
-              description_clauses << 'only if it is not blank'
-            elsif matcher.try(:expects_to_allow_nil?)
-              description_clauses << 'only if it is not nil'
+          def description_clause_for_strict_or_custom_validation_message
+            if expects_strict?
+              description_clause_for_strict
+            elsif expects_custom_validation_message?
+              description_clause_for_custom_validation_message
+            end
+          end
+
+          def description_clause_for_allow_blank
+            'only if it is not blank'
+          end
+
+          def description_clause_for_allow_nil
+            'only if it is not nil'
+          end
+
+          def description_clause_for_strict
+            parts = []
+
+            parts << 'raising a validation exception'
+
+            if matcher.try(:expects_custom_validation_message?)
+              parts << matcher.expected_message.inspect
             end
 
-            if matcher.try(:expects_strict?)
-              clause = ''
+            parts << 'on failure'
 
-              if matcher.try(:expects_custom_validation_message?)
-                clause << 'raising a validation exception '
-                clause << matcher.expected_message.inspect
-              else
-                clause << 'raising a validation exception'
-              end
+            parts.join(' ')
+          end
 
-              clause << ' on failure'
+          def description_clause_for_custom_validation_message
+            parts = [
+              'producing a validation error',
+              matcher.expected_message.inspect,
+              'on failure',
+            ]
 
-              description_clauses << clause
-            elsif matcher.try(:expects_custom_validation_message?)
-              clause = ''
-              clause << 'producing a validation error '
-              clause << matcher.expected_message.inspect
-              clause << 'on failure'
-              description_clauses << clause
-            end
+            parts.join(' ')
+          end
 
-            description_clauses.join(', and')
+          def expects_to_allow_blank?
+            matcher.try(:expects_to_allow_blank?)
+          end
+
+          def expects_to_allow_nil?
+            matcher.try(:expects_to_allow_nil?)
+          end
+
+          def expects_strict?
+            matcher.try(:expects_strict?)
+          end
+
+          def expects_custom_validation_message?
+            matcher.try(:expects_custom_validation_message?)
           end
         end
       end

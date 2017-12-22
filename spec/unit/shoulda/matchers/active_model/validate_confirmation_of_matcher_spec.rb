@@ -3,7 +3,7 @@ require 'unit_spec_helper'
 describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :model do
   include UnitTests::ConfirmationMatcherHelpers
 
-  context '#description' do
+  describe '#description' do
     it 'includes the name of the attribute which is being confirmed' do
       builder = builder_for_record_validating_confirmation
       matcher = described_class.new(builder.attribute_to_confirm)
@@ -36,20 +36,29 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :m
           attribute_name: :password,
           changing_values_with: :next_value,
           expected_message: <<-MESSAGE.strip
-Example did not properly validate that :password_confirmation matches
-:password.
-  After setting :password_confirmation to ‹"same value"›, then setting
-  :password to ‹"same value"› -- which was read back as ‹"same valuf"›
-  -- the matcher expected the Example to be valid, but it was invalid
-  instead, producing these validation errors:
+Your test expecting Example to validate confirmation of :password didn't
+pass.
+
+The matcher ran the following subtests. Those indicated with ✘ failed
+when they should have passed:
+
+✔︎ Expected Example to be invalid with :password_confirmation set to
+  ‹"some value"› and :password set to ‹"different value"› (which was
+  read back as ‹"different valuf"›).
+✘ Expected Example to be valid with :password_confirmation set to ‹"same
+  value"› and :password set to ‹"same value"› (which was read back as
+  ‹"same valuf"›). However, it produced these validation errors:
 
   * password_confirmation: ["doesn't match Password"]
+✔︎ Expected Example to be valid with :password_confirmation set to ‹nil›
+  and :password set to ‹"any value"› (which was read back as ‹"any
+  valuf"›).
 
-  As indicated in the message above, :password seems to be changing
-  certain values as they are set, and this could have something to do
-  with why this test is failing. If you've overridden the writer method
-  for this attribute, then you may need to change it to make this test
-  pass, or do something else entirely.
+As indicated above, :password seems to be changing certain values as
+they are set, and this could have something to do with why this matcher
+is failing. If you've overridden the writer method for this attribute,
+then you may need to change it to make this matcher pass. Otherwise, you
+may need to do something else entirely.
           MESSAGE
         },
       },
@@ -108,11 +117,19 @@ The matcher attempted to set :attribute_to_confirm on the Example to
       end
 
       message = <<-MESSAGE
-Example did not properly validate that
-:attribute_to_confirm_confirmation matches :attribute_to_confirm.
-  After setting :attribute_to_confirm_confirmation to ‹"some value"›,
-  then setting :attribute_to_confirm to ‹"different value"›, the matcher
-  expected the Example to be invalid, but it was valid instead.
+Your test expecting Example to validate confirmation of
+:attribute_to_confirm didn't pass.
+
+The matcher ran the following subtests. Those indicated with ✘ failed
+when they should have passed:
+
+✘ Expected Example to be invalid with :attribute_to_confirm_confirmation
+  set to ‹"some value"› and :attribute_to_confirm set to ‹"different
+  value"›. However, it was valid.
+✔︎ Expected Example to be valid with :attribute_to_confirm_confirmation
+  set to ‹"same value"› and :attribute_to_confirm set to ‹"same value"›.
+✔︎ Expected Example to be valid with :attribute_to_confirm_confirmation
+  set to ‹nil› and :attribute_to_confirm set to ‹"any value"›.
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)

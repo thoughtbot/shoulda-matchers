@@ -45,6 +45,20 @@ module Shoulda
             description
           end
 
+          def expectation_clause
+            clause = ''
+            clause << ":#{attribute_name} set to "
+            clause << Shoulda::Matchers::Util.inspect_value(value_written)
+
+            if attribute_changed_value?
+              clause << ' (which was read back as '
+              clause << Shoulda::Matchers::Util.inspect_value(value_read)
+              clause << ')'
+            end
+
+            clause
+          end
+
           def run
             check && set
           end

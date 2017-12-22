@@ -305,13 +305,33 @@ module Shoulda
 
       # @private
       class AllowValueMatcher < AllowOrDisallowValueMatcher
-        def simple_description
-          "fail validation with :#{attribute_to_set} set to something " +
-            "other than #{inspected_values_to_set}"
-        end
+        # def description_of_values_to_disallow
+          # "something other than #{inspected_values_to_set}"
+        # end
 
         def expectation
-          simple_description
+          ValidationMatcher::BuildExpectation.call(self, 'be valid')
+        end
+
+        def aberration_description
+          if was_negated?
+            'However, it was valid.'
+          else
+            validator = result.validator
+
+            description = 'However, '
+
+            if validator.captured_validation_exception?
+              description << ' it raised a validation exception with the message '
+              description << validator.validation_exception_message.inspect
+              description << '.'
+            else
+              description << " it produced these validation errors:\n\n"
+              description << validator.all_formatted_validation_error_messages
+            end
+
+            description
+          end
         end
 
         def matches?(subject)

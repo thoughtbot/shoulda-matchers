@@ -111,6 +111,26 @@ module Shoulda
           ValidationMatcher::BuildDescription.call(self, simple_description)
         end
 
+        def expectation_description
+          if was_negated?
+            "Expected #{model} not to #{expectation}."
+          else
+            "Expected #{model} to #{expectation}."
+          end
+        end
+
+        def expectation_clauses_for_values_to_preset
+          attribute_setters_for_values_to_preset.
+            select(&:attribute_set?).
+            map(&:attribute_setter_expectation_clause)
+        end
+
+        def expectation_clauses_for_values_to_set
+          attribute_setters_and_validators_for_values_to_set.
+            select(&:attribute_set?).
+            map(&:attribute_setter_expectation_clause)
+        end
+
         def model
           subject.class
         end
@@ -284,9 +304,9 @@ module Shoulda
 
         def default_failure_message_preface
           ''.tap do |preface|
-            if descriptions_for_preset_values.any?
+            if descriptions_for_values_to_preset.any?
               preface << 'After setting '
-              preface << descriptions_for_preset_values.to_sentence
+              preface << descriptions_for_values_to_preset.to_sentence
               preface << ', then '
             else
               preface << 'After '
@@ -312,19 +332,10 @@ module Shoulda
           <<-MESSAGE.strip
 As indicated above, :#{result.attribute_setter.attribute_name} seems to be
 changing certain values as they are set, and this could have something to do
-with why this test is failing. If you've overridden the writer method for this
-attribute, then you may need to change it to make this test pass. Otherwise, you
-may need to do something else entirely.
+with why this matcher is failing. If you've overridden the writer method for
+this attribute, then you may need to change it to make this matcher pass.
+Otherwise, you may need to do something else entirely.
           MESSAGE
-        end
-
-        def descriptions_for_preset_values
-          attribute_setters_for_values_to_preset.
-            map(&:attribute_setter_description)
-        end
-
-        def description_for_resulting_attribute_setter
-          result.attribute_setter_description
         end
 
         def attribute_setters_for_values_to_preset
@@ -358,6 +369,7 @@ may need to do something else entirely.
         def default_attribute_message
           default_error_message(
             options[:expected_message],
+            attribute_to_check_message_against,
             default_attribute_message_values,
           )
         end

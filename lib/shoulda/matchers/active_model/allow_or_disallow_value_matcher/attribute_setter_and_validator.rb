@@ -38,8 +38,12 @@ module Shoulda
             )
           end
 
-          def attribute_setter_description
-            attribute_setter.description
+          def attribute_set?
+            attribute_setter.set?
+          end
+
+          def attribute_setter_expectation_clause
+            attribute_setter.expectation_clause
           end
 
           def validator

@@ -16,9 +16,8 @@ module Shoulda
           list_items.join("\n")
         end
 
-        def default_error_message(type, options = {})
+        def default_error_message(type, attribute, options = {})
           model_name = options.delete(:model_name)
-          attribute = options.fetch(:attribute)
           instance = options.delete(:instance)
 
           RailsShim.generate_validation_message(

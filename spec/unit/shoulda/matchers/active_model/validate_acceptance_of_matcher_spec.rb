@@ -23,16 +23,16 @@ describe Shoulda::Matchers::ActiveModel::ValidateAcceptanceOfMatcher, type: :mod
           expected_message: <<-MESSAGE.strip
 Your test expecting Example to validate acceptance of :attr didn't pass.
 
-All of these subtests should have passed:
+The matcher ran the following subtests. Those indicated with ✘ failed
+when they should have passed:
 
-* After setting :attr to ‹false› -- which was read back as ‹nil› -- the
-  matcher expected the Example to be invalid, but it was valid instead.
-  (✘)
+✘ Expected Example to be invalid with :attr set to ‹false› (which was
+  read back as ‹nil›). However, it was valid.
 
 As indicated above, :attr seems to be changing certain values as they
-are set, and this could have something to do with why this test is
+are set, and this could have something to do with why this matcher is
 failing. If you've overridden the writer method for this attribute, then
-you may need to change it to make this test pass. Otherwise, you may
+you may need to change it to make this matcher pass. Otherwise, you may
 need to do something else entirely.
           MESSAGE
         },

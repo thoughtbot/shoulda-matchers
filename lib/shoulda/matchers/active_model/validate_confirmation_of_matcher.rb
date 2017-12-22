@@ -129,7 +129,7 @@ module Shoulda
           matcher.with_message(
             expected_message,
             against: confirmation_attribute,
-            values: { attribute: attribute },
+            values: { attribute: model.human_attribute_name(attribute) },
           )
         end
       end

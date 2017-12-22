@@ -16,13 +16,6 @@ module Shoulda
           @captured_validation_exception = false
         end
 
-        # -- should be no validation messages
-        # expect(record).to allow_value(...)
-        # -- should be validation messages AND the message should match
-        # expect(record).not_to allow_value(...).with_message("something")
-        # -- should be validation messages AND the exception should match
-        # expect(record).not_to allow_value(...).with_message("something").strict
-
         def passes?
           perform_validation
           validation_messages.none?
