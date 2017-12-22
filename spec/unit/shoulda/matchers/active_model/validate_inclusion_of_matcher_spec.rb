@@ -490,13 +490,10 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         reject_if_qualified_but_changing_value_interferes: {
           attribute_name: :attr,
           changing_values_with: :next_value,
-          expected_message_includes: "
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
-          ".strip
+          expected_message_includes: <<-MESSAGE.strip
+As indicated above, :attr seems to be changing certain values as they
+are set
+          MESSAGE
         }
       }
     )
@@ -610,13 +607,10 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         reject_if_qualified_but_changing_value_interferes: {
           attribute_name: :attr,
           changing_values_with: :next_value,
-          expected_message_includes: "
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
-          ".strip
+          expected_message_includes: <<-MESSAGE.strip
+As indicated above, :attr seems to be changing certain values as they
+are set
+          MESSAGE
         }
       }
     )

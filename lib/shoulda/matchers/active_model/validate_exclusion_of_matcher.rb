@@ -156,41 +156,41 @@ module Shoulda
           end
         end
 
-        def matches?(subject)
-          super(subject)
-
+        def add_submatchers
           if @range
-            allows_lower_value &&
-              disallows_minimum_value &&
-              allows_higher_value &&
-              disallows_maximum_value
+            add_submatcher_allowing_lower_value
+            add_submatcher_disallowing_minimum_value
+            add_submatcher_allowing_higher_value
+            add_submatcher_disallowing_maximum_value
           elsif @array
-            disallows_all_values_in_array?
+            add_submatchers_disallowing_all_values_in_array
           end
         end
 
         private
 
-        def disallows_all_values_in_array?
-          @array.all? do |value|
-            disallows_value_of(value, @expected_message)
+        def add_submatchers_disallowing_all_values_in_array
+          @array.each do |value|
+            add_submatcher_disallowing(value, @expected_message)
           end
         end
 
-        def allows_lower_value
-          @minimum == 0 || allows_value_of(@minimum - 1, @expected_message)
+        def add_submatcher_allowing_lower_value
+          if @minimum != 0
+            add_submatcher_allowing(@minimum - 1, @expected_message)
+          end
         end
 
-        def allows_higher_value
-          allows_value_of(@maximum + 1, @expected_message)
+        def add_submatcher_allowing_higher_value
+          add_submatcher_allowing(@maximum + 1, @expected_message)
         end
 
-        def disallows_minimum_value
-          disallows_value_of(@minimum, @expected_message)
+        def add_submatcher_disallowing_minimum_value
+          add_submatcher_disallowing(@minimum, @expected_message)
         end
 
-        def disallows_maximum_value
-          disallows_value_of(@maximum, @expected_message)
+        def add_submatcher_disallowing_maximum_value
+          add_submatcher_disallowing(@maximum, @expected_message)
         end
 
         def inspect_message

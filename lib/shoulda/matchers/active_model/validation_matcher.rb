@@ -125,7 +125,7 @@ module Shoulda
             indented_item
           end
 
-          message << list.join("\n")
+          message << list.join("\n\n")
 
           if submatcher_result_with_attribute_changed_value_message.present?
             attribute_changed_value_message = Shoulda::Matchers.word_wrap(
@@ -168,7 +168,7 @@ module Shoulda
           add_submatcher(matcher)
           matcher
         end
-        alias_method :add_matcher_allowing, :allows_value_of
+        alias_method :add_submatcher_allowing, :allows_value_of
 
         def disallows_value_of(value_or_values, message = nil, &block)
           matcher =
@@ -180,7 +180,7 @@ module Shoulda
           add_submatcher(matcher)
           matcher
         end
-        alias_method :add_matcher_disallowing, :disallows_value_of
+        alias_method :add_submatcher_disallowing, :disallows_value_of
 
         def allow_value_matcher(*values, message: nil, &block)
           build_allow_or_disallow_value_matcher(

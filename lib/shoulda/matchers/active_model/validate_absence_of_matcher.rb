@@ -90,7 +90,7 @@ module Shoulda
         protected
 
         def add_submatchers
-          add_matcher_disallowing([value], expected_message)
+          add_submatcher_disallowing([value], expected_message)
         end
 
         private

@@ -25,19 +25,31 @@ describe Shoulda::Matchers::ActiveModel::ValidateExclusionOfMatcher, type: :mode
           attribute_name: :attr,
           changing_values_with: :next_value,
           expected_message: <<-MESSAGE.strip
-Example did not properly validate that :attr lies outside the range ‹2›
-to ‹5›.
-  After setting :attr to ‹1› -- which was read back as ‹2› -- the
-  matcher expected the Example to be valid, but it was invalid instead,
-  producing these validation errors:
+Your test expecting Example to validate that :attr lies outside the
+range ‹2› to ‹5› didn't pass.
+
+The matcher ran the following subtests. Those indicated with ✘ failed
+when they should have passed:
+
+✘ Expected Example to be valid with :attr set to ‹1› (which was read
+  back as ‹2›). However, it produced these validation errors:
 
   * attr: ["is reserved"]
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+✔︎ Expected Example to be invalid with :attr set to ‹2› (which was read
+  back as ‹3›).
+
+✔︎ Expected Example to be valid with :attr set to ‹6› (which was read
+  back as ‹7›).
+
+✘ Expected Example to be invalid with :attr set to ‹5› (which was read
+  back as ‹6›). However, it was valid.
+
+As indicated above, :attr seems to be changing certain values as they
+are set, and this could have something to do with why this matcher is
+failing. If you've overridden the writer method for this attribute, then
+you may need to change it to make this matcher pass. Otherwise, you may
+need to do something else entirely.
           MESSAGE
         },
       },
@@ -161,17 +173,23 @@ to ‹5›.
           attribute_name: :attr,
           changing_values_with: :next_value,
           expected_message: <<-MESSAGE.strip
-Example did not properly validate that :attr is neither ‹"one"› nor
-‹"two"›.
-  After setting :attr to ‹"one"› -- which was read back as ‹"onf"› --
-  the matcher expected the Example to be invalid, but it was valid
-  instead.
+Your test expecting Example to validate that :attr is neither ‹"one"›
+nor ‹"two"› didn't pass.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+The matcher ran the following subtests. Those indicated with ✘ failed
+when they should have passed:
+
+✘ Expected Example to be invalid with :attr set to ‹"one"› (which was
+  read back as ‹"onf"›). However, it was valid.
+
+✘ Expected Example to be invalid with :attr set to ‹"two"› (which was
+  read back as ‹"twp"›). However, it was valid.
+
+As indicated above, :attr seems to be changing certain values as they
+are set, and this could have something to do with why this matcher is
+failing. If you've overridden the writer method for this attribute, then
+you may need to change it to make this matcher pass. Otherwise, you may
+need to do something else entirely.
         MESSAGE
         },
       },

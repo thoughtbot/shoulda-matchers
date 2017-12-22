@@ -358,13 +358,13 @@ EOT
         end
 
         def simple_description
-          if @range
-            "allow :#{@attribute} to lie inside the range " +
-              Shoulda::Matchers::Util.inspect_range(@range)
+          if range
+            "validate that :#{attribute} lies inside the range " +
+              Shoulda::Matchers::Util.inspect_range(range)
           else
-            description = "allow :#{@attribute} to be "
+            description = "validate that :#{attribute} is "
 
-            if @array.many?
+            if array.many?
               description << "either #{inspected_array}"
             else
               description << inspected_array
@@ -374,96 +374,96 @@ EOT
           end
         end
 
-        def matches?(subject)
-          if @array
-            add_submatchers_to_test_array
-          elsif @range
-            add_submatchers_to_test_range
+        def add_submatchers
+          if array
+            add_submatchers_for_array
+          elsif range
+            add_submatchers_for_range
           end
-
-          super(subject)
         end
 
         def pretty_print(pp)
           Shoulda::Matchers::Util.pretty_print(self, pp, {
             was_negated: was_negated?,
-            range: @range,
-            array: @array,
-            attribute: @attribute,
-            subject: subject,
+            range: range,
+            array: array,
+            attribute: attribute,
+            record: record,
             last_submatcher_run: last_submatcher_run,
           })
         end
 
         private
 
-        def add_submatchers_to_test_range
-          add_matcher_disallowing_lower_value
-          add_matcher_allowing_minimum_value
-          add_matcher_disallowing_higher_value
-          add_matcher_allowing_maximum_value
+        attr_reader :range, :array
+
+        def add_submatchers_for_range
+          add_submatcher_disallowing_lower_value
+          add_submatcher_allowing_minimum_value
+          add_submatcher_disallowing_higher_value
+          add_submatcher_allowing_maximum_value
         end
 
-        def add_submatchers_to_test_array
-          add_matcher_allowing_all_values_in_array
-          add_matcher_allowing_blank
-          add_matcher_allowing_nil
-          add_matcher_disallowing_values_outside_of_array
+        def add_submatchers_for_array
+          add_submatcher_allowing_all_values_in_array
+          add_submatcher_allowing_blank
+          add_submatcher_allowing_nil
+          add_submatcher_disallowing_values_outside_of_array
         end
 
-        def add_matcher_allowing_blank
+        def add_submatcher_allowing_blank
           if @options.key?(:allow_blank)
             blank_values = ['', ' ', "\n", "\r", "\t", "\f"]
 
             if @options[:allow_blank]
               blank_values.each do |value|
-                add_matcher_allowing(value)
+                add_submatcher_allowing(value)
               end
             else
               blank_values.each do |value|
-                add_matcher_disallowing(value)
+                add_submatcher_disallowing(value)
               end
             end
           end
         end
 
-        def add_matcher_allowing_nil
+        def add_submatcher_allowing_nil
           if @options.key?(:allow_nil)
             if @options[:allow_nil]
-              add_matcher_allowing(nil)
+              add_submatcher_allowing(nil)
             else
-              add_matcher_disallowing(nil)
+              add_submatcher_disallowing(nil)
             end
           end
         end
 
-        def add_matcher_allowing_all_values_in_array
-          @array.each do |value|
-            add_matcher_allowing(value).with_message(@low_message)
+        def add_submatcher_allowing_all_values_in_array
+          array.each do |value|
+            add_submatcher_allowing(value).with_message(@low_message)
           end
         end
 
-        def add_matcher_disallowing_lower_value
+        def add_submatcher_disallowing_lower_value
           if !@minimum.nil? && @minimum > 0
-            add_matcher_disallowing(@minimum - 1).with_message(@low_message)
+            add_submatcher_disallowing(@minimum - 1).with_message(@low_message)
           end
         end
 
-        def add_matcher_disallowing_higher_value
-          add_matcher_disallowing(@maximum + 1).with_message(@high_message)
+        def add_submatcher_disallowing_higher_value
+          add_submatcher_disallowing(@maximum + 1).with_message(@high_message)
         end
 
-        def add_matcher_allowing_minimum_value
-          add_matcher_allowing(@minimum).with_message(@low_message)
+        def add_submatcher_allowing_minimum_value
+          add_submatcher_allowing(@minimum).with_message(@low_message)
         end
 
-        def add_matcher_allowing_maximum_value
-          add_matcher_allowing(@maximum).with_message(@high_message)
+        def add_submatcher_allowing_maximum_value
+          add_submatcher_allowing(@maximum).with_message(@high_message)
         end
 
-        def add_matcher_disallowing_values_outside_of_array
+        def add_submatcher_disallowing_values_outside_of_array
           if attribute_type == :boolean
-            case @array
+            case array
             when [false, true], [true, false]
               Shoulda::Matchers.warn BOOLEAN_ALLOWS_BOOLEAN_MESSAGE
               return true
@@ -472,18 +472,18 @@ EOT
                 Shoulda::Matchers.warn BOOLEAN_ALLOWS_NIL_MESSAGE
                 return true
               else
-                raise NonNullableBooleanError.create(@attribute)
+                raise NonNullableBooleanError.create(attribute)
               end
             end
           end
 
           values_outside_of_array.each do |value|
-            add_matcher_disallowing(value).with_message(@low_message)
+            add_submatcher_disallowing(value).with_message(@low_message)
           end
         end
 
         def values_outside_of_array
-          if @array.any? { |value| outside_values.include?(value) }
+          if array.any? { |value| outside_values.include?(value) }
             raise CouldNotDetermineValueOutsideOfArray
           else
             outside_values
@@ -512,7 +512,7 @@ EOT
         def boolean_outside_values
           values = []
 
-          values << case @array
+          values << case array
             when [true]  then false
             when [false] then true
             else              raise CouldNotDetermineValueOutsideOfArray
@@ -529,7 +529,7 @@ EOT
           if attribute_column
             column_type_to_attribute_type(attribute_column.type)
           else
-            value_to_attribute_type(subject.__send__(@attribute))
+            value_to_attribute_type(record.__send__(attribute))
           end
         end
 
@@ -542,8 +542,8 @@ EOT
         end
 
         def attribute_column
-          if subject.class.respond_to?(:columns_hash)
-            subject.class.columns_hash[@attribute.to_s]
+          if model.respond_to?(:columns_hash)
+            model.columns_hash[attribute.to_s]
           end
         end
 
@@ -568,7 +568,7 @@ EOT
         end
 
         def inspected_array
-          Shoulda::Matchers::Util.inspect_values(@array).to_sentence(
+          Shoulda::Matchers::Util.inspect_values(array).to_sentence(
             two_words_connector: " or ",
             last_word_connector: ", or "
           )

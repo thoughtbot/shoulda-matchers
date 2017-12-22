@@ -95,29 +95,29 @@ module Shoulda
         protected
 
         def add_submatchers
-          add_matcher_disallowing_different_value
-          add_matcher_allowing_same_value
-          add_matcher_allowing_missing_confirmation
+          add_submatcher_disallowing_different_value
+          add_submatcher_allowing_same_value
+          add_submatcher_allowing_missing_confirmation
         end
 
         private
 
         attr_reader :expected_message, :confirmation_attribute
 
-        def add_matcher_disallowing_different_value
-          add_matcher_disallowing('different value') do |matcher|
+        def add_submatcher_disallowing_different_value
+          add_submatcher_disallowing('different value') do |matcher|
             qualify_matcher(matcher, 'some value')
           end
         end
 
-        def add_matcher_allowing_same_value
-          add_matcher_allowing('same value') do |matcher|
+        def add_submatcher_allowing_same_value
+          add_submatcher_allowing('same value') do |matcher|
             qualify_matcher(matcher, 'same value')
           end
         end
 
-        def add_matcher_allowing_missing_confirmation
-          add_matcher_allowing('any value') do |matcher|
+        def add_submatcher_allowing_missing_confirmation
+          add_submatcher_allowing('any value') do |matcher|
             qualify_matcher(matcher, nil)
           end
         end
