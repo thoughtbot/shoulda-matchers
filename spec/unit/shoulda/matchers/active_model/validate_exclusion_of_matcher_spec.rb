@@ -31,19 +31,19 @@ range ‹2› to ‹5› didn't pass.
 The matcher ran the following subtests. Those indicated with ✘ failed
 when they should have passed:
 
-✘ Expected Example to be valid with :attr set to ‹1› (which was read
-  back as ‹2›). However, it produced these validation errors:
+✘ Expected Example not to fail validation by placing the error "is
+  reserved" on :attr with :attr set to ‹1› (which was read back as ‹2›).
+  However, it did.
 
-  * attr: ["is reserved"]
+✔︎ Expected Example to fail validation by placing the error "is reserved"
+  on :attr with :attr set to ‹2› (which was read back as ‹3›).
 
-✔︎ Expected Example to be invalid with :attr set to ‹2› (which was read
-  back as ‹3›).
+✔︎ Expected Example not to fail validation by placing the error "is
+  reserved" on :attr with :attr set to ‹6› (which was read back as ‹7›).
 
-✔︎ Expected Example to be valid with :attr set to ‹6› (which was read
-  back as ‹7›).
-
-✘ Expected Example to be invalid with :attr set to ‹5› (which was read
-  back as ‹6›). However, it was valid.
+✘ Expected Example to fail validation by placing the error "is reserved"
+  on :attr with :attr set to ‹5› (which was read back as ‹6›). However,
+  no such error was found on :attr.
 
 As indicated above, :attr seems to be changing certain values as they
 are set, and this could have something to do with why this matcher is
@@ -179,11 +179,13 @@ nor ‹"two"› didn't pass.
 The matcher ran the following subtests. Those indicated with ✘ failed
 when they should have passed:
 
-✘ Expected Example to be invalid with :attr set to ‹"one"› (which was
-  read back as ‹"onf"›). However, it was valid.
+✘ Expected Example to fail validation by placing the error "is reserved"
+  on :attr with :attr set to ‹"one"› (which was read back as ‹"onf"›).
+  However, no such error was found on :attr.
 
-✘ Expected Example to be invalid with :attr set to ‹"two"› (which was
-  read back as ‹"twp"›). However, it was valid.
+✘ Expected Example to fail validation by placing the error "is reserved"
+  on :attr with :attr set to ‹"two"› (which was read back as ‹"twp"›).
+  However, no such error was found on :attr.
 
 As indicated above, :attr seems to be changing certain values as they
 are set, and this could have something to do with why this matcher is

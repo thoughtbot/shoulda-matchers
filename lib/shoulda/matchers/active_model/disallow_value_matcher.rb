@@ -10,15 +10,20 @@ module Shoulda
         def expectation
           error_type_clause =
             if expects_strict?
-              'raise a validation exception'
+              'raising an exception'
             else
-              'produce the validation error'
+              'placing the error'
             end
 
           if expected_message
+            preface =
+              "to fail validation by #{error_type_clause} " +
+              "#{expected_message.inspect} on " +
+              ":#{attribute_to_check_message_against}"
+
             ValidationMatcher::BuildExpectation.call(
               self,
-              "to #{error_type_clause} #{expected_message.inspect}",
+              preface,
               state: :invalid,
             )
           else

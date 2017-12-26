@@ -39,13 +39,13 @@ least 4 didn't pass.
 The matcher ran the following subtests. Those indicated with ✘ failed
 when they should have passed:
 
-✘ Expected Example to produce the validation error "is too short
-  (minimum is 4 characters)" with :attr set to ‹"xxx"› (which was read
-  back as ‹"xxxa"›). However, no such error was found.
+✘ Expected Example to fail validation by placing the error "is too short
+  (minimum is 4 characters)" on :attr with :attr set to ‹"xxx"› (which
+  was read back as ‹"xxxa"›). However, no such error was found on :attr.
 
-✔︎ Expected Example not to produce the validation error "is too short
-  (minimum is 4 characters)" with :attr set to ‹"xxxx"› (which was read
-  back as ‹"xxxxa"›).
+✔︎ Expected Example not to fail validation by placing the error "is too
+  short (minimum is 4 characters)" on :attr with :attr set to ‹"xxxx"›
+  (which was read back as ‹"xxxxa"›).
 
 As indicated above, :attr seems to be changing certain values as they
 are set, and this could have something to do with why this matcher is
@@ -111,13 +111,13 @@ most 4 didn't pass.
 The matcher ran the following subtests. Those indicated with ✘ failed
 when they should have passed:
 
-✘ Expected Example to produce the validation error "is too long (maximum
-  is 4 characters)" with :attr set to ‹"xxxxx"› (which was read back as
-  ‹"xxxx"›). However, no such error was found.
+✘ Expected Example to fail validation by placing the error "is too long
+  (maximum is 4 characters)" on :attr with :attr set to ‹"xxxxx"› (which
+  was read back as ‹"xxxx"›). However, no such error was found on :attr.
 
-✔︎ Expected Example not to produce the validation error "is too long
-  (maximum is 4 characters)" with :attr set to ‹"xxxx"› (which was read
-  back as ‹"xxx"›).
+✔︎ Expected Example not to fail validation by placing the error "is too
+  long (maximum is 4 characters)" on :attr with :attr set to ‹"xxxx"›
+  (which was read back as ‹"xxx"›).
 
 As indicated above, :attr seems to be changing certain values as they
 are set, and this could have something to do with why this matcher is
@@ -176,27 +176,22 @@ didn't pass.
 The matcher ran the following subtests. Those indicated with ✘ failed
 when they should have passed:
 
-✘ Expected Example to produce the validation error "is the wrong length
-  (should be 4 characters)" with :attr set to ‹"xxx"› (which was read
-  back as ‹"xxxa"›). However, no such error was found.
+✘ Expected Example to fail validation by placing the error "is the wrong
+  length (should be 4 characters)" on :attr with :attr set to ‹"xxx"›
+  (which was read back as ‹"xxxa"›). However, no such error was found on
+  :attr.
 
-✘ Expected Example not to produce the validation error "is the wrong
-  length (should be 4 characters)" with :attr set to ‹"xxxx"› (which was
-  read back as ‹"xxxxa"›). However, it produced these validation
-  errors:
+✘ Expected Example not to fail validation by placing the error "is the
+  wrong length (should be 4 characters)" on :attr with :attr set to
+  ‹"xxxx"› (which was read back as ‹"xxxxa"›). However, it did.
 
-  * attr: ["is the wrong length (should be 4 characters)"]
+✔︎ Expected Example to fail validation by placing the error "is the wrong
+  length (should be 4 characters)" on :attr with :attr set to ‹"xxxxx"›
+  (which was read back as ‹"xxxxxa"›).
 
-✔︎ Expected Example to produce the validation error "is the wrong length
-  (should be 4 characters)" with :attr set to ‹"xxxxx"› (which was read
-  back as ‹"xxxxxa"›).
-
-✘ Expected Example not to produce the validation error "is the wrong
-  length (should be 4 characters)" with :attr set to ‹"xxxx"› (which was
-  read back as ‹"xxxxa"›). However, it produced these validation
-  errors:
-
-  * attr: ["is the wrong length (should be 4 characters)"]
+✘ Expected Example not to fail validation by placing the error "is the
+  wrong length (should be 4 characters)" on :attr with :attr set to
+  ‹"xxxx"› (which was read back as ‹"xxxxa"›). However, it did.
 
 As indicated above, :attr seems to be changing certain values as they
 are set, and this could have something to do with why this matcher is

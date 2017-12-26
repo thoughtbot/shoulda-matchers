@@ -42,17 +42,20 @@ pass.
 The matcher ran the following subtests. Those indicated with ✘ failed
 when they should have passed:
 
-✔︎ Expected Example to be invalid with :password_confirmation set to
-  ‹"some value"› and :password set to ‹"different value"› (which was
-  read back as ‹"different valuf"›).
-✘ Expected Example to be valid with :password_confirmation set to ‹"same
-  value"› and :password set to ‹"same value"› (which was read back as
-  ‹"same valuf"›). However, it produced these validation errors:
+✔︎ Expected Example to fail validation by placing the error "doesn't
+  match Password" on :password_confirmation with :password_confirmation
+  set to ‹"some value"› and :password set to ‹"different value"› (which
+  was read back as ‹"different valuf"›).
 
-  * password_confirmation: ["doesn't match Password"]
-✔︎ Expected Example to be valid with :password_confirmation set to ‹nil›
-  and :password set to ‹"any value"› (which was read back as ‹"any
-  valuf"›).
+✘ Expected Example not to fail validation by placing the error "doesn't
+  match Password" on :password_confirmation with :password_confirmation
+  set to ‹"same value"› and :password set to ‹"same value"› (which was
+  read back as ‹"same valuf"›). However, it did.
+
+✔︎ Expected Example not to fail validation by placing the error "doesn't
+  match Password" on :password_confirmation with :password_confirmation
+  set to ‹nil› and :password set to ‹"any value"› (which was read back
+  as ‹"any valuf"›).
 
 As indicated above, :password seems to be changing certain values as
 they are set, and this could have something to do with why this matcher
@@ -123,13 +126,21 @@ Your test expecting Example to validate confirmation of
 The matcher ran the following subtests. Those indicated with ✘ failed
 when they should have passed:
 
-✘ Expected Example to be invalid with :attribute_to_confirm_confirmation
-  set to ‹"some value"› and :attribute_to_confirm set to ‹"different
-  value"›. However, it was valid.
-✔︎ Expected Example to be valid with :attribute_to_confirm_confirmation
-  set to ‹"same value"› and :attribute_to_confirm set to ‹"same value"›.
-✔︎ Expected Example to be valid with :attribute_to_confirm_confirmation
-  set to ‹nil› and :attribute_to_confirm set to ‹"any value"›.
+✘ Expected Example to fail validation by placing the error "doesn't
+  match Attribute to confirm" on :attribute_to_confirm_confirmation with
+  :attribute_to_confirm_confirmation set to ‹"some value"› and
+  :attribute_to_confirm set to ‹"different value"›. However, no such
+  error was found on :attribute_to_confirm_confirmation.
+
+✔︎ Expected Example not to fail validation by placing the error "doesn't
+  match Attribute to confirm" on :attribute_to_confirm_confirmation with
+  :attribute_to_confirm_confirmation set to ‹"same value"› and
+  :attribute_to_confirm set to ‹"same value"›.
+
+✔︎ Expected Example not to fail validation by placing the error "doesn't
+  match Attribute to confirm" on :attribute_to_confirm_confirmation with
+  :attribute_to_confirm_confirmation set to ‹nil› and
+  :attribute_to_confirm set to ‹"any value"›.
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)

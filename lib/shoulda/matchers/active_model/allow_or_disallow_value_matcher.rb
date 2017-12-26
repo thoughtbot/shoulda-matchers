@@ -134,7 +134,8 @@ module Shoulda
             elsif expects_strict?
               message << 'However, no such exception was raised.'
             else
-              message << 'However, no such error was found.'
+              message << 'However, no such error was found on '
+              message << ":#{attribute_to_check_message_against}."
             end
           elsif validator.captured_validation_exception?
             message << 'The record was invalid, but it'
@@ -153,18 +154,20 @@ module Shoulda
         def negative_aberration_description
           validator = result.validator
 
-          description = 'However, '
+          # description = 'However, '
 
-          if validator.captured_validation_exception?
-            description << ' it raised a validation exception with the message '
-            description << validator.validation_exception_message.inspect
-            description << '.'
-          else
-            description << " it produced these validation errors:\n\n"
-            description << validator.all_formatted_validation_error_messages
-          end
+          # if validator.captured_validation_exception?
+            # description << ' it raised a validation exception with the message '
+            # description << validator.validation_exception_message.inspect
+            # description << '.'
+          # else
+            # description << " it produced these validation errors:\n\n"
+            # description << validator.all_formatted_validation_error_messages
+          # end
 
-          description
+          # description
+
+          "However, it did."
         end
 
         def expectation_clauses_for_values_to_preset
