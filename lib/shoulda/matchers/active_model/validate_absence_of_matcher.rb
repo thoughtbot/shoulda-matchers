@@ -105,7 +105,7 @@ module Shoulda
           else
             case column_type
             when :integer, :float then 1
-            when :decimal then BigDecimal.new(1, 0)
+            when :decimal then BigDecimal(1, 0)
             when :datetime, :time, :timestamp then Time.now
             when :date then Date.new
             when :binary then '0'
