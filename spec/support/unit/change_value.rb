@@ -37,6 +37,8 @@ module UnitTests
     def next_value
       if value.is_a?(Array)
         value + [value.first.class.new]
+      elsif value.is_a?(Float)
+        value + 0.1
       elsif value.respond_to?(:next)
         value.next
       else
@@ -98,6 +100,12 @@ module UnitTests
 
     def non_numeric_value
       'a'
+    end
+
+    def round_up
+      Float(value).ceil
+    rescue ArgumentError
+      value
     end
 
     def change_value(value, value_changer)

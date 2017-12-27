@@ -5,34 +5,11 @@ module Shoulda
     module ActiveModel
       module NumericalityMatchers
         # @private
-        class NumericTypeMatcher
-          extend Forwardable
+        class NumericTypeMatcher < ValidationMatcher
+          def initialize(numericality_matcher, attribute)
+            super(attribute)
 
-          def_delegators(
-            :disallow_value_matcher,
-            :expects_custom_validation_message?,
-            :expects_strict?,
-            :failure_message,
-            :failure_message_when_negated,
-            :ignore_interference_by_writer,
-            :ignoring_interference_by_writer,
-            :matches?,
-            :on,
-            :strict,
-            :with_message,
-          )
-
-          def initialize(numeric_type_matcher, attribute)
-            @numeric_type_matcher = numeric_type_matcher
-            @attribute = attribute
-          end
-
-          def allowed_type_name
-            'number'
-          end
-
-          def allowed_type_adjective
-            ''
+            @numericality_matcher = numericality_matcher
           end
 
           def diff_to_compare
@@ -41,25 +18,14 @@ module Shoulda
 
           protected
 
-          attr_reader :attribute
+          attr_reader :numericality_matcher
 
-          def wrap_disallow_value_matcher(matcher)
-            raise NotImplementedError
+          def add_submatchers
+            add_submatcher_disallowing(disallowed_value)
           end
 
           def disallowed_value
             raise NotImplementedError
-          end
-
-          private
-
-          def disallow_value_matcher
-            @_disallow_value_matcher ||= begin
-              DisallowValueMatcher.new(disallowed_value).tap do |matcher|
-                matcher.for(attribute)
-                wrap_disallow_value_matcher(matcher)
-              end
-            end
           end
         end
       end

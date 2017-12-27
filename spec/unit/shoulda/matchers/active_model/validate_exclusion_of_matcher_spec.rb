@@ -31,19 +31,21 @@ range ‹2› to ‹5› didn't pass.
 The matcher ran the following subtests. Those indicated with ✘ failed
 when they should have passed:
 
-✘ Expected Example not to fail validation by placing the error "is
-  reserved" on :attr with :attr set to ‹1› (which was read back as ‹2›).
-  However, it did.
+✘ With :attr set to ‹1› (which was read back as ‹2›), the Example was
+  expected not to fail validation by placing the error "is reserved" on
+  :attr. However, it did fail with that error.
 
-✔︎ Expected Example to fail validation by placing the error "is reserved"
-  on :attr with :attr set to ‹2› (which was read back as ‹3›).
+✔︎ With :attr set to ‹2› (which was read back as ‹3›), the Example was
+  expected to fail validation by placing the error "is reserved" on
+  :attr.
 
-✔︎ Expected Example not to fail validation by placing the error "is
-  reserved" on :attr with :attr set to ‹6› (which was read back as ‹7›).
+✔︎ With :attr set to ‹6› (which was read back as ‹7›), the Example was
+  expected not to fail validation by placing the error "is reserved" on
+  :attr.
 
-✘ Expected Example to fail validation by placing the error "is reserved"
-  on :attr with :attr set to ‹5› (which was read back as ‹6›). However,
-  no such error was found on :attr.
+✘ With :attr set to ‹5› (which was read back as ‹6›), the Example was
+  expected to fail validation by placing the error "is reserved" on
+  :attr. However, no such error was found on :attr.
 
 As indicated above, :attr seems to be changing certain values as they
 are set, and this could have something to do with why this matcher is
@@ -179,13 +181,13 @@ nor ‹"two"› didn't pass.
 The matcher ran the following subtests. Those indicated with ✘ failed
 when they should have passed:
 
-✘ Expected Example to fail validation by placing the error "is reserved"
-  on :attr with :attr set to ‹"one"› (which was read back as ‹"onf"›).
-  However, no such error was found on :attr.
+✘ With :attr set to ‹"one"› (which was read back as ‹"onf"›), the
+  Example was expected to fail validation by placing the error "is
+  reserved" on :attr. However, no such error was found on :attr.
 
-✘ Expected Example to fail validation by placing the error "is reserved"
-  on :attr with :attr set to ‹"two"› (which was read back as ‹"twp"›).
-  However, no such error was found on :attr.
+✘ With :attr set to ‹"two"› (which was read back as ‹"twp"›), the
+  Example was expected to fail validation by placing the error "is
+  reserved" on :attr. However, no such error was found on :attr.
 
 As indicated above, :attr seems to be changing certain values as they
 are set, and this could have something to do with why this matcher is

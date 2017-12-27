@@ -16,6 +16,10 @@ module Shoulda
           list_items.join("\n")
         end
 
+        def format_attribute_specific_validation_errors(errors)
+          errors.map { |error| "* #{error}" }.join("\n")
+        end
+
         def default_error_message(type, attribute, options = {})
           model_name = options.delete(:model_name)
           instance = options.delete(:instance)

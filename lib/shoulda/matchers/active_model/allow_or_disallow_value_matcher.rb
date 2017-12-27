@@ -111,65 +111,6 @@ module Shoulda
           ValidationMatcher::BuildDescription.call(self, simple_description)
         end
 
-        def expectation_description
-          "Expected #{model} #{expectation}."
-        end
-
-        def positive_aberration_description
-          validator = result.validator
-          message = ''
-
-          if validator.validation_message_type_matches?
-            if validator.has_validation_messages?
-              message << 'The record was invalid, but'
-
-              if validator.captured_validation_exception?
-                message << ' the exception message was '
-                message << validator.validation_exception_message.inspect
-                message << ' instead.'
-              else
-                message << " it produced these validation errors instead:\n\n"
-                message << validator.all_formatted_validation_error_messages
-              end
-            elsif expects_strict?
-              message << 'However, no such exception was raised.'
-            else
-              message << 'However, no such error was found on '
-              message << ":#{attribute_to_check_message_against}."
-            end
-          elsif validator.captured_validation_exception?
-            message << 'The record was invalid, but it'
-            message << ' raised a validation exception '
-            message << validator.validation_exception_message.inspect
-            message << ' instead.'
-          else
-            message << 'The record was invalid, but '
-            message << " it produced these validation errors instead:\n\n"
-            message << validator.all_formatted_validation_error_messages
-          end
-
-          message
-        end
-
-        def negative_aberration_description
-          validator = result.validator
-
-          # description = 'However, '
-
-          # if validator.captured_validation_exception?
-            # description << ' it raised a validation exception with the message '
-            # description << validator.validation_exception_message.inspect
-            # description << '.'
-          # else
-            # description << " it produced these validation errors:\n\n"
-            # description << validator.all_formatted_validation_error_messages
-          # end
-
-          # description
-
-          "However, it did."
-        end
-
         def expectation_clauses_for_values_to_preset
           attribute_setters_for_values_to_preset.
             select(&:attribute_set?).
@@ -182,16 +123,16 @@ module Shoulda
             map(&:attribute_setter_expectation_clause)
         end
 
-        def model
-          subject.class
-        end
-
         def last_attribute_setter_used
           result.attribute_setter
         end
 
         def last_value_set
           last_attribute_setter_used.value_written
+        end
+
+        def model
+          subject.class
         end
 
         def pretty_print(pp)
@@ -340,6 +281,72 @@ module Shoulda
           end
 
           Shoulda::Matchers.word_wrap(message)
+        end
+
+        def positive_aberration_description
+          validator = result.validator
+
+          # description = 'However, '
+
+          # if validator.captured_validation_exception?
+            # description << ' it raised a validation exception with the message '
+            # description << validator.validation_exception_message.inspect
+            # description << '.'
+          # else
+            # description << " it produced these validation errors:\n\n"
+            # description << validator.all_formatted_validation_error_messages
+          # end
+
+          # description
+
+          'However, it did fail with that error.'
+        end
+
+        def negative_aberration_description
+          validator = result.validator
+          message = ''
+
+          if validator.validation_message_type_matches?
+            if validator.has_validation_messages?
+              message << 'The record did indeed fail validation, but'
+
+              if validator.captured_validation_exception?
+                message << ' the exception message was '
+                message << validator.validation_exception_message.inspect
+                message << ' instead.'
+              else
+                message << ' it produced these validation errors on '
+                message << ":#{attribute_to_check_message_against} instead:\n\n"
+                message << validator.formatted_validation_messages
+              end
+            elsif expects_strict?
+              message << 'However, no such exception was raised.'
+            else
+              message << 'However, no such error was found on '
+              message << ":#{attribute_to_check_message_against}"
+
+              if context.present?
+                message << ' there. (Perhaps the validation was run under a '
+                message << 'different context?)'
+              else
+                message << '.'
+              end
+            end
+          elsif validator.captured_validation_exception?
+            message << 'The record did indeed fail validation, but it '
+            message << 'raised a validation exception '
+            message << validator.validation_exception_message.inspect
+            message << ' instead.'
+          elsif validator.has_any_validation_errors?
+            message << 'The record did indeed fail validation, but instead of '
+            message << 'raising an exception, it produced errors on '
+            message << "these attributes:\n\n"
+            message << validator.all_formatted_validation_errors
+          else
+            message << 'However, it did not fail validation.'
+          end
+
+          message
         end
 
         private

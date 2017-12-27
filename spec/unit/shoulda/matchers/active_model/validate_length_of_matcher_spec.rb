@@ -39,13 +39,14 @@ least 4 didn't pass.
 The matcher ran the following subtests. Those indicated with ✘ failed
 when they should have passed:
 
-✘ Expected Example to fail validation by placing the error "is too short
-  (minimum is 4 characters)" on :attr with :attr set to ‹"xxx"› (which
-  was read back as ‹"xxxa"›). However, no such error was found on :attr.
+✘ With :attr set to ‹"xxx"› (which was read back as ‹"xxxa"›), the
+  Example was expected to fail validation by placing the error "is too
+  short (minimum is 4 characters)" on :attr. However, no such error was
+  found on :attr.
 
-✔︎ Expected Example not to fail validation by placing the error "is too
-  short (minimum is 4 characters)" on :attr with :attr set to ‹"xxxx"›
-  (which was read back as ‹"xxxxa"›).
+✔︎ With :attr set to ‹"xxxx"› (which was read back as ‹"xxxxa"›), the
+  Example was expected not to fail validation by placing the error "is
+  too short (minimum is 4 characters)" on :attr.
 
 As indicated above, :attr seems to be changing certain values as they
 are set, and this could have something to do with why this matcher is
@@ -111,13 +112,14 @@ most 4 didn't pass.
 The matcher ran the following subtests. Those indicated with ✘ failed
 when they should have passed:
 
-✘ Expected Example to fail validation by placing the error "is too long
-  (maximum is 4 characters)" on :attr with :attr set to ‹"xxxxx"› (which
-  was read back as ‹"xxxx"›). However, no such error was found on :attr.
+✘ With :attr set to ‹"xxxxx"› (which was read back as ‹"xxxx"›), the
+  Example was expected to fail validation by placing the error "is too
+  long (maximum is 4 characters)" on :attr. However, no such error was
+  found on :attr.
 
-✔︎ Expected Example not to fail validation by placing the error "is too
-  long (maximum is 4 characters)" on :attr with :attr set to ‹"xxxx"›
-  (which was read back as ‹"xxx"›).
+✔︎ With :attr set to ‹"xxxx"› (which was read back as ‹"xxx"›), the
+  Example was expected not to fail validation by placing the error "is
+  too long (maximum is 4 characters)" on :attr.
 
 As indicated above, :attr seems to be changing certain values as they
 are set, and this could have something to do with why this matcher is
@@ -176,22 +178,24 @@ didn't pass.
 The matcher ran the following subtests. Those indicated with ✘ failed
 when they should have passed:
 
-✘ Expected Example to fail validation by placing the error "is the wrong
-  length (should be 4 characters)" on :attr with :attr set to ‹"xxx"›
-  (which was read back as ‹"xxxa"›). However, no such error was found on
-  :attr.
+✘ With :attr set to ‹"xxx"› (which was read back as ‹"xxxa"›), the
+  Example was expected to fail validation by placing the error "is the
+  wrong length (should be 4 characters)" on :attr. However, no such
+  error was found on :attr.
 
-✘ Expected Example not to fail validation by placing the error "is the
-  wrong length (should be 4 characters)" on :attr with :attr set to
-  ‹"xxxx"› (which was read back as ‹"xxxxa"›). However, it did.
+✘ With :attr set to ‹"xxxx"› (which was read back as ‹"xxxxa"›), the
+  Example was expected not to fail validation by placing the error "is
+  the wrong length (should be 4 characters)" on :attr. However, it did
+  fail with that error.
 
-✔︎ Expected Example to fail validation by placing the error "is the wrong
-  length (should be 4 characters)" on :attr with :attr set to ‹"xxxxx"›
-  (which was read back as ‹"xxxxxa"›).
+✔︎ With :attr set to ‹"xxxxx"› (which was read back as ‹"xxxxxa"›), the
+  Example was expected to fail validation by placing the error "is the
+  wrong length (should be 4 characters)" on :attr.
 
-✘ Expected Example not to fail validation by placing the error "is the
-  wrong length (should be 4 characters)" on :attr with :attr set to
-  ‹"xxxx"› (which was read back as ‹"xxxxa"›). However, it did.
+✘ With :attr set to ‹"xxxx"› (which was read back as ‹"xxxxa"›), the
+  Example was expected not to fail validation by placing the error "is
+  the wrong length (should be 4 characters)" on :attr. However, it did
+  fail with that error.
 
 As indicated above, :attr seems to be changing certain values as they
 are set, and this could have something to do with why this matcher is

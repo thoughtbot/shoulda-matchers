@@ -5,16 +5,21 @@ module Shoulda
       class ValidationMatcher
         include Qualifiers::IgnoringInterferenceByWriter
 
+        attr_reader :expected_message, :validation_context
+
         def initialize(attribute)
           super
+
           @attribute = attribute
           @expects_strict = false
-          @record = nil
-          @submatchers = []
           @expected_message = nil
           @expects_custom_validation_message = false
-          @_submatchers_added = false
+          @validation_context = nil
+          @submatchers = []
+
+          @record = nil
           @was_negated = nil
+          @_submatchers_populated = false
         end
 
         def description
@@ -29,13 +34,13 @@ module Shoulda
           end
         end
 
-        def on(context)
-          @context = context
+        def on(validation_context)
+          @validation_context = validation_context
           self
         end
 
-        def strict
-          @expects_strict = true
+        def strict(expects_strict = true)
+          @expects_strict = expects_strict
           self
         end
 
@@ -59,10 +64,7 @@ module Shoulda
         def matches?(record)
           @record = record
 
-          if !@_submatchers_added
-            add_submatchers
-            @_submatchers_added = true
-          end
+          populate_submatchers
 
           all_submatchers_match?.tap do
             @was_negated = false
@@ -142,13 +144,28 @@ module Shoulda
           @was_negated
         end
 
+        def populated_submatchers
+          populate_submatchers
+          submatchers
+        end
+
         protected
 
-        attr_reader :attribute, :context, :record, :submatchers,
-          :first_failing_submatcher
+        attr_reader :attribute, :submatchers, :record
 
-        def model
-          record.class
+        def simple_description
+          raise NotImplementedError
+        end
+
+        def expectation
+          description
+        end
+
+        def populate_submatchers
+          if !@_submatchers_populated
+            add_submatchers
+            @_submatchers_populated = true
+          end
         end
 
         def add_submatchers
@@ -200,20 +217,47 @@ module Shoulda
           )
         end
 
+        def build_submatcher(matcher_class, *args)
+          matcher = matcher_class.new(*args).
+            with_message(expected_message).
+            on(validation_context).
+            strict(expects_strict?).
+            ignoring_interference_by_writer(ignore_interference_by_writer)
+          yield matcher if block_given?
+
+          matcher
+        end
+
+        def model
+          record.class
+        end
+
         private
 
         def overall_failure_message
-          Shoulda::Matchers.word_wrap(<<~MESSAGE)
-            Your test expecting #{model.name} to #{simple_description} didn't
-            pass.
-          MESSAGE
+          message = "Your test expecting #{model.name} to #{description}"
+
+          message <<
+            if message.include?(',')
+              ", didn't pass."
+            else
+              " didn't pass."
+            end
+
+          Shoulda::Matchers.word_wrap(message)
         end
 
         def overall_failure_message_when_negated
-          Shoulda::Matchers.word_wrap(<<~MESSAGE)
-            Your test expecting #{model.name} not to #{simple_description}
-            didn't pass.
-          MESSAGE
+          message = "Your test expecting #{model.name} not to #{description}"
+
+          message <<
+            if message.include?(',')
+              ", didn't pass."
+            else
+              "didn't pass."
+            end
+
+          Shoulda::Matchers.word_wrap(message)
         end
 
         def indented_failure_message_for_first_failing_submatcher
@@ -262,16 +306,14 @@ module Shoulda
         end
 
         def build_allow_or_disallow_value_matcher(matcher_class:, values:, message:)
-          matcher = matcher_class.new(*values, part_of_larger_matcher: true).
-            for(attribute).
-            with_message(message).
-            on(context).
-            strict(expects_strict?).
-            ignoring_interference_by_writer(ignore_interference_by_writer)
-
-          yield matcher if block_given?
-
-          matcher
+          build_submatcher(
+            matcher_class,
+            *values,
+            part_of_larger_matcher: true,
+          ) do |matcher|
+            matcher.for(attribute).with_message(message || expected_message)
+            yield matcher if block_given?
+          end
         end
 
         class SubmatcherResult

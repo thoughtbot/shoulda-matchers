@@ -9,143 +9,92 @@ module Shoulda
             :>= => :greater_than_or_equal_to,
             :< => :less_than,
             :<= => :less_than_or_equal_to,
-            :== => :equal_to
-          }
+            :== => :equal_to,
+          }.freeze
 
-          def initialize(numericality_matcher, value, operator)
-            super(nil)
-            unless numericality_matcher.respond_to? :diff_to_compare
-              raise ArgumentError, 'numericality_matcher is invalid'
+          def initialize(numericality_matcher, attribute, value, operator)
+            super(attribute)
+
+            if !numericality_matcher.respond_to?(:diff_to_compare)
+              raise ArgumentError.new(
+                'The given numericality matcher does not respond to ' +
+                ':diff_to_compare',
+              )
             end
+
             @numericality_matcher = numericality_matcher
             @value = value
             @operator = operator
-            @message = ERROR_MESSAGES[operator]
+            @message = ERROR_MESSAGES.fetch(operator)
+            # @comparison_expectation = COMPARISON_EXPECTATIONS.fetch(operator)
           end
 
-          def simple_description
-            description = ''
+          # def comparison_description
+            # "#{comparison_expectation} #{value}"
+          # end
 
-            if expects_strict?
-              description << ' strictly'
+          protected
+
+          def add_submatchers
+            comparison_tuples.each do |diff, add_submatcher_method_name|
+              __send__(add_submatcher_method_name, diff, nil) do |matcher|
+                matcher.with_message(message, values: { count: value })
+              end
             end
-
-            description +
-              "disallow :#{attribute} from being a number that is not " +
-              "#{comparison_expectation} #{@value}"
-          end
-
-          def for(attribute)
-            @attribute = attribute
-            self
-          end
-
-          def with_message(message)
-            @expects_custom_validation_message = true
-            @message = message
-            self
-          end
-
-          def expects_custom_validation_message?
-            @expects_custom_validation_message
-          end
-
-          def matches?(subject)
-            @subject = subject
-            all_bounds_correct?
-          end
-
-          def failure_message
-            last_failing_submatcher.failure_message
-          end
-
-          def failure_message_when_negated
-            last_failing_submatcher.failure_message_when_negated
-          end
-
-          def comparison_description
-            "#{comparison_expectation} #{@value}"
           end
 
           private
 
-          def all_bounds_correct?
-            failing_submatchers.empty?
-          end
+          attr_reader :numericality_matcher, :value, :operator, :message,
+            :comparison_expectation
 
-          def failing_submatchers
-            submatchers_and_results.
-              select { |x| !x[:matched] }.
-              map { |x| x[:matcher] }
-          end
-
-          def last_failing_submatcher
-            failing_submatchers.last
-          end
-
-          def submatchers
-            @_submatchers ||=
-              comparison_combos.map do |diff, submatcher_method_name|
-                matcher = __send__(submatcher_method_name, diff, nil)
-                matcher.with_message(@message, values: { count: @value })
-                matcher
-              end
-          end
-
-          def submatchers_and_results
-            @_submatchers_and_results ||=
-              submatchers.map do |matcher|
-                { matcher: matcher, matched: matcher.matches?(@subject) }
-              end
-          end
-
-          def comparison_combos
-            diffs_to_compare.zip(submatcher_method_names)
-          end
-
-          def submatcher_method_names
-            assertions.map do |value|
-              if value
-                :allow_value_matcher
-              else
-                :disallow_value_matcher
-              end
-            end
-          end
-
-          def assertions
-            case @operator
-            when :>
-              [false, false, true]
-            when :>=
-              [false, true, true]
-            when :==
-              [false, true, false]
-            when :<
-              [true, false, false]
-            when :<=
-              [true, true, false]
-            end
+          def comparison_tuples
+            diffs_to_compare.zip(add_submatcher_method_names)
           end
 
           def diffs_to_compare
-            diff_to_compare = @numericality_matcher.diff_to_compare
-            values = [-1, 0, 1].map { |sign| @value + (diff_to_compare * sign) }
+            diff_to_compare = numericality_matcher.diff_to_compare
+            values = [-1, 0, 1].map { |sign| value + (diff_to_compare * sign) }
 
-            if @numericality_matcher.given_numeric_column?
+            if numericality_matcher.given_numeric_column?
               values
             else
               values.map(&:to_s)
             end
           end
 
-          def comparison_expectation
-            case @operator
-              when :> then "greater than"
-              when :>= then "greater than or equal to"
-              when :== then "equal to"
-              when :< then "less than"
-              when :<= then "less than or equal to"
+          def add_submatcher_method_names
+            case operator
+            when :>
+              [
+                :add_submatcher_disallowing,
+                :add_submatcher_disallowing,
+                :add_submatcher_allowing,
+              ]
+            when :>=
+              [
+                :add_submatcher_disallowing,
+                :add_submatcher_allowing,
+                :add_submatcher_allowing,
+              ]
+            when :==
+              [
+                :add_submatcher_disallowing,
+                :add_submatcher_allowing,
+                :add_submatcher_disallowing,
+              ]
+            when :<
+              [
+                :add_submatcher_allowing,
+                :add_submatcher_disallowing,
+                :add_submatcher_disallowing,
+              ]
+            when :<=
+              [
+                :add_submatcher_allowing,
+                :add_submatcher_allowing,
+                :add_submatcher_disallowing,
+              ]
             end
           end
         end

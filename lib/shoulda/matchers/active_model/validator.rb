@@ -43,8 +43,16 @@ module Shoulda
           validation_messages.any?
         end
 
-        def all_formatted_validation_error_messages
+        def has_any_validation_errors?
+          all_validation_errors.any?
+        end
+
+        def all_formatted_validation_errors
           format_validation_errors(all_validation_errors)
+        end
+
+        def formatted_validation_messages
+          format_attribute_specific_validation_errors(validation_messages)
         end
 
         def validation_exception_message

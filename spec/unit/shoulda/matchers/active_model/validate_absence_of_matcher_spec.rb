@@ -62,9 +62,9 @@ Your test expecting Example to validate absence of :attr didn't pass.
 The matcher ran the following subtests. Those indicated with ✘ failed
 when they should have passed:
 
-✘ Expected Example to fail validation by placing the error "must be
-  blank" on :attr with :attr set to ‹"an arbitrary value"›. However, no
-  such error was found on :attr.
+✘ With :attr set to ‹"an arbitrary value"›, the Example was expected to
+  fail validation by placing the error "must be blank" on :attr.
+  However, no such error was found on :attr.
       MESSAGE
 
       assertion = lambda do
@@ -106,9 +106,9 @@ Your test expecting Example to validate absence of :attr didn't pass.
 The matcher ran the following subtests. Those indicated with ✘ failed
 when they should have passed:
 
-✘ Expected Example to fail validation by placing the error "must be
-  blank" on :attr with :attr set to ‹"an arbitrary value"›. However, no
-  such error was found on :attr.
+✘ With :attr set to ‹"an arbitrary value"›, the Example was expected to
+  fail validation by placing the error "must be blank" on :attr.
+  However, no such error was found on :attr.
       MESSAGE
 
       assertion = lambda do
@@ -175,8 +175,8 @@ Your test expecting Parent to validate absence of :children didn't pass.
 The matcher ran the following subtests. Those indicated with ✘ failed
 when they should have passed:
 
-✘ Expected Parent to fail validation by placing the error "must be
-  blank" on :children with :children set to ‹[#<Child id: nil>]›.
+✘ With :children set to ‹[#<Child id: nil>]›, the Parent was expected to
+  fail validation by placing the error "must be blank" on :children.
   However, no such error was found on :children.
       MESSAGE
 

@@ -6,19 +6,10 @@ module Shoulda
         class OddNumberMatcher < NumericTypeMatcher
           NON_ODD_NUMBER_VALUE = 2
 
-          def simple_description
-            description = ''
+          def initialize(*args)
+            super
 
-            if expects_strict?
-              description << 'strictly '
-            end
-
-            description +
-              "disallow :#{attribute} from being an even number"
-          end
-
-          def allowed_type_adjective
-            'odd'
+            with_message(:odd)
           end
 
           def diff_to_compare
@@ -27,12 +18,8 @@ module Shoulda
 
           protected
 
-          def wrap_disallow_value_matcher(matcher)
-            matcher.with_message(:odd)
-          end
-
           def disallowed_value
-            if @numeric_type_matcher.given_numeric_column?
+            if numericality_matcher.given_numeric_column?
               NON_ODD_NUMBER_VALUE
             else
               NON_ODD_NUMBER_VALUE.to_s

@@ -6,18 +6,10 @@ module Shoulda
         class OnlyIntegerMatcher < NumericTypeMatcher
           NON_INTEGER_VALUE = 0.1
 
-          def simple_description
-            description = ''
+          def initialize(*args)
+            super
 
-            if expects_strict?
-              description << ' strictly'
-            end
-
-            description + "disallow :#{attribute} from being a decimal number"
-          end
-
-          def allowed_type_name
-            'integer'
+            with_message(:not_an_integer)
           end
 
           def diff_to_compare
@@ -26,12 +18,8 @@ module Shoulda
 
           protected
 
-          def wrap_disallow_value_matcher(matcher)
-            matcher.with_message(:not_an_integer)
-          end
-
           def disallowed_value
-            if @numeric_type_matcher.given_numeric_column?
+            if numericality_matcher.given_numeric_column?
               NON_INTEGER_VALUE
             else
               NON_INTEGER_VALUE.to_s

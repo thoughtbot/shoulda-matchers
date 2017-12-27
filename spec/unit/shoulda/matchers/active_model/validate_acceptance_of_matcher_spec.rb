@@ -26,9 +26,9 @@ Your test expecting Example to validate acceptance of :attr didn't pass.
 The matcher ran the following subtests. Those indicated with ✘ failed
 when they should have passed:
 
-✘ Expected Example to fail validation by placing the error "must be
-  accepted" on :attr with :attr set to ‹false› (which was read back as
-  ‹nil›). However, no such error was found on :attr.
+✘ With :attr set to ‹false› (which was read back as ‹nil›), the Example
+  was expected to fail validation by placing the error "must be
+  accepted" on :attr. However, no such error was found on :attr.
 
 As indicated above, :attr seems to be changing certain values as they
 are set, and this could have something to do with why this matcher is

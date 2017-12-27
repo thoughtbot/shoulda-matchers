@@ -4,35 +4,31 @@ module Shoulda
       class ValidationMatcher
         # @private
         class BuildDescription
-          def self.call(matcher, main_description, **options)
-            new(matcher, **options).call(main_description)
+          def self.call(matcher, main_description)
+            new(matcher).call(main_description)
           end
 
-          def initialize(matcher, expectation_state: :agnostic)
+          def initialize(matcher)
             @matcher = matcher
-            @expectation_state = expectation_state
           end
 
           def call(main_description)
-            if description_clauses_for_qualifiers.present?
-              [main_description, description_clauses_for_qualifiers].join(', ')
-            else
-              main_description
+            description = decorate_with_validation_context(main_description)
+
+            if description_clause_for_allow_blank_or_nil.present?
+              description << " #{description_clause_for_allow_blank_or_nil}"
             end
-          end
 
-          def description_clauses_for_qualifiers
-            parts = [
-              description_clause_for_allow_blank_or_nil,
-              description_clause_for_strict_or_custom_validation_message,
-            ]
+            if description_clause_for_strict_or_custom_validation_message.present?
+              description << ", #{description_clause_for_strict_or_custom_validation_message}"
+            end
 
-            parts.select(&:present?).join(', and')
+            description
           end
 
           protected
 
-          attr_reader :matcher, :expectation_state
+          attr_reader :matcher
 
           private
 
@@ -45,50 +41,52 @@ module Shoulda
           end
 
           def description_clause_for_strict_or_custom_validation_message
-            if expectation_state == :agnostic
-              if expects_strict?
-                description_clause_for_strict
-              elsif expects_custom_validation_message?
-                description_clause_for_custom_validation_message
-              end
+            if expects_strict?
+              description_clause_for_strict
+            elsif expects_custom_validation_message?
+              description_clause_for_custom_validation_message
             end
           end
 
           def description_clause_for_allow_blank
-            'only if it is not blank'
+            '(only when not blank)'
           end
 
           def description_clause_for_allow_nil
-            'only if it is not nil'
+            '(only when not nil)'
           end
 
           def description_clause_for_strict
-            parts = []
+            'raising a validation exception on failure'
+          end
 
-            parts << 'raising a validation exception'
+          def description_clause_for_custom_validation_message
+            parts = ['producing a validation error']
 
-            if matcher.try(:expects_custom_validation_message?)
-              parts << matcher.expected_message.inspect
-            end
+            parts <<
+              if matcher.expected_message.is_a?(Regexp)
+                "matching #{matcher.expected_message.inspect}"
+              else
+                matcher.expected_message.inspect
+              end
 
-            if expectation_state == :agnostic
-              parts << 'on failure'
-            end
+            parts << 'on failure'
 
             parts.join(' ')
           end
 
-          def description_clause_for_custom_validation_message
-            parts = [
-              'producing a validation error',
-              matcher.expected_message.inspect,
-            ]
-
-            if expectation_state == :agnostic
-              parts << 'on failure'
+          def decorate_with_validation_context(description)
+            if validation_context.present?
+              description.gsub(/\bvalidat(?:e|ion)\b/) do |str|
+                "#{str} (context: #{validation_context.inspect})"
+              end
+            else
+              description
             end
+          end
 
-            parts.join(' ')
+          def validation_context
+            matcher.try(:validation_context)
           end
 
           def expects_to_allow_blank?
