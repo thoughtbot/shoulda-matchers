@@ -225,10 +225,6 @@ module Shoulda
           def active_resource_object?
             object.respond_to?(:known_attributes)
           end
-
-          def model
-            object.class
-          end
         end
       end
     end
