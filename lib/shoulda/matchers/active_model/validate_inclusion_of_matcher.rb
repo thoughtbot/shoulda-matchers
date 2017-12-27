@@ -270,7 +270,7 @@ module Shoulda
       class ValidateInclusionOfMatcher < ValidationMatcher
         ARBITRARY_OUTSIDE_STRING = 'shoulda-matchers test string'
         ARBITRARY_OUTSIDE_FIXNUM = 123456789
-        ARBITRARY_OUTSIDE_DECIMAL = BigDecimal.new('0.123456789')
+        ARBITRARY_OUTSIDE_DECIMAL = BigDecimal('0.123456789')
         ARBITRARY_OUTSIDE_DATE = Date.jd(9999999)
         ARBITRARY_OUTSIDE_DATETIME = DateTime.jd(9999999)
         ARBITRARY_OUTSIDE_TIME = Time.at(9999999999)

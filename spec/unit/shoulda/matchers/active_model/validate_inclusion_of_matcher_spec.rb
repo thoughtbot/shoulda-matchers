@@ -107,18 +107,18 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     context 'against a decimal attribute' do
       it_behaves_like 'it supports in_array',
         possible_values: [1.0, 2.0, 3.0, 4.0, 5.0].map { |number|
-          BigDecimal.new(number.to_s)
+          BigDecimal(number.to_s)
         },
-        zero: BigDecimal.new('0.0'),
+        zero: BigDecimal('0.0'),
         reserved_outside_value: described_class::ARBITRARY_OUTSIDE_DECIMAL
 
       it_behaves_like 'it supports in_range',
-        possible_values: BigDecimal.new('1.0') .. BigDecimal.new('5.0'),
-        zero: BigDecimal.new('0.0')
+        possible_values: BigDecimal('1.0') .. BigDecimal('5.0'),
+        zero: BigDecimal('0.0')
 
       def build_object(options = {}, &block)
         build_object_with_generic_attribute(
-          options.merge(column_type: :decimal, value: BigDecimal.new('1.0')),
+          options.merge(column_type: :decimal, value: BigDecimal('1.0')),
           &block
         )
       end
@@ -130,7 +130,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       def validation_matcher_scenario_args
         super.deep_merge(
           column_type: :decimal,
-          default_value: BigDecimal.new('1.0')
+          default_value: BigDecimal('1.0')
         )
       end
     end
