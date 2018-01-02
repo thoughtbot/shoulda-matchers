@@ -21,16 +21,20 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
           attribute_name: :attr,
           changing_values_with: :never_falsy,
           expected_message: <<-MESSAGE
-Example did not properly validate that :attr cannot be empty/falsy.
-  After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
-  -- the matcher expected the Example to be invalid, but it was valid
-  instead.
+Your test expecting Example to validate presence of :attr didn't pass.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+The matcher ran the following subtests. Those indicated with ✘ failed
+when they should have passed:
+
+✘ With :attr set to ‹nil› (which was read back as ‹"dummy value"›), the
+  Example was expected to fail validation by placing the error "can't be
+  blank" on :attr. However, no such error was found on :attr.
+
+As indicated above, :attr seems to be changing certain values as they
+are set, and this could have something to do with why this matcher is
+failing. If you've overridden the writer method for this attribute, then
+you may need to change it to make this matcher pass. Otherwise, you may
+need to do something else entirely.
           MESSAGE
         }
       }
@@ -46,9 +50,14 @@ Example did not properly validate that :attr cannot be empty/falsy.
       end
 
       message = <<-MESSAGE
-Example did not properly validate that :attr cannot be empty/falsy.
-  After setting :attr to ‹nil›, the matcher expected the Example to be
-  invalid, but it was valid instead.
+Your test expecting Example to validate presence of :attr didn't pass.
+
+The matcher ran the following subtests. Those indicated with ✘ failed
+when they should have passed:
+
+✘ With :attr set to ‹nil›, the Example was expected to fail validation
+  by placing the error "can't be blank" on :attr. However, no such error
+  was found on :attr.
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)
@@ -75,16 +84,20 @@ Example did not properly validate that :attr cannot be empty/falsy.
           attribute_name: :attr,
           changing_values_with: :never_falsy,
           expected_message: <<-MESSAGE
-Example did not properly validate that :attr cannot be empty/falsy.
-  After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
-  -- the matcher expected the Example to be invalid, but it was valid
-  instead.
+Your test expecting Example to validate presence of :attr didn't pass.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+The matcher ran the following subtests. Those indicated with ✘ failed
+when they should have passed:
+
+✘ With :attr set to ‹nil› (which was read back as ‹"dummy value"›), the
+  Example was expected to fail validation by placing the error "can't be
+  blank" on :attr. However, no such error was found on :attr.
+
+As indicated above, :attr seems to be changing certain values as they
+are set, and this could have something to do with why this matcher is
+failing. If you've overridden the writer method for this attribute, then
+you may need to change it to make this matcher pass. Otherwise, you may
+need to do something else entirely.
           MESSAGE
         }
       }
@@ -102,9 +115,14 @@ Example did not properly validate that :attr cannot be empty/falsy.
       end
 
       message = <<-MESSAGE
-Example did not properly validate that :attr cannot be empty/falsy.
-  After setting :attr to ‹nil›, the matcher expected the Example to be
-  invalid, but it was valid instead.
+Your test expecting Example to validate presence of :attr didn't pass.
+
+The matcher ran the following subtests. Those indicated with ✘ failed
+when they should have passed:
+
+✘ With :attr set to ‹nil›, the Example was expected to fail validation
+  by placing the error "can't be blank" on :attr. However, no such error
+  was found on :attr.
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)
@@ -127,16 +145,20 @@ Example did not properly validate that :attr cannot be empty/falsy.
           attribute_name: :attr,
           changing_values_with: :never_falsy,
           expected_message: <<-MESSAGE
-Example did not properly validate that :attr cannot be empty/falsy.
-  After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
-  -- the matcher expected the Example to be invalid, but it was valid
-  instead.
+Your test expecting Example to validate presence of :attr didn't pass.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+The matcher ran the following subtests. Those indicated with ✘ failed
+when they should have passed:
+
+✘ With :attr set to ‹nil› (which was read back as ‹"dummy value"›), the
+  Example was expected to fail validation by placing the error "can't be
+  blank" on :attr. However, no such error was found on :attr.
+
+As indicated above, :attr seems to be changing certain values as they
+are set, and this could have something to do with why this matcher is
+failing. If you've overridden the writer method for this attribute, then
+you may need to change it to make this matcher pass. Otherwise, you may
+need to do something else entirely.
           MESSAGE
         }
       }
@@ -185,16 +207,20 @@ Example did not properly validate that :attr cannot be empty/falsy.
           attribute_name: :attr,
           changing_values_with: :never_falsy,
           expected_message: <<-MESSAGE
-Example did not properly validate that :attr cannot be empty/falsy.
-  After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
-  -- the matcher expected the Example to be invalid, but it was valid
-  instead.
+Your test expecting Example to validate presence of :attr didn't pass.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+The matcher ran the following subtests. Those indicated with ✘ failed
+when they should have passed:
+
+✘ With :attr set to ‹nil› (which was read back as ‹"dummy value"›), the
+  Example was expected to fail validation by placing the error "can't be
+  blank" on :attr. However, no such error was found on :attr.
+
+As indicated above, :attr seems to be changing certain values as they
+are set, and this could have something to do with why this matcher is
+failing. If you've overridden the writer method for this attribute, then
+you may need to change it to make this matcher pass. Otherwise, you may
+need to do something else entirely.
           MESSAGE
         }
       }
@@ -223,9 +249,15 @@ Example did not properly validate that :attr cannot be empty/falsy.
       end
 
       message = <<-MESSAGE
-Parent did not properly validate that :children cannot be empty/falsy.
-  After setting :children to ‹[]›, the matcher expected the Parent to be
-  invalid, but it was valid instead.
+Your test expecting Parent to validate presence of :children didn't
+pass.
+
+The matcher ran the following subtests. Those indicated with ✘ failed
+when they should have passed:
+
+✘ With :children set to ‹[]›, the Parent was expected to fail validation
+  by placing the error "can't be blank" on :children. However, no such
+  error was found on :children.
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)

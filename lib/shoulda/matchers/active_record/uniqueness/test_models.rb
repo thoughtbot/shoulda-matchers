@@ -15,6 +15,12 @@ module Shoulda
             root_namespace.clear
           end
 
+          def self.within_sandbox
+            yield
+          ensure
+            remove_all
+          end
+
           def self.root_namespace
             @_root_namespace ||= Namespace.new(self)
           end

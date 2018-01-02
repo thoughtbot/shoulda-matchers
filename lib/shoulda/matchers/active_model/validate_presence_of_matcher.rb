@@ -113,40 +113,42 @@ module Shoulda
       class ValidatePresenceOfMatcher < ValidationMatcher
         def initialize(attribute)
           super
-          @expected_message = :blank
-        end
-
-        def matches?(subject)
-          super(subject)
 
           if secure_password_being_validated?
             ignore_interference_by_writer.default_to(when: :blank?)
-            disallows_and_double_checks_value_of!(blank_value, @expected_message)
-          else
-            disallows_original_or_typecast_value?(blank_value, @expected_message)
           end
+
+          @expected_message = :blank
         end
 
         def simple_description
-          "validate that :#{@attribute} cannot be empty/falsy"
+          "validate presence of :#{attribute}"
+        end
+
+        def matches?(subject)
+          if secure_password_being_validated?
+            begin
+              super
+            rescue ActiveModel::AllowValueMatcher::AttributeChangedValueError
+              raise ActiveModel::CouldNotSetPasswordError.create(model)
+            end
+          else
+            super
+          end
+        end
+
+        protected
+
+        def add_submatchers
+          add_submatcher_disallowing([blank_value])
         end
 
         private
 
         def secure_password_being_validated?
           defined?(::ActiveModel::SecurePassword) &&
-            @subject.class.ancestors.include?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation) &&
-            @attribute == :password
-        end
-
-        def disallows_and_double_checks_value_of!(value, message)
-          disallows_value_of(value, message)
-        rescue ActiveModel::AllowValueMatcher::AttributeChangedValueError
-          raise ActiveModel::CouldNotSetPasswordError.create(@subject.class)
-        end
-
-        def disallows_original_or_typecast_value?(value, message)
-          disallows_value_of(blank_value, @expected_message)
+            model.ancestors.include?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation) &&
+            attribute == :password
         end
 
         def blank_value
@@ -166,8 +168,8 @@ module Shoulda
         end
 
         def reflection
-          @subject.class.respond_to?(:reflect_on_association) &&
-            @subject.class.reflect_on_association(@attribute)
+          model.respond_to?(:reflect_on_association) &&
+            model.reflect_on_association(attribute)
         end
       end
     end

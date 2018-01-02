@@ -91,10 +91,7 @@ module Shoulda
           message = "\n\n"
 
           if was_negated?
-            message << Shoulda::Matchers.word_wrap(
-              'The matcher ran the following subtests. ' +
-              'All passed, but at least one of them should have failed:',
-            )
+            message << 'The matcher ran the following subtests:'
           else
             message << Shoulda::Matchers.word_wrap(
               'The matcher ran the following subtests. ' +
@@ -128,6 +125,12 @@ module Shoulda
           end
 
           message << list.join("\n\n")
+
+          if was_negated?
+            message << "\n\nAs noted above, all tests passed. "
+            message << 'However, in this case, at least one of them should '
+            message << 'have failed!'
+          end
 
           if submatcher_result_with_attribute_changed_value_message.present?
             attribute_changed_value_message = Shoulda::Matchers.word_wrap(
@@ -254,7 +257,7 @@ module Shoulda
             if message.include?(',')
               ", didn't pass."
             else
-              "didn't pass."
+              " didn't pass."
             end
 
           Shoulda::Matchers.word_wrap(message)

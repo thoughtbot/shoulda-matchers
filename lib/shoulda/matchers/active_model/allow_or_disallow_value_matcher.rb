@@ -15,8 +15,8 @@ module Shoulda
         )
 
         attr_writer(
-          :attribute_changed_value_message,
-          :failure_message_preface,
+          # :attribute_changed_value_message,
+          # :failure_message_preface,
           :values_to_preset,
         )
 
@@ -29,8 +29,8 @@ module Shoulda
           @expects_custom_validation_message = false
           @context = nil
           @values_to_preset = {}
-          @failure_message_preface = nil
-          @attribute_changed_value_message = nil
+          # @failure_message_preface = nil
+          # @attribute_changed_value_message = nil
           @was_negated = nil
           @part_of_larger_matcher = part_of_larger_matcher
         end
@@ -103,9 +103,9 @@ module Shoulda
             result.attribute_setter.attribute_changed_value?
         end
 
-        def attribute_changed_value_message
-          stored_attribute_changed_value_message.call
-        end
+        # def attribute_changed_value_message
+          # stored_attribute_changed_value_message.call
+        # end
 
         def description
           ValidationMatcher::BuildDescription.call(self, simple_description)
@@ -357,10 +357,6 @@ module Shoulda
         end
 
         def failure_message_preface
-          @failure_message_preface || method(:default_failure_message_preface)
-        end
-
-        def default_failure_message_preface
           ''.tap do |preface|
             if descriptions_for_values_to_preset.any?
               preface << 'After setting '
@@ -381,12 +377,7 @@ module Shoulda
           end
         end
 
-        def stored_attribute_changed_value_message
-          @attribute_changed_value_message ||
-            method(:default_attribute_changed_value_message)
-        end
-
-        def default_attribute_changed_value_message
+        def attribute_changed_value_message
           <<-MESSAGE.strip
 As indicated above, :#{result.attribute_setter.attribute_name} seems to be
 changing certain values as they are set, and this could have something to do

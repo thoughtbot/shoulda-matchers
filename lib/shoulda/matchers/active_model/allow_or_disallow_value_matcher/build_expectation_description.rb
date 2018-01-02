@@ -14,14 +14,19 @@ module Shoulda
           end
 
           def call
-            parts = [
-              'With',
-              attribute_setter_clauses + ',',
-              'the',
-              matcher.model,
-              'was expected',
-              expectation,
-            ]
+            parts = []
+
+            if attribute_setter_clauses.present?
+              parts << 'With'
+              parts << attribute_setter_clauses + ','
+              parts << 'the'
+            else
+              parts << 'The'
+            end
+
+            parts << matcher.model
+            parts << 'was expected'
+            parts << expectation
 
             parts.join(' ') + '.'
           end
@@ -90,11 +95,12 @@ module Shoulda
             else
               clause = ''
 
-              if matcher.expected_message.is_a?(Regexp)
-                clause << 'placing an error matching '
-              else
-                clause << 'placing the error '
-              end
+              clause <<
+                if matcher.expected_message.is_a?(Regexp)
+                  'placing an error matching '
+                else
+                  'placing the error '
+                end
 
               clause << "#{matcher.expected_message.inspect} "
               clause << "on :#{matcher.attribute_to_check_message_against}"
