@@ -72,6 +72,10 @@ is now:
   * *Original PR: [#956]*
   * *Original issues: [#870], [#861]*
 
+* Add `allow_nil` qualifier to `delegate_method`.
+
+  * *Original PR: [#2659]*
+
 [a6d09aa]: https://github.com/thoughtbot/shoulda-matchers/commit/a6d09aa5de0d546367e7b3d7177dfde6c66f7f05
 [#943]: https://github.com/thoughtbot/shoulda-matchers/pulls/943
 [#933]: https://github.com/thoughtbot/shoulda-matchers/issues/933
@@ -92,6 +96,7 @@ is now:
 [#912]: https://github.com/thoughtbot/shoulda-matchers/issues/912
 [#1073]: https://github.com/thoughtbot/shoulda-matchers/pulls/1073
 [#949]: https://github.com/thoughtbot/shoulda-matchers/issues/949
+[#2659]: https://github.com/thoughtbot/shoulda-matchers/pulls/2659
 
 ### Improvements
 
