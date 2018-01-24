@@ -69,12 +69,18 @@ is now:
   matchers. (When using the `belong_to` matcher under Rails 5+, `required` is
   assumed unless overridden.)
 
+  * *Commit: [3af3d9f]*
   * *Original PR: [#956]*
   * *Original issues: [#870], [#861]*
 
 * Add `allow_nil` qualifier to `delegate_method`.
 
+  * *Commit: [d49cfca]*
   * *Original PR: [#2659]*
+
+* Add `allow_nil` qualifier to `validate_length_of`.
+
+  * *Original PR: [#724]*
 
 [a6d09aa]: https://github.com/thoughtbot/shoulda-matchers/commit/a6d09aa5de0d546367e7b3d7177dfde6c66f7f05
 [#943]: https://github.com/thoughtbot/shoulda-matchers/pulls/943
@@ -96,7 +102,14 @@ is now:
 [#912]: https://github.com/thoughtbot/shoulda-matchers/issues/912
 [#1073]: https://github.com/thoughtbot/shoulda-matchers/pulls/1073
 [#949]: https://github.com/thoughtbot/shoulda-matchers/issues/949
+[d49cfca]: https://github.com/thoughtbot/shoulda-matchers/commit/d49cfcae1b294e12a05e06a5612cb8ebb22a7df1
 [#2659]: https://github.com/thoughtbot/shoulda-matchers/pulls/2659
+[#724]: https://github.com/thoughtbot/shoulda-matchers/issues/724
+[d49cfca]: https://github.com/thoughtbot/shoulda-matchers/commit/d49cfcae1b294e12a05e06a5612cb8ebb22a7df1
+[3af3d9f]: https://github.com/thoughtbot/shoulda-matchers/commit/3af3d9f7abb768c063759941724ccae48c7b76d6
+[#956]: https://github.com/thoughtbot/shoulda-matchers/pulls/956
+[#870]: https://github.com/thoughtbot/shoulda-matchers/issues/870
+[#861]: https://github.com/thoughtbot/shoulda-matchers/issues/861
 
 ### Improvements
 
