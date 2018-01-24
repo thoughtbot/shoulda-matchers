@@ -22,8 +22,8 @@ module Shoulda
       #
       # ##### with
       #
-      # Use `with` to test that the enum has been defined with a certain set of
-      # known values.
+      # Use `with` to test that the attribute has been defined with a certain
+      # set of known values.
       #
       #     class Process < ActiveRecord::Base
       #       enum status: [:running, :stopped, :suspended]
@@ -42,6 +42,44 @@ module Shoulda
       #       should define_enum_for(:status).
       #         with([:running, :stopped, :suspended])
       #     end
+      #
+      # ##### backed_by_column_of_type
+      #
+      # Use `backed_by_column_of_type` to test that the attribute is of a
+      # certain column type. (The default is `:integer`.)
+      #
+      #     class LoanApplication < ActiveRecord::Base
+      #       enum status: {
+      #         active: "active",
+      #         pending: "pending",
+      #         rejected: "rejected"
+      #       }
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe LoanApplication, type: :model do
+      #       it do
+      #         should define_enum_for(:status).
+      #           with(
+      #             active: "active",
+      #             pending: "pending",
+      #             rejected: "rejected"
+      #           ).
+      #           backed_by_column_of_type(:string)
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class LoanApplicationTest < ActiveSupport::TestCase
+      #       should define_enum_for(:status).
+      #         with(
+      #           active: "active",
+      #           pending: "pending",
+      #           rejected: "rejected"
+      #         ).
+      #         backed_by_column_of_type(:string)
+      #     end
+      #
       #
       # @return [DefineEnumForMatcher]
       #
