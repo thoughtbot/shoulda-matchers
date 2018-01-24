@@ -34,6 +34,13 @@ task :default do
   end
 end
 
+namespace :appraisal do
+  task :list do
+    appraisals = Tests::CurrentBundle.instance.available_appraisals
+    puts "Valid appraisals: #{appraisals.join(', ')}"
+  end
+end
+
 Shoulda::Matchers::DocumentationTasks.create
 
 task release: 'docs:publish_latest'
