@@ -14,7 +14,7 @@ is now:
 
 * `use_before_filter`, `use_after_filter`, and `use_around_filter` are no longer
   usable when using shoulda-matchers under Rails 5.x, as the corresponding
-  controller callback don't exist there.
+  controller callbacks don't exist there.
 
   * *PR: [#1054]*
 
@@ -41,18 +41,27 @@ is now:
   * *PR: [#1038]*
   * *Original issue: [#1006]*
 
-* Fix `permit` matcher so that it uses the correct method signature to call the
-  controller action with params in order to prevent a warning under Rails 5.x.
+* Fix the `permit` matcher so that it uses the correct method signature to call
+  the controller action with params in order to prevent a warning under Rails
+  5.x.
 
   * *Commit: [ce9624b]*
   * *PRs: [#989], [#964], [#917]*
   * *Original issue: [#867]*
 
-* Fix `define_enum_for` matcher so that it once more allows string columns to be
-  used as enum attributes.
+* Fix the `define_enum_for` matcher so that it once more allows string columns
+  to be used as enum attributes.
 
+  * *Commit: [5650aae]*
   * *PR: [#1063]*
   * *Original issue: [#912]*
+
+* Fix `validate_uniqueness_of` when used under Rails 4.2 so that when the
+  attribute you're testing is a boolean column, it will no longer emit a
+  warning.
+
+  * *PR: [#1073]*
+  * *Original issue: [#949]*
 
 ### Features
 
@@ -78,8 +87,11 @@ is now:
 [#917]: https://github.com/thoughtbot/shoulda-matchers/pulls/917
 [#867]: https://github.com/thoughtbot/shoulda-matchers/issues/867
 [#1054]: https://github.com/thoughtbot/shoulda-matchers/pulls/1054
+[5650aae]: https://github.com/thoughtbot/shoulda-matchers/commit/5650aae35de85aeabd75bc544324fda33ce1a092
 [#1063]: https://github.com/thoughtbot/shoulda-matchers/pulls/1063
 [#912]: https://github.com/thoughtbot/shoulda-matchers/issues/912
+[#1073]: https://github.com/thoughtbot/shoulda-matchers/pulls/1073
+[#949]: https://github.com/thoughtbot/shoulda-matchers/issues/949
 
 ### Improvements
 
