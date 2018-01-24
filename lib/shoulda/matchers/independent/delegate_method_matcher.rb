@@ -148,6 +148,26 @@ module Shoulda
       #         with_arguments(expedited: true)
       #     end
       #
+      # ##### allow_nil
+      #
+      # Use `allow_nil` if the delegation accounts for the fact that your
+      # delegate object could be nil. (This is mostly intended as an analogue to
+      # the `allow_nil` option that Rails' `delegate` helper takes.)
+      #
+      #     class Account
+      #       delegate :plan, to: :subscription, allow_nil: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Account do
+      #       it { should delegate_method(:plan).to(:subscription).allow_nil }
+      #     end
+      #
+      #     # Minitest
+      #     class PageTest < Minitest::Test
+      #       should delegate_method(:plan).to(:subscription).allow_nil
+      #     end
+      #
       # @return [DelegateMethodMatcher]
       #
       def delegate_method(delegating_method)
