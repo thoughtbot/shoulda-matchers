@@ -39,7 +39,7 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
     ansi (1.5.0)
-    appraisal (2.1.0)
+    appraisal (2.2.0)
       bundler
       rake
       thor (>= 0.14.0)
@@ -202,7 +202,7 @@ PLATFORMS
 DEPENDENCIES
   activerecord-jdbc-adapter
   activerecord-jdbcsqlite3-adapter
-  appraisal (= 2.1.0)
+  appraisal (= 2.2.0)
   bcrypt (~> 3.1.7)
   bundler (~> 1.1)
   fssm

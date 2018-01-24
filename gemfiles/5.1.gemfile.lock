@@ -41,7 +41,7 @@ GEM
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
     ansi (1.5.0)
-    appraisal (2.1.0)
+    appraisal (2.2.0)
       bundler
       rake
       thor (>= 0.14.0)
@@ -219,7 +219,7 @@ PLATFORMS
 DEPENDENCIES
   activerecord-jdbc-adapter
   activerecord-jdbcsqlite3-adapter
-  appraisal (= 2.1.0)
+  appraisal (= 2.2.0)
   bcrypt (~> 3.1.7)
   bundler (~> 1.1)
   capybara (~> 2.13)

@@ -2,24 +2,24 @@
 
 source "https://rubygems.org"
 
-gem "appraisal", "2.1.0"
+gem "appraisal", "2.2.0"
 gem "bundler", "~> 1.1"
 gem "pry"
 gem "pry-byebug"
 gem "rake", "12.1.0"
 gem "rspec", "~> 3.6"
-gem "zeus", :require => false
+gem "zeus", require: false
 gem "yard"
 gem "redcarpet"
 gem "pygments.rb"
 gem "fssm"
-gem "activerecord-jdbc-adapter", :platform => :jruby
-gem "activerecord-jdbcsqlite3-adapter", :platform => :jruby
-gem "jdbc-sqlite3", :platform => :jruby
-gem "jruby-openssl", :platform => :jruby
-gem "therubyrhino", :platform => :jruby
-gem "sqlite3", :platform => :ruby
-gem "pg", :platform => :ruby
+gem "activerecord-jdbc-adapter", platform: :jruby
+gem "activerecord-jdbcsqlite3-adapter", platform: :jruby
+gem "jdbc-sqlite3", platform: :jruby
+gem "jruby-openssl", platform: :jruby
+gem "therubyrhino", platform: :jruby
+gem "sqlite3", platform: :ruby
+gem "pg", platform: :ruby
 gem "spring"
 gem "spring-commands-rspec"
 gem "minitest-reporters"
@@ -32,7 +32,7 @@ gem "coffee-rails", "~> 4.1.0"
 gem "jquery-rails"
 gem "turbolinks"
 gem "jbuilder", "~> 2.0"
-gem "sdoc", "~> 0.4.0", :group => :doc
+gem "sdoc", "~> 0.4.0", group: :doc
 gem "bcrypt", "~> 3.1.7"
 gem "activeresource", "4.0.0"
 gem "json", "~> 1.4"
