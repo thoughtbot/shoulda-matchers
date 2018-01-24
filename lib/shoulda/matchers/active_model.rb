@@ -31,6 +31,7 @@ require 'shoulda/matchers/active_model/numericality_matchers/only_integer_matche
 require 'shoulda/matchers/active_model/allow_mass_assignment_of_matcher'
 require 'shoulda/matchers/active_model/errors'
 require 'shoulda/matchers/active_model/have_secure_password_matcher'
+require 'shoulda/matchers/active_model/have_attribute_matcher'
 
 module Shoulda
   module Matchers

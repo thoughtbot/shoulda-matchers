@@ -3,6 +3,7 @@ module Shoulda
     module ActiveModel
       # @private
       class ValidationMatcher
+        include Qualifiers::Callbacks
         include Qualifiers::IgnoringInterferenceByWriter
 
         attr_reader :expected_message, :validation_context
@@ -62,12 +63,14 @@ module Shoulda
         end
 
         def matches?(record)
-          @record = record
+          @subject = @record = record
 
           populate_submatchers
 
-          all_submatchers_match?.tap do
-            @was_negated = false
+          matching do
+            all_submatchers_match?.tap do
+              @was_negated = false
+            end
           end
         end
 
@@ -154,7 +157,7 @@ module Shoulda
 
         protected
 
-        attr_reader :attribute, :submatchers, :record
+        attr_reader :attribute, :submatchers, :record, :subject
 
         def simple_description
           raise NotImplementedError
@@ -226,9 +229,16 @@ module Shoulda
             on(validation_context).
             strict(expects_strict?).
             ignoring_interference_by_writer(ignore_interference_by_writer)
+
           yield matcher if block_given?
 
           matcher
+        end
+
+        def before_matching
+        end
+
+        def after_matching
         end
 
         def model
@@ -236,6 +246,8 @@ module Shoulda
         end
 
         private
+
+        attr_reader :before_matching_blocks, :after_matching_blocks
 
         def overall_failure_message
           message = "Your test expecting #{model.name} to #{description}"
@@ -315,6 +327,7 @@ module Shoulda
             part_of_larger_matcher: true,
           ) do |matcher|
             matcher.for(attribute).with_message(message || expected_message)
+            require "pry-byebug"; binding.pry
             yield matcher if block_given?
           end
         end

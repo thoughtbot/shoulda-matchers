@@ -331,19 +331,18 @@ module Shoulda
           negative_failure_message
         end
 
-        def expectation_description
-          AllowOrDisallowValueMatcher::BuildExpectationDescription.call(
-            self,
-            negated: was_negated?,
-          )
-        end
-
         def aberration_description
           if was_negated?
             negative_aberration_description
           else
             positive_aberration_description
           end
+        end
+
+        protected
+
+        def expectation_negated?
+          was_negated?
         end
       end
     end

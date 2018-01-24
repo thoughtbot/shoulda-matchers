@@ -4,6 +4,7 @@ module Shoulda
       # @private
       class AllowOrDisallowValueMatcher
         include Helpers
+        include Qualifiers::Callbacks
         include Qualifiers::IgnoringInterferenceByWriter
 
         attr_reader(
@@ -15,13 +16,15 @@ module Shoulda
         )
 
         attr_writer(
-          # :attribute_changed_value_message,
-          # :failure_message_preface,
+          :expectation_preface,
           :values_to_preset,
         )
 
         def initialize(*values, part_of_larger_matcher: false)
+          require "pry-byebug"; binding.pry
+
           super
+
           @values_to_set = values
           @options = {}
           @after_setting_value_callback = -> {}
@@ -29,10 +32,12 @@ module Shoulda
           @expects_custom_validation_message = false
           @context = nil
           @values_to_preset = {}
-          # @failure_message_preface = nil
-          # @attribute_changed_value_message = nil
-          @was_negated = nil
+          @expectation_preface = nil
           @part_of_larger_matcher = part_of_larger_matcher
+
+          building_attribute_changed_message do
+            default_attribute_changed_value_message
+          end
         end
 
         def for(attribute_name)
@@ -103,12 +108,16 @@ module Shoulda
             result.attribute_setter.attribute_changed_value?
         end
 
-        # def attribute_changed_value_message
-          # stored_attribute_changed_value_message.call
-        # end
-
         def description
           ValidationMatcher::BuildDescription.call(self, simple_description)
+        end
+
+        def expectation_description
+          AllowOrDisallowValueMatcher::BuildExpectationDescription.call(
+            self,
+            negated: expectation_negated?,
+            preface: expectation_preface,
+          )
         end
 
         def expectation_clauses_for_values_to_preset
@@ -129,6 +138,10 @@ module Shoulda
 
         def last_value_set
           last_attribute_setter_used.value_written
+        end
+
+        def building_attribute_changed_message(&block)
+          @build_attribute_changed_message = block
         end
 
         def model
@@ -182,7 +195,7 @@ module Shoulda
 =begin
           if result.attribute_setter.successfully_checked?
             validator = result.validator
-            message = failure_message_preface.call
+            message = description_for_attribute_setters.call
             message << ' valid, but it was invalid instead,'
 
             if validator.captured_validation_exception?
@@ -199,7 +212,7 @@ module Shoulda
 =end
 
           if !part_of_larger_matcher? && include_attribute_changed_value_message?
-            message << "\n\n" + attribute_changed_value_message
+            message << "\n\n" + build_attribute_changed_message.call
           end
 
           Shoulda::Matchers.word_wrap(message)
@@ -218,7 +231,7 @@ module Shoulda
 =begin
           if attribute_setter.successfully_checked?
             validator = result.validator
-            message = failure_message_preface.call + ' invalid'
+            message = description_for_attribute_setters.call + ' invalid'
 
             if validator.validation_message_type_matches?
               if validator.has_matching_validation_messages?
@@ -277,7 +290,7 @@ module Shoulda
 =end
 
           if !part_of_larger_matcher? && include_attribute_changed_value_message?
-            message << "\n\n" + attribute_changed_value_message
+            message << "\n\n" + build_attribute_changed_message.call
           end
 
           Shoulda::Matchers.word_wrap(message)
@@ -351,33 +364,33 @@ module Shoulda
 
         private
 
+        attr_reader :build_attribute_changed_message
+
         def run(strategy)
           attribute_setters_for_values_to_preset.first_to_unexpectedly_not_pass ||
             attribute_setters_and_validators_for_values_to_set.public_send(strategy)
         end
 
-        def failure_message_preface
-          ''.tap do |preface|
-            if descriptions_for_values_to_preset.any?
-              preface << 'After setting '
-              preface << descriptions_for_values_to_preset.to_sentence
-              preface << ', then '
-            else
-              preface << 'After '
-            end
+        # def default_clauses_for_values_to_preset
+          # ''.tap do |preface|
+            # if descriptions_for_values_to_preset.any?
+              # preface << 'After setting '
+              # preface << descriptions_for_values_to_preset.to_sentence
+              # preface << ', then '
+            # else
+              # preface << 'After '
+            # end
 
-            preface << 'setting '
-            preface << description_for_resulting_attribute_setter
+            # preface << 'setting '
+            # preface << description_for_resulting_attribute_setter
 
-            unless preface.end_with?('--')
-              preface << ','
-            end
+            # unless preface.end_with?('--')
+              # preface << ', '
+            # end
+          # end
+        # end
 
-            preface << " the matcher expected the #{model.name} to be"
-          end
-        end
-
-        def attribute_changed_value_message
+        def default_attribute_changed_value_message
           <<-MESSAGE.strip
 As indicated above, :#{result.attribute_setter.attribute_name} seems to be
 changing certain values as they are set, and this could have something to do

@@ -20,6 +20,7 @@ require "shoulda/matchers/active_record/serialize_matcher"
 require "shoulda/matchers/active_record/accept_nested_attributes_for_matcher"
 require "shoulda/matchers/active_record/define_enum_for_matcher"
 require "shoulda/matchers/active_record/uniqueness"
+require "shoulda/matchers/active_record/validation_matcher_with_existing_record"
 require "shoulda/matchers/active_record/validate_uniqueness_of_matcher"
 
 module Shoulda

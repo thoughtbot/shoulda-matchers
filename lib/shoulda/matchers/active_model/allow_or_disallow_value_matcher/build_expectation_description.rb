@@ -4,39 +4,44 @@ module Shoulda
       class AllowOrDisallowValueMatcher
         # @private
         class BuildExpectationDescription
-          def self.call(matcher, negated:)
-            new(matcher, negated: negated).call
+          def self.call(matcher, **rest)
+            new(matcher, **rest).call
           end
 
-          def initialize(matcher, negated:)
+          def initialize(
+            matcher,
+            negated:,
+            preface: default_preface
+          )
             @matcher = matcher
             @negated = negated
+            @preface = preface
           end
 
           def call
-            parts = []
-
-            if attribute_setter_clauses.present?
-              parts << 'With'
-              parts << attribute_setter_clauses + ','
-              parts << 'the'
-            else
-              parts << 'The'
-            end
-
-            parts << matcher.model
-            parts << 'was expected'
-            parts << expectation
-
-            parts.join(' ') + '.'
+            "#{preface} #{expectation}."
           end
 
           private
 
-          attr_reader :matcher
+          attr_reader :matcher, :preface
 
           def negated?
             @negated
+          end
+
+          def default_preface
+            preface = ''
+
+            if attribute_setter_clauses.any?
+              preface << 'With '
+              preface << attribute_setter_clauses.join(' and ')
+              preface << ', the '
+            else
+              preface << 'The '
+            end
+
+            preface << "#{matcher.model} was expected"
           end
 
           def attribute_setter_clauses
@@ -45,11 +50,7 @@ module Shoulda
               clauses_for_values_to_set,
             ]
 
-            clauses.select(&:present?).join(' and ')
-          end
-
-          def clauses_for_values_to_preset
-            matcher.expectation_clauses_for_values_to_preset
+            clauses.select(&:present?)
           end
 
           def clauses_for_values_to_set
