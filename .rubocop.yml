@@ -1,5 +1,7 @@
 inherit_from: .hound/ruby.yml
-Style/AlignParameters:
+AllCops:
+  TargetRubyVersion: 2.4
+Layout/AlignParameters:
   EnforcedStyle: with_fixed_indentation
 Style/CollectionMethods:
   PreferredMethods:
