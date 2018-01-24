@@ -11,43 +11,51 @@ module UnitTests
 
       def matches?(block)
         @captured_stderr = collapse_whitespace(capture(:stderr, &block))
+        @was_negated = false
         captured_stderr.include?(expected_warning)
       end
 
-      def failure_message
-        "Expected block to #{expectation}\nbut actually printed#{actual_warning}"
+      def does_not_match?(block)
+        !matches?(block).tap do
+          @was_negated = true
+        end
       end
-      alias_method :failure_message_for_should, :failure_message
+
+      def failure_message
+        "Expected block to #{expectation}\n\nHowever, #{aberration}"
+      end
 
       def failure_message_when_negated
-        "Expected block not to #{expectation}, but it did."
+        "Expected block not to #{expectation}\n\nHowever, #{aberration}"
       end
-      alias_method :failure_message_for_should_not,
-        :failure_message_when_negated
 
       def description
-        "should #{expectation}"
+        "should print a warning containing #{expected_warning.inspect}"
       end
 
       def supports_block_expectations?
         true
       end
 
-      protected
+      private
 
       attr_reader :expected_warning, :captured_stderr
 
-      private
-
-      def expectation
-        "print a warning including:\n  #{expected_warning}"
+      def was_negated?
+        @was_negated
       end
 
-      def actual_warning
-        if captured_stderr.empty?
-          " nothing."
+      def expectation
+        "print a warning containing:\n\n  #{expected_warning}"
+      end
+
+      def aberration
+        if was_negated?
+          'it did.'
+        elsif captured_stderr.empty?
+          'it actually printed nothing.'
         else
-          ":\n  #{captured_stderr}"
+          "it actually printed:\n\n  #{captured_stderr}"
         end
       end
 

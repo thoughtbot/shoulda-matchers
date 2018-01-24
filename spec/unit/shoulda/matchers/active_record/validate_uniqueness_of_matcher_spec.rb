@@ -929,11 +929,11 @@ unique.
 
         message = <<-MESSAGE
 Example did not properly validate that :attr is case-sensitively unique.
-  After taking the given Example, setting its :attr to ‹"an arbitrary
-  value"›, and saving it as the existing record, then making a new
-  Example and setting its :attr to a different value, ‹"AN ARBITRARY
-  VALUE"›, the matcher expected the new Example to be valid, but it was
-  invalid instead, producing these validation errors:
+  After taking the given Example, setting its :attr to ‹"dummy value"›,
+  and saving it as the existing record, then making a new Example and
+  setting its :attr to a different value, ‹"DUMMY VALUE"›, the matcher
+  expected the new Example to be valid, but it was invalid instead,
+  producing these validation errors:
 
   * attr: ["has already been taken"]
         MESSAGE
@@ -1355,12 +1355,12 @@ Example did not properly validate that :attr is case-sensitively unique.
 
           message = <<-MESSAGE.strip
 Example did not properly validate that :name is case-sensitively unique.
-  After taking the given Example, setting its :name to ‹"an arbitrary
-  value"› (read back as ‹"AN ARBITRARY VALUE"›), and saving it as the
-  existing record, then making a new Example and setting its :name to
-  ‹"an arbitrary value"› (read back as ‹"AN ARBITRARY VALUE"›) as well,
-  the matcher expected the new Example to be valid, but it was invalid
-  instead, producing these validation errors:
+  After taking the given Example, setting its :name to ‹"dummy value"›
+  (read back as ‹"DUMMY VALUE"›), and saving it as the existing record,
+  then making a new Example and setting its :name to ‹"dummy value"›
+  (read back as ‹"DUMMY VALUE"›) as well, the matcher expected the new
+  Example to be valid, but it was invalid instead, producing these
+  validation errors:
 
   * name: ["has already been taken"]
 
@@ -1416,6 +1416,18 @@ Example did not properly validate that :name is case-sensitively unique.
             case_insensitive
         end
       end
+    end
+  end
+
+  context 'when the column is a boolean column' do
+    it 'accepts (and does not print a warning)' do
+      record = build_record_validating_uniqueness(attribute_type: :boolean)
+      running_validation = -> { expect(record).to validate_uniqueness }
+      message =
+        'You attempted to assign a value which is not explicitly `true` or ' +
+        '`false`'
+
+      expect(&running_validation).not_to print_warning_including(message)
     end
   end
 

@@ -518,8 +518,8 @@ module Shoulda
         end
 
         def arbitrary_non_blank_value
+          non_blank_value = dummy_value_for(@attribute)
           limit = column_limit_for(@attribute)
-          non_blank_value = 'an arbitrary value'
 
           if limit && limit < non_blank_value.length
             'x' * limit
