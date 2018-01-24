@@ -1,6 +1,8 @@
 #!/bin/bash
 
-SUPPORTED_VERSIONS=$(<script/SUPPORTED_VERSIONS)
+set -euo pipefail
+
+SUPPORTED_VERSIONS=$(script/supported_ruby_versions)
 gem="$1"
 
 update-gem-for-version() {
