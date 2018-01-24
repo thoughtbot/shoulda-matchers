@@ -48,6 +48,12 @@ is now:
   * *PRs: [#989], [#964], [#917]*
   * *Original issue: [#867]*
 
+* Fix `define_enum_for` matcher so that it once more allows string columns to be
+  used as enum attributes.
+
+  * *PR: [#1063]*
+  * *Original issue: [#912]*
+
 ### Features
 
 * Add `required` and `optional` qualifiers to `belong_to` and `have_one`
@@ -72,6 +78,8 @@ is now:
 [#917]: https://github.com/thoughtbot/shoulda-matchers/pulls/917
 [#867]: https://github.com/thoughtbot/shoulda-matchers/issues/867
 [#1054]: https://github.com/thoughtbot/shoulda-matchers/pulls/1054
+[#1063]: https://github.com/thoughtbot/shoulda-matchers/pulls/1063
+[#912]: https://github.com/thoughtbot/shoulda-matchers/issues/912
 
 ### Improvements
 
