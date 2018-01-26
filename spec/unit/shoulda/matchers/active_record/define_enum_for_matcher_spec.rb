@@ -123,7 +123,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
           MESSAGE
 
           assertion = lambda do
-            expect(record).to define_enum_for(:attr).with(['open', 'close'])
+            expect(record).to define_enum_for(:attr).with_values(['open', 'close'])
           end
 
           expect(&assertion).to fail_with_message(message)
@@ -144,7 +144,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
             MESSAGE
 
             assertion = lambda do
-              expect(record).to define_enum_for(:attr).with(['open', 'close'])
+              expect(record).to define_enum_for(:attr).with_values(['open', 'close'])
             end
 
             expect(&assertion).to fail_with_message(message)
@@ -159,7 +159,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
             )
 
             expect(record).to define_enum_for(:attr).
-              with(['published', 'unpublished', 'draft'])
+              with_values(['published', 'unpublished', 'draft'])
           end
         end
       end
@@ -180,7 +180,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
           assertion = lambda do
             expect(record).
               to define_enum_for(:attr).
-              with(active: 5, archived: 10)
+              with_values(active: 5, archived: 10)
           end
 
           expect(&assertion).to fail_with_message(message)
@@ -203,7 +203,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
             assertion = lambda do
               expect(record).
                 to define_enum_for(:attr).
-                with(active: 5, archived: 10)
+                with_values(active: 5, archived: 10)
             end
 
             expect(&assertion).to fail_with_message(message)
@@ -220,7 +220,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
 
               expect(record).
                 to define_enum_for(:attr).
-                with(active: 0, archived: 1)
+                with_values(active: 0, archived: 1)
             end
           end
 
@@ -233,11 +233,29 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
 
               expect(record).
                 to define_enum_for(:attr).
-                with(['active', 'archived'])
+                with_values(['active', 'archived'])
             end
           end
         end
       end
+    end
+  end
+
+  context 'with values specified using #with' do
+    it 'produces a warning' do
+      record = build_record_with_array_values(
+        attribute_name: :attr,
+        values: [:foo, :bar],
+      )
+
+      assertion = lambda do
+        expect(record).to define_enum_for(:attr).with([:foo, :bar])
+      end
+
+      expect(&assertion).to deprecate(
+        'The `with` qualifier on `define_enum_for`',
+        '`with_values`',
+      )
     end
   end
 

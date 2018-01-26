@@ -20,10 +20,10 @@ module Shoulda
       #
       # #### Qualifiers
       #
-      # ##### with
+      # ##### with_values
       #
-      # Use `with` to test that the attribute has been defined with a certain
-      # set of known values.
+      # Use `with_values` to test that the attribute has been defined with a
+      # certain set of possible values.
       #
       #     class Process < ActiveRecord::Base
       #       enum status: [:running, :stopped, :suspended]
@@ -33,14 +33,14 @@ module Shoulda
       #     RSpec.describe Process, type: :model do
       #       it do
       #         should define_enum_for(:status).
-      #           with([:running, :stopped, :suspended])
+      #           with_values([:running, :stopped, :suspended])
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
       #     class ProcessTest < ActiveSupport::TestCase
       #       should define_enum_for(:status).
-      #         with([:running, :stopped, :suspended])
+      #         with_values([:running, :stopped, :suspended])
       #     end
       #
       # ##### backed_by_column_of_type
@@ -60,7 +60,7 @@ module Shoulda
       #     RSpec.describe LoanApplication, type: :model do
       #       it do
       #         should define_enum_for(:status).
-      #           with(
+      #           with_values(
       #             active: "active",
       #             pending: "pending",
       #             rejected: "rejected"
@@ -72,7 +72,7 @@ module Shoulda
       #     # Minitest (Shoulda)
       #     class LoanApplicationTest < ActiveSupport::TestCase
       #       should define_enum_for(:status).
-      #         with(
+      #         with_values(
       #           active: "active",
       #           pending: "pending",
       #           rejected: "rejected"
@@ -94,9 +94,17 @@ module Shoulda
           @options = {}
         end
 
-        def with(expected_enum_values)
+        def with_values(expected_enum_values)
           options[:expected_enum_values] = expected_enum_values
           self
+        end
+
+        def with(expected_enum_values)
+          Shoulda::Matchers.warn_about_deprecated_method(
+            'The `with` qualifier on `define_enum_for`',
+            '`with_values`'
+          )
+          with_values(expected_enum_values)
         end
 
         def backed_by_column_of_type(expected_column_type)
