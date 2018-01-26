@@ -1,146 +1,222 @@
 require 'unit_spec_helper'
 
-describe 'Shoulda::Matchers::Routing::RouteMatcher', type: :routing do
-  before do
-    define_controller('ThingsController')
-  end
-
+describe Shoulda::Matchers::Routing::RouteMatcher, type: :routing do
   shared_examples_for 'core tests' do
     context 'when the given method, path, controller, and action match an existing route' do
       it 'accepts' do
-        define_routes { get '/', to: 'things#index' }
+        define_controller_and_routes(
+          method: :get,
+          path: '/',
+          controller: 'things',
+          action: 'index',
+        )
 
-        assert_accepts add_target_to(
-          route(:get, '/'),
+        matcher = build_route_matcher(
+          method: :get,
+          path: '/',
           controller: 'things',
           action: 'index'
         )
+
+        is_expected.to(matcher)
       end
 
       context 'and the expected controller is specified as a symbol' do
         it 'accepts' do
-          define_routes { get '/', to: 'things#index' }
+          define_controller_and_routes(
+            method: :get,
+            path: '/',
+            controller: 'things',
+            action: 'index',
+          )
 
-          assert_accepts add_target_to(
-            route(:get, '/'),
+          matcher = build_route_matcher(
+            method: :get,
+            path: '/',
             controller: :things,
             action: 'index'
           )
+
+          is_expected.to(matcher)
         end
       end
 
       context 'and the expected action is specified as a symbol' do
         it 'accepts' do
-          define_routes { get '/', to: 'things#index' }
-
-          assert_accepts add_target_to(
-            route(:get, '/'),
+          define_controller_and_routes(
+            method: :get,
+            path: '/',
             controller: 'things',
-            action: :index
+            action: 'index',
           )
+
+          matcher = build_route_matcher(
+            method: :get,
+            path: '/',
+            controller: 'things',
+            action: :index,
+          )
+
+          is_expected.to(matcher)
         end
       end
     end
 
     context 'when the given method, path, controller, and action do not match an existing route' do
       it 'rejects' do
-        assert_rejects add_target_to(
-          route(:get, '/non_existent_route'),
-          controller: 'no_controller',
-          action: 'no_action'
+        matcher = build_route_matcher(
+          method: :get,
+          path: '/non_existent_route',
+          controller: 'some_controller',
+          action: 'some_action',
         )
+
+        is_expected.not_to(matcher)
       end
     end
 
     context 'when the given path, controller, and action match an existing route but the method does not' do
       it 'rejects' do
-        define_routes { post '/', to: 'things#index' }
-
-        assert_rejects add_target_to(
-          route(:get, '/'),
+        define_controller_and_routes(
+          method: :get,
+          path: '/',
           controller: 'things',
-          action: 'index'
+          action: 'index',
         )
+
+        matcher = build_route_matcher(
+          method: :post,
+          path: '/',
+          controller: 'things',
+          action: 'index',
+        )
+
+        is_expected.not_to(matcher)
       end
     end
 
     context 'when the given method, controller, and action match an existing route but the path does not' do
       it 'rejects' do
-        define_routes { get '/', to: 'things#index' }
-
-        assert_rejects add_target_to(
-          route(:get, '/different_path'),
+        define_controller_and_routes(
+          method: :get,
+          path: '/',
           controller: 'things',
-          action: 'index'
+          action: 'index',
         )
+
+        matcher = build_route_matcher(
+          method: :get,
+          path: '/something_else',
+          controller: 'things',
+          action: 'index',
+        )
+
+        is_expected.not_to(matcher)
       end
     end
 
     context 'when the given method and path match an existing route but the controller does not' do
       it 'rejects' do
-        define_routes { get '/', to: 'another_controller#index' }
-
-        assert_rejects add_target_to(
-          route(:get, '/'),
+        define_controller_and_routes(
+          method: :get,
+          path: '/',
           controller: 'things',
-          action: 'index'
+          action: 'index',
         )
+
+        matcher = build_route_matcher(
+          method: :get,
+          path: '/',
+          controller: 'some_other_controller',
+          action: 'index',
+        )
+
+        is_expected.not_to(matcher)
       end
     end
 
     context 'when the given method, path, and controller match an existing route but the action does not' do
       it 'rejects' do
-        define_routes { get '/', to: 'things#index' }
-
-        assert_rejects add_target_to(
-          route(:get, '/'),
+        define_controller_and_routes(
+          method: :get,
+          path: '/',
           controller: 'things',
-          action: 'another_action'
+          action: 'index',
         )
+
+        matcher = build_route_matcher(
+          method: :get,
+          path: '/',
+          controller: 'things',
+          action: 'another_action',
+        )
+
+        is_expected.not_to(matcher)
       end
     end
 
     context 'when the actual route has a param' do
       context 'and the expected params include that param' do
         it 'accepts' do
-          define_routes { get '/things/:id', to: 'things#show' }
-
-          assert_accepts add_target_to(
-            route(:get, '/things/1'),
+          define_controller_and_routes(
+            method: :get,
+            path: '/things/:id',
             controller: 'things',
             action: 'show',
-            id: '1'
           )
+
+          matcher = build_route_matcher(
+            method: :get,
+            path: '/things/1',
+            controller: 'things',
+            action: 'show',
+            id: '1',
+          )
+
+          is_expected.to(matcher)
         end
 
         context 'but its value was not specified as a string' do
           it 'accepts, treating it as a string' do
-            define_routes { get '/things/:id', to: 'things#show' }
-
-            assert_accepts add_target_to(
-              route(:get, '/things/1'),
+            define_controller_and_routes(
+              method: :get,
+              path: '/things/:id',
               controller: 'things',
               action: 'show',
-              id: 1
             )
+
+            matcher = build_route_matcher(
+              method: :get,
+              path: '/things/1',
+              controller: 'things',
+              action: 'show',
+              id: 1,
+            )
+
+            is_expected.to(matcher)
           end
         end
       end
 
       context 'and the expected params do not match the actual params' do
         it 'rejects' do
-          define_routes { get '/things/:id', to: 'things#show' }
+          define_controller_and_routes(
+            method: :get,
+            path: '/things/:id',
+            controller: 'things',
+            action: 'show',
+          )
 
-          params = {
+          matcher = build_route_matcher(
+            method: :get,
+            path: '/things/1',
             controller: 'things',
             action: 'show',
             some: 'other',
-            params: 'here'
-          }
-          assert_rejects add_target_to(
-            route(:get, '/things/:id'),
-            params
+            params: 'here',
           )
+
+          is_expected.not_to(matcher)
         end
       end
     end
@@ -149,35 +225,45 @@ describe 'Shoulda::Matchers::Routing::RouteMatcher', type: :routing do
       context 'and the expected params include a value for it' do
         context 'as a symbol' do
           it 'accepts' do
-            define_routes do
-              post '/things(.:format)',
-                to: 'things#create',
-                defaults: { format: :json }
-            end
-
-            assert_accepts add_target_to(
-              route(:post, '/things'),
+            define_controller_and_routes(
+              method: :post,
+              path: '/things(.:format)',
               controller: 'things',
               action: 'create',
-              format: :json
+              defaults: { format: :json },
             )
+
+            matcher = build_route_matcher(
+              method: :post,
+              path: '/things',
+              controller: 'things',
+              action: 'create',
+              format: :json,
+            )
+
+            is_expected.to(matcher)
           end
         end
 
         context 'as a string' do
           it 'accepts' do
-            define_routes do
-              post '/things(.:format)',
-                to: 'things#create',
-                defaults: { format: :json }
-            end
-
-            assert_accepts add_target_to(
-              route(:post, '/things'),
+            define_controller_and_routes(
+              method: :post,
+              path: '/things(.:format)',
               controller: 'things',
               action: 'create',
-              format: 'json'
+              defaults: { format: :json },
             )
+
+            matcher = build_route_matcher(
+              method: :post,
+              path: '/things',
+              controller: 'things',
+              action: 'create',
+              format: 'json',
+            )
+
+            is_expected.to(matcher)
           end
         end
       end
@@ -186,57 +272,72 @@ describe 'Shoulda::Matchers::Routing::RouteMatcher', type: :routing do
     context 'when the existing route has a glob segment' do
       context 'and a param is given which represents the segment' do
         it 'accepts' do
-          define_routes { get '/things/*id', to: 'things#whatever' }
-
-          assert_accepts add_target_to(
-            route(:get, '/things/foo/bar'),
+          define_controller_and_routes(
+            method: :get,
+            path: '/things/*id',
             controller: 'things',
-            action: 'whatever',
-            id: 'foo/bar'
+            action: 'show',
           )
+
+          matcher = build_route_matcher(
+            method: :get,
+            path: '/things/foo/bar',
+            controller: 'things',
+            action: 'show',
+            id: 'foo/bar',
+          )
+
+          is_expected.to(matcher)
         end
       end
 
       context 'and no param is given which represents the segment' do
         it 'rejects' do
-          define_routes { get '/things/*id', to: 'things#whatever' }
-
-          assert_rejects add_target_to(
-            route(:get, '/things'),
+          define_controller_and_routes(
+            method: :get,
+            path: '/things/*id',
             controller: 'things',
-            action: 'whatever'
+            action: 'show',
           )
+
+          matcher = build_route_matcher(
+            method: :get,
+            path: '/things',
+            controller: 'things',
+            action: 'show',
+          )
+
+          is_expected.not_to(matcher)
         end
       end
     end
   end
 
   context 'given a controller and action specified as individual options' do
-    include_examples 'core tests'
-
-    def add_target_to(route_matcher, params)
-      route_matcher.to(params)
+    include_examples 'core tests' do
+      def build_route_matcher(method:, path:, **params)
+        super.to(params)
+      end
     end
   end
 
   context 'given a controller and action joined together in a string' do
-    include_examples 'core tests'
-
-    def add_target_to(route_matcher, args)
-      controller = args.fetch(:controller)
-      action = args.fetch(:action)
-      route_matcher.to(
-        "#{controller}##{action}",
-        args.except(:controller, :action)
-      )
+    include_examples 'core tests' do
+      def build_route_matcher(method:, path:, controller:, action:, **rest)
+        super.to("#{controller}##{action}", **rest)
+      end
     end
   end
 
-  def assert_accepts(matcher)
-    should(matcher)
+  def define_controller_and_routes(method:, path:, controller:, action:, **params)
+    define_controller(controller.camelize)
+
+    define_routes do
+      send(method, path, controller: controller, action: action, **params)
+    end
   end
 
-  def assert_rejects(matcher)
-    should_not(matcher)
+  def build_route_matcher(method:, path:, **)
+    route(method, path)
   end
 end
