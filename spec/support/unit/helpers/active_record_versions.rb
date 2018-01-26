@@ -9,6 +9,10 @@ module UnitTests
       Tests::Version.new(::ActiveRecord::VERSION::STRING)
     end
 
+    def active_record_enum_supports_prefix_and_suffix?
+      active_record_version >= 5
+    end
+
     def active_record_supports_has_secure_password?
       active_record_version >= 3.1
     end

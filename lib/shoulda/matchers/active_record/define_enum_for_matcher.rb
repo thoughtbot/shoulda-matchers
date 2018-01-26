@@ -80,6 +80,55 @@ module Shoulda
       #         backed_by_column_of_type(:string)
       #     end
       #
+      ## ##### with_prefix
+      #
+      # Use `with_prefix` to test that the enum is defined with a `_prefix`
+      # option (Rails 5 only). Can take either a boolean or a symbol:
+      #
+      #     class Issue < ActiveRecord::Base
+      #       enum status: [:open, :closed], _prefix: :old
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Issue, type: :model do
+      #       it do
+      #         should define_enum_for(:status).
+      #           with_values([:open, :closed]).
+      #           with_prefix(:old)
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class ProcessTest < ActiveSupport::TestCase
+      #       should define_enum_for(:status).
+      #         with_values([:open, :closed]).
+      #         with_prefix(:old)
+      #     end
+      #
+      # ##### with_suffix
+      #
+      # Use `with_suffix` to test that the enum is defined with a `_suffix`
+      # option (Rails 5 only). Can take either a boolean or a symbol:
+      #
+      #     class Issue < ActiveRecord::Base
+      #       enum status: [:open, :closed], _suffix: true
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Issue, type: :model do
+      #       it do
+      #         should define_enum_for(:status).
+      #           with_values([:open, :closed]).
+      #           with_suffix
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class ProcessTest < ActiveSupport::TestCase
+      #       should define_enum_for(:status).
+      #         with_values([:open, :closed]).
+      #         with_suffix
+      #     end
       #
       # @return [DefineEnumForMatcher]
       #
@@ -97,6 +146,23 @@ module Shoulda
         def description
           description = "define :#{attribute_name} as an enum, backed by "
           description << Shoulda::Matchers::Util.a_or_an(expected_column_type)
+
+          if options[:expected_prefix]
+            description << ', using a prefix of '
+            description << "#{options[:expected_prefix].inspect}"
+          end
+
+          if options[:expected_suffix]
+            if options[:expected_prefix]
+              description << ' and'
+            else
+              description << ', using'
+            end
+
+            description << ' a suffix of '
+
+            description << "#{options[:expected_suffix].inspect}"
+          end
 
           if presented_expected_enum_values.any?
             description << ', with possible values '
@@ -121,6 +187,16 @@ module Shoulda
           with_values(expected_enum_values)
         end
 
+        def with_prefix(expected_prefix = attribute_name)
+          options[:expected_prefix] = expected_prefix
+          self
+        end
+
+        def with_suffix(expected_suffix = attribute_name)
+          options[:expected_suffix] = expected_suffix
+          self
+        end
+
         def backed_by_column_of_type(expected_column_type)
           options[:expected_column_type] = expected_column_type
           self
@@ -128,7 +204,11 @@ module Shoulda
 
         def matches?(subject)
           @record = subject
-          enum_defined? && enum_values_match? && column_type_matches?
+
+          enum_defined? &&
+            enum_values_match? &&
+            column_type_matches? &&
+            enum_value_methods_exist?
         end
 
         def failure_message
@@ -166,6 +246,10 @@ module Shoulda
 
         def normalized_expected_enum_values
           to_hash(expected_enum_values)
+        end
+
+        def expected_enum_value_names
+          to_array(expected_enum_values)
         end
 
         def expected_enum_values
@@ -236,6 +320,38 @@ module Shoulda
 
         def model
           record.class
+        end
+
+        def enum_value_methods_exist?
+          passed = expected_singleton_methods.all? do |method|
+            model.singleton_methods.include?(method)
+          end
+
+          if passed
+            true
+          else
+            @failure_reason =
+              if options[:expected_prefix]
+                if options[:expected_suffix]
+                  'it was defined with either a different prefix, a ' +
+                  'different suffix, or neither one at all'
+                else
+                  'it was defined with either a different prefix or none at all'
+                end
+              elsif options[:expected_suffix]
+                'it was defined with either a different suffix or none at all'
+              end
+            false
+          end
+        end
+
+        def expected_singleton_methods
+          expected_enum_value_names.map do |name|
+            [options[:expected_prefix], name, options[:expected_suffix]].
+              select(&:present?).
+              join('_').
+              to_sym
+          end
         end
 
         def to_hash(value)
