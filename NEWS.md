@@ -82,7 +82,9 @@ is now:
 
   * *Original PR: [#724]*
 
-* Add `with_port` qualifier to `route`.
+* Add a `port` option to the `route` matcher to allow testing a route that has
+  a constraint on it such that only a specific port may be used to access that
+  route.
 
   * *Original issue: [#954]*
 

@@ -312,7 +312,7 @@ describe 'Shoulda::Matchers::Routing::RouteMatcher', type: :routing do
       end
     end
 
-    context 'qualified with #with_port' do
+    context 'when a port is specified' do
       context 'when the route is constrained to the same port' do
         it 'accepts' do
           define_controller_and_routes(
@@ -323,14 +323,13 @@ describe 'Shoulda::Matchers::Routing::RouteMatcher', type: :routing do
             constraints: port_constraint_class.new(12345),
           )
 
-          matcher =
-            build_route_matcher(
-              method: :get,
-              path: '/',
-              controller: 'things',
-              action: 'show',
-            ).
-            with_port(12345)
+          matcher = build_route_matcher(
+            method: :get,
+            path: '/',
+            controller: 'things',
+            action: 'show',
+            port: 12345,
+          )
 
           is_expected.to(matcher)
         end
@@ -346,14 +345,13 @@ describe 'Shoulda::Matchers::Routing::RouteMatcher', type: :routing do
             constraints: port_constraint_class.new(12345),
           )
 
-          matcher =
-            build_route_matcher(
-              method: :get,
-              path: '/',
-              controller: 'things',
-              action: 'show',
-            ).
-            with_port(99999)
+          matcher = build_route_matcher(
+            method: :get,
+            path: '/',
+            controller: 'things',
+            action: 'show',
+            port: 99999,
+          )
 
           is_expected.not_to(matcher)
         end
@@ -363,16 +361,17 @@ describe 'Shoulda::Matchers::Routing::RouteMatcher', type: :routing do
 
   context 'given a controller and action specified as individual options' do
     include_examples 'core tests' do
-      def build_route_matcher(method:, path:, **params)
-        super.to(params)
+      def build_route_matcher(method:, path:, port: nil, **params)
+        super(method: method, path: path, port: port).to(params)
       end
     end
   end
 
   context 'given a controller and action joined together in a string' do
     include_examples 'core tests' do
-      def build_route_matcher(method:, path:, controller:, action:, **rest)
-        super.to("#{controller}##{action}", **rest)
+      def build_route_matcher(method:, path:, controller:, action:, port: nil, **rest)
+        super(method: method, path: path, port: port).
+          to("#{controller}##{action}", **rest)
       end
     end
   end
@@ -385,8 +384,8 @@ describe 'Shoulda::Matchers::Routing::RouteMatcher', type: :routing do
     end
   end
 
-  def build_route_matcher(method:, path:, **)
-    route(method, path)
+  def build_route_matcher(method:, path:, port:, **)
+    route(method, path, port: port)
   end
 
   let(:port_constraint_class) do

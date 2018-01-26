@@ -64,6 +64,42 @@ module Shoulda
       # this controller. In the latter case we specify this using the
       # `controller` key passed to the `to` qualifier.
       #
+      # #### Specifying a port
+      #
+      # If the route you're testing has a constraint on it that limits the route
+      # to a particular port, you can specify it by passing a `port` option to
+      # the matcher:
+      #
+      #     class PortConstraint
+      #       def initialize(port)
+      #         @port = port
+      #       end
+      #
+      #       def matches?(request)
+      #         request.port == @port
+      #       end
+      #     end
+      #
+      #     My::Application.routes.draw do
+      #       get '/posts',
+      #         to: 'posts#index',
+      #         constraints: PortConstraint.new(12345)
+      #     end
+      #
+      #     # RSpec
+      #     describe 'Routing', type: :routing do
+      #       it do
+      #         should route(:get, '/posts', port: 12345).
+      #           to('posts#index')
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class RoutesTest < ActionController::IntegrationTest
+      #       should route(:get, '/posts', port: 12345).
+      #         to('posts#index')
+      #     end
+      #
       # #### Qualifiers
       #
       # ##### to
@@ -86,64 +122,19 @@ module Shoulda
       #
       #     route(:get, '/posts').to('posts#index', format: :json)
       #
-      # ##### with_port
-      #
-      # Use `with_port` if the route you're testing has a constraint on it that
-      # limits the route to a particular port:
-      #
-      #     class PortConstraint
-      #       def initialize(port)
-      #         @port = port
-      #       end
-      #
-      #       def matches?(request)
-      #         request.port == @port
-      #       end
-      #     end
-      #
-      #     My::Application.routes.draw do
-      #       get '/posts',
-      #         to: 'posts#index',
-      #         constraints: PortConstraint.new(12345)
-      #     end
-      #
-      #     # RSpec
-      #     describe 'Routing', type: :routing do
-      #       it do
-      #         should route(:get, '/posts').
-      #           to('posts#index').
-      #           with_port(12345)
-      #       end
-      #     end
-      #
-      #     # Minitest (Shoulda)
-      #     class RoutesTest < ActionController::IntegrationTest
-      #       should route(:get, '/posts').
-      #         to('posts#index').
-      #         with_port(12345)
-      #     end
-      #
       # @return [RouteMatcher]
       #
-      def route(method, path)
-        RouteMatcher.new(method, path, self)
+      def route(method, path, port: nil)
+        RouteMatcher.new(self, method, path, port: port)
       end
 
       # @private
       class RouteMatcher
-        def initialize(method, path, context)
-          @method = method
-
-          @path =
-            if path.start_with?('/')
-              path
-            else
-              @path = "/#{path}"
-            end
-
+        def initialize(context, method, path, port: nil)
           @context = context
+          @method = method
+          @path = add_port_to_path(normalize_path(path), port)
           @params = {}
-          @port = nil
         end
 
         attr_reader :failure_message
@@ -155,11 +146,6 @@ module Shoulda
 
         def in_context(context)
           @context = context
-          self
-        end
-
-        def with_port(port)
-          @path = "http://example.com:#{port}" + path
           self
         end
 
@@ -179,7 +165,24 @@ module Shoulda
 
         private
 
-        attr_reader :method, :path, :context, :params
+        attr_reader :context, :method, :path, :params
+
+        def normalize_path(path)
+          if path.start_with?('/')
+            path
+          else
+            "/#{path}"
+          end
+        end
+
+        def add_port_to_path(path, port)
+          if port
+            "http://example.com:#{port}" + path
+          else
+            path
+          end
+        end
+
 
         def guess_controller_if_necessary(controller)
           params[:controller] ||= controller.controller_path
