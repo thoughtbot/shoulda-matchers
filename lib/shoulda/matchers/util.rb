@@ -41,7 +41,14 @@ module Shoulda
       end
 
       def self.inspect_value(value)
-        "‹#{value.inspect}›"
+        case value
+        when Hash
+          inspect_hash(value)
+        when Range
+          inspect_range(value)
+        else
+          "‹#{value.inspect}›"
+        end
       end
 
       def self.inspect_values(values)
@@ -50,6 +57,20 @@ module Shoulda
 
       def self.inspect_range(range)
         "#{inspect_value(range.first)} to #{inspect_value(range.last)}"
+      end
+
+      def self.inspect_hash(hash)
+        output = '‹{'
+
+        output << hash.map { |key, value|
+          if key.is_a?(Symbol)
+            "#{key}: #{value.inspect}"
+          else
+            "#{key.inspect} => #{value.inspect}"
+          end
+        }.join(', ')
+
+        output << '}›'
       end
 
       def self.dummy_value_for(column_type, array: false)

@@ -8,9 +8,9 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
         attribute_name: :attr,
         column_type: :integer,
       )
-      message = as_one_line(<<~MESSAGE)
-        Expected Example to define :attrs as an enum and store the value in a
-        column of type integer
+      message = format_message(<<-MESSAGE)
+        Expected Example to define :attrs as an enum, backed by an integer.
+        However, no such enum exists in Example.
       MESSAGE
 
       assertion = lambda do
@@ -27,13 +27,13 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
         def self.statuses; end
       end
 
-      message = as_one_line(<<~MESSAGE)
-        Expected Example to define :statuses as an enum and store the value in a
-        column of type integer
+      message = format_message(<<-MESSAGE)
+        Expected Example to define :attr as an enum, backed by an integer.
+        However, no such enum exists in Example.
       MESSAGE
 
       assertion = lambda do
-        expect(model.new).to define_enum_for(:statuses)
+        expect(model.new).to define_enum_for(:attr)
       end
 
       expect(&assertion).to fail_with_message(message)
@@ -47,9 +47,9 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
           model_name: 'Example',
           attribute_name: :attr,
         )
-        message = as_one_line(<<~MESSAGE)
-          Expected Example to define :attr as an enum and store the value in a
-          column of type integer
+        message = format_message(<<-MESSAGE)
+          Expected Example to define :attr as an enum, backed by an integer.
+          However, no such enum exists in Example.
         MESSAGE
 
         assertion = lambda do
@@ -67,9 +67,9 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
           attribute_name: :attr,
           column_type: :string,
         )
-        message = as_one_line(<<~MESSAGE)
-          Expected Example to define :attr as an enum and store the value in a
-          column of type integer
+        message = format_message(<<-MESSAGE)
+          Expected Example to define :attr as an enum, backed by an integer.
+          However, :attr is a string column.
         MESSAGE
 
         assertion = lambda do
@@ -94,9 +94,9 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
             attribute_name: :attr,
             column_type: :integer,
           )
-          message = as_one_line(<<~MESSAGE)
-            Did not expect Example to define :attr as an enum and store the
-            value in a column of type integer
+          message = format_message(<<-MESSAGE)
+            Expected Example not to define :attr as an enum, backed by an integer,
+            but it did.
           MESSAGE
 
           assertion = lambda do
@@ -117,20 +117,23 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
             model_name: 'Example',
             attribute_name: :attr,
           )
-          message = as_one_line(<<~MESSAGE)
-            Expected Example to define :attr as an enum with ["open", "close"]
-            and store the value in a column of type integer
+          message = format_message(<<-MESSAGE)
+            Expected Example to define :attr as an enum, backed by an integer,
+            with possible values ‹["open", "close"]›. However, no such enum
+            exists in Example.
           MESSAGE
 
           assertion = lambda do
-            expect(record).to define_enum_for(:attr).with_values(['open', 'close'])
+            expect(record).
+              to define_enum_for(:attr).
+              with_values(['open', 'close'])
           end
 
           expect(&assertion).to fail_with_message(message)
         end
       end
 
-      context 'if the attribute is defined as an enum and the enum values match' do
+      context 'if the attribute is defined as an enum' do
         context 'but the enum values do not match' do
           it 'rejects with an appropriate failure message' do
             record = build_record_with_array_values(
@@ -138,13 +141,16 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
               attribute_name: :attr,
               values: ['published', 'unpublished', 'draft'],
             )
-            message = as_one_line(<<~MESSAGE)
-              Expected Example to define :attr as an enum with ["open", "close"]
-              and store the value in a column of type integer
+            message = format_message(<<-MESSAGE)
+              Expected Example to define :attr as an enum, backed by an integer,
+              with possible values ‹["open", "close"]›. However, the actual
+              enum values for :attr are ‹["published", "unpublished", "draft"]›.
             MESSAGE
 
             assertion = lambda do
-              expect(record).to define_enum_for(:attr).with_values(['open', 'close'])
+              expect(record).
+                to define_enum_for(:attr).
+                with_values(['open', 'close'])
             end
 
             expect(&assertion).to fail_with_message(message)
@@ -172,9 +178,10 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
             model_name: 'Example',
             attribute_name: :attr,
           )
-          message = as_one_line(<<~MESSAGE)
-            Expected Example to define :attr as an enum with {:active=>5,
-            :archived=>10} and store the value in a column of type integer
+          message = format_message(<<-MESSAGE)
+            Expected Example to define :attr as an enum, backed by an integer,
+            with possible values ‹{active: 5, archived: 10}›. However, no such
+            enum exists in Example.
           MESSAGE
 
           assertion = lambda do
@@ -195,9 +202,10 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
               attribute_name: :attr,
               values: { active: 0, archived: 1 },
             )
-            message = as_one_line(<<~MESSAGE)
-              Expected Example to define :attr as an enum with {:active=>5,
-              :archived=>10} and store the value in a column of type integer
+            message = format_message(<<-MESSAGE)
+              Expected Example to define :attr as an enum, backed by an integer,
+              with possible values ‹{active: 5, archived: 10}›. However, the
+              actual enum values for :attr are ‹{active: 0, archived: 1}›.
             MESSAGE
 
             assertion = lambda do
@@ -267,9 +275,9 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
           attribute_name: :attr,
           column_type: :integer,
         )
-        message = as_one_line(<<~MESSAGE)
-          Expected Example to define :attr as an enum and store the value in a
-          column of type string
+        message = format_message(<<-MESSAGE)
+          Expected Example to define :attr as an enum, backed by a string.
+          However, :attr is an integer column.
         MESSAGE
 
         assertion = lambda do
@@ -339,9 +347,5 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
 
   def build_record_with_non_enum_attribute(model_name:, attribute_name:)
     define_model(model_name, attribute_name => :integer).new
-  end
-
-  def as_one_line(message)
-    message.tr("\n", ' ').strip
   end
 end

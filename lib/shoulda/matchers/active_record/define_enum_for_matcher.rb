@@ -91,7 +91,21 @@ module Shoulda
       class DefineEnumForMatcher
         def initialize(attribute_name)
           @attribute_name = attribute_name
-          @options = {}
+          @options = { expected_enum_values: [] }
+        end
+
+        def description
+          description = "define :#{attribute_name} as an enum, backed by "
+          description << Shoulda::Matchers::Util.a_or_an(expected_column_type)
+
+          if presented_expected_enum_values.any?
+            description << ', with possible values '
+            description << Shoulda::Matchers::Util.inspect_value(
+              presented_expected_enum_values,
+            )
+          end
+
+          description
         end
 
         def with_values(expected_enum_values)
@@ -102,7 +116,7 @@ module Shoulda
         def with(expected_enum_values)
           Shoulda::Matchers.warn_about_deprecated_method(
             'The `with` qualifier on `define_enum_for`',
-            '`with_values`'
+            '`with_values`',
           )
           with_values(expected_enum_values)
         end
@@ -118,37 +132,56 @@ module Shoulda
         end
 
         def failure_message
-          "Expected #{expectation}"
-        end
-        alias :failure_message_for_should :failure_message
+          message = "Expected #{model} to #{expectation}"
 
-        def failure_message_when_negated
-          "Did not expect #{expectation}"
-        end
-        alias :failure_message_for_should_not :failure_message_when_negated
-
-        def description
-          desc = "define :#{attribute_name} as an enum"
-
-          if options[:expected_enum_values]
-            desc << " with #{options[:expected_enum_values]}"
+          if failure_reason
+            message << ". However, #{failure_reason}"
           end
 
-          desc << " and store the value in a column of type #{expected_column_type}"
+          message << '.'
 
-          desc
+          Shoulda::Matchers.word_wrap(message)
         end
 
-        protected
+        def failure_message_when_negated
+          message = "Expected #{model} not to #{expectation}, but it did."
+          Shoulda::Matchers.word_wrap(message)
+        end
 
-        attr_reader :record, :attribute_name, :options
+        private
+
+        attr_reader :attribute_name, :options, :record, :failure_reason
 
         def expectation
-          "#{model.name} to #{description}"
+          description
+        end
+
+        def presented_expected_enum_values
+          if expected_enum_values.is_a?(Hash)
+            expected_enum_values.symbolize_keys
+          else
+            expected_enum_values
+          end
+        end
+
+        def normalized_expected_enum_values
+          to_hash(expected_enum_values)
         end
 
         def expected_enum_values
-          hashify(options[:expected_enum_values]).with_indifferent_access
+          options[:expected_enum_values]
+        end
+
+        def presented_actual_enum_values
+          if expected_enum_values.is_a?(Array)
+            to_array(actual_enum_values)
+          else
+            to_hash(actual_enum_values).symbolize_keys
+          end
+        end
+
+        def normalized_actual_enum_values
+          to_hash(actual_enum_values)
         end
 
         def actual_enum_values
@@ -156,19 +189,45 @@ module Shoulda
         end
 
         def enum_defined?
-          model.defined_enums.include?(attribute_name.to_s)
+          if model.defined_enums.include?(attribute_name.to_s)
+            true
+          else
+            @failure_reason = "no such enum exists in #{model}"
+            false
+          end
         end
 
         def enum_values_match?
-          expected_enum_values.empty? || actual_enum_values == expected_enum_values
+          passed =
+            expected_enum_values.empty? ||
+            normalized_actual_enum_values == normalized_expected_enum_values
+
+          if passed
+            true
+          else
+            @failure_reason =
+              "the actual enum values for #{attribute_name.inspect} are " +
+              Shoulda::Matchers::Util.inspect_value(
+                presented_actual_enum_values,
+              )
+            false
+          end
+        end
+
+        def column_type_matches?
+          if column.type == expected_column_type.to_sym
+            true
+          else
+            @failure_reason =
+              "#{attribute_name.inspect} is " +
+              Shoulda::Matchers::Util.a_or_an(column.type) +
+              ' column'
+            false
+          end
         end
 
         def expected_column_type
           options[:expected_column_type] || :integer
-        end
-
-        def column_type_matches?
-          column.type == expected_column_type.to_sym
         end
 
         def column
@@ -179,21 +238,21 @@ module Shoulda
           record.class
         end
 
-        def hashify(value)
-          if value.nil?
-            return {}
-          end
-
+        def to_hash(value)
           if value.is_a?(Array)
-            new_value = {}
-
-            value.each_with_index do |v, i|
-              new_value[v] = i
+            value.each_with_index.inject({}) do |hash, (item, index)|
+              hash.merge(item.to_s => index)
             end
-
-            new_value
           else
-            value
+            value.stringify_keys
+          end
+        end
+
+        def to_array(value)
+          if value.is_a?(Array)
+            value.map(&:to_s)
+          else
+            value.keys.map(&:to_s)
           end
         end
       end

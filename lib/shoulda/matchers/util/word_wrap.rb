@@ -1,9 +1,13 @@
 module Shoulda
   module Matchers
     # @private
-    def self.word_wrap(document, options = {})
-      Document.new(document, options).wrap
+    module WordWrap
+      def word_wrap(document, options = {})
+        Document.new(document, options).wrap
+      end
     end
+
+    extend WordWrap
 
     # @private
     class Document
