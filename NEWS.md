@@ -82,6 +82,10 @@ is now:
 
   * *Original PR: [#724]*
 
+* Add `with_port` qualifier to `route`.
+
+  * *Original issue: [#954]*
+
 [a6d09aa]: https://github.com/thoughtbot/shoulda-matchers/commit/a6d09aa5de0d546367e7b3d7177dfde6c66f7f05
 [#943]: https://github.com/thoughtbot/shoulda-matchers/pulls/943
 [#933]: https://github.com/thoughtbot/shoulda-matchers/issues/933
@@ -110,6 +114,7 @@ is now:
 [#956]: https://github.com/thoughtbot/shoulda-matchers/pulls/956
 [#870]: https://github.com/thoughtbot/shoulda-matchers/issues/870
 [#861]: https://github.com/thoughtbot/shoulda-matchers/issues/861
+[#954]: https://github.com/thoughtbot/shoulda-matchers/issues/954
 
 ### Improvements
 

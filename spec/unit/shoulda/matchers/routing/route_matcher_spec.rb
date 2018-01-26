@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::Routing::RouteMatcher, type: :routing do
+describe 'Shoulda::Matchers::Routing::RouteMatcher', type: :routing do
   shared_examples_for 'core tests' do
     context 'when the given method, path, controller, and action match an existing route' do
       it 'accepts' do
@@ -311,6 +311,54 @@ describe Shoulda::Matchers::Routing::RouteMatcher, type: :routing do
         end
       end
     end
+
+    context 'qualified with #with_port' do
+      context 'when the route is constrained to the same port' do
+        it 'accepts' do
+          define_controller_and_routes(
+            method: :get,
+            path: '/',
+            controller: 'things',
+            action: 'show',
+            constraints: port_constraint_class.new(12345),
+          )
+
+          matcher =
+            build_route_matcher(
+              method: :get,
+              path: '/',
+              controller: 'things',
+              action: 'show',
+            ).
+            with_port(12345)
+
+          is_expected.to(matcher)
+        end
+      end
+
+      context 'when the route is not constrained to the same port' do
+        it 'rejects' do
+          define_controller_and_routes(
+            method: :get,
+            path: '/',
+            controller: 'things',
+            action: 'show',
+            constraints: port_constraint_class.new(12345),
+          )
+
+          matcher =
+            build_route_matcher(
+              method: :get,
+              path: '/',
+              controller: 'things',
+              action: 'show',
+            ).
+            with_port(99999)
+
+          is_expected.not_to(matcher)
+        end
+      end
+    end
   end
 
   context 'given a controller and action specified as individual options' do
@@ -339,5 +387,21 @@ describe Shoulda::Matchers::Routing::RouteMatcher, type: :routing do
 
   def build_route_matcher(method:, path:, **)
     route(method, path)
+  end
+
+  let(:port_constraint_class) do
+    Class.new do
+      def initialize(port)
+        @port = port
+      end
+
+      def matches?(request)
+        request.port == port
+      end
+
+      private
+
+      attr_reader :port
+    end
   end
 end
