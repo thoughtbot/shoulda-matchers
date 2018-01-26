@@ -19,7 +19,7 @@ GEM
       pry (~> 0.10)
     pygments.rb (1.1.1)
       multi_json (>= 1.0.0)
-    rake (12.1.0)
+    rake (12.3.0)
     redcarpet (3.4.0)
     rspec (3.6.0)
       rspec-core (~> 3.6.0)
@@ -49,11 +49,11 @@ DEPENDENCIES
   pry
   pry-byebug
   pygments.rb
-  rake (= 12.1.0)
+  rake (= 12.3.0)
   redcarpet
   rspec (~> 3.6)
   yard
   zeus
 
 BUNDLED WITH
-   1.16.0
+   1.16.1
