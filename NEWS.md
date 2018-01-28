@@ -18,6 +18,13 @@ is now:
 
   * *PR: [#1054]*
 
+### Deprecations
+
+* `define_enum_for`: `with` is deprecated in favor of `with_values`. This is to
+  prevent confusion with `with_prefix` and `with_suffix`, which are new.
+
+  * *PR: [#1077]
+
 ### Bug fixes
 
 * Fix association matchers when used under Rails 5.x so that they make use of
@@ -89,6 +96,13 @@ is now:
   * *PRs: [#1074], [#1075]*
   * *Original issue: [#954]*
 
+* Add `with_prefix` and `with_suffix` to `define_enum_for` to allow testing
+  the `enum` macro with corresponding `prefix` and `suffix` options (Rails 5
+  only).
+
+  * *PR: [#1077]
+  * *Original issue: [#961]
+
 [a6d09aa]: https://github.com/thoughtbot/shoulda-matchers/commit/a6d09aa5de0d546367e7b3d7177dfde6c66f7f05
 [#943]: https://github.com/thoughtbot/shoulda-matchers/pulls/943
 [#933]: https://github.com/thoughtbot/shoulda-matchers/issues/933
@@ -120,6 +134,8 @@ is now:
 [#954]: https://github.com/thoughtbot/shoulda-matchers/issues/954
 [#1074]: https://github.com/thoughtbot/shoulda-matchers/pulls/1074
 [#1075]: https://github.com/thoughtbot/shoulda-matchers/pulls/1075
+[#1077]: https://github.com/thoughtbot/shoulda-matchers/pulls/1077
+[#961]: https://github.com/thoughtbot/shoulda-matchers/issues/961
 
 ### Improvements
 
