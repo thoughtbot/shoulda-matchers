@@ -815,16 +815,14 @@ value", but that attribute does not exist.
     end
   end
 
-  if active_record_supports_enum?
-    context 'given an ActiveRecord model' do
-      context 'where the attribute under test is an enum and the given value is a value in that enum' do
-        it 'accepts' do
-          model = define_model('Shipment', status: :integer) do
-            enum status: { pending: 1, shipped: 2, delivered: 3 }
-          end
-
-          expect(model.new).to allow_value(1).for(:status)
+  context 'given an ActiveRecord model' do
+    context 'where the attribute under test is an enum and the given value is a value in that enum' do
+      it 'accepts' do
+        model = define_model('Shipment', status: :integer) do
+          enum status: { pending: 1, shipped: 2, delivered: 3 }
         end
+
+        expect(model.new).to allow_value(1).for(:status)
       end
     end
   end

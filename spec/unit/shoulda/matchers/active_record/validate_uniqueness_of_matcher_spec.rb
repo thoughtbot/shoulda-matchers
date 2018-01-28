@@ -721,60 +721,58 @@ Example did not properly validate that :attr is case-sensitively unique.
       include_context 'it supports scoped attributes of a certain type',
         column_type: :integer
 
-      if active_record_supports_enum?
-        context 'when one of the scoped attributes is an enum' do
-          it 'accepts' do
+      context 'when one of the scoped attributes is an enum' do
+        it 'accepts' do
+          record = build_record_validating_scoped_uniqueness_with_enum(
+            enum_scope: :scope
+          )
+          expect(record).to validate_uniqueness.scoped_to(:scope)
+        end
+
+        context 'when too narrow of a scope is specified' do
+          it 'rejects with an appropriate failure message' do
             record = build_record_validating_scoped_uniqueness_with_enum(
-              enum_scope: :scope
+              enum_scope: :scope1,
+              additional_scopes: [:scope2],
+              additional_attributes: [:other]
             )
-            expect(record).to validate_uniqueness.scoped_to(:scope)
-          end
 
-          context 'when too narrow of a scope is specified' do
-            it 'rejects with an appropriate failure message' do
-              record = build_record_validating_scoped_uniqueness_with_enum(
-                enum_scope: :scope1,
-                additional_scopes: [:scope2],
-                additional_attributes: [:other]
-              )
+            assertion = lambda do
+              expect(record).
+                to validate_uniqueness.
+                scoped_to(:scope1, :scope2, :other)
+            end
 
-              assertion = lambda do
-                expect(record).
-                  to validate_uniqueness.
-                  scoped_to(:scope1, :scope2, :other)
-              end
-
-              message = <<-MESSAGE
+            message = <<-MESSAGE
 Example did not properly validate that :attr is case-sensitively unique
 within the scope of :scope1, :scope2, and :other.
   Expected the validation to be scoped to :scope1, :scope2, and :other,
   but it was scoped to :scope1 and :scope2 instead.
-              MESSAGE
+            MESSAGE
 
-              expect(&assertion).to fail_with_message(message)
-            end
+            expect(&assertion).to fail_with_message(message)
           end
+        end
 
-          context 'when too broad of a scope is specified' do
-            it 'rejects with an appropriate failure message' do
-              record = build_record_validating_scoped_uniqueness_with_enum(
-                enum_scope: :scope1,
-                additional_scopes: [:scope2]
-              )
+        context 'when too broad of a scope is specified' do
+          it 'rejects with an appropriate failure message' do
+            record = build_record_validating_scoped_uniqueness_with_enum(
+              enum_scope: :scope1,
+              additional_scopes: [:scope2]
+            )
 
-              assertion = lambda do
-                expect(record).to validate_uniqueness.scoped_to(:scope1)
-              end
+            assertion = lambda do
+              expect(record).to validate_uniqueness.scoped_to(:scope1)
+            end
 
-              message = <<-MESSAGE
+            message = <<-MESSAGE
 Example did not properly validate that :attr is case-sensitively unique
 within the scope of :scope1.
   Expected the validation to be scoped to :scope1, but it was scoped to
   :scope1 and :scope2 instead.
-              MESSAGE
+            MESSAGE
 
-              expect(&assertion).to fail_with_message(message)
-            end
+            expect(&assertion).to fail_with_message(message)
           end
         end
       end
