@@ -6,8 +6,14 @@ module UnitTests
       example_group.include(self)
     end
 
-    def format_message(message)
-      word_wrap(message.strip_heredoc.strip)
+    def format_message(message, one_line: false)
+      stripped_message = message.strip_heredoc.strip
+
+      if one_line
+        stripped_message.tr("\n", " ").squeeze(" ")
+      else
+        word_wrap(stripped_message)
+      end
     end
   end
 end

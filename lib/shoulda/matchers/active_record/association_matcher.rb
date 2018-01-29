@@ -253,8 +253,6 @@ module Shoulda
       #       should belong_to(:organization).inverse_of(:employees)
       #     end
       #
-      # @return [AssociationMatcher]
-      #
       # ##### required
       #
       # Use `required` to assert that the association is not allowed to be nil.
@@ -273,8 +271,6 @@ module Shoulda
       #     class PersonTest < ActiveSupport::TestCase
       #       should belong_to(:organization).required
       #     end
-      #
-      # @return [AssociationMatcher]
       #
       # ##### optional
       #
@@ -954,7 +950,7 @@ module Shoulda
           @missing = ''
 
           if macro == :belongs_to
-            if RailsShim.active_record_gte_5?
+            if RailsShim.active_record_gte_5? && belongs_to_required_by_default?
               required
             else
               optional
@@ -1051,12 +1047,12 @@ module Shoulda
           self
         end
 
-        def optional(optional = true)
+        def optional
           remove_submatcher(AssociationMatchers::RequiredMatcher)
           add_submatcher(
             AssociationMatchers::OptionalMatcher,
             name,
-            optional,
+            true,
           )
           self
         end
@@ -1156,8 +1152,8 @@ module Shoulda
         end
 
         def failing_submatchers
-          @failing_submatchers ||= submatchers.reject do |matcher|
-            matcher.matches?(subject)
+          @failing_submatchers ||= submatchers.select do |matcher|
+            !matcher.matches?(subject)
           end
         end
 
@@ -1338,6 +1334,10 @@ module Shoulda
 
         def submatchers_match?
           failing_submatchers.empty?
+        end
+
+        def belongs_to_required_by_default?
+          ::ActiveRecord::Base.belongs_to_required_by_default
         end
       end
     end

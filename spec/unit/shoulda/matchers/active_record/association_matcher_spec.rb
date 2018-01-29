@@ -279,62 +279,258 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       end
     end
 
-    context 'given an association with neither :required nor :optional specified' do
+    context 'given the association is neither configured to be required nor optional' do
+      context 'when qualified with required(true)' do
+        if active_record_supports_required_for_associations?
+          context 'when belongs_to is configured to be required by default' do
+            it 'passes' do
+              configuring_default_belongs_to_requiredness(true) do
+                expect(belonging_to_parent).to belong_to(:parent).required(true)
+              end
+            end
+          end
+
+          context 'when belongs_to is not configured to be required by default' do
+            it 'fails with an appropriate message' do
+              configuring_default_belongs_to_requiredness(false) do
+                assertion = lambda do
+                  expect(belonging_to_parent).
+                    to belong_to(:parent).required(true)
+                end
+
+                message = format_message(<<-MESSAGE, one_line: true)
+                  Expected Child to have a belongs_to association called parent
+                  (the association should have been defined with `required:
+                  true`, but was not)
+                MESSAGE
+
+                expect(&assertion).to fail_with_message(message)
+              end
+            end
+          end
+        else
+          it 'fails with an appropriate message' do
+            assertion = lambda do
+              expect(belonging_to_parent).to belong_to(:parent).required(true)
+            end
+
+            message = format_message(<<-MESSAGE, one_line: true)
+              Expected Child to have a belongs_to association called parent (the
+              association should have been defined with `required: true`, but
+              was not)
+            MESSAGE
+
+            expect(&assertion).to fail_with_message(message)
+          end
+        end
+      end
+
+      context 'when qualified with required(false)' do
+        if active_record_supports_required_for_associations?
+          context 'when belongs_to is configured to be required by default' do
+            it 'fails with an appropriate message' do
+              configuring_default_belongs_to_requiredness(true) do
+                assertion = lambda do
+                  expect(belonging_to_parent).
+                    to belong_to(:parent).required(false)
+                end
+
+                message = format_message(<<-MESSAGE, one_line: true)
+                  Expected Child to have a belongs_to association called parent
+                  (the association should have been defined with `required:
+                  false`, but was not)
+                MESSAGE
+
+                expect(&assertion).to fail_with_message(message)
+              end
+            end
+          end
+
+          context 'when belongs_to is not configured to be required by default' do
+            it 'passes' do
+              configuring_default_belongs_to_requiredness(false) do
+                expect(belonging_to_parent).to belong_to(:parent).required(false)
+              end
+            end
+          end
+        else
+          it 'passes' do
+            expect(belonging_to_parent).to belong_to(:parent).required(false)
+          end
+        end
+      end
+
+      context 'when qualified with optional' do
+        if active_record_supports_required_for_associations?
+          context 'when belongs_to is configured to be required by default' do
+            it 'fails with an appropriate message' do
+              configuring_default_belongs_to_requiredness(true) do
+                assertion = lambda do
+                  expect(belonging_to_parent).
+                    to belong_to(:parent).optional
+                end
+
+                message = format_message(<<-MESSAGE, one_line: true)
+                  Expected Child to have a belongs_to association called parent (the
+                  association should have been defined with `optional: true`, but
+                  was not)
+                MESSAGE
+
+                expect(&assertion).to fail_with_message(message)
+              end
+            end
+          end
+
+          context 'when belongs_to is not configured to be required by default' do
+            it 'passes' do
+              configuring_default_belongs_to_requiredness(false) do
+                expect(belonging_to_parent).to belong_to(:parent).optional
+              end
+            end
+          end
+        else
+          it 'passes' do
+            expect(belonging_to_parent).to belong_to(:parent).optional
+          end
+        end
+      end
+
       if active_record_supports_required_for_associations?
-        it 'assumes it is required' do
-          expect(belonging_to_parent).to belong_to(:parent).required
-        end
-      else
-        it 'assumes it is optional' do
-          expect(belonging_to_parent).to belong_to(:parent).optional
+        context 'when qualified with nothing' do
+          context 'when belongs_to is configured to be required by default' do
+            it 'passes' do
+              configuring_default_belongs_to_requiredness(true) do
+                expect(belonging_to_parent).to belong_to(:parent)
+              end
+            end
+          end
+
+          context 'when belongs_to is not configured to be required by default' do
+            it 'passes' do
+              configuring_default_belongs_to_requiredness(false) do
+                expect(belonging_to_parent).to belong_to(:parent)
+              end
+            end
+          end
         end
       end
     end
 
-    context 'given an association with a matching :required option' do
-      it 'passes' do
-        expect(belonging_to_parent(required: true)).
-          to belong_to(:parent).required
-      end
-    end
-
-    context 'given an association with a non-matching :required option' do
-      it 'fails with an appropriate message' do
-        assertion = lambda do
-          expect(belonging_to_parent(required: false)).
-            to belong_to(:parent).required
+    context 'given the association is configured with required: true' do
+      context 'when qualified with required(true)' do
+        it 'passes' do
+          expect(belonging_to_parent(required: true)).
+            to belong_to(:parent).required(true)
         end
+      end
 
-        message =
-          'Expected Child to have a belongs_to association called parent ' +
-          '(the association should have been defined with `required: true`, ' +
-          'but was not)'
+      context 'when qualified with required(false)' do
+        it 'passes' do
+          assertion = lambda do
+            expect(belonging_to_parent(required: true)).
+              to belong_to(:parent).required(false)
+          end
 
-        expect(&assertion).to fail_with_message(message)
+          message = format_message(<<-MESSAGE, one_line: true)
+            Expected Child to have a belongs_to association called parent (the
+            association should have been defined with `required: false`, but
+            was not)
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'when qualified with optional' do
+        it 'fails with an appropriate message' do
+          assertion = lambda do
+            expect(belonging_to_parent(required: true)).
+              to belong_to(:parent).optional
+          end
+
+          message = format_message(<<-MESSAGE, one_line: true)
+            Expected Child to have a belongs_to association called parent (the
+            association should have been defined with `optional: true`, but
+            was not)
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'when qualified with nothing' do
+        if active_record_supports_required_for_associations?
+          it 'passes' do
+            expect(belonging_to_parent(required: true)).
+              to belong_to(:parent)
+          end
+        else
+          it 'fails with an appropriate message' do
+            assertion = lambda do
+              expect(belonging_to_parent(required: true)).
+                to belong_to(:parent)
+            end
+
+            message = format_message(<<-MESSAGE, one_line: true)
+              Expected Child to have a belongs_to association called parent (the
+              association should have been defined with `optional: true`, but
+              was not)
+            MESSAGE
+
+            expect(&assertion).to fail_with_message(message)
+          end
+        end
       end
     end
 
     if active_record_supports_required_for_associations?
-      context 'given an association with a matching :optional option' do
-        it 'passes' do
-          expect(belonging_to_parent(optional: true)).
-            to belong_to(:parent).optional
-        end
-      end
+      context 'given the association is configured as optional: true' do
+        context 'when qualified with required(true)' do
+          it 'fails with an appropriate message' do
+            assertion = lambda do
+              expect(belonging_to_parent(optional: true)).
+                to belong_to(:parent).required(true)
+            end
 
-      context 'given an association with a non-matching :optional option' do
-        it 'fails with an appropriate message' do
-          assertion = lambda do
-            expect(belonging_to_parent(optional: false)).
+            message = format_message(<<-MESSAGE, one_line: true)
+              Expected Child to have a belongs_to association called parent (the
+              association should have been defined with `required: true`, but
+              was not)
+            MESSAGE
+
+            expect(&assertion).to fail_with_message(message)
+          end
+        end
+
+        context 'when qualified with required(false)' do
+          it 'passes' do
+            expect(belonging_to_parent(optional: true)).
+              to belong_to(:parent).required(false)
+          end
+        end
+
+        context 'when qualified with optional' do
+          it 'passes' do
+            expect(belonging_to_parent(optional: true)).
               to belong_to(:parent).optional
           end
+        end
 
-          message =
-            'Expected Child to have a belongs_to association called parent ' +
-            '(the association should have been defined with `optional: ' +
-            'true`, but was not)'
+        context 'when qualified with nothing' do
+          it 'fails with an appropriate message' do
+            assertion = lambda do
+              expect(belonging_to_parent(optional: true)).
+                to belong_to(:parent)
+            end
 
-          expect(&assertion).to fail_with_message(message)
+            message = format_message(<<-MESSAGE, one_line: true)
+              Expected Child to have a belongs_to association called parent (the
+              association should have been defined with `required: true`, but
+              was not)
+            MESSAGE
+
+            expect(&assertion).to fail_with_message(message)
+          end
         end
       end
     end
@@ -1341,5 +1537,22 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
     else
       [:destroy, :delete, :nullify, :restrict]
     end
+  end
+
+  def configuring_default_belongs_to_requiredness(value, &block)
+    configuring_application(
+      ActiveRecord::Base,
+      :belongs_to_required_by_default,
+      value,
+      &block
+    )
+  end
+
+  def configuring_application(config, name, value)
+    previous_value = config.send(name)
+    config.send("#{name}=", value)
+    yield
+  ensure
+    config.send("#{name}=", previous_value)
   end
 end

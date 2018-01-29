@@ -7,37 +7,36 @@ module Shoulda
           attr_reader :missing_option
 
           def initialize(attribute_name, optional)
-            @attribute_name = attribute_name
+            @optional = optional
+            @submatcher = ActiveModel::AllowValueMatcher.new(nil).
+              for(attribute_name)
             @missing_option = ''
-            @submatcher = submatcher_class_for(optional).new(nil).
-              for(attribute_name).
-              with_message(:required)
           end
 
           def description
-            'required: true'
+            "optional: #{optional}"
           end
 
           def matches?(subject)
-            if submatcher.matches?(subject)
+            if submatcher_passes?(subject)
               true
             else
               @missing_option =
                 'the association should have been defined ' +
-                'with `optional: true`, but was not'
+                "with `optional: #{optional}`, but was not"
               false
             end
           end
 
           private
 
-          attr_reader :subject, :submatcher
+          attr_reader :optional, :submatcher
 
-          def submatcher_class_for(optional)
+          def submatcher_passes?(subject)
             if optional
-              ActiveModel::AllowValueMatcher
+              submatcher.matches?(subject)
             else
-              ActiveModel::DisallowValueMatcher
+              submatcher.does_not_match?(subject)
             end
           end
         end
