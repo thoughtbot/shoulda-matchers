@@ -305,24 +305,6 @@ module Shoulda
 
       # @private
       class AllowValueMatcher < AllowOrDisallowValueMatcher
-        # def description_of_values_to_disallow
-          # "something other than #{inspected_values_to_set}"
-        # end
-
-        def matches?(subject)
-          super(subject)
-
-          @result = run(:first_to_unexpectedly_not_pass)
-          @result.nil?
-        end
-
-        # def does_not_match?(subject)
-          # super(subject)
-
-          # @result = run(:first_to_unexpectedly_not_fail)
-          # @result.nil?
-        # end
-
         def failure_message
           positive_failure_message
         end
@@ -343,6 +325,10 @@ module Shoulda
 
         def expectation_negated?
           was_negated?
+        end
+
+        def method_to_run_for_matching
+          :first_to_unexpectedly_not_fail
         end
       end
     end

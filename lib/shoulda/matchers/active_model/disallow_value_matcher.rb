@@ -3,10 +3,6 @@ module Shoulda
     module ActiveModel
       # @private
       class DisallowValueMatcher < AllowOrDisallowValueMatcher
-        # def description_of_values_to_disallow
-           # inspected_values_to_set
-        # end
-
         def aberration_description
           if was_negated?
             positive_aberration_description
@@ -14,20 +10,6 @@ module Shoulda
             negative_aberration_description
           end
         end
-
-        def matches?(subject)
-          super(subject)
-
-          @result = run(:first_to_unexpectedly_not_fail)
-          @result.nil?
-        end
-
-        # def does_not_match?(subject)
-          # super(subject)
-
-          # @result = run(:first_to_unexpectedly_not_pass)
-          # !@result.nil?
-        # end
 
         def failure_message
           negative_failure_message
@@ -41,6 +23,10 @@ module Shoulda
 
         def expectation_negated?
           !was_negated?
+        end
+
+        def method_to_run_for_matching
+          :first_to_unexpectedly_not_pass
         end
       end
     end

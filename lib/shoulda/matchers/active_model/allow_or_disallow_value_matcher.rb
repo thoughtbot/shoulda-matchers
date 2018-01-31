@@ -21,10 +21,6 @@ module Shoulda
         )
 
         def initialize(*values, part_of_larger_matcher: false)
-          require "pry-byebug"; binding.pry
-
-          super
-
           @values_to_set = values
           @options = {}
           @after_setting_value_callback = -> {}
@@ -35,7 +31,7 @@ module Shoulda
           @expectation_preface = nil
           @part_of_larger_matcher = part_of_larger_matcher
 
-          building_attribute_changed_message do
+          building_attribute_changed_value_message do
             default_attribute_changed_value_message
           end
         end
@@ -95,6 +91,22 @@ module Shoulda
           @after_setting_value_callback = callback
         end
 
+        def matches?(subject)
+          @subject = subject
+          @was_negated = false
+
+          matching do
+            @result = run(method_to_run_for_matching)
+            @result.nil?
+          end
+        end
+
+        def does_not_match?(subject)
+          !matches?(subject).tap do
+            @was_negated = true
+          end
+        end
+
         def was_negated?
           @was_negated
         end
@@ -140,8 +152,8 @@ module Shoulda
           last_attribute_setter_used.value_written
         end
 
-        def building_attribute_changed_message(&block)
-          @build_attribute_changed_message = block
+        def building_attribute_changed_value_message(&block)
+          @build_attribute_changed_value_message = block
         end
 
         def model
@@ -164,23 +176,12 @@ module Shoulda
         protected
 
         attr_reader(
+          :expectation_preface,
           :options,
           :result,
           :values_to_preset,
           :values_to_set,
         )
-
-        def matches?(subject)
-          @subject = subject
-          @was_negated = false
-          false
-        end
-
-        def does_not_match?(subject)
-          @subject = subject
-          @was_negated = true
-          false
-        end
 
         def positive_failure_message
           attribute_setter = result.attribute_setter
@@ -212,7 +213,7 @@ module Shoulda
 =end
 
           if !part_of_larger_matcher? && include_attribute_changed_value_message?
-            message << "\n\n" + build_attribute_changed_message.call
+            message << "\n\n" + build_attribute_changed_value_message.call
           end
 
           Shoulda::Matchers.word_wrap(message)
@@ -290,7 +291,7 @@ module Shoulda
 =end
 
           if !part_of_larger_matcher? && include_attribute_changed_value_message?
-            message << "\n\n" + build_attribute_changed_message.call
+            message << "\n\n" + build_attribute_changed_value_message.call
           end
 
           Shoulda::Matchers.word_wrap(message)
@@ -364,7 +365,7 @@ module Shoulda
 
         private
 
-        attr_reader :build_attribute_changed_message
+        attr_reader :build_attribute_changed_value_message
 
         def run(strategy)
           attribute_setters_for_values_to_preset.first_to_unexpectedly_not_pass ||

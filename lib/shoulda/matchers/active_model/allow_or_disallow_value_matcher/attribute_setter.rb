@@ -10,6 +10,7 @@ module Shoulda
 
           attr_reader(
             :attribute_name,
+            :original_value,
             :result_of_checking,
             :result_of_setting,
             :value_written,
@@ -27,6 +28,7 @@ module Shoulda
             )
             @after_set_callback = args.fetch(:after_set_callback, -> { })
 
+            @original_value = object.public_send(attribute_name)
             @value_read = nil
             @result_of_checking = nil
             @result_of_setting = nil

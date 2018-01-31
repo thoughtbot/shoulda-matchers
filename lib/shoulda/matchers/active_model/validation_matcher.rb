@@ -9,8 +9,6 @@ module Shoulda
         attr_reader :expected_message, :validation_context
 
         def initialize(attribute)
-          super
-
           @attribute = attribute
           @expects_strict = false
           @expected_message = nil
@@ -75,8 +73,6 @@ module Shoulda
         end
 
         def does_not_match?(record)
-          @record = record
-
           !matches?(record).tap do
             @was_negated = true
           end
@@ -179,6 +175,10 @@ module Shoulda
 
         def add_submatcher(submatcher)
           submatchers << submatcher
+        end
+
+        def submatcher_matches?(submatcher)
+          submatcher.matches?(record)
         end
 
         def allows_value_of(value_or_values, message = nil, &block)
@@ -314,7 +314,7 @@ module Shoulda
           @_submatcher_results ||= submatchers.map do |submatcher|
             SubmatcherResult.new(
               submatcher,
-              submatcher.matches?(record),
+              submatcher_matches?(submatcher),
               was_negated?,
             )
           end
@@ -327,7 +327,6 @@ module Shoulda
             part_of_larger_matcher: true,
           ) do |matcher|
             matcher.for(attribute).with_message(message || expected_message)
-            require "pry-byebug"; binding.pry
             yield matcher if block_given?
           end
         end
@@ -373,7 +372,11 @@ module Shoulda
           end
 
           def submatcher_includes_attribute_changed_value_message?
-            submatcher.include_attribute_changed_value_message?
+            if submatcher.respond_to?(:include_attribute_changed_value_message?)
+              submatcher.include_attribute_changed_value_message?
+            else
+              false
+            end
           end
 
           def submatcher_attribute_changed_value_message

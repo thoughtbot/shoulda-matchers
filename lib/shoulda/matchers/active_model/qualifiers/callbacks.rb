@@ -4,15 +4,6 @@ module Shoulda
       module Qualifiers
         # @private
         module Callbacks
-          def initialize(*args)
-            require "pry-byebug"; binding.pry
-
-            super
-
-            @before_matching_callbacks = []
-            @after_matching_callbacks = []
-          end
-
           def before_matching(&block)
             before_matching_callbacks << block
           end
@@ -41,7 +32,13 @@ module Shoulda
 
           private
 
-          attr_reader :before_matching_callbacks, :after_matching_callbacks
+          def before_matching_callbacks
+            @_before_matching_callbacks ||= []
+          end
+
+          def after_matching_callbacks
+            @_after_matching_callbacks ||= []
+          end
         end
       end
     end

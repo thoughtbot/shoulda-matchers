@@ -4,15 +4,14 @@ module Shoulda
       module Qualifiers
         # @private
         module IgnoringInterferenceByWriter
-          attr_reader :ignore_interference_by_writer
-
-          def initialize(*args)
-            @ignore_interference_by_writer = IgnoreInterferenceByWriter.new
+          def ignoring_interference_by_writer(value = :always)
+            ignore_interference_by_writer.set(value)
+            self
           end
 
-          def ignoring_interference_by_writer(value = :always)
-            @ignore_interference_by_writer.set(value)
-            self
+          # This can't be protected, otherwise we get a warning from Forwardable
+          def ignore_interference_by_writer
+            @_ignore_interference_by_writer ||= IgnoreInterferenceByWriter.new
           end
         end
       end

@@ -304,8 +304,20 @@ module Shoulda
           options[:allow_blank]
         end
 
-        def matches?(subject)
-          Uniqueness::TestModels.within_sandbox { super(subject) }
+        def matches?(given_record)
+          existing_record, existing_record_created =
+            find_or_create_existing_record(given_record)
+          value_from_existing_record = existing_record.send(attribute)
+          new_record = initialize_new_record(existing_record)
+
+          Uniqueness::TestModels.within_sandbox do
+            super(
+              new_record: new_record,
+              existing_record: existing_record,
+              existing_record_created: existing_record_created,
+              value_from_existing_record: value_from_existing_record,
+            )
+          end
         end
 
         protected
@@ -324,8 +336,8 @@ module Shoulda
         end
 
         def add_submatchers
-          add_submatcher_to_verify_validation_has_scopes
           add_submatcher_to_verify_model_has_attribute_and_scope_attributes
+          add_submatcher_to_verify_validation_has_scopes
           add_submatcher_to_test_uniqueness_of_non_blank_value
           add_submatcher_to_test_case_sensitivity
           add_submatchers_to_test_scopes
@@ -345,25 +357,40 @@ module Shoulda
           options[:case_sensitivity_strategy]
         end
 
-        def subject
-          unless defined?(@_subject)
-            initialize_subject
-          end
+        def find_or_create_existing_record(given_record)
+          existing_record = find_existing_record(given_record)
 
-          @_subject
+          if existing_record
+            [existing_record, false]
+          else
+            [create_existing_record(given_record), true]
+          end
         end
 
-        def initialize_subject
-          @_subject = existing_record.dup
+        def find_existing_record(given_record)
+          given_record.class.first.presence
+        end
 
-          attribute_names_under_test.each do |attribute_name|
-            set_attribute_on_new_record!(
-              attribute_name,
-              existing_record.public_send(attribute_name),
-            )
+        def create_existing_record(given_record)
+          given_record.tap do |existing_record|
+            ensure_secure_password_set_on(existing_record)
+            existing_record.save(validate: false)
           end
+        rescue ::ActiveRecord::StatementInvalid => error
+          raise ExistingRecordInvalid.create(underlying_exception: error)
+        end
 
-          subject
+        def initialize_new_record(existing_record)
+          existing_record.dup.tap do |new_record|
+            attribute_names_under_test.each do |attribute_name|
+              set_attribute_on!(
+                :new_record,
+                new_record,
+                attribute_name,
+                existing_record.public_send(attribute_name),
+              )
+            end
+          end
         end
 
         def attribute_names_under_test
@@ -383,7 +410,7 @@ module Shoulda
 
         def add_submatcher_for_allow_nil
           if expects_to_allow_nil?
-            add_submatching_allowing(nil) do |matcher|
+            add_submatcher_allowing(nil) do |matcher|
               matcher.before_matching do
                 update_existing_record!(nil)
               end
@@ -403,7 +430,6 @@ module Shoulda
 
         def add_submatcher_to_verify_validation_has_scopes
           submatcher = HaveScopesMatcher.new(
-            self,
             attribute,
             expected_scope_attributes,
           )
@@ -446,8 +472,8 @@ module Shoulda
         def add_submatcher_to_test_case_sensitivity
           if should_validate_case_sensitivity?
             submatcher = CaseSensitivityMatcher.new(
-              self,
               attribute,
+              case_sensitivity_strategy,
             )
             add_submatcher(submatcher)
           end
@@ -457,6 +483,10 @@ module Shoulda
           case_sensitivity_strategy != :ignore &&
             value_from_existing_record.respond_to?(:swapcase) &&
             !value_from_existing_record.empty?
+        end
+
+        def inspected_expected_scope_attributes
+          expected_scope_attributes.map(&:inspect).to_sentence
         end
 
         def add_submatchers_to_test_scopes
@@ -470,12 +500,12 @@ module Shoulda
                   )
                 end
 
-                matcher.after_matching do
-                  set_attribute_on_new_record!(
-                    scope[:attribute],
-                    scope[:previous_value],
-                  )
-                end
+                # matcher.after_matching do
+                  # new_record.send(
+                    # "#{scope[:attribute]}=",
+                    # scope[:previous_value],
+                  # )
+                # end
               end
             end
           end
@@ -494,14 +524,18 @@ module Shoulda
 
         def scopes
           expected_scope_attributes.map do |scope_attribute|
-            previous_value = all_records.map(&scope).compact.max
+            previous_value = all_records.map(&scope_attribute).compact.max
 
             next_value =
               if previous_value.blank?
-                dummy_value_for(scope)
+                dummy_value_for(scope_attribute)
               else
-                next_value_for(scope, previous_value)
+                next_value_for(scope_attribute, previous_value)
               end
+
+            existing_value = read_value_from_existing_record(
+              for_attribute: scope_attribute,
+            )
 
             {
               attribute: scope_attribute,
@@ -588,25 +622,55 @@ module Shoulda
         end
 
         class HaveScopesMatcher
-          def initialize(parent_matcher, attribute, expected_scope_attributes)
-            @parent_matcher = parent_matcher
+          def initialize(attribute, expected_scope_attributes)
             @attribute = attribute
             @expected_scope_attributes = expected_scope_attributes
           end
 
-          def matches?(subject)
-            @subject = subject
+          def matches?(record)
+            @record = record
+
             no_scopes? || scopes_match?
           end
 
-          def failure_message
-            "Expected #{model} to #{expectation}. However, #{aberration}."
+          def expectation_description
+            description =
+              "Expected #{model} to have a uniqueness validation on :#{attribute} "
+
+            if expected_scope_attributes.empty?
+              description << 'with no scopes'
+            else
+              description << 'scoped to '
+              description << inspected_expected_scope_attributes
+            end
+
+            description << '.'
+
+            description
+          end
+
+          def aberration_description
+            description = 'However, '
+
+            if actual_sets_of_scope_attributes.empty?
+              description << 'no existing validations had scopes on them.'
+            else
+              description << 'the existing validations had these '
+              description << "scopes instead:\n\n"
+
+              actual_sets_of_scope_attributes.each do |set_of_scopes|
+                description << "* #{set_of_scopes.join(', ')}\n"
+              end
+
+              description
+            end
+
+            description
           end
 
           private
 
-          attr_reader :parent_matcher, :attribute, :expected_scope_attributes,
-            :subject
+          attr_reader :attribute, :expected_scope_attributes, :record
 
           def no_scopes?
             actual_sets_of_scope_attributes.empty? &&
@@ -616,34 +680,6 @@ module Shoulda
           def scopes_match?
             actual_sets_of_scope_attributes.any? do |scopes|
               scopes == expected_scope_attributes
-            end
-          end
-
-          def expectation
-            expectation = "have a uniqueness validation on :#{attribute}"
-
-            if expected_scope_attributes.empty?
-              expectation << 'which is not scoped to anything'
-            else
-              expectation << 'which is scoped to '
-              expectation << inspected_expected_scope_attributes
-            end
-
-            expectation
-          end
-
-          def aberration
-            if actual_sets_of_scope_attributes.empty?
-              'no existing validations had scopes on them'
-            else
-              aberration =
-                "the existing validations had these scopes instead:\n\n"
-
-              actual_sets_of_scope_attributes.each do |set_of_scopes|
-                aberration << "* #{set_of_scopes.join(', ')}\n"
-              end
-
-              aberration
             end
           end
 
@@ -662,9 +698,18 @@ module Shoulda
               validator.is_a?(::ActiveRecord::Validations::UniquenessValidator)
             end
           end
+
+          def model
+            record.class
+          end
         end
 
         class CaseSensitivityMatcher < ValidationMatcherWithExistingRecord
+          def initialize(attribute, case_sensitivity_strategy)
+            super(attribute)
+            @case_sensitivity_strategy = case_sensitivity_strategy
+          end
+
           def before_match
             if value_from_existing_record.blank?
               update_existing_record!(arbitrary_non_blank_value)
@@ -682,13 +727,24 @@ module Shoulda
             end
           end
 
-          def simple_description
+          def expectation_description
+            description =
+              "Expected #{model}'s uniqueness validation on :#{attribute} to be "
+
+            description <<
+              if case_sensitivity_strategy == :sensitive
+                'case-sensitive'
+              else
+                'case-insensitive'
+              end
+
+            description << '.'
+
+            description
           end
 
-          def expectation
-          end
-
-          def aberration
+          def aberration_description
+            'However, it was not.'
           end
 
           protected
@@ -703,7 +759,7 @@ module Shoulda
 
           private
 
-          attr_reader :swapcased_value
+          attr_reader :case_sensitivity_strategy, :swapcased_value
 
           # @private
           class NonCaseSwappableValueError < Shoulda::Matchers::Error
@@ -730,6 +786,28 @@ For more information, please see:
 http://matchers.shoulda.io/docs/v#{Shoulda::Matchers::VERSION}/file.NonCaseSwappableValueError.html
               MESSAGE
             end
+          end
+        end
+
+        # @private
+        class ExistingRecordInvalid < Shoulda::Matchers::Error
+          include Shoulda::Matchers::ActiveModel::Helpers
+
+          attr_accessor :underlying_exception
+
+          def message
+            <<-MESSAGE.strip
+validate_uniqueness_of works by matching a new record against an
+existing record. If there is no existing record, it will create one
+using the record you provide.
+
+While doing this, the following error was raised:
+
+#{Shoulda::Matchers::Util.indent(underlying_exception.message, 2)}
+
+The best way to fix this is to provide the matcher with a record where
+any required attributes are filled in with valid values beforehand.
+            MESSAGE
           end
         end
       end

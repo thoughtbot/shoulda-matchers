@@ -3,35 +3,31 @@ module Shoulda
     module ActiveModel
       # @private
       class HaveAttributeMatcher
-        def initialize(attribute)
-          @attribute = attribute
+        def initialize(attribute_name)
+          @attribute_name = attribute_name
         end
 
-        def matches?(subject)
-          @subject = subject
+        def matches?(record)
+          @record = record
 
-          model.method_defined?("#{attribute}=") ||
-            model.columns_hash.key?(attribute.to_s)
+          model.method_defined?("#{attribute_name}=") ||
+            model.columns_hash.key?(attribute_name.to_s)
         end
 
-        def failure_message
-          "Expected #{model} to #{expectation}, but #{aberration}."
+        def expectation_description
+          "Expected :#{attribute_name} to be a valid attribute of #{model}."
+        end
+
+        def aberration_description
+          'However, it was not.'
         end
 
         private
 
-        attr_reader :attribute, :subject
-
-        def expectation
-          "have :#{attribute}"
-        end
-
-        def aberration
-          'it did not'
-        end
+        attr_reader :attribute_name, :record
 
         def model
-          subject.class
+          record.class
         end
       end
     end

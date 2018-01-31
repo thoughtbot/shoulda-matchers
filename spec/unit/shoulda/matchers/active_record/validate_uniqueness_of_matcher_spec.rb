@@ -334,10 +334,24 @@ within the scope of :non_existent1 and :non_existent2.
       end
 
       message = <<-MESSAGE
-Example did not properly validate that :attr is case-sensitively unique.
-  Given an existing Example whose :attr is ‹"value"›, after making a new
-  Example and setting its :attr to ‹"value"› as well, the matcher
-  expected the new Example to be invalid, but it was valid instead.
+Your test expecting Example to validate that :attr is case-sensitively
+unique didn't pass.
+
+The matcher ran the following subtests. Those indicated with ✘ failed
+when they should have passed:
+
+✔︎ Expected :attr to be a valid attribute of Example.
+
+✔︎ Expected Example's uniqueness validation on :attr to not be scoped to
+  anything.
+
+✘ Given an existing Example whose :attr is ‹"value"›, after making a new
+  Example and setting its :attr to ‹"value"›, the new Example was
+  expected to fail validation by placing the error "has already been
+  taken" on :attr. However, no such error was found on :attr.
+
+✔︎ Expected Example's uniqueness validation on :attr to be
+  case-sensitive.
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)
