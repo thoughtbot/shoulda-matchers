@@ -24,6 +24,16 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher, type: :model do
   end
 
   context 'have_db_index on multiple columns' do
+    it 'accepts an existing index regardless of order' do
+      db_connection = create_table 'geocodings' do |table|
+        table.integer :geocodable_id
+        table.string  :geocodable_type
+      end
+      db_connection.add_index :geocodings, [:geocodable_type, :geocodable_id]
+      expect(define_model_class('Geocoding').new).
+        to have_db_index([:geocodable_id, :geocodable_type])
+    end
+
     it 'accepts an existing index' do
       db_connection = create_table 'geocodings' do |table|
         table.integer :geocodable_id
@@ -41,6 +51,43 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher, type: :model do
       end
       expect(define_model_class('Geocoding').new).
         not_to have_db_index([:geocodable_type, :geocodable_id])
+    end
+  end
+
+  context 'with a custom sql index' do
+    it 'accepts an existing index' do
+      db_connection = create_table 'geocodings' do |table|
+        table.integer :geocodable_id
+        table.integer :geocodable_value
+      end
+
+      db_connection.execute(
+        <<-SQL
+          CREATE INDEX index_geocodings_on_geocodable_id_and_absolute_value
+            ON geocodings(geocodable_id, abs(geocodable_value));
+        SQL
+      )
+
+      expect(define_model_class('Geocoding').new).
+        to have_db_index(expected_indexed_columns)
+    end
+
+    it 'rejects a nonexistent index' do
+      create_table 'geocodings' do |table|
+        table.integer :geocodable_id
+        table.datetime :geocodable_at
+      end
+
+      expect(define_model_class('Geocoding').new).
+        not_to have_db_index(expected_indexed_columns)
+    end
+
+    def expected_indexed_columns
+      if postgresql?
+        [:geocodable_id, 'abs(geocodable_value)']
+      else
+        [:geocodable_id, nil]
+      end
     end
   end
 

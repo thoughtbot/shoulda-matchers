@@ -72,8 +72,9 @@ module Shoulda
       # @private
       class HaveDbIndexMatcher
         def initialize(columns)
-          @columns = normalize_columns_to_array(columns)
-          @options = {}
+          @columns        = normalize_columns_to_array(columns)
+          @joined_columns = normalize_columns_to_string(columns)
+          @options        = {}
         end
 
         def unique(unique = true)
@@ -124,7 +125,10 @@ module Shoulda
         end
 
         def matched_index
-          indexes.detect { |each| each.columns == @columns }
+          indexes.detect do |each|
+            each.columns == @columns ||
+              normalize_columns_to_string(each.columns) == @joined_columns
+          end
         end
 
         def model_class
@@ -153,6 +157,10 @@ module Shoulda
 
         def normalize_columns_to_array(columns)
           Array.wrap(columns).map(&:to_s)
+        end
+
+        def normalize_columns_to_string(columns)
+          Array.wrap(columns).compact.map(&:to_s).join(', ')
         end
       end
     end
