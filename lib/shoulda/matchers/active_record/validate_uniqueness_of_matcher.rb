@@ -521,7 +521,8 @@ module Shoulda
           non_blank_value = dummy_value_for(@attribute)
           limit = column_limit_for(@attribute)
 
-          if limit && limit < non_blank_value.length
+          is_string_value = non_blank_value.is_a?(String)
+          if is_string_value && limit && limit < non_blank_value.length
             'x' * limit
           else
             non_blank_value

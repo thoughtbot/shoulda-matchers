@@ -356,6 +356,17 @@ Example did not properly validate that :attr is case-sensitively unique.
       end
     end
 
+    context 'when the attribute is of integer type' do
+      it 'accepts' do
+        record = build_record_validating_uniqueness(
+          attribute_type: :integer,
+          attribute_options: { limit: 4 },
+        )
+
+        expect(record).to validate_uniqueness
+      end
+    end
+
     context 'when the existing record was created beforehand' do
       context 'when the subject is a new record' do
         it 'accepts' do
