@@ -526,7 +526,8 @@ module Shoulda
       #
       # ##### index_errors
       #
-      # Use `index_errors` to assert that the `:index_errors` option was specified.
+      # Use `index_errors` to assert that the `:index_errors` option was
+      # specified.
       #
       #     class Player < ActiveRecord::Base
       #       has_many :games, index_errors: true
@@ -1283,10 +1284,12 @@ module Shoulda
 
         def index_errors_correct?
           if options.key?(:index_errors)
-            if option_verifier.correct_for_boolean?(:index_errors, options[:index_errors])
+            if option_verifier.correct_for_boolean?(:index_errors,
+                                                    options[:index_errors])
               true
             else
-              @missing = "#{name} should have index_errors set to #{options[:index_errors]}"
+              @missing = "#{name} should have index_errors set to "\
+                         "#{options[:index_errors]}"
               false
             end
           else
