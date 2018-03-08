@@ -801,6 +801,28 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       }.to fail_with_message(message)
     end
 
+    context 'index_errors' do
+      it 'accepts an association with a matching :index_errors option' do
+        define_model :child, parent_id: :integer
+        define_model :parent do
+          has_many :children, index_errors: true
+        end
+        expect(Parent.new).to have_many(:children).index_errors(true)
+      end
+
+      it 'rejects an association with a non-matching :index_errors option and returns the correct message' do
+        define_model :child, parent_id: :integer
+        define_model :parent do
+          has_many :children, autosave: false
+        end
+
+        message = 'Expected Parent to have a has_many association called children (children should have index_errors set to true)'
+        expect {
+          expect(Parent.new).to have_many(:children).index_errors(true)
+        }.to fail_with_message(message)
+      end
+    end
+
     context 'validate' do
       it 'accepts when the :validate option matches' do
         expect(having_many_children(validate: false)).to have_many(:children).validate(false)
