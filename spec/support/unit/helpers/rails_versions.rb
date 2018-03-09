@@ -34,5 +34,9 @@ module UnitTests
     def rails_lt_5?
       rails_version < 5
     end
+
+    def rails_5_x?
+      rails_version =~ '~> 5.0'
+    end
   end
 end

@@ -1284,8 +1284,9 @@ module Shoulda
 
         def index_errors_correct?
           if options.key?(:index_errors)
-            if option_verifier.correct_for_boolean?(:index_errors,
-                                                    options[:index_errors])
+            if option_verifier.correct_for_boolean?(
+              :index_errors, options[:index_errors]
+            )
               true
             else
               @missing = "#{name} should have index_errors set to "\
