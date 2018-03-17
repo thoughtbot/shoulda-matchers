@@ -86,13 +86,13 @@ module Shoulda
       #     end
       #
       # Or, if you're using
-      # [FactoryGirl](http://github.com/thoughtbot/factory_girl) and you have a
+      # [FactoryBot](https://github.com/thoughtbot/factory_bot) and you have a
       # `post` factory defined which automatically fills in `content`, you can
       # say:
       #
       #     RSpec.describe Post, type: :model do
       #       describe "validations" do
-      #         subject { FactoryGirl.create(:post) }
+      #         subject { FactoryBot.create(:post) }
       #         it { should validate_uniqueness_of(:title) }
       #       end
       #     end
