@@ -524,6 +524,25 @@ module Shoulda
       #       should have_many(:games).autosave(true)
       #     end
       #
+      # ##### index_errors
+      #
+      # Use `index_errors` to assert that the `:index_errors` option was
+      # specified.
+      #
+      #     class Player < ActiveRecord::Base
+      #       has_many :games, index_errors: true
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Player, type: :model do
+      #       it { should have_many(:games).index_errors(true) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PlayerTest < ActiveSupport::TestCase
+      #       should have_many(:games).index_errors(true)
+      #     end
+      #
       # ##### inverse_of
       #
       # Use `inverse_of` to assert that the `:inverse_of` option was specified.
@@ -1022,6 +1041,11 @@ module Shoulda
           self
         end
 
+        def index_errors(index_errors)
+          @options[:index_errors] = index_errors
+          self
+        end
+
         def class_name(class_name)
           @options[:class_name] = class_name
           self
@@ -1096,6 +1120,7 @@ module Shoulda
             class_name_correct? &&
             join_table_correct? &&
             autosave_correct? &&
+            index_errors_correct? &&
             conditions_correct? &&
             validate_correct? &&
             touch_correct? &&
@@ -1254,6 +1279,20 @@ module Shoulda
             end
           else
             true
+          end
+        end
+
+        def index_errors_correct?
+          return true unless options.key?(:index_errors)
+
+          if option_verifier.correct_for_boolean?(
+            :index_errors, options[:index_errors]
+          )
+            true
+          else
+            @missing = "#{name} should have index_errors set to "\
+                       "#{options[:index_errors]}"
+            false
           end
         end
 
