@@ -103,6 +103,11 @@ is now:
   * *PR: [#1077]
   * *Original issue: [#961]
 
+* Add `index_errors` option to `has_many` (Rails 5 only).
+
+  * *Commit: [795ca68]*
+  * *PR: [#1089]*
+
 [a6d09aa]: https://github.com/thoughtbot/shoulda-matchers/commit/a6d09aa5de0d546367e7b3d7177dfde6c66f7f05
 [#943]: https://github.com/thoughtbot/shoulda-matchers/pulls/943
 [#933]: https://github.com/thoughtbot/shoulda-matchers/issues/933
@@ -136,6 +141,8 @@ is now:
 [#1075]: https://github.com/thoughtbot/shoulda-matchers/pulls/1075
 [#1077]: https://github.com/thoughtbot/shoulda-matchers/pulls/1077
 [#961]: https://github.com/thoughtbot/shoulda-matchers/issues/961
+[795ca68]: https://github.com/thoughtbot/shoulda-matchers/commit/795ca688bff08590dbd2ab6f2b51ea415e0c7473
+[#1089]: https://github.com/thoughtbot/shoulda-matchers/pulls/1089
 
 ### Improvements
 
