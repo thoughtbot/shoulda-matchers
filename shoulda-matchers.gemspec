@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
                    "Matt Jankowski", "Stafford Brunk", "Elliot Winkler"]
   s.date        = Time.now.strftime("%Y-%m-%d")
   s.email       = "support@thoughtbot.com"
-  s.homepage    = "http://thoughtbot.com/community/"
+  s.homepage    = "https://matchers.shoulda.io/"
   s.summary     = "Making tests easy on the fingers and eyes"
   s.license     = "MIT"
   s.description = "Making tests easy on the fingers and eyes"
