@@ -10,7 +10,7 @@ module Shoulda
       # pre-existing record (thereby failing the uniqueness check).
       #
       #     class Post < ActiveRecord::Base
-      #       validates_uniqueness_of :permalink
+      #       validates :permalink, uniqueness: true
       #     end
       #
       #     # RSpec
@@ -102,7 +102,7 @@ module Shoulda
       # Use `on` if your validation applies only under a certain context.
       #
       #     class Post < ActiveRecord::Base
-      #       validates_uniqueness_of :title, on: :create
+      #       validates :title, uniqueness: true, on: :create
       #     end
       #
       #     # RSpec
@@ -120,7 +120,7 @@ module Shoulda
       # Use `with_message` if you are using a custom validation message.
       #
       #     class Post < ActiveRecord::Base
-      #       validates_uniqueness_of :title, message: 'Please choose another title'
+      #       validates :title, uniqueness: true, message: 'Please choose another title'
       #     end
       #
       #     # RSpec
@@ -144,7 +144,7 @@ module Shoulda
       # unique, but the scoped attributes are not unique either.
       #
       #     class Post < ActiveRecord::Base
-      #       validates_uniqueness_of :slug, scope: :journal_id
+      #       validates :slug, uniqueness: true, scope: :journal_id
       #     end
       #
       #     # RSpec
@@ -165,7 +165,7 @@ module Shoulda
       # attributes in the pre-existing record.
       #
       #     class Post < ActiveRecord::Base
-      #       validates_uniqueness_of :key, case_sensitive: false
+      #       validates :key, uniqueness: { case_sensitive: false }
       #     end
       #
       #     # RSpec
@@ -193,7 +193,7 @@ module Shoulda
       # attribute.
       #
       #     class User < ActiveRecord::Base
-      #       validates_uniqueness_of :email
+      #       validates :email, uniqueness: true
       #
       #       def email=(value)
       #         super(value.downcase)
@@ -217,7 +217,7 @@ module Shoulda
       # Use `allow_nil` to assert that the attribute allows nil.
       #
       #     class Post < ActiveRecord::Base
-      #       validates_uniqueness_of :author_id, allow_nil: true
+      #       validates :author_id, uniqueness: true, allow_nil: true
       #     end
       #
       #     # RSpec
@@ -237,7 +237,7 @@ module Shoulda
       # Use `allow_blank` to assert that the attribute allows a blank value.
       #
       #     class Post < ActiveRecord::Base
-      #       validates_uniqueness_of :author_id, allow_blank: true
+      #       validates :author_id, uniqueness: true, allow_blank: true
       #     end
       #
       #     # RSpec
