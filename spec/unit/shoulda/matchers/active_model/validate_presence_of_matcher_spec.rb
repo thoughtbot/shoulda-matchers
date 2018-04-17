@@ -39,7 +39,7 @@ Example did not properly validate that :attr cannot be empty/falsy.
 
   context 'a model without a presence validation' do
     it 'rejects with the correct failure message' do
-      record = define_model(:example, attr: :string).new
+      record = without_validating_presence
 
       assertion = lambda do
         expect(record).to matcher
@@ -339,6 +339,53 @@ raising a validation exception on failure.
     end
   end
 
+  context 'qualified with allow_nil' do
+    context 'when validating a model with a presence validator' do
+      it 'accepts with allow_nil on validator' do
+        record = validating_presence(allow_nil: true)
+        expect(record).to matcher.allow_nil
+      end
+
+      it 'rejects without allow_nil on validator' do
+        record = validating_presence
+
+        assertion = lambda do
+          expect(record).to matcher.allow_nil
+        end
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr cannot be empty/falsy, but
+only if it is not nil.
+  After setting :attr to ‹nil›, the matcher expected the Example to be
+  valid, but it was invalid instead, producing these validation errors:
+
+  * attr: ["can't be blank"]
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+    end
+
+    context 'when validating a model without a presence validator' do
+      it 'rejects' do
+        record = without_validating_presence
+
+        assertion = lambda do
+          expect(record).to matcher.allow_nil
+        end
+
+        message = <<-MESSAGE
+Example did not properly validate that :attr cannot be empty/falsy, but
+only if it is not nil.
+  After setting :attr to ‹""›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+    end
+  end
+
   def matcher
     validate_presence_of(:attr)
   end
@@ -347,6 +394,10 @@ raising a validation exception on failure.
     define_model :example, attr: :string do
       validates_presence_of :attr, options
     end.new
+  end
+
+  def without_validating_presence
+    define_model(:example, attr: :string).new
   end
 
   def active_model(&block)

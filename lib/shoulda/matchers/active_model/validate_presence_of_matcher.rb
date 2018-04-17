@@ -57,6 +57,27 @@ module Shoulda
       #
       # #### Qualifiers
       #
+      # ##### allow_nil
+      #
+      # Use `allow_nil` if your model has an optional attribute.
+      #
+      #   class Robot
+      #     include ActiveModel::Model
+      #     attr_accessor :nickname
+      #
+      #     validates_presence_of :nickname, allow_nil: true
+      #   end
+      #
+      #   # RSpec
+      #   RSpec.describe Robot, type: :model do
+      #     it { should validate_presence_of(:nickname).allow_nil }
+      #   end
+      #
+      #   # Minitest (Shoulda)
+      #   class RobotTest < ActiveSupport::TestCase
+      #     should validate_presence_of(:nickname).allow_nil
+      #   end
+      #
       # ##### on
       #
       # Use `on` if your validation applies only under a certain context.
@@ -114,6 +135,16 @@ module Shoulda
         def initialize(attribute)
           super
           @expected_message = :blank
+          @expects_to_allow_nil = false
+        end
+
+        def allow_nil
+          @expects_to_allow_nil = true
+          self
+        end
+
+        def expects_to_allow_nil?
+          @expects_to_allow_nil
         end
 
         def matches?(subject)
@@ -122,6 +153,9 @@ module Shoulda
           if secure_password_being_validated?
             ignore_interference_by_writer.default_to(when: :blank?)
             disallows_and_double_checks_value_of!(blank_value, @expected_message)
+          elsif expects_to_allow_nil?
+            allows_value_of(nil) &&
+              disallows_original_or_typecast_value?(blank_value, @expected_message)
           else
             disallows_original_or_typecast_value?(blank_value, @expected_message)
           end
@@ -146,12 +180,14 @@ module Shoulda
         end
 
         def disallows_original_or_typecast_value?(value, message)
-          disallows_value_of(blank_value, @expected_message)
+          disallows_value_of(value, message)
         end
 
         def blank_value
           if collection?
             []
+          elsif expects_to_allow_nil?
+            ''
           else
             nil
           end
