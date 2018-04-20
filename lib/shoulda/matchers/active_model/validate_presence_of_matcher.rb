@@ -152,12 +152,18 @@ module Shoulda
 
           if secure_password_being_validated?
             ignore_interference_by_writer.default_to(when: :blank?)
-            disallows_and_double_checks_value_of!(blank_value, @expected_message)
+            check_values(disallowed_values) do |value|
+              disallows_and_double_checks_value_of!(value, @expected_message)
+            end
           elsif expects_to_allow_nil?
             allows_value_of(nil) &&
-              disallows_original_or_typecast_value?(blank_value, @expected_message)
+              check_values(disallowed_values) do |value|
+                disallows_original_or_typecast_value?(value, @expected_message)
+              end
           else
-            disallows_original_or_typecast_value?(blank_value, @expected_message)
+            check_values(disallowed_values) do |value|
+              disallows_original_or_typecast_value?(value, @expected_message)
+            end
           end
         end
 
@@ -183,14 +189,23 @@ module Shoulda
           disallows_value_of(value, message)
         end
 
-        def blank_value
+        def check_values(values)
+          values
+            .map { |value| yield(value) }
+            .all?
+        end
+
+        def disallowed_values
+          disallowed = []
+
           if collection?
-            []
-          elsif expects_to_allow_nil?
-            ''
+            disallowed << []
           else
-            nil
+            disallowed << ''
+            disallowed << nil unless expects_to_allow_nil?
           end
+
+          disallowed
         end
 
         def collection?
