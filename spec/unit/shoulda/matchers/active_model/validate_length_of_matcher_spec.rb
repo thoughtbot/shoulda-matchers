@@ -3,23 +3,31 @@ require 'unit_spec_helper'
 describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher, type: :model do
   context 'an attribute with a non-zero minimum length validation' do
     it 'accepts ensuring the correct minimum length' do
-      expect(validating_length(minimum: 4)).
-        to validate_length_of(:attr).is_at_least(4)
+      attribute_types(minimum: 4).each do |options|
+        expect(validating_length(options)).
+          to validate_length_of(:attr).is_at_least(4)
+      end
     end
 
     it 'rejects ensuring a lower minimum length with any message' do
-      expect(validating_length(minimum: 4)).
-        not_to validate_length_of(:attr).is_at_least(3).with_short_message(/.*/)
+      attribute_types(minimum: 4).each do |options|
+        expect(validating_length(options)).not_to validate_length_of(:attr).
+          is_at_least(3).with_short_message(/.*/)
+      end
     end
 
     it 'rejects ensuring a higher minimum length with any message' do
-      expect(validating_length(minimum: 4)).
-        not_to validate_length_of(:attr).is_at_least(5).with_short_message(/.*/)
+      attribute_types(minimum: 4).each do |options|
+        expect(validating_length(options)).not_to validate_length_of(:attr).
+          is_at_least(5).with_short_message(/.*/)
+      end
     end
 
     it 'does not override the default message with a blank' do
-      expect(validating_length(minimum: 4)).
-        to validate_length_of(:attr).is_at_least(4).with_short_message(nil)
+      attribute_types(minimum: 4).each do |options|
+        expect(validating_length(options)).
+          to validate_length_of(:attr).is_at_least(4).with_short_message(nil)
+      end
     end
 
     it_supports(
@@ -35,7 +43,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher, type: :model d
           expected_message: <<-MESSAGE.strip
 Example did not properly validate that the length of :attr is at least
 4.
-  After setting :attr to ‹"xxx"› -- which was read back as ‹"xxxa"› --
+  After setting :attr to ‹"123"› -- which was read back as ‹"123a"› --
   the matcher expected the Example to be invalid, but it was valid
   instead.
 
@@ -60,30 +68,42 @@ Example did not properly validate that the length of :attr is at least
 
   context 'an attribute with a minimum length validation of 0' do
     it 'accepts ensuring the correct minimum length' do
-      expect(validating_length(minimum: 0)).
-        to validate_length_of(:attr).is_at_least(0)
+      attribute_types(minimum: 0).each do |options|
+        expect(validating_length(options)).
+          to validate_length_of(:attr).is_at_least(0)
+      end
     end
   end
 
   context 'an attribute with a maximum length' do
     it 'accepts ensuring the correct maximum length' do
-      expect(validating_length(maximum: 4)).
-        to validate_length_of(:attr).is_at_most(4)
+      attribute_types(maximum: 4).each do |options|
+        expect(validating_length(options)).
+          to validate_length_of(:attr).is_at_most(4)
+      end
     end
 
     it 'rejects ensuring a lower maximum length with any message' do
-      expect(validating_length(maximum: 4)).
-        not_to validate_length_of(:attr).is_at_most(3).with_long_message(/.*/)
+      attribute_types(maximum: 4).each do |options|
+        expect(validating_length(options)).
+          not_to validate_length_of(:attr).
+            is_at_most(3).with_long_message(/.*/)
+      end
     end
 
     it 'rejects ensuring a higher maximum length with any message' do
-      expect(validating_length(maximum: 4)).
-        not_to validate_length_of(:attr).is_at_most(5).with_long_message(/.*/)
+      attribute_types(maximum: 4).each do |options|
+        expect(validating_length(options)).
+          not_to validate_length_of(:attr).
+            is_at_most(5).with_long_message(/.*/)
+      end
     end
 
     it 'does not override the default message with a blank' do
-      expect(validating_length(maximum: 4)).
-        to validate_length_of(:attr).is_at_most(4).with_long_message(nil)
+      attribute_types(maximum: 4).each do |options|
+        expect(validating_length(options)).
+          to validate_length_of(:attr).is_at_most(4).with_long_message(nil)
+      end
     end
 
     it_supports(
@@ -98,7 +118,7 @@ Example did not properly validate that the length of :attr is at least
           changing_values_with: :remove_character,
           expected_message: <<-MESSAGE.strip
 Example did not properly validate that the length of :attr is at most 4.
-  After setting :attr to ‹"xxxxx"› -- which was read back as ‹"xxxx"› --
+  After setting :attr to ‹"12345"› -- which was read back as ‹"1234"› --
   the matcher expected the Example to be invalid, but it was valid
   instead.
 
@@ -123,23 +143,31 @@ Example did not properly validate that the length of :attr is at most 4.
 
   context 'an attribute with a required exact length' do
     it 'accepts ensuring the correct length' do
-      expect(validating_length(is: 4)).
-        to validate_length_of(:attr).is_equal_to(4)
+      attribute_types(is: 4).each do |options|
+        expect(validating_length(options)).
+          to validate_length_of(:attr).is_equal_to(4)
+      end
     end
 
     it 'rejects ensuring a lower maximum length with any message' do
-      expect(validating_length(is: 4)).
-        not_to validate_length_of(:attr).is_equal_to(3).with_message(/.*/)
+      attribute_types(is: 4).each do |options|
+        expect(validating_length(options)).
+          not_to validate_length_of(:attr).is_equal_to(3).with_message(/.*/)
+      end
     end
 
     it 'rejects ensuring a higher maximum length with any message' do
-      expect(validating_length(is: 4)).
-        not_to validate_length_of(:attr).is_equal_to(5).with_message(/.*/)
+      attribute_types(is: 4).each do |options|
+        expect(validating_length(options)).
+          not_to validate_length_of(:attr).is_equal_to(5).with_message(/.*/)
+      end
     end
 
     it 'does not override the default message with a blank' do
-      expect(validating_length(is: 4)).
-        to validate_length_of(:attr).is_equal_to(4).with_message(nil)
+      attribute_types(is: 4).each do |options|
+        expect(validating_length(options)).
+          to validate_length_of(:attr).is_equal_to(4).with_message(nil)
+      end
     end
 
     it_supports(
@@ -154,7 +182,7 @@ Example did not properly validate that the length of :attr is at most 4.
           changing_values_with: :add_character,
           expected_message: <<-MESSAGE.strip
 Example did not properly validate that the length of :attr is 4.
-  After setting :attr to ‹"xxx"› -- which was read back as ‹"xxxa"› --
+  After setting :attr to ‹"123"› -- which was read back as ‹"123a"› --
   the matcher expected the Example to be invalid, but it was valid
   instead.
 
@@ -179,40 +207,49 @@ Example did not properly validate that the length of :attr is 4.
 
   context 'an attribute with a required exact length and another validation' do
     it 'accepts ensuring the correct length' do
-      model = define_model(:example, attr: :string) do
-        validates_length_of :attr, is: 4
-        validates_numericality_of :attr
-      end.new
-
-      expect(model).to validate_length_of(:attr).is_equal_to(4)
+      attribute_types(attr: :string).each do |options|
+        model = define_model(:example, options) do
+          validates_length_of :attr, is: 4
+          validates_numericality_of :attr
+        end.new
+        expect(model).to validate_length_of(:attr).is_equal_to(4)
+      end
     end
   end
 
   context 'an attribute with a custom minimum length validation' do
     it 'accepts ensuring the correct minimum length' do
-      expect(validating_length(minimum: 4, too_short: 'foobar')).
-        to validate_length_of(:attr).is_at_least(4).with_short_message(/foo/)
+      attribute_types(minimum: 4, too_short: 'foobar').each do |options|
+        expect(validating_length(options)).
+          to validate_length_of(:attr).is_at_least(4).with_short_message(/foo/)
+      end
     end
   end
 
   context 'an attribute with a custom maximum length validation' do
     it 'accepts ensuring the correct minimum length' do
-      expect(validating_length(maximum: 4, too_long: 'foobar')).
-        to validate_length_of(:attr).is_at_most(4).with_long_message(/foo/)
+      attribute_types(maximum: 4, too_long: 'foobar').each do |options|
+        expect(validating_length(options)).
+          to validate_length_of(:attr).is_at_most(4).with_long_message(/foo/)
+      end
     end
   end
 
   context 'an attribute with a custom equal validation' do
     it 'accepts ensuring the correct exact length' do
-      expect(validating_length(is: 4, message: 'foobar')).
-        to validate_length_of(:attr).is_equal_to(4).with_message(/foo/)
+      attribute_types(is: 4, message: 'foobar').each do |options|
+        expect(validating_length(options)).
+          to validate_length_of(:attr).is_equal_to(4).with_message(/foo/)
+      end
     end
   end
 
   context 'an attribute without a length validation' do
     it 'rejects ensuring a minimum length' do
-      expect(define_model(:example, attr: :string).new).
-        not_to validate_length_of(:attr).is_at_least(1)
+      attribute_types(attr: :string).each do |options|
+        expect(define_model(:example, options).new).
+          not_to validate_length_of(:attr).is_at_least(1)
+      end
     end
   end
 
@@ -228,8 +265,10 @@ Example did not properly validate that the length of :attr is 4.
 
       it "does not raise an exception" do
         expect {
-          expect(validating_length(maximum: 4)).
-            to validate_length_of(:attr).is_at_most(4)
+          attribute_types(maximum: 4).each { |options|
+            expect(validating_length(options)).
+              to validate_length_of(:attr).is_at_most(4)
+          }
         }.to_not raise_exception
       end
     end
@@ -242,9 +281,11 @@ Example did not properly validate that the length of :attr is 4.
       end
 
       it "does not raise an exception" do
-        expect {
-          expect(validating_length(minimum: 4)).to validate_length_of(:attr).is_at_least(4)
-        }.to_not raise_exception
+        attribute_types(minimum: 4).each do |options|
+          expect {
+            expect(validating_length(options)).to validate_length_of(:attr).is_at_least(4)
+          }.to_not raise_exception
+        end
       end
     end
 
@@ -256,10 +297,12 @@ Example did not properly validate that the length of :attr is 4.
       end
 
       it "does not raise an exception" do
-        expect {
-          expect(validating_length(is: 4)).
-            to validate_length_of(:attr).is_equal_to(4)
-        }.to_not raise_exception
+        attribute_types(is: 4).each do |options|
+          expect {
+            expect(validating_length(options)).
+              to validate_length_of(:attr).is_equal_to(4)
+          }.to_not raise_exception
+        end
       end
     end
   end
@@ -267,16 +310,20 @@ Example did not properly validate that the length of :attr is 4.
   context 'qualified with allow_nil' do
     context 'and validating with allow_nil' do
       it 'accepts' do
-        expect(validating_length(minimum: 1, allow_nil: true)).
-          to validate_length_of(:attr).is_at_least(1).allow_nil
+        attribute_types(minimum: 1, allow_nil: true).each do |options|
+          expect(validating_length(options)).
+            to validate_length_of(:attr).is_at_least(1).allow_nil
+        end
       end
     end
 
     context 'and not validating with allow_nil' do
       it 'rejects' do
         assertion = lambda do
-          expect(validating_length(minimum: 1)).
-            to validate_length_of(:attr).is_at_least(1).allow_nil
+          attribute_types(minimum: 1).each do |options|
+            expect(validating_length(options)).
+              to validate_length_of(:attr).is_at_least(1).allow_nil
+          end
         end
 
         message = <<-MESSAGE
@@ -296,8 +343,9 @@ Example did not properly validate that the length of :attr is at least
   def define_model_validating_length(options = {})
     options = options.dup
     attribute_name = options.delete(:attribute_name) { :attr }
+    attribute_type = options.delete(:attribute_type) { :string }
 
-    define_model(:example, attribute_name => :string) do |model|
+    define_model(:example, attribute_name => attribute_type) do |model|
       model.validates_length_of(attribute_name, options)
     end
   end
@@ -313,5 +361,10 @@ Example did not properly validate that the length of :attr is at least
       matcher_name: :validate_length_of,
       model_creator: :active_model
     )
+  end
+
+  def attribute_types(options)
+    integer_options = options.dup.merge(attribute_type: :integer)
+    [options, integer_options]
   end
 end

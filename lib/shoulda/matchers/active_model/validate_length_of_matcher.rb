@@ -406,7 +406,7 @@ module Shoulda
         end
 
         def string_of_length(length)
-          'x' * length
+          (1..length).to_a.map{ |e| e.to_s[-1] }.join('')
         end
 
         def allow_nil_matches?
