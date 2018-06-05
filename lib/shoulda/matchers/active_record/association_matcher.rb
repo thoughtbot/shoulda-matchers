@@ -1366,7 +1366,7 @@ module Shoulda
         end
 
         def foreign_key_reflection
-          if [:has_one, :has_many].include?(macro) && reflection.options.include?(:inverse_of)
+          if [:has_one, :has_many].include?(macro) && reflection.options.include?(:inverse_of) && reflection.options[:inverse_of] != false
             associated_class.reflect_on_association(reflection.options[:inverse_of])
           else
             reflection
