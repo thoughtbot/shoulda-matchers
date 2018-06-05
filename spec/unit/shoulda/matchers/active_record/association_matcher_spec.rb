@@ -1144,6 +1144,17 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       expect(Parent.new).not_to have_many(:children)
     end
 
+    it 'accepts an association with a nonstandard foreign key, with reverse association turned off' do
+      define_model :child, ancestor_id: :integer do
+      end
+
+      define_model :parent do
+        has_many :children, foreign_key: :ancestor_id, inverse_of: false
+      end
+
+      expect(Parent.new).to have_many(:children)
+    end
+
     def having_many_children(options = {})
       define_model :child, parent_id: :integer
       define_model(:parent).tap do |model|
