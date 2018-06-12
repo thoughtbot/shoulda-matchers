@@ -109,6 +109,7 @@ module Shoulda
             when :datetime, :time, :timestamp then Time.now
             when :date then Date.new
             when :binary then '0'
+            when :uuid then SecureRandom.uuid
             else 'an arbitrary value'
             end
           end
