@@ -13,7 +13,8 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
         :timestamp,
         :time,
         :date,
-        :binary
+        :binary,
+        :uuid
       ]
     end
 
