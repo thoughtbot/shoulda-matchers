@@ -134,9 +134,10 @@ module Shoulda
         private
 
         def secure_password_being_validated?
-          defined?(::ActiveModel::SecurePassword) &&
-            @subject.class.ancestors.include?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation) &&
-            @attribute == :password
+          return false unless defined?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation)
+          return false unless @subject.class.ancestors.include?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation)
+
+          @attribute == :password
         end
 
         def disallows_and_double_checks_value_of!(value, message)

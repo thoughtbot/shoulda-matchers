@@ -530,8 +530,10 @@ module Shoulda
         end
 
         def has_secure_password?
-          model.ancestors.map(&:to_s).include?(
-            'ActiveModel::SecurePassword::InstanceMethodsOnActivation'
+          return false unless defined?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation)
+
+          model.ancestors.include?(
+            ::ActiveModel::SecurePassword::InstanceMethodsOnActivation
           )
         end
 
