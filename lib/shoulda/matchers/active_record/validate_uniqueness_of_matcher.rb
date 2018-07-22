@@ -503,8 +503,8 @@ module Shoulda
 
         def ensure_secure_password_set(instance)
           if has_secure_password?
-            instance.password = "password"
-            instance.password_confirmation = "password"
+            instance.send("#{@secure_attribute}=", "password")
+            instance.send("#{@secure_attribute_confirmation}=", "password")
           end
         end
 
@@ -530,11 +530,19 @@ module Shoulda
         end
 
         def has_secure_password?
-          return false unless defined?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation)
+          if defined?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation)
+            return false unless model.ancestors.include?(
+              ::ActiveModel::SecurePassword::InstanceMethodsOnActivation
+            )
 
-          model.ancestors.include?(
-            ::ActiveModel::SecurePassword::InstanceMethodsOnActivation
-          )
+            @secure_attribute = :password
+          else
+            auth_attr = model.instance_methods.find {|meth| meth.to_s =~ /authenticate_[\w_]+/ }
+
+            return false unless auth_attr
+
+            @secure_attribute = auth_attr.delete('authenticate_')
+          end
         end
 
         def build_new_record

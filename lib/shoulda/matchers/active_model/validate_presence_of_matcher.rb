@@ -134,10 +134,17 @@ module Shoulda
         private
 
         def secure_password_being_validated?
-          return false unless defined?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation)
-          return false unless @subject.class.ancestors.include?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation)
+          if defined?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation)
+            return false unless @subject.class.ancestors.include?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation)
 
-          @attribute == :password
+            @attribute == :password
+          else
+            auth_attr = @subject.instance_methods.find {|meth| meth.to_s =~ /authenticate_[\w_]+/ }
+
+            return false unless auth_attr
+
+            @attribute = auth_attr.delete('authenticate_')
+          end
         end
 
         def disallows_and_double_checks_value_of!(value, message)
