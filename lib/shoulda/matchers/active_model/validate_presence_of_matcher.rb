@@ -139,7 +139,7 @@ module Shoulda
 
             @attribute == :password
           else
-            auth_attr = @subject.instance_methods.find {|meth| meth.to_s =~ /authenticate_[\w_]+/ }
+            auth_attr = @subject.class.instance_methods.find {|meth| meth.to_s =~ /authenticate_[\w_]+/ }
 
             return false unless auth_attr
 
