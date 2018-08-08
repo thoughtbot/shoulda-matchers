@@ -1,4 +1,4 @@
-# Shoulda Matchers [![Gem Version][version-badge]][rubygems] [![Build Status][travis-badge]][travis] ![Downloads][downloads-badge]
+# Shoulda Matchers [![Gem Version][version-badge]][rubygems] [![Build Status][travis-badge]][travis] ![Downloads][downloads-badge] [![Hound][hound-badge]][hound]
 
 Shoulda Matchers provides RSpec- and Minitest-compatible one-liners that test
 common Rails functionality. These tests would otherwise be much longer, more
@@ -342,3 +342,5 @@ projects][community]. We are [available for hire][hire].
 [shoulda-context]: http://github.com/thoughtbot/shoulda-context
 [Zeus]: https://github.com/burke/zeus
 [Appraisal]: https://github.com/thoughtbot/appraisal
+[hound-badge]: https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg
+[hound]: https://houndci.com
