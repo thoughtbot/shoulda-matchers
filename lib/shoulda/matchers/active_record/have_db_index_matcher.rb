@@ -50,7 +50,7 @@ module Shoulda
       #       should have_db_index(:name).unique(true)
       #     end
       #
-      # Since it only ever makes since for `unique` to be `true`, you can also
+      # Since it only ever makes sense for `unique` to be `true`, you can also
       # leave off the argument to save some keystrokes:
       #
       #     # RSpec
