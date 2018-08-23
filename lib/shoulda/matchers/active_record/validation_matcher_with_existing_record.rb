@@ -12,22 +12,16 @@ module Shoulda
             new_record: UniqueAttributeSetters.new,
             existing_record: UniqueAttributeSetters.new,
           }
-          @original_values = {
-            new_record: {},
-            existing_record: {},
-          }
         end
 
         def matches?(
           new_record:,
           existing_record:,
-          existing_record_created:,
-          value_from_existing_record:
+          existing_record_created:
         )
           @new_record = new_record
           @existing_record = existing_record
           @existing_record_created = existing_record_created
-          @value_from_existing_record = value_from_existing_record
 
           super(new_record)
         # ensure
@@ -43,7 +37,6 @@ module Shoulda
               new_record: new_record,
               existing_record: existing_record,
               existing_record_created: existing_record_created?,
-              value_from_existing_record: value_from_existing_record,
             )
           else
             submatcher.matches?(existing_record)
@@ -61,7 +54,7 @@ module Shoulda
         end
 
         def update_existing_record!(value)
-          if value_from_existing_record != value
+          if current_value_from_existing_record != value
             set_attribute_on_existing_record!(attribute, value)
             # It would be nice if we could ensure that the record was valid,
             # but that would break users' existing tests
@@ -72,7 +65,7 @@ module Shoulda
         private
 
         attr_reader :attribute_setters, :new_record, :existing_record,
-          :value_from_existing_record, :original_values
+          :original_values
 
         def existing_record_created?
           @existing_record_created
@@ -91,27 +84,41 @@ module Shoulda
           )
         end
 
-        def set_attribute_on_existing_record!(attribute_name, value)
+        def set_attribute_on_existing_record!(
+          attribute_name,
+          value,
+          remember_setting: true
+        )
           set_attribute_on!(
             :existing_record,
             existing_record,
             attribute_name,
             value,
+            remember_setting: remember_setting,
           )
         end
 
-        def set_attribute_on_new_record!(attribute_name, value)
+        def set_attribute_on_new_record!(
+          attribute_name,
+          value,
+          remember_setting: true
+        )
           set_attribute_on!(
             :new_record,
             subject,
             attribute_name,
             value,
+            remember_setting: remember_setting,
           )
         end
 
-        def set_attribute_on!(record_type, record, attribute_name, value)
-          puts "Setting :#{attribute_name} on #{record_type} to #{value.inspect}"
-
+        def set_attribute_on!(
+          record_type,
+          record,
+          attribute_name,
+          value,
+          remember_setting: true
+        )
           attribute_setter = build_attribute_setter(
             record,
             attribute_name,
@@ -119,11 +126,9 @@ module Shoulda
           )
           attribute_setter.set!
 
-          attribute_setters[record_type] << attribute_setter
-
-          if !original_values[record_type].key?(attribute_name)
-            original_values[record_type][attribute_name] =
-              attribute_setter.original_value
+          if remember_setting
+            puts "Setting :#{attribute_name} on #{record_type} to #{value.inspect}"
+            attribute_setters[record_type] << attribute_setter
           end
         end
 
@@ -145,8 +150,22 @@ module Shoulda
           )
         end
 
-        def read_value_from_existing_record(for_attribute:)
-          existing_record.public_send(for_attribute)
+        def original_values_for_existing_record
+          attribute_setters_for_new_record.inject({}) do |hash, attribute_setter|
+            if hash.key?(attribute_setter.attribute_name)
+              hash
+            else
+              hash.merge(attribute_setter.attribute_name => attribute_setter.original_value)
+            end
+          end
+        end
+
+        def original_value_from_existing_record
+          original_values_for_existing_record[attribute]
+        end
+
+        def current_value_from_existing_record
+          existing_record.public_send(attribute)
         end
 
         def revert_new_record
@@ -167,7 +186,7 @@ module Shoulda
           # if attribute_setter_for_existing_record
             # attribute_setter_for_existing_record.value_written
           # else
-            # value_from_existing_record
+            # current_value_from_existing_record
           # end
         # end
 
@@ -182,27 +201,36 @@ module Shoulda
               prefix << descriptions_for_attribute_setters_for_existing_record
             else
               prefix << ", with its :#{attribute} set to "
-              prefix << "‹#{value_from_existing_record.inspect}›"
+              prefix << "‹#{original_value_from_existing_record.inspect}›"
             end
 
-            prefix << ', and saving it as the existing record, then'
+            prefix << ', and saving it as the existing record, then '
           elsif attribute_setters_for_existing_record.any?
             prefix << "Given an existing #{model.name},"
             prefix << ' after setting its '
             prefix << descriptions_for_attribute_setters_for_existing_record
-            prefix << ', then'
+            prefix << ', then '
           else
-            prefix << "Given an existing #{model.name} with its :#{attribute} "
-            prefix << 'set to '
-            prefix << Shoulda::Matchers::Util.inspect_value(
-              value_from_existing_record,
-            )
-            prefix << ', after'
+            prefix << "Given an existing #{model.name}"
+
+            if attribute_setters_for_new_record.any?
+              prefix << ' with '
+
+              prefix << original_values_for_existing_record.map { |attribute, value|
+                "its :#{attribute} set to " +
+                  Shoulda::Matchers::Util.inspect_value(value)
+              }.to_sentence
+            end
+
+            prefix << ', after '
           end
 
-          prefix << " making a new #{model.name}, setting "
+          prefix << "making a new #{model.name}"
 
-          prefix << descriptions_for_attribute_setters_for_new_record
+          if attribute_setters_for_new_record.any?
+            prefix << ' and setting '
+            prefix << descriptions_for_attribute_setters_for_new_record
+          end
 
           prefix << ", the new #{model.name} was expected "
         end

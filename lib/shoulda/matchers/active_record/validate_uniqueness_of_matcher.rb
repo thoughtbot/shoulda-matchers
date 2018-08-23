@@ -258,6 +258,29 @@ module Shoulda
 
       # @private
       class ValidateUniquenessOfMatcher < ValidationMatcherWithExistingRecord
+        module Helpers
+          def arbitrary_non_blank_value
+            limit = column_limit_for(attribute)
+            non_blank_value = 'an arbitrary value'
+
+            if limit && limit < non_blank_value.length
+              'x' * limit
+            else
+              non_blank_value
+            end
+          end
+
+          def column_limit_for(attribute)
+            column_for(attribute).try(:limit)
+          end
+
+          def column_for(scope)
+            model.columns_hash[scope.to_s]
+          end
+        end
+
+        include Helpers
+
         def initialize(attribute)
           super(attribute)
 
@@ -307,7 +330,6 @@ module Shoulda
         def matches?(given_record)
           existing_record, existing_record_created =
             find_or_create_existing_record(given_record)
-          value_from_existing_record = existing_record.send(attribute)
           new_record = initialize_new_record(existing_record)
 
           Uniqueness::TestModels.within_sandbox do
@@ -315,7 +337,6 @@ module Shoulda
               new_record: new_record,
               existing_record: existing_record,
               existing_record_created: existing_record_created,
-              value_from_existing_record: value_from_existing_record,
             )
           end
         end
@@ -341,8 +362,8 @@ module Shoulda
           add_submatcher_to_test_uniqueness_of_non_blank_value
           add_submatcher_to_test_case_sensitivity
           add_submatchers_to_test_scopes
-          add_submatcher_for_allow_nil
-          add_submatcher_for_allow_blank
+          # add_submatcher_for_allow_nil
+          # add_submatcher_for_allow_blank
         end
 
         private
@@ -410,6 +431,8 @@ module Shoulda
 
         def add_submatcher_for_allow_nil
           if expects_to_allow_nil?
+            submatcher = AllowBlankMatcher.new(attribute, nil)
+
             add_submatcher_allowing(nil) do |matcher|
               matcher.before_matching do
                 update_existing_record!(nil)
@@ -445,28 +468,13 @@ module Shoulda
         end
 
         def add_submatcher_to_test_uniqueness_of_non_blank_value
-          add_submatcher_disallowing(value_from_existing_record) do |matcher|
+          add_submatcher_disallowing(current_value_from_existing_record) do |matcher|
             matcher.before_matching do
-              if value_from_existing_record.blank?
+              if current_value_from_existing_record.blank?
                 update_existing_record!(arbitrary_non_blank_value)
               end
             end
           end
-        end
-
-        def arbitrary_non_blank_value
-          limit = column_limit_for(attribute)
-          non_blank_value = 'an arbitrary value'
-
-          if limit && limit < non_blank_value.length
-            'x' * limit
-          else
-            non_blank_value
-          end
-        end
-
-        def column_limit_for(attribute)
-          column_for(attribute).try(:limit)
         end
 
         def add_submatcher_to_test_case_sensitivity
@@ -481,8 +489,8 @@ module Shoulda
 
         def should_validate_case_sensitivity?
           case_sensitivity_strategy != :ignore &&
-            value_from_existing_record.respond_to?(:swapcase) &&
-            !value_from_existing_record.empty?
+            current_value_from_existing_record.respond_to?(:swapcase) &&
+            !current_value_from_existing_record.empty?
         end
 
         def inspected_expected_scope_attributes
@@ -492,21 +500,7 @@ module Shoulda
         def add_submatchers_to_test_scopes
           if should_test_scopes?
             scopes.each do |scope|
-              add_submatcher_allowing(value_from_existing_record) do |matcher|
-                matcher.before_matching do
-                  set_attribute_on_new_record!(
-                    scope[:attribute],
-                    scope[:next_value],
-                  )
-                end
-
-                # matcher.after_matching do
-                  # new_record.send(
-                    # "#{scope[:attribute]}=",
-                    # scope[:previous_value],
-                  # )
-                # end
-              end
+              add_submatcher(ScopeMatcher.new(attribute, scope))
             end
           end
         end
@@ -533,9 +527,8 @@ module Shoulda
                 next_value_for(scope_attribute, previous_value)
               end
 
-            existing_value = read_value_from_existing_record(
-              for_attribute: scope_attribute,
-            )
+            existing_value =
+              original_values_for_existing_record.fetch(scope_attribute)
 
             {
               attribute: scope_attribute,
@@ -590,10 +583,6 @@ module Shoulda
           else
             previous_value.to_s.next
           end
-        end
-
-        def column_for(scope)
-          model.columns_hash[scope.to_s]
         end
 
         def defined_as_enum?(scope)
@@ -705,17 +694,19 @@ module Shoulda
         end
 
         class CaseSensitivityMatcher < ValidationMatcherWithExistingRecord
+          include Helpers
+
           def initialize(attribute, case_sensitivity_strategy)
             super(attribute)
             @case_sensitivity_strategy = case_sensitivity_strategy
           end
 
           def before_match
-            if value_from_existing_record.blank?
+            if current_value_from_existing_record.blank?
               update_existing_record!(arbitrary_non_blank_value)
             end
 
-            value = value_from_existing_record
+            value = current_value_from_existing_record
             @swapcased_value = value.swapcase
 
             if case_sensitivity_strategy == :sensitive && value == swapcased_value
@@ -787,6 +778,50 @@ http://matchers.shoulda.io/docs/v#{Shoulda::Matchers::VERSION}/file.NonCaseSwapp
               MESSAGE
             end
           end
+        end
+
+        class ScopeMatcher < ValidationMatcherWithExistingRecord
+          delegate(
+            :description,
+            :failure_message,
+            :failure_message_when_negated,
+            to: :submatcher,
+          )
+
+          def initialize(attribute, scope)
+            super(attribute)
+            @scope = scope
+            @submatcher =
+              allow_value_matcher(current_value_from_existing_record) do |matcher|
+                matcher.before_matching do
+                  set_attribute_on_new_record!(
+                    scope[:attribute],
+                    scope[:next_value],
+                  )
+                end
+
+                matcher.after_matching do
+                  set_attribute_on_new_record!(
+                    scope[:attribute],
+                    scope[:previous_value],
+                    remember_setting: false,
+                  )
+                end
+              end
+          end
+
+          protected
+
+          def add_submatchers
+            add_submatcher(submatcher)
+          end
+
+          private
+
+          attr_reader :scope, :submatcher
+        end
+
+        class AllowBlankMatcher < ValidationMatcherWithExistingRecord
         end
 
         # @private

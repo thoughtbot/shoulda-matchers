@@ -181,7 +181,7 @@ module Shoulda
           submatcher.matches?(record)
         end
 
-        def allows_value_of(value_or_values, message = nil, &block)
+        def add_submatcher_allowing(value_or_values, message = nil, &block)
           matcher =
             if value_or_values.is_a?(Array)
               allow_value_matcher(*value_or_values, message: message, &block)
@@ -191,9 +191,8 @@ module Shoulda
           add_submatcher(matcher)
           matcher
         end
-        alias_method :add_submatcher_allowing, :allows_value_of
 
-        def disallows_value_of(value_or_values, message = nil, &block)
+        def add_submatcher_disallowing(value_or_values, message = nil, &block)
           matcher =
             if value_or_values.is_a?(Array)
               disallow_value_matcher(*value_or_values, message: message, &block)
@@ -203,7 +202,6 @@ module Shoulda
           add_submatcher(matcher)
           matcher
         end
-        alias_method :add_submatcher_disallowing, :disallows_value_of
 
         def allow_value_matcher(*values, message: nil, &block)
           build_allow_or_disallow_value_matcher(
