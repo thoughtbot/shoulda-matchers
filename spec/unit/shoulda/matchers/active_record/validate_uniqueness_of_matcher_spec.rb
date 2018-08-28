@@ -333,25 +333,24 @@ within the scope of :non_existent1 and :non_existent2.
         expect(model.new).to validate_uniqueness_of(attribute_name)
       end
 
-      message = <<-MESSAGE
-Your test expecting Example to validate that :attr is case-sensitively
-unique didn't pass.
-
-The matcher ran the following subtests. Those indicated with ✘ failed
-when they should have passed:
-
-✔︎ Expected :attr to be a valid attribute of Example.
-
-✔︎ Expected Example's uniqueness validation on :attr to not be scoped to
-  anything.
-
-✘ Given an existing Example whose :attr is ‹"value"›, after making a new
-  Example and setting its :attr to ‹"value"›, the new Example was
-  expected to fail validation by placing the error "has already been
-  taken" on :attr. However, no such error was found on :attr.
+      _save_for_later = <<-BLANK
 
 ✔︎ Expected Example's uniqueness validation on :attr to be
   case-sensitive.
+      BLANK
+
+      message = <<-MESSAGE
+The expectation that Example should validate that :attr is
+case-sensitively unique could not be proved.
+
+The matcher ran the following subtests:
+
+✔︎ Expected :attr to be an attribute of Example (i.e. for Example to
+  define a writer method called :attr=).
+
+✘ Expected Example to have a uniqueness validation on :attr with no
+  scopes. However, :attr does not have any uniqueness validations on it
+  at all.
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)
@@ -532,10 +531,22 @@ when they should have passed:
         end
 
         message = <<-MESSAGE
-Example did not properly validate that :attr is case-sensitively unique
-within the scope of :other.
-  Expected the validation to be scoped to :other, but it was not scoped
-  to anything.
+The expectation that Example should validate that :attr is
+case-sensitively unique within the scope of :other could not be proved.
+
+The matcher ran the following subtests:
+
+✔︎ Expected :attr to be an attribute of Example (i.e. for Example to
+  define a writer method called :attr=).
+
+✔︎ Expected :other to be an attribute of Example (i.e. for Example to
+  define a writer method called :other=).
+
+✘ Expected Example to have a uniqueness validation on :attr scoped to
+  :other. :attr has uniqueness validations on it, but none of them have
+  scopes on them.
+
+✔︎ Expected :attr to only allow unique values.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -555,15 +566,32 @@ within the scope of :other.
           end
 
           message = <<-MESSAGE
-Example did not properly validate that :attr is case-sensitively unique.
-  After taking the given Example, whose :attr is ‹"some value"›, and
-  saving it as the existing record, then making a new Example and
-  setting its :attr to ‹"some value"› as well, the matcher expected the
-  new Example to be invalid and to produce the validation error "has
-  already been taken" on :attr. The record was indeed invalid, but it
-  produced these validation errors instead:
+Your test expecting Example to validate that :attr is case-sensitively
+unique didn't pass.
 
-  * attr: ["bad value"]
+The matcher ran the following subtests:
+
+✔︎ Expected :attr to be an attribute of Example (i.e. for Example to
+  define a writer method called :attr=).
+
+✔︎ Expected Example to have a uniqueness validation on :attr.
+
+✔︎ Expected Example to have a uniqueness validation on :attr with no
+  scopes.
+
+✘ Expected :attr to pass the "unique attribute" test, but it did not.
+
+  To explain further: Given an existing Example with its :attr set to
+  ‹"some value"›, the matcher expected a new Example with its :attr also
+  set to ‹"some value"› to fail validation by placing this error on
+  :attr:
+
+  - "has already been taken"
+
+  The record did fail validation, but these errors were found on :attr
+  instead:
+
+  - "bad value"
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -585,16 +613,33 @@ Example did not properly validate that :attr is case-sensitively unique.
             end
 
             message = <<-MESSAGE
-Example did not properly validate that :attr is case-sensitively unique,
-producing a custom validation error on failure.
-  After taking the given Example, whose :attr is ‹"some value"›, and
-  saving it as the existing record, then making a new Example and
-  setting its :attr to ‹"some value"› as well, the matcher expected the
-  new Example to be invalid and to produce the validation error "some
-  message" on :attr. The record was indeed invalid, but it produced
-  these validation errors instead:
+Your test expecting Example to validate that :attr is case-sensitively
+unique, producing a validation error "some message" on failure, didn't
+pass.
 
-  * attr: ["something else entirely"]
+The matcher ran the following subtests:
+
+✔︎ Expected :attr to be an attribute of Example (i.e. for Example to
+  define a writer method called :attr=).
+
+✔︎ Expected Example to have a uniqueness validation on :attr.
+
+✔︎ Expected Example to have a uniqueness validation on :attr with no
+  scopes.
+
+✘ Expected :attr to pass the "unique attribute" test, but it did not.
+
+  To explain further: Given an existing Example with its :attr set to
+  ‹"some value"›, the matcher expected a new Example with its :attr also
+  set to ‹"some value"› to fail validation by placing this error on
+  :attr:
+
+  - "some message"
+
+  The record did fail validation, but these errors were found on :attr
+  instead:
+
+  - "something else entirely"
             MESSAGE
 
             expect(&assertion).to fail_with_message(message)
@@ -628,16 +673,33 @@ producing a custom validation error on failure.
             end
 
             message = <<-MESSAGE
-Example did not properly validate that :attr is case-sensitively unique,
-producing a custom validation error on failure.
-  After taking the given Example, whose :attr is ‹"some value"›, and
-  saving it as the existing record, then making a new Example and
-  setting its :attr to ‹"some value"› as well, the matcher expected the
-  new Example to be invalid and to produce a validation error matching
-  ‹/some message/› on :attr. The record was indeed invalid, but it
-  produced these validation errors instead:
+Your test expecting Example to validate that :attr is case-sensitively
+unique, producing a validation error matching /some message/ on failure,
+didn't pass.
 
-  * attr: ["something else entirely"]
+The matcher ran the following subtests:
+
+✔︎ Expected :attr to be an attribute of Example (i.e. for Example to
+  define a writer method called :attr=).
+
+✔︎ Expected Example to have a uniqueness validation on :attr.
+
+✔︎ Expected Example to have a uniqueness validation on :attr with no
+  scopes.
+
+✘ Expected :attr to pass the "unique attribute" test, but it did not.
+
+  To explain further: Given an existing Example with its :attr set to
+  ‹"some value"›, the matcher expected a new Example with its :attr also
+  set to ‹"some value"› to fail validation by placing an error like this
+  on :attr:
+
+  - /some message/
+
+  The record did fail validation, but these errors were found on :attr
+  instead:
+
+  - "something else entirely"
             MESSAGE
 
             expect(&assertion).to fail_with_message(message)
@@ -663,26 +725,39 @@ producing a custom validation error on failure.
         reject_if_qualified_but_changing_value_interferes: {
           model_name: 'Example',
           attribute_name: :attr,
-          default_value: 'some value',
+          default_value: 'a serial value 0',
           changing_values_with: :next_value,
           expected_message: <<-MESSAGE.strip
-Example did not properly validate that :attr is case-sensitively unique.
-  After taking the given Example, whose :attr is ‹"some valuf"›, and
-  saving it as the existing record, then making a new Example and
-  setting its :attr to ‹"some valuf"› (read back as ‹"some valug"›) as
-  well, the matcher expected the new Example to be invalid, but it was
-  valid instead.
+The expectation that Example should validate that :attr is
+case-sensitively unique could not be proved.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you or something else has overridden the
-  writer method for this attribute to normalize values by changing their
-  case in any way (for instance, ensuring that the attribute is always
-  downcased), then try adding `ignoring_case_sensitivity` onto the end
-  of the uniqueness matcher. Otherwise, you may need to write the test
-  yourself, or do something different altogether.
+The matcher ran the following subtests:
 
-          MESSAGE
+✔︎ Expected :attr to be an attribute of Example (i.e. for Example to
+  define a writer method called :attr=).
+
+✔︎ Expected Example to have a uniqueness validation on :attr with no
+  scopes.
+
+✘ Expected Example to disallow non-unique values of :attr: Given an
+  existing Example with its :attr set to ‹"a serial value 1"›, the
+  matcher expected a new Example with its :attr also set to ‹"a serial
+  value 1"› (read back as ‹"a serial value 2"›) to fail validation by
+  placing this error on :attr:
+
+  - "has already been taken"
+
+  However, no such error was found on :attr.
+
+As indicated in the message above, :attr seems to be changing certain
+values as they are set, and this could have something to do with why
+this test is failing. If you or something else has overridden the writer
+method for this attribute to normalize values by changing their case in
+any way (for instance, ensuring that the attribute is always downcased),
+then try adding `ignoring_case_sensitivity` onto the end of the
+uniqueness matcher. Otherwise, you may need to write the test yourself,
+or do something different altogether.
+            MESSAGE
         }
       }
     )

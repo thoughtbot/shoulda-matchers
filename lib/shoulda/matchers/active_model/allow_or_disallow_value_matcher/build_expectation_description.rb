@@ -11,20 +11,20 @@ module Shoulda
           def initialize(
             matcher,
             negated:,
-            preface: default_preface
+            build_preface: method(:default_preface)
           )
             @matcher = matcher
             @negated = negated
-            @preface = preface
+            @build_preface = build_preface
           end
 
           def call
-            "#{preface} #{expectation}."
+            "#{build_preface.call} #{expectation}"
           end
 
           private
 
-          attr_reader :matcher, :preface
+          attr_reader :matcher, :build_preface
 
           def negated?
             @negated
@@ -61,7 +61,7 @@ module Shoulda
             if matcher.expects_custom_validation_message?
               expectation_with_expected_message
             else
-              expectation_without_expected_message
+              expectation_without_expected_message + '.'
             end
           end
 
@@ -98,13 +98,14 @@ module Shoulda
 
               clause <<
                 if matcher.expected_message.is_a?(Regexp)
-                  'placing an error matching '
+                  'placing an error like this '
                 else
-                  'placing the error '
+                  'placing this error '
                 end
 
-              clause << "#{matcher.expected_message.inspect} "
-              clause << "on :#{matcher.attribute_to_check_message_against}"
+              clause << "on :#{matcher.attribute_to_check_message_against}:"
+
+              clause << "\n\n- #{matcher.expected_message.inspect}\n\n"
             end
           end
 

@@ -2,6 +2,12 @@ module Shoulda
   module Matchers
     module ActiveModel
       # @private
+      # +------------+--------------------------------------------+-------------------------------------------+
+      # |XXXXXXXXXXXX| AllowValueMatcher                          | DisallowValueMatcher                      |
+      # +------------+--------------------+-----------------------+-------------------------------------------+
+      # | should     | inverted? == false | was_negated? == false | inverted? == true | was_negated? == false |
+      # | should not | inverted? == false | was_negated? ==  true | inverted? == true | was_negated? ==  true |
+      # +------------+--------------------+-----------------------+-------------------------------------------+
       class AllowOrDisallowValueMatcher
         include Helpers
         include Qualifiers::Callbacks
@@ -15,25 +21,22 @@ module Shoulda
           :subject,
         )
 
-        attr_writer(
-          :expectation_preface,
-          :values_to_preset,
-        )
+        attr_writer :values_to_preset
 
         def initialize(*values, part_of_larger_matcher: false)
           @values_to_set = values
+          @part_of_larger_matcher = part_of_larger_matcher
+
+          @was_negated = nil
           @options = {}
           @after_setting_value_callback = -> {}
           @expects_strict = false
           @expects_custom_validation_message = false
           @context = nil
           @values_to_preset = {}
-          @expectation_preface = nil
-          @part_of_larger_matcher = part_of_larger_matcher
-
-          building_attribute_changed_value_message do
-            default_attribute_changed_value_message
-          end
+          @build_expectation_preface = nil
+          @build_attribute_changed_value_message =
+            method(:default_attribute_changed_value_message)
         end
 
         def for(attribute_name)
@@ -87,24 +90,16 @@ module Shoulda
           @expects_strict
         end
 
+        def building_expectation_preface(&block)
+          @build_expectation_preface = block
+        end
+
+        def building_attribute_changed_value_message(&block)
+          @build_attribute_changed_value_message = block
+        end
+
         def _after_setting_value(&callback)
           @after_setting_value_callback = callback
-        end
-
-        def matches?(subject)
-          @subject = subject
-          @was_negated = false
-
-          matching do
-            @result = run(method_to_run_for_matching)
-            @result.nil?
-          end
-        end
-
-        def does_not_match?(subject)
-          !matches?(subject).tap do
-            @was_negated = true
-          end
         end
 
         def was_negated?
@@ -124,12 +119,38 @@ module Shoulda
           ValidationMatcher::BuildDescription.call(self, simple_description)
         end
 
+        def matches?(subject)
+          @was_negated = false
+          matches_or_does_not_match?(subject)
+        end
+
+        def does_not_match?(subject)
+          @was_negated = true
+          matches_or_does_not_match?(subject)
+        end
+
+        def failure_message
+          raise NotImplementedError
+        end
+
+        def failure_message_when_negated
+          raise NotImplementedError
+        end
+
         def expectation_description
-          AllowOrDisallowValueMatcher::BuildExpectationDescription.call(
+          BuildExpectationDescription.call(
             self,
-            negated: expectation_negated?,
-            preface: expectation_preface,
+            negated: (inverted? ? !was_negated? : was_negated?),
+            build_preface: build_expectation_preface,
           )
+        end
+
+        def aberration_description
+          raise NotImplementedError
+        end
+
+        def aberration_description_when_negated
+          raise NotImplementedError
         end
 
         def expectation_clauses_for_values_to_preset
@@ -152,22 +173,18 @@ module Shoulda
           last_attribute_setter_used.value_written
         end
 
-        def building_attribute_changed_value_message(&block)
-          @build_attribute_changed_value_message = block
-        end
-
         def model
           subject.class
         end
 
         def pretty_print(pp)
           Shoulda::Matchers::Util.pretty_print(self, pp, {
-            was_negated: was_negated?,
+            to_ruby_snippet: to_ruby_snippet,
             attribute_to_set: attribute_to_set,
             attribute_to_check_message_against: attribute_to_check_message_against,
             values_to_set: values_to_set,
             expected_message: expected_message,
-            expects_strict: expects_strict?,
+            expects_strict?: expects_strict?,
             subject: subject,
             attribute_setters_and_validators_for_values_to_set: attribute_setters_and_validators_for_values_to_set,
           })
@@ -176,19 +193,32 @@ module Shoulda
         protected
 
         attr_reader(
-          :expectation_preface,
+          :build_expectation_preface,
           :options,
           :result,
           :values_to_preset,
           :values_to_set,
         )
 
+        def matches_or_does_not_match?(subject)
+          @subject = subject
+
+          matching do
+            @result = run(method_to_find_first_non_match)
+            @result.nil?
+          end
+        end
+
         def positive_failure_message
-          attribute_setter = result.attribute_setter
+          attribute_setter = last_attribute_setter_used
 
           message =
-            if result.attribute_setter.successfully_checked?
-              "Expected #{model} #{expectation}, but it did not."
+            if attribute_setter.successfully_checked?
+              # "Expected #{model} #{expectation}, but it did not."
+              Shoulda::Matchers::Util.join_sections([
+                expectation_description,
+                aberration_description
+              ])
             else
               attribute_setter.failure_message
             end
@@ -220,14 +250,12 @@ module Shoulda
         end
 
         def negative_failure_message
-          attribute_setter = result.attribute_setter
-
-          message =
-            if result.attribute_setter.successfully_checked?
-              "Expected #{model} #{expectation}, but it did."
-            else
-              attribute_setter.failure_message
-            end
+          # "Expected #{model} #{expectation}, but it did."
+          # "#{expectation_description} However, it did not."
+          message = Shoulda::Matchers::Util.join_sections([
+            expectation_description,
+            aberration_description_when_negated
+          ])
 
 =begin
           if attribute_setter.successfully_checked?
@@ -298,7 +326,7 @@ module Shoulda
         end
 
         def positive_aberration_description
-          validator = result.validator
+          # validator = result.validator
 
           # description = 'However, '
 
@@ -317,58 +345,28 @@ module Shoulda
         end
 
         def negative_aberration_description
-          validator = result.validator
-          message = ''
+          BuildNegativeAberrationDescription.call(result.validator)
+        end
 
-          if validator.validation_message_type_matches?
-            if validator.has_validation_messages?
-              message << 'The record did indeed fail validation, but'
-
-              if validator.captured_validation_exception?
-                message << ' the exception message was '
-                message << validator.validation_exception_message.inspect
-                message << ' instead.'
-              else
-                message << ' it produced these validation errors on '
-                message << ":#{attribute_to_check_message_against} instead:\n\n"
-                message << validator.formatted_validation_messages
-              end
-            elsif expects_strict?
-              message << 'However, no such exception was raised.'
+        def to_ruby_snippet
+          should_or_should_not =
+            if was_negated? || inverted?
+              'should_not'
             else
-              message << 'However, no such error was found on '
-              message << ":#{attribute_to_check_message_against}"
-
-              if context.present?
-                message << ' there. (Perhaps the validation was run under a '
-                message << 'different context?)'
-              else
-                message << '.'
-              end
+              'should'
             end
-          elsif validator.captured_validation_exception?
-            message << 'The record did indeed fail validation, but it '
-            message << 'raised a validation exception '
-            message << validator.validation_exception_message.inspect
-            message << ' instead.'
-          elsif validator.has_any_validation_errors?
-            message << 'The record did indeed fail validation, but instead of '
-            message << 'raising an exception, it produced errors on '
-            message << "these attributes:\n\n"
-            message << validator.all_formatted_validation_errors
-          else
-            message << 'However, it did not fail validation.'
-          end
 
-          message
+          "#{should_or_should_not} allow_value(...)"
         end
 
         private
 
-        attr_reader :build_attribute_changed_value_message
+        attr_reader :build_expectation_preface,
+          :build_attribute_changed_value_message
 
         def run(strategy)
-          attribute_setters_for_values_to_preset.first_to_unexpectedly_not_pass ||
+          # FIXME I don't know what this means....
+          attribute_setters_for_values_to_preset.first_to_not_pass ||
             attribute_setters_and_validators_for_values_to_set.public_send(strategy)
         end
 

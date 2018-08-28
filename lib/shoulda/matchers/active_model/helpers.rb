@@ -17,7 +17,7 @@ module Shoulda
         end
 
         def format_attribute_specific_validation_errors(errors)
-          errors.map { |error| "* #{error}" }.join("\n")
+          errors.map { |error| "- #{error.inspect}" }.join("\n")
         end
 
         def default_error_message(type, attribute, options = {})

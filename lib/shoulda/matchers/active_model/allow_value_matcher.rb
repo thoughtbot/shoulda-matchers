@@ -314,21 +314,25 @@ module Shoulda
         end
 
         def aberration_description
-          if was_negated?
-            negative_aberration_description
-          else
-            positive_aberration_description
-          end
+          positive_aberration_description
+        end
+
+        def aberration_description_when_negated
+          negative_aberration_description
+        end
+
+        def inverted?
+          false
         end
 
         protected
 
-        def expectation_negated?
-          was_negated?
-        end
-
-        def method_to_run_for_matching
-          :first_to_unexpectedly_not_fail
+        def method_to_find_first_non_match
+          if was_negated?
+            :first_where_validation_messages_do_not_match
+          else
+            :first_to_produce_validation_messages
+          end
         end
       end
     end

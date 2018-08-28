@@ -26,7 +26,7 @@ module Shoulda
               :ignore_interference_by_writer,
               Qualifiers::IgnoreInterferenceByWriter.new
             )
-            @after_set_callback = args.fetch(:after_set_callback, -> { })
+            @after_set_callback = args.fetch(:after_set_callback, proc { })
 
             @original_value = object.public_send(attribute_name)
             @value_read = nil
@@ -47,13 +47,19 @@ module Shoulda
             description
           end
 
-          def expectation_clause
+          def expectation_clause(add_also: false)
             clause = ''
-            clause << ":#{attribute_name} set to "
+            clause << ":#{attribute_name} "
+
+            if add_also
+              clause << 'also '
+            end
+
+            clause << 'set to '
             clause << Shoulda::Matchers::Util.inspect_value(value_written)
 
             if attribute_changed_value?
-              clause << ' (which was read back as '
+              clause << ' (read back as '
               clause << Shoulda::Matchers::Util.inspect_value(value_read)
               clause << ')'
             end
@@ -99,7 +105,7 @@ module Shoulda
           def set
             object.public_send("#{attribute_name}=", value_written)
             read_value
-            after_set_callback.call
+            after_set_callback.call(self)
 
             @result_of_checking = successful_check
 

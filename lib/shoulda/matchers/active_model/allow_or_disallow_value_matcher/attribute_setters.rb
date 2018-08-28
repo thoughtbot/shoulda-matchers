@@ -20,7 +20,7 @@ module Shoulda
             tuples.each(&block)
           end
 
-          def first_to_unexpectedly_not_pass
+          def first_to_not_pass
             tuples.detect(&method(:fails_to_pass?))
           end
 

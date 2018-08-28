@@ -82,36 +82,30 @@ module Shoulda
           overall_failure_message + submatchers_report
         end
 
-        def failure_message_when_negated
-          overall_failure_message_when_negated + submatchers_report
-        end
+        alias_method :failure_message_when_negated, :failure_message
 
         def submatchers_report
           message = "\n\n"
 
-          if was_negated?
+          # if was_negated?
             message << 'The matcher ran the following subtests:'
-          else
-            message << Shoulda::Matchers.word_wrap(
-              'The matcher ran the following subtests. ' +
-              'Those indicated with ✘ failed when they should have ' +
-              'passed:',
-            )
-          end
+          # else
+            # message << Shoulda::Matchers.word_wrap(
+              # 'The matcher ran the following subtests. ' +
+              # 'Those indicated with ✘ failed when they should have ' +
+              # 'passed:',
+            # )
+          # end
 
           message << "\n\n"
 
           list = submatcher_results.map do |result|
-            item = ''
-            item << result.submatcher_expectation_description
+            indented_item = Shoulda::Matchers.word_wrap(
+              result.report_item,
+              indent: 2
+            )
 
-            if !result.expected? && result.submatcher_aberration_description.present?
-              item << ' ' + result.submatcher_aberration_description
-            end
-
-            indented_item = Shoulda::Matchers.word_wrap(item, indent: 2)
-
-            indented_item[0] =
+            icon =
               if result.expected?
                 '✔︎'
               elsif result.matched?
@@ -120,7 +114,7 @@ module Shoulda
                 '✘'
               end
 
-            indented_item
+            icon + indented_item[1..-1]
           end
 
           message << list.join("\n\n")
@@ -151,6 +145,19 @@ module Shoulda
           submatchers
         end
 
+        def pretty_print(pp)
+          Shoulda::Matchers::Util.pretty_print(self, pp, {
+            attribute: attribute,
+            expects_strict: expects_strict?,
+            expected_message: expected_message,
+            expects_custom_validation_message: expects_custom_validation_message?,
+            validation_context: validation_context,
+            submatchers: submatchers,
+            was_negated?: was_negated?,
+            record: record
+          })
+        end
+
         protected
 
         attr_reader :attribute, :submatchers, :record, :subject
@@ -173,8 +180,21 @@ module Shoulda
         def add_submatchers
         end
 
-        def add_submatcher(submatcher)
-          submatchers << submatcher
+        def add_submatcher(*args)
+          submatcher =
+            if args.size == 1
+              args[0]
+            else
+              if args[0] < ValidationMatcher
+                build_child_validation_matcher(*args)
+              else
+                args[0].new(*args[1..-1])
+              end
+            end
+
+          if !submatcher.respond_to?(:active) || submatcher.active?
+            submatchers << submatcher
+          end
         end
 
         def submatcher_matches?(submatcher)
@@ -221,7 +241,7 @@ module Shoulda
           )
         end
 
-        def build_submatcher(matcher_class, *args)
+        def build_child_validation_matcher(matcher_class, *args)
           matcher = matcher_class.new(*args).
             with_message(expected_message).
             on(validation_context).
@@ -233,12 +253,6 @@ module Shoulda
           matcher
         end
 
-        def before_matching
-        end
-
-        def after_matching
-        end
-
         def model
           record.class
         end
@@ -248,26 +262,22 @@ module Shoulda
         attr_reader :before_matching_blocks, :after_matching_blocks
 
         def overall_failure_message
-          message = "Your test expecting #{model.name} to #{description}"
-
-          message <<
-            if message.include?(',')
-              ", didn't pass."
+          should_or_should_not =
+            if was_negated?
+              'should not'
             else
-              " didn't pass."
+              'should'
             end
 
-          Shoulda::Matchers.word_wrap(message)
-        end
-
-        def overall_failure_message_when_negated
-          message = "Your test expecting #{model.name} not to #{description}"
+          message =
+            "The expectation that #{model.name} " +
+            "#{should_or_should_not} #{description}"
 
           message <<
             if message.include?(',')
-              ", didn't pass."
+              ", could not be proved."
             else
-              " didn't pass."
+              " could not be proved."
             end
 
           Shoulda::Matchers.word_wrap(message)
@@ -319,7 +329,7 @@ module Shoulda
         end
 
         def build_allow_or_disallow_value_matcher(matcher_class:, values:, message:)
-          build_submatcher(
+          build_child_validation_matcher(
             matcher_class,
             *values,
             part_of_larger_matcher: true,
@@ -357,8 +367,20 @@ module Shoulda
             submatcher.description
           end
 
-          def submatcher_failure_message
-            submatcher.failure_message
+          def report_item
+            # if expected?
+              # submatcher_expectation_description
+            # elsif submatcher.respond_to?(:failure_message_as_submatcher)
+              # submatcher.failure_message_as_submatcher
+            # else
+              sections = [submatcher_expectation_description]
+
+              if !expected? && submatcher_aberration_description.present?
+                sections << submatcher_aberration_description
+              end
+
+              Shoulda::Matchers::Util.join_sections(sections)
+            # end
           end
 
           def submatcher_expectation_description
@@ -366,15 +388,15 @@ module Shoulda
           end
 
           def submatcher_aberration_description
-            submatcher.aberration_description
+            if submatcher.try(:was_negated?)
+              submatcher.aberration_description_when_negated
+            else
+              submatcher.aberration_description
+            end
           end
 
           def submatcher_includes_attribute_changed_value_message?
-            if submatcher.respond_to?(:include_attribute_changed_value_message?)
-              submatcher.include_attribute_changed_value_message?
-            else
-              false
-            end
+            submatcher.try(:include_attribute_changed_value_message?)
           end
 
           def submatcher_attribute_changed_value_message

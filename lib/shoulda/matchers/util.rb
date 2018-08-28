@@ -33,7 +33,7 @@ module Shoulda
       end
 
       def self.a_or_an(next_word)
-        if next_word =~ /\A[aeiou]/i
+        if next_word =~ /\A[aeiou]/i && next_word !~ /\Aun[aeiou]/
           "an #{next_word}"
         else
           "a #{next_word}"
@@ -110,6 +110,18 @@ module Shoulda
             'dummy value'
           end
         end
+      end
+
+      def self.join_sections(sections)
+        separated_sections = sections.map.with_index do |section, index|
+          if section.end_with?("\n\n") || index == sections.length - 1
+            section
+          else
+            section + ' '
+          end
+        end
+
+        separated_sections.join
       end
     end
   end

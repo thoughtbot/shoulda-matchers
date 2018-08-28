@@ -15,7 +15,9 @@ module Shoulda
         end
 
         def expectation_description
-          "Expected :#{attribute_name} to be a valid attribute of #{model}."
+          "Expected :#{attribute_name} to be an attribute of #{model} " +
+            "(i.e. for #{model} to define a writer method called " +
+            ":#{attribute_name}=)."
         end
 
         def aberration_description

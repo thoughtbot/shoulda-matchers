@@ -4,11 +4,11 @@ module Shoulda
       class ValidationMatcherWithExistingRecord < Shoulda::Matchers::ActiveModel::ValidationMatcher
         include ActiveModel::Helpers
 
-        def initialize(attribute)
+        def initialize(attribute, attribute_setters: nil)
           super(attribute)
 
           @existing_record_created = false
-          @attribute_setters = {
+          @attribute_setters ||= {
             new_record: UniqueAttributeSetters.new,
             existing_record: UniqueAttributeSetters.new,
           }
@@ -22,11 +22,26 @@ module Shoulda
           @new_record = new_record
           @existing_record = existing_record
           @existing_record_created = existing_record_created
+          @original_value_for_existing_record =
+            existing_record.public_send(attribute)
 
           super(new_record)
         # ensure
           # revert_new_record
           # revert_existing_record
+        end
+
+        def attribute_changed_value_message
+          <<-MESSAGE.strip
+As indicated in the message above, :#{attribute} seems to be changing
+certain values as they are set, and this could have something to do with
+why this test is failing. If you or something else has overridden the
+writer method for this attribute to normalize values by changing their
+case in any way (for instance, ensuring that the attribute is always
+downcased), then try adding `ignoring_case_sensitivity` onto the end of
+the uniqueness matcher. Otherwise, you may need to write the test
+yourself, or do something different altogether.
+          MESSAGE
         end
 
         protected
@@ -39,16 +54,33 @@ module Shoulda
               existing_record_created: existing_record_created?,
             )
           else
-            submatcher.matches?(existing_record)
+            submatcher.matches?(new_record)
           end
+        end
+
+        def build_child_validation_matcher(
+          matcher_class,
+          *args,
+          **opts,
+          &block
+        )
+          if matcher_class < ValidationMatcherWithExistingRecord
+            opts = { attribute_setters: attribute_setters.dup }.merge(opts)
+          end
+
+          super(matcher_class, *args, **opts, &block)
         end
 
         def build_allow_or_disallow_value_matcher(args)
           super.tap do |matcher|
-            matcher.expectation_preface = expectation_preface
+            matcher.building_expectation_preface { expectation_preface }
 
             matcher.building_attribute_changed_value_message do
               attribute_changed_value_message
+            end
+
+            matcher._after_setting_value do |attribute_setter|
+              attribute_setters_for_new_record << attribute_setter
             end
           end
         end
@@ -65,7 +97,8 @@ module Shoulda
         private
 
         attr_reader :attribute_setters, :new_record, :existing_record,
-          :original_values
+          :original_value_for_existing_record
+          # :original_values
 
         def existing_record_created?
           @existing_record_created
@@ -127,7 +160,6 @@ module Shoulda
           attribute_setter.set!
 
           if remember_setting
-            puts "Setting :#{attribute_name} on #{record_type} to #{value.inspect}"
             attribute_setters[record_type] << attribute_setter
           end
         end
@@ -150,6 +182,7 @@ module Shoulda
           )
         end
 
+        # NOTE: I don't think this is right
         def original_values_for_existing_record
           attribute_setters_for_new_record.inject({}) do |hash, attribute_setter|
             if hash.key?(attribute_setter.attribute_name)
@@ -160,8 +193,19 @@ module Shoulda
           end
         end
 
+        # Here's the new one
+        def original_values_for_existing_record
+          attribute_setters_for_existing_record.inject({}) do |hash, attribute_setter|
+            hash.merge(attribute_setter.attribute_name => attribute_setter.original_value)
+          end
+        end
+
         def original_value_from_existing_record
-          original_values_for_existing_record[attribute]
+          if original_values_for_existing_record.any?
+            original_values_for_existing_record[attribute]
+          else
+            original_value_for_existing_record
+          end
         end
 
         def current_value_from_existing_record
@@ -190,7 +234,7 @@ module Shoulda
           # end
         # end
 
-        def expectation_preface
+        def OLD_expectation_preface
           prefix = ''
 
           if existing_record_created?
@@ -216,9 +260,11 @@ module Shoulda
             if attribute_setters_for_new_record.any?
               prefix << ' with '
 
-              prefix << original_values_for_existing_record.map { |attribute, value|
+              prefix << attribute_setters_for_new_record.keys.map { |attribute|
                 "its :#{attribute} set to " +
-                  Shoulda::Matchers::Util.inspect_value(value)
+                  Shoulda::Matchers::Util.inspect_value(
+                    existing_record.public_send(attribute)
+                  )
               }.to_sentence
             end
 
@@ -233,6 +279,43 @@ module Shoulda
           end
 
           prefix << ", the new #{model.name} was expected "
+        end
+
+        def expectation_preface
+          ''.tap do |preface|
+            preface << "Given an existing #{model.name}"
+
+            if attribute_setters_for_new_record.any?
+              preface << ' with '
+
+              clauses = attribute_setters_for_new_record.map do |attribute_setter|
+                inspected_value = Shoulda::Matchers::Util.inspect_value(
+                  existing_record.public_send(attribute_setter.attribute_name)
+                )
+                "its :#{attribute} set to #{inspected_value}"
+              end
+
+              preface << clauses.to_sentence
+            end
+
+            preface << ", the matcher expected a new #{model.name} "
+
+            if attribute_setters_for_new_record.any?
+              preface << ' with '
+
+              clauses = attribute_setters_for_new_record.map do |attribute_setter|
+                value_on_existing_record = existing_record.public_send(
+                  attribute_setter.attribute_name
+                )
+                add_also = (
+                  attribute_setter.value_written == value_on_existing_record
+                )
+                'its ' + attribute_setter.expectation_clause(add_also: add_also)
+              end
+
+              preface << clauses.to_sentence
+            end
+          end
         end
 
         def description_for_attribute_setter(attribute_setter)#, same_as_existing: nil)
@@ -275,19 +358,6 @@ module Shoulda
         # def existing_and_new_values_are_same?
           # last_value_set_on_new_record == existing_value_written
         # end
-
-        def attribute_changed_value_message
-          <<-MESSAGE.strip
-As indicated in the message above, :#{attribute} seems to be changing
-certain values as they are set, and this could have something to do with
-why this test is failing. If you or something else has overridden the
-writer method for this attribute to normalize values by changing their
-case in any way (for instance, ensuring that the attribute is always
-downcased), then try adding `ignoring_case_sensitivity` onto the end of
-the uniqueness matcher. Otherwise, you may need to write the test
-yourself, or do something different altogether.
-          MESSAGE
-        end
 
         # # FIXME: last_submatcher_run probably won't work
         # def last_attribute_setter_used_on_new_record

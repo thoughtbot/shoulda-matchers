@@ -1,6 +1,5 @@
 {
-  "command": "ruby -rubygems -r./custom_plan -eZeus.go",
-
+  "command": "ruby -r rubygems -r ./custom_plan -e Zeus.go",
   "plan": {
     "boot": {
       "test_environment": {
