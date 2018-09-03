@@ -398,11 +398,33 @@ module Shoulda
         end
 
         def allows_length_of?(length, message)
-          allows_value_of(string_of_length(length), message)
+          allows_value_of(attribute_of_length(length), message)
         end
 
         def disallows_length_of?(length, message)
-          disallows_value_of(string_of_length(length), message)
+          disallows_value_of(attribute_of_length(length), message)
+        end
+
+        def attribute_of_length(length)
+          attribute_is_association? ? association_of_length(length) : string_of_length(length)
+        end
+
+        def attribute_is_association?
+          !!attribute_association_reflection
+        end
+
+        def attribute_association_reflection
+          if @subject.class.respond_to?(:reflect_on_association)
+            @subject.class.reflect_on_association(@attribute)
+          end
+        end
+
+        def association_of_length(length)
+          [attribute_association_class.new] * length
+        end
+
+        def attribute_association_class
+          attribute_association_reflection.class_name.constantize
         end
 
         def string_of_length(length)
