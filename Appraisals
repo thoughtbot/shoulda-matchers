@@ -84,3 +84,22 @@ appraise '5.1' do
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
+
+
+appraise '5.2' do
+  instance_eval(&shared_dependencies)
+
+  gem 'rails', '~> 5.2.1'
+  gem 'rails-controller-testing', '>= 1.0.1'
+  gem 'puma', '~> 3.11'
+  gem 'bootsnap', '>= 1.1.0', require: false
+  gem 'sass-rails', '~> 5.0'
+  gem 'turbolinks', '~> 5'
+  gem 'jbuilder', '~> 2.5'
+  gem 'bcrypt', '~> 3.1.7'
+  gem 'capybara', '~> 3.1.1'
+  gem 'selenium-webdriver'
+  gem 'chromedriver-helper'
+  gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'spring-watcher-listen', '~> 2.0.0'
+end
