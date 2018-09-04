@@ -302,9 +302,9 @@ Style/SymbolProc:
   Enabled: true
   IgnoredMethods:
   - respond_to
-Style/TrailingCommaInArrayLiteral
+Style/TrailingCommaInArrayLiteral:
   Enabled: true
-Style/TrailingCommaInHashLiteral
+Style/TrailingCommaInHashLiteral:
   Enabled: true
 Style/TrailingCommaInArguments:
   Description: Checks for trailing comma in parameter lists and literals.
