@@ -91,6 +91,11 @@ module Shoulda
           disallows_value_of(false, @expected_message)
         end
 
+        def does_not_match?(subject)
+          super(subject)
+          allows_value_of(false, @expected_message)
+        end
+
         def simple_description
           %(validate that :#{@attribute} has been set to "1")
         end

@@ -268,6 +268,7 @@ module Shoulda
 
       # @private
       class ValidateInclusionOfMatcher < ValidationMatcher
+        BLANK_VALUES = ['', ' ', "\n", "\r", "\t", "\f"]
         ARBITRARY_OUTSIDE_STRING = 'shoulda-matchers test string'
         ARBITRARY_OUTSIDE_INTEGER = 123456789
         ARBITRARY_OUTSIDE_DECIMAL = BigDecimal('0.123456789')
@@ -294,8 +295,8 @@ EOT
           @range = nil
           @minimum = nil
           @maximum = nil
-          @low_message = nil
-          @high_message = nil
+          @low_message = :inclusion
+          @high_message = :inclusion
         end
 
         def in_array(array)
@@ -375,8 +376,6 @@ EOT
           super(subject)
 
           if @range
-            @low_message  ||= :inclusion
-            @high_message ||= :inclusion
             matches_for_range?
           elsif @array
             if matches_for_array?
@@ -388,47 +387,55 @@ EOT
           end
         end
 
+        def does_not_match?(subject)
+          super(subject)
+
+          if @range
+            does_not_match_for_range?
+          elsif @array
+            if does_not_match_for_array?
+              true
+            else
+              @failure_message = "#{@array} matches array in validation"
+              false
+            end
+          end
+        end
+
         private
 
         def matches_for_range?
           disallows_lower_value &&
             allows_minimum_value &&
-            disallows_higher_value &&
-            allows_maximum_value
+            allows_maximum_value &&
+            disallows_higher_value
+        end
+
+        def does_not_match_for_range?
+          allows_lower_value ||
+            disallows_minimum_value ||
+            disallows_maximum_value ||
+            allows_higher_value
         end
 
         def matches_for_array?
           allows_all_values_in_array? &&
-            allows_blank_value? &&
+            disallows_all_values_outside_of_array? &&
             allows_nil_value? &&
-            disallows_value_outside_of_array?
+            allows_blank_value?
         end
 
-        def allows_blank_value?
-          if @options.key?(:allow_blank)
-            blank_values = ['', ' ', "\n", "\r", "\t", "\f"]
-            @options[:allow_blank] == blank_values.all? { |value| allows_value_of(value) }
-          else
-            true
-          end
+        def does_not_match_for_array?
+          disallows_any_values_in_array? ||
+            allows_any_value_outside_of_array? ||
+            disallows_nil_value? ||
+            disallows_blank_value?
         end
 
-        def allows_nil_value?
-          if @options.key?(:allow_nil)
-            @options[:allow_nil] == allows_value_of(nil)
-          else
-            true
-          end
-        end
-
-        def inspect_message
-          @range.nil? ? @array.inspect : @range.inspect
-        end
-
-        def allows_all_values_in_array?
-          @array.all? do |value|
-            allows_value_of(value, @low_message)
-          end
+        def allows_lower_value
+          @minimum &&
+            @minimum != 0 &&
+            allows_value_of(@minimum - 1, @low_message)
         end
 
         def disallows_lower_value
@@ -437,19 +444,64 @@ EOT
             disallows_value_of(@minimum - 1, @low_message)
         end
 
-        def disallows_higher_value
-          disallows_value_of(@maximum + 1, @high_message)
-        end
-
         def allows_minimum_value
           allows_value_of(@minimum, @low_message)
+        end
+
+        def disallows_minimum_value
+          disallows_value_of(@minimum, @low_message)
         end
 
         def allows_maximum_value
           allows_value_of(@maximum, @high_message)
         end
 
-        def disallows_value_outside_of_array?
+        def disallows_maximum_value
+          disallows_value_of(@maximum, @high_message)
+        end
+
+        def allows_higher_value
+          allows_value_of(@maximum + 1, @high_message)
+        end
+
+        def disallows_higher_value
+          disallows_value_of(@maximum + 1, @high_message)
+        end
+
+        def allows_all_values_in_array?
+          @array.all? do |value|
+            allows_value_of(value, @low_message)
+          end
+        end
+
+        def disallows_any_values_in_array?
+          @array.any? do |value|
+            disallows_value_of(value, @low_message)
+          end
+        end
+
+        def allows_any_value_outside_of_array?
+          if attribute_type == :boolean
+            case @array
+            when [false, true], [true, false]
+              Shoulda::Matchers.warn BOOLEAN_ALLOWS_BOOLEAN_MESSAGE
+              return true
+            when [nil]
+              if attribute_column.null
+                Shoulda::Matchers.warn BOOLEAN_ALLOWS_NIL_MESSAGE
+                return true
+              else
+                raise NonNullableBooleanError.create(@attribute)
+              end
+            end
+          end
+
+          values_outside_of_array.any? do |value|
+            allows_value_of(value, @low_message)
+          end
+        end
+
+        def disallows_all_values_outside_of_array?
           if attribute_type == :boolean
             case @array
             when [false, true], [true, false]
@@ -553,6 +605,24 @@ EOT
             when Time then :time
             else :unknown
           end
+        end
+
+        def allows_nil_value?
+          @options[:allow_nil] != true || allows_value_of(nil)
+        end
+
+        def disallows_nil_value?
+          @options[:allow_nil] && disallows_value_of(nil)
+        end
+
+        def allows_blank_value?
+          @options[:allow_blank] != true ||
+            BLANK_VALUES.all? { |value| allows_value_of(value) }
+        end
+
+        def disallows_blank_value?
+          @options[:allow_blank] &&
+            BLANK_VALUES.any? { |value| disallows_value_of(value) }
         end
 
         def inspected_array

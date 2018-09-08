@@ -498,6 +498,16 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       end
     end
 
+    it 'fails when used in the negative' do
+      builder = build_object_allowing(possible_values)
+
+      assertion = lambda do
+        expect_not_to_match_on_values(builder, possible_values)
+      end
+
+      expect(&assertion).to fail
+    end
+
     it_behaves_like 'it supports allow_nil', valid_values: possible_values
     it_behaves_like 'it supports allow_blank', valid_values: possible_values
     it_behaves_like 'it supports with_message', valid_values: possible_values

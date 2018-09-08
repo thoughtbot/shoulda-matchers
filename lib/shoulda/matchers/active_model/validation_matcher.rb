@@ -51,6 +51,11 @@ module Shoulda
           false
         end
 
+        def does_not_match?(subject)
+          @subject = subject
+          true
+        end
+
         def failure_message
           overall_failure_message.dup.tap do |message|
             if failure_reason.present?
@@ -65,10 +70,10 @@ module Shoulda
 
         def failure_message_when_negated
           overall_failure_message_when_negated.dup.tap do |message|
-            if failure_reason_when_negated.present?
+            if failure_reason.present?
               message << "\n"
               message << Shoulda::Matchers.word_wrap(
-                failure_reason_when_negated,
+                failure_reason,
                 indent: 2
               )
             end
@@ -115,13 +120,15 @@ module Shoulda
 
         def overall_failure_message
           Shoulda::Matchers.word_wrap(
-            "#{model.name} did not properly #{description}."
+            "Expected #{model.name} to #{description}, but this could not be " +
+            'proved.'
           )
         end
 
         def overall_failure_message_when_negated
           Shoulda::Matchers.word_wrap(
-            "Expected #{model.name} not to #{description}, but it did."
+            "Expected #{model.name} not to #{description}, but this could " +
+            'not be proved.'
           )
         end
 

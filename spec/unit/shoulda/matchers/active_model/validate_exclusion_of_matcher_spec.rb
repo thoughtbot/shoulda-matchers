@@ -7,9 +7,24 @@ describe Shoulda::Matchers::ActiveModel::ValidateExclusionOfMatcher, type: :mode
         to validate_exclusion_of(:attr).in_range(2..5)
     end
 
-    it 'rejects ensuring excluded value' do
+    it 'rejects if the given range spills past the top of the range in the validation' do
       expect(validating_exclusion(in: 2..5)).
         not_to validate_exclusion_of(:attr).in_range(2..6)
+    end
+
+    it 'rejects if the given range falls short of the top of the range in the validation' do
+      expect(validating_exclusion(in: 2..5)).
+        not_to validate_exclusion_of(:attr).in_range(2..4)
+    end
+
+    it 'rejects if the given range spills past the bottom of the range in the validation' do
+      expect(validating_exclusion(in: 2..5)).
+        not_to validate_exclusion_of(:attr).in_range(1..5)
+    end
+
+    it 'rejects if the given range falls short of the bottom of the range in the validation' do
+      expect(validating_exclusion(in: 2..5)).
+        not_to validate_exclusion_of(:attr).in_range(3..5)
     end
 
     it 'does not override the default message with a blank' do
@@ -25,8 +40,8 @@ describe Shoulda::Matchers::ActiveModel::ValidateExclusionOfMatcher, type: :mode
           attribute_name: :attr,
           changing_values_with: :next_value,
           expected_message: <<-MESSAGE.strip
-Example did not properly validate that :attr lies outside the range ‹2›
-to ‹5›.
+Expected Example to validate that :attr lies outside the range ‹2› to
+‹5›, but this could not be proved.
   After setting :attr to ‹1› -- which was read back as ‹2› -- the
   matcher expected the Example to be valid, but it was invalid instead,
   producing these validation errors:
@@ -50,6 +65,22 @@ to ‹5›.
       def configure_validation_matcher(matcher)
         matcher.in_range(2..5)
       end
+    end
+
+    it 'fails when used in the negative' do
+      assertion = lambda do
+        expect(validating_exclusion(in: 2..5)).
+          not_to validate_exclusion_of(:attr).in_range(2..5)
+      end
+
+      message = <<-MESSAGE
+Expected Example not to validate that :attr lies outside the range ‹2›
+to ‹5›, but this could not be proved.
+  After setting :attr to ‹6›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
     end
   end
 
@@ -161,8 +192,8 @@ to ‹5›.
           attribute_name: :attr,
           changing_values_with: :next_value,
           expected_message: <<-MESSAGE.strip
-Example did not properly validate that :attr is neither ‹"one"› nor
-‹"two"›.
+Expected Example to validate that :attr is neither ‹"one"› nor ‹"two"›,
+but this could not be proved.
   After setting :attr to ‹"one"› -- which was read back as ‹"onf"› --
   the matcher expected the Example to be invalid, but it was valid
   instead.
@@ -184,6 +215,24 @@ Example did not properly validate that :attr is neither ‹"one"› nor
       def configure_validation_matcher(matcher)
         matcher.in_array(['one', 'two'])
       end
+    end
+
+    it 'fails when used in the negative' do
+      assertion = lambda do
+        expect(validating_exclusion(in: %w(one two))).
+          not_to validate_exclusion_of(:attr).in_array(%w(one two))
+      end
+
+      message = <<-MESSAGE
+Expected Example not to validate that :attr is neither ‹"one"› nor
+‹"two"›, but this could not be proved.
+  After setting :attr to ‹"two"›, the matcher expected the Example to be
+  valid, but it was invalid instead, producing these validation errors:
+
+  * attr: ["is reserved"]
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
     end
 
     def define_model_validating_exclusion(options)

@@ -21,7 +21,8 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
           attribute_name: :attr,
           changing_values_with: :never_falsy,
           expected_message: <<-MESSAGE
-Example did not properly validate that :attr cannot be empty/falsy.
+Expected Example to validate that :attr cannot be empty/falsy, but this
+could not be proved.
   After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
   -- the matcher expected the Example to be invalid, but it was valid
   instead.
@@ -35,6 +36,23 @@ Example did not properly validate that :attr cannot be empty/falsy.
         }
       }
     )
+
+    it 'fails when used in the negative' do
+      assertion = lambda do
+        expect(validating_presence).not_to matcher
+      end
+
+      message = <<-MESSAGE
+Expected Example not to validate that :attr cannot be empty/falsy, but
+this could not be proved.
+  After setting :attr to ‹nil›, the matcher expected the Example to be
+  valid, but it was invalid instead, producing these validation errors:
+
+  * attr: ["can't be blank"]
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
+    end
   end
 
   context 'a model without a presence validation' do
@@ -46,7 +64,8 @@ Example did not properly validate that :attr cannot be empty/falsy.
       end
 
       message = <<-MESSAGE
-Example did not properly validate that :attr cannot be empty/falsy.
+Expected Example to validate that :attr cannot be empty/falsy, but this
+could not be proved.
   After setting :attr to ‹nil›, the matcher expected the Example to be
   invalid, but it was valid instead.
       MESSAGE
@@ -75,7 +94,8 @@ Example did not properly validate that :attr cannot be empty/falsy.
           attribute_name: :attr,
           changing_values_with: :never_falsy,
           expected_message: <<-MESSAGE
-Example did not properly validate that :attr cannot be empty/falsy.
+Expected Example to validate that :attr cannot be empty/falsy, but this
+could not be proved.
   After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
   -- the matcher expected the Example to be invalid, but it was valid
   instead.
@@ -102,7 +122,8 @@ Example did not properly validate that :attr cannot be empty/falsy.
       end
 
       message = <<-MESSAGE
-Example did not properly validate that :attr cannot be empty/falsy.
+Expected Example to validate that :attr cannot be empty/falsy, but this
+could not be proved.
   After setting :attr to ‹nil›, the matcher expected the Example to be
   invalid, but it was valid instead.
       MESSAGE
@@ -127,7 +148,8 @@ Example did not properly validate that :attr cannot be empty/falsy.
           attribute_name: :attr,
           changing_values_with: :never_falsy,
           expected_message: <<-MESSAGE
-Example did not properly validate that :attr cannot be empty/falsy.
+Expected Example to validate that :attr cannot be empty/falsy, but this
+could not be proved.
   After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
   -- the matcher expected the Example to be invalid, but it was valid
   instead.
@@ -185,7 +207,8 @@ Example did not properly validate that :attr cannot be empty/falsy.
           attribute_name: :attr,
           changing_values_with: :never_falsy,
           expected_message: <<-MESSAGE
-Example did not properly validate that :attr cannot be empty/falsy.
+Expected Example to validate that :attr cannot be empty/falsy, but this
+could not be proved.
   After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
   -- the matcher expected the Example to be invalid, but it was valid
   instead.
@@ -223,7 +246,8 @@ Example did not properly validate that :attr cannot be empty/falsy.
       end
 
       message = <<-MESSAGE
-Parent did not properly validate that :children cannot be empty/falsy.
+Expected Parent to validate that :children cannot be empty/falsy, but
+this could not be proved.
   After setting :children to ‹[]›, the matcher expected the Parent to be
   invalid, but it was valid instead.
       MESSAGE
@@ -260,8 +284,8 @@ Parent did not properly validate that :children cannot be empty/falsy.
         end
 
         message = <<-MESSAGE
-Example did not properly validate that :attr cannot be empty/falsy,
-raising a validation exception on failure.
+Expected Example to validate that :attr cannot be empty/falsy, raising a
+validation exception on failure, but this could not be proved.
   After setting :attr to ‹nil›, the matcher expected the Example to be
   invalid and to raise a validation exception, but the record produced
   validation errors instead.
