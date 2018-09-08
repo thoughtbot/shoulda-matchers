@@ -13,7 +13,7 @@ module UnitTests
     end
 
     def model_name
-      'Example'
+      options.fetch(:model_name, 'Example')
     end
 
     def record
@@ -29,7 +29,10 @@ module UnitTests
     end
 
     def confirmation_attribute
-      :"#{attribute_to_confirm}_confirmation"
+      options.fetch(
+        :confirmation_attribute,
+        :"#{attribute_to_confirm}_confirmation"
+      )
     end
 
     def attribute_that_receives_error

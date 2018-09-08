@@ -88,6 +88,11 @@ module Shoulda
           disallows_value_of(value, @expected_message)
         end
 
+        def does_not_match?(subject)
+          super(subject)
+          allows_value_of(value, @expected_message)
+        end
+
         def simple_description
           "validate that :#{@attribute} is empty/falsy"
         end

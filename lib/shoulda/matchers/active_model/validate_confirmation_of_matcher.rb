@@ -100,7 +100,21 @@ module Shoulda
             allows_missing_confirmation
         end
 
+        def does_not_match?(subject)
+          super(subject)
+
+          allows_different_value ||
+            disallows_same_value ||
+            disallows_missing_confirmation
+        end
+
         private
+
+        def allows_different_value
+          allows_value_of('different value') do |matcher|
+            qualify_matcher(matcher, 'some value')
+          end
+        end
 
         def disallows_different_value
           disallows_value_of('different value') do |matcher|
@@ -114,8 +128,20 @@ module Shoulda
           end
         end
 
+        def disallows_same_value
+          disallows_value_of('same value') do |matcher|
+            qualify_matcher(matcher, 'same value')
+          end
+        end
+
         def allows_missing_confirmation
           allows_value_of('any value') do |matcher|
+            qualify_matcher(matcher, nil)
+          end
+        end
+
+        def disallows_missing_confirmation
+          disallows_value_of('any value') do |matcher|
             qualify_matcher(matcher, nil)
           end
         end
@@ -128,17 +154,6 @@ module Shoulda
             @expected_message,
             against: confirmation_attribute,
             values: { attribute: attribute }
-          )
-        end
-
-        def set_confirmation(value)
-          @last_value_set_on_confirmation_attribute = value
-
-          AttributeSetter.set(
-            matcher_name: 'confirmation',
-            object: @subject,
-            attribute_name: confirmation_attribute,
-            value: value
           )
         end
       end

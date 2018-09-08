@@ -36,8 +36,8 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :m
           attribute_name: :password,
           changing_values_with: :next_value,
           expected_message: <<-MESSAGE.strip
-Example did not properly validate that :password_confirmation matches
-:password.
+Expected Example to validate that :password_confirmation matches
+:password, but this could not be proved.
   After setting :password_confirmation to ‹"same value"›, then setting
   :password to ‹"same value"› -- which was read back as ‹"same valuf"›
   -- the matcher expected the Example to be valid, but it was invalid
@@ -55,6 +55,29 @@ Example did not properly validate that :password_confirmation matches
       },
       model_creator: :active_model
     )
+
+    it 'fails when used in the negative' do
+      builder = builder_for_record_validating_confirmation(
+        model_name: 'Example',
+        attribute: :password,
+        confirmation_attribute: :password_confirmation
+      )
+
+      assertion = lambda do
+        expect(builder.record).
+          not_to validate_confirmation_of(builder.attribute_to_confirm)
+      end
+
+      message = <<-MESSAGE
+Expected Example not to validate that :password_confirmation matches
+:password, but this could not be proved.
+  After setting :password_confirmation to ‹nil›, then setting :password
+  to ‹"any value"›, the matcher expected the Example to be invalid, but
+  it was valid instead.
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
+    end
   end
 
   context 'when the model does not have a confirmation attribute' do
@@ -108,8 +131,8 @@ The matcher attempted to set :attribute_to_confirm on the Example to
       end
 
       message = <<-MESSAGE
-Example did not properly validate that
-:attribute_to_confirm_confirmation matches :attribute_to_confirm.
+Expected Example to validate that :attribute_to_confirm_confirmation
+matches :attribute_to_confirm, but this could not be proved.
   After setting :attribute_to_confirm_confirmation to ‹"some value"›,
   then setting :attribute_to_confirm to ‹"different value"›, the matcher
   expected the Example to be invalid, but it was valid instead.

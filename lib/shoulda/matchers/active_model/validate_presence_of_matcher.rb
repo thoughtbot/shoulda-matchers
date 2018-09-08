@@ -119,11 +119,24 @@ module Shoulda
         def matches?(subject)
           super(subject)
 
+          possibly_ignore_interference_by_writer
+
           if secure_password_being_validated?
-            ignore_interference_by_writer.default_to(when: :blank?)
             disallows_and_double_checks_value_of!(blank_value, @expected_message)
           else
             disallows_original_or_typecast_value?(blank_value, @expected_message)
+          end
+        end
+
+        def does_not_match?(subject)
+          super(subject)
+
+          possibly_ignore_interference_by_writer
+
+          if secure_password_being_validated?
+            allows_and_double_checks_value_of!(blank_value, @expected_message)
+          else
+            allows_original_or_typecast_value?(blank_value, @expected_message)
           end
         end
 
@@ -137,6 +150,22 @@ module Shoulda
           defined?(::ActiveModel::SecurePassword) &&
             @subject.class.ancestors.include?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation) &&
             @attribute == :password
+        end
+
+        def possibly_ignore_interference_by_writer
+          if secure_password_being_validated?
+            ignore_interference_by_writer.default_to(when: :blank?)
+          end
+        end
+
+        def allows_and_double_checks_value_of!(value, message)
+          allows_value_of(value, message)
+        rescue ActiveModel::AllowValueMatcher::AttributeChangedValueError
+          raise ActiveModel::CouldNotSetPasswordError.create(@subject.class)
+        end
+
+        def allows_original_or_typecast_value?(value, message)
+          allows_value_of(blank_value, @expected_message)
         end
 
         def disallows_and_double_checks_value_of!(value, message)
