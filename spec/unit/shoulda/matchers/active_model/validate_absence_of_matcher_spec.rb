@@ -1,7 +1,7 @@
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model do
-  if active_model_4_0?
+  if active_model_supports_absence_validation?
     def self.available_column_types
       [
         :string,
