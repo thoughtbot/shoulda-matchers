@@ -75,6 +75,12 @@ is now:
 
   * *Original issue: [#904]*
 
+* Add negative versions of all validation matchers (i.e. implement
+  `does_not_match?` for them) to prevent them from blowing up with
+  "undefined method \`attribute_setter' for nil:NilClass".
+
+  * *Original issue: [#904]*
+
 ### Features
 
 * Add `required` and `optional` qualifiers to `belong_to` and `have_one`
