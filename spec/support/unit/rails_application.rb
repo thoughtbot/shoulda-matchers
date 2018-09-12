@@ -75,6 +75,7 @@ module UnitTests
     def generate
       rails_new
       fix_available_locales_warning
+      remove_bootsnap
       write_database_configuration
 
       if bundle.version_of("rails") >= 5
@@ -96,6 +97,16 @@ if I18n.respond_to?(:enforce_available_locales=)
 end
         EOT
       end
+    end
+
+    def remove_bootsnap
+      # Rails 5.2 introduced bootsnap, which is helpful when you're developing
+      # or deploying an app, but we don't really need it (and it messes with
+      # Zeus anyhow)
+      fs.comment_lines_matching(
+        'config/boot.rb',
+        %r{\Arequire 'bootsnap/setup'},
+      )
     end
 
     def write_database_configuration
