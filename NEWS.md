@@ -70,6 +70,11 @@ is now:
   * *PR: [#1073]*
   * *Original issue: [#949]*
 
+* Fix `validate_inclusion_of` so that if it fails, it will no longer blow up
+  with the error "undefined method \`attribute_setter' for nil:NilClass".
+
+  * *Original issue: [#904]*
+
 ### Features
 
 * Add `required` and `optional` qualifiers to `belong_to` and `have_one`
@@ -143,6 +148,7 @@ is now:
 [#961]: https://github.com/thoughtbot/shoulda-matchers/issues/961
 [795ca68]: https://github.com/thoughtbot/shoulda-matchers/commit/795ca688bff08590dbd2ab6f2b51ea415e0c7473
 [#1089]: https://github.com/thoughtbot/shoulda-matchers/pulls/1089
+[#904]: https://github.com/thoughtbot/shoulda-matchers/issues/904
 
 ### Improvements
 

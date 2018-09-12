@@ -448,9 +448,21 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
     define_method(:valid_values) { args.fetch(:possible_values) }
 
-    it 'does not match a record with no validations' do
-      builder = build_object
-      expect_not_to_match_on_values(builder, possible_values)
+    context 'when the record has no validations' do
+      it 'passes when used in the negative' do
+        builder = build_object
+        expect_not_to_match_on_values(builder, possible_values)
+      end
+
+      it 'fails when used in the positive with an appropriate failure message' do
+        builder = build_object
+
+        assertion = lambda do
+          expect_to_match_on_values(builder, possible_values)
+        end
+
+        expect(&assertion).to fail
+      end
     end
 
     it 'matches given the same array of valid values' do
