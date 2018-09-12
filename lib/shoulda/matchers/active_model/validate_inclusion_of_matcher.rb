@@ -496,7 +496,7 @@ EOT
             end
           end
 
-          values_outside_of_array.any? do |value|
+          values_outside_of_array.all? do |value|
             allows_value_of(value, @low_message)
           end
         end
@@ -517,8 +517,8 @@ EOT
             end
           end
 
-          values_outside_of_array.all? do |value|
-            disallows_value_of(value, @low_message)
+          values_outside_of_array.none? do |value|
+            allows_value_of(value, @low_message)
           end
         end
 
