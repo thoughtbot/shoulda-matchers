@@ -72,7 +72,7 @@ end
 appraise '5.1' do
   instance_eval(&shared_dependencies)
 
-  gem 'rails', '~> 5.1.4'
+  gem 'rails', '~> 5.1.6'
   gem 'rails-controller-testing', '>= 1.0.1'
   gem 'puma', '~> 3.7'
   gem 'sass-rails', '~> 5.0'
