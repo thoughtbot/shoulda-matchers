@@ -174,6 +174,14 @@ different levels where you can use these matchers:
   tagged with `type: :routing` or in files located under `spec/routing`.
 * Independent matchers are available in all example groups.
 
+**In order for rspec to infer the spec type from the spec file location,** ensure you have this in your `spec_helper.rb`:
+
+``` ruby
+RSpec.configure do |config|
+  config.infer_spec_type_from_file_location!
+end
+```
+
 **If you are using ActiveModel or ActiveRecord outside of Rails** and you want
 to use model matchers in certain example groups, you'll need to manually include
 them. Here's a good way of doing that:
