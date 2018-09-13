@@ -281,7 +281,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
 
     context 'given the association is neither configured to be required nor optional' do
       context 'when qualified with required(true)' do
-        if active_record_supports_required_for_associations?
+        if active_record_supports_optional_for_associations?
           context 'when belongs_to is configured to be required by default' do
             it 'passes' do
               configuring_default_belongs_to_requiredness(true) do
@@ -311,13 +311,14 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
         else
           it 'fails with an appropriate message' do
             assertion = lambda do
-              expect(belonging_to_parent).to belong_to(:parent).required(true)
+              expect(belonging_to_parent).
+                to belong_to(:parent).required(true)
             end
 
             message = format_message(<<-MESSAGE, one_line: true)
-              Expected Child to have a belongs_to association called parent (the
-              association should have been defined with `required: true`, but
-              was not)
+              Expected Child to have a belongs_to association called parent
+              (the association should have been defined with `required:
+              true`, but was not)
             MESSAGE
 
             expect(&assertion).to fail_with_message(message)
@@ -326,7 +327,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       end
 
       context 'when qualified with required(false)' do
-        if active_record_supports_required_for_associations?
+        if active_record_supports_optional_for_associations?
           context 'when belongs_to is configured to be required by default' do
             it 'fails with an appropriate message' do
               configuring_default_belongs_to_requiredness(true) do
@@ -361,7 +362,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       end
 
       context 'when qualified with optional' do
-        if active_record_supports_required_for_associations?
+        if active_record_supports_optional_for_associations?
           context 'when belongs_to is configured to be required by default' do
             it 'fails with an appropriate message' do
               configuring_default_belongs_to_requiredness(true) do
@@ -395,8 +396,8 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
         end
       end
 
-      if active_record_supports_required_for_associations?
-        context 'when qualified with nothing' do
+      context 'when qualified with nothing' do
+        if active_record_supports_optional_for_associations?
           context 'when belongs_to is configured to be required by default' do
             it 'passes' do
               configuring_default_belongs_to_requiredness(true) do
@@ -409,6 +410,92 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
             it 'passes' do
               configuring_default_belongs_to_requiredness(false) do
                 expect(belonging_to_parent).to belong_to(:parent)
+              end
+            end
+
+            context 'and a presence validation is on the attribute instead of using required: true' do
+              it 'passes' do
+                configuring_default_belongs_to_requiredness(false) do
+                  record = belonging_to_parent do
+                    validates_presence_of :parent
+                  end
+
+                  expect(record).to belong_to(:parent)
+                end
+              end
+            end
+
+            context 'and a presence validation is on the attribute with a condition' do
+              context 'and the condition is true' do
+                it 'passes' do
+                  configuring_default_belongs_to_requiredness(false) do
+                    child_model = create_child_model_belonging_to_parent do
+                      attr_accessor :condition
+                      validates_presence_of :parent, if: :condition
+                    end
+
+                    record = child_model.new(condition: true)
+
+                    expect(record).to belong_to(:parent)
+                  end
+                end
+              end
+
+              context 'and the condition is false' do
+                it 'passes' do
+                  configuring_default_belongs_to_requiredness(false) do
+                    child_model = create_child_model_belonging_to_parent do
+                      attr_accessor :condition
+                      validates_presence_of :parent, if: :condition
+                    end
+
+                    record = child_model.new(condition: false)
+
+                    expect(record).to belong_to(:parent)
+                  end
+                end
+              end
+            end
+          end
+        else
+          it 'passes' do
+            expect(belonging_to_parent).to belong_to(:parent)
+          end
+
+          context 'and a presence validation is on the attribute instead of using required: true' do
+            it 'passes' do
+              record = belonging_to_parent do
+                validates_presence_of :parent
+              end
+
+              expect(record).to belong_to(:parent)
+            end
+          end
+
+          context 'and a presence validation is on the attribute with a condition' do
+            context 'and the condition is true' do
+              it 'passes' do
+                child_model = create_child_model_belonging_to_parent do
+                  attr_accessor :condition
+                  validates_presence_of :parent, if: :condition
+                end
+
+                record = child_model.new(condition: true)
+
+                expect(record).to belong_to(:parent)
+              end
+            end
+
+            context 'and the condition is false' do
+              it 'passes' do
+                child_model = create_child_model_belonging_to_parent do
+                  attr_accessor :condition
+                  validates_presence_of :parent, if: :condition
+                end
+
+                record = child_model.new(condition: false)
+
+                expect(record).to belong_to(:parent)
               end
             end
           end
@@ -459,31 +546,13 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       end
 
       context 'when qualified with nothing' do
-        if active_record_supports_required_for_associations?
-          it 'passes' do
-            expect(belonging_to_parent(required: true)).
-              to belong_to(:parent)
-          end
-        else
-          it 'fails with an appropriate message' do
-            assertion = lambda do
-              expect(belonging_to_parent(required: true)).
-                to belong_to(:parent)
-            end
-
-            message = format_message(<<-MESSAGE, one_line: true)
-              Expected Child to have a belongs_to association called parent (the
-              association should have been defined with `optional: true`, but
-              was not)
-            MESSAGE
-
-            expect(&assertion).to fail_with_message(message)
-          end
+        it 'passes' do
+          expect(belonging_to_parent(required: true)).to belong_to(:parent)
         end
       end
     end
 
-    if active_record_supports_required_for_associations?
+    if active_record_supports_optional_for_associations?
       context 'given the association is configured as optional: true' do
         context 'when qualified with required(true)' do
           it 'fails with an appropriate message' do
@@ -535,11 +604,29 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       end
     end
 
-    def belonging_to_parent(options = {}, parent_options = {})
-      define_model :parent, parent_options
+    def belonging_to_parent(options = {}, parent_options = {}, &block)
+      child_model = create_child_model_belonging_to_parent(
+        options,
+        parent_options,
+        &block
+      )
+      child_model.new
+    end
+
+    def create_child_model_belonging_to_parent(
+      options = {},
+      parent_options = {},
+      &block
+    )
+      define_model(:parent, parent_options)
+
       define_model :child, parent_id: :integer do
         belongs_to :parent, options
-      end.new
+
+        if block
+          class_eval(&block)
+        end
+      end
     end
 
     def belonging_to_with_inverse(association, inverse_association)
@@ -1128,7 +1215,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       end
     end
 
-    if active_record_supports_required_for_associations?
+    if active_record_supports_optional_for_associations?
       context 'given an association with a matching :required option' do
         it 'passes' do
           expect(having_one_detail(required: true)).

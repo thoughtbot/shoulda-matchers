@@ -968,12 +968,8 @@ module Shoulda
           @submatchers = []
           @missing = ''
 
-          if macro == :belongs_to
-            if RailsShim.active_record_gte_5? && belongs_to_required_by_default?
-              required
-            else
-              optional
-            end
+          if macro == :belongs_to && RailsShim.active_record_gte_5?
+            required(belongs_to_required_by_default?)
           end
         end
 
