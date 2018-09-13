@@ -45,6 +45,7 @@ GEM
       rake
       thor (>= 0.14.0)
     arel (6.0.4)
+    ast (2.4.0)
     bcrypt (3.1.11)
     builder (3.2.3)
     byebug (9.1.0)
@@ -66,6 +67,7 @@ GEM
     globalid (0.4.0)
       activesupport (>= 4.2.0)
     i18n (0.8.6)
+    jaro_winkler (1.5.1-x86_64-darwin-17)
     jbuilder (2.7.0)
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
@@ -93,7 +95,11 @@ GEM
     multi_json (1.12.2)
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
+    parallel (1.12.1)
+    parser (2.5.1.2)
+      ast (~> 2.4.0)
     pg (0.21.0)
+    powerpack (0.1.2)
     protected_attributes (1.0.9)
       activemodel (>= 4.0.1, < 5.0)
     pry (0.11.3)
@@ -133,6 +139,7 @@ GEM
       activesupport (= 4.2.10)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
+    rainbow (3.0.0)
     rake (12.3.0)
     rb-fsevent (0.10.2)
     rb-inotify (0.9.10)
@@ -160,6 +167,14 @@ GEM
       rspec-mocks (~> 3.6.0)
       rspec-support (~> 3.6.0)
     rspec-support (3.6.0)
+    rubocop (0.59.0)
+      jaro_winkler (~> 1.5.1)
+      parallel (~> 1.10)
+      parser (>= 2.5, != 2.5.1.1)
+      powerpack (~> 0.1)
+      rainbow (>= 2.2.2, < 4.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-progressbar (1.8.1)
     sass (3.5.2)
       sass-listen (~> 4.0.0)
@@ -198,6 +213,7 @@ GEM
       thread_safe (~> 0.1)
     uglifier (3.2.0)
       execjs (>= 0.3.0, < 3)
+    unicode-display_width (1.4.0)
     yard (0.9.9)
     zeus (0.15.14)
       method_source (>= 0.6.7)
@@ -230,6 +246,7 @@ DEPENDENCIES
   redcarpet
   rspec (~> 3.6)
   rspec-rails (~> 3.6)
+  rubocop
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   shoulda-context (~> 1.2.0)
@@ -243,4 +260,4 @@ DEPENDENCIES
   zeus
 
 BUNDLED WITH
-   1.16.1
+   1.16.4
