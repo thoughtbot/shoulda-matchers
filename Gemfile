@@ -6,10 +6,11 @@ gem 'pry'
 gem 'pry-byebug'
 gem 'rake', '12.3.0'
 gem 'rspec', '~> 3.6'
+gem 'rubocop', require: false
 gem 'zeus', require: false
 
 # YARD
-gem 'yard'
-gem 'redcarpet'
-gem 'pygments.rb'
 gem 'fssm'
+gem 'pygments.rb'
+gem 'redcarpet'
+gem 'yard'
