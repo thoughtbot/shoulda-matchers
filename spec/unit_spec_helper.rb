@@ -1,6 +1,7 @@
 require_relative 'support/unit/load_environment'
 
 require 'rspec/rails'
+require 'rspec/matchers/fail_matchers'
 require 'shoulda-matchers'
 
 require 'spec_helper'
@@ -10,6 +11,8 @@ Dir[ File.join(File.expand_path('../support/unit/**/*.rb', __FILE__)) ].sort.eac
 end
 
 RSpec.configure do |config|
+  config.include RSpec::Matchers::FailMatchers
+
   UnitTests::ActionPackVersions.configure_example_group(config)
   UnitTests::ActiveModelHelpers.configure_example_group(config)
   UnitTests::ActiveModelVersions.configure_example_group(config)
