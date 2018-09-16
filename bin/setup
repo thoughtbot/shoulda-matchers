@@ -1,0 +1,190 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+RUBY_VERSION=$(script/supported_ruby_versions | xargs -n 1 echo | sort -V | tail -n 1)
+
+cd "$(dirname "$(dirname "$0")")"
+
+uname=$(uname)
+
+if [[ $uname == 'Darwin' ]]; then
+  platform='mac'
+else
+  platform='linux'
+fi
+
+banner() {
+  echo -e "\033[34m== $@ ==\033[0m"
+}
+
+success() {
+  echo -e "\033[32m$@\033[0m"
+}
+
+warning() {
+  echo -e "\033[33m$@\033[0m"
+}
+
+error() {
+  echo -e "\033[31m$@\033[0m"
+}
+
+has-executable() {
+  type "$1" &>/dev/null
+}
+
+is-running() {
+  pgrep "$1" >/dev/null
+}
+
+install() {
+  local apt_package=""
+  local rpm_package=""
+  local brew_package=""
+  local default_package=""
+  local package=""
+
+  for arg in "$@"; do
+    case $arg in
+      apt=*)
+        apt_package="$arg"
+        ;;
+      rpm=*)
+        rpm_package="$arg"
+        ;;
+      brew=*)
+        brew_package="$arg"
+        ;;
+      *)
+        default_package="$arg"
+        ;;
+    esac
+  done
+
+  if has-executable brew; then
+    package="${brew_package:-$default_package}"
+
+    if [[ -n $package ]]; then
+      brew install "$package"
+    fi
+  elif has-executable apt-get; then
+    package="${apt_package:-$default_package}"
+
+    if [[ -n $package ]]; then
+      sudo apt-get install -y "$package"
+    fi
+  elif has-executable yum; then
+    package="${yum_package:-$default_package}"
+
+    if [[ -n $package ]]; then
+      sudo yum install -y "$package"
+    fi
+  else
+    error "Sorry, I'm not sure how to install $default_package."
+    exit 1
+  fi
+}
+
+check-for-build-tools() {
+  if [[ $platform == "linux" ]]; then
+    if ! has-executable apt-get; then
+      error "You don't seem to have a package manager installed."
+      echo "The setup script assumes you're using Debian or a Debian-derived flavor of Linux"
+      echo "(i.e. something with Apt). If this is not the case, then we would gladly take a"
+      echo "PR fixing this!"
+      exit 1
+    fi
+
+    # TODO: Check if build-essential is installed on Debian?
+  else
+    if ! has-executable brew; then
+      error "You don't seem to have Homebrew installed."
+      echo
+      echo "Follow the instructions here to do this:"
+      echo
+      echo "http://brew.sh"
+      exit 1
+    fi
+
+    # TODO: Check that OS X Command Line Tools are installed?
+  fi
+}
+
+install-development-libraries() {
+  install apt=ruby-dev rpm=ruby-devel
+  install rpm=zlib-devel
+}
+
+install-dependencies() {
+  if ! has-executable sqlite3; then
+    banner 'Installing SQLite 3'
+    install sqlite3
+    install apt=libsqlite3-dev rpm=sqlite-devel
+  fi
+
+  if ! has-executable psql; then
+    banner 'Installing PostgreSQL'
+    install postgresql
+    install apt=libpq-dev rpm=postgresql-devel
+  fi
+
+  if ! is-running postgres; then
+    banner 'Starting PostgreSQL'
+    start postgresql
+  fi
+
+  if ! has-executable heroku; then
+    banner 'Installing Heroku'
+    install heroku/brew/heroku heroku
+  fi
+
+  if has-executable rbenv; then
+    if ! (rbenv versions | grep $RUBY_VERSION'\>' &>/dev/null); then
+      banner "Installing Ruby $RUBY_VERSION with rbenv"
+      rbenv install --skip-existing "$RUBY_VERSION"
+    fi
+  elif has-executable rvm; then
+    if ! (rvm ls | grep $RUBY_VERSION'\>' &>/dev/null); then
+      banner "Installing Ruby $RUBY_VERSION with rvm"
+      error "You don't seem to have Ruby $RUBY_VERSION installed."
+      echo
+      echo "Use RVM to do so, and then re-run this command."
+      echo
+    fi
+  else
+    error "You don't seem to have a Ruby manager installed."
+    echo
+    echo 'We recommend using rbenv. You can find installation instructions here:'
+    echo
+    echo 'http://github.com/rbenv/rbenv'
+    echo
+    echo "When you're done, simply re-run this script!"
+    exit 1
+  fi
+
+  banner 'Installing Ruby dependencies'
+  gem install bundler --conservative
+  bundle check || bundle install
+  bundle exec appraisal install
+
+  if ! has-executable node; then
+    banner 'Installing Node'
+
+    if [[ $platform == 'linux' ]]; then
+      curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+
+      install nodejs
+
+      if ! has-executable npm; then
+        install npm
+      fi
+    else
+      install nodejs
+    fi
+  fi
+}
+
+check-for-build-tools
+install-development-libraries
+install-dependencies
