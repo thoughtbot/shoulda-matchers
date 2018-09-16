@@ -232,67 +232,6 @@ class PersonTest < ActiveSupport::TestCase
 end
 ```
 
-## Running tests
-
-### Unit tests
-
-Unit tests are the most common kind of tests in this gem, and the best way to
-run them is by using [Zeus].
-
-You'll want to run `zeus start` in one shell, then in another shell, instead of
-using `rspec` to run tests, you can use `zeus rspec`. So for instance, you might
-say:
-
-```
-zeus rspec spec/unit/shoulda/matchers/active_model/validate_inclusion_of_matcher_spec.rb
-```
-
-As a shortcut, you can also drop the initial part of the path and say this
-instead:
-
-```
-zeus rspec active_model/validate_inclusion_of_matcher_spec.rb
-```
-
-### Acceptance tests
-
-The gem uses [Appraisal] to test against multiple versions of Rails and Ruby.
-This means that if you're trying to run a single test file, you'll need to
-specify which appraisal to use. For instance, you can't simply say:
-
-```
-rspec spec/acceptance/active_model_integration_spec.rb
-```
-
-Instead, you need to say
-
-```
-bundle exec appraisal 5.1 rspec spec/acceptance/active_model_integration_spec.rb
-```
-
-### All tests
-
-You can run all tests by saying:
-
-```
-bundle exec rake
-```
-
-## Generating documentation
-
-YARD is used to generate documentation, which can be viewed [online][rubydocs].
-You can preview changes you make to the documentation locally by running
-
-    yard doc
-
-from this directory. Then, open `doc/index.html` in your browser.
-
-If you want to be able to regenerate the docs as you work without having to run
-`yard doc` over and over again, keep this command running in a separate terminal
-session:
-
-    rake docs:autogenerate
-
 ## Contributing
 
 Shoulda Matchers is open source, and we are grateful for
