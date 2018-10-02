@@ -282,7 +282,8 @@ errors instead:
 
         assertion = lambda do
           expect(validating_format(with: /abc/, message: 'bad value')).
-            not_to allow_value('xyz').for(:attr).with_failure_message(/different/)
+            not_to allow_value('xyz').for(:attr).
+            with_failure_message(/different/)
         end
 
         expect(&assertion).to fail_with_message(message)
@@ -556,8 +557,8 @@ invalid and to raise a validation exception with message matching
             MESSAGE
 
             assertion = lambda do
-              expect(validating_format(with: /abc/, strict: true)).
-                not_to allow_value('xyz').for(:attr).with_failure_message(/abc/).strict
+              expect(validating_format(with: /abc/, strict: true)).not_to \
+                allow_value('xyz').for(:attr).with_failure_message(/abc/).strict
             end
 
             expect(&assertion).to fail_with_message(message)

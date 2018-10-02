@@ -225,8 +225,8 @@ module Shoulda
       #         with_failure_message(/open or closed/)
       #     end
       #
-      # Use `with_failure_message` with the `:against` option if the attribute the
-      # validation message is stored under is different from the attribute
+      # Use `with_failure_message` with the `:against` option if the attribute
+      # the validation message is stored under is different from the attribute
       # being validated:
       #
       #     class UserProfile

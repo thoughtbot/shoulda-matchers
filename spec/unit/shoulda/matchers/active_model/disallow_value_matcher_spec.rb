@@ -58,12 +58,14 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher, type: :model do
   context 'an attribute where the message occurs on another attribute' do
     it 'matches if the message is correct but the value is not' do
       expect(record_with_custom_validation).to \
-        matcher('bad value').for(:attr).with_failure_message(/some message/, against: :attr2)
+        matcher('bad value').for(:attr).
+        with_failure_message(/some message/, against: :attr2)
     end
 
     it 'does not match if the value and message are both correct' do
       expect(record_with_custom_validation).not_to \
-        matcher('good value').for(:attr).with_failure_message(/some message/, against: :attr2)
+        matcher('good value').for(:attr).
+        with_failure_message(/some message/, against: :attr2)
     end
 
     def record_with_custom_validation

@@ -1154,7 +1154,8 @@ custom validation error on failure, but this could not be proved.
         model = define_model_validating_nothing
 
         assertion = lambda do
-          expect(model.new).to validate_numericality.with_failure_message(/wrong/)
+          expect(model.new).to validate_numericality.
+            with_failure_message(/wrong/)
         end
 
         message = <<-MESSAGE

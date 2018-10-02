@@ -98,8 +98,9 @@ to ‹5›, but this could not be proved.
 
   context 'an attribute with a custom validation message' do
     it 'accepts ensuring the correct range' do
-      expect(validating_exclusion(in: 2..4, message: 'not good')).
-        to validate_exclusion_of(:attr).in_range(2..4).with_failure_message(/not good/)
+      expect(validating_exclusion(in: 2..4, message: 'not good')).to \
+        validate_exclusion_of(:attr).in_range(2..4).
+        with_failure_message(/not good/)
     end
 
     it 'accepts ensuring the correct range with an interpolated variable in the message' do

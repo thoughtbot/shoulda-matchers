@@ -146,12 +146,14 @@ this could not be proved.
 
     it 'rejects ensuring a lower maximum length with any message' do
       expect(validating_length(is: 4)).
-        not_to validate_length_of(:attr).is_equal_to(3).with_failure_message(/.*/)
+        not_to validate_length_of(:attr).is_equal_to(3).
+        with_failure_message(/.*/)
     end
 
     it 'rejects ensuring a higher maximum length with any message' do
       expect(validating_length(is: 4)).
-        not_to validate_length_of(:attr).is_equal_to(5).with_failure_message(/.*/)
+        not_to validate_length_of(:attr).is_equal_to(5).
+        with_failure_message(/.*/)
     end
 
     it 'does not override the default message with a blank' do

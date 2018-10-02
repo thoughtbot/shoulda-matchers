@@ -510,7 +510,8 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
     it_behaves_like 'it supports allow_nil', valid_values: possible_values
     it_behaves_like 'it supports allow_blank', valid_values: possible_values
-    it_behaves_like 'it supports with_failure_message', valid_values: possible_values
+    it_behaves_like 'it supports with_failure_message',
+      valid_values: possible_values
 
     if active_model_3_2?
       context '+ strict' do
@@ -630,7 +631,8 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
     it_behaves_like 'it supports allow_nil', valid_values: possible_values
     it_behaves_like 'it supports allow_blank', valid_values: possible_values
-    it_behaves_like 'it supports with_failure_message', valid_values: possible_values
+    it_behaves_like 'it supports with_failure_message',
+      valid_values: possible_values
 
     if active_model_3_2?
       context '+ strict' do

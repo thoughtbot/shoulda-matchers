@@ -80,7 +80,8 @@ could not be proved.
     end
 
     it 'does not override the default message with a blank' do
-      expect(active_model_validating_presence).to matcher.with_failure_message(nil)
+      expect(active_model_validating_presence).to \
+        matcher.with_failure_message(nil)
     end
 
     it_supports(

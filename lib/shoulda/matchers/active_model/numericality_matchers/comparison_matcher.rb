@@ -95,7 +95,10 @@ module Shoulda
             @_submatchers ||=
               comparison_combos.map do |diff, submatcher_method_name|
                 matcher = __send__(submatcher_method_name, diff, nil)
-                matcher.with_failure_message(@message, values: { count: @value })
+                matcher.with_failure_message(
+                  @message,
+                  values: { count: @value },
+                )
                 matcher
               end
           end
