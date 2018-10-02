@@ -129,9 +129,9 @@ module Shoulda
       #         is_at_least(5).is_at_most(30)
       #     end
       #
-      # ##### with_message
+      # ##### with_failure_message
       #
-      # Use `with_message` if you are using a custom validation message.
+      # Use `with_failure_message` if you are using a custom validation message.
       #
       #     class User
       #       include ActiveModel::Model
@@ -147,7 +147,7 @@ module Shoulda
       #       it do
       #         should validate_length_of(:password).
       #           is_at_least(10).
-      #           with_message("Password isn't long enough")
+      #           with_failure_message("Password isn't long enough")
       #       end
       #     end
       #
@@ -155,7 +155,7 @@ module Shoulda
       #     class UserTest < ActiveSupport::TestCase
       #       should validate_length_of(:password).
       #         is_at_least(10).
-      #         with_message("Password isn't long enough")
+      #         with_failure_message("Password isn't long enough")
       #     end
       #
       # ##### with_short_message
@@ -275,6 +275,14 @@ module Shoulda
         end
 
         def with_message(message)
+          Shoulda::Matchers.warn_about_deprecated_method(
+            'The `with_message` qualifier on `validate_length_of`',
+            '`with_failure_message`',
+          )
+          with_failure_message(message)
+        end
+
+        def with_failure_message(message)
           if message
             @expects_custom_validation_message = true
             @short_message = message

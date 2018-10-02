@@ -115,9 +115,9 @@ module Shoulda
       #       should validate_uniqueness_of(:title).on(:create)
       #     end
       #
-      # ##### with_message
+      # ##### with_failure_message
       #
-      # Use `with_message` if you are using a custom validation message.
+      # Use `with_failure_message` if you are using a custom validation message.
       #
       #     class Post < ActiveRecord::Base
       #       validates :title, uniqueness: true, message: 'Please choose another title'
@@ -127,14 +127,14 @@ module Shoulda
       #     RSpec.describe Post, type: :model do
       #       it do
       #         should validate_uniqueness_of(:title).
-      #           with_message('Please choose another title')
+      #           with_failure_message('Please choose another title')
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
       #     class PostTest < ActiveSupport::TestCase
       #       should validate_uniqueness_of(:title).
-      #         with_message('Please choose another title')
+      #         with_failure_message('Please choose another title')
       #     end
       #
       # ##### scoped_to

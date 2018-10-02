@@ -29,7 +29,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateExclusionOfMatcher, type: :mode
 
     it 'does not override the default message with a blank' do
       expect(validating_exclusion(in: 2..5)).
-        to validate_exclusion_of(:attr).in_range(2..5).with_message(nil)
+        to validate_exclusion_of(:attr).in_range(2..5).with_failure_message(nil)
     end
 
     it_supports(
@@ -99,7 +99,7 @@ to ‹5›, but this could not be proved.
   context 'an attribute with a custom validation message' do
     it 'accepts ensuring the correct range' do
       expect(validating_exclusion(in: 2..4, message: 'not good')).
-        to validate_exclusion_of(:attr).in_range(2..4).with_message(/not good/)
+        to validate_exclusion_of(:attr).in_range(2..4).with_failure_message(/not good/)
     end
 
     it 'accepts ensuring the correct range with an interpolated variable in the message' do
@@ -107,7 +107,7 @@ to ‹5›, but this could not be proved.
       expect(matcher).
       to validate_exclusion_of(:attr).
         in_range(2..4).
-        with_message(/^[234] is not good$/)
+        with_failure_message(/^[234] is not good$/)
     end
   end
 
@@ -120,7 +120,7 @@ to ‹5›, but this could not be proved.
       end
 
       expect(model).to validate_exclusion_of(:attr).in_range(2..5).
-        with_message(/should be out of this range/)
+        with_failure_message(/should be out of this range/)
 
       model = custom_validation do
         if attr >= 2 && attr <= 4
@@ -129,7 +129,7 @@ to ‹5›, but this could not be proved.
       end
 
       expect(model).to validate_exclusion_of(:attr).in_range(2...5).
-        with_message(/should be out of this range/)
+        with_failure_message(/should be out of this range/)
     end
 
     it 'has correct description' do

@@ -27,7 +27,7 @@ module Shoulda
           protected
 
           def wrap_disallow_value_matcher(matcher)
-            matcher.with_message(:not_an_integer)
+            matcher.with_failure_message(:not_an_integer)
           end
 
           def disallowed_value

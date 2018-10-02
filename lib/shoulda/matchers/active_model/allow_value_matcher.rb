@@ -169,36 +169,9 @@ module Shoulda
       #         on(:create)
       #     end
       #
-      # ##### with_message
+      # ##### with_failure_message
       #
-      # Use `with_message` if you are using a custom validation message.
-      #
-      #     class UserProfile
-      #       include ActiveModel::Model
-      #       attr_accessor :state
-      #
-      #       validates_format_of :state,
-      #         with: /^(open|closed)$/,
-      #         message: 'State must be open or closed'
-      #     end
-      #
-      #     # RSpec
-      #     RSpec.describe UserProfile, type: :model do
-      #       it do
-      #         should allow_value('open', 'closed').
-      #           for(:state).
-      #           with_message('State must be open or closed')
-      #       end
-      #     end
-      #
-      #     # Minitest (Shoulda)
-      #     class UserProfileTest < ActiveSupport::TestCase
-      #       should allow_value('open', 'closed').
-      #         for(:state).
-      #         with_message('State must be open or closed')
-      #     end
-      #
-      # Use `with_message` with a regexp to perform a partial match:
+      # Use `with_failure_message` if you are using a custom validation message.
       #
       #     class UserProfile
       #       include ActiveModel::Model
@@ -214,7 +187,7 @@ module Shoulda
       #       it do
       #         should allow_value('open', 'closed').
       #           for(:state).
-      #           with_message(/open or closed/)
+      #           with_failure_message('State must be open or closed')
       #       end
       #     end
       #
@@ -222,10 +195,37 @@ module Shoulda
       #     class UserProfileTest < ActiveSupport::TestCase
       #       should allow_value('open', 'closed').
       #         for(:state).
-      #         with_message(/open or closed/)
+      #         with_failure_message('State must be open or closed')
       #     end
       #
-      # Use `with_message` with the `:against` option if the attribute the
+      # Use `with_failure_message` with a regexp to perform a partial match:
+      #
+      #     class UserProfile
+      #       include ActiveModel::Model
+      #       attr_accessor :state
+      #
+      #       validates_format_of :state,
+      #         with: /^(open|closed)$/,
+      #         message: 'State must be open or closed'
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe UserProfile, type: :model do
+      #       it do
+      #         should allow_value('open', 'closed').
+      #           for(:state).
+      #           with_failure_message(/open or closed/)
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class UserProfileTest < ActiveSupport::TestCase
+      #       should allow_value('open', 'closed').
+      #         for(:state).
+      #         with_failure_message(/open or closed/)
+      #     end
+      #
+      # Use `with_failure_message` with the `:against` option if the attribute the
       # validation message is stored under is different from the attribute
       # being validated:
       #
@@ -250,7 +250,7 @@ module Shoulda
       #       it do
       #         should allow_value('Broncos', 'Titans').
       #           for(:sports_team).
-      #           with_message('Must be either a Broncos or Titans fan',
+      #           with_failure_message('Must be either a Broncos or Titans fan',
       #             against: :chosen_sports_team
       #           )
       #       end
@@ -260,7 +260,7 @@ module Shoulda
       #     class UserProfileTest < ActiveSupport::TestCase
       #       should allow_value('Broncos', 'Titans').
       #         for(:sports_team).
-      #         with_message('Must be either a Broncos or Titans fan',
+      #         with_failure_message('Must be either a Broncos or Titans fan',
       #           against: :chosen_sports_team
       #         )
       #     end
@@ -350,6 +350,14 @@ module Shoulda
         end
 
         def with_message(message, given_options = {})
+          Shoulda::Matchers.warn_about_deprecated_method(
+            'The `with_message` qualifier on `allow_value`',
+            '`with_failure_message`',
+          )
+          with_failure_message(message, given_options)
+        end
+
+        def with_failure_message(message, given_options = {})
           if message.present?
             @expects_custom_validation_message = true
             options[:expected_message] = message

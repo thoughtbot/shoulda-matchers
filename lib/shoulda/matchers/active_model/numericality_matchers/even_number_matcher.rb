@@ -28,7 +28,7 @@ module Shoulda
           protected
 
           def wrap_disallow_value_matcher(matcher)
-            matcher.with_message(:even)
+            matcher.with_failure_message(:even)
           end
 
           def disallowed_value

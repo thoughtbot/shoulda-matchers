@@ -99,9 +99,9 @@ module Shoulda
       #         on(:create)
       #     end
       #
-      # ##### with_message
+      # ##### with_failure_message
       #
-      # Use `with_message` if you are using a custom validation message.
+      # Use `with_failure_message` if you are using a custom validation message.
       #
       #     class Issue
       #       include ActiveModel::Model
@@ -117,7 +117,7 @@ module Shoulda
       #       it do
       #         should validate_inclusion_of(:severity).
       #           in_array(%w(low medium high)).
-      #           with_message('Severity must be low, medium, or high')
+      #           with_failure_message('Severity must be low, medium, or high')
       #       end
       #     end
       #
@@ -125,7 +125,7 @@ module Shoulda
       #     class IssueTest < ActiveSupport::TestCase
       #       should validate_inclusion_of(:severity).
       #         in_array(%w(low medium high)).
-      #         with_message('Severity must be low, medium, or high')
+      #         with_failure_message('Severity must be low, medium, or high')
       #     end
       #
       # ##### with_low_message
@@ -329,6 +329,14 @@ EOT
         end
 
         def with_message(message)
+          Shoulda::Matchers.warn_about_deprecated_method(
+            'The `with_message` qualifier on `validate_inclusion_of`',
+            '`with_failure_message`',
+          )
+          with_failure_message(message)
+        end
+
+        def with_failure_message(message)
           if message
             @expects_custom_validation_message = true
             @low_message = message

@@ -41,6 +41,14 @@ module Shoulda
           end
 
           def with_message(message)
+            Shoulda::Matchers.warn_about_deprecated_method(
+              'The `with_message` qualifier',
+              '`with_failure_message`',
+            )
+            with_failure_message(message)
+          end
+
+          def with_failure_message(message)
             @expects_custom_validation_message = true
             @message = message
             self
@@ -87,7 +95,7 @@ module Shoulda
             @_submatchers ||=
               comparison_combos.map do |diff, submatcher_method_name|
                 matcher = __send__(submatcher_method_name, diff, nil)
-                matcher.with_message(@message, values: { count: @value })
+                matcher.with_failure_message(@message, values: { count: @value })
                 matcher
               end
           end

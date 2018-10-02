@@ -249,9 +249,9 @@ module Shoulda
       #       should validate_numericality_of(:birth_day).odd
       #     end
       #
-      # ##### with_message
+      # ##### with_failure_message
       #
-      # Use `with_message` if you are using a custom validation message.
+      # Use `with_failure_message` if you are using a custom validation message.
       #
       #     class Person
       #       include ActiveModel::Model
@@ -265,14 +265,14 @@ module Shoulda
       #     RSpec.describe Person, type: :model do
       #       it do
       #         should validate_numericality_of(:number_of_dependents).
-      #           with_message('Number of dependents must be a number')
+      #           with_failure_message('Number of dependents must be a number')
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should validate_numericality_of(:number_of_dependents).
-      #         with_message('Number of dependents must be a number')
+      #         with_failure_message('Number of dependents must be a number')
       #     end
       #
       # ##### allow_nil
@@ -347,7 +347,7 @@ module Shoulda
           prepare_submatcher(
             AllowValueMatcher.new(nil)
               .for(@attribute)
-              .with_message(:not_a_number)
+              .with_failure_message(:not_a_number)
           )
           self
         end
@@ -396,6 +396,14 @@ module Shoulda
         end
 
         def with_message(message)
+          Shoulda::Matchers.warn_about_deprecated_method(
+            'The `with_message` qualifier on `validate_numericality_of`',
+            '`with_failure_message`',
+          )
+          with_failure_message(message)
+        end
+
+        def with_failure_message(message)
           @expects_custom_validation_message = true
           @expected_message = message
           self
@@ -500,7 +508,7 @@ module Shoulda
           disallow_value_matcher = DisallowValueMatcher.
             new(NON_NUMERIC_VALUE).
             for(@attribute).
-            with_message(:not_a_number)
+            with_failure_message(:not_a_number)
 
           add_submatcher(disallow_value_matcher)
         end
@@ -539,7 +547,7 @@ module Shoulda
             end
 
             if @expected_message.present?
-              submatcher.with_message(@expected_message)
+              submatcher.with_failure_message(@expected_message)
             end
 
             if @context

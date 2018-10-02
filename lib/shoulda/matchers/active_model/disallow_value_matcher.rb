@@ -47,7 +47,15 @@ module Shoulda
         end
 
         def with_message(message, options={})
-          allow_matcher.with_message(message, options)
+          Shoulda::Matchers.warn_about_deprecated_method(
+            'The `with_message` qualifier',
+            '`with_failure_message`',
+          )
+          with_failure_message(message, options)
+        end
+
+        def with_failure_message(message, options={})
+          allow_matcher.with_failure_message(message, options)
           self
         end
 

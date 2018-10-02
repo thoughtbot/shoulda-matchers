@@ -289,12 +289,12 @@ not be proved.
             expect(model.new).
               to validate_uniqueness.
               scoped_to(:scope1).
-              with_message('first message')
+              with_failure_message('first message')
 
             expect(model.new).
               to validate_uniqueness.
               scoped_to(:scope2).
-              with_message('second message')
+              with_failure_message('second message')
           end
         end
       end
@@ -584,7 +584,7 @@ this could not be proved.
             assertion = lambda do
               expect(record).
                 to validate_uniqueness.
-                with_message('some message')
+                with_failure_message('some message')
             end
 
             message = <<-MESSAGE
@@ -612,7 +612,7 @@ proved.
             )
             expect(record).
               to validate_uniqueness.
-              with_message('bad value')
+              with_failure_message('bad value')
           end
         end
       end
@@ -628,7 +628,7 @@ proved.
             assertion = lambda do
               expect(record).
                 to validate_uniqueness.
-                with_message(/some message/)
+                with_failure_message(/some message/)
             end
 
             message = <<-MESSAGE
@@ -656,7 +656,7 @@ proved.
             )
             expect(record).
               to validate_uniqueness.
-              with_message(/bad/)
+              with_failure_message(/bad/)
           end
         end
       end

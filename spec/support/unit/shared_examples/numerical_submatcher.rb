@@ -1,6 +1,6 @@
 shared_examples 'a numerical submatcher' do
-  it 'implements the with_message method' do
-    expect(subject).to respond_to(:with_message).with(1).arguments
+  it 'implements the with_failure_message method' do
+    expect(subject).to respond_to(:with_failure_message).with(1).arguments
   end
 
   it 'implements the matches? method' do

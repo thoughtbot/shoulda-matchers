@@ -24,7 +24,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :m
         builder = builder_for_record_validating_confirmation
         expect(builder.record).
           to validate_confirmation_of(builder.attribute_to_confirm).
-          with_message(nil)
+          with_failure_message(nil)
       end
     end
 
@@ -147,14 +147,14 @@ matches :attribute_to_confirm, but this could not be proved.
       builder = builder_for_record_validating_confirmation(message: 'custom')
       expect(builder.record).
         to validate_confirmation_of(builder.attribute_to_confirm).
-        with_message(/custom/)
+        with_failure_message(/custom/)
     end
 
     it 'fails when the expected and actual messages do not match' do
       builder = builder_for_record_validating_confirmation(message: 'custom')
       expect(builder.record).
         not_to validate_confirmation_of(builder.attribute_to_confirm).
-        with_message(/wrong/)
+        with_failure_message(/wrong/)
     end
   end
 

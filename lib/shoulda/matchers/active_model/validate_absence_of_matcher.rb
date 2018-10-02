@@ -44,9 +44,9 @@ module Shoulda
       #       should validate_absence_of(:nuclear_weapons).on(:create)
       #     end
       #
-      # ##### with_message
+      # ##### with_failure_message
       #
-      # Use `with_message` if you are using a custom validation message.
+      # Use `with_failure_message` if you are using a custom validation message.
       #
       #     class PowerHungryCountry
       #       include ActiveModel::Model
@@ -60,14 +60,14 @@ module Shoulda
       #     RSpec.describe PowerHungryCountry, type: :model do
       #       it do
       #         should validate_absence_of(:nuclear_weapons).
-      #           with_message("there shall be peace on Earth")
+      #           with_failure_message("there shall be peace on Earth")
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
       #     class PowerHungryCountryTest < ActiveSupport::TestCase
       #       should validate_absence_of(:nuclear_weapons).
-      #         with_message("there shall be peace on Earth")
+      #         with_failure_message("there shall be peace on Earth")
       #     end
       #
       # @return [ValidateAbsenceOfMatcher}

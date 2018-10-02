@@ -78,9 +78,9 @@ module Shoulda
       #       should validate_presence_of(:arms).on(:create)
       #     end
       #
-      # ##### with_message
+      # ##### with_failure_message
       #
-      # Use `with_message` if you are using a custom validation message.
+      # Use `with_failure_message` if you are using a custom validation message.
       #
       #     class Robot
       #       include ActiveModel::Model
@@ -93,14 +93,14 @@ module Shoulda
       #     RSpec.describe Robot, type: :model do
       #       it do
       #         should validate_presence_of(:legs).
-      #           with_message('Robot has no legs')
+      #           with_failure_message('Robot has no legs')
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
       #     class RobotTest < ActiveSupport::TestCase
       #       should validate_presence_of(:legs).
-      #         with_message('Robot has no legs')
+      #         with_failure_message('Robot has no legs')
       #     end
       #
       # @return [ValidatePresenceOfMatcher]

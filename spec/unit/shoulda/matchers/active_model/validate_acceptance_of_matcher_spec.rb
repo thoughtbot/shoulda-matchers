@@ -7,7 +7,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateAcceptanceOfMatcher, type: :mod
     end
 
     it 'does not overwrite the default message with nil' do
-      expect(record_validating_acceptance).to matcher.with_message(nil)
+      expect(record_validating_acceptance).to matcher.with_failure_message(nil)
     end
 
     it_supports(
@@ -64,12 +64,12 @@ this could not be proved.
   context 'an attribute which must be accepted with a custom message' do
     it 'accepts when the message matches' do
       expect(record_validating_acceptance(message: 'custom')).
-        to matcher.with_message(/custom/)
+        to matcher.with_failure_message(/custom/)
     end
 
     it 'rejects when the message does not match' do
       expect(record_validating_acceptance(message: 'custom')).
-        not_to matcher.with_message(/wrong/)
+        not_to matcher.with_failure_message(/wrong/)
     end
   end
 

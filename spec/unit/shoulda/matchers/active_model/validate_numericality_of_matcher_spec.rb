@@ -1111,11 +1111,11 @@ Expected Example to validate that :attr looks like a number greater than
     end
   end
 
-  context 'qualified with with_message' do
+  context 'qualified with with_failure_message' do
     context 'and validating with the same message' do
       it 'accepts' do
         record = build_record_validating_numericality(message: 'custom')
-        expect(record).to validate_numericality.with_message(/custom/)
+        expect(record).to validate_numericality.with_failure_message(/custom/)
       end
     end
 
@@ -1124,7 +1124,7 @@ Expected Example to validate that :attr looks like a number greater than
         record = build_record_validating_numericality(message: 'custom')
 
         assertion = lambda do
-          expect(record).to validate_numericality.with_message(/wrong/)
+          expect(record).to validate_numericality.with_failure_message(/wrong/)
         end
 
         message = <<-MESSAGE
@@ -1145,7 +1145,7 @@ custom validation error on failure, but this could not be proved.
     context 'and no message is provided' do
       it 'ignores the qualifier' do
         record = build_record_validating_numericality
-        expect(record).to validate_numericality.with_message(nil)
+        expect(record).to validate_numericality.with_failure_message(nil)
       end
     end
 
@@ -1154,7 +1154,7 @@ custom validation error on failure, but this could not be proved.
         model = define_model_validating_nothing
 
         assertion = lambda do
-          expect(model.new).to validate_numericality.with_message(/wrong/)
+          expect(model.new).to validate_numericality.with_failure_message(/wrong/)
         end
 
         message = <<-MESSAGE

@@ -47,9 +47,9 @@ module Shoulda
       #       should validate_acceptance_of(:terms_of_service).on(:create)
       #     end
       #
-      # ##### with_message
+      # ##### with_failure_message
       #
-      # Use `with_message` if you are using a custom validation message.
+      # Use `with_failure_message` if you are using a custom validation message.
       #
       #     class Registration
       #       include ActiveModel::Model
@@ -63,14 +63,14 @@ module Shoulda
       #     RSpec.describe Registration, type: :model do
       #       it do
       #         should validate_acceptance_of(:terms_of_service).
-      #           with_message('You must accept the terms of service')
+      #           with_failure_message('You must accept the terms of service')
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
       #     class RegistrationTest < ActiveSupport::TestCase
       #       should validate_acceptance_of(:terms_of_service).
-      #         with_message('You must accept the terms of service')
+      #         with_failure_message('You must accept the terms of service')
       #     end
       #
       # @return [ValidateAcceptanceOfMatcher]

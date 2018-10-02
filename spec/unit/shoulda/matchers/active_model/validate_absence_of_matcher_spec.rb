@@ -23,7 +23,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
       end
 
       it 'does not override the default message with a present' do
-        expect(validating_absence_of(:attr)).to validate_absence_of(:attr).with_message(nil)
+        expect(validating_absence_of(:attr)).to validate_absence_of(:attr).with_failure_message(nil)
       end
 
       available_column_types.each do |type|
@@ -99,7 +99,7 @@ not be proved.
       end
 
       it 'does not override the default message with a blank' do
-        expect(active_model_validating_absence_of(:attr)).to validate_absence_of(:attr).with_message(nil)
+        expect(active_model_validating_absence_of(:attr)).to validate_absence_of(:attr).with_failure_message(nil)
       end
 
       it_supports(

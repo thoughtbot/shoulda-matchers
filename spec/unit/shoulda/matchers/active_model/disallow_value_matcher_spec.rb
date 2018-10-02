@@ -32,7 +32,7 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher, type: :model do
   context 'an attribute with a format validation and a custom message' do
     it 'does not match if the value and message are both correct' do
       expect(validating_format(with: /abc/, message: 'good message')).
-        not_to matcher('abcde').for(:attr).with_message('good message')
+        not_to matcher('abcde').for(:attr).with_failure_message('good message')
     end
 
     it "delegates its failure message to its allow matcher's negative failure message" do
@@ -43,7 +43,7 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher, type: :model do
         to receive(:new).
         and_return(allow_matcher)
 
-      matcher = matcher('abcde').for(:attr).with_message('good message')
+      matcher = matcher('abcde').for(:attr).with_failure_message('good message')
       matcher.matches?(validating_format(with: /abc/, message: 'good message'))
 
       expect(matcher.failure_message).to eq 'allow matcher failure'
@@ -51,19 +51,19 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher, type: :model do
 
     it 'matches if the message is correct but the value is not' do
       expect(validating_format(with: /abc/, message: 'good message')).
-        to matcher('xyz').for(:attr).with_message('good message')
+        to matcher('xyz').for(:attr).with_failure_message('good message')
     end
   end
 
   context 'an attribute where the message occurs on another attribute' do
     it 'matches if the message is correct but the value is not' do
       expect(record_with_custom_validation).to \
-        matcher('bad value').for(:attr).with_message(/some message/, against: :attr2)
+        matcher('bad value').for(:attr).with_failure_message(/some message/, against: :attr2)
     end
 
     it 'does not match if the value and message are both correct' do
       expect(record_with_custom_validation).not_to \
-        matcher('good value').for(:attr).with_message(/some message/, against: :attr2)
+        matcher('good value').for(:attr).with_failure_message(/some message/, against: :attr2)
     end
 
     def record_with_custom_validation

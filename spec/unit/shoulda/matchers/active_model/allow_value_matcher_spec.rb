@@ -250,7 +250,7 @@ invalid, but it was valid instead.
   context 'an attribute with a validation and a custom message' do
     it 'allows a good value' do
       expect(validating_format(with: /abc/, message: 'bad value')).
-        to allow_value('abcde').for(:attr).with_message(/bad/)
+        to allow_value('abcde').for(:attr).with_failure_message(/bad/)
     end
 
     it 'rejects a bad value with an appropriate failure message' do
@@ -263,7 +263,7 @@ valid, but it was invalid instead, producing these validation errors:
 
       assertion = lambda do
         expect(validating_format(with: /abc/, message: 'bad value')).
-          to allow_value('xyz').for(:attr).with_message(/bad/)
+          to allow_value('xyz').for(:attr).with_failure_message(/bad/)
       end
 
       expect(&assertion).to fail_with_message(message)
@@ -282,7 +282,7 @@ errors instead:
 
         assertion = lambda do
           expect(validating_format(with: /abc/, message: 'bad value')).
-            not_to allow_value('xyz').for(:attr).with_message(/different/)
+            not_to allow_value('xyz').for(:attr).with_failure_message(/different/)
         end
 
         expect(&assertion).to fail_with_message(message)
@@ -306,7 +306,7 @@ errors instead:
           expect(record).
             not_to allow_value('xyz').
             for(:attr).
-            with_message(:greater_than, values: { count: 2 })
+            with_failure_message(:greater_than, values: { count: 2 })
         end
       end
 
@@ -327,7 +327,7 @@ errors instead:
             expect(record).
               not_to allow_value('xyz').
               for(:attr).
-              with_message(:greater_than, values: { count: 2 })
+              with_failure_message(:greater_than, values: { count: 2 })
           end
 
           message = <<-MESSAGE
@@ -355,7 +355,7 @@ errors instead:
           expect(builder.record).
             to allow_value(builder.valid_value).
             for(builder.attribute_to_validate).
-            with_message(
+            with_failure_message(
               builder.message,
               against: builder.attribute_that_receives_error
             )
@@ -370,7 +370,7 @@ errors instead:
           expect(builder.record).
             not_to allow_value(invalid_value).
             for(builder.attribute_to_validate).
-            with_message(
+            with_failure_message(
               builder.message,
               against: builder.attribute_that_receives_error
             )
@@ -387,7 +387,7 @@ errors instead:
               expect(builder.record).
                 not_to allow_value(invalid_value).
                 for(builder.attribute_to_validate).
-                with_message(
+                with_failure_message(
                   "some error",
                   against: builder.attribute_that_receives_error
                 )
@@ -414,7 +414,7 @@ indeed invalid, but it produced these validation errors instead:
         expect(builder.record).
           to allow_value(builder.valid_value).
           for(builder.attribute_to_validate).
-          with_message(
+          with_failure_message(
             builder.validation_message_key,
             against: builder.attribute_that_receives_error
           )
@@ -426,7 +426,7 @@ indeed invalid, but it produced these validation errors instead:
         expect(builder.record).
           not_to allow_value(invalid_value).
           for(builder.attribute_to_validate).
-          with_message(
+          with_failure_message(
             builder.validation_message_key,
             against: builder.attribute_that_receives_error
           )
@@ -557,7 +557,7 @@ invalid and to raise a validation exception with message matching
 
             assertion = lambda do
               expect(validating_format(with: /abc/, strict: true)).
-                not_to allow_value('xyz').for(:attr).with_message(/abc/).strict
+                not_to allow_value('xyz').for(:attr).with_failure_message(/abc/).strict
             end
 
             expect(&assertion).to fail_with_message(message)

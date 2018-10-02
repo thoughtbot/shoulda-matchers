@@ -10,7 +10,7 @@ module Shoulda
             @required = required
             @submatcher = ActiveModel::DisallowValueMatcher.new(nil).
               for(attribute_name).
-              with_message(validation_message_key)
+              with_failure_message(validation_message_key)
             @missing_option = ''
           end
 

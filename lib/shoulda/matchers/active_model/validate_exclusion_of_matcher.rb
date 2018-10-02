@@ -83,9 +83,9 @@ module Shoulda
       #         on(:create)
       #     end
       #
-      # ##### with_message
+      # ##### with_failure_message
       #
-      # Use `with_message` if you are using a custom validation message.
+      # Use `with_failure_message` if you are using a custom validation message.
       #
       #     class Game
       #       include ActiveModel::Model
@@ -101,7 +101,7 @@ module Shoulda
       #       it do
       #         should validate_exclusion_of(:weapon).
       #           in_array(['pistol', 'paintball gun', 'stick']).
-      #           with_message('You chose a puny weapon')
+      #           with_failure_message('You chose a puny weapon')
       #       end
       #     end
       #
@@ -109,7 +109,7 @@ module Shoulda
       #     class GameTest < ActiveSupport::TestCase
       #       should validate_exclusion_of(:weapon).
       #         in_array(['pistol', 'paintball gun', 'stick']).
-      #         with_message('You chose a puny weapon')
+      #         with_failure_message('You chose a puny weapon')
       #     end
       #
       # @return [ValidateExclusionOfMatcher]

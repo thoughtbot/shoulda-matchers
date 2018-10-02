@@ -34,6 +34,14 @@ module Shoulda
         end
 
         def with_message(expected_message)
+          Shoulda::Matchers.warn_about_deprecated_method(
+            'The `with_message` qualifier',
+            '`with_failure_message`',
+          )
+          with_failure_message(expected_message)
+        end
+
+        def with_failure_message(expected_message)
           if expected_message
             @expects_custom_validation_message = true
             @expected_message = expected_message
@@ -147,7 +155,7 @@ module Shoulda
 
           matcher = matcher_class.new(value).
             for(attribute).
-            with_message(message).
+            with_failure_message(message).
             on(context).
             strict(expects_strict?).
             ignoring_interference_by_writer(ignore_interference_by_writer)

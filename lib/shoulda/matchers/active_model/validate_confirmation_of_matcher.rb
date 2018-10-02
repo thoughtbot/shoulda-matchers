@@ -44,9 +44,9 @@ module Shoulda
       #       should validate_confirmation_of(:password).on(:create)
       #     end
       #
-      # ##### with_message
+      # ##### with_failure_message
       #
-      # Use `with_message` if you are using a custom validation message.
+      # Use `with_failure_message` if you are using a custom validation message.
       #
       #     class User
       #       include ActiveModel::Model
@@ -60,14 +60,14 @@ module Shoulda
       #     RSpec.describe User, type: :model do
       #       it do
       #         should validate_confirmation_of(:password).
-      #           with_message('Please re-enter your password')
+      #           with_failure_message('Please re-enter your password')
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
       #     class UserTest < ActiveSupport::TestCase
       #       should validate_confirmation_of(:password).
-      #         with_message('Please re-enter your password')
+      #         with_failure_message('Please re-enter your password')
       #     end
       #
       # @return [ValidateConfirmationOfMatcher]
@@ -150,7 +150,7 @@ module Shoulda
           matcher.values_to_preset = {
             confirmation_attribute => confirmation_attribute_value
           }
-          matcher.with_message(
+          matcher.with_failure_message(
             @expected_message,
             against: confirmation_attribute,
             values: { attribute: attribute }

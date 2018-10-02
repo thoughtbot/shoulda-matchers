@@ -19,7 +19,7 @@ module Shoulda
             :matches?,
             :on,
             :strict,
-            :with_message,
+            :with_failure_message,
           )
 
           def initialize(numeric_type_matcher, attribute)

@@ -352,7 +352,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     end
   end
 
-  shared_examples_for 'it supports with_message' do |args|
+  shared_examples_for 'it supports with_failure_message' do |args|
     valid_values = args.fetch(:valid_values)
 
     context 'given a string' do
@@ -363,7 +363,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         )
 
         expect_to_match_on_values(builder, valid_values) do |matcher|
-          matcher.with_message('a message')
+          matcher.with_failure_message('a message')
         end
       end
 
@@ -374,7 +374,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         )
 
         expect_to_match_on_values(builder, valid_values) do |matcher|
-          matcher.with_message(/ is not included\Z/)
+          matcher.with_failure_message(/ is not included\Z/)
         end
       end
 
@@ -382,7 +382,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         builder = build_object_allowing(valid_values)
 
         expect_not_to_match_on_values(builder, valid_values) do |matcher|
-          matcher.with_message('a message')
+          matcher.with_failure_message('a message')
         end
       end
 
@@ -393,7 +393,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         )
 
         expect_not_to_match_on_values(builder, valid_values) do |matcher|
-          matcher.with_message('a message')
+          matcher.with_failure_message('a message')
         end
       end
     end
@@ -406,7 +406,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         )
 
         expect_to_match_on_values(builder, valid_values) do |matcher|
-          matcher.with_message(/a message/)
+          matcher.with_failure_message(/a message/)
         end
       end
 
@@ -414,7 +414,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         builder = build_object_allowing(valid_values)
 
         expect_not_to_match_on_values(builder, valid_values) do |matcher|
-          matcher.with_message(/a message/)
+          matcher.with_failure_message(/a message/)
         end
       end
 
@@ -425,17 +425,17 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         )
 
         expect_not_to_match_on_values(builder, valid_values) do |matcher|
-          matcher.with_message(/a message/)
+          matcher.with_failure_message(/a message/)
         end
       end
     end
 
     context 'given nil' do
-      it 'is as if with_message had never been called' do
+      it 'is as if with_failure_message had never been called' do
         builder = build_object_allowing(valid_values)
 
         expect_to_match_on_values(builder, valid_values) do |matcher|
-          matcher.with_message(nil)
+          matcher.with_failure_message(nil)
         end
       end
     end
@@ -510,7 +510,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
     it_behaves_like 'it supports allow_nil', valid_values: possible_values
     it_behaves_like 'it supports allow_blank', valid_values: possible_values
-    it_behaves_like 'it supports with_message', valid_values: possible_values
+    it_behaves_like 'it supports with_failure_message', valid_values: possible_values
 
     if active_model_3_2?
       context '+ strict' do
@@ -630,7 +630,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
     it_behaves_like 'it supports allow_nil', valid_values: possible_values
     it_behaves_like 'it supports allow_blank', valid_values: possible_values
-    it_behaves_like 'it supports with_message', valid_values: possible_values
+    it_behaves_like 'it supports with_failure_message', valid_values: possible_values
 
     if active_model_3_2?
       context '+ strict' do

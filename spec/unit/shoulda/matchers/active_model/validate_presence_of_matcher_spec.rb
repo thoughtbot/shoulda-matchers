@@ -7,7 +7,7 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
     end
 
     it 'does not override the default message with a blank' do
-      expect(validating_presence).to matcher.with_message(nil)
+      expect(validating_presence).to matcher.with_failure_message(nil)
     end
 
     it_supports(
@@ -80,7 +80,7 @@ could not be proved.
     end
 
     it 'does not override the default message with a blank' do
-      expect(active_model_validating_presence).to matcher.with_message(nil)
+      expect(active_model_validating_presence).to matcher.with_failure_message(nil)
     end
 
     it_supports(
@@ -297,7 +297,7 @@ validation exception on failure, but this could not be proved.
 
     it 'does not override the default message with a blank' do
       expect(validating_presence(strict: true)).
-        to matcher.strict.with_message(nil)
+        to matcher.strict.with_failure_message(nil)
     end
   end
 
