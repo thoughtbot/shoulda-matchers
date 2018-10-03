@@ -12,6 +12,10 @@ Gem::Specification.new do |s|
   s.summary     = "Making tests easy on the fingers and eyes"
   s.license     = "MIT"
   s.description = "Making tests easy on the fingers and eyes"
+  s.metadata    = {
+    'changelog_uri' => 'https://github.com/thoughtbot/shoulda-matchers/blob/master/NEWS.md',
+    'source_code_uri' => 'https://github.com/thoughtbot/shoulda-matchers'
+  }
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
