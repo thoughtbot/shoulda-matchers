@@ -295,8 +295,8 @@ EOT
           @range = nil
           @minimum = nil
           @maximum = nil
-          @low_message = :inclusion
-          @high_message = :inclusion
+          @low_message = nil
+          @high_message = nil
         end
 
         def in_array(array)
@@ -308,6 +308,8 @@ EOT
           @range = range
           @minimum = range.first
           @maximum = range.max
+          @low_message ||= :inclusion
+          @high_message ||= :inclusion
           self
         end
 
