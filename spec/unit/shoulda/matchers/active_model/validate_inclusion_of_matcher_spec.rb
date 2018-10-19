@@ -432,7 +432,10 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
     context 'given nil' do
       it 'is as if with_message had never been called' do
-        builder = build_object_allowing(valid_values)
+        builder = build_object_allowing(
+          valid_values,
+          validation_options: { message: 'this message should not matter' }
+        )
 
         expect_to_match_on_values(builder, valid_values) do |matcher|
           matcher.with_message(nil)

@@ -308,8 +308,6 @@ EOT
           @range = range
           @minimum = range.first
           @maximum = range.max
-          @low_message ||= :inclusion
-          @high_message ||= :inclusion
           self
         end
 
