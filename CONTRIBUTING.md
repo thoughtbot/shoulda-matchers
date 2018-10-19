@@ -142,7 +142,7 @@ bundle exec appraisal 5.1 rspec spec/acceptance/active_model_integration_spec.rb
 
 ### Run all tests
 
-In order to run all tests, simply run
+In order to run all tests, simply run:
 
 ```
 bundle exec rake
