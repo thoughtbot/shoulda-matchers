@@ -3,9 +3,8 @@
 We've put a lot of work into making improvements to Shoulda Matchers, but we
 always welcome changes and improvements from the community!
 
-If you'd like to propose a change to the gem, whether it's a fix for a problem
-you've been running into or an idea for a new feature you think would be useful,
-here's how the process works:
+Have a fix for a problem you've been running into or an idea for a new feature
+you think would be useful? Simply follow these instructions:
 
 1. [Read and understand the Code of Conduct](#code-of-conduct).
 1. Fork this repo and clone your fork to somewhere on your machine.
@@ -24,11 +23,12 @@ here's how the process works:
 1. [Ensure that the test suite passes on Travis and make any necessary changes
    to your branch to bring it to green.](#continuous-integration)
 
-Although we maintain the gem in our free time, we try to respond within a day or
-so. After submitting your PR, we may give you feedback. For instance, we may
-suggest some changes to make to your code to fit within the project style or
-discuss alternate ways of addressing the issue in question. Assuming we're happy
-with everything, we'll bring your changes into master!
+Although we maintain Shoulda Matchers in our free time, we try to respond to
+contributions in a timely manner. Once we look at your pull request, we may give
+you feedback. For instance, we may suggest some changes to make to your code to
+fit within the project style or discuss alternate ways of addressing the issue
+in question. Assuming we're happy with everything, we'll then bring your changes
+into master. Now you're a contributor!
 
 ---
 
@@ -54,6 +54,8 @@ bin/setup
 This project follows the typical structure for a gem: code is located in `lib`
 and tests are in `spec`.
 
+### Matchers
+
 All of the matchers are broken up by the type of example group they apply to:
 
 * `{lib,spec/unit}/shoulda/matchers/action_controller*` for ActionController
@@ -63,8 +65,10 @@ All of the matchers are broken up by the type of example group they apply to:
 * `{lib,spec/unit}/shoulda/matchers/independent*` for matchers that can be used
   in any example group
 
-There are other files in the project, of course, but there are likely the ones
-that you'll be interested in.
+There are other files in the project, of course, but these are likely the ones
+you'll be most interested in.
+
+### Tests
 
 In addition, tests are broken up into two categories:
 
@@ -114,7 +118,7 @@ You'll want to start by running `zeus start` in one shell. Then in another
 shell, instead of using `bundle exec rspec` to run tests, you'll use `bundle
 exec zeus rspec`. So for instance, you might say:
 
-```
+```bash
 bundle exec zeus rspec spec/unit/shoulda/matchers/active_model/validate_inclusion_of_matcher_spec.rb
 ```
 
@@ -132,48 +136,53 @@ appraisal to use. For instance, you can't simply say:
 
 [Appraisal]: https://github.com/thoughtbot/appraisal
 
-```
+```bash
 bundle exec rspec spec/acceptance/active_model_integration_spec.rb
 ```
 
-Instead, you need to say
+Instead, you need to say:
 
-```
+```bash
 bundle exec appraisal 5.1 rspec spec/acceptance/active_model_integration_spec.rb
 ```
 
-### Run all tests
+You can get a list of valid appraisals by running the following command and
+inspecting the output:
 
-In order to run all tests, simply run:
-
+```bash
+bundle exec appraisal --help
 ```
+
+### All tests
+
+In order to run all of the tests, simply run:
+
+```bash
 bundle exec rake
 ```
 
 ## Managing your branch
 
-* Use well-crafted commit messages, providing context if possible. [tpope's
+* Use well-crafted commit messages, providing context if possible. [Tim Pope's
   guide] was a wonderful piece on this topic when it came out and we still find
   it to be helpful even today.
-* Squash "WIP" commits and remove merge commits by rebasing. We try to keep our
-  commit history as clean as possible.
+* Squash "WIP" commits and remove merge commits by rebasing your branch against
+  `master`. We try to keep our commit history as clean as possible. so we really
 
-[tpope's guide]: https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
+[Tim Pope's guide]: https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
 
 ## Documentation
 
-As you navigate the codebase, you may notice that each class and method in the
-public API is prefaced with inline documentation, which can be viewed
-[online][rubydocs]. This documentation is written and generated using
-[YARD][yard].
+As you navigate the codebase, you may notice certain classes and methods that
+are prefaced with inline documentation. This documentation is written and
+generated using [YARD][yard] and is published [online][rubydocs].
 
 [rubydocs]: https://matchers.shoulda.io/docs
 [yard]: https://github.com/lsegal/yard
 
 We ensure that the documentation is up to date before we issue a release, but
 sometimes we don't catch everything. So if your changes end up extending or
-updating the API, it's a big help if you can update the documentation to match
-and submit those changes in your PR.
+updating the API, it helps us greatly to update the docs at the same time.
 
 ## A word on the changelog
 
