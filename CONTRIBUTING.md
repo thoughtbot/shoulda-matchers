@@ -20,7 +20,9 @@ here's how the process works:
 1. [Update the inline documentation if you're making a change to the
    API](#documentation).
 1. [Refrain from updating the changelog.](#a-word-on-the-changelog)
-1. Finally, push to your fork and submit a pull request.
+1. Push to your fork and submit a pull request.
+1. [Ensure that the test suite passes on Travis and make any necessary changes
+   to your branch to bring it to green.](#continuous-integration)
 
 Although we maintain the gem in our free time, we try to respond within a day or
 so. After submitting your PR, we may give you feedback. For instance, we may
@@ -178,3 +180,23 @@ and submit those changes in your PR.
 You may also notice that we have a changelog in the form of [NEWS.md](NEWS.md).
 You may be tempted to include changes to this in your branch, but don't worry
 about this -- we'll take care of it!
+
+## Continuous integration
+
+While running `bundle exec rake` is a great way to check your work, this command
+will only run your tests against the latest supported Ruby and Rails version.
+Ultimately, though, you'll want to ensure that your changes work in all possible
+environments. We make use of [Travis][travis] to do this work for us. Travis
+will kick in after you push up a branch or open a PR. It takes 15-20 minutes to
+run a complete build, which you are free to
+[monitor as it progresses][shoulda-matchers-on-travis].
+
+[shoulda-matchers-on-travis]: https://travis-ci.org/thoughtbot/shoulda-matchers
+
+So what happens if the build fails in some way? Don't fear! Click on a failed
+job and scroll through its output to determine the cause of the failure. You'll
+want to make changes to your branch and push them up until the entire build is
+green. It may take a bit of time, but overall it is worth it and it helps us
+immensely!
+
+[travis]: https://travis-ci.org/
