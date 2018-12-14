@@ -10,17 +10,17 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
       context 'when the subject is a new record' do
         it 'accepts' do
           record = build_record_validating_uniqueness(
-              scopes: [
-                          build_attribute(name: :scope1),
-                          { name: :scope2 }
-                      ]
+            scopes: [
+              build_attribute(name: :scope1),
+              { name: :scope2 }
+            ]
           )
           expect(record).to validate_uniqueness.scoped_to(:scope1, :scope2)
         end
 
         it 'still accepts if the scope is unset beforehand' do
           record = build_record_validating_uniqueness(
-              scopes: [ build_attribute(name: :scope, value: nil) ]
+            scopes: [ build_attribute(name: :scope, value: nil) ]
           )
 
           expect(record).to validate_uniqueness.scoped_to(:scope)
@@ -31,9 +31,9 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
         it 'accepts' do
           record = create_record_validating_uniqueness(
               scopes: [
-                          build_attribute(name: :scope1),
-                          { name: :scope2 }
-                      ]
+                build_attribute(name: :scope1),
+                { name: :scope2 }
+              ]
           )
 
           expect(record).to validate_uniqueness.scoped_to(:scope1, :scope2)
@@ -41,7 +41,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
 
         it 'still accepts if the scope is unset beforehand' do
           record = create_record_validating_uniqueness(
-              scopes: [ build_attribute(name: :scope, value: nil) ]
+            scopes: [ build_attribute(name: :scope, value: nil) ]
           )
 
           expect(record).to validate_uniqueness.scoped_to(:scope)
@@ -1479,12 +1479,12 @@ this could not be proved.
     context 'Rails 5 attributes API' do
       it 'builds uuid for attributes API type :uuid' do
         model = define_model_validating_uniqueness(scopes: [
-                                                             { name:        :foo,
-                                                               column_type: :string,
-                                                               value_type:  :string,
-                                                               options:     { array: false }
-                                                             }
-                                                           ])
+          { name:        :foo,
+            column_type: :string,
+            value_type:  :string,
+            options:     { array: false }
+          }
+        ])
         module ActiveRecord
           module Type
             class Uuid < ActiveRecord::Type::String
