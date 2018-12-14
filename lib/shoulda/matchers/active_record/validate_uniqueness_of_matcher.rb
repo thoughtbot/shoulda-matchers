@@ -818,9 +818,7 @@ module Shoulda
         end
 
         def next_scalar_value_for(scope, previous_value)
-          column = column_for(scope)
-
-          if column.type == :uuid
+          if uuid?(scope)
             SecureRandom.uuid
           elsif defined_as_enum?(scope)
             available_values = available_enum_values_for(scope, previous_value)
@@ -836,6 +834,13 @@ module Shoulda
           else
             previous_value.to_s.next
           end
+        end
+
+        def uuid?(scope)
+          [
+            column_for(scope),
+            attribute_type_for(scope)
+          ].compact.map(&:type).include? :uuid
         end
 
         def all_scopes_are_booleans?
@@ -929,6 +934,10 @@ module Shoulda
 
         def column_for(scope)
           model.columns_hash[scope.to_s]
+        end
+
+        def attribute_type_for(scope)
+          return model.attribute_types[scope.to_s] if model.respond_to?(:attribute_types)
         end
 
         def column_limit_for(attribute)
