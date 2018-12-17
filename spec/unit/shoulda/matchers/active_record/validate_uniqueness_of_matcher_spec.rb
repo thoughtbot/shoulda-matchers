@@ -30,10 +30,10 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
       context 'when the subject is an existing record' do
         it 'accepts' do
           record = create_record_validating_uniqueness(
-              scopes: [
-                build_attribute(name: :scope1),
-                { name: :scope2 }
-              ]
+            scopes: [
+              build_attribute(name: :scope1),
+              { name: :scope2 }
+            ]
           )
 
           expect(record).to validate_uniqueness.scoped_to(:scope1, :scope2)
@@ -1478,29 +1478,40 @@ this could not be proved.
   if active_model_supports_attributes_api?
     context 'Rails 5 attributes API' do
       it 'builds uuid for attributes API type :uuid' do
-        model = define_model_validating_uniqueness(scopes: [
-          { name:        :foo,
-            column_type: :string,
-            value_type:  :string,
-            options:     { array: false }
-          }
-        ])
-        module ActiveRecord
-          module Type
-            class Uuid < ActiveRecord::Type::String
-              def type
-                :uuid
+        scopes = {
+          scopes: [
+            {
+              name:        :foo,
+              column_type: :string,
+              value_type:  :string,
+              options:     {
+                array: false,
+              },
+            },
+          ],
+        }
+        model = define_model_validating_uniqueness(scopes)
+
+        unless database_supports_uuid_columns?
+          module ActiveRecord
+            module Type
+              class Uuid < ActiveRecord::Type::String
+                def type
+                  :uuid
+                end
               end
             end
           end
+
+          ActiveRecord::Type.register(:uuid, ActiveRecord::Type::Uuid)
         end
 
-        ActiveRecord::Type.register(:uuid, ActiveRecord::Type::Uuid)
         model.attribute(:foo, :uuid)
 
         value1 = SecureRandom.uuid
         create_record_from(model, foo: value1)
-        record = build_record_from(model, foo: next_scalar_value_for(:foo, value1, model.new))
+        value2 = next_scalar_value_for(:foo, value1, model.new)
+        record = build_record_from(model, foo: value2)
 
         expect(SecureRandom).to receive(:uuid)
 
