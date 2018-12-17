@@ -1492,19 +1492,17 @@ this could not be proved.
         }
         model = define_model_validating_uniqueness(scopes)
 
-        unless database_supports_uuid_columns?
-          module ActiveRecord
-            module Type
-              class Uuid < ActiveRecord::Type::String
-                def type
-                  :uuid
-                end
+        module ActiveRecord
+          module Type
+            class Uuid < ActiveRecord::Type::String
+              def type
+                :uuid
               end
             end
           end
-
-          ActiveRecord::Type.register(:uuid, ActiveRecord::Type::Uuid)
         end
+
+        ActiveRecord::Type.register(:uuid, ActiveRecord::Type::Uuid, override: false)
 
         model.attribute(:foo, :uuid)
 
