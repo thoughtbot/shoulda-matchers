@@ -839,7 +839,7 @@ module Shoulda
         def uuid?(scope)
           [
             column_for(scope),
-            attribute_type_for(scope)
+            attribute_type_for(scope),
           ].compact.map(&:type).include? :uuid
         end
 
@@ -937,7 +937,7 @@ module Shoulda
         end
 
         def attribute_type_for(scope)
-          return model.attribute_types[scope.to_s] if model.respond_to?(:attribute_types)
+          model.attribute_types[scope.to_s] if model.respond_to?(:attribute_types)
         end
 
         def column_limit_for(attribute)

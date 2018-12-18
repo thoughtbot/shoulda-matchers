@@ -1481,7 +1481,7 @@ this could not be proved.
         scopes = {
           scopes: [
             {
-              name:        :foo,
+              name:        :uuid,
               column_type: :string,
               value_type:  :string,
               options:     {
@@ -1502,18 +1502,15 @@ this could not be proved.
           end
         end
 
-        ActiveRecord::Type.register(:uuid, ActiveRecord::Type::Uuid, override: false)
+        ActiveRecord::Type.register(:uuid,
+                                    ActiveRecord::Type::Uuid,
+                                    override: false)
+        model.attribute(:uuid, :uuid)
 
-        model.attribute(:foo, :uuid)
+        expect(SecureRandom).to receive(:uuid).and_call_original
+        next_scalar_value_for(:uuid, "", model.new)
 
-        value1 = SecureRandom.uuid
-        create_record_from(model, foo: value1)
-        value2 = next_scalar_value_for(:foo, value1, model.new)
-        record = build_record_from(model, foo: value2)
-
-        expect(SecureRandom).to receive(:uuid)
-
-        expect(record).to validate_uniqueness.scoped_to(:foo)
+        expect(model.new).to validate_uniqueness.scoped_to(:uuid).ignoring_case_sensitivity
       end
     end
 
