@@ -937,7 +937,9 @@ module Shoulda
         end
 
         def attribute_type_for(scope)
-          model.attribute_types[scope.to_s] if model.respond_to?(:attribute_types)
+          if model.respond_to?(:attribute_types)
+            model.attribute_types[scope.to_s]
+          end
         end
 
         def column_limit_for(attribute)

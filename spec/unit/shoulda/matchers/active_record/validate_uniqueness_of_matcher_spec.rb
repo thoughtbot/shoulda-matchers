@@ -1503,14 +1503,16 @@ this could not be proved.
         end
 
         ActiveRecord::Type.register(:uuid,
-                                    ActiveRecord::Type::Uuid,
-                                    override: false)
+          ActiveRecord::Type::Uuid,
+          override: false,)
         model.attribute(:uuid, :uuid)
 
         expect(SecureRandom).to receive(:uuid).and_call_original
-        next_scalar_value_for(:uuid, "", model.new)
+        next_scalar_value_for(:uuid, '', model.new)
 
-        expect(model.new).to validate_uniqueness.scoped_to(:uuid).ignoring_case_sensitivity
+        expect(model.new).to validate_uniqueness.
+          scoped_to(:uuid).
+          ignoring_case_sensitivity
       end
     end
 
