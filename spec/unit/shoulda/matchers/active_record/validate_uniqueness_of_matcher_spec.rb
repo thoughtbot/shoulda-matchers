@@ -1507,10 +1507,10 @@ this could not be proved.
           override: false,)
         model.attribute(:uuid, :uuid)
 
+        record = model.new(uuid: next_scalar_value_for(:uuid, '', model.new))
         expect(SecureRandom).to receive(:uuid).and_call_original
-        next_scalar_value_for(:uuid, '', model.new)
 
-        expect(model.new).to validate_uniqueness.
+        expect(record).to validate_uniqueness.
           scoped_to(:uuid).
           ignoring_case_sensitivity
       end
