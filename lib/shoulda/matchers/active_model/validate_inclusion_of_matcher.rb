@@ -322,6 +322,7 @@ EOT
 
         def allow_nil
           @options[:allow_nil] = true
+          self
         end
 
         def expects_to_allow_nil?
