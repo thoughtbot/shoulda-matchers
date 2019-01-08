@@ -4,13 +4,13 @@ This release mainly brings the gem up to date with modern versions of Ruby and
 Rails and drops support for older, unsupported versions. The compatibility list
 is now:
 
-* **Ruby:** 2.5.1, 2.4.4, 2.3.7, 2.2.8
+* **Ruby:** 2.5.1, 2.4.4, 2.3.7
 * **Rails:** 5.2.1, 5.1.6, 5.0.6, 4.2.9
 
 ### Backward-incompatible changes
 
-* Drop support for Rails 4.0 and 4.1 as well as Ruby 2.0 and 2.1, since they've
-  been end-of-lifed. The gem now supports Ruby 2.2+ and Rails 4.2+.
+* Drop support for Rails 4.0 and 4.1 as well as Ruby 2.0, 2.1, and 2.2, since
+  they've been end-of-lifed. The gem now supports Ruby 2.3+ and Rails 4.2+.
 
 * `use_before_filter`, `use_after_filter`, and `use_around_filter` are no longer
   usable when using shoulda-matchers under Rails 5.x, as the corresponding

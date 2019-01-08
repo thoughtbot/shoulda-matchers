@@ -30,9 +30,9 @@ complex, and error-prone.
 ## Compatibility
 
 Shoulda Matchers 4 is tested and supported against Rails 5.x, Rails 4.2, RSpec
-3.x, Minitest 5, Minitest 4, and Ruby 2.2+.
+3.x, Minitest 5, Minitest 4, and Ruby 2.3+.
 
-For Rails 4.0/4.1 and Ruby 2.0/2.1 compatibility, please use shoulda-matchers
+For Rails 4.0/4.1 and Ruby 2.0/2.1/2.2 compatibility, please use shoulda-matchers
 [3.1.2](https://github.com/thoughtbot/shoulda-matchers/releases/tag/v3.1.2).
 
 ## Getting started
