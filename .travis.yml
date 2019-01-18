@@ -4,16 +4,16 @@ cache: bundler
 script: "bundle exec rake"
 
 env:
-  - DATABASE_ADAPTER=sqlite3
+  # - DATABASE_ADAPTER=sqlite3
   - DATABASE_ADAPTER=postgresql
 
 rvm:
-  - 2.0
-  - 2.1
+  # - 2.0
+  # - 2.1
   - 2.2
 
 gemfile:
-  - gemfiles/4.0.0.gemfile
-  - gemfiles/4.0.1.gemfile
-  - gemfiles/4.1.gemfile
+  # - gemfiles/4.0.0.gemfile
+  # - gemfiles/4.0.1.gemfile
+  # - gemfiles/4.1.gemfile
   - gemfiles/4.2.gemfile
