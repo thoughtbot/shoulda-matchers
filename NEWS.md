@@ -1,3 +1,10 @@
+# 3.1.3
+
+### Improvements
+
+* Update `BigDecimal.new()` to use `BigDecimal()` and avoid deprecation warnings
+  in Ruby 2.6.
+
 # 3.1.2
 
 ### Deprecations
