@@ -82,7 +82,7 @@ GEM
     i18n (1.1.0)
       concurrent-ruby (~> 1.0)
     io-like (0.3.0)
-    jaro_winkler (1.5.1-x86_64-darwin-17)
+    jaro_winkler (1.5.1)
     jbuilder (2.7.0)
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
@@ -159,7 +159,7 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.19.0, < 2.0)
     rainbow (3.0.0)
-    rake (12.3.0)
+    rake (12.3.2)
     rb-fsevent (0.10.3)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
@@ -269,7 +269,7 @@ DEPENDENCIES
   pygments.rb
   rails (~> 5.2.1)
   rails-controller-testing (>= 1.0.1)
-  rake (= 12.3.0)
+  rake (= 12.3.2)
   redcarpet
   rspec (~> 3.6)
   rspec-rails (~> 3.6)
@@ -287,4 +287,4 @@ DEPENDENCIES
   zeus
 
 BUNDLED WITH
-   1.16.4
+   1.16.5
