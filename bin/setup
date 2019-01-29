@@ -164,7 +164,7 @@ install-dependencies() {
   fi
 
   banner 'Installing Ruby dependencies'
-  gem install bundler --conservative
+  gem install bundler -v '~> 1.0' --conservative
   bundle check || bundle install
   bundle exec appraisal install
 
