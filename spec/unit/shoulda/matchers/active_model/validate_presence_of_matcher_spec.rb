@@ -327,7 +327,7 @@ validation exception on failure, but this could not be proved.
     end
   end
 
-  if rails_4_x?
+  if rails_4_x? || rails_5_x?
     context 'against a pre-set password in a model that has_secure_password' do
       it 'raises a CouldNotSetPasswordError' do
         user_class = define_model :user, password_digest: :string do

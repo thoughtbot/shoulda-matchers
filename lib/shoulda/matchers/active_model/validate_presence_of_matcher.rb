@@ -147,9 +147,19 @@ module Shoulda
         private
 
         def secure_password_being_validated?
-          defined?(::ActiveModel::SecurePassword) &&
+          rails_lt_6_secure_password_being_validated? ||
+            rails_6_secure_password_being_validated?
+        end
+
+        def rails_lt_6_secure_password_being_validated?
+          defined?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation) &&
             @subject.class.ancestors.include?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation) &&
             @attribute == :password
+        end
+
+        def rails_6_secure_password_being_validated?
+          !defined?(::ActiveModel::SecurePassword) &&
+            @subject.respond_to?("#{@attribute}_digest")
         end
 
         def possibly_ignore_interference_by_writer
