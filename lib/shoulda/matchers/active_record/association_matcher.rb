@@ -272,6 +272,35 @@ module Shoulda
       #       should belong_to(:organization).required
       #     end
       #
+      # #### without_presence_validation
+      #
+      # Use `without_presence_validation` with `belong_to` to prevent the
+      # matcher from checking whether the association disallows nil (Rails 5+
+      # only). This can be helpful if you have a custom hook that always sets
+      # the association to a meaningful value:
+      #
+      #     class Person < ActiveRecord::Base
+      #       belongs_to :organization
+      #
+      #       before_validation :autoassign_organization
+      #
+      #       private
+      #
+      #       def autoassign_organization
+      #         self.organization = Organization.create!
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe Person
+      #       it { should belong_to(:organization).without_presence_validation }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should belong_to(:organization).without_presence_validation
+      #     end
+      #
       # ##### optional
       #
       # Use `optional` to assert that the association is allowed to be nil.
@@ -1089,6 +1118,11 @@ module Shoulda
 
         def join_table(join_table_name)
           @options[:join_table_name] = join_table_name
+          self
+        end
+
+        def without_validating_presence
+          remove_submatcher(AssociationMatchers::RequiredMatcher)
           self
         end
 

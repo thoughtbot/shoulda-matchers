@@ -91,6 +91,11 @@ is now:
   * *Original PR: [#956]*
   * *Original issues: [#870], [#861]*
 
+* Add `without_presence_validation` qualifier to `belong_to` to get around the
+  fact that `required` is assumed, above.
+
+  * *Original issues: [#1153], [#1154]*
+
 * Add `allow_nil` qualifier to `delegate_method`.
 
   * *Commit: [d49cfca]*
@@ -147,6 +152,8 @@ is now:
 [#956]: https://github.com/thoughtbot/shoulda-matchers/pulls/956
 [#870]: https://github.com/thoughtbot/shoulda-matchers/issues/870
 [#861]: https://github.com/thoughtbot/shoulda-matchers/issues/861
+[#1153]: https://github.com/thoughtbot/shoulda-matchers/issues/1153
+[#1154]: https://github.com/thoughtbot/shoulda-matchers/issues/1154
 [#954]: https://github.com/thoughtbot/shoulda-matchers/issues/954
 [#1074]: https://github.com/thoughtbot/shoulda-matchers/pulls/1074
 [#1075]: https://github.com/thoughtbot/shoulda-matchers/pulls/1075
