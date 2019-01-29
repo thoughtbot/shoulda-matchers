@@ -7,6 +7,7 @@ module Shoulda
           attr_reader :missing_option
 
           def initialize(attribute_name, optional)
+            @attribute_name = attribute_name
             @optional = optional
             @submatcher = ActiveModel::AllowValueMatcher.new(nil).
               for(attribute_name)
@@ -21,16 +22,38 @@ module Shoulda
             if submatcher_passes?(subject)
               true
             else
-              @missing_option =
-                'the association should have been defined ' +
-                "with `optional: #{optional}`, but was not"
+              @missing_option = 'and for the record '
+
+              missing_option <<
+                if optional
+                  'not to '
+                else
+                  'to '
+                end
+
+              missing_option << (
+                'fail validation if ' +
+                ":#{attribute_name} is unset; i.e., either the association " +
+                'should have been defined with `optional: ' +
+                "#{optional.inspect}`, or there "
+              )
+
+              missing_option <<
+                if optional
+                  'should not '
+                else
+                  'should '
+                end
+
+              missing_option << "be a presence validation on :#{attribute_name}"
+
               false
             end
           end
 
           private
 
-          attr_reader :optional, :submatcher
+          attr_reader :attribute_name, :optional, :submatcher
 
           def submatcher_passes?(subject)
             if optional

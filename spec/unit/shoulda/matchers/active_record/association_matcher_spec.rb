@@ -300,8 +300,10 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
 
                 message = format_message(<<-MESSAGE, one_line: true)
                   Expected Child to have a belongs_to association called parent
-                  (the association should have been defined with `required:
-                  true`, but was not)
+                  (and for the record to fail validation if :parent is unset;
+                  i.e., either the association should have been defined with
+                  `required: true`, or there should be a presence validation on
+                  :parent)
                 MESSAGE
 
                 expect(&assertion).to fail_with_message(message)
@@ -317,8 +319,9 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
 
             message = format_message(<<-MESSAGE, one_line: true)
               Expected Child to have a belongs_to association called parent
-              (the association should have been defined with `required:
-              true`, but was not)
+              (and for the record to fail validation if :parent is unset; i.e.,
+              either the association should have been defined with `required:
+              true`, or there should be a presence validation on :parent)
             MESSAGE
 
             expect(&assertion).to fail_with_message(message)
@@ -338,8 +341,10 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
 
                 message = format_message(<<-MESSAGE, one_line: true)
                   Expected Child to have a belongs_to association called parent
-                  (the association should have been defined with `required:
-                  false`, but was not)
+                  (and for the record not to fail validation if :parent is
+                  unset; i.e., either the association should have been defined
+                  with `required: false`, or there should not be a presence
+                  validation on :parent)
                 MESSAGE
 
                 expect(&assertion).to fail_with_message(message)
@@ -372,9 +377,11 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
                 end
 
                 message = format_message(<<-MESSAGE, one_line: true)
-                  Expected Child to have a belongs_to association called parent (the
-                  association should have been defined with `optional: true`, but
-                  was not)
+                  Expected Child to have a belongs_to association called parent
+                  (and for the record not to fail validation if :parent is
+                  unset; i.e., either the association should have been defined
+                  with `optional: true`, or there should not be a presence
+                  validation on :parent)
                 MESSAGE
 
                 expect(&assertion).to fail_with_message(message)
@@ -519,9 +526,10 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
           end
 
           message = format_message(<<-MESSAGE, one_line: true)
-            Expected Child to have a belongs_to association called parent (the
-            association should have been defined with `required: false`, but
-            was not)
+            Expected Child to have a belongs_to association called parent (and
+            for the record not to fail validation if :parent is unset; i.e.,
+            either the association should have been defined with `required:
+            false`, or there should not be a presence validation on :parent)
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -536,9 +544,11 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
           end
 
           message = format_message(<<-MESSAGE, one_line: true)
-            Expected Child to have a belongs_to association called parent (the
-            association should have been defined with `optional: true`, but
-            was not)
+            Expected Child to have a belongs_to association called parent
+            (and for the record not to fail validation if :parent is unset;
+            i.e., either the association should have been defined with
+            `optional: true`, or there should not be a presence validation on
+            :parent)
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -562,9 +572,10 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
             end
 
             message = format_message(<<-MESSAGE, one_line: true)
-              Expected Child to have a belongs_to association called parent (the
-              association should have been defined with `required: true`, but
-              was not)
+              Expected Child to have a belongs_to association called parent
+              (and for the record to fail validation if :parent is unset; i.e.,
+              either the association should have been defined with `required:
+              true`, or there should be a presence validation on :parent)
             MESSAGE
 
             expect(&assertion).to fail_with_message(message)
@@ -593,9 +604,10 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
             end
 
             message = format_message(<<-MESSAGE, one_line: true)
-              Expected Child to have a belongs_to association called parent (the
-              association should have been defined with `required: true`, but
-              was not)
+              Expected Child to have a belongs_to association called parent
+              (and for the record to fail validation if :parent is unset; i.e.,
+              either the association should have been defined with `required:
+              true`, or there should be a presence validation on :parent)
             MESSAGE
 
             expect(&assertion).to fail_with_message(message)
@@ -1231,10 +1243,12 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
             to have_one(:detail).required
         end
 
-        message =
-          'Expected Person to have a has_one association called detail ' +
-          '(the association should have been defined with `required: true`, ' +
-          'but was not)'
+        message = format_message(<<-MESSAGE, one_line: true)
+          Expected Person to have a has_one association called detail (and for
+          the record to fail validation if :detail is unset; i.e., either the
+          association should have been defined with `required: true`, or there
+          should be a presence validation on :detail)
+        MESSAGE
 
         expect(&assertion).to fail_with_message(message)
       end
