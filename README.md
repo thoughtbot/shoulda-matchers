@@ -1,26 +1,10 @@
 # Shoulda Matchers [![Gem Version][version-badge]][rubygems] [![Build Status][travis-badge]][travis] ![Downloads][downloads-badge]
 
-[![Join the chat at https://gitter.im/shoulda-matchers/Lobby](https://badges.gitter.im/shoulda-matchers/Lobby.svg)](https://gitter.im/shoulda-matchers/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 Shoulda Matchers provides RSpec- and Minitest-compatible one-liners that test
 common Rails functionality. These tests would otherwise be much longer, more
 complex, and error-prone.
 
-[View the official documentation for the latest version (3.1.1).][rubydocs]
-
-----
-
-### Note from the maintainer
-
-> Are you a fan of Shoulda Matchers? Are you interested in maintaining a popular
-> open-source project? If so, please contact me. Don't misunderstand me -- I
-> still use Shoulda Matchers on every project, but unfortunately, it has been a
-> long while since I've been able to give it the love it deserves, and I'd like
-> to hand the reins over to someone else who is able to do that. If you're
-> interested, I can be reached on Twitter as @mcmire or at
-> <elliot.winkler@gmail.com>. Thanks!
->
-> -- Elliot
+[View the official documentation for the latest version (3.1.3).][rubydocs]
 
 ----
 
@@ -326,7 +310,7 @@ Shoulda Matchers follows Semantic Versioning 2.0 as defined at
 
 ## License
 
-Shoulda Matchers is copyright © 2006-2016
+Shoulda Matchers is copyright © 2006-2018
 [thoughtbot, inc](https://thoughtbot.com/). It is free software,
 and may be redistributed under the terms specified in the
 [MIT-LICENSE](MIT-LICENSE) file.
