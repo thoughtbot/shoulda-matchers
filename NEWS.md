@@ -4,7 +4,7 @@ This release mainly brings the gem up to date with modern versions of Ruby and
 Rails and drops support for older, unsupported versions. The compatibility list
 is now:
 
-* **Ruby:** 2.5.1, 2.4.4, 2.3.7
+* **Ruby:** 2.6.0, 2.5.1, 2.4.4, 2.3.7
 * **Rails:** 5.2.1, 5.1.6, 5.0.6, 4.2.9
 
 ### Backward-incompatible changes

@@ -13,6 +13,7 @@ env:
   - DATABASE_ADAPTER=postgresql
 
 rvm:
+  - 2.6.0
   - 2.5.1
   - 2.4.4
   - 2.3.7
@@ -22,3 +23,8 @@ gemfile:
   - gemfiles/5.0.gemfile
   - gemfiles/5.1.gemfile
   - gemfiles/5.2.gemfile
+
+matrix:
+  exclude:
+    - rvm: 2.6.0
+      gemfile: gemfiles/4.2.gemfile
