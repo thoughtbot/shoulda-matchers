@@ -60,7 +60,7 @@ module UnitTests
         end
 
         UnitTests::ModelCreationStrategies::ActiveModel.call(
-          'Example',
+          class_name,
           columns,
           options,
           &block

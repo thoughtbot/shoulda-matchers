@@ -45,6 +45,9 @@ Metrics/LineLength:
     - "^[ ]*shared_context.+$"
     - "^[ ]*shared_examples_for.+$"
     - "^[ ]*it.+$"
+    - "^[ ]*'.+?' => '.+?',?$"
+    - "^[ ]*\".+?\" => \".+?\",?$"
+    - "^[ ]*.+?: .+?$"
 Metrics/MethodLength:
   Max: 30
 Naming/AccessorMethodName:

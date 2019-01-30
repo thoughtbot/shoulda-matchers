@@ -128,20 +128,16 @@ module Shoulda
           options
         )
           default_translation_keys = [
+            :"activemodel.errors.models.#{model_name}.attributes.#{attribute}.#{type}",
+            :"activemodel.errors.models.#{model_name}.#{type}",
+            :"activemodel.errors.messages.#{type}",
+            :"activerecord.errors.models.#{model_name}.attributes.#{attribute}.#{type}",
             :"activerecord.errors.models.#{model_name}.#{type}",
             :"activerecord.errors.messages.#{type}",
             :"errors.attributes.#{attribute}.#{type}",
             :"errors.messages.#{type}",
           ]
-          primary_translation_key = [
-            :activerecord,
-            :errors,
-            :models,
-            model_name,
-            :attributes,
-            attribute,
-            type,
-          ]
+          primary_translation_key = default_translation_keys.shift
           translate_options =
             { default: default_translation_keys }.merge(options)
           I18n.translate(primary_translation_key, translate_options)

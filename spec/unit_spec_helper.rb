@@ -42,6 +42,10 @@ RSpec.configure do |config|
   config.before(:all, type: :controller) do
     self.class.controller(ApplicationController) { }
   end
+
+  config.before(:suite) do
+    I18n.backend.send(:init_translations)
+  end
 end
 
 ActiveSupport::Deprecation.behavior = :stderr
