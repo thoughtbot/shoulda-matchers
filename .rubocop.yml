@@ -6,6 +6,8 @@ Layout/ConditionPosition:
   Enabled: false
 Layout/DotPosition:
   EnforcedStyle: trailing
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
 Lint/AmbiguousOperator:
   Enabled: false
 Lint/AmbiguousRegexpLiteral:
@@ -43,6 +45,8 @@ Metrics/LineLength:
     - "^[ ]*shared_context.+$"
     - "^[ ]*shared_examples_for.+$"
     - "^[ ]*it.+$"
+Metrics/MethodLength:
+  Max: 30
 Naming/AccessorMethodName:
   Enabled: false
 Naming/AsciiIdentifiers:
