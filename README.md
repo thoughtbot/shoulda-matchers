@@ -104,6 +104,8 @@ to use model matchers in certain example groups, you'll need to manually include
 them. Here's a good way of doing that:
 
 ```ruby
+require 'shoulda-matchers'
+
 RSpec.configure do |config|
   config.include(Shoulda::Matchers::ActiveModel, type: :model)
   config.include(Shoulda::Matchers::ActiveRecord, type: :model)
