@@ -144,7 +144,7 @@ module Shoulda
       # unique, but the scoped attributes are not unique either.
       #
       #     class Post < ActiveRecord::Base
-      #       validates :slug, uniqueness: true, scope: :journal_id
+      #       validates :slug, uniqueness: { scope: :journal_id }
       #     end
       #
       #     # RSpec
