@@ -121,7 +121,7 @@ module Shoulda
 
           possibly_ignore_interference_by_writer
 
-          if secure_password_being_validated?
+          if should_double_check_attribute?
             disallows_and_double_checks_value_of!(blank_value, @expected_message)
           else
             disallows_original_or_typecast_value?(blank_value, @expected_message)
@@ -133,7 +133,7 @@ module Shoulda
 
           possibly_ignore_interference_by_writer
 
-          if secure_password_being_validated?
+          if should_double_check_attribute?
             allows_and_double_checks_value_of!(blank_value, @expected_message)
           else
             allows_original_or_typecast_value?(blank_value, @expected_message)
@@ -146,24 +146,24 @@ module Shoulda
 
         private
 
-        def secure_password_being_validated?
-          rails_lt_6_secure_password_being_validated? ||
-            rails_6_secure_password_being_validated?
+        def should_double_check_attribute?
+          attribute_is_secure_password? ||
+            attribute_has_digest?
         end
 
-        def rails_lt_6_secure_password_being_validated?
+        def attribute_is_secure_password?
           defined?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation) &&
             @subject.class.ancestors.include?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation) &&
             @attribute == :password
         end
 
-        def rails_6_secure_password_being_validated?
+        def attribute_has_digest?
           !defined?(::ActiveModel::SecurePassword) &&
             @subject.respond_to?("#{@attribute}_digest")
         end
 
         def possibly_ignore_interference_by_writer
-          if secure_password_being_validated?
+          if should_double_check_attribute?
             ignore_interference_by_writer.default_to(when: :blank?)
           end
         end
