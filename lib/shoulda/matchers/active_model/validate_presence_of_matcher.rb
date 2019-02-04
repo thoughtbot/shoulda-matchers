@@ -157,7 +157,7 @@ module Shoulda
           ) &&
             @subject.class.ancestors.include?(
               ::ActiveModel::SecurePassword::InstanceMethodsOnActivation
-          ) &&
+            ) &&
             @attribute == :password
         end
 
