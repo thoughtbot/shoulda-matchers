@@ -152,8 +152,12 @@ module Shoulda
         end
 
         def attribute_is_secure_password?
-          defined?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation) &&
-            @subject.class.ancestors.include?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation) &&
+          defined?(
+            ::ActiveModel::SecurePassword::InstanceMethodsOnActivation
+          ) &&
+            @subject.class.ancestors.include?(
+              ::ActiveModel::SecurePassword::InstanceMethodsOnActivation
+          ) &&
             @attribute == :password
         end
 
