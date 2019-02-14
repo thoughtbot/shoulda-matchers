@@ -2,25 +2,6 @@ require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :model do
   shared_context 'for a generic attribute' do
-    def self.testing_values_of_option(option_name, &block)
-      [nil, true, false].each do |option_value|
-        context_name = "+ #{option_name}"
-        option_args = []
-        matches_or_not = ['matches', 'does not match']
-        to_or_not_to = [:to, :not_to]
-
-        unless option_value == nil
-          context_name << "(#{option_value})"
-          option_args = [option_value]
-        end
-
-        if option_value == false
-          matches_or_not.reverse!
-          to_or_not_to.reverse!
-        end
-      end
-    end
-
     context 'against an integer attribute' do
       it_behaves_like 'it supports in_array',
         possible_values: (1..5).to_a,
@@ -243,25 +224,28 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
   shared_examples_for 'it supports allow_nil' do |args|
     valid_values = args.fetch(:valid_values)
 
-    testing_values_of_option 'allow_nil' do |option_args, matches_or_not, to_or_not_to|
-      it "#{matches_or_not[0]} when the validation specifies allow_nil" do
-        builder = build_object_allowing(
-          valid_values,
-          validation_options: { allow_nil: true }
-        )
+    it 'matches when the validation specifies allow_nil' do
+      builder = build_object_allowing(
+        valid_values,
+        validation_options: { allow_nil: true },
+      )
 
-        __send__("expect_#{to_or_not_to[0]}_match_on_values", builder, valid_values) do |matcher|
-          matcher.allow_nil(*option_args)
-        end
+      # rubocop:disable Style/SymbolProc
+      expect_to_match_on_values(builder, valid_values) do |matcher|
+        matcher.allow_nil
+      end
+      # rubocop:enable Style/SymbolProc
+    end
+
+    it 'allows other qualifiers to be chained afterward' do
+      builder = build_object_allowing(valid_values)
+
+      using_matcher = -> do
+        matcher = validate_inclusion_of(builder.attribute)
+        matcher.allow_nil.allow_blank
       end
 
-      it "#{matches_or_not[1]} when the validation does not specify allow_nil" do
-        builder = build_object_allowing(valid_values)
-
-        __send__("expect_#{to_or_not_to[1]}_match_on_values", builder, valid_values) do |matcher|
-          matcher.allow_nil(*option_args)
-        end
-      end
+      expect(&using_matcher).not_to raise_error
     end
 
 =begin
@@ -298,25 +282,17 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
   shared_examples_for 'it supports allow_blank' do |args|
     valid_values = args.fetch(:valid_values)
 
-    testing_values_of_option 'allow_blank' do |option_args, matches_or_not, to_or_not_to|
-      it "#{matches_or_not[0]} when the validation specifies allow_blank" do
-        builder = build_object_allowing(
-          valid_values,
-          validation_options: { allow_blank: true }
-        )
+    it 'matches when the validation specifies allow_blank' do
+      builder = build_object_allowing(
+        valid_values,
+        validation_options: { allow_blank: true },
+      )
 
-        __send__("expect_#{to_or_not_to[0]}_match_on_values", builder, valid_values) do |matcher|
-          matcher.allow_blank(*option_args)
-        end
+      # rubocop:disable Style/SymbolProc
+      expect_to_match_on_values(builder, valid_values) do |matcher|
+        matcher.allow_blank
       end
-
-      it "#{matches_or_not[1]} when the validation does not specify allow_blank" do
-        builder = build_object_allowing(valid_values)
-
-        __send__("expect_#{to_or_not_to[1]}_match_on_values", builder, valid_values) do |matcher|
-          matcher.allow_blank(*option_args)
-        end
-      end
+      # rubocop:enable Style/SymbolProc
     end
 
 =begin
@@ -559,6 +535,32 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       expect(&assertion).to fail
     end
 
+    it_behaves_like 'it supports allow_nil', valid_values: possible_values do
+      it 'does not match when the validation does not specify allow_nil' do
+        builder = build_object_allowing(valid_values)
+
+        # rubocop:disable Style/SymbolProc
+        expect_not_to_match_on_values(builder, valid_values) do |matcher|
+          matcher.allow_nil
+        end
+        # rubocop:enable Style/SymbolProc
+      end
+    end
+
+    it_behaves_like 'it supports allow_blank', valid_values: possible_values do
+      it 'does not match when the validation does not specify allow_blank' do
+        builder = build_object_allowing(valid_values)
+
+        # rubocop:disable Style/SymbolProc
+        expect_not_to_match_on_values(builder, valid_values) do |matcher|
+          matcher.allow_blank
+        end
+        # rubocop:enable Style/SymbolProc
+      end
+    end
+
+    it_behaves_like 'it supports with_message', valid_values: possible_values
+
     if active_model_3_2?
       context '+ strict' do
         context 'when the validation specifies strict' do
@@ -678,6 +680,32 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         Range.new(possible_values.first, possible_values.last + 1)
       )
     end
+
+    it_behaves_like 'it supports allow_nil', valid_values: possible_values do
+      it 'matches when the validation does not specify allow_nil' do
+        builder = build_object_allowing(valid_values)
+
+        # rubocop:disable Style/SymbolProc
+        expect_to_match_on_values(builder, valid_values) do |matcher|
+          matcher.allow_nil
+        end
+        # rubocop:enable Style/SymbolProc
+      end
+    end
+
+    it_behaves_like 'it supports allow_blank', valid_values: possible_values do
+      it 'matches when the validation does not specify allow_blank' do
+        builder = build_object_allowing(valid_values)
+
+        # rubocop:disable Style/SymbolProc
+        expect_to_match_on_values(builder, valid_values) do |matcher|
+          matcher.allow_blank
+        end
+        # rubocop:enable Style/SymbolProc
+      end
+    end
+
+    it_behaves_like 'it supports with_message', valid_values: possible_values
 
     if active_model_3_2?
       context '+ strict' do
