@@ -261,7 +261,7 @@ Shoulda Matchers follows Semantic Versioning 2.0 as defined at
 
 ## License
 
-Shoulda Matchers is copyright © 2006-2018
+Shoulda Matchers is copyright © 2006-2019
 [thoughtbot, inc][thoughtbot-website]. It is free software,
 and may be redistributed under the terms specified in the
 [MIT-LICENSE](MIT-LICENSE) file.
