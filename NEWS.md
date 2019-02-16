@@ -5,7 +5,7 @@ Rails and drops support for older, unsupported versions. The compatibility list
 is now:
 
 * **Ruby:** 2.6.0, 2.5.1, 2.4.4, 2.3.7
-* **Rails:** 5.2.1, 5.1.6, 5.0.6, 4.2.9
+* **Rails:** 5.2.2, 5.1.6.1, 5.0.7, 4.2.10
 
 ### Backward-incompatible changes
 

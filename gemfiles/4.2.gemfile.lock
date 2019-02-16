@@ -68,7 +68,6 @@ GEM
       activesupport (>= 4.2.0)
     i18n (0.8.6)
     jaro_winkler (1.5.1)
-    jaro_winkler (1.5.1-x86_64-darwin-17)
     jbuilder (2.7.0)
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
@@ -242,7 +241,7 @@ DEPENDENCIES
   pry
   pry-byebug
   pygments.rb
-  rails (~> 4.2.9)
+  rails (~> 4.2.10)
   rake (= 12.3.2)
   redcarpet
   rspec (~> 3.6)
@@ -261,4 +260,4 @@ DEPENDENCIES
   zeus
 
 BUNDLED WITH
-   1.16.5
+   1.17.2
