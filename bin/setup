@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+cd "$(dirname "$(dirname "$0")")"
+
+required_ruby_version=$(cat .ruby-version)
+current_ruby_version=$(ruby -v | perl -ne '/(\d+\.\d+\.\d+)/ && print "$1\n"')
+required_node_version=$(cat .nvmrc)
+current_node_version=$(node -v | sed -e 's/^v//')
+
+banner() {
+  echo -e "\033[34m== $@ ==\033[0m"
+}
+
+has-executable() {
+  type "$1" &>/dev/null
+}
+
+if [[ -e $NVM_DIR/nvm.sh ]]; then
+  source $NVM_DIR/nvm.sh
+fi
+
+if [[ $current_ruby_version != $required_ruby_version ]]; then
+  banner "Installing Ruby $required_ruby_version"
+  if has-executable rbenv; then
+    rbenv install $required_ruby_version
+  else
+    echo "Please install rbenv using homebrew, load a new shell, and then re-run this script."
+    exit 1
+  fi
+fi
+
+if [[ $current_node_version != $required_node_version ]]; then
+  banner "Installing Node $required_node_version"
+  if has-executable nvm; then
+    nvm install $required_node_version
+    nvm use $required_node_version
+  else
+    echo "Please install nvm using homebrew, load a new shell, and then re-run this script."
+    exit 1
+  fi
+fi
+
+if ! has-executable yarn; then
+  banner "Installing Yarn"
+  brew install yarn
+fi
+
+banner "Installing frontend dependencies"
+yarn install
+
+banner "Installing backend dependencies"
+bundle install

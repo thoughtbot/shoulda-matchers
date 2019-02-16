@@ -46,7 +46,7 @@ nav {
 
 .logo {
   @include size(em(250) em(65));
-  background: image-url("shoulda-matchers-logo.svg") no-repeat;
+  background: url("../../images/shoulda-matchers-logo.svg") no-repeat;
   display: inline-block;
   float: left;
   margin-top: em(19);
@@ -95,7 +95,7 @@ nav {
 
 .main-header {
   @include size(auto em(720));
-  background: image-url('background-header.png') no-repeat top;
+  background: url('../../images/background-header.png') no-repeat top;
   background-size: cover;
 
   @include media($medium-large-screen) {
@@ -162,7 +162,7 @@ nav {
   @extend .emoji;
   @include size(em(75));
   @include transition(all .2s ease-in-out);
-  background: image-url("emoji-thumb.svg") no-repeat;
+  background: url("../../images/emoji-thumb.svg") no-repeat;
 
   &:hover {
     @include size(em(80));
@@ -173,7 +173,7 @@ nav {
   @extend .emoji;
   @include size(em(70));
   @include transition(all .2s ease-in-out);
-  background: image-url("emoji-thumb-down.svg") no-repeat;
+  background: url("../../images/emoji-thumb-down.svg") no-repeat;
 
   &:hover {
     @include size(em(75));
@@ -237,9 +237,10 @@ nav {
 .icon {
   @include size(em(70) em(70));
   margin: 0 auto;
+  opacity: 0;
 
   &.animated {
-    @include animation(fadeIn 2s);
+    @include animation(fadeIn 2s forwards);
   }
 }
 

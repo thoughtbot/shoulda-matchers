@@ -1,0 +1,20 @@
+!!!
+%html
+  %head
+    %meta(charset="utf-8")
+    %meta(name="description" content="Shoulda Matchers Gem")
+    %meta(name="keywords" content="Ruby,Gem")
+    %meta(name="author" content="Shoulda Matchers")
+    %meta(content="IE=edge,chrome=1" http-equiv="X-UA-Compatible")
+    %title= current_page.data.title || "The Middleman"
+    = stylesheet_link_tag "bundle.css"
+    %script(src="//use.typekit.net/wch8lhz.js")
+    :javascript
+      try {
+        Typekit.load();
+      } catch(e) {
+        // don't worry, be happy
+      }
+  %body(class="#{page_classes}")
+    = yield
+    = javascript_include_tag "bundle.js"

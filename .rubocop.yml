@@ -1,0 +1,188 @@
+AllCops:
+  TargetRubyVersion: 2.4
+Layout/AlignParameters:
+  EnforcedStyle: with_fixed_indentation
+Layout/ConditionPosition:
+  Enabled: false
+Layout/DotPosition:
+  EnforcedStyle: trailing
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+Lint/AmbiguousOperator:
+  Enabled: false
+Lint/AmbiguousRegexpLiteral:
+  Enabled: false
+Lint/AssignmentInCondition:
+  Enabled: false
+Lint/DeprecatedClassMethods:
+  Enabled: false
+Lint/ElseLayout:
+  Enabled: false
+Lint/HandleExceptions:
+  Enabled: false
+Lint/IndentHeredoc:
+  Enabled: false
+Lint/LiteralInInterpolation:
+  Enabled: false
+Lint/Loop:
+  Enabled: false
+Lint/ParenthesesAsGroupedExpression:
+  Enabled: false
+Lint/RequireParentheses:
+  Enabled: false
+Lint/UnderscorePrefixedVariableName:
+  Enabled: false
+Lint/Void:
+  Enabled: false
+Metrics/BlockLength:
+  Enabled: false
+Metrics/ClassLength:
+  Enabled: false
+Metrics/LineLength:
+  IgnoredPatterns:
+    - "^[ ]*describe.+$"
+    - "^[ ]*context.+$"
+    - "^[ ]*shared_context.+$"
+    - "^[ ]*shared_examples_for.+$"
+    - "^[ ]*it.+$"
+    - "^[ ]*'.+?' => '.+?',?$"
+    - "^[ ]*\".+?\" => \".+?\",?$"
+    - "^[ ]*.+?: .+?$"
+Metrics/MethodLength:
+  Max: 30
+Naming/AccessorMethodName:
+  Enabled: false
+Naming/AsciiIdentifiers:
+  Enabled: false
+Naming/BinaryOperatorParameterName:
+  Enabled: false
+Style/ClassVars:
+  Enabled: false
+Style/ColonMethodCall:
+  Enabled: false
+Naming/FileName:
+  Enabled: false
+Rails:
+  Enabled: true
+Rails/Delegate:
+  Enabled: false
+Rails/HttpPositionalArguments:
+  Enabled: false
+Style/Alias:
+  Enabled: false
+Style/ArrayJoin:
+  Enabled: false
+Style/AsciiComments:
+  Enabled: false
+Style/Attr:
+  Enabled: false
+Style/CaseEquality:
+  Enabled: false
+Style/CharacterLiteral:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false
+Style/CollectionMethods:
+  PreferredMethods:
+    find: detect
+    reduce: inject
+    collect: map
+    find_all: select
+Style/CommentAnnotation:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Style/DoubleNegation:
+  Enabled: false
+Style/EachWithObject:
+  Enabled: false
+Style/EmptyLiteral:
+  Enabled: false
+Style/Encoding:
+  Enabled: false
+Style/EvenOdd:
+  Enabled: false
+Style/FlipFlop:
+  Enabled: false
+Style/FormatString:
+  Enabled: false
+Style/FrozenStringLiteralComment:
+  Enabled: false
+Style/GlobalVars:
+  Enabled: false
+Style/GuardClause:
+  Enabled: false
+Style/IfUnlessModifier:
+  Enabled: false
+Style/IfWithSemicolon:
+  Enabled: false
+Style/InlineComment:
+  Enabled: false
+Style/Lambda:
+  Enabled: false
+Style/LambdaCall:
+  Enabled: false
+Style/LineEndConcatenation:
+  Enabled: false
+Style/MethodCalledOnDoEndBlock:
+  Enabled: false
+Style/ModuleFunction:
+  Enabled: false
+Style/NegatedIf:
+  Enabled: false
+Style/NegatedWhile:
+  Enabled: false
+Style/Next:
+  Enabled: false
+Style/NilComparison:
+  Enabled: false
+Style/Not:
+  Enabled: false
+Style/NumericLiterals:
+  Enabled: false
+Style/NumericPredicate:
+  Enabled: false
+Style/OneLineConditional:
+  Enabled: false
+Style/PercentLiteralDelimiters:
+  Enabled: false
+Style/PerlBackrefs:
+  Enabled: false
+Style/PreferredHashMethods:
+  Enabled: false
+Style/Proc:
+  Enabled: false
+Style/RaiseArgs:
+  Enabled: false
+Style/RegexpLiteral:
+  Enabled: false
+Style/SelfAssignment:
+  Enabled: false
+Style/SignalException:
+  Enabled: false
+Style/SingleLineBlockParams:
+  Enabled: false
+Style/SingleLineMethods:
+  Enabled: false
+Style/SpecialGlobalVars:
+  Enabled: false
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+Style/SymbolArray:
+  Enabled: false
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: consistent_comma
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+Style/TrivialAccessors:
+  Enabled: false
+Style/WhenThen:
+  Enabled: false
+Style/WhileUntilModifier:
+  Enabled: false
+Style/WordArray:
+  Enabled: false
+Style/VariableInterpolation:
+  Enabled: false

@@ -1,10 +1,12 @@
 .bundle
 .gh-pages
-.thoughtbot-gh-pages
 .mcmire-gh-pages
+.thoughtbot-gh-pages
+.tmp
 .yardoc
 coverage
 build
 doc
+node_modules
 pkg
 tmp

@@ -3,11 +3,13 @@
 This is the branch where the site for shoulda-matchers (located at
 <http://matchers.shoulda.io>) is kept.
 
-Here's how to make changes:
+## Developing
 
-* Install dependencies: `bundle install`
-* Start the Middleman server: `bundle exec middleman`
-* Make changes to files in source/
+* Install dependencies: `bin/setup`
+* Start Middleman and Webpack: `bin/server`
+* Make changes to files in `source/` and `assets/`
 * View the changes at <http://localhost:4567>
-* When finished, publish your changes by running `rake site:publish`
+* When finished, try building the site using `bundle exec middleman build`
+* Assuming all goes well, publish your changes by running `bundle exec rake
+  site:publish`
 * That's it!

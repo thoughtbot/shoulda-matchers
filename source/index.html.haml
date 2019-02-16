@@ -25,11 +25,11 @@ title: Shoulda Matchers
               :preserve
                 describe User do
                   it 'is not valid if its username is the same as another user within the same account' do
-                    _existing_user = FactoryGirl.create(:user,
+                    _existing_user = FactoryBot.create(:user,
                       username: 'johnsmith',
                       account_id: 1
                     )
-                    user = FactoryGirl.build(:user,
+                    user = FactoryBot.build(:user,
                       username: 'johnsmith',
                       account_id: 1
                     )
@@ -37,11 +37,11 @@ title: Shoulda Matchers
                   end
 
                   it 'is valid if its username is the same as another user within the same account, but for different case' do
-                    _existing_user = FactoryGirl.create(:user,
+                    _existing_user = FactoryBot.create(:user,
                       username: 'johnsmith',
                       account_id: 1
                     )
-                    user = FactoryGirl.build(:user,
+                    user = FactoryBot.build(:user,
                       username: 'JohnSmith',
                       account_id: 1
                     )
@@ -62,7 +62,7 @@ title: Shoulda Matchers
               :preserve
                 describe User do
                   context 'validations' do
-                    before { FactoryGirl.build(:user) }
+                    before { FactoryBot.build(:user) }
 
                     it do
                       should validate_uniqueness_of(:username).
@@ -75,15 +75,15 @@ title: Shoulda Matchers
 %section.benefits
   .wrapper
     .benefit
-      =image_tag 'clock-icon.svg', class: "icon animate"
+      =image_tag 'clock-icon.svg', class: "icon", data: {id: "animate-when-visible"}
       %h4 Save Time
       %p Spend less time writing long, complex, and error-prone tests
     .benefit
-      =image_tag 'write-icon.svg', class: "icon animate"
+      =image_tag 'write-icon.svg', class: "icon", data: {id: "animate-when-visible"}
       %h4 Write More Tests
       %p Test thoroughly by using over 30 pre-existing matchers, developed over time
     .benefit
-      =image_tag 'check-icon.svg', class: "icon animate"
+      =image_tag 'check-icon.svg', class: "icon", data: {id: "animate-when-visible"}
       %h4 More Readable Results
       %p Get clear, readable, and actionable messages from the tests you run
 
@@ -91,19 +91,19 @@ title: Shoulda Matchers
   .wrapper
     %h2.section-header
       Extensive matchers for ActiveModel, ActiveRecord, and ActionController
-    .vertical-tabs-container.js-vertical-tabs-container
+    .vertical-tabs-container{data: {id: "tabs-container"}}
       .vertical-tabs
-        %a.js-vertical-tab.vertical-tab.is-active{:href => "#tab1"} ActiveModel validation matchers
-        %a.js-vertical-tab.vertical-tab{:href => "#tab2"} Other ActiveModel matchers
-        %a.js-vertical-tab.vertical-tab{:href => "#tab3"} ActiveRecord validation matchers
-        %a.js-vertical-tab.vertical-tab{:href => "#tab4"} ActiveRecord association matchers
-        %a.js-vertical-tab.vertical-tab{:href => "#tab5"} ActionController matchers
-        %a.js-vertical-tab.vertical-tab{:href => "#tab6"} Independent matchers
+        %a.vertical-tab.is-active{href: "#tab1", data: {id: "sidebar-tab"}} ActiveModel validation matchers
+        %a.vertical-tab{href: "#tab2", data: {id: "sidebar-tab"}} Other ActiveModel matchers
+        %a.vertical-tab{href: "#tab3", data: {id: "sidebar-tab"}} ActiveRecord validation matchers
+        %a.vertical-tab{href: "#tab4", data: {id: "sidebar-tab"}} ActiveRecord association matchers
+        %a.vertical-tab{href: "#tab5", data: {id: "sidebar-tab"}} ActionController matchers
+        %a.vertical-tab{href: "#tab6", data: {id: "sidebar-tab"}} Independent matchers
       .vertical-tab-content-container
         #tab1.vertical-tab-accordion
-          %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "#tab3"}
+          %a.vertical-tab-accordion-heading.is-active{href: "#tab1", data: {id: "accordion-tab"}}
             ActiveModel validation matchers
-          .js-vertical-tab-content.vertical-tab-content.is-active
+          .vertical-tab-content.is-active{data: {id: "tab-content"}}
             %p
               Example:
               %code validate_presence_of
@@ -136,9 +136,9 @@ title: Shoulda Matchers
                       should validate_presence_of(:arms)
                     end
         #tab2.vertical-tab-accordion
-          %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "#tab4"}
+          %a.vertical-tab-accordion-heading{href: "#tab2", data: {id: "accordion-tab"}}
             Other ActiveModel matchers
-          .js-vertical-tab-content.vertical-tab-content
+          .vertical-tab-content{data: {id: "tab-content"}}
             %p
               Example:
               %code have_secure_password
@@ -172,9 +172,9 @@ title: Shoulda Matchers
                       should have_secure_password
                     end
         #tab3.vertical-tab-accordion
-          %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading.is-active{:href => "#tab1"}
+          %a.vertical-tab-accordion-heading.is-active{href: "#tab3", data: {id: "accordion-tab"}}
             ActiveRecord validation matchers
-          .js-vertical-tab-content.vertical-tab-content
+          .vertical-tab-content{data: {id: "tab-content"}}
             %p
               Example:
               %code validate_uniqueness_of
@@ -197,7 +197,7 @@ title: Shoulda Matchers
                   :preserve
                     describe Post do
                       context 'validations' do
-                        subject { FactoryGirl.build(:post) }
+                        subject { FactoryBot.build(:post) }
 
                         it do
                           should validate_uniqueness_of(:slug).
@@ -214,7 +214,7 @@ title: Shoulda Matchers
                   :preserve
                     class PostTest &lt; ActiveSupport::TestCase
                       context 'validations' do
-                        subject { FactoryGirl.build(:post) }
+                        subject { FactoryBot.build(:post) }
 
                         should validate_uniqueness_of(:slug).
                           scoped_to(:user_id).
@@ -223,9 +223,9 @@ title: Shoulda Matchers
                       end
                     end
         #tab4.vertical-tab-accordion
-          %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "#tab2"}
+          %a.vertical-tab-accordion-heading{href: "#tab4", data: {id: "accordion-tab"}}
             ActiveRecord association matchers
-          .js-vertical-tab-content.vertical-tab-content
+          .vertical-tab-content{data: {id: "tab-content"}}
             %p
               Example:
               %code have_many
@@ -265,9 +265,9 @@ title: Shoulda Matchers
                         class_name('Person')
                     end
         #tab5.vertical-tab-accordion
-          %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "#tab5"}
+          %a.vertical-tab-accordion-heading{href: "#tab5", data: {id: "accordion-tab"}}
             ActionController matchers
-          .js-vertical-tab-content.vertical-tab-content
+          .vertical-tab-content{data: {id: "tab-content"}}
             %p
               Example:
               %code rescue_from
@@ -307,9 +307,9 @@ title: Shoulda Matchers
                         with(:render_not_found)
                     end
         #tab6.vertical-tab-accordion
-          %a.js-vertical-tab-accordion-heading.vertical-tab-accordion-heading{:href => "#tab6"}
+          %a.vertical-tab-accordion-heading{href: "#tab6", data: {id: "accordion-tab"}}
             Independent matchers
-          .js-vertical-tab-content.vertical-tab-content
+          .vertical-tab-content{data: {id: "tab-content"}}
             %p
               Example:
               %code delegate_method
@@ -390,9 +390,9 @@ title: Shoulda Matchers
     %li route
     %li set_session
     %li set_flash
-    %li use_after_action / use_after_filter
-    %li use_around_action / use_around_filter
-    %li use_before_action / use_before_filter
+    %li use_after_action
+    %li use_around_action
+    %li use_before_action
 
   .list-wrapper
     %h4 Independent Matchers
@@ -403,5 +403,10 @@ title: Shoulda Matchers
     .footer-buttons
       %a.btn-github(href="https://github.com/thoughtbot/shoulda-matchers#installation" target="_blank")
         Get full installation instructions on GitHub
-    %p Shoulda Matchers is maintained and funded by thoughtbot, inc. Tweet your questions or suggestions to <a href='https://twitter.com/mcmire' target='_blank'>@mcmire</a> or <a href='https://twitter.com/thoughtbot' target='_blank'>@thoughtbot</a>
-    %p Copyright © 2014 thoughtbot, inc.
+    %p
+      Shoulda Matchers is maintained and funded by thoughtbot, inc. Tweet your
+      questions or suggestions to <a href='https://twitter.com/mcmire'
+      target='_blank'>@mcmire</a> or <a href='https://twitter.com/thoughtbot'
+      target='_blank'>@thoughtbot</a>
+    %p
+      Copyright © 2014-2019 thoughtbot, inc.
