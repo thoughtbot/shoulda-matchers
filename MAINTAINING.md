@@ -8,7 +8,7 @@ be too low-level for contributors.
 
 ## Communication
 
-We use a combination of methods to communicate with each other:
+We have several ways that we can communicate with each other:
 
 * In planning major releases, it can be helpful to create a **new issue**
   outlining the changes as well as steps needed to launch the release. This
@@ -53,9 +53,9 @@ workflow is as follows:
 Besides the matchers, there are files in `lib` which you may need to reference
 or update:
 
-* `lib/shoulda/matchers/doublespeak*` -- a small handrolled mocking library
+* `lib/shoulda/matchers/doublespeak*` — a small handrolled mocking library
   which is used by the `permit` matcher
-* `lib/shoulda/matchers/util*` -- extra methods which are used in various places
+* `lib/shoulda/matchers/util*` — extra methods which are used in various places
   to detect library versions, wrap/indent text, and more
 
 ## Updating the changelog
@@ -113,11 +113,14 @@ open doc/index.html
 The docfiles that YARD generates are published to the docsite, which is located
 at:
 
-<https://matchers.shoulda.io/docs>
+<https://matchers.shoulda.io>
 
-The docsite is hosted on GitHub Pages*. As such, the `gh-pages` branch hosts the
-code for the docsite. This branch is written to automatically by the
-`docs:publish` and `docs:publish_latest` tasks.
+The docsite is hosted on GitHub Pages*. As such, the `gh-pages` branch hosts its
+code. Usually you don't need to update this branch directly unless you want to
+make changes to the homepage itself. As for the *documentation*, it is hosted
+one level deeper:
+
+<https://matchers.shoulda.io/docs>
 
 The URL above actually links to a bare-bones HTML page which merely serves to
 automatically redirect the visitor to the docs for the latest published version
@@ -174,7 +177,7 @@ Releasing a new version is very simple:
 ### Re-publishing docs
 
 In general you'll use the `release` task to update the docsite, but there may be
-a situation where you'll need to do it manually.
+situations where you'll need to do it manually.
 
 You can re-publish the docs for the latest version (as governed by
 `lib/shoulda/matchers/version.rb`) by running:
@@ -183,13 +186,13 @@ You can re-publish the docs for the latest version (as governed by
 bundle exec rake docs:publish_latest
 ```
 
-This will update the version to which the docsite auto-redirects to the latest
-version. For instance, if the latest version were 4.0.0, this command would
-publish the docs at <https://matchers.shoulda.io/docs/v4.0.0> but redirect
+This will update the auto-redirect on the index page to the latest version. For
+instance, if the latest version were 4.0.0, this command would publish the docs
+at <https://matchers.shoulda.io/docs/v4.0.0> and simultaneously redirect
 <https://matchers.shoulda.io/docs> to this location.
 
-However, if you want to publish the docs for a version and at the same
-time manually set the auto-redirected version, you can run this instead:
+However, if you want to publish the docs for a version but manually set the
+auto-redirected version, you can run this instead:
 
 ```bash
 bundle exec rake docs:publish[version, latest_version]
@@ -208,9 +211,9 @@ This would publish the docs for 4.0.0 at
 
 ## Addendum: Labels
 
-In order to corral the issue and PR backlog, we've found
-[labels] to be useful for cataloguing and tracking progress purposes. Over time
-we've added quite a collection of labels. Here's a quick list:
+Considering that we work on the gem in our spare time, we've found [labels] to
+be useful for cataloguing and marking progress. Over time we've added quite a
+collection of labels. Here's a quick list:
 
 [labels]: https://github.com/thoughtbot/shoulda-matchers/labels
 
@@ -218,24 +221,24 @@ we've added quite a collection of labels. Here's a quick list:
 
 * **Issue: Bug**
 * **Issue: Feature Request**
-* **Issue: Need to Investigate** -- if we don't know whether a bug is legitimate
+* **Issue: Need to Investigate** — if we don't know whether a bug is legitimate
   or not
-* **Issue: PR Needed** -- perhaps unnecessary, but it does signal to the
+* **Issue: PR Needed** — perhaps unnecessary, but it does signal to the
   community that we'd love a PR
 
 ### Labels for PRs
 
 * **PR: Bugfix**
 * **PR: Feature**
-* **PR: Good to Merge** -- most of the time not necessary, but can be helpful in
+* **PR: Good to Merge** — most of the time not necessary, but can be helpful in
   a code freeze before a release to mark PRs that we will include in the next
   release
-* **PR: In Progress** -- used to mark PRs that are still being worked on by the
+* **PR: In Progress** — used to mark PRs that are still being worked on by the
   PR author
 * **PR: Needs Documentation**
 * **PR: Needs Review**
 * **PR: Needs Tests**
-* **PR: Needs Updates Before Merge** -- along the same lines as the other
+* **PR: Needs Updates Before Merge** — along the same lines as the other
   "Needs" tags, but more generic
 
 ### Generic labels
