@@ -3,11 +3,13 @@
 [![shoulda-matchers][logo]][website]
 
 Shoulda Matchers provides RSpec- and Minitest-compatible one-liners that test
-common Rails functionality. These tests would otherwise be much longer, more
-complex, and error-prone.
+common Rails functionality. These tests, if written by hand, would be much
+longer, more complex, and error-prone.
 
-* [Documentation](#documentation)
-* [Compatibility](#compatibility)
+**[View the documentation for the latest version (4.0.0.rc1).][rubydocs]**
+
+---
+
 * [Getting started](#getting-started)
    * [RSpec](#rspec)
       * [Availability of matchers in various example groups](#availability-of-matchers-in-various-example-groups)
@@ -18,22 +20,11 @@ complex, and error-prone.
    * [ActiveRecord matchers](#activerecord-matchers)
    * [ActionController matchers](#actioncontroller-matchers)
    * [Independent matchers](#independent-matchers)
+* [Compatibility](#compatibility)
 * [Contributing](#contributing)
 * [Versioning](#versioning)
 * [License](#license)
 * [About thoughtbot](#about-thoughtbot)
-
-## Documentation
-
-[View the official documentation for the latest version (4.0.0.rc1).][rubydocs]
-
-## Compatibility
-
-Shoulda Matchers 4 is tested and supported against Rails 5.x, Rails 4.2, RSpec
-3.x, Minitest 5, Minitest 4, and Ruby 2.3+.
-
-For Rails 4.0/4.1 and Ruby 2.0/2.1/2.2 compatibility, please use shoulda-matchers
-[3.1.2](https://github.com/thoughtbot/shoulda-matchers/releases/tag/v3.1.2).
 
 ## Getting started
 
@@ -43,8 +34,8 @@ Start by including `shoulda-matchers` in your Gemfile:
 
 ```ruby
 group :test do
-  gem 'shoulda-matchers', '4.0.0.rc1'
-  gem 'rails-controller-testing' # If you are using Rails 5.x
+  gem 'shoulda-matchers'
+  gem 'rails-controller-testing'
 end
 ```
 
@@ -53,30 +44,25 @@ Now you need to tell the gem a couple of things:
 * Which test framework you're using
 * Which portion of the matchers you want to use
 
-You can supply this information by using a configuration block. Place the
-following in `rails_helper.rb`:
+You can supply this information by providing a configuration block. Where this
+goes and what this contains depends on your project.
+
+#### Rails apps
+
+Assuming you are testing a Rails app, simply place this at the bottom of
+`spec/rails_helper.rb` (or in a support file if you so choose):
 
 ```ruby
 Shoulda::Matchers.configure do |config|
   config.integrate do |with|
-    # Choose a test framework:
     with.test_framework :rspec
-    with.test_framework :minitest
-    with.test_framework :minitest_4
-    with.test_framework :test_unit
-
-    # Choose one or more libraries:
-    with.library :active_record
-    with.library :active_model
-    with.library :action_controller
-    # Or, choose all of the above:
     with.library :rails
   end
 end
 ```
 
-Now you can use matchers in your tests. For instance, a model test might look
-like this:
+Now you're ready to use matchers in your tests! For instance, you might decide
+to add a matcher to one of your models:
 
 ```ruby
 RSpec.describe Person, type: :model do
@@ -84,10 +70,41 @@ RSpec.describe Person, type: :model do
 end
 ```
 
+#### Non-Rails apps
+
+If your project isn't a Rails app, but you still make use of ActiveRecord or
+ActiveModel, you can still use this gem too! In that case, you'll want to place
+the following configuration at the bottom of `spec/spec_helper.rb`:
+
+```ruby
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+
+    # Keep as many of these lines as are necessary:
+    with.library :active_record
+    with.library :active_model
+  end
+end
+```
+
+Now you're ready to use matchers in your tests! For instance, you might decide
+to add a matcher to one of your models:
+
+```ruby
+RSpec.describe Person, type: :model do
+  it { should validate_presence_of(:name) }
+end
+```
+
+For more of an idea of what you can use, [see the list of matchers
+below](#matchers).
+
 #### Availability of matchers in various example groups
 
-Since shoulda-matchers provides four categories of matchers, there are four
-different levels where you can use these matchers:
+Regardless of your project, it's important to keep in mind that since
+shoulda-matchers provides four categories of matchers, there are four different
+levels where you can use these matchers:
 
 * ActiveRecord and ActiveModel matchers are available only in model example
   groups, i.e., those tagged with `type: :model` or in files located under
@@ -99,7 +116,7 @@ different levels where you can use these matchers:
   tagged with `type: :routing` or in files located under `spec/routing`.
 * Independent matchers are available in all example groups.
 
-**If you are using ActiveModel or ActiveRecord outside of Rails** and you want
+**⚠️ If you are using ActiveModel or ActiveRecord outside of Rails** and you want
 to use model matchers in certain example groups, you'll need to manually include
 them. Here's a good way of doing that:
 
@@ -124,8 +141,8 @@ end
 
 Note that in this README and throughout the documentation we're using the
 `should` form of RSpec's one-liner syntax over `is_expected.to`. The `should`
-form works regardless of how you've configured RSpec -- meaning you can still
-use it even when using the `expect` syntax. But if you prefer to use
+form works regardless of how you've configured RSpec — meaning you can still use
+it even when using the `expect` syntax. But if you prefer to use
 `is_expected.to`, you can do that too:
 
 ```ruby
@@ -140,8 +157,8 @@ Shoulda Matchers was originally a component of [Shoulda][shoulda], a gem that
 also provides `should` and `context` syntax via
 [`shoulda-context`][shoulda-context].
 
-At the moment, `shoulda` has not been updated to support `shoulda-matchers` 3.x and 4.x,
-so you'll want to add the following to your Gemfile:
+At the moment, `shoulda` has not been updated to support `shoulda-matchers` 3.x
+and 4.x, so you'll want to add the following to your Gemfile:
 
 ```ruby
 group :test do
@@ -150,14 +167,17 @@ group :test do
 end
 ```
 
-Now you can use matchers in your tests. For instance a model test might look
-like this:
+Now you're ready to use matchers in your tests! For instance, you might decide
+to add a matcher to one of your models:
 
 ```ruby
 class PersonTest < ActiveSupport::TestCase
   should validate_presence_of(:name)
 end
 ```
+
+For more of an idea of what you can use, [see the list of matchers
+below](#matchers).
 
 ## Matchers
 
@@ -244,6 +264,16 @@ end
 * **[delegate_method](lib/shoulda/matchers/independent/delegate_method_matcher.rb)**
   tests that an object forwards messages to other, internal objects by way of
   delegation.
+
+## Compatibility
+
+Shoulda Matchers 4 is tested and supported against Rails 5.x, Rails 4.2, RSpec
+3.x, Minitest 5, Minitest 4, and Ruby 2.3+.
+
+For Rails 4.0/4.1 and Ruby 2.0/2.1/2.2 compatibility, please use
+[shoulda-matchers 3.1.3][v3.1.3].
+
+[v3.1.3]: https://github.com/thoughtbot/shoulda-matchers/releases/tag/v3.1.3
 
 ## Contributing
 
