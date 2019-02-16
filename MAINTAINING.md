@@ -58,6 +58,31 @@ or update:
 * `lib/shoulda/matchers/util*` — extra methods which are used in various places
   to detect library versions, wrap/indent text, and more
 
+## Running tests
+
+The CONTRIBUTING guide shows how to use Appraisal to run tests. This works well
+if you are hopping in, making a few changes, and hopping right out, but if you
+plan on working on a feature or bug, there is often a faster alternative, at
+least for unit tests: [Zeus]. Zeus works by preloading the Rails environment so
+that running unit tests are a lot faster. We also have it set up to
+automatically select the latest Appraisal so you don't have to provide that.
+
+You'll want to start by running `zeus start` in one shell. Then in another
+shell, instead of using `bundle exec rspec` to run tests, you'll use `bundle
+exec zeus rspec`. So for instance, you might say:
+
+```bash
+bundle exec zeus rspec spec/unit/shoulda/matchers/active_model/validate_inclusion_of_matcher_spec.rb
+```
+
+This is long to say, but it helps if you add an alias to your shell:
+
+```bash
+alias zr="bundle exec zeus rspec"
+```
+
+[Zeus]: https://github.com/burke/zeus
+
 ## Updating the changelog
 
 After every user-facing change makes it into master, we make a note of it in the
@@ -122,10 +147,10 @@ one level deeper:
 
 <https://matchers.shoulda.io/docs>
 
-The URL above actually links to a bare-bones HTML page which merely serves to
-automatically redirect the visitor to the docs for the latest published version
-of the gem. This version is hardcoded in the HTML page, but is also updated
-automatically by the `docs:publish` and `docs:publish_latest` tasks.
+The URL above actually links to a HTML page which merely serves to automatically
+redirect the visitor to the docs for the latest published version of the gem.
+This version is hardcoded in the HTML page, but is also updated automatically by
+the `docs:publish` and `docs:publish_latest` tasks.
 
 *\* thoughtbot owns <https://shoulda.io>, and
 they've got `matchers.shoulda.io` set up on the DNS level as an alias for
