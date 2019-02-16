@@ -1,5 +1,6 @@
 module Shoulda
   module Matchers
+    # @private
     TERMINAL_MAX_WIDTH = 72
 
     # @private

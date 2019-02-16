@@ -24,6 +24,8 @@ require "shoulda/matchers/active_record/validate_uniqueness_of_matcher"
 
 module Shoulda
   module Matchers
+    # This module provides matchers that are used to test behavior within
+    # ActiveRecord classes.
     module ActiveRecord
     end
   end

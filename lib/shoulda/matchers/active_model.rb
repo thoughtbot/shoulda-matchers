@@ -32,9 +32,8 @@ require 'shoulda/matchers/active_model/have_secure_password_matcher'
 
 module Shoulda
   module Matchers
-    # This mixin provides matchers that are used to test behavior, such as
-    # validations, that you've added to your ActiveModel (or ActiveRecord)
-    # objects.
+    # This module provides matchers that are used to test behavior within
+    # ActiveModel or ActiveRecord classes.
     #
     # ### Testing conditional validations
     #
