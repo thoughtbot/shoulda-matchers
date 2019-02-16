@@ -6,7 +6,7 @@ Shoulda Matchers provides RSpec- and Minitest-compatible one-liners that test
 common Rails functionality. These tests, if written by hand, would be much
 longer, more complex, and error-prone.
 
-**[View the documentation for the latest version (4.0.0.rc1).][rubydocs]**
+**[View the documentation for the latest version (4.0.0).][rubydocs]**
 
 ---
 

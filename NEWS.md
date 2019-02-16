@@ -1,4 +1,4 @@
-# 4.0.0 (unreleased)
+# 4.0.0
 
 This release mainly brings the gem up to date with modern versions of Ruby and
 Rails and drops support for older, unsupported versions. The compatibility list
