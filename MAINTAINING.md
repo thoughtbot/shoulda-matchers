@@ -6,6 +6,19 @@ up your environment, write code to fit the code style, run tests, craft commits
 and manage branches. Beyond this, this document provides some details that would
 be too low-level for contributors.
 
+## Table of Contents
+
+* [Communication](#communication)
+* [Managing the community](#managing-the-community)
+* [Workflow](#workflow)
+* [Architecture](#architecture)
+* [Running tests](#running-tests)
+* [Updating the changelog](#updating-the-changelog)
+* [Documentation](#documentation)
+* [Versioning](#versioning)
+* [Updating the landing page](#updating-the-landing-page)
+* [Addendum: Labels](#addendum-labels)
+
 ## Communication
 
 We have several ways that we can communicate with each other:
@@ -60,12 +73,13 @@ or update:
 
 ## Running tests
 
-The CONTRIBUTING guide shows how to use Appraisal to run tests. This works well
-if you are hopping in, making a few changes, and hopping right out, but if you
-plan on working on a feature or bug, there is often a faster alternative, at
-least for unit tests: [Zeus]. Zeus works by preloading the Rails environment so
-that running unit tests are a lot faster. We also have it set up to
-automatically select the latest Appraisal so you don't have to provide that.
+The [Contributing guide](CONTRIBUTING.md) shows how to use Appraisal to run
+tests. This works well if you are hopping in, making a few changes, and hopping
+right out, but if you plan on working on a feature or bug, there is often a
+faster alternative, at least for unit tests: [Zeus]. Zeus works by preloading
+the Rails environment so that running unit tests are a lot faster. We also have
+it set up to automatically select the latest Appraisal so you don't have to
+provide that.
 
 You'll want to start by running `zeus start` in one shell. Then in another
 shell, instead of using `bundle exec rspec` to run tests, you'll use `bundle
@@ -110,18 +124,18 @@ such PR is available). This helps users cross-reference changes if they need to.
 
 ### Generating documentation
 
-As mentioned in the Contributing document, we use YARD for documentation. YARD
-is configured via `.yardopts` to process the Ruby files in `lib/` as well as
-`NEWS.md` and the Markdown files in `docs/` and write the documentation in HTML
-form to `doc`. This command will do exactly that:
+As mentioned in the [Contributing](CONTRIBUTING.md) document, we use YARD for
+documentation. YARD is configured via `.yardopts` to process the Ruby files in
+`lib/` as well as `NEWS.md` and the Markdown files in `docs/` and write the
+documentation in HTML form to `doc`. This command will do exactly that:
 
 ```bash
 bundle exec yard doc
 ```
 
-However, if you're actively updating the documentation, it's more helpful to
-launch a process that will watch the aforementioned source files for changes and
-generate the HTML for you automatically:
+This works, but if you're actively updating the documentation, it's more helpful
+to launch a process that will watch the aforementioned source files for changes
+and generate the HTML for you automatically:
 
 ```bash
 bundle exec rake docs:autogenerate
@@ -133,76 +147,18 @@ Whichever approach you take, you can view the generated docs locally by running:
 open doc/index.html
 ```
 
-### About the docsite
+### Publishing documentation
 
-The docfiles that YARD generates are published to the docsite, which is located
-at:
-
-<https://matchers.shoulda.io>
-
-The docsite is hosted on GitHub Pages*. As such, the `gh-pages` branch hosts its
-code. Usually you don't need to update this branch directly unless you want to
-make changes to the homepage itself. As for the *documentation*, it is hosted
-one level deeper:
+The Ruby documentation is hosted on GitHub Pages on a custom domain*:
 
 <https://matchers.shoulda.io/docs>
 
-The URL above actually links to a HTML page which merely serves to automatically
+This URL actually links to a HTML page which merely serves to automatically
 redirect the visitor to the docs for the latest published version of the gem.
-This version is hardcoded in the HTML page, but is also updated automatically by
-the `docs:publish` and `docs:publish_latest` tasks.
+This version is hardcoded in the HTML page.
 
-*\* thoughtbot owns <https://shoulda.io>, and
-they've got `matchers.shoulda.io` set up on the DNS level as an alias for
-`thoughtbot.github.io/shoulda-matchers`.*
-
-## Versioning
-
-### Naming a new version
-
-As designated in the README, we follow [SemVer 2.0][semver]. This offers a
-meaningful baseline for deciding how to name versions. Generally speaking:
-
-[semver]: https://semver.org/spec/v2.0.0.html
-
-* We bump the "major" part of the version if we're introducing
-  backward-incompatible changes (e.g. changing the API or core behavior,
-  removing parts of the API, or dropping support for a version of Ruby).
-* We bump the "minor" part if we're adding a new feature (e.g. adding a new
-  matcher or adding a new qualifier to a matcher).
-* We bump the "patch" part if we're merely including bugfixes.
-
-In addition to major, minor, and patch levels, you can also append a
-suffix to the version for pre-release versions. We usually use this to issue
-release candidates prior to an actual release. A version number in this case
-might look like `4.0.0.rc1`.
-
-### Releasing a new version
-
-Releasing a new version is very simple:
-
-1. First, you'll want to be given ownership permissions for the Ruby gem itself.
-   If you want to give someone else these rights, you can use:
-
-   ```bash
-   gem owner shoulda-matchers -a <email address>
-   ```
-1. Next, you'll want to update the `VERSION` constant in
-   `lib/shoulda/matchers/version.rb`. This constant is referenced in the gemspec
-   and is used in the Rake tasks to publish the gem on RubyGems as well as
-   generate documentation.
-1. Finally, you'll want to run:
-
-   ```bash
-   rake release
-   ```
-
-   This will not only push the gem to RubyGems, but also update the docsite.
-
-### Re-publishing docs
-
-In general you'll use the `release` task to update the docsite, but there may be
-situations where you'll need to do it manually.
+Generally you will update the published docs as a part of a release, but there
+may be situations where you'll need to do it manually.
 
 You can re-publish the docs for the latest version (as governed by
 `lib/shoulda/matchers/version.rb`) by running:
@@ -233,6 +189,67 @@ bundle exec rake docs:publish[4.0.0, 3.7.2]
 This would publish the docs for 4.0.0 at
 <https://matchers.shoulda.io/docs/v4.0.0>, but redirect
 <https://matchers.shoulda.io/docs> to <https://matchers.shoulda.io/docs/v3.7.2>.
+
+*\* thoughtbot owns <https://shoulda.io>, and
+they've got `matchers.shoulda.io` set up on the DNS level as an alias for
+`thoughtbot.github.io/shoulda-matchers`.*
+
+## Versioning
+
+### Naming a new version
+
+As designated in the README, we follow [SemVer 2.0][semver]. This offers a
+meaningful baseline for deciding how to name versions. Generally speaking:
+
+[semver]: https://semver.org/spec/v2.0.0.html
+
+* We bump the "major" part of the version if we're introducing
+  backward-incompatible changes (e.g. changing the API or core behavior,
+  removing parts of the API, or dropping support for a version of Ruby).
+* We bump the "minor" part if we're adding a new feature (e.g. adding a new
+  matcher or adding a new qualifier to a matcher).
+* We bump the "patch" part if we're merely including bugfixes.
+
+In addition to major, minor, and patch levels, you can also append a
+suffix to the version for pre-release versions. We usually use this to issue
+release candidates prior to an actual release. A version number in this case
+might look like `4.0.0.rc1`.
+
+### Releasing a new version
+
+Releasing a new version is very simple.
+
+First, you'll want to be given ownership permissions for the Ruby gem itself.
+If you want to give someone else these rights, you can use:
+
+```bash
+gem owner shoulda-matchers -a <email address>
+```
+
+Next, you'll want to update the `VERSION` constant in
+`lib/shoulda/matchers/version.rb`. This constant is referenced in the gemspec
+and is used in the Rake tasks to publish the gem on RubyGems as well as generate
+documentation.
+
+Finally, you'll want to run:
+
+```bash
+rake release
+```
+
+This will not only push the gem to RubyGems, but also publish the docs to GitHub
+Pages.
+
+## Updating the landing page
+
+The Shoulda Matchers landing page is located at:
+
+<https://matchers.shoulda.io>
+
+The code for this page is stored on the [`site`][site-branch] branch. There are
+instructions there for maintaining and publishing it.
+
+[site-branch]: https://github.com/thoughtbot/shoulda-matchers/tree/site
 
 ## Addendum: Labels
 
