@@ -1461,6 +1461,30 @@ this could not be proved.
         end
       end
     end
+
+    context 'when the scope argument is defined as a string on the model' do
+      it 'transforms the scope argument to a symbol' do
+        model = define_model_validating_uniqueness(
+          attribute_name: :name,
+          scopes: ['account_id'],
+        )
+
+        expect(model.new).to validate_uniqueness_of(:name).
+          scoped_to(:account_id)
+      end
+    end
+
+    context 'when the scoped_to argument is passed as a string' do
+      it 'transforms the scoped_to argument to a symbol' do
+        model = define_model_validating_uniqueness(
+          attribute_name: :name,
+          scopes: [:account_id],
+        )
+
+        expect(model.new).to validate_uniqueness_of(:name).
+          scoped_to('account_id')
+      end
+    end
   end
 
   context 'when the column is a boolean column' do
