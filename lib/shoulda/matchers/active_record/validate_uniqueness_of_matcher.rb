@@ -276,7 +276,7 @@ module Shoulda
         end
 
         def scoped_to(*scopes)
-          @options[:scopes] = [*scopes].flatten
+          @options[:scopes] = [*scopes].flatten.map(&:to_sym)
           self
         end
 
@@ -477,7 +477,7 @@ module Shoulda
 
         def actual_sets_of_scopes
           validations.map do |validation|
-            Array.wrap(validation.options[:scope])
+            Array.wrap(validation.options[:scope]).map(&:to_sym)
           end.reject(&:empty?)
         end
 
