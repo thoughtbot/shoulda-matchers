@@ -272,9 +272,9 @@ module Shoulda
       #       should belong_to(:organization).required
       #     end
       #
-      # #### without_presence_validation
+      # #### without_validating_presence
       #
-      # Use `without_presence_validation` with `belong_to` to prevent the
+      # Use `without_validating_presence` with `belong_to` to prevent the
       # matcher from checking whether the association disallows nil (Rails 5+
       # only). This can be helpful if you have a custom hook that always sets
       # the association to a meaningful value:
@@ -293,12 +293,12 @@ module Shoulda
       #
       #     # RSpec
       #     describe Person
-      #       it { should belong_to(:organization).without_presence_validation }
+      #       it { should belong_to(:organization).without_validating_presence }
       #     end
       #
       #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
-      #       should belong_to(:organization).without_presence_validation
+      #       should belong_to(:organization).without_validating_presence
       #     end
       #
       # ##### optional
