@@ -91,7 +91,7 @@ is now:
   * *Original PR: [#956]*
   * *Original issues: [#870], [#861]*
 
-* Add `without_presence_validation` qualifier to `belong_to` to get around the
+* Add `without_validating_presence` qualifier to `belong_to` to get around the
   fact that `required` is assumed, above.
 
   * *Original issues: [#1153], [#1154]*
