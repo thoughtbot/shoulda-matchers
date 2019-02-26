@@ -1,4 +1,13 @@
-# 4.0.0
+# 4.0.1
+
+### Bug fixes
+
+* Fix gemspec so that `setup` script isn't installed globally when gem is
+  installed. ([#1180])
+
+[#1180]: https://github.com/thoughtbot/shoulda-matchers/pulls/1180
+
+# 4.0.0 (yanked)
 
 This release mainly brings the gem up to date with modern versions of Ruby and
 Rails and drops support for older, unsupported versions. The compatibility list
