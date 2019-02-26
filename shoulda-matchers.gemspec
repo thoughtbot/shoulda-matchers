@@ -1,5 +1,6 @@
-$LOAD_PATH << File.join(File.dirname(__FILE__), 'lib')
-require 'shoulda/matchers/version'
+# frozen_string_literal: true
+
+require_relative 'lib/shoulda/matchers/version'
 
 Gem::Specification.new do |s|
   s.name        = "shoulda-matchers"
@@ -20,11 +21,7 @@ Gem::Specification.new do |s|
     'source_code_uri' => 'https://github.com/thoughtbot/shoulda-matchers'
   }
 
-  s.files = Dir.chdir(File.expand_path('..', __FILE__)) do
-    `git ls-files -z -- {docs,lib,README.md,MIT-LICENSE,shoulda-matchers.gemspec}`.
-      split("\x0")
-  end
-  s.require_paths = ["lib"]
+  s.files = `git ls-files`.split("\n")
 
   s.required_ruby_version = '>= 2.2.0'
   s.add_dependency('activesupport', '>= 4.2.0')
