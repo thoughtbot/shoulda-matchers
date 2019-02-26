@@ -5,7 +5,7 @@
 * Fix gemspec so that `setup` script isn't installed globally when gem is
   installed. ([#1180])
 
-[#1180]: https://github.com/thoughtbot/shoulda-matchers/pulls/1180
+[#1180]: https://github.com/thoughtbot/shoulda-matchers/pull/1180
 
 # 4.0.0 (yanked)
 
