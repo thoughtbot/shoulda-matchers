@@ -6,7 +6,7 @@ Shoulda Matchers provides RSpec- and Minitest-compatible one-liners that test
 common Rails functionality. These tests, if written by hand, would be much
 longer, more complex, and error-prone.
 
-**[View the documentation for the latest version (4.0.0).][rubydocs]**
+**[View the documentation for the latest version (4.0.1).][rubydocs]**
 
 ---
 
@@ -306,7 +306,7 @@ logos for thoughtbot are trademarks of thoughtbot, inc.
 We are passionate about open source software. See [our other
 projects][community]. We are [available for hire][hire].
 
-[rubydocs]: http://matchers.shoulda.io/docs/v4.0.0.rc1
+[rubydocs]: http://matchers.shoulda.io/docs
 [community]: https://thoughtbot.com/community?utm_source=github
 [hire]: https://thoughtbot.com?utm_source=github
 [version-badge]: https://img.shields.io/gem/v/shoulda-matchers.svg
