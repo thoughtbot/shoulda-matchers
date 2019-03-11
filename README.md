@@ -310,7 +310,7 @@ projects][community]. We are [available for hire][hire].
 [community]: https://thoughtbot.com/community?utm_source=github
 [hire]: https://thoughtbot.com?utm_source=github
 [version-badge]: https://img.shields.io/gem/v/shoulda-matchers.svg
-[rubygems]: httpss://rubygems.org/gems/shoulda-matchers
+[rubygems]: https://rubygems.org/gems/shoulda-matchers
 [travis-badge]: https://img.shields.io/travis/thoughtbot/shoulda-matchers/master.svg
 [travis]: https://travis-ci.org/thoughtbot/shoulda-matchers
 [downloads-badge]: https://img.shields.io/gem/dtv/shoulda-matchers.svg
