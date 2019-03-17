@@ -56,6 +56,10 @@ Naming/AsciiIdentifiers:
   Enabled: false
 Naming/BinaryOperatorParameterName:
   Enabled: false
+Naming/MemoizedInstanceVariableName:
+  EnforcedStyleForLeadingUnderscores: required
+Naming/PredicateName:
+  Enabled: false
 Style/ClassVars:
   Enabled: false
 Style/ColonMethodCall:
