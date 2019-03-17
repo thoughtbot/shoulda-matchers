@@ -6,6 +6,8 @@ require 'shoulda-matchers'
 
 require 'spec_helper'
 
+$VERBOSE = true
+
 Dir[ File.join(File.expand_path('../support/unit/**/*.rb', __FILE__)) ].sort.each do |file|
   require file
 end
