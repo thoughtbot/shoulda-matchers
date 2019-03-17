@@ -38,7 +38,7 @@ end
 appraise 'rails_4_2' do
   instance_eval(&shared_dependencies)
 
-  gem 'rails', '~> 4.2.10'
+  gem 'rails', '~> 4.2.11.1'
   gem 'sass-rails', '~> 5.0'
   gem 'uglifier', '>= 1.3.0'
   gem 'coffee-rails', '~> 4.1.0'
@@ -57,7 +57,7 @@ end
 appraise 'rails_5_0' do
   instance_eval(&shared_dependencies)
 
-  gem 'rails', '~> 5.0.7'
+  gem 'rails', '~> 5.0.7.2'
   gem 'rails-controller-testing', '>= 1.0.1'
   gem 'puma', '~> 3.0'
   gem 'sass-rails', '~> 5.0'
@@ -72,7 +72,7 @@ end
 appraise 'rails_5_1' do
   instance_eval(&shared_dependencies)
 
-  gem 'rails', '~> 5.1.6'
+  gem 'rails', '~> 5.1.6.2'
   gem 'rails-controller-testing', '>= 1.0.1'
   gem 'puma', '~> 3.7'
   gem 'sass-rails', '~> 5.0'
@@ -88,7 +88,7 @@ end
 appraise 'rails_5_2' do
   instance_eval(&shared_dependencies)
 
-  gem 'rails', '~> 5.2.2'
+  gem 'rails', '~> 5.2.2.1'
   gem 'rails-controller-testing', '>= 1.0.1'
   gem 'puma', '~> 3.11'
   gem 'bootsnap', '>= 1.1.0', require: false
