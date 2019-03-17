@@ -5,8 +5,8 @@ env:
   - DATABASE_ADAPTER=postgresql
 rvm:
   - 2.4.4
-  - 2.5.1
-  - 2.6.0
+  - 2.5.4
+  - 2.6.2
 gemfile:
   - gemfiles/rails_4_2.gemfile
   - gemfiles/rails_5_0.gemfile
@@ -14,7 +14,7 @@ gemfile:
   - gemfiles/rails_5_2.gemfile
 matrix:
   exclude:
-    - rvm: 2.6.0
+    - rvm: 2.6.2
       gemfile: gemfiles/rails_4_2.gemfile
 cache: bundler
 # Source: <https://docs.travis-ci.com/user/languages/ruby/#bundler-20>
