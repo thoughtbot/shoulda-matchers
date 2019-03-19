@@ -92,7 +92,7 @@ module Shoulda
           when :datetime, :timestamp
             DateTime.new(2100, 1, 1)
           when :time
-            Time.new(2100, 1, 1)
+            Time.new(2000, 1, 1)
           when :uuid
             SecureRandom.uuid
           when :boolean

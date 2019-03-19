@@ -820,7 +820,7 @@ module Shoulda
           elsif previous_value.respond_to?(:next)
             previous_value.next
           elsif previous_value.respond_to?(:to_datetime)
-            previous_value.to_datetime.next
+            previous_value.to_datetime.in(60).next
           elsif boolean_value?(previous_value)
             !previous_value
           else

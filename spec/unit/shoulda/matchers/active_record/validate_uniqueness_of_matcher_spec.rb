@@ -829,6 +829,11 @@ within the scope of :scope1, but this could not be proved.
         column_type: :datetime
     end
 
+    context 'when one of the scoped attributes is a time column (using Time)' do
+      include_context 'it supports scoped attributes of a certain type',
+        column_type: :time
+    end
+
     context 'when one of the scoped attributes is a datetime column (using Time)' do
       include_context 'it supports scoped attributes of a certain type',
         column_type: :datetime,
@@ -1538,32 +1543,7 @@ this could not be proved.
   end
 
   def dummy_value_for(attribute_type, array: false)
-    if array
-      [ dummy_scalar_value_for(attribute_type) ]
-    else
-      dummy_scalar_value_for(attribute_type)
-    end
-  end
-
-  def dummy_scalar_value_for(attribute_type)
-    case attribute_type
-    when :string, :text
-      'dummy value'
-    when :integer
-      1
-    when :date
-      Date.today
-    when :datetime
-      Date.today.to_datetime
-    when :time
-      Time.now
-    when :uuid
-      SecureRandom.uuid
-    when :boolean
-      true
-    else
-      raise ArgumentError, "Unknown type '#{attribute_type}'"
-    end
+    Shoulda::Matchers::Util.dummy_value_for(attribute_type, array: array)
   end
 
   def next_version_of(value, value_type)
