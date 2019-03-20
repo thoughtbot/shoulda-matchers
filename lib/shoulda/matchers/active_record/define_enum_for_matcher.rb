@@ -4,19 +4,19 @@ module Shoulda
       # The `define_enum_for` matcher is used to test that the `enum` macro has
       # been used to decorate an attribute with enum methods.
       #
-      #     class Process < ActiveRecord::Base
-      #       enum status: [:running, :stopped, :suspended]
-      #     end
+      #   class Process < ActiveRecord::Base
+      #     enum status: [:running, :stopped, :suspended]
+      #   end
       #
-      #     # RSpec
-      #     RSpec.describe Process, type: :model do
-      #       it { should define_enum_for(:status) }
-      #     end
+      #   # RSpec
+      #   RSpec.describe Process, type: :model do
+      #     it { should define_enum_for(:status) }
+      #   end
       #
-      #     # Minitest (Shoulda)
-      #     class ProcessTest < ActiveSupport::TestCase
-      #       should define_enum_for(:status)
-      #     end
+      #   # Minitest (Shoulda)
+      #   class ProcessTest < ActiveSupport::TestCase
+      #     should define_enum_for(:status)
+      #   end
       #
       # #### Qualifiers
       #
@@ -25,52 +25,69 @@ module Shoulda
       # Use `with_values` to test that the attribute has been defined with a
       # certain set of possible values.
       #
-      #     class Process < ActiveRecord::Base
-      #       enum status: [:running, :stopped, :suspended]
-      #     end
+      #   class Process < ActiveRecord::Base
+      #     enum status: [:running, :stopped, :suspended]
+      #   end
       #
-      #     # RSpec
-      #     RSpec.describe Process, type: :model do
-      #       it do
-      #         should define_enum_for(:status).
-      #           with_values([:running, :stopped, :suspended])
-      #       end
-      #     end
-      #
-      #     # Minitest (Shoulda)
-      #     class ProcessTest < ActiveSupport::TestCase
+      #   # RSpec
+      #   RSpec.describe Process, type: :model do
+      #     it do
       #       should define_enum_for(:status).
       #         with_values([:running, :stopped, :suspended])
       #     end
+      #   end
+      #
+      #   # Minitest (Shoulda)
+      #   class ProcessTest < ActiveSupport::TestCase
+      #     should define_enum_for(:status).
+      #       with_values([:running, :stopped, :suspended])
+      #   end
+      #
+      # If the values backing your enum attribute are arbitrary instead of a
+      # series of integers starting from 0, pass a hash to with_values instead
+      # of an array:
+      #
+      #   class Process < ActiveRecord::Base
+      #       enum status: {
+      #         running: 0,
+      #         stopped: 1,
+      #         suspended: 3,
+      #         other: 99
+      #       }
+      #   end
+      #
+      #   # RSpec
+      #   RSpec.describe Process, type: :model do
+      #     it do
+      #       should define_enum_for(:status).
+      #         with_values(running: 0, stopped: 1, suspended: 3, other: 99)
+      #     end
+      #   end
+      #
+      #
+      #   # Minitest (Shoulda)
+      #   class ProcessTest < ActiveSupport::TestCase
+      #     should define_enum_for(:status).
+      #       with_values(running: 0, stopped: 1, suspended: 3, other: 99)
+      #   end
+      #
       #
       # ##### backed_by_column_of_type
       #
       # Use `backed_by_column_of_type` to test that the attribute is of a
       # certain column type. (The default is `:integer`.)
       #
-      #     class LoanApplication < ActiveRecord::Base
-      #       enum status: {
-      #         active: "active",
-      #         pending: "pending",
-      #         rejected: "rejected"
-      #       }
-      #     end
+      #   class LoanApplication < ActiveRecord::Base
+      #     enum status: {
+      #       active: "active",
+      #       pending: "pending",
+      #       rejected: "rejected"
+      #     }
+      #   end
       #
-      #     # RSpec
-      #     RSpec.describe LoanApplication, type: :model do
-      #       it do
-      #         should define_enum_for(:status).
-      #           with_values(
-      #             active: "active",
-      #             pending: "pending",
-      #             rejected: "rejected"
-      #           ).
-      #           backed_by_column_of_type(:string)
-      #       end
-      #     end
-      #
-      #     # Minitest (Shoulda)
-      #     class LoanApplicationTest < ActiveSupport::TestCase
+      #   # RSpec
+      #   RSpec.describe LoanApplication, type: :model do
+      #     it do
       #       should define_enum_for(:status).
       #         with_values(
       #           active: "active",
@@ -79,56 +96,68 @@ module Shoulda
       #         ).
       #         backed_by_column_of_type(:string)
       #     end
+      #   end
+      #
+      #   # Minitest (Shoulda)
+      #   class LoanApplicationTest < ActiveSupport::TestCase
+      #     should define_enum_for(:status).
+      #       with_values(
+      #         active: "active",
+      #         pending: "pending",
+      #         rejected: "rejected"
+      #       ).
+      #       backed_by_column_of_type(:string)
+      #   end
       #
       ## ##### with_prefix
       #
       # Use `with_prefix` to test that the enum is defined with a `_prefix`
       # option (Rails 5 only). Can take either a boolean or a symbol:
       #
-      #     class Issue < ActiveRecord::Base
-      #       enum status: [:open, :closed], _prefix: :old
-      #     end
+      #   class Issue < ActiveRecord::Base
+      #     enum status: [:open, :closed], _prefix: :old
+      #   end
       #
-      #     # RSpec
-      #     RSpec.describe Issue, type: :model do
-      #       it do
-      #         should define_enum_for(:status).
-      #           with_values([:open, :closed]).
-      #           with_prefix(:old)
-      #       end
-      #     end
-      #
-      #     # Minitest (Shoulda)
-      #     class ProcessTest < ActiveSupport::TestCase
+      #   # RSpec
+      #   RSpec.describe Issue, type: :model do
+      #     it do
       #       should define_enum_for(:status).
       #         with_values([:open, :closed]).
       #         with_prefix(:old)
       #     end
+      #   end
+      #
+      #   # Minitest (Shoulda)
+      #   class ProcessTest < ActiveSupport::TestCase
+      #     should define_enum_for(:status).
+      #       with_values([:open, :closed]).
+      #       with_prefix(:old)
+      #   end
       #
       # ##### with_suffix
       #
       # Use `with_suffix` to test that the enum is defined with a `_suffix`
       # option (Rails 5 only). Can take either a boolean or a symbol:
       #
-      #     class Issue < ActiveRecord::Base
-      #       enum status: [:open, :closed], _suffix: true
-      #     end
+      #   class Issue < ActiveRecord::Base
+      #     enum status: [:open, :closed], _suffix: true
+      #   end
       #
-      #     # RSpec
-      #     RSpec.describe Issue, type: :model do
-      #       it do
-      #         should define_enum_for(:status).
-      #           with_values([:open, :closed]).
-      #           with_suffix
-      #       end
-      #     end
-      #
-      #     # Minitest (Shoulda)
-      #     class ProcessTest < ActiveSupport::TestCase
+      #   # RSpec
+      #   RSpec.describe Issue, type: :model do
+      #     it do
       #       should define_enum_for(:status).
       #         with_values([:open, :closed]).
       #         with_suffix
       #     end
+      #   end
+      #
+      #   # Minitest (Shoulda)
+      #   class ProcessTest < ActiveSupport::TestCase
+      #     should define_enum_for(:status).
+      #       with_values([:open, :closed]).
+      #       with_suffix
+      #   end
       #
       # @return [DefineEnumForMatcher]
       #
