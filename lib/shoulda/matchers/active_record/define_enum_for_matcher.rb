@@ -2,7 +2,7 @@ module Shoulda
   module Matchers
     module ActiveRecord
       # The `define_enum_for` matcher is used to test that the `enum` macro has
-      # been used to decorate an attribute with enum methods.
+      # been used to decorate an attribute with enum capabilities.
       #
       #     class Process < ActiveRecord::Base
       #       enum status: [:running, :stopped, :suspended]
@@ -22,8 +22,8 @@ module Shoulda
       #
       # ##### with_values
       #
-      # Use `with_values` to test that the attribute has been defined with a
-      # certain set of possible values.
+      # Use `with_values` to test that the attribute can only receive a certain
+      # set of possible values.
       #
       #     class Process < ActiveRecord::Base
       #       enum status: [:running, :stopped, :suspended]
@@ -43,10 +43,37 @@ module Shoulda
       #         with_values([:running, :stopped, :suspended])
       #     end
       #
+      # If the values backing your enum attribute are arbitrary instead of a
+      # series of integers starting from 0, pass a hash to `with_values` instead
+      # of an array:
+      #
+      #     class Process < ActiveRecord::Base
+      #       enum status: {
+      #         running: 0,
+      #         stopped: 1,
+      #         suspended: 3,
+      #         other: 99
+      #       }
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Process, type: :model do
+      #       it do
+      #         should define_enum_for(:status).
+      #           with_values(running: 0, stopped: 1, suspended: 3, other: 99)
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class ProcessTest < ActiveSupport::TestCase
+      #       should define_enum_for(:status).
+      #         with_values(running: 0, stopped: 1, suspended: 3, other: 99)
+      #     end
+      #
       # ##### backed_by_column_of_type
       #
-      # Use `backed_by_column_of_type` to test that the attribute is of a
-      # certain column type. (The default is `:integer`.)
+      # Use `backed_by_column_of_type` when the column backing your column type
+      # is a string instead of an integer:
       #
       #     class LoanApplication < ActiveRecord::Base
       #       enum status: {
