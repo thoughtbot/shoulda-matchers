@@ -1,31 +1,26 @@
 language: ruby
 sudo: false
+env:
+  - DATABASE_ADAPTER=sqlite3
+  - DATABASE_ADAPTER=postgresql
+rvm:
+  - 2.4.4
+  - 2.5.1
+  - 2.6.0
+gemfile:
+  - gemfiles/rails_4_2.gemfile
+  - gemfiles/rails_5_0.gemfile
+  - gemfiles/rails_5_1.gemfile
+  - gemfiles/rails_5_2.gemfile
+matrix:
+  exclude:
+    - rvm: 2.6.0
+      gemfile: gemfiles/rails_4_2.gemfile
 cache: bundler
-script: "bundle exec rake"
 # Source: <https://docs.travis-ci.com/user/languages/ruby/#bundler-20>
 before_install:
   - gem update --system '2.7.8' --no-document
   - gem uninstall -v '>= 2' -i $(rvm gemdir)@global -ax bundler || true
   - gem install bundler -v '< 2' --no-document
 install: "bundle install --jobs=3 --retry=3"
-
-env:
-  - DATABASE_ADAPTER=sqlite3
-  - DATABASE_ADAPTER=postgresql
-
-rvm:
-  - 2.6.0
-  - 2.5.1
-  - 2.4.4
-  - 2.3.7
-
-gemfile:
-  - gemfiles/rails_4_2.gemfile
-  - gemfiles/rails_5_0.gemfile
-  - gemfiles/rails_5_1.gemfile
-  - gemfiles/rails_5_2.gemfile
-
-matrix:
-  exclude:
-    - rvm: 2.6.0
-      gemfile: gemfiles/rails_4_2.gemfile
+script: "bundle exec rake"
