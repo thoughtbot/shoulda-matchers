@@ -12,8 +12,7 @@ shared_jruby_dependencies = proc do
 end
 
 shared_rails_dependencies = proc do
-  gem 'sqlite3', platform: :ruby
-  gem 'pg', platform: :ruby
+  gem 'sqlite3', '~> 1.3.6', platform: :ruby
 end
 
 shared_spring_dependencies = proc do
@@ -23,7 +22,6 @@ end
 
 shared_test_dependencies = proc do
   gem 'minitest-reporters'
-  # gem 'nokogiri', '~> 1.8'
   gem 'rspec-rails', '~> 3.6'
   gem 'shoulda-context', '~> 1.2.0'
 end
@@ -48,10 +46,11 @@ appraise 'rails_4_2' do
   gem 'sdoc', '~> 0.4.0', group: :doc
   gem 'bcrypt', '~> 3.1.7'
 
-  # Other dependencies we use
+  # Other dependencies
   gem 'activeresource', '4.0.0'
   gem 'json', '~> 1.4'
   gem 'protected_attributes', '~> 1.0.6'
+  gem 'pg', '~> 0.15', platform: :ruby
 end
 
 appraise 'rails_5_0' do
@@ -67,6 +66,9 @@ appraise 'rails_5_0' do
   gem 'bcrypt', '~> 3.1.7'
   gem 'listen', '~> 3.0.5'
   gem 'spring-watcher-listen', '~> 2.0.0'
+
+  # Other dependencies
+  gem 'pg', '~> 1.1', platform: :ruby
 end
 
 appraise 'rails_5_1' do
@@ -83,6 +85,9 @@ appraise 'rails_5_1' do
   gem 'selenium-webdriver'
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'spring-watcher-listen', '~> 2.0.0'
+
+  # Other dependencies
+  gem 'pg', '~> 1.1', platform: :ruby
 end
 
 appraise 'rails_5_2' do
@@ -101,4 +106,29 @@ appraise 'rails_5_2' do
   gem 'chromedriver-helper'
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'spring-watcher-listen', '~> 2.0.0'
+
+  # Other dependencies
+  gem 'pg', '~> 1.1', platform: :ruby
+end
+
+appraise 'rails_6_0' do
+  instance_eval(&shared_dependencies)
+
+  gem 'rails', '~> 6.0.0.beta3'
+  gem 'puma', '~> 3.11'
+  gem 'bootsnap', '>= 1.4.1', require: false
+  gem 'sass-rails', '~> 5.0'
+  gem 'webpacker', '>= 4.0.0.rc3'
+  gem 'turbolinks', '~> 5'
+  gem 'jbuilder', '~> 2.5'
+  gem 'bcrypt', '~> 3.1.7'
+  gem 'capybara', '>= 2.15'
+  gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'selenium-webdriver'
+  gem 'chromedriver-helper'
+
+  # Other dependencies
+  gem 'rails-controller-testing', '>= 1.0.1'
+  gem 'pg', '~> 1.1', platform: :ruby
 end

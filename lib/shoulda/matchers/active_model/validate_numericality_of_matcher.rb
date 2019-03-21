@@ -562,7 +562,8 @@ module Shoulda
 
         def has_been_qualified?
           @submatchers.any? do |submatcher|
-            submatcher.class.parent == NumericalityMatchers
+            Shoulda::Matchers::RailsShim.parent_of(submatcher.class) ==
+              NumericalityMatchers
           end
         end
 

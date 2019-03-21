@@ -1362,13 +1362,11 @@ module Shoulda
         def class_has_foreign_key?(klass)
           if options.key?(:foreign_key)
             option_verifier.correct_for_string?(:foreign_key, options[:foreign_key])
+          elsif column_names_for(klass).include?(foreign_key)
+            true
           else
-            if klass.column_names.include?(foreign_key)
-              true
-            else
-              @missing = "#{klass} does not have a #{foreign_key} foreign key."
-              false
-            end
+            @missing = "#{klass} does not have a #{foreign_key} foreign key."
+            false
           end
         end
 
@@ -1405,6 +1403,12 @@ module Shoulda
 
         def submatchers_match?
           failing_submatchers.empty?
+        end
+
+        def column_names_for(klass)
+          klass.column_names
+        rescue ::ActiveRecord::StatementInvalid
+          []
         end
 
         def belongs_to_required_by_default?

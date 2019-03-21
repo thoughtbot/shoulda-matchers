@@ -147,9 +147,8 @@ module Shoulda
         private
 
         def secure_password_being_validated?
-          defined?(::ActiveModel::SecurePassword) &&
-            @subject.class.ancestors.include?(::ActiveModel::SecurePassword::InstanceMethodsOnActivation) &&
-            @attribute == :password
+          Shoulda::Matchers::RailsShim.digestible_attributes_in(@subject).
+            include?(@attribute)
         end
 
         def possibly_ignore_interference_by_writer

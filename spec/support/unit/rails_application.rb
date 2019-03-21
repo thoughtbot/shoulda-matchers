@@ -19,8 +19,7 @@ module UnitTests
       generate
 
       fs.within_project do
-        install_gems
-        remove_unwanted_gems
+        update_gems
       end
     end
 
@@ -78,13 +77,34 @@ module UnitTests
       remove_bootsnap
       write_database_configuration
 
-      if bundle.version_of("rails") >= 5
+      if rails_version >= 5
         add_initializer_for_time_zone_aware_types
       end
     end
 
     def rails_new
-      run_command! %W(rails new #{fs.project_directory} --skip-bundle --no-rc)
+      run_command!(*rails_new_command)
+    end
+
+    def rails_new_command
+      if rails_version > 5
+        [
+          'rails',
+          'new',
+          fs.project_directory.to_s,
+          '--skip-bundle',
+          '--no-rc',
+          '--skip-webpack-install',
+        ]
+      else
+        [
+          'rails',
+          'new',
+          fs.project_directory.to_s,
+          '--skip-bundle',
+          '--no-rc',
+        ]
+      end
     end
 
     def fix_available_locales_warning
@@ -132,20 +152,26 @@ end
       end
     end
 
-    def install_gems
-      bundle.install_gems
-    end
-
-    def remove_unwanted_gems
+    def update_gems
       bundle.updating do
+        bundle.remove_gem 'turn'
+        bundle.remove_gem 'coffee-rails'
+        bundle.remove_gem 'uglifier'
         bundle.remove_gem 'debugger'
         bundle.remove_gem 'byebug'
         bundle.remove_gem 'web-console'
+        bundle.add_gem 'pg'
+        bundle.remove_gem 'sqlite3'
+        bundle.add_gem 'sqlite3', '~> 1.3.6'
       end
     end
 
     def run_command!(*args)
       Tests::CommandRunner.run!(*args)
+    end
+
+    def rails_version
+      bundle.version_of('rails')
     end
   end
 end

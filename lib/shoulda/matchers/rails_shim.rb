@@ -119,6 +119,43 @@ module Shoulda
           end
         end
 
+        def parent_of(mod)
+          if mod.respond_to?(:module_parent)
+            mod.module_parent
+          else
+            mod.parent
+          end
+        end
+
+        def has_secure_password?(record, attribute_name)
+          if secure_password_module
+            attribute_name == :password &&
+              record.class.ancestors.include?(secure_password_module)
+          else
+            record.respond_to?("authenticate_#{attribute_name}")
+          end
+        end
+
+        def digestible_attributes_in(record)
+          record.methods.inject([]) do |array, method_name|
+            match = method_name.to_s.match(
+              /\A(\w+)_(?:confirmation|digest)=\Z/,
+            )
+
+            if match
+              array.concat([match[1].to_sym])
+            else
+              array
+            end
+          end
+        end
+
+        def secure_password_module
+          ::ActiveModel::SecurePassword::InstanceMethodsOnActivation
+        rescue NameError
+          nil
+        end
+
         private
 
         def simply_generate_validation_message(

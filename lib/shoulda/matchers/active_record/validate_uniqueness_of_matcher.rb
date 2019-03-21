@@ -546,10 +546,11 @@ module Shoulda
         end
 
         def ensure_secure_password_set(instance)
-          if has_secure_password?
-            instance.password = "password"
-            instance.password_confirmation = "password"
-          end
+          Shoulda::Matchers::RailsShim.digestible_attributes_in(instance).
+            each do |attribute|
+              instance.send("#{attribute}=", 'password')
+              instance.send("#{attribute}_confirmation=", 'password')
+            end
         end
 
         def update_existing_record!(value)
@@ -576,9 +577,7 @@ module Shoulda
         end
 
         def has_secure_password?
-          model.ancestors.map(&:to_s).include?(
-            'ActiveModel::SecurePassword::InstanceMethodsOnActivation'
-          )
+          Shoulda::Matchers::RailsShim.has_secure_password?(subject, @attribute)
         end
 
         def build_new_record
