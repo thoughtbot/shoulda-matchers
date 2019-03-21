@@ -34,8 +34,8 @@ module Shoulda
       class HaveSecurePasswordMatcher
         attr_reader :failure_message
 
-        CORRECT_PASSWORD = "aBcDe12345"
-        INCORRECT_PASSWORD = "password"
+        CORRECT_PASSWORD = 'aBcDe12345'.freeze
+        INCORRECT_PASSWORD = 'password'.freeze
 
         EXPECTED_METHODS = [
           :authenticate,
@@ -43,16 +43,17 @@ module Shoulda
           :password_confirmation=,
           :password_digest,
           :password_digest=,
-        ]
+        ].freeze
 
         MESSAGES = {
-          authenticated_incorrect_password: "expected %{subject} to not authenticate an incorrect password",
-          did_not_authenticate_correct_password: "expected %{subject} to authenticate the correct password",
-          method_not_found: "expected %{subject} to respond to %{methods}"
-        }
+          authenticated_incorrect_password: 'expected %{subject} to not authenticate an incorrect password',
+          did_not_authenticate_correct_password: 'expected %{subject} to authenticate the correct password',
+          method_not_found: 'expected %{subject} to respond to %{methods}',
+          should_not_have_secure_password: 'expected %{subject} to not %{description}!',
+        }.freeze
 
         def description
-          "have a secure password"
+          'have a secure password'
         end
 
         def matches?(subject)
@@ -66,12 +67,17 @@ module Shoulda
           failure.nil?
         end
 
+        def failure_message_when_negated
+          MESSAGES[:should_not_have_secure_password] % { subject: @subject.class, description: description }
+        end
+
         protected
 
         attr_reader :subject
 
         def validate
-          missing_methods = EXPECTED_METHODS.select {|m| !subject.respond_to?(m) }
+          missing_methods = EXPECTED_METHODS.
+            reject { |m| subject.respond_to?(m) }
 
           if missing_methods.present?
             [:method_not_found, { methods: missing_methods.to_sentence }]
