@@ -35,7 +35,7 @@ shared_dependencies = proc do
   instance_eval(&shared_test_dependencies)
 end
 
-appraise '4.2' do
+appraise 'rails_4_2' do
   instance_eval(&shared_dependencies)
 
   gem 'rails', '~> 4.2.10'
@@ -54,7 +54,7 @@ appraise '4.2' do
   gem 'protected_attributes', '~> 1.0.6'
 end
 
-appraise '5.0' do
+appraise 'rails_5_0' do
   instance_eval(&shared_dependencies)
 
   gem 'rails', '~> 5.0.7'
@@ -69,7 +69,7 @@ appraise '5.0' do
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
-appraise '5.1' do
+appraise 'rails_5_1' do
   instance_eval(&shared_dependencies)
 
   gem 'rails', '~> 5.1.6'
@@ -85,8 +85,7 @@ appraise '5.1' do
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
-
-appraise '5.2' do
+appraise 'rails_5_2' do
   instance_eval(&shared_dependencies)
 
   gem 'rails', '~> 5.2.2'
