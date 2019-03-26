@@ -24,6 +24,30 @@ module Shoulda
       #       should have_db_index(:user_id)
       #     end
       #
+      # It can also be used to test that the table that backs your model
+      # has an index on an array of specific columns.
+      #
+      #     class CreateBlogs < ActiveRecord::Migration
+      #       def change
+      #         create_table :blogs do |t|
+      #           t.integer :user_id
+      #           t.string :name
+      #         end
+      #
+      #         add_index :blogs, :user_id, :name
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Blog, type: :model do
+      #       it { should have_db_index([:user_id, :name]) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class BlogTest < ActiveSupport::TestCase
+      #       should have_db_index([:user_id, :name])
+      #     end
+      #
       # #### Qualifiers
       #
       # ##### unique
