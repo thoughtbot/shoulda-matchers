@@ -24,6 +24,29 @@ module Shoulda
       #       should have_db_index(:user_id)
       #     end
       #
+      # has an index and an array of columns.
+      #
+      #     class CreateBlogs < ActiveRecord::Migration
+      #       def change
+      #         create_table :blogs do |t|
+      #           t.integer :user_id
+      #           t.string :name
+      #         end
+      #
+      #         add_index :blogs, :user_id, :name
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Blog, type: :model do
+      #       it { should have_db_index([:user_id, :name]) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class BlogTest < ActiveSupport::TestCase
+      #       should have_db_index([:user_id, :name])
+      #     end
+      #
       # #### Qualifiers
       #
       # ##### unique
