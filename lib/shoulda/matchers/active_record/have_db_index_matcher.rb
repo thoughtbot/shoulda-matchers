@@ -24,7 +24,8 @@ module Shoulda
       #       should have_db_index(:user_id)
       #     end
       #
-      # has an index and an array of columns.
+      # It can also be used to test that the table that backs your model
+      # has an index on an array of specific columns.
       #
       #     class CreateBlogs < ActiveRecord::Migration
       #       def change
