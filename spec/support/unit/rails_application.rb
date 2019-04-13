@@ -76,6 +76,8 @@ module UnitTests
       fix_available_locales_warning
       remove_bootsnap
       write_database_configuration
+      write_activerecord_model_with_default_connection
+      write_activerecord_model_with_different_connection
 
       if rails_version >= 5
         add_initializer_for_time_zone_aware_types
@@ -133,6 +135,36 @@ end
       YAML.dump(database.config.to_hash, fs.open('config/database.yml', 'w'))
     end
 
+    def write_activerecord_model_with_different_connection
+      # To simulate multi-db connections, we create a new "base model" which
+      # connects to a different database (in this case -
+      # shoulda-matchers-test_production).
+      # Any models which inherit from this class, or uses this model's
+      # connection will be routed to this database.
+      path = 'app/models/production_record.rb'
+      fs.write(path, <<-TEXT)
+class ProductionRecord < ActiveRecord::Base
+  self.abstract_class = true
+  establish_connection :production
+end
+      TEXT
+    end
+
+    def write_activerecord_model_with_default_connection
+      # This model connects to the default "development" database.
+      # Alongside ProductionRecord created above, we also create a dummy
+      # DevelopmentRecord, for symmetry's sake. This allows us to be a little
+      # more explicit when writing tests, for example:
+      #   expect(with_index_on(:age1, parent_class: DevelopmentRecord)).to have_db_index(:age1)
+      #   expect(with_index_on(:age2, parent_class: ProductionRecord)).to have_db_index(:age2)
+      path = 'app/models/development_record.rb'
+      fs.write(path, <<-TEXT)
+class DevelopmentRecord < ActiveRecord::Base
+  self.abstract_class = true
+end
+      TEXT
+    end
+
     def add_initializer_for_time_zone_aware_types
       path = 'config/initializers/configure_time_zone_aware_types.rb'
       fs.write(path, <<-TEXT)
@@ -148,7 +180,7 @@ end
 
     def run_migrations
       fs.within_project do
-        run_command! 'bundle exec rake db:drop db:create db:migrate'
+        run_command! 'bundle exec rake db:drop:all db:create:all db:migrate'
       end
     end
 
