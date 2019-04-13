@@ -35,7 +35,8 @@ module UnitTests
       end
 
       def create_table(table_name, options = {}, &block)
-        connection = ::ActiveRecord::Base.connection
+        connection =
+          options.delete(:connection) || ::ActiveRecord::Base.connection
 
         begin
           connection.execute("DROP TABLE IF EXISTS #{table_name}")
@@ -48,8 +49,8 @@ module UnitTests
         end
       end
 
-      def define_model_class(class_name, &block)
-        ClassBuilder.define_class(class_name, ::ActiveRecord::Base, &block)
+      def define_model_class(class_name, parent_class: ::ActiveRecord::Base, &block)
+        ClassBuilder.define_class(class_name, parent_class, &block)
       end
 
       def define_active_model_class(class_name, options = {}, &block)
