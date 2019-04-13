@@ -20,14 +20,11 @@ module Tests
 
     def to_hash
       ENVIRONMENTS.each_with_object({}) do |env, config_as_hash|
-        config_as_hash[env] = inner_config_as_hash
+        config_as_hash[env] = {
+          'adapter' => adapter.to_s,
+          'database' => "#{database}_#{env}",
+        }
       end
-    end
-
-    private
-
-    def inner_config_as_hash
-      { 'adapter' => adapter.to_s, 'database' => database.to_s }
     end
   end
 end
