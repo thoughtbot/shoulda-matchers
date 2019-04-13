@@ -3,7 +3,20 @@ require 'unit_spec_helper'
 describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher, type: :model do
   context 'have_db_index' do
     it 'accepts an existing index' do
-      expect(with_index_on(:age)).to have_db_index(:age)
+      model_connected_to_development = with_index_on(
+        :age1,
+        model_name: 'DevelopmentEmployee',
+        table_name: 'development_employees',
+        parent_class: DevelopmentRecord,
+      )
+      model_connected_to_production = with_index_on(
+        :age2,
+        model_name: 'ProductionEmployee',
+        table_name: 'production_employees',
+        parent_class: ProductionRecord,
+      )
+      expect(model_connected_to_development).to have_db_index(:age1)
+      expect(model_connected_to_production).to have_db_index(:age2)
     end
 
     it 'rejects a nonexistent index' do
@@ -77,9 +90,13 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher, type: :model do
   end
 
   def with_index_on(column_name, index_options = {})
-    create_table 'employees' do |table|
+    model_name   = index_options.delete(:model_name) || 'Employee'
+    table_name   = index_options.delete(:table_name) || 'employees'
+    parent_class = index_options.delete(:parent_class) || DevelopmentRecord
+
+    create_table(table_name, connection: parent_class.connection) do |table|
       table.integer column_name
-    end.add_index(:employees, column_name, index_options)
-    define_model_class('Employee').new
+    end.add_index(table_name.to_sym, column_name, index_options)
+    define_model_class(model_name, parent_class: parent_class).new
   end
 end
