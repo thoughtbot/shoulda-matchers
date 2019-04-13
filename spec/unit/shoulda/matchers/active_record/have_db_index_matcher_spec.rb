@@ -3,7 +3,8 @@ require 'unit_spec_helper'
 describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher, type: :model do
   context 'have_db_index' do
     it 'accepts an existing index' do
-      expect(with_index_on(:age)).to have_db_index(:age)
+      expect(with_index_on(:age1, parent_class: DevelopmentRecord)).to have_db_index(:age1)
+      expect(with_index_on(:age2, parent_class: ProductionRecord)).to have_db_index(:age2)
     end
 
     it 'rejects a nonexistent index' do
@@ -77,9 +78,11 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher, type: :model do
   end
 
   def with_index_on(column_name, index_options = {})
-    create_table 'employees' do |table|
+    parent_class = index_options.delete(:parent_class) || ActiveRecord::Base
+
+    create_table('employees', connection: parent_class.connection) do |table|
       table.integer column_name
     end.add_index(:employees, column_name, index_options)
-    define_model_class('Employee').new
+    define_model_class('Employee', parent_class: parent_class).new
   end
 end

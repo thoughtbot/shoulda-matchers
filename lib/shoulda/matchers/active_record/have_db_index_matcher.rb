@@ -160,7 +160,7 @@ module Shoulda
         end
 
         def indexes
-          ::ActiveRecord::Base.connection.indexes(table_name)
+          model_class.connection.indexes(table_name)
         end
 
         def expectation
