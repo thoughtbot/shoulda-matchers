@@ -35,7 +35,8 @@ module UnitTests
       end
 
       def create_table(table_name, options = {}, &block)
-        connection = ::ActiveRecord::Base.connection
+        connection =
+          options.delete(:connection) || DevelopmentRecord.connection
 
         begin
           connection.execute("DROP TABLE IF EXISTS #{table_name}")
@@ -48,8 +49,8 @@ module UnitTests
         end
       end
 
-      def define_model_class(class_name, &block)
-        ClassBuilder.define_class(class_name, ::ActiveRecord::Base, &block)
+      def define_model_class(class_name, parent_class: DevelopmentRecord, &block)
+        ClassBuilder.define_class(class_name, parent_class, &block)
       end
 
       def define_active_model_class(class_name, options = {}, &block)
@@ -83,10 +84,12 @@ module UnitTests
       def clear_column_caches
         # Rails 4.x
         if ::ActiveRecord::Base.connection.respond_to?(:schema_cache)
-          ::ActiveRecord::Base.connection.schema_cache.clear!
+          DevelopmentRecord.connection.schema_cache.clear!
+          ProductionRecord.connection.schema_cache.clear!
         # Rails 3.1 - 4.0
         elsif ::ActiveRecord::Base.connection_pool.respond_to?(:clear_cache!)
-          ::ActiveRecord::Base.connection_pool.clear_cache!
+          DevelopmentRecord.connection_pool.clear_cache!
+          ProductionRecord.connection_pool.clear_cache!
         end
 
         defined_models.each do |model|
@@ -95,10 +98,11 @@ module UnitTests
       end
 
       def drop_created_tables
-        connection = ::ActiveRecord::Base.connection
-
         created_tables.each do |table_name|
-          connection.execute("DROP TABLE IF EXISTS #{table_name}")
+          DevelopmentRecord.connection.
+            execute("DROP TABLE IF EXISTS #{table_name}")
+          ProductionRecord.connection.
+            execute("DROP TABLE IF EXISTS #{table_name}")
         end
       end
 
