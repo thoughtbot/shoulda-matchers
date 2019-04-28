@@ -137,16 +137,15 @@ module Shoulda
         end
 
         def digestible_attributes_in(record)
-          record.methods.inject([]) do |array, method_name|
-            match = method_name.to_s.match(
-              /\A(\w+)_(?:confirmation|digest)=\Z/,
-            )
+          writer_methods = record.public_methods.grep(/\A\w+.*=\Z/)
 
-            if match
-              array.concat([match[1].to_sym])
-            else
-              array
-            end
+          reader_methods = writer_methods.map do |method_name|
+            method_name.to_s.remove(/=\Z/).to_sym
+          end
+
+          reader_methods.select do |reader_method_name|
+            record.respond_to?("#{reader_method_name}_digest") &&
+              record.respond_to?("#{reader_method_name}_confirmation=")
           end
         end
 
