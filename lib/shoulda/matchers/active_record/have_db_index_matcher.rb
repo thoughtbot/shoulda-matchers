@@ -2,7 +2,9 @@ module Shoulda
   module Matchers
     module ActiveRecord
       # The `have_db_index` matcher tests that the table that backs your model
-      # has a index on a specific column.
+      # has a specific index.
+      #
+      # You can specify one column:
       #
       #     class CreateBlogs < ActiveRecord::Migration
       #       def change
@@ -24,8 +26,7 @@ module Shoulda
       #       should have_db_index(:user_id)
       #     end
       #
-      # It can also be used to test that the table that backs your model
-      # has an index on an array of specific columns.
+      # Or you can specify a group of columns:
       #
       #     class CreateBlogs < ActiveRecord::Migration
       #       def change
@@ -52,39 +53,32 @@ module Shoulda
       #
       # ##### unique
       #
-      # Use `unique` to assert that the index is unique.
+      # Use `unique` to assert that the index is either unique or non-unique:
       #
       #     class CreateBlogs < ActiveRecord::Migration
       #       def change
       #         create_table :blogs do |t|
-      #           t.string :name
+      #           t.string :domain
+      #           t.integer :user_id
       #         end
       #
-      #         add_index :blogs, :name, unique: true
+      #         add_index :blogs, :domain, unique: true
+      #         add_index :blogs, :user_id
       #       end
       #     end
       #
       #     # RSpec
       #     RSpec.describe Blog, type: :model do
-      #       it { should have_db_index(:name).unique(true) }
-      #     end
-      #
-      #     # Minitest (Shoulda)
-      #     class BlogTest < ActiveSupport::TestCase
-      #       should have_db_index(:name).unique(true)
-      #     end
-      #
-      # Since it only ever makes sense for `unique` to be `true`, you can also
-      # leave off the argument to save some keystrokes:
-      #
-      #     # RSpec
-      #     RSpec.describe Blog, type: :model do
       #       it { should have_db_index(:name).unique }
+      #       it { should have_db_index(:name).unique(true) }   # if you want to be explicit
+      #       it { should have_db_index(:user_id).unique(false) }
       #     end
       #
       #     # Minitest (Shoulda)
       #     class BlogTest < ActiveSupport::TestCase
       #       should have_db_index(:name).unique
+      #       should have_db_index(:name).unique(true)   # if you want to be explicit
+      #       should have_db_index(:user_id).unique(false)
       #     end
       #
       # @return [HaveDbIndexMatcher]
@@ -96,12 +90,12 @@ module Shoulda
       # @private
       class HaveDbIndexMatcher
         def initialize(columns)
-          @columns = normalize_columns_to_array(columns)
-          @options = {}
+          @expected_columns = normalize_columns_to_array(columns)
+          @qualifiers = {}
         end
 
         def unique(unique = true)
-          @options[:unique] = unique
+          @qualifiers[:unique] = unique
           self
         end
 
@@ -111,72 +105,139 @@ module Shoulda
         end
 
         def failure_message
-          "Expected #{expectation} (#{@missing})"
+          message =
+            "Expected #{described_table_name} to #{positive_expectation}"
+
+          message <<
+            if index_exists?
+              ". The index does exist, but #{reason}."
+            elsif reason
+              ", but #{reason}."
+            else
+              ', but it does not.'
+            end
+
+          Shoulda::Matchers.word_wrap(message)
         end
 
         def failure_message_when_negated
-          "Did not expect #{expectation}"
+          Shoulda::Matchers.word_wrap(
+            "Expected #{described_table_name} not to " +
+            "#{negative_expectation}, but it does.",
+          )
         end
 
         def description
-          if @options.key?(:unique)
-            "have a #{index_type} index on columns #{@columns.join(' and ')}"
-          else
-            "have an index on columns #{@columns.join(' and ')}"
-          end
+          description = 'have '
+
+          description <<
+            if qualifiers.include?(:unique)
+              Shoulda::Matchers::Util.a_or_an(index_type) + ' '
+            else
+              'an '
+            end
+
+          description << 'index on '
+
+          description << inspected_expected_columns
         end
 
-        protected
+        private
+
+        attr_reader :expected_columns, :qualifiers, :subject, :reason
+
+        def normalize_columns_to_array(columns)
+          Array.wrap(columns).map(&:to_s)
+        end
 
         def index_exists?
-          ! matched_index.nil?
+          !matched_index.nil?
         end
 
         def correct_unique?
-          return true unless @options.key?(:unique)
-
-          is_unique = matched_index.unique
-
-          is_unique = !is_unique unless @options[:unique]
-
-          unless is_unique
-            @missing = "#{table_name} has an index named #{matched_index.name} " <<
-            "of unique #{matched_index.unique}, not #{@options[:unique]}."
+          if qualifiers.include?(:unique)
+            if qualifiers[:unique] && !matched_index.unique
+              @reason = 'it is not unique'
+              false
+            elsif !qualifiers[:unique] && matched_index.unique
+              @reason = 'it is unique'
+              false
+            else
+              true
+            end
+          else
+            true
           end
-
-          is_unique
         end
 
         def matched_index
-          indexes.detect { |each| each.columns == @columns }
+          @_matched_index ||= actual_indexes.find do |index|
+            index.columns == expected_columns
+          end
         end
 
-        def model_class
-          @subject.class
+        def actual_indexes
+          model.connection.indexes(table_name)
+        end
+
+        def described_table_name
+          if model
+            "the #{table_name} table"
+          else
+            'a table'
+          end
         end
 
         def table_name
-          model_class.table_name
+          model.table_name
         end
 
-        def indexes
-          model_class.connection.indexes(table_name)
+        def positive_expectation
+          if index_exists?
+            expectation = "have an index on #{inspected_expected_columns}"
+
+            if qualifiers.include?(:unique)
+              expectation << " and for it to be #{index_type}"
+            end
+
+            expectation
+          else
+            description
+          end
         end
 
-        def expectation
-          "#{model_class.name} to #{description}"
+        def negative_expectation
+          description
+        end
+
+        def inspected_expected_columns
+          if formatted_expected_columns.one?
+            formatted_expected_columns.first.inspect
+          else
+            formatted_expected_columns.inspect
+          end
         end
 
         def index_type
-          if @options[:unique]
+          if qualifiers[:unique]
             'unique'
           else
             'non-unique'
           end
         end
 
-        def normalize_columns_to_array(columns)
-          Array.wrap(columns).map(&:to_s)
+        def formatted_expected_columns
+          expected_columns.map do |column|
+            if column.match?(/^\w+$/)
+              column.to_sym
+            else
+              column
+            end
+          end
+        end
+
+        def model
+          subject&.class
         end
       end
     end

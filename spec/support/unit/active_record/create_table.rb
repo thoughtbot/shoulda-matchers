@@ -1,13 +1,30 @@
 module UnitTests
   module ActiveRecord
     class CreateTable
-      def self.call(table_name, columns)
-        new(table_name, columns).call
+      def self.call(
+        table_name:,
+        columns:,
+        connection: ::ActiveRecord::Base.connection,
+        &block
+      )
+        new(
+          table_name: table_name,
+          columns: columns,
+          connection: connection,
+          &block
+        ).call
       end
 
-      def initialize(table_name, columns)
+      def initialize(
+        table_name:,
+        columns:,
+        connection: ::ActiveRecord::Base.connection,
+        &block
+      )
         @table_name = table_name
         @columns = columns
+        @connection = connection
+        @customizer = block || proc {}
       end
 
       def call
@@ -15,27 +32,31 @@ module UnitTests
           columns.delete(:id)
           UnitTests::ModelBuilder.create_table(
             table_name,
-            id: false,
-            &method(:add_columns_to_table)
-          )
+            connection: connection,
+            id: false
+          ) do |table|
+            add_columns_to_table(table)
+          end
         else
           UnitTests::ModelBuilder.create_table(
             table_name,
-            &method(:add_columns_to_table)
-          )
+            connection: connection
+          ) do |table|
+            add_columns_to_table(table)
+          end
         end
       end
 
-      protected
-
-      attr_reader :table_name, :columns
-
       private
+
+      attr_reader :table_name, :columns, :connection, :customizer
 
       def add_columns_to_table(table)
         columns.each do |column_name, column_specification|
           add_column_to_table(table, column_name, column_specification)
         end
+
+        customizer.call(table)
       end
 
       def add_column_to_table(table, column_name, column_specification)

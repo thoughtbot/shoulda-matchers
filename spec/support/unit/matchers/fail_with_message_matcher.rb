@@ -2,7 +2,14 @@ module UnitTests
   module Matchers
     extend RSpec::Matchers::DSL
 
-    matcher :fail_with_message do |expected|
+    matcher :fail_with_message do |raw_expected, wrap: false|
+      expected =
+        if wrap
+          Shoulda::Matchers.word_wrap(raw_expected)
+        else
+          raw_expected
+        end
+
       def supports_block_expectations?
         true
       end
@@ -19,7 +26,7 @@ module UnitTests
         @actual && @actual == expected.sub(/\n\z/, '')
       end
 
-      def failure_message
+      define_method :failure_message do
         lines = ['Expectation should have failed with message:']
         lines << Shoulda::Matchers::Util.indent(expected, 2)
 
@@ -40,18 +47,10 @@ module UnitTests
         lines.join("\n")
       end
 
-      def failure_message_for_should
-        failure_message
-      end
-
-      def failure_message_when_negated
+      define_method :failure_message_when_negated do
         lines = ['Expectation should not have failed with message:']
         lines << Shoulda::Matchers::Util.indent(expected, 2)
         lines.join("\n")
-      end
-
-      def failure_message_for_should_not
-        failure_message_when_negated
       end
 
       private
