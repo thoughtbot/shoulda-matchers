@@ -272,27 +272,25 @@ this could not be proved.
     end
   end
 
-  if active_model_3_2?
-    context 'a strictly required attribute' do
-      it 'accepts when the :strict options match' do
-        expect(validating_presence(strict: true)).to matcher.strict
+  context 'a strictly required attribute' do
+    it 'accepts when the :strict options match' do
+      expect(validating_presence(strict: true)).to matcher.strict
+    end
+
+    it 'rejects with the correct failure message when the :strict options do not match' do
+      assertion = lambda do
+        expect(validating_presence(strict: false)).to matcher.strict
       end
 
-      it 'rejects with the correct failure message when the :strict options do not match' do
-        assertion = lambda do
-          expect(validating_presence(strict: false)).to matcher.strict
-        end
-
-        message = <<-MESSAGE
+      message = <<-MESSAGE
 Expected Example to validate that :attr cannot be empty/falsy, raising a
 validation exception on failure, but this could not be proved.
-  After setting :attr to ‹nil›, the matcher expected the Example to be
+  After setting :attr to ‹""›, the matcher expected the Example to be
   invalid and to raise a validation exception, but the record produced
   validation errors instead.
-        MESSAGE
+      MESSAGE
 
-        expect(&assertion).to fail_with_message(message)
-      end
+      expect(&assertion).to fail_with_message(message)
     end
 
     it 'does not override the default message with a blank' do
