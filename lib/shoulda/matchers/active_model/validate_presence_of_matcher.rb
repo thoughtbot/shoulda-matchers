@@ -57,6 +57,27 @@ module Shoulda
       #
       # #### Qualifiers
       #
+      # ##### allow_nil
+      #
+      # Use `allow_nil` if your model has an optional attribute.
+      #
+      #   class Robot
+      #     include ActiveModel::Model
+      #     attr_accessor :nickname
+      #
+      #     validates_presence_of :nickname, allow_nil: true
+      #   end
+      #
+      #   # RSpec
+      #   RSpec.describe Robot, type: :model do
+      #     it { should validate_presence_of(:nickname).allow_nil }
+      #   end
+      #
+      #   # Minitest (Shoulda)
+      #   class RobotTest < ActiveSupport::TestCase
+      #     should validate_presence_of(:nickname).allow_nil
+      #   end
+      #
       # ##### on
       #
       # Use `on` if your validation applies only under a certain context.
@@ -111,6 +132,8 @@ module Shoulda
 
       # @private
       class ValidatePresenceOfMatcher < ValidationMatcher
+        include Qualifiers::AllowNil
+
         def initialize(attribute)
           super
           @expected_message = :blank
@@ -122,9 +145,16 @@ module Shoulda
           possibly_ignore_interference_by_writer
 
           if secure_password_being_validated?
-            disallows_and_double_checks_value_of!(blank_value, @expected_message)
+            ignore_interference_by_writer.default_to(when: :blank?)
+
+            disallowed_values.all? do |value|
+              disallows_and_double_checks_value_of!(value)
+            end
           else
-            disallows_original_or_typecast_value?(blank_value, @expected_message)
+            (!expects_to_allow_nil? || allows_value_of(nil)) &&
+              disallowed_values.all? do |value|
+                disallows_original_or_typecast_value?(value)
+              end
           end
         end
 
@@ -134,9 +164,16 @@ module Shoulda
           possibly_ignore_interference_by_writer
 
           if secure_password_being_validated?
-            allows_and_double_checks_value_of!(blank_value, @expected_message)
+            ignore_interference_by_writer.default_to(when: :blank?)
+
+            disallowed_values.any? do |value|
+              allows_and_double_checks_value_of!(value)
+            end
           else
-            allows_original_or_typecast_value?(blank_value, @expected_message)
+            (expects_to_allow_nil? && !allows_value_of(nil)) ||
+              disallowed_values.any? do |value|
+                allows_original_or_typecast_value?(value)
+              end
           end
         end
 
@@ -157,31 +194,35 @@ module Shoulda
           end
         end
 
-        def allows_and_double_checks_value_of!(value, message)
-          allows_value_of(value, message)
+        def allows_and_double_checks_value_of!(value)
+          allows_value_of(value, @expected_message)
         rescue ActiveModel::AllowValueMatcher::AttributeChangedValueError
           raise ActiveModel::CouldNotSetPasswordError.create(@subject.class)
         end
 
-        def allows_original_or_typecast_value?(value, message)
-          allows_value_of(blank_value, @expected_message)
+        def allows_original_or_typecast_value?(value)
+          allows_value_of(value, @expected_message)
         end
 
-        def disallows_and_double_checks_value_of!(value, message)
-          disallows_value_of(value, message)
+        def disallows_and_double_checks_value_of!(value)
+          disallows_value_of(value, @expected_message)
         rescue ActiveModel::AllowValueMatcher::AttributeChangedValueError
           raise ActiveModel::CouldNotSetPasswordError.create(@subject.class)
         end
 
-        def disallows_original_or_typecast_value?(value, message)
-          disallows_value_of(blank_value, @expected_message)
+        def disallows_original_or_typecast_value?(value)
+          disallows_value_of(value, @expected_message)
         end
 
-        def blank_value
+        def disallowed_values
           if collection?
-            []
+            [Array.new]
           else
-            nil
+            [''].tap do |disallowed|
+              if !expects_to_allow_nil?
+                disallowed << nil
+              end
+            end
           end
         end
 

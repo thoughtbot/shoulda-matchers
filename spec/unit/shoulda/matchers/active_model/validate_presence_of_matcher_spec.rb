@@ -66,7 +66,7 @@ this could not be proved.
       message = <<-MESSAGE
 Expected Example to validate that :attr cannot be empty/falsy, but this
 could not be proved.
-  After setting :attr to ‹nil›, the matcher expected the Example to be
+  After setting :attr to ‹""›, the matcher expected the Example to be
   invalid, but it was valid instead.
       MESSAGE
 
@@ -124,7 +124,7 @@ could not be proved.
       message = <<-MESSAGE
 Expected Example to validate that :attr cannot be empty/falsy, but this
 could not be proved.
-  After setting :attr to ‹nil›, the matcher expected the Example to be
+  After setting :attr to ‹""›, the matcher expected the Example to be
   invalid, but it was valid instead.
       MESSAGE
 
@@ -355,11 +355,89 @@ validation exception on failure, but this could not be proved.
         validates_presence_of :foo
 
         def foo=(value)
-          super(Array.wrap(value))
+          super([])
         end
       end
 
       expect(model.new).to validate_presence_of(:foo)
+    end
+  end
+
+  context 'qualified with allow_nil' do
+    context 'when validating a model with a presence validator' do
+      context 'and it is specified with allow_nil: true' do
+        it 'matches in the positive' do
+          record = validating_presence(allow_nil: true)
+          expect(record).to matcher.allow_nil
+        end
+
+        it 'does not match in the negative' do
+          record = validating_presence(allow_nil: true)
+
+          assertion = -> { expect(record).not_to matcher.allow_nil }
+
+          expect(&assertion).to fail_with_message(<<-MESSAGE)
+Expected Example not to validate that :attr cannot be empty/falsy, but
+this could not be proved.
+  After setting :attr to ‹""›, the matcher expected the Example to be
+  valid, but it was invalid instead, producing these validation errors:
+
+  * attr: ["can't be blank"]
+          MESSAGE
+        end
+      end
+
+      context 'and it is not specified with allow_nil: true' do
+        it 'does not match in the positive' do
+          record = validating_presence
+
+          assertion = lambda do
+            expect(record).to matcher.allow_nil
+          end
+
+          message = <<-MESSAGE
+Expected Example to validate that :attr cannot be empty/falsy, but this
+could not be proved.
+  After setting :attr to ‹nil›, the matcher expected the Example to be
+  valid, but it was invalid instead, producing these validation errors:
+
+  * attr: ["can't be blank"]
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      it 'matches in the negative' do
+        record = validating_presence
+
+        expect(record).not_to matcher.allow_nil
+      end
+    end
+
+    context 'when validating a model without a presence validator' do
+      it 'does not match in the positive' do
+        record = without_validating_presence
+
+        assertion = lambda do
+          expect(record).to matcher.allow_nil
+        end
+
+        message = <<-MESSAGE
+Expected Example to validate that :attr cannot be empty/falsy, but this
+could not be proved.
+  After setting :attr to ‹""›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+
+      it 'matches in the negative' do
+        record = without_validating_presence
+
+        expect(record).not_to matcher.allow_nil
+      end
     end
   end
 
@@ -371,6 +449,10 @@ validation exception on failure, but this could not be proved.
     define_model :example, attr: :string do
       validates_presence_of :attr, options
     end.new
+  end
+
+  def without_validating_presence
+    define_model(:example, attr: :string).new
   end
 
   def active_model(&block)
