@@ -101,6 +101,7 @@ Style/CharacterLiteral:
 Style/ClassAndModuleChildren:
   Enabled: false
 Style/CollectionMethods:
+  Enabled: true
   PreferredMethods:
     find: detect
     reduce: inject

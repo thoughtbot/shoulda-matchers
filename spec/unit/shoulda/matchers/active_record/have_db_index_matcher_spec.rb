@@ -1,6 +1,11 @@
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher, type: :model do
+  def self.can_test_expression_indexes?
+    active_record_supports_expression_indexes? &&
+      database_supports_expression_indexes?
+  end
+
   describe 'the matcher' do
     # rubocop:disable Layout/MultilineBlockLayout
     # rubocop:disable Layout/SpaceAroundBlockParameters
@@ -237,6 +242,99 @@ Expected the examples table to have an index on [:geocodable_id,
           end
         end
       end
+
+      if can_test_expression_indexes?
+        context 'when given an expression' do
+          context 'qualified with nothing' do
+            context 'when the table has the given index' do
+              it 'matches when used in the positive' do
+                record = record_with_index_on(
+                  'lower((code)::text)',
+                  columns: { code: :string },
+                )
+                expect(record).to have_db_index('lower((code)::text)')
+              end
+
+              it 'does not match when used in the negative' do
+                record = record_with_index_on(
+                  'lower((code)::text)',
+                  model_name: 'Example',
+                  columns: { code: :string },
+                )
+
+                assertion = lambda do
+                  expect(record).not_to have_db_index('lower((code)::text)')
+                end
+
+                expect(&assertion).to fail_with_message(<<-MESSAGE, wrap: true)
+Expected the examples table not to have an index on "lower((code)::text)", but
+it does.
+                MESSAGE
+              end
+            end
+
+            context 'when the table does not have the given index' do
+              it 'matches when used in the negative' do
+                record = record_with_index_on(
+                  'code',
+                  columns: { code: :string },
+                )
+                expect(record).not_to have_db_index('lower((code)::text)')
+              end
+
+              it 'does not match when used in the positive' do
+                record = record_with_index_on(
+                  'code',
+                  model_name: 'Example',
+                  columns: { code: :string },
+                )
+
+                assertion = lambda do
+                  expect(record).to have_db_index('lower((code)::text)')
+                end
+
+                expect(&assertion).to fail_with_message(<<-MESSAGE, wrap: true)
+Expected the examples table to have an index on "lower((code)::text)", but it
+does not.
+                MESSAGE
+              end
+            end
+          end
+
+          context 'when qualified with unique' do
+            include_examples(
+              'for when the matcher is qualified',
+              index: 'lower((code)::text)',
+              other_index: 'code',
+              columns: { code: :string },
+              unique: true,
+              qualifier_args: [],
+            )
+          end
+
+          context 'when qualified with unique: true' do
+            include_examples(
+              'for when the matcher is qualified',
+              index: 'lower((code)::text)',
+              other_index: 'code',
+              columns: { code: :string },
+              unique: true,
+              qualifier_args: [true],
+            )
+          end
+
+          context 'when qualified with unique: false' do
+            include_examples(
+              'for when the matcher is qualified',
+              index: 'lower((code)::text)',
+              other_index: 'code',
+              columns: { code: :string },
+              unique: false,
+              qualifier_args: [false],
+            )
+          end
+        end
+      end
     end
 
     context 'when not all models are connected to the same database' do
@@ -350,6 +448,44 @@ Expected the examples table to have an index on [:geocodable_id,
           index_type: 'non-unique',
           qualifier_args: [false],
         )
+      end
+    end
+
+    if can_test_expression_indexes?
+      context 'when given an expression' do
+        context 'when not qualified with anything' do
+          it 'returns the correct description' do
+            matcher = have_db_index('lower(code)')
+            expect(matcher.description).to eq('have an index on "lower(code)"')
+          end
+        end
+
+        context 'when qualified with unique' do
+          include_examples(
+            'for when the matcher is qualified',
+            index: 'lower(code)',
+            index_type: 'unique',
+            qualifier_args: [],
+          )
+        end
+
+        context 'when qualified with unique: true' do
+          include_examples(
+            'for when the matcher is qualified',
+            index: 'lower(code)',
+            index_type: 'unique',
+            qualifier_args: [true],
+          )
+        end
+
+        context 'when qualified with unique: false' do
+          include_examples(
+            'for when the matcher is qualified',
+            index: 'lower(code)',
+            index_type: 'non-unique',
+            qualifier_args: [false],
+          )
+        end
       end
     end
   end

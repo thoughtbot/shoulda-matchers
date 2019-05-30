@@ -16,5 +16,6 @@ module UnitTests
     alias_method :database_supports_array_columns?, :postgresql?
     alias_method :database_supports_uuid_columns?, :postgresql?
     alias_method :database_supports_money_columns?, :postgresql?
+    alias_method :database_supports_expression_indexes?, :postgresql?
   end
 end

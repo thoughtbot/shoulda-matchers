@@ -49,6 +49,30 @@ module Shoulda
       #       should have_db_index([:user_id, :name])
       #     end
       #
+      # Finally, if you're using Rails 5 and PostgreSQL, you can also specify an
+      # expression:
+      #
+      #     class CreateLoggedErrors < ActiveRecord::Migration
+      #       def change
+      #         create_table :logged_errors do |t|
+      #           t.string :code
+      #           t.jsonb :content
+      #         end
+      #
+      #         add_index :logged_errors, 'lower(code)::text'
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe LoggedError, type: :model do
+      #       it { should have_db_index('lower(code)::text') }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class LoggedErrorTest < ActiveSupport::TestCase
+      #       should have_db_index('lower(code)::text')
+      #     end
+      #
       # #### Qualifiers
       #
       # ##### unique
@@ -171,9 +195,16 @@ module Shoulda
         end
 
         def matched_index
-          @_matched_index ||= actual_indexes.find do |index|
-            index.columns == expected_columns
-          end
+          @_matched_index ||=
+            if expected_columns.one?
+              actual_indexes.detect do |index|
+                Array.wrap(index.columns) == expected_columns
+              end
+            else
+              actual_indexes.detect do |index|
+                index.columns == expected_columns
+              end
+            end
         end
 
         def actual_indexes
