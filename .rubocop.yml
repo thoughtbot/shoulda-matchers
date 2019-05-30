@@ -2,12 +2,20 @@ AllCops:
   TargetRubyVersion: 2.4
 Layout/AlignParameters:
   EnforcedStyle: with_fixed_indentation
+Layout/CommentIndentation:
+  Enabled: false
 Layout/ConditionPosition:
   Enabled: false
 Layout/DotPosition:
   EnforcedStyle: trailing
+Layout/EmptyLineBetweenDefs:
+  AllowAdjacentOneLineDefs: true
+Layout/IndentHeredoc:
+  Enabled: false
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
+Layout/SpaceInLambdaLiteral:
+  EnforcedStyle: require_space
 Lint/AmbiguousOperator:
   Enabled: false
 Lint/AmbiguousRegexpLiteral:
@@ -18,9 +26,9 @@ Lint/DeprecatedClassMethods:
   Enabled: false
 Lint/ElseLayout:
   Enabled: false
-Lint/HandleExceptions:
+Lint/FlipFlop:
   Enabled: false
-Lint/IndentHeredoc:
+Lint/HandleExceptions:
   Enabled: false
 Lint/LiteralInInterpolation:
   Enabled: false
@@ -34,12 +42,15 @@ Lint/UnderscorePrefixedVariableName:
   Enabled: false
 Lint/Void:
   Enabled: false
+Metrics/AbcSize:
+  Max: 25
 Metrics/BlockLength:
   Enabled: false
 Metrics/ClassLength:
   Enabled: false
 Metrics/LineLength:
   IgnoredPatterns:
+    - "^[ ]*#.+$"
     - "^[ ]*describe.+$"
     - "^[ ]*context.+$"
     - "^[ ]*shared_context.+$"
@@ -47,9 +58,12 @@ Metrics/LineLength:
     - "^[ ]*it.+$"
     - "^[ ]*'.+?' => '.+?',?$"
     - "^[ ]*\".+?\" => \".+?\",?$"
-    - "^[ ]*.+?: .+?$"
 Metrics/MethodLength:
   Max: 30
+Metrics/ParameterLists:
+  CountKeywordArgs: false
+Metrics/PerceivedComplexity:
+  Max: 10
 Naming/AccessorMethodName:
   Enabled: false
 Naming/AsciiIdentifiers:
@@ -105,8 +119,6 @@ Style/EmptyLiteral:
 Style/Encoding:
   Enabled: false
 Style/EvenOdd:
-  Enabled: false
-Style/FlipFlop:
   Enabled: false
 Style/FormatString:
   Enabled: false
