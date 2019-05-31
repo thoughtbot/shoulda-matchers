@@ -1,3 +1,25 @@
+# 4.1.0 (Unreleased)
+
+### Bug fixes
+
+* Fix `validate_uniqueness_of` so that it works when a scope is defined as a
+  string instead of a symbol on the model. ([#1176])
+* Fix `have_db_index` so that it can be used against multiple models that are
+  connected to different databases. ([#1200])
+
+[#1176]: https://github.com/thoughtbot/shoulda-matchers/pull/1176
+[#1200]: https://github.com/thoughtbot/shoulda-matchers/pull/1200
+
+### Features
+
+* Add support for Rails 6. No new Rails 6 features are supported, but only
+  existing features that broke with the upgrade. ([#1193])
+* Add support for expression indexes (Rails 5, Postgres only) to
+  `have_db_index`. ([#1211])
+
+[#1193]: https://github.com/thoughtbot/shoulda-matchers/pull/1193
+[#1211]: https://github.com/thoughtbot/shoulda-matchers/pull/1211
+
 # 4.0.1
 
 ### Bug fixes
