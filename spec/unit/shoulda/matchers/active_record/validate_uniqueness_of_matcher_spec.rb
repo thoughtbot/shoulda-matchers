@@ -235,28 +235,27 @@ not be proved.
       context 'when a record exists beforehand, where all scopes are set' do
         if column_type != :boolean
           context 'when each validation has the same (default) message' do
-            it 'accepts' do
-              pending 'this needs another qualifier to properly fix'
+            # this needs another qualifier to properly fix
+            # it 'accepts' do
+              # model = define_model(
+                # 'Example',
+                # attribute_name => :string,
+                # scope1: column_type,
+                # scope2: column_type
+              # ) do |m|
+                # m.validates_uniqueness_of(attribute_name, scope: [:scope1])
+                # m.validates_uniqueness_of(attribute_name, scope: [:scope2])
+              # end
 
-              model = define_model(
-                'Example',
-                attribute_name => :string,
-                scope1: column_type,
-                scope2: column_type
-              ) do |m|
-                m.validates_uniqueness_of(attribute_name, scope: [:scope1])
-                m.validates_uniqueness_of(attribute_name, scope: [:scope2])
-              end
+              # model.create!(
+                # attribute_name => dummy_value_for(:string),
+                # scope1: dummy_value_for(column_type),
+                # scope2: dummy_value_for(column_type)
+              # )
 
-              model.create!(
-                attribute_name => dummy_value_for(:string),
-                scope1: dummy_value_for(column_type),
-                scope2: dummy_value_for(column_type)
-              )
-
-              expect(model.new).to validate_uniqueness.scoped_to(:scope1)
-              expect(model.new).to validate_uniqueness.scoped_to(:scope2)
-            end
+              # expect(model.new).to validate_uniqueness.scoped_to(:scope1)
+              # expect(model.new).to validate_uniqueness.scoped_to(:scope2)
+            # end
           end
         end
 
@@ -300,22 +299,21 @@ not be proved.
       end
 
       context 'when no record exists beforehand' do
-        it 'accepts' do
-          pending 'this needs another qualifier to properly fix'
+        # this needs another qualifier to properly fix
+        # it 'accepts' do
+          # model = define_model(
+            # 'Example',
+            # attribute_name => :string,
+            # scope1: column_type,
+            # scope2: column_type
+          # ) do |m|
+            # m.validates_uniqueness_of(attribute_name, scope: [:scope1])
+            # m.validates_uniqueness_of(attribute_name, scope: [:scope2])
+          # end
 
-          model = define_model(
-            'Example',
-            attribute_name => :string,
-            scope1: column_type,
-            scope2: column_type
-          ) do |m|
-            m.validates_uniqueness_of(attribute_name, scope: [:scope1])
-            m.validates_uniqueness_of(attribute_name, scope: [:scope2])
-          end
-
-          expect(model.new).to validate_uniqueness.scoped_to(:scope1)
-          expect(model.new).to validate_uniqueness.scoped_to(:scope2)
-        end
+          # expect(model.new).to validate_uniqueness.scoped_to(:scope1)
+          # expect(model.new).to validate_uniqueness.scoped_to(:scope2)
+        # end
       end
     end
 
@@ -894,14 +892,14 @@ within the scope of :scope1, but this could not be proved.
 
     context "when an existing record that is not the first has a nil value for the scoped attribute" do
       # This fails intermittently
-      xit 'still works' do
-        model = define_model_validating_uniqueness(scopes: [:scope])
-        create_record_from(model, scope: 'some value')
-        create_record_from(model, scope: nil)
-        record = build_record_from(model, scope: 'a different value')
+      # it 'still works' do
+        # model = define_model_validating_uniqueness(scopes: [:scope])
+        # create_record_from(model, scope: 'some value')
+        # create_record_from(model, scope: nil)
+        # record = build_record_from(model, scope: 'a different value')
 
-        expect(record).to validate_uniqueness.scoped_to(:scope)
-      end
+        # expect(record).to validate_uniqueness.scoped_to(:scope)
+      # end
     end
   end
 
