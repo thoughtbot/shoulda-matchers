@@ -3,6 +3,7 @@
 set -euo pipefail
 
 RUBY_VERSION=$(script/supported_ruby_versions | xargs -n 1 echo | sort -V | tail -n 1)
+required_ruby_version=$(cat .ruby-version)
 
 cd "$(dirname "$(dirname "$0")")"
 
@@ -30,12 +31,24 @@ error() {
   echo -e "\033[31m$@\033[0m"
 }
 
+echo-wrapped() {
+  echo "$@" | fmt -w 80 | cat
+}
+
 has-executable() {
   type "$1" &>/dev/null
 }
 
 is-running() {
   pgrep "$1" >/dev/null
+}
+
+start() {
+  if has-executable brew; then
+    brew services start "$1"
+  else
+    sudo service "${2:-$1}" start
+  fi
 }
 
 install() {
@@ -90,9 +103,10 @@ check-for-build-tools() {
   if [[ $platform == "linux" ]]; then
     if ! has-executable apt-get; then
       error "You don't seem to have a package manager installed."
-      echo "The setup script assumes you're using Debian or a Debian-derived flavor of Linux"
-      echo "(i.e. something with Apt). If this is not the case, then we would gladly take a"
-      echo "PR fixing this!"
+      echo-wrapped "\
+The setup script assumes you're using Debian or a Debian-derived flavor of
+Linux (i.e. something with Apt). If this is not the case, then we would
+gladly take a PR fixing this!"
       exit 1
     fi
 
@@ -100,10 +114,12 @@ check-for-build-tools() {
   else
     if ! has-executable brew; then
       error "You don't seem to have Homebrew installed."
-      echo
-      echo "Follow the instructions here to do this:"
-      echo
-      echo "http://brew.sh"
+      echo-wrapped "\
+Follow the instructions here to do this:
+
+    http://brew.sh
+
+Then re-run this script."
       exit 1
     fi
 
@@ -145,21 +161,22 @@ install-dependencies() {
       rbenv install --skip-existing "$RUBY_VERSION"
     fi
   elif has-executable rvm; then
-    if ! (rvm ls | grep $RUBY_VERSION'\>' &>/dev/null); then
-      banner "Installing Ruby $RUBY_VERSION with rvm"
-      error "You don't seem to have Ruby $RUBY_VERSION installed."
-      echo
-      echo "Use RVM to do so, and then re-run this command."
-      echo
+    if ! (rvm list | grep $required_ruby_version'\>' &>/dev/null); then
+      banner "Installing Ruby $required_ruby_version with rvm"
+      rvm install $required_ruby_version
+      rvm use $required_ruby_version
     fi
   else
     error "You don't seem to have a Ruby manager installed."
-    echo
-    echo 'We recommend using rbenv. You can find installation instructions here:'
-    echo
-    echo 'http://github.com/rbenv/rbenv'
-    echo
-    echo "When you're done, simply re-run this script!"
+    echo-wrapped "\
+We recommend using rbenv. You can find instructions to install it here:
+
+    https://github.com/rbenv/rbenv#installation
+
+Make sure to follow the instructions to configure your shell so that rbenv is
+automatically loaded.
+
+When you're done, open up a new terminal tab and re-run this script."
     exit 1
   fi
 
@@ -167,22 +184,6 @@ install-dependencies() {
   gem install bundler -v '~> 1.0' --conservative
   bundle check || bundle install
   bundle exec appraisal install
-
-  if ! has-executable node; then
-    banner 'Installing Node'
-
-    if [[ $platform == 'linux' ]]; then
-      curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-
-      install nodejs
-
-      if ! has-executable npm; then
-        install npm
-      fi
-    else
-      install nodejs
-    fi
-  fi
 }
 
 check-for-build-tools
