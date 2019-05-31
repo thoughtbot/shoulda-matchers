@@ -1,12 +1,5 @@
 require 'unit_spec_helper'
 
-# given one column, a group of columns, or an index expression
-#   qualified with: nothing, unique, unique(true), unique(false)
-#     index exists
-#       index has unique: true or unique: false
-#     index doesn't exist
-# models are connected to same database or different database
-
 describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher, type: :model do
   describe 'the matcher' do
     # rubocop:disable Layout/MultilineBlockLayout
