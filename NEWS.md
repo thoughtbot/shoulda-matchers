@@ -16,10 +16,11 @@
   existing features that broke with the upgrade. ([#1193])
 * Add support for expression indexes (Rails 5, Postgres only) to
   `have_db_index`. ([#1211])
-* Add `allow_nil` to the `validate_presence_of` matcher. ([#1100])
+* Add `allow_nil` to the `validate_presence_of` matcher. ([834d8d0], [#1100])
 
 [#1193]: https://github.com/thoughtbot/shoulda-matchers/pull/1193
 [#1211]: https://github.com/thoughtbot/shoulda-matchers/pull/1211
+[834d8d0]: https://github.com/thoughtbot/shoulda-matchers/commit/834d8d0356573b9f47e63a1b910cfa8f3d815e51
 [#1100]: https://github.com/thoughtbot/shoulda-matchers/pull/1100
 
 # 4.0.1
