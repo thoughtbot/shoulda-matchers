@@ -538,19 +538,10 @@ module Shoulda
 
         def create_existing_record
           @given_record.tap do |existing_record|
-            ensure_secure_password_set(existing_record)
             existing_record.save(validate: false)
           end
         rescue ::ActiveRecord::StatementInvalid => error
           raise ExistingRecordInvalid.create(underlying_exception: error)
-        end
-
-        def ensure_secure_password_set(instance)
-          Shoulda::Matchers::RailsShim.digestible_attributes_in(instance).
-            each do |attribute|
-              instance.send("#{attribute}=", 'password')
-              instance.send("#{attribute}_confirmation=", 'password')
-            end
         end
 
         def update_existing_record!(value)

@@ -1053,23 +1053,6 @@ but this could not be proved.
         expect(record).to validate_uniqueness.allow_nil
       end
     end
-
-    if active_record_supports_has_secure_password?
-      context 'when the model is declared with has_secure_password' do
-        it 'accepts' do
-          model = define_model_validating_uniqueness(
-            validation_options: { allow_nil: true },
-            additional_attributes: [{ name: :password_digest, type: :string }]
-          ) do |m|
-            m.has_secure_password
-          end
-
-          record = build_record_from(model, attribute_name => nil)
-
-          expect(record).to validate_uniqueness.allow_nil
-        end
-      end
-    end
   end
 
   context 'when the validation is not declared with allow_nil' do
