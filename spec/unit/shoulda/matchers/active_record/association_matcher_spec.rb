@@ -1,6 +1,8 @@
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
+  include UnitTests::ApplicationConfigurationHelpers
+
   context 'belong_to' do
     it 'accepts a good association with the default foreign key' do
       expect(belonging_to_parent).to belong_to(:parent)
@@ -284,7 +286,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
         if active_record_supports_optional_for_associations?
           context 'when belongs_to is configured to be required by default' do
             it 'passes' do
-              configuring_default_belongs_to_requiredness(true) do
+              with_belongs_to_as_required_by_default do
                 expect(belonging_to_parent).to belong_to(:parent).required(true)
               end
             end
@@ -292,7 +294,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
 
           context 'when belongs_to is not configured to be required by default' do
             it 'fails with an appropriate message' do
-              configuring_default_belongs_to_requiredness(false) do
+              with_belongs_to_as_optional_by_default do
                 assertion = lambda do
                   expect(belonging_to_parent).
                     to belong_to(:parent).required(true)
@@ -333,7 +335,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
         if active_record_supports_optional_for_associations?
           context 'when belongs_to is configured to be required by default' do
             it 'fails with an appropriate message' do
-              configuring_default_belongs_to_requiredness(true) do
+              with_belongs_to_as_required_by_default do
                 assertion = lambda do
                   expect(belonging_to_parent).
                     to belong_to(:parent).required(false)
@@ -354,7 +356,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
 
           context 'when belongs_to is not configured to be required by default' do
             it 'passes' do
-              configuring_default_belongs_to_requiredness(false) do
+              with_belongs_to_as_optional_by_default do
                 expect(belonging_to_parent).to belong_to(:parent).required(false)
               end
             end
@@ -370,7 +372,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
         if active_record_supports_optional_for_associations?
           context 'when belongs_to is configured to be required by default' do
             it 'fails with an appropriate message' do
-              configuring_default_belongs_to_requiredness(true) do
+              with_belongs_to_as_required_by_default do
                 assertion = lambda do
                   expect(belonging_to_parent).
                     to belong_to(:parent).optional
@@ -391,7 +393,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
 
           context 'when belongs_to is not configured to be required by default' do
             it 'passes' do
-              configuring_default_belongs_to_requiredness(false) do
+              with_belongs_to_as_optional_by_default do
                 expect(belonging_to_parent).to belong_to(:parent).optional
               end
             end
@@ -407,7 +409,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
         if active_record_supports_optional_for_associations?
           context 'when belongs_to is configured to be required by default' do
             it 'passes' do
-              configuring_default_belongs_to_requiredness(true) do
+              with_belongs_to_as_required_by_default do
                 expect(belonging_to_parent).to belong_to(:parent)
               end
             end
@@ -415,14 +417,14 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
 
           context 'when belongs_to is not configured to be required by default' do
             it 'passes' do
-              configuring_default_belongs_to_requiredness(false) do
+              with_belongs_to_as_optional_by_default do
                 expect(belonging_to_parent).to belong_to(:parent)
               end
             end
 
             context 'and a presence validation is on the attribute instead of using required: true' do
               it 'passes' do
-                configuring_default_belongs_to_requiredness(false) do
+                with_belongs_to_as_optional_by_default do
                   record = belonging_to_parent do
                     validates_presence_of :parent
                   end
@@ -435,7 +437,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
             context 'and a presence validation is on the attribute with a condition' do
               context 'and the condition is true' do
                 it 'passes' do
-                  configuring_default_belongs_to_requiredness(false) do
+                  with_belongs_to_as_optional_by_default do
                     child_model = create_child_model_belonging_to_parent do
                       attr_accessor :condition
                       validates_presence_of :parent, if: :condition
@@ -450,7 +452,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
 
               context 'and the condition is false' do
                 it 'passes' do
-                  configuring_default_belongs_to_requiredness(false) do
+                  with_belongs_to_as_optional_by_default do
                     child_model = create_child_model_belonging_to_parent do
                       attr_accessor :condition
                       validates_presence_of :parent, if: :condition
@@ -630,7 +632,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
               end
 
               assertion = lambda do
-                configuring_default_belongs_to_requiredness(true) do
+                with_belongs_to_as_required_by_default do
                   expect(model.new).to belong_to(:parent)
                 end
               end
@@ -656,7 +658,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
                 end
               end
 
-              configuring_default_belongs_to_requiredness(true) do
+              with_belongs_to_as_required_by_default do
                 expect(model.new).
                   to belong_to(:parent).
                   without_validating_presence
@@ -677,7 +679,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
               end
 
               assertion = lambda do
-                configuring_default_belongs_to_requiredness(true) do
+                with_belongs_to_as_required_by_default do
                   expect(model.new).to belong_to(:parent).required
                 end
               end
@@ -703,7 +705,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
                 end
               end
 
-              configuring_default_belongs_to_requiredness(true) do
+              with_belongs_to_as_required_by_default do
                 expect(model.new).
                   to belong_to(:parent).
                   required.
@@ -1764,22 +1766,5 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
     else
       [:destroy, :delete, :nullify, :restrict]
     end
-  end
-
-  def configuring_default_belongs_to_requiredness(value, &block)
-    configuring_application(
-      ActiveRecord::Base,
-      :belongs_to_required_by_default,
-      value,
-      &block
-    )
-  end
-
-  def configuring_application(config, name, value)
-    previous_value = config.send(name)
-    config.send("#{name}=", value)
-    yield
-  ensure
-    config.send("#{name}=", previous_value)
   end
 end

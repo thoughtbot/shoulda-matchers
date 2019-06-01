@@ -181,6 +181,27 @@ module Shoulda
           "validate that :#{@attribute} cannot be empty/falsy"
         end
 
+        def failure_message
+          message = super
+
+          if should_add_footnote_about_belongs_to?
+            message << "\n\n"
+            message << Shoulda::Matchers.word_wrap(<<-MESSAGE.strip, indent: 2)
+You're getting this error because #{reason_for_existing_presence_validation}.
+*This* presence validation doesn't use "can't be blank", the usual validation
+message, but "must exist" instead.
+
+With that said, did you know that the `belong_to` matcher can test this
+validation for you? Instead of using `validate_presence_of`, try the following
+instead:
+
+      it { should #{representation_of_belongs_to} }
+            MESSAGE
+          end
+
+          message
+        end
+
         private
 
         def secure_password_being_validated?
@@ -197,7 +218,7 @@ module Shoulda
         def allows_and_double_checks_value_of!(value)
           allows_value_of(value, @expected_message)
         rescue ActiveModel::AllowValueMatcher::AttributeChangedValueError
-          raise ActiveModel::CouldNotSetPasswordError.create(@subject.class)
+          raise ActiveModel::CouldNotSetPasswordError.create(model)
         end
 
         def allows_original_or_typecast_value?(value)
@@ -207,7 +228,7 @@ module Shoulda
         def disallows_and_double_checks_value_of!(value)
           disallows_value_of(value, @expected_message)
         rescue ActiveModel::AllowValueMatcher::AttributeChangedValueError
-          raise ActiveModel::CouldNotSetPasswordError.create(@subject.class)
+          raise ActiveModel::CouldNotSetPasswordError.create(model)
         end
 
         def disallows_original_or_typecast_value?(value)
@@ -218,25 +239,79 @@ module Shoulda
           if collection?
             [Array.new]
           else
-            [''].tap do |disallowed|
-              if !expects_to_allow_nil?
-                disallowed << nil
-              end
+            values = []
+
+            if !association_being_validated?
+              values << ''
             end
+
+            if !expects_to_allow_nil?
+              values << nil
+            end
+
+            values
           end
         end
 
         def collection?
-          if reflection
-            [:has_many, :has_and_belongs_to_many].include?(reflection.macro)
+          if association_reflection
+            [:has_many, :has_and_belongs_to_many].include?(
+              association_reflection.macro,
+            )
           else
             false
           end
         end
 
-        def reflection
-          @subject.class.respond_to?(:reflect_on_association) &&
-            @subject.class.reflect_on_association(@attribute)
+        def should_add_footnote_about_belongs_to?
+          belongs_to_association_being_validated? &&
+            presence_validation_exists_on_attribute?
+        end
+
+        def reason_for_existing_presence_validation
+          if belongs_to_association_configured_to_be_required?
+            "you've instructed your `belongs_to` association to add a " +
+              'presence validation to the attribute'
+          else
+            # assume ::ActiveRecord::Base.belongs_to_required_by_default == true
+            'ActiveRecord is configured to add a presence validation to all ' +
+              '`belongs_to` associations, and this includes yours'
+          end
+        end
+
+        def representation_of_belongs_to
+          'belong_to(:parent)'.tap do |str|
+            if association_reflection.options.include?(:optional)
+              str << ".optional(#{association_reflection.options[:optional]})"
+            end
+          end
+        end
+
+        def belongs_to_association_configured_to_be_required?
+          association_reflection.options[:optional] == false ||
+            association_reflection.options[:required] == true
+        end
+
+        def belongs_to_association_being_validated?
+          association_being_validated? &&
+            association_reflection.macro == :belongs_to
+        end
+
+        def association_being_validated?
+          !!association_reflection
+        end
+
+        def association_reflection
+          model.respond_to?(:reflect_on_association) &&
+            model.reflect_on_association(@attribute)
+        end
+
+        def presence_validation_exists_on_attribute?
+          model._validators.include?(@attribute)
+        end
+
+        def model
+          @subject.class
         end
       end
     end

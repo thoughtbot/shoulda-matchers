@@ -2,6 +2,8 @@ module Shoulda
   module Matchers
     # @private
     module WordWrap
+      TERMINAL_WIDTH = 72
+
       def word_wrap(document, options = {})
         Document.new(document, options).wrap
       end
@@ -112,7 +114,6 @@ module Shoulda
 
     # @private
     class Line
-      TERMINAL_WIDTH = 72
       OFFSETS = { left: -1, right: +1 }
 
       def initialize(line, indent: 0)
@@ -171,7 +172,7 @@ module Shoulda
       def wrap_line(line, direction: :left)
         index = nil
 
-        if line.length > TERMINAL_WIDTH
+        if line.length > Shoulda::Matchers::WordWrap::TERMINAL_WIDTH
           index = determine_where_to_break_line(line, direction: :left)
 
           if index == -1
@@ -192,7 +193,7 @@ module Shoulda
 
       def determine_where_to_break_line(line, args)
         direction = args.fetch(:direction)
-        index = TERMINAL_WIDTH
+        index = Shoulda::Matchers::WordWrap::TERMINAL_WIDTH
         offset = OFFSETS.fetch(direction)
 
         while line[index] !~ /\s/ && (0...line.length).cover?(index)
