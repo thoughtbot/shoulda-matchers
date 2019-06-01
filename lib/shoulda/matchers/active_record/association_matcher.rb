@@ -272,7 +272,7 @@ module Shoulda
       #       should belong_to(:organization).required
       #     end
       #
-      # #### without_validating_presence
+      # ##### without_validating_presence
       #
       # Use `without_validating_presence` with `belong_to` to prevent the
       # matcher from checking whether the association disallows nil (Rails 5+
