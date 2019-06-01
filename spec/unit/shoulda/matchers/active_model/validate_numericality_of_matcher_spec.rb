@@ -306,6 +306,23 @@ it is not nil, but this could not be proved.
         expect(record).to validate_numericality.only_integer
       end
 
+      it 'rejects when used in the negative' do
+        record = build_record_validating_numericality(only_integer: true)
+
+        assertion = lambda do
+          expect(record).not_to validate_numericality.only_integer
+        end
+
+        expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected Example not to validate that :attr looks like an integer, but
+this could not be proved.
+  After setting :attr to ‹"0.1"›, the matcher expected the Example to be
+  valid, but it was invalid instead, producing these validation errors:
+
+  * attr: ["must be an integer"]
+        MESSAGE
+      end
+
       it_supports(
         'ignoring_interference_by_writer',
         tests: {
@@ -366,6 +383,23 @@ could not be proved.
       it 'accepts' do
         record = build_record_validating_numericality(odd: true)
         expect(record).to validate_numericality.odd
+      end
+
+      it 'rejects when used in the negative' do
+        record = build_record_validating_numericality(odd: true)
+
+        assertion = lambda do
+          expect(record).not_to validate_numericality.odd
+        end
+
+        expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected Example not to validate that :attr looks like an odd number,
+but this could not be proved.
+  After setting :attr to ‹"2"›, the matcher expected the Example to be
+  valid, but it was invalid instead, producing these validation errors:
+
+  * attr: ["must be odd"]
+        MESSAGE
       end
 
       it_supports(
@@ -472,6 +506,23 @@ this could not be proved.
         expect(record).to validate_numericality.even
       end
 
+      it 'rejects when used in the negative' do
+        record = build_record_validating_numericality(even: true)
+
+        assertion = lambda do
+          expect(record).not_to validate_numericality.even
+        end
+
+        expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected Example not to validate that :attr looks like an even number,
+but this could not be proved.
+  After setting :attr to ‹"1"›, the matcher expected the Example to be
+  valid, but it was invalid instead, producing these validation errors:
+
+  * attr: ["must be even"]
+        MESSAGE
+      end
+
       it_supports(
         'ignoring_interference_by_writer',
         tests: {
@@ -572,10 +623,27 @@ this could not be proved.
   context 'qualified with is_less_than_or_equal_to' do
     context 'and validating with less_than_or_equal_to' do
       it 'accepts' do
-        record = build_record_validating_numericality(
-          less_than_or_equal_to: 18
-        )
+        record = build_record_validating_numericality(less_than_or_equal_to: 18)
         expect(record).to validate_numericality.is_less_than_or_equal_to(18)
+      end
+
+      it 'rejects when used in the negative' do
+        record = build_record_validating_numericality(less_than_or_equal_to: 18)
+
+        assertion = lambda do
+          expect(record).not_to validate_numericality.
+            is_less_than_or_equal_to(18)
+        end
+
+        expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected Example not to validate that :attr looks like a number less
+than or equal to 18, but this could not be proved.
+  After setting :attr to ‹"abcd"›, the matcher expected the Example to
+  be valid, but it was invalid instead, producing these validation
+  errors:
+
+  * attr: ["is not a number"]
+        MESSAGE
       end
 
       it_supports(
@@ -686,6 +754,24 @@ equal to 18, but this could not be proved.
           is_less_than(18)
       end
 
+      it 'rejects when used in the negative' do
+        record = build_record_validating_numericality(less_than: 18)
+
+        assertion = lambda do
+          expect(record).not_to validate_numericality.is_less_than(18)
+        end
+
+        expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected Example not to validate that :attr looks like a number less
+than 18, but this could not be proved.
+  After setting :attr to ‹"abcd"›, the matcher expected the Example to
+  be valid, but it was invalid instead, producing these validation
+  errors:
+
+  * attr: ["is not a number"]
+        MESSAGE
+      end
+
       it_supports(
         'ignoring_interference_by_writer',
         tests: {
@@ -788,6 +874,24 @@ Expected Example to validate that :attr looks like a number less than
       it 'accepts' do
         record = build_record_validating_numericality(equal_to: 18)
         expect(record).to validate_numericality.is_equal_to(18)
+      end
+
+      it 'rejects when used in the negative' do
+        record = build_record_validating_numericality(equal_to: 18)
+
+        assertion = lambda do
+          expect(record).not_to validate_numericality.is_equal_to(18)
+        end
+
+        expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected Example not to validate that :attr looks like a number equal to
+18, but this could not be proved.
+  After setting :attr to ‹"abcd"›, the matcher expected the Example to
+  be valid, but it was invalid instead, producing these validation
+  errors:
+
+  * attr: ["is not a number"]
+        MESSAGE
       end
 
       it_supports(
@@ -896,6 +1000,27 @@ but this could not be proved.
         expect(record).
           to validate_numericality.
           is_greater_than_or_equal_to(18)
+      end
+
+      it 'rejects when used in the negative' do
+        record = build_record_validating_numericality(
+          greater_than_or_equal_to: 18,
+        )
+
+        assertion = lambda do
+          expect(record).not_to validate_numericality.
+            is_greater_than_or_equal_to(18)
+        end
+
+        expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected Example not to validate that :attr looks like a number greater
+than or equal to 18, but this could not be proved.
+  After setting :attr to ‹"abcd"›, the matcher expected the Example to
+  be valid, but it was invalid instead, producing these validation
+  errors:
+
+  * attr: ["is not a number"]
+        MESSAGE
       end
 
       it_supports(
@@ -1009,6 +1134,25 @@ or equal to 18, but this could not be proved.
         expect(record).
           to validate_numericality.
           is_greater_than(18)
+      end
+
+      it 'rejects when used in the negative' do
+        record = build_record_validating_numericality(greater_than: 18)
+
+        assertion = lambda do
+          expect(record).not_to validate_numericality.
+            is_greater_than(18)
+        end
+
+        expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected Example not to validate that :attr looks like a number greater
+than 18, but this could not be proved.
+  After setting :attr to ‹"abcd"›, the matcher expected the Example to
+  be valid, but it was invalid instead, producing these validation
+  errors:
+
+  * attr: ["is not a number"]
+        MESSAGE
       end
 
       it_supports(
