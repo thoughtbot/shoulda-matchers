@@ -458,19 +458,58 @@ Expected Child to have a belongs_to association called parent (parent should hav
     context 'when the association has been configured with an explicit class_name' do
       context 'which refers to a real class' do
         context 'and is the same as the given class_name' do
-          it 'matches' do
-            define_class('TreeParent')
-            record = record_belonging_to(
-              :parent,
-              model_name: 'Child',
-              class_name: 'TreeParent',
-            )
+          context 'and the class is not namespaced' do
+            it 'matches' do
+              define_class('TreeParent')
+              record = record_belonging_to(
+                :parent,
+                model_name: 'Child',
+                class_name: 'TreeParent',
+              )
 
-            expect { belong_to(:parent).class_name('TreeParent') }.
-              to match_against(record).
-              or_fail_with(<<-MESSAGE)
+              expect { belong_to(:parent).class_name('TreeParent') }.
+                to match_against(record).
+                or_fail_with(<<-MESSAGE)
 Did not expect Child to have a belongs_to association called parent
-            MESSAGE
+              MESSAGE
+            end
+          end
+
+          context 'and the class is namespaced' do
+            it 'matches' do
+              define_module('Models')
+              define_model('Models::Organization')
+              record = record_belonging_to(
+                :organization,
+                model_name: 'Models::User',
+                class_name: 'Organization',
+              )
+
+              expect { belong_to(:organization).class_name('Organization') }.
+                to match_against(record).
+                or_fail_with(<<-MESSAGE)
+Did not expect Models::User to have a belongs_to association called organization
+              MESSAGE
+            end
+          end
+
+          context 'and the class is both in the global namespace and in a sub-namespace' do
+            it 'resolves the class inside the sub-namespace' do
+              define_module('Models')
+              define_module('Organization')
+              define_model('Models::Organization')
+              record = record_belonging_to(
+                :organization,
+                model_name: 'Models::User',
+                class_name: 'Organization',
+              )
+
+              expect { belong_to(:organization).class_name('Organization') }.
+                to match_against(record).
+                or_fail_with(<<-MESSAGE)
+Did not expect Models::User to have a belongs_to association called organization
+              MESSAGE
+            end
           end
         end
 
@@ -596,63 +635,6 @@ end
 #   type: :model
 # ) do
 #   include UnitTests::ApplicationConfigurationHelpers
-#     it 'accepts an association without a :class_name option' do
-#       expect(record_belonging_to(:parent)).to belong_to(:parent).class_name('Parent')
-#     end
-#
-#     it 'accepts an association with a valid :class_name option' do
-#       define_model :tree_parent
-#       define_model :child, parent_id: :integer do
-#         belongs_to :parent, class_name: 'TreeParent'
-#       end
-#
-#       expect(Child.new).to belong_to(:parent).class_name('TreeParent')
-#     end
-#
-#     it 'rejects an association with a bad :class_name option' do
-#       expect(record_belonging_to(:parent)).not_to belong_to(:parent).class_name('TreeChild')
-#     end
-#
-#     it 'rejects an association with non-existent implicit class name' do
-#       expect(belonging_to_non_existent_class(:child, :parent)).not_to belong_to(:parent)
-#     end
-#
-#     it 'rejects an association with non-existent explicit class name' do
-#       expect(belonging_to_non_existent_class(:child, :parent, class_name: 'Parent')).not_to belong_to(:parent)
-#     end
-#
-#     it 'adds error message when rejecting an association with non-existent class' do
-#       message = 'Expected Child to have a belongs_to association called parent (Parent2 does not exist)'
-#       expect {
-#         expect(belonging_to_non_existent_class(:child, :parent, class_name: 'Parent2')).to belong_to(:parent)
-#       }.to fail_with_message(message)
-#     end
-#
-#     it 'accepts an association with a namespaced class name' do
-#       define_module 'Models'
-#       define_model 'Models::Organization'
-#       user_model = define_model 'Models::User', organization_id: :integer do
-#         belongs_to :organization, class_name: 'Organization'
-#       end
-#
-#       expect(user_model.new).
-#         to belong_to(:organization).
-#         class_name('Organization')
-#     end
-#
-#     it 'resolves class_name within the context of the namespace before the global namespace' do
-#       define_module 'Models'
-#       define_model 'Organization'
-#       define_model 'Models::Organization'
-#       user_model = define_model 'Models::User', organization_id: :integer do
-#         belongs_to :organization, class_name: 'Organization'
-#       end
-#
-#       expect(user_model.new).
-#         to belong_to(:organization).
-#         class_name('Organization')
-#     end
-#
 #     it 'accepts an association with a matching :autosave option' do
 #       define_model :parent, adopter: :boolean
 #       define_model :child, parent_id: :integer do
