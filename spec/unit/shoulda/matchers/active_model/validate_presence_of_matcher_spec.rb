@@ -309,7 +309,7 @@ could not be proved.
         end
 
         context 'and an explicit presence validation is not on the association' do
-          it 'does not match, instructing the user to use belong_to instead' do
+          it 'does not match, instructing the user to use belongs_to instead' do
             record = record_belonging_to(
               :parent,
               optional: false,
@@ -337,9 +337,96 @@ could not be proved.
 
   With that said, did you know that the `belong_to` matcher can test
   this validation for you? Instead of using `validate_presence_of`, try
-  the following instead:
+  one of the following instead, depending on your use case:
 
       it { should belong_to(:parent).optional(false) }
+      it { should belong_to(:parent).required(true) }
+              MESSAGE
+          end
+        end
+      end
+
+      context 'declared with required: true' do
+        context 'and an explicit presence validation is on the association' do
+          it 'matches' do
+            record = record_belonging_to(
+              :parent,
+              required: true,
+              validate_presence: true,
+            )
+
+            expect { validate_presence_of(:parent) }.to match_against(record)
+          end
+        end
+
+        context 'and an explicit presence validation is not on the association' do
+          it 'does not match, instructing the user to use belongs_to instead' do
+            record = record_belonging_to(
+              :parent,
+              required: true,
+              validate_presence: false,
+              model_name: 'Child',
+              parent_model_name: 'Parent',
+            )
+
+            expect { validate_presence_of(:parent) }.
+              not_to match_against(record).
+              and_fail_with(<<-MESSAGE)
+Expected Child to validate that :parent cannot be empty/falsy, but this
+could not be proved.
+  After setting :parent to ‹nil›, the matcher expected the Child to be
+  invalid and to produce the validation error "can't be blank" on
+  :parent. The record was indeed invalid, but it produced these
+  validation errors instead:
+
+  * parent: ["must exist"]
+
+  You're getting this error because you've instructed your `belongs_to`
+  association to add a presence validation to the attribute. *This*
+  presence validation doesn't use "can't be blank", the usual validation
+  message, but "must exist" instead.
+
+  With that said, did you know that the `belong_to` matcher can test
+  this validation for you? Instead of using `validate_presence_of`, try
+  one of the following instead, depending on your use case:
+
+      it { should belong_to(:parent).optional(false) }
+      it { should belong_to(:parent).required(true) }
+              MESSAGE
+          end
+        end
+      end
+
+      context 'declared with required: false' do
+        context 'and an explicit presence validation is on the association' do
+          it 'matches' do
+            record = record_belonging_to(
+              :parent,
+              required: false,
+              validate_presence: true,
+            )
+
+            expect { validate_presence_of(:parent) }.to match_against(record)
+          end
+        end
+
+        context 'and an explicit presence validation is not on the association' do
+          it 'does not match' do
+            record = record_belonging_to(
+              :parent,
+              required: false,
+              validate_presence: false,
+              model_name: 'Child',
+              parent_model_name: 'Parent',
+            )
+
+            expect { validate_presence_of(:parent) }.
+              not_to match_against(record).
+              and_fail_with(<<-MESSAGE)
+Expected Child to validate that :parent cannot be empty/falsy, but this
+could not be proved.
+  After setting :parent to ‹nil›, the matcher expected the Child to be
+  invalid, but it was valid instead.
               MESSAGE
           end
         end

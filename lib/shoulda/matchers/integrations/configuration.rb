@@ -5,11 +5,13 @@ module Shoulda
     module Integrations
       # @private
       class Configuration
-        def self.apply(configuration, &block)
-          new(configuration, &block).apply
+        def self.apply(&block)
+          new(&block).apply
         end
 
-        def initialize(configuration, &block)
+        attr_reader :test_frameworks
+
+        def initialize(&block)
           @test_frameworks = Set.new
           @libraries = Set.new
 
@@ -47,6 +49,8 @@ EOT
             test_framework.include(Shoulda::Matchers::Independent)
             @libraries.each { |library| library.integrate_with(test_framework) }
           end
+
+          self
         end
 
         private

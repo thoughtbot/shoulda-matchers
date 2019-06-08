@@ -192,10 +192,8 @@ You're getting this error because #{reason_for_existing_presence_validation}.
 message, but "must exist" instead.
 
 With that said, did you know that the `belong_to` matcher can test this
-validation for you? Instead of using `validate_presence_of`, try the following
-instead:
-
-      it { should #{representation_of_belongs_to} }
+validation for you? Instead of using `validate_presence_of`, try
+#{suggestions_for_belongs_to}
             MESSAGE
           end
 
@@ -279,17 +277,42 @@ instead:
           end
         end
 
-        def representation_of_belongs_to
-          'belong_to(:parent)'.tap do |str|
-            if association_reflection.options.include?(:optional)
-              str << ".optional(#{association_reflection.options[:optional]})"
+        def suggestions_for_belongs_to
+          if belongs_to_association_configured_to_be_required?
+            <<~MESSAGE
+              one of the following instead, depending on your use case:
+
+                    #{example_of_belongs_to(with: [:optional, false])}
+                    #{example_of_belongs_to(with: [:required, true])}
+            MESSAGE
+          else
+            <<~MESSAGE
+              the following instead:
+
+                    #{example_of_belongs_to}
+            MESSAGE
+          end
+        end
+
+        def example_of_belongs_to(with: nil)
+          initial_call = "should belong_to(:#{association_name})"
+          inside =
+            if with
+              "#{initial_call}.#{with.first}(#{with.second})"
+            else
+              initial_call
             end
+
+          if Shoulda::Matchers.integrations.test_frameworks.any?(&:n_unit?)
+            inside
+          else
+            "it { #{inside} }"
           end
         end
 
         def belongs_to_association_configured_to_be_required?
-          association_reflection.options[:optional] == false ||
-            association_reflection.options[:required] == true
+          association_options[:optional] == false ||
+            association_options[:required] == true
         end
 
         def belongs_to_association_being_validated?
@@ -299,6 +322,14 @@ instead:
 
         def association_being_validated?
           !!association_reflection
+        end
+
+        def association_name
+          association_reflection.name
+        end
+
+        def association_options
+          association_reflection&.options
         end
 
         def association_reflection
