@@ -1,12 +1,27 @@
 # Shoulda Matchers [![Gem Version][version-badge]][rubygems] [![Build Status][travis-badge]][travis] ![Downloads][downloads-badge] [![Hound][hound-badge]][hound]
 
+[version-badge]: https://img.shields.io/gem/v/shoulda-matchers.svg
+[rubygems]: https://rubygems.org/gems/shoulda-matchers
+[travis-badge]: https://img.shields.io/travis/thoughtbot/shoulda-matchers/master.svg
+[travis]: https://travis-ci.org/thoughtbot/shoulda-matchers
+[downloads-badge]: https://img.shields.io/gem/dtv/shoulda-matchers.svg
+[hound-badge]: https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg
+[hound]: https://houndci.com
+
 [![shoulda-matchers][logo]][website]
+
+[logo]: https://matchers.shoulda.io/images/shoulda-matchers-logo.png
+[website]: https://matchers.shoulda.io/
 
 Shoulda Matchers provides RSpec- and Minitest-compatible one-liners that test
 common Rails functionality. These tests, if written by hand, would be much
 longer, more complex, and error-prone.
 
-**[View the documentation for the latest version (4.0.1).][rubydocs]**
+📖 **[Read the documentation for the latest version (4.0.1)][rubydocs].**  
+📢 **[See what's changed][news].**
+
+[rubydocs]: http://matchers.shoulda.io/docs
+[news]: NEWS.md
 
 ---
 
@@ -157,6 +172,9 @@ Shoulda Matchers was originally a component of [Shoulda][shoulda], a gem that
 also provides `should` and `context` syntax via
 [`shoulda-context`][shoulda-context].
 
+[shoulda]: https://github.com/thoughtbot/shoulda
+[shoulda-context]: https://github.com/thoughtbot/shoulda-context
+
 At the moment, `shoulda` has not been updated to support `shoulda-matchers` 3.x
 and 4.x, so you'll want to add the following to your Gemfile:
 
@@ -279,6 +297,8 @@ For Ruby < 2.4 and Rails < 4.1 compatibility, please use [v3.1.3][v3.1.3].
 Shoulda Matchers is open source, and we are grateful for
 [everyone][contributors] who's contributed so far.
 
+[contributors]: https://github.com/thoughtbot/shoulda-matchers/contributors
+
 If you'd like to contribute, please take a look at the
 [instructions](CONTRIBUTING.md) for installing dependencies and crafting a good
 pull request.
@@ -295,9 +315,13 @@ Shoulda Matchers is copyright © 2006-2019
 and may be redistributed under the terms specified in the
 [MIT-LICENSE](MIT-LICENSE) file.
 
+[thoughtbot-website]: https://thoughtbot.com
+
 ## About thoughtbot
 
 ![thoughtbot][thoughtbot-logo]
+
+[thoughtbot-logo]: https://presskit.thoughtbot.com/images/thoughtbot-logo-for-readmes.svg
 
 Shoulda Matchers is maintained and funded by thoughtbot, inc. The names and
 logos for thoughtbot are trademarks of thoughtbot, inc.
@@ -305,22 +329,5 @@ logos for thoughtbot are trademarks of thoughtbot, inc.
 We are passionate about open source software. See [our other
 projects][community]. We are [available for hire][hire].
 
-[rubydocs]: http://matchers.shoulda.io/docs
 [community]: https://thoughtbot.com/community?utm_source=github
 [hire]: https://thoughtbot.com?utm_source=github
-[version-badge]: https://img.shields.io/gem/v/shoulda-matchers.svg
-[rubygems]: https://rubygems.org/gems/shoulda-matchers
-[travis-badge]: https://img.shields.io/travis/thoughtbot/shoulda-matchers/master.svg
-[travis]: https://travis-ci.org/thoughtbot/shoulda-matchers
-[downloads-badge]: https://img.shields.io/gem/dtv/shoulda-matchers.svg
-[contributors]: https://github.com/thoughtbot/shoulda-matchers/contributors
-[shoulda]: https://github.com/thoughtbot/shoulda
-[shoulda-context]: https://github.com/thoughtbot/shoulda-context
-[Zeus]: https://github.com/burke/zeus
-[Appraisal]: https://github.com/thoughtbot/appraisal
-[hound-badge]: https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg
-[hound]: https://houndci.com
-[thoughtbot-website]: https://thoughtbot.com
-[thoughtbot-logo]: https://presskit.thoughtbot.com/images/thoughtbot-logo-for-readmes.svg
-[logo]: https://matchers.shoulda.io/images/shoulda-matchers-logo.png
-[website]: https://matchers.shoulda.io/
