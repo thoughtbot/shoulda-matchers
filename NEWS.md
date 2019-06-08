@@ -23,6 +23,18 @@
 [834d8d0]: https://github.com/thoughtbot/shoulda-matchers/commit/834d8d0356573b9f47e63a1b910cfa8f3d815e51
 [#1100]: https://github.com/thoughtbot/shoulda-matchers/pull/1100
 
+### Improvements
+
+* Update `validate_presence_of` so that if it is being used against an
+  association which is `required: true` or `optional: false`, or it is not
+  configured as such but ActiveRecord defaults `belong_to` associations to
+  `optional: false`, and the matcher fails, the developer is reminded in the
+  failure message that the `belong_to` matcher can be used instead. ([#1214],
+  [8697b01])
+
+[#1214]: https://github.com/thoughtbot/shoulda-matchers/pull/1214
+[8697b01]: https://github.com/thoughtbot/shoulda-matchers/commit/8697b015ed88fdbbbcf5d31bf98670f17c3df9e1
+
 # 4.0.1
 
 ### Bug fixes
