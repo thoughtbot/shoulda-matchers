@@ -24,6 +24,7 @@ GEM
       pry (~> 0.10)
     pygments.rb (1.1.1)
       multi_json (>= 1.0.0)
+    rack (2.0.7)
     rainbow (3.0.0)
     rake (12.3.2)
     redcarpet (3.4.0)
@@ -40,13 +41,16 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.6.0)
     rspec-support (3.6.0)
-    rubocop (0.70.0)
+    rubocop (0.71.0)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
       parser (>= 2.6)
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 1.7)
+    rubocop-rails (2.0.0)
+      rack (>= 2.0)
+      rubocop (>= 0.70.0)
     ruby-progressbar (1.10.1)
     thor (0.20.0)
     unicode-display_width (1.6.0)
@@ -68,6 +72,7 @@ DEPENDENCIES
   redcarpet
   rspec (~> 3.6)
   rubocop
+  rubocop-rails
   yard
   zeus
 
