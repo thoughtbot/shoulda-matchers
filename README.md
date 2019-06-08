@@ -27,9 +27,11 @@ longer, more complex, and error-prone.
 
 * [Getting started](#getting-started)
    * [RSpec](#rspec)
-      * [Availability of matchers in various example groups](#availability-of-matchers-in-various-example-groups)
-      * [<code>should</code> vs <code>is_expected.to</code>](#should-vs-is_expectedto)
    * [Minitest](#minitest)
+* [Usage](#usage)
+  * [On the subject of `subject`](#on-the-subject-of-subject)
+  * [Availability of RSpec matchers in example groups](#availability-of-rspec-matchers-in-example-groups)
+  * [`should` vs `is_expected.to`](#should-vs-is_expectedto)
 * [Matchers](#matchers)
    * [ActiveModel matchers](#activemodel-matchers)
    * [ActiveRecord matchers](#activerecord-matchers)
@@ -76,14 +78,7 @@ Shoulda::Matchers.configure do |config|
 end
 ```
 
-Now you're ready to use matchers in your tests! For instance, you might decide
-to add a matcher to one of your models:
-
-```ruby
-RSpec.describe Person, type: :model do
-  it { should validate_presence_of(:name) }
-end
-```
+Now you're ready to [use matchers in your tests](#usage)!
 
 #### Non-Rails apps
 
@@ -103,68 +98,7 @@ Shoulda::Matchers.configure do |config|
 end
 ```
 
-Now you're ready to use matchers in your tests! For instance, you might decide
-to add a matcher to one of your models:
-
-```ruby
-RSpec.describe Person, type: :model do
-  it { should validate_presence_of(:name) }
-end
-```
-
-For more of an idea of what you can use, [see the list of matchers
-below](#matchers).
-
-#### Availability of matchers in various example groups
-
-Regardless of your project, it's important to keep in mind that since
-shoulda-matchers provides four categories of matchers, there are four different
-levels where you can use these matchers:
-
-* ActiveRecord and ActiveModel matchers are available only in model example
-  groups, i.e., those tagged with `type: :model` or in files located under
-  `spec/models`.
-* ActionController matchers are available only in controller example groups,
-  i.e., those tagged with `type: :controller` or in files located under
-  `spec/controllers`.
-* The `route` matcher is available also in routing example groups, i.e., those
-  tagged with `type: :routing` or in files located under `spec/routing`.
-* Independent matchers are available in all example groups.
-
-**⚠️ If you are using ActiveModel or ActiveRecord outside of Rails** and you want
-to use model matchers in certain example groups, you'll need to manually include
-them. Here's a good way of doing that:
-
-```ruby
-require 'shoulda-matchers'
-
-RSpec.configure do |config|
-  config.include(Shoulda::Matchers::ActiveModel, type: :model)
-  config.include(Shoulda::Matchers::ActiveRecord, type: :model)
-end
-```
-
-Then you can say:
-
-```ruby
-describe MySpecialModel, type: :model do
-  # ...
-end
-```
-
-#### `should` vs `is_expected.to`
-
-Note that in this README and throughout the documentation we're using the
-`should` form of RSpec's one-liner syntax over `is_expected.to`. The `should`
-form works regardless of how you've configured RSpec — meaning you can still use
-it even when using the `expect` syntax. But if you prefer to use
-`is_expected.to`, you can do that too:
-
-```ruby
-RSpec.describe Person, type: :model do
-  it { is_expected.to validate_presence_of(:name) }
-end
-```
+Now you're ready to [use matchers in your tests](#usage)!
 
 ### Minitest
 
@@ -185,19 +119,174 @@ group :test do
 end
 ```
 
-Now you're ready to use matchers in your tests! For instance, you might decide
-to add a matcher to one of your models:
+Now you're ready to [use matchers in your tests](#usage)!
 
-```ruby
-class PersonTest < ActiveSupport::TestCase
-  should validate_presence_of(:name)
+## Usage
+
+The matchers provided by this gem are divided into different categories
+depending on what you're testing within your Rails app:
+
+* [database models backed by ActiveRecord](#activemodel-matchers)
+* [non-database models, form objects, etc. backed by
+  ActiveModel](#activerecord-matchers)
+* [controllers](#actioncontroller-matchers)
+* [routes](#routing-matchers) (RSpec only)
+* [usage of Rails-specific features like `delegate`](#independent-matchers)
+
+All matchers are designed to be prepended primarily with the word `should`,
+which is a special directive in both RSpec and Shoulda. For instance, a model
+test case may look something like:
+
+``` ruby
+# RSpec
+RSpec.describe MenuItem, type: :model do
+  describe 'associations' do
+    it { should belong_to(:category).class_name('MenuCategory') }
+  end
+
+  describe 'validations' do
+    it { should validate_presence_of(:name) }
+    it { should validate_uniqueness_of(:name).scoped_to(:category_id) }
+  end
+end
+
+# Minitest (Shoulda)
+class MenuItemTest < ActiveSupport::TestCase
+  context 'associations' do
+    should belong_to(:category).class_name('MenuCategory')
+  end
+
+  context 'validations' do
+    should validate_presence_of(:name)
+    should validate_uniqueness_of(:name).scoped_to(:category_id)
+  end
 end
 ```
 
-For more of an idea of what you can use, [see the list of matchers
-below](#matchers).
+For the full set of matchers you can use, [see below](#matchers).
+
+### On the subject of `subject`
+
+For both RSpec and Shoulda, the **subject** is an implicit reference to the
+object under test, and all of the matchers make use of it internally when they
+are run. This is always set automatically by your test framework in any given
+test case; however, in certain cases it can be advantageous to override the
+subject. For instance, when testing validations in a model, it is customary to
+provide a valid model instead of a fresh one:
+
+``` ruby
+# RSpec
+RSpec.describe Post, type: :model do
+  describe 'validations' do
+    # Here we're using FactoryBot, but you could use anything
+    subject { build(:post) }
+
+    it { should validate_presence_of(:title) }
+  end
+end
+
+# Minitest (Shoulda)
+class PostTest < ActiveSupport::TestCase
+  context 'validations' do
+    subject { build(:post) }
+
+    should validate_presence_of(:title)
+  end
+end
+```
+
+When overriding the subject in this manner, then, it's important to provide the
+correct object. **When in doubt, provide an instance of the class under test.**
+This is particularly necessary for controller tests, where it is easy to
+accidentally write something like:
+
+``` ruby
+RSpec.describe PostsController, type: :controller do
+  describe 'GET #index' do
+    subject { get :index }
+
+    # This may work...
+    it { should have_http_status(:success) }
+    # ...but this will not!
+    it { should permit(:title, :body).for(:post) }
+  end
+end
+```
+
+In this case, you would want to use `before` rather than `subject`:
+
+``` ruby
+RSpec.describe PostsController, type: :controller do
+  describe 'GET #index' do
+    before { get :index }
+
+    # Notice that we have to assert have_http_status on the response here...
+    it { expect(response).to have_http_status(:success) }
+    # ...but we do not have to provide a subject for render_template
+    it { should render_template('index') }
+  end
+end
+```
+
+### Availability of RSpec matchers in example groups
+
+If you're using RSpec, then you're probably familiar with the concept of example
+groups: these are different kinds of test cases, and each of them has special
+behavior around them. As alluded to [above](#usage), this gem works in a similar
+way, and there are matchers that are only available in certain types of example
+groups:
+
+* ActiveRecord and ActiveModel matchers are available only in model example
+  groups, i.e., those tagged with `type: :model` or in files located under
+  `spec/models`.
+* ActionController matchers are available only in controller example groups,
+  i.e., those tagged with `type: :controller` or in files located under
+  `spec/controllers`.
+* The `route` matcher is available in routing example groups, i.e., those
+  tagged with `type: :routing` or in files located under `spec/routing`.
+* Independent matchers are available in all example groups.
+
+As long as you're using Rails, you don't need to worry about this — everything
+should "just work".
+
+**However, if you are using ActiveModel or ActiveRecord outside of Rails**, and
+you want to use model matchers in certain example groups, you'll need to
+manually include the module that holds those matchers. A good way to do this is
+to place the following in your `spec_helper.rb`:
+
+```ruby
+RSpec.configure do |config|
+  config.include(Shoulda::Matchers::ActiveModel, type: :model)
+  config.include(Shoulda::Matchers::ActiveRecord, type: :model)
+end
+```
+
+Then you can say:
+
+```ruby
+describe MySpecialModel, type: :model do
+  # ...
+end
+```
+
+### `should` vs `is_expected.to`
+
+In this README and throughout the documentation, we're using the `should` form
+of RSpec's one-liner syntax over `is_expected.to`. The `should` form works
+regardless of how you've configured RSpec — meaning you can still use it even
+when using the `expect` syntax. But if you prefer to use `is_expected.to`, you
+can do that too:
+
+```ruby
+RSpec.describe Person, type: :model do
+  it { is_expected.to validate_presence_of(:name) }
+end
+```
 
 ## Matchers
+
+The following is a list of matchers shipped with the gem. If you need details
+about any of them, make sure to [consult the documentation][rubydocs]!
 
 ### ActiveModel matchers
 
@@ -276,6 +365,11 @@ below](#matchers).
   tests that an `around_action` callback is defined in your controller.
 * **[use_before_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L54)**
   tests that a `before_action` callback is defined in your controller.
+
+### Routing matchers
+
+* **[route](lib/shoulda/matchers/action_controller/route_matcher.rb)** tests
+  your routes.
 
 ### Independent matchers
 
