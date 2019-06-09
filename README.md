@@ -13,17 +13,19 @@
 [logo]: https://matchers.shoulda.io/images/shoulda-matchers-logo.png
 [website]: https://matchers.shoulda.io/
 
-Shoulda Matchers provides RSpec- and Minitest-compatible one-liners that test
-common Rails functionality. These tests, if written by hand, would be much
-longer, more complex, and error-prone.
+Shoulda Matchers provides RSpec- and Minitest-compatible one-liners to test
+common Rails functionality that, if written by hand, would be much longer, more
+complex, and error-prone.
+
+## Quick links
 
 📖 **[Read the documentation for the latest version (4.0.1)][rubydocs].**  
-📢 **[See what's changed][news].**
+📢 **[See what's changed in a recent version][news].**
 
 [rubydocs]: http://matchers.shoulda.io/docs
 [news]: NEWS.md
 
----
+## Table of contents
 
 * [Getting started](#getting-started)
    * [RSpec](#rspec)
