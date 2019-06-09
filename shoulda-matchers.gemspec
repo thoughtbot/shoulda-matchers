@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
     'Stafford Brunk',
     'Elliot Winkler',
   ]
-  s.date        = Time.zone.now.strftime('%Y-%m-%d')
+  s.date        = Time.now.strftime('%Y-%m-%d')
   s.email       = 'support@thoughtbot.com'
   s.homepage    = 'https://matchers.shoulda.io/'
   s.summary     = 'Simple one-liner tests for common Rails functionality'
