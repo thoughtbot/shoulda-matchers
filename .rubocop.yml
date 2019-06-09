@@ -1,6 +1,8 @@
 require: rubocop-rails
 AllCops:
   TargetRubyVersion: 2.4
+Layout/AlignArguments:
+  EnforcedStyle: with_fixed_indentation
 Layout/AlignParameters:
   EnforcedStyle: with_fixed_indentation
 Layout/CommentIndentation:
@@ -74,6 +76,8 @@ Naming/BinaryOperatorParameterName:
 Naming/MemoizedInstanceVariableName:
   EnforcedStyleForLeadingUnderscores: required
 Naming/PredicateName:
+  Enabled: false
+Style/BlockDelimiters:
   Enabled: false
 Style/ClassVars:
   Enabled: false
