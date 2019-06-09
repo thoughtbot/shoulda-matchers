@@ -54,7 +54,6 @@ Start by including `shoulda-matchers` in your Gemfile:
 ```ruby
 group :test do
   gem 'shoulda-matchers'
-  gem 'rails-controller-testing'
 end
 ```
 
@@ -118,6 +117,7 @@ and 4.x, so you'll want to add the following to your Gemfile:
 group :test do
   gem 'shoulda', '~> 3.5'
   gem 'shoulda-matchers', '~> 2.0'
+  gem 'rails-controller-testing'
 end
 ```
 
