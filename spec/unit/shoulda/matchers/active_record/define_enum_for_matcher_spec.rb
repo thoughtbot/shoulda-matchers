@@ -9,8 +9,8 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
         column_type: :integer,
       )
       message = format_message(<<-MESSAGE)
-        Expected Example to define :attrs as an enum, backed by an integer.
-        However, no such enum exists in Example.
+        Expected Example to define :attrs as an enum, but no such enum exists on
+        Example.
       MESSAGE
 
       assertion = lambda do
@@ -28,8 +28,8 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
       end
 
       message = format_message(<<-MESSAGE)
-        Expected Example to define :attr as an enum, backed by an integer.
-        However, no such enum exists in Example.
+        Expected Example to define :attr as an enum, but no such enum exists on
+        Example.
       MESSAGE
 
       assertion = lambda do
@@ -48,8 +48,8 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
           attribute_name: :attr,
         )
         message = format_message(<<-MESSAGE)
-          Expected Example to define :attr as an enum, backed by an integer.
-          However, no such enum exists in Example.
+          Expected Example to define :attr as an enum, but no such enum exists
+          on Example.
         MESSAGE
 
         assertion = lambda do
@@ -68,7 +68,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
           column_type: :string,
         )
         message = format_message(<<-MESSAGE)
-          Expected Example to define :attr as an enum, backed by an integer.
+          Expected Example to define :attr as an enum backed by an integer.
           However, :attr is a string column.
         MESSAGE
 
@@ -81,30 +81,23 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     end
 
     context 'if the attribute is defined as an enum' do
-      it 'accepts' do
+      it 'matches' do
         record = build_record_with_array_values(attribute_name: :attr)
 
-        expect(record).to define_enum_for(:attr)
+        expect { define_enum_for(:attr) }.
+          to match_against(record).
+          or_fail_with(<<-MESSAGE, wrap: true)
+            Expected Example not to define :attr as an enum backed by an
+            integer, but it did.
+          MESSAGE
       end
 
-      context 'and the matcher is negated' do
-        it 'rejects with an appropriate failure message' do
-          record = build_record_with_array_values(
-            model_name: 'Example',
-            attribute_name: :attr,
-            column_type: :integer,
-          )
-          message = format_message(<<-MESSAGE)
-            Expected Example not to define :attr as an enum, backed by an integer,
-            but it did.
-          MESSAGE
+      it 'has the right description' do
+        matcher = define_enum_for(:attr)
 
-          assertion = lambda do
-            expect(record).not_to define_enum_for(:attr)
-          end
-
-          expect(&assertion).to fail_with_message(message)
-        end
+        expect(matcher.description).to eq(<<~MESSAGE.strip)
+          define :attr as an enum backed by an integer
+        MESSAGE
       end
     end
   end
@@ -118,9 +111,8 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
             attribute_name: :attr,
           )
           message = format_message(<<-MESSAGE)
-            Expected Example to define :attr as an enum, backed by an integer,
-            with possible values ‹["open", "close"]›. However, no such enum
-            exists in Example.
+            Expected Example to define :attr as an enum, but no such enum
+            exists on Example.
           MESSAGE
 
           assertion = lambda do
@@ -142,9 +134,10 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
               values: ['published', 'unpublished', 'draft'],
             )
             message = format_message(<<-MESSAGE)
-              Expected Example to define :attr as an enum, backed by an integer,
-              with possible values ‹["open", "close"]›. However, the actual
-              enum values for :attr are ‹["published", "unpublished", "draft"]›.
+              Expected Example to define :attr as an enum backed by an integer,
+              mapping ‹"open"› to ‹0› and ‹"close"› to ‹1›. However, :attr
+              actually maps ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and
+              ‹"draft"› to ‹2›.
             MESSAGE
 
             assertion = lambda do
@@ -158,14 +151,33 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
         end
 
         context 'and the enum values match' do
-          it 'accepts' do
+          it 'matches' do
             record = build_record_with_array_values(
               attribute_name: :attr,
               values: ['published', 'unpublished', 'draft'],
             )
 
-            expect(record).to define_enum_for(:attr).
+            matcher = lambda do
+              define_enum_for(:attr).
+                with_values(['published', 'unpublished', 'draft'])
+            end
+
+            expect(&matcher).
+              to match_against(record).
+              or_fail_with(<<-MESSAGE, wrap: true)
+                Expected Example not to define :attr as an enum backed by an
+                integer, mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›,
+                and ‹"draft"› to ‹2›, but it did.
+              MESSAGE
+          end
+
+          it 'has the right description' do
+            matcher = define_enum_for(:attr).
               with_values(['published', 'unpublished', 'draft'])
+
+            expect(matcher.description).to eq(<<~MESSAGE.strip)
+              define :attr as an enum backed by an integer with values ‹["published", "unpublished", "draft"]›
+            MESSAGE
           end
         end
       end
@@ -179,9 +191,8 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
             attribute_name: :attr,
           )
           message = format_message(<<-MESSAGE)
-            Expected Example to define :attr as an enum, backed by an integer,
-            with possible values ‹{active: 5, archived: 10}›. However, no such
-            enum exists in Example.
+            Expected Example to define :attr as an enum, but no such enum exists
+            on Example.
           MESSAGE
 
           assertion = lambda do
@@ -203,9 +214,9 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
               values: { active: 0, archived: 1 },
             )
             message = format_message(<<-MESSAGE)
-              Expected Example to define :attr as an enum, backed by an integer,
-              with possible values ‹{active: 5, archived: 10}›. However, the
-              actual enum values for :attr are ‹{active: 0, archived: 1}›.
+              Expected Example to define :attr as an enum backed by an integer,
+              mapping ‹"active"› to ‹5› and ‹"archived"› to ‹10›. However, :attr
+              actually maps ‹"active"› to ‹0› and ‹"archived"› to ‹1›.
             MESSAGE
 
             assertion = lambda do
@@ -220,28 +231,64 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
 
         context 'and the enum values match' do
           context 'when expected enum values are a hash' do
-            it 'accepts' do
+            it 'matches' do
               record = build_record_with_hash_values(
                 attribute_name: :attr,
                 values: { active: 0, archived: 1 },
               )
 
-              expect(record).
-                to define_enum_for(:attr).
+              matcher = lambda do
+                define_enum_for(:attr).
+                  with_values(active: 0, archived: 1)
+              end
+
+              expect(&matcher).
+                to match_against(record).
+                or_fail_with(<<-MESSAGE, wrap: true)
+                  Expected Example not to define :attr as an enum backed by an
+                  integer, mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›,
+                  but it did.
+                MESSAGE
+            end
+
+            it 'has the right description' do
+              matcher = define_enum_for(:attr).
                 with_values(active: 0, archived: 1)
+
+              expect(matcher.description).to eq(<<~MESSAGE.strip)
+                define :attr as an enum backed by an integer with values ‹{active: 0, archived: 1}›
+              MESSAGE
             end
           end
 
           context 'when expected enum values are an array' do
-            it 'accepts' do
+            it 'matches' do
               record = build_record_with_hash_values(
                 attribute_name: :attr,
                 values: { active: 0, archived: 1 },
               )
 
-              expect(record).
-                to define_enum_for(:attr).
+              matcher = lambda do
+                define_enum_for(:attr).
+                  with_values(['active', 'archived'])
+              end
+
+              expect(&matcher).
+                to match_against(record).
+                or_fail_with(<<-MESSAGE, wrap: true)
+                  Expected Example not to define :attr as an enum backed by an
+                  integer, mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›,
+                  but it did.
+                MESSAGE
+            end
+
+            it 'has the right description' do
+              matcher = define_enum_for(:attr).
                 with_values(['active', 'archived'])
+
+              expect(matcher.description).to eq(<<~MESSAGE.strip)
+                define :attr as an enum backed by an integer with values ‹["active", "archived"]›
+              MESSAGE
             end
           end
         end
@@ -276,7 +323,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
           column_type: :integer,
         )
         message = format_message(<<-MESSAGE)
-          Expected Example to define :attr as an enum, backed by a string.
+          Expected Example to define :attr as an enum backed by a string.
           However, :attr is an integer column.
         MESSAGE
 
@@ -291,15 +338,30 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     end
 
     context 'if the column storing the attribute is of the same type' do
-      it 'accepts' do
+      it 'matches' do
         record = build_record_with_array_values(
           attribute_name: :attr,
           column_type: :string,
         )
 
-        expect(record).
-          to define_enum_for(:attr).
-          backed_by_column_of_type(:string)
+        matcher = lambda do
+          define_enum_for(:attr).backed_by_column_of_type(:string)
+        end
+
+        expect(&matcher).
+          to match_against(record).
+          or_fail_with(<<-MESSAGE, wrap: true)
+            Expected Example not to define :attr as an enum backed by a string,
+            but it did.
+        MESSAGE
+      end
+
+      it 'has the right description' do
+        matcher = define_enum_for(:attr).backed_by_column_of_type(:string)
+
+        expect(matcher.description).to eq(<<~MESSAGE.strip)
+          define :attr as an enum backed by a string
+        MESSAGE
       end
     end
   end
@@ -324,10 +386,11 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
             end
 
             message = format_message(<<-MESSAGE)
-              Expected Example to define :attr as an enum, backed by an integer,
-              using a prefix of :foo, with possible values ‹[:active,
-              :archived]›. However, it was defined with either a different
-              prefix or none at all.
+              Expected Example to define :attr as an enum backed by an integer,
+              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and prefixing
+              accessor methods with "foo_". :attr does map to these values, but
+              the enum is configured with either a different prefix or no prefix
+              at all (we can't tell which).
             MESSAGE
 
             expect(&assertion).to fail_with_message(message)
@@ -352,10 +415,11 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
             end
 
             message = format_message(<<-MESSAGE)
-              Expected Example to define :attr as an enum, backed by an integer,
-              using a prefix of :bar, with possible values ‹[:active,
-              :archived]›. However, it was defined with either a different
-              prefix or none at all.
+              Expected Example to define :attr as an enum backed by an integer,
+              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and prefixing
+              accessor methods with "bar_". :attr does map to these values, but
+              the enum is configured with either a different prefix or no prefix
+              at all (we can't tell which).
             MESSAGE
 
             expect(&assertion).to fail_with_message(message)
@@ -363,7 +427,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
         end
 
         context 'if the attribute was defined with the same prefix' do
-          it 'accepts' do
+          it 'matches' do
             record = build_record_with_array_values(
               model_name: 'Example',
               attribute_name: :attr,
@@ -371,10 +435,29 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
               prefix: :foo,
             )
 
-            expect(record).
-              to define_enum_for(:attr).
+            matcher = lambda do
+              define_enum_for(:attr).
+                with_values([:active, :archived]).
+                with_prefix(:foo)
+            end
+
+            expect(&matcher).
+              to match_against(record).
+              or_fail_with(<<-MESSAGE, wrap: true)
+                Expected Example not to define :attr as an enum backed by an
+                integer, mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and
+                prefixing accessor methods with "foo_", but it did.
+            MESSAGE
+          end
+
+          it 'has the right description' do
+            matcher = define_enum_for(:attr).
               with_values([:active, :archived]).
               with_prefix(:foo)
+
+            expect(matcher.description).to eq(<<~MESSAGE.strip)
+              define :attr as an enum backed by an integer with values ‹[:active, :archived]›, prefix: :foo
+            MESSAGE
           end
         end
       end
@@ -397,10 +480,11 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
             end
 
             message = format_message(<<-MESSAGE)
-              Expected Example to define :attr as an enum, backed by an integer,
-              using a prefix of :attr, with possible values ‹[:active,
-              :archived]›. However, it was defined with either a different
-              prefix or none at all.
+              Expected Example to define :attr as an enum backed by an integer,
+              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and prefixing
+              accessor methods with "attr_". :attr does map to these values, but
+              the enum is configured with either a different prefix or no prefix
+              at all (we can't tell which).
             MESSAGE
 
             expect(&assertion).to fail_with_message(message)
@@ -408,7 +492,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
         end
 
         context 'if the attribute was defined with a prefix' do
-          it 'accepts' do
+          it 'matches' do
             record = build_record_with_array_values(
               model_name: 'Example',
               attribute_name: :attr,
@@ -416,10 +500,29 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
               prefix: true,
             )
 
-            expect(record).
-              to define_enum_for(:attr).
+            matcher = lambda do
+              define_enum_for(:attr).
+                with_values([:active, :archived]).
+                with_prefix
+            end
+
+            expect(&matcher).
+              to match_against(record).
+              or_fail_with(<<-MESSAGE, wrap: true)
+                Expected Example not to define :attr as an enum backed by an
+                integer, mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and
+                prefixing accessor methods with "attr_", but it did.
+              MESSAGE
+          end
+
+          it 'has the right description' do
+            matcher = define_enum_for(:attr).
               with_values([:active, :archived]).
               with_prefix
+
+            expect(matcher.description).to eq(<<~MESSAGE.strip)
+              define :attr as an enum backed by an integer with values ‹[:active, :archived]›, prefix: true
+            MESSAGE
           end
         end
       end
@@ -444,10 +547,11 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
             end
 
             message = format_message(<<-MESSAGE)
-              Expected Example to define :attr as an enum, backed by an integer,
-              using a suffix of :foo, with possible values ‹[:active,
-              :archived]›. However, it was defined with either a different
-              suffix or none at all.
+              Expected Example to define :attr as an enum backed by an integer,
+              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and suffixing
+              accessor methods with "_foo". :attr does map to these values, but
+              the enum is configured with either a different suffix or no suffix
+              at all (we can't tell which).
             MESSAGE
 
             expect(&assertion).to fail_with_message(message)
@@ -472,10 +576,11 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
             end
 
             message = format_message(<<-MESSAGE)
-              Expected Example to define :attr as an enum, backed by an integer,
-              using a suffix of :bar, with possible values ‹[:active,
-              :archived]›. However, it was defined with either a different
-              suffix or none at all.
+              Expected Example to define :attr as an enum backed by an integer,
+              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and suffixing
+              accessor methods with "_bar". :attr does map to these values, but
+              the enum is configured with either a different suffix or no suffix
+              at all (we can't tell which).
             MESSAGE
 
             expect(&assertion).to fail_with_message(message)
@@ -483,7 +588,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
         end
 
         context 'if the attribute was defined with the same suffix' do
-          it 'accepts' do
+          it 'matches' do
             record = build_record_with_array_values(
               model_name: 'Example',
               attribute_name: :attr,
@@ -491,10 +596,29 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
               suffix: :foo,
             )
 
-            expect(record).
-              to define_enum_for(:attr).
+            matcher = lambda do
+              define_enum_for(:attr).
+                with_values([:active, :archived]).
+                with_suffix(:foo)
+            end
+
+            expect(&matcher).
+              to match_against(record).
+              or_fail_with(<<-MESSAGE, wrap: true)
+                Expected Example not to define :attr as an enum backed by an
+                integer, mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and
+                suffixing accessor methods with "_foo", but it did.
+              MESSAGE
+          end
+
+          it 'has the right description' do
+            matcher = define_enum_for(:attr).
               with_values([:active, :archived]).
               with_suffix(:foo)
+
+            expect(matcher.description).to eq(<<~MESSAGE.strip)
+              define :attr as an enum backed by an integer with values ‹[:active, :archived]›, suffix: :foo
+            MESSAGE
           end
         end
       end
@@ -517,10 +641,11 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
             end
 
             message = format_message(<<-MESSAGE)
-              Expected Example to define :attr as an enum, backed by an integer,
-              using a suffix of :attr, with possible values ‹[:active,
-              :archived]›. However, it was defined with either a different
-              suffix or none at all.
+              Expected Example to define :attr as an enum backed by an integer,
+              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and suffixing
+              accessor methods with "_attr". :attr does map to these values, but
+              the enum is configured with either a different suffix or no suffix
+              at all (we can't tell which).
             MESSAGE
 
             expect(&assertion).to fail_with_message(message)
@@ -528,7 +653,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
         end
 
         context 'if the attribute was defined with a suffix' do
-          it 'accepts' do
+          it 'matches' do
             record = build_record_with_array_values(
               model_name: 'Example',
               attribute_name: :attr,
@@ -536,10 +661,29 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
               suffix: true,
             )
 
-            expect(record).
-              to define_enum_for(:attr).
+            matcher = lambda do
+              define_enum_for(:attr).
+                with_values([:active, :archived]).
+                with_suffix
+            end
+
+            expect(&matcher).
+              to match_against(record).
+              or_fail_with(<<-MESSAGE, wrap: true)
+                Expected Example not to define :attr as an enum backed by an
+                integer, mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and
+                suffixing accessor methods with "_attr", but it did.
+              MESSAGE
+          end
+
+          it 'has the right description' do
+            matcher = define_enum_for(:attr).
               with_values([:active, :archived]).
               with_suffix
+
+            expect(matcher.description).to eq(<<~MESSAGE.strip)
+              define :attr as an enum backed by an integer with values ‹[:active, :archived]›, suffix: true
+            MESSAGE
           end
         end
       end
@@ -566,10 +710,12 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
           end
 
           message = format_message(<<-MESSAGE)
-            Expected Example to define :attr as an enum, backed by an integer,
-            using a prefix of :whatever and a suffix of :bar, with possible
-            values ‹[:active, :archived]›. However, it was defined with either
-            a different prefix, a different suffix, or neither one at all.
+            Expected Example to define :attr as an enum backed by an integer,
+            mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›, prefixing
+            accessor methods with "whatever_", and suffixing accessor methods
+            with "_bar". :attr does map to these values, but the enum is
+            configured with either a different prefix or suffix, or no prefix or
+            suffix at all (we can't tell which).
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -595,11 +741,12 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
             end
 
             message = format_message(<<-MESSAGE)
-              Expected Example to define :attr as an enum, backed by an integer,
-              using a prefix of :foo and a suffix of :whatever, with possible
-              values ‹[:active, :archived]›. However, it was defined with
-              either a different prefix, a different suffix, or neither one at
-              all.
+              Expected Example to define :attr as an enum backed by an integer,
+              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›, prefixing
+              accessor methods with "foo_", and suffixing accessor methods with
+              "_whatever". :attr does map to these values, but the enum is
+              configured with either a different prefix or suffix, or no prefix
+              or suffix at all (we can't tell which).
             MESSAGE
 
             expect(&assertion).to fail_with_message(message)
@@ -607,7 +754,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
         end
 
         context 'if the attribute was defined with the same prefix and suffix' do
-          it 'accepts' do
+          it 'matches' do
             record = build_record_with_array_values(
               model_name: 'Example',
               attribute_name: :attr,
@@ -616,11 +763,32 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
               suffix: :bar,
             )
 
-            expect(record).
-              to define_enum_for(:attr).
+            matcher = lambda do
+              define_enum_for(:attr).
+                with_values([:active, :archived]).
+                with_prefix(:foo).
+                with_suffix(:bar)
+            end
+
+            expect(&matcher).
+              to match_against(record).
+              or_fail_with(<<-MESSAGE, wrap: true)
+                Expected Example not to define :attr as an enum backed by an
+                integer, mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›,
+                prefixing accessor methods with "foo_", and suffixing accessor
+                methods with "_bar", but it did.
+              MESSAGE
+          end
+
+          it 'has the right description' do
+            matcher = define_enum_for(:attr).
               with_values([:active, :archived]).
               with_prefix(:foo).
               with_suffix(:bar)
+
+            expect(matcher.description).to eq(<<~MESSAGE.strip)
+              define :attr as an enum backed by an integer with values ‹[:active, :archived]›, prefix: :foo, suffix: :bar
+            MESSAGE
           end
         end
       end

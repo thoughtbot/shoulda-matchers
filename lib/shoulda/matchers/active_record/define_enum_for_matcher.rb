@@ -144,31 +144,22 @@ module Shoulda
         end
 
         def description
-          description = "define :#{attribute_name} as an enum, backed by "
+          description = "#{simple_description} backed by "
           description << Shoulda::Matchers::Util.a_or_an(expected_column_type)
 
-          if options[:expected_prefix]
-            description << ', using a prefix of '
-            description << "#{options[:expected_prefix].inspect}"
-          end
-
-          if options[:expected_suffix]
-            if options[:expected_prefix]
-              description << ' and'
-            else
-              description << ', using'
-            end
-
-            description << ' a suffix of '
-
-            description << "#{options[:expected_suffix].inspect}"
-          end
-
-          if presented_expected_enum_values.any?
-            description << ', with possible values '
+          if expected_enum_values.any?
+            description << ' with values '
             description << Shoulda::Matchers::Util.inspect_value(
-              presented_expected_enum_values,
+              expected_enum_values,
             )
+          end
+
+          if options[:prefix]
+            description << ", prefix: #{options[:prefix].inspect}"
+          end
+
+          if options[:suffix]
+            description << ", suffix: #{options[:suffix].inspect}"
           end
 
           description
@@ -187,13 +178,13 @@ module Shoulda
           with_values(expected_enum_values)
         end
 
-        def with_prefix(expected_prefix = attribute_name)
-          options[:expected_prefix] = expected_prefix
+        def with_prefix(expected_prefix = true)
+          options[:prefix] = expected_prefix
           self
         end
 
-        def with_suffix(expected_suffix = attribute_name)
-          options[:expected_suffix] = expected_suffix
+        def with_suffix(expected_suffix = true)
+          options[:suffix] = expected_suffix
           self
         end
 
@@ -212,13 +203,14 @@ module Shoulda
         end
 
         def failure_message
-          message = "Expected #{model} to #{expectation}"
+          message =
+            if enum_defined?
+              "Expected #{model} to #{expectation}. "
+            else
+              "Expected #{model} to #{expectation}, but "
+            end
 
-          if failure_reason
-            message << ". However, #{failure_reason}"
-          end
-
-          message << '.'
+          message << failure_message_continuation + '.'
 
           Shoulda::Matchers.word_wrap(message)
         end
@@ -230,18 +222,63 @@ module Shoulda
 
         private
 
-        attr_reader :attribute_name, :options, :record, :failure_reason
+        attr_reader :attribute_name, :options, :record,
+          :failure_message_continuation
 
         def expectation
-          description
+          if enum_defined?
+            expectation = "#{simple_description} backed by "
+            expectation << Shoulda::Matchers::Util.a_or_an(expected_column_type)
+
+            if expected_enum_values.any?
+              expectation << ', mapping '
+              expectation << presented_enum_mapping(
+                normalized_expected_enum_values,
+              )
+            end
+
+            if expected_prefix
+              expectation <<
+                if expected_suffix
+                  ', '
+                else
+                  ' and '
+                end
+
+              expectation << 'prefixing accessor methods with '
+              expectation << "#{expected_prefix}_".inspect
+            end
+
+            if expected_suffix
+              expectation <<
+                if expected_prefix
+                  ', and '
+                else
+                  ' and '
+                end
+
+              expectation << 'suffixing accessor methods with '
+              expectation << "_#{expected_suffix}".inspect
+            end
+
+            expectation
+          else
+            simple_description
+          end
         end
 
-        def presented_expected_enum_values
-          if expected_enum_values.is_a?(Hash)
-            expected_enum_values.symbolize_keys
-          else
-            expected_enum_values
-          end
+        def simple_description
+          "define :#{attribute_name} as an enum"
+        end
+
+        def presented_enum_mapping(enum_values)
+          enum_values.
+            map { |output_to_input|
+              output_to_input.
+                map(&Shoulda::Matchers::Util.method(:inspect_value)).
+                join(' to ')
+            }.
+            to_sentence
         end
 
         def normalized_expected_enum_values
@@ -256,14 +293,6 @@ module Shoulda
           options[:expected_enum_values]
         end
 
-        def presented_actual_enum_values
-          if expected_enum_values.is_a?(Array)
-            to_array(actual_enum_values)
-          else
-            to_hash(actual_enum_values).symbolize_keys
-          end
-        end
-
         def normalized_actual_enum_values
           to_hash(actual_enum_values)
         end
@@ -276,7 +305,8 @@ module Shoulda
           if model.defined_enums.include?(attribute_name.to_s)
             true
           else
-            @failure_reason = "no such enum exists in #{model}"
+            @failure_message_continuation =
+              "no such enum exists on #{model}"
             false
           end
         end
@@ -289,11 +319,9 @@ module Shoulda
           if passed
             true
           else
-            @failure_reason =
-              "the actual enum values for #{attribute_name.inspect} are " +
-              Shoulda::Matchers::Util.inspect_value(
-                presented_actual_enum_values,
-              )
+            @failure_message_continuation =
+              "However, #{attribute_name.inspect} actually maps " +
+              presented_enum_mapping(normalized_actual_enum_values)
             false
           end
         end
@@ -302,8 +330,8 @@ module Shoulda
           if column.type == expected_column_type.to_sym
             true
           else
-            @failure_reason =
-              "#{attribute_name.inspect} is " +
+            @failure_message_continuation =
+              "However, #{attribute_name.inspect} is " +
               Shoulda::Matchers::Util.a_or_an(column.type) +
               ' column'
             false
@@ -330,27 +358,56 @@ module Shoulda
           if passed
             true
           else
-            @failure_reason =
-              if options[:expected_prefix]
-                if options[:expected_suffix]
-                  'it was defined with either a different prefix, a ' +
-                  'different suffix, or neither one at all'
-                else
-                  'it was defined with either a different prefix or none at all'
-                end
-              elsif options[:expected_suffix]
-                'it was defined with either a different suffix or none at all'
+            message = "#{attribute_name.inspect} does map to these "
+            message << 'values, but the enum is '
+
+            if expected_prefix
+              if expected_suffix
+                message << 'configured with either a different prefix or '
+                message << 'suffix, or no prefix or suffix at all'
+              else
+                message << 'configured with either a different prefix or no '
+                message << 'prefix at all'
               end
+            elsif expected_suffix
+              message << 'configured with either a different suffix or no '
+              message << 'suffix at all'
+            end
+
+            message << " (we can't tell which)"
+
+            @failure_message_continuation = message
+
             false
           end
         end
 
         def expected_singleton_methods
           expected_enum_value_names.map do |name|
-            [options[:expected_prefix], name, options[:expected_suffix]].
+            [expected_prefix, name, expected_suffix].
               select(&:present?).
               join('_').
               to_sym
+          end
+        end
+
+        def expected_prefix
+          if options.include?(:prefix)
+            if options[:prefix] == true
+              attribute_name#.to_sym
+            else
+              options[:prefix]#.to_sym
+            end
+          end
+        end
+
+        def expected_suffix
+          if options.include?(:suffix)
+            if options[:suffix] == true
+              attribute_name#.to_sym
+            else
+              options[:suffix]#.to_sym
+            end
           end
         end
 
