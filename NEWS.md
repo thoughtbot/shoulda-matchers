@@ -31,9 +31,12 @@
   `optional: false`, and the matcher fails, the developer is reminded in the
   failure message that the `belong_to` matcher can be used instead. ([#1214],
   [8697b01])
+* Update `define_enum_for` so that it produces a more helpful message on
+  failure. ([#1216])
 
 [#1214]: https://github.com/thoughtbot/shoulda-matchers/pull/1214
 [8697b01]: https://github.com/thoughtbot/shoulda-matchers/commit/8697b015ed88fdbbbcf5d31bf98670f17c3df9e1
+[#1216]: https://github.com/thoughtbot/shoulda-matchers/pull/1216
 
 # 4.0.1
 
