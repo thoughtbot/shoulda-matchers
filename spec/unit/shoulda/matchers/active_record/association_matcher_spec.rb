@@ -404,7 +404,19 @@ Expected Child to have a belongs_to association called parent (parent should hav
     end
 
     context 'when the parent model does not have the inverse association' do
-      it 'fails'
+      it 'fails' do
+        pending "This won't work"
+
+        it 'does not match' do
+          record = record_belonging_to(:parent, model_name: 'Child')
+
+          expect { belong_to(:parent).inverse_of(:children) }.
+            not_to match_against(record).
+            and_fail_with(<<-MESSAGE)
+Expected Child to have a belongs_to association called parent (Parent does not have an association :children)
+            MESSAGE
+        end
+      end
     end
   end
 
@@ -590,6 +602,150 @@ Expected Child to have a belongs_to association called parent (parent should res
               MESSAGE
           end
         end
+      end
+    end
+  end
+
+  context 'qualified with autosave' do
+    context 'when the association has been configured with autosave: true' do
+      it 'matches' do
+        pending 'TODO'
+
+        record = record_belonging_to(
+          :parent,
+          model_name: 'Child',
+          autosave: true,
+        )
+
+        expect { belong_to(:parent).autosave }.
+          to match_against(record).
+          or_fail_with(<<-MESSAGE)
+Did not expect Child to have a belongs_to association called parent
+          MESSAGE
+      end
+    end
+
+    context 'when the association has been configured with autosave: false' do
+      it 'does not match' do
+        pending 'TODO'
+
+        record = record_belonging_to(
+          :parent,
+          model_name: 'Child',
+          autosave: false,
+        )
+
+        expect { belong_to(:parent).autosave }.
+          not_to match_against(record).
+          and_fail_with(<<-MESSAGE)
+Expected Child to have a belongs_to association called parent (parent should have autosave => true)
+          MESSAGE
+      end
+    end
+
+    context 'when the association has not been configured with :autosave at all' do
+      it 'does not match' do
+        pending 'TODO'
+
+        record = record_belonging_to(:parent, model_name: 'Child')
+
+        expect { belong_to(:parent).autosave }.
+          not_to match_against(record).
+          and_fail_with(<<-MESSAGE)
+Expected Child to have a belongs_to association called parent (parent should have autosave => true)
+          MESSAGE
+      end
+    end
+  end
+
+  context 'qualified with autosave(true)' do
+    context 'when the association has been configured with autosave: true' do
+      it 'matches' do
+        record = record_belonging_to(
+          :parent,
+          model_name: 'Child',
+          autosave: true,
+        )
+
+        expect { belong_to(:parent).autosave(true) }.
+          to match_against(record).
+          or_fail_with(<<-MESSAGE)
+Did not expect Child to have a belongs_to association called parent
+          MESSAGE
+      end
+    end
+
+    context 'when the association has been configured with autosave: false' do
+      it 'does not match' do
+        record = record_belonging_to(
+          :parent,
+          model_name: 'Child',
+          autosave: false,
+        )
+
+        expect { belong_to(:parent).autosave(true) }.
+          not_to match_against(record).
+          and_fail_with(<<-MESSAGE)
+Expected Child to have a belongs_to association called parent (parent should have autosave set to true)
+          MESSAGE
+      end
+    end
+
+    context 'when the association has not been configured with :autosave at all' do
+      it 'does not match' do
+        record = record_belonging_to(:parent, model_name: 'Child')
+
+        expect { belong_to(:parent).autosave(true) }.
+          not_to match_against(record).
+          and_fail_with(<<-MESSAGE)
+Expected Child to have a belongs_to association called parent (parent should have autosave set to true)
+          MESSAGE
+      end
+    end
+  end
+
+  context 'qualified with autosave(false)' do
+    context 'when the association has been configured with autosave: true' do
+      it 'does not match' do
+        record = record_belonging_to(
+          :parent,
+          model_name: 'Child',
+          autosave: true,
+        )
+
+        expect { belong_to(:parent).autosave(false) }.
+          not_to match_against(record).
+          and_fail_with(<<-MESSAGE)
+Expected Child to have a belongs_to association called parent (parent should have autosave set to false)
+          MESSAGE
+      end
+    end
+
+    context 'when the association has been configured with autosave: false' do
+      it 'matches' do
+        record = record_belonging_to(
+          :parent,
+          model_name: 'Child',
+          autosave: false,
+        )
+
+        expect { belong_to(:parent).autosave(false) }.
+          to match_against(record).
+          or_fail_with(<<-MESSAGE)
+Did not expect Child to have a belongs_to association called parent
+          MESSAGE
+      end
+    end
+
+    context 'when the association has not been configured with :autosave at all' do
+      it 'does not match' do
+        record = record_belonging_to(:parent, model_name: 'Child')
+
+        expect { belong_to(:parent).autosave(false) }.
+          not_to match_against(record).
+          and_fail_with(<<-MESSAGE)
+Expected Child to have a belongs_to association called parent (parent should have autosave => false)
+          MESSAGE
       end
     end
   end

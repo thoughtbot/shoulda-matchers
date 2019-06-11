@@ -1061,11 +1061,13 @@ module Shoulda
           self
         end
 
+        # TODO: this should default to true
         def autosave(autosave)
           @options[:autosave] = autosave
           self
         end
 
+        # TODO: this should default to true
         def index_errors(index_errors)
           @options[:index_errors] = index_errors
           self
@@ -1096,6 +1098,7 @@ module Shoulda
           self
         end
 
+        # TODO: optional: false
         def optional
           remove_submatcher(AssociationMatchers::RequiredMatcher)
           add_submatcher(
