@@ -93,6 +93,8 @@ Rails/Delegate:
   Enabled: false
 Rails/HttpPositionalArguments:
   Enabled: false
+Rails/SkipsModelValidations:
+  Enabled: false
 Style/Alias:
   Enabled: false
 Style/ArrayJoin:

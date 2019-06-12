@@ -95,6 +95,10 @@ module Shoulda
           end
         end
       end
+
+      def self.unwrap(message)
+        message.tr("\n", ' ').squeeze(' ')
+      end
     end
   end
 end

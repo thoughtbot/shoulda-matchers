@@ -16,29 +16,15 @@ module UnitTests
         @should_be_negated = nil
       end
 
-      def and_fail_with(message, wrap: false)
-        @expected_message =
-          if wrap
-            Shoulda::Matchers.word_wrap(message.strip_heredoc.strip)
-          else
-            message.strip_heredoc.strip
-          end
-
+      def and_fail_with(message, wrap: false, unwrap: false)
+        @expected_message = format_message(message, wrap: wrap, unwrap: unwrap)
         @should_be_negated = true
-
         self
       end
 
-      def or_fail_with(message, wrap: false)
-        @expected_message =
-          if wrap
-            Shoulda::Matchers.word_wrap(message.strip_heredoc.strip)
-          else
-            message.strip_heredoc.strip
-          end
-
+      def or_fail_with(message, wrap: false, unwrap: false)
+        @expected_message = format_message(message, wrap: wrap, unwrap: unwrap)
         @should_be_negated = false
-
         self
       end
 
@@ -80,9 +66,11 @@ Expected the matcher to match in the positive, but it failed with this message:
 
         if matcher_fails_in_positive?
           if (
-            negative_matcher.respond_to?(:does_not_match?) &&
-            !negative_matcher.does_not_match?(object)
+            !negative_matcher.respond_to?(:does_not_match?) ||
+            negative_matcher.does_not_match?(object)
           )
+            true
+          else
             @failure_message_when_negated = <<-MESSAGE
 Expected the matcher to match in the negative, but it failed with this message:
 
@@ -91,8 +79,6 @@ Expected the matcher to match in the negative, but it failed with this message:
 #{DIVIDER}
             MESSAGE
             false
-          else
-            true
           end
         end
       end
@@ -210,6 +196,18 @@ Diff:
 
       def differ
         @_differ ||= RSpec::Support::Differ.new
+      end
+
+      def format_message(message, wrap:, unwrap:)
+        stripped_message = message.strip_heredoc.strip
+
+        if wrap
+          Shoulda::Matchers.word_wrap(stripped_message)
+        elsif unwrap
+          Shoulda::Matchers::Util.unwrap(stripped_message)
+        else
+          stripped_message
+        end
       end
     end
   end
