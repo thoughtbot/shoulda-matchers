@@ -737,6 +737,7 @@ module Shoulda
 
         def should_test_case_sensitivity?
           case_sensitivity_strategy != :ignore &&
+            model.column_for_attribute(attribute).type != :uuid &&
             existing_value_read.respond_to?(:swapcase) &&
             !existing_value_read.empty?
         end
