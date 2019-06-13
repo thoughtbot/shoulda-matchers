@@ -55,6 +55,50 @@ this could not be proved.
 
       expect(&assertion).to fail_with_message(message)
     end
+
+    context 'when the attribute is decorated with serialize' do
+      context 'and the type is a string' do
+        it 'still works' do
+          record = record_validating_presence_of(:traits) do
+            serialize :traits, String
+          end
+
+          expect(record).to validate_presence_of(:traits)
+        end
+      end
+
+      context 'and the type is not a string' do
+        it 'still works' do
+          record = record_validating_presence_of(:traits) do
+            serialize :traits, Array
+          end
+
+          expect(record).to validate_presence_of(:traits)
+        end
+      end
+    end
+
+    context 'when the column backing the attribute is a scalar, but not a string' do
+      it 'still works' do
+        record = record_validating_presence_of(
+          :pinned_on,
+          column_options: { type: :date },
+        )
+
+        expect(record).to validate_presence_of(:pinned_on)
+      end
+    end
+
+    context 'when the column backing the attribute is an array' do
+      it 'still works' do
+        record = record_validating_presence_of(
+          :possible_meeting_dates,
+          column_options: { type: :date, array: true },
+        )
+
+        expect(record).to validate_presence_of(:possible_meeting_dates)
+      end
+    end
   end
 
   context 'a model without a presence validation' do
@@ -112,6 +156,30 @@ could not be proved.
       }
     )
 
+    if active_model_supports_full_attributes_api?
+      context 'when the attribute has been configured with a type' do
+        context 'and it is a string' do
+          it 'works' do
+            record = active_model_object_validating_presence_of(:age) do
+              attribute :age, :string
+            end
+
+            expect(record).to validate_presence_of(:age)
+          end
+        end
+
+        context 'and it is not a string' do
+          it 'still works' do
+            record = active_model_object_validating_presence_of(:age) do
+              attribute :age, :time
+            end
+
+            expect(record).to validate_presence_of(:age)
+          end
+        end
+      end
+    end
+
     def model_creator
       :active_model
     end
@@ -120,7 +188,9 @@ could not be proved.
   context 'an ActiveModel class without a presence validation' do
     it 'rejects with the correct failure message' do
       assertion = lambda do
-        expect(active_model).to matcher
+        record = plain_active_model_object_with(:attr, model_name: 'Example')
+
+        expect(record).to matcher
       end
 
       message = <<-MESSAGE
@@ -826,22 +896,58 @@ could not be proved.
     validate_presence_of(:attr)
   end
 
-  def validating_presence(options = {})
-    define_model :example, attr: :string do
-      validates_presence_of :attr, options
-    end.new
+  def record_validating_presence_of(
+    attribute_name = :attr,
+    column_options: { type: :string },
+    **options,
+    &block
+  )
+    model = define_model 'Example', attribute_name => column_options do
+      validates_presence_of(attribute_name, options)
+
+      if block
+        class_eval(&block)
+      end
+    end
+
+    model.new
   end
+  alias_method :validating_presence, :record_validating_presence_of
 
   def without_validating_presence
     define_model(:example, attr: :string).new
   end
 
-  def active_model(&block)
-    define_active_model_class('Example', accessors: [:attr], &block).new
-  end
+  def active_model_object_validating_presence_of(
+    attribute_name = :attr,
+    **options,
+    &block
+  )
+    plain_active_model_object_with(attribute_name, **options) do
+      validates_presence_of(attribute_name)
 
-  def active_model_validating_presence
-    active_model { validates_presence_of :attr }
+      if block
+        class_eval(&block)
+      end
+    end
+  end
+  alias_method :active_model_validating_presence,
+    :active_model_object_validating_presence_of
+
+  def plain_active_model_object_with(
+    attribute_name = :attr,
+    model_name: 'Example',
+    **options,
+    &block
+  )
+    model = define_active_model_class(
+      model_name,
+      accessors: [attribute_name],
+      **options,
+      &block
+    )
+
+    model.new
   end
 
   def has_many_children(options = {})

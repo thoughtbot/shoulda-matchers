@@ -1,13 +1,19 @@
 module UnitTests
   module ModelCreationStrategies
     class ActiveModel
-      def self.call(name, columns = {}, options = {}, &block)
-        new(name, columns, options, &block).call
+      def self.call(name, attribute_names = [], options = {}, &block)
+        new(name, attribute_names, options, &block).call
       end
 
-      def initialize(name, columns = {}, options = {}, &block)
+      def initialize(name, attribute_names = [], options = {}, &block)
         @name = name
-        @columns = columns
+        @attribute_names =
+          if attribute_names.is_a?(Hash)
+            # mimicking columns
+            attribute_names.keys
+          else
+            attribute_names
+          end
         @options = options
         @model_customizers = []
 
@@ -22,7 +28,9 @@ module UnitTests
 
       def call
         ClassBuilder.define_class(name, Model).tap do |model|
-          model.columns = columns.keys
+          attribute_names.each do |attribute_name|
+            model.attribute(attribute_name)
+          end
 
           model_customizers.each do |block|
             run_block(model, block)
@@ -30,11 +38,9 @@ module UnitTests
         end
       end
 
-      protected
-
-      attr_reader :name, :columns, :model_customizers, :options
-
       private
+
+      attr_reader :name, :attribute_names, :model_customizers, :options
 
       def run_block(model, block)
         if block
@@ -46,29 +52,40 @@ module UnitTests
         end
       end
 
-      class Model
-        class << self
-          def columns
-            @_columns ||= []
-          end
+      module PoorMansAttributes
+        extend ActiveSupport::Concern
 
-          def columns=(columns)
-            existing_columns = self.columns
-            new_columns = columns - existing_columns
+        included do
+          class_attribute :attribute_names
 
-            @_columns += new_columns
+          self.attribute_names = Set.new
+        end
 
+        module ClassMethods
+          def attribute(name)
             include attributes_module
 
-            attributes_module.module_eval do
-              new_columns.each do |column|
-                define_method(column) do
-                  attributes[column]
-                end
+            name = name.to_sym
 
-                define_method("#{column}=") do |value|
-                  attributes[column] = value
-                end
+            if (
+              attribute_names.include?(name) &&
+              attributes_module.instance_methods.include?(name)
+            )
+              attributes_module.module_eval do
+                remove_method(name)
+                remove_method("#{name}=")
+              end
+            end
+
+            self.attribute_names += [name]
+
+            attributes_module.module_eval do
+              define_method(name) do
+                attributes[name]
+              end
+
+              define_method("#{name}=") do |value|
+                attributes[name] = value
               end
             end
           end
@@ -80,8 +97,6 @@ module UnitTests
           end
         end
 
-        include ::ActiveModel::Model
-
         attr_reader :attributes
 
         def initialize(attributes = {})
@@ -92,7 +107,7 @@ module UnitTests
           middle = '%s:0x%014x%s' % [
             self.class,
             object_id * 2,
-            ' ' + inspected_attributes.join(' ')
+            ' ' + inspected_attributes.join(' '),
           ]
 
           "#<#{middle.strip}>"
@@ -101,9 +116,19 @@ module UnitTests
         private
 
         def inspected_attributes
-          self.class.columns.map do |key, value|
-            "#{key}: #{attributes[key].inspect}"
+          self.class.attribute_names.map do |name|
+            "#{name}: #{attributes[name].inspect}"
           end
+        end
+      end
+
+      class Model
+        include ::ActiveModel::Model
+
+        if defined?(::ActiveModel::Attributes)
+          include ::ActiveModel::Attributes
+        else
+          include PoorMansAttributes
         end
       end
     end

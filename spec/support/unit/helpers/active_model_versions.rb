@@ -28,5 +28,9 @@ module UnitTests
     def active_model_supports_strict?
       active_model_version >= 3.2
     end
+
+    def active_model_supports_full_attributes_api?
+      active_model_version >= '5.2'
+    end
   end
 end

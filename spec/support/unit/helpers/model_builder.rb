@@ -56,13 +56,9 @@ module UnitTests
       def define_active_model_class(class_name, options = {}, &block)
         attribute_names = options.delete(:accessors) { [] }
 
-        columns = attribute_names.reduce({}) do |hash, attribute_name|
-          hash.merge(attribute_name => nil)
-        end
-
         UnitTests::ModelCreationStrategies::ActiveModel.call(
           class_name,
-          columns,
+          attribute_names,
           options,
           &block
         )

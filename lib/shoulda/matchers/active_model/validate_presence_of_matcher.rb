@@ -239,7 +239,7 @@ validation for you? Instead of using `validate_presence_of`, try
           else
             values = []
 
-            if !association_being_validated?
+            if attribute_accepts_string_values?
               values << ''
             end
 
@@ -316,12 +316,16 @@ validation for you? Instead of using `validate_presence_of`, try
         end
 
         def belongs_to_association_being_validated?
-          association_being_validated? &&
+          !!association_reflection &&
             association_reflection.macro == :belongs_to
         end
 
-        def association_being_validated?
-          !!association_reflection
+        def attribute_accepts_string_values?
+          !association_reflection && (
+            !attribute_type.respond_to?(:coder) ||
+            !attribute_type.coder ||
+            attribute_type.coder.object_class == String
+          )
         end
 
         def association_name
@@ -337,12 +341,39 @@ validation for you? Instead of using `validate_presence_of`, try
             model.reflect_on_association(@attribute)
         end
 
+        def attribute_type
+          if model.respond_to?(:attribute_types)
+            model.attribute_types[@attribute.to_s]
+          else
+            LegacyAttributeType.new(model, @attribute)
+          end
+        end
+
         def presence_validation_exists_on_attribute?
           model._validators.include?(@attribute)
         end
 
         def model
           @subject.class
+        end
+
+        class LegacyAttributeType
+          def initialize(model, attribute_name)
+            @model = model
+            @attribute_name = attribute_name
+          end
+
+          def coder
+            if model.respond_to?(:serialized_attributes)
+              ActiveSupport::Deprecation.silence do
+                model.serialized_attributes[attribute_name.to_s]
+              end
+            end
+          end
+
+          private
+
+          attr_reader :model, :attribute_name
         end
       end
     end
