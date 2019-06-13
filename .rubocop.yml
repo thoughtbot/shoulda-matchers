@@ -17,6 +17,8 @@ Layout/IndentHeredoc:
   Enabled: false
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
+Layout/SpaceInsideBlockBraces:
+  Enabled: false
 Layout/SpaceInLambdaLiteral:
   EnforcedStyle: require_space
 Lint/AmbiguousOperator:
@@ -85,9 +87,11 @@ Style/ColonMethodCall:
   Enabled: false
 Naming/FileName:
   Enabled: false
-Rails:
-  Enabled: true
+Rails/Date:
+  Enabled: false
 Rails/Delegate:
+  Enabled: false
+Rails/TimeZone:
   Enabled: false
 Rails/HttpPositionalArguments:
   Enabled: false
@@ -165,6 +169,8 @@ Style/NumericLiterals:
 Style/NumericPredicate:
   Enabled: false
 Style/OneLineConditional:
+  Enabled: false
+Style/ParenthesesAroundCondition:
   Enabled: false
 Style/PercentLiteralDelimiters:
   Enabled: false
