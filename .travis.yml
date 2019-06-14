@@ -1,13 +1,8 @@
 language: ruby
-addons:
-  postgresql: "10"
-  apt:
-    packages:
-    - postgresql-10
-    - postgresql-client-10
+dist: xenial
+services:
+  - postgresql
 env:
-  global:
-    - PGPORT=5433
   matrix:
     - DATABASE_ADAPTER=sqlite3
     - DATABASE_ADAPTER=postgresql
