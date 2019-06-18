@@ -204,6 +204,89 @@ could not be proved.
     end
   end
 
+  # validate_presence_of an attachment only works on rails >= 6
+  if rails_gte_6_0?
+    context 'a has_one_attached association with a presence validation' do
+      it 'requires the attribute to be set' do
+        expect(has_one_attached_child(presence: true)).to validate_presence_of(:child)
+      end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          accept_if_qualified_but_changing_value_does_not_interfere: {
+            changing_values_with: :nil_to_blank
+          },
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :never_falsy,
+            expected_message: <<-MESSAGE
+Expected Example to validate that :attr cannot be empty/falsy, but this
+could not be proved.
+  After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
+  -- the matcher expected the Example to be invalid, but it was valid
+  instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      )
+    end
+
+    context 'a has_one_attached association without a presence validation' do
+      it 'requires the attribute to be set' do
+        expect(has_one_attached_child(presence: false)).
+          not_to validate_presence_of(:child)
+      end
+    end
+
+    context 'a has_many_attached association with a presence validation' do
+      it 'requires the attribute to be set' do
+        expect(has_many_attached_children(presence: true)).to validate_presence_of(:children)
+      end
+
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          accept_if_qualified_but_changing_value_does_not_interfere: {
+            changing_values_with: :nil_to_blank
+          },
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :never_falsy,
+            expected_message: <<-MESSAGE
+Expected Example to validate that :attr cannot be empty/falsy, but this
+could not be proved.
+  After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
+  -- the matcher expected the Example to be invalid, but it was valid
+  instead.
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          }
+        }
+      )
+    end
+
+    context 'a has_many_attached association without a presence validation' do
+      it 'does not require the attribute to be set' do
+        expect(has_many_attached_children(presence: false)).
+          not_to validate_presence_of(:children)
+      end
+    end
+  end
+
   context 'a has_many association with a presence validation' do
     it 'requires the attribute to be set' do
       expect(has_many_children(presence: true)).to validate_presence_of(:children)
@@ -954,6 +1037,26 @@ could not be proved.
     define_model :child
     define_model :parent do
       has_many :children
+      if options[:presence]
+        validates_presence_of :children
+      end
+    end.new
+  end
+
+  def has_one_attached_child(options = {})
+    define_model :child
+    define_model :parent do
+      has_one_attached :child
+      if options[:presence]
+        validates_presence_of :child
+      end
+    end.new
+  end
+
+  def has_many_attached_children(options = {})
+    define_model :child
+    define_model :parent do
+      has_many_attached :children
       if options[:presence]
         validates_presence_of :children
       end
