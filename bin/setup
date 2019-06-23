@@ -160,6 +160,16 @@ install-dependencies() {
       banner "Installing Ruby $RUBY_VERSION with rbenv"
       rbenv install --skip-existing "$RUBY_VERSION"
     fi
+  elif has-executable chruby-exec; then
+    PREFIX='' source /usr/local/share/chruby/chruby.sh
+    if ! (chruby '' | grep $RUBY_VERSION'\>' &>/dev/null); then
+      if has-executable install-ruby; then
+      banner "Installing Ruby $RUBY_VERSION with install-ruby"
+        install-ruby "$RUBY_VERSION"
+      else
+        error "Please install Ruby $RUBY_VERSION"
+      fi
+    fi
   elif has-executable rvm; then
     if ! (rvm list | grep $required_ruby_version'\>' &>/dev/null); then
       banner "Installing Ruby $required_ruby_version with rvm"
