@@ -61,13 +61,13 @@ install() {
   for arg in "$@"; do
     case $arg in
       apt=*)
-        apt_package="$arg"
+        apt_package="${arg#apt=}"
         ;;
       rpm=*)
-        rpm_package="$arg"
+        rpm_package="${arg#rpm=}"
         ;;
       brew=*)
-        brew_package="$arg"
+        brew_package="${arg#brew=}"
         ;;
       *)
         default_package="$arg"
@@ -152,7 +152,7 @@ install-dependencies() {
 
   if ! has-executable heroku; then
     banner 'Installing Heroku'
-    install heroku/brew/heroku heroku
+    install brew=heroku/brew/heroku heroku
   fi
 
   if has-executable rbenv; then
