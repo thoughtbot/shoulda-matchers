@@ -312,11 +312,13 @@ validation for you? Instead of using `validate_presence_of`, try
         end
 
         def attribute_accepts_string_values?
-          !association? && (
-            !attribute_type.respond_to?(:coder) ||
-            !attribute_type.coder ||
-            attribute_type.coder.object_class == String
-          )
+          if association? || attachment?
+            false
+          elsif attribute_serializer
+            attribute_serializer.object_class == String
+          else
+            attribute_type.try(:type) == :string
+          end
         end
 
         def association?
@@ -350,6 +352,14 @@ validation for you? Instead of using `validate_presence_of`, try
         def model_has_associations?(associations)
           associations.any? do |association|
             !!model.try(:reflect_on_association, association)
+          end
+        end
+
+        def attribute_serializer
+          if attribute_type.respond_to?(:coder)
+            attribute_type.coder
+          else
+            nil
           end
         end
 

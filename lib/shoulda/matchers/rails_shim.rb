@@ -157,7 +157,7 @@ module Shoulda
         end
 
         def attribute_type_for(model, attribute_name)
-          if model.respond_to?(:attribute_types)
+          if supports_full_attributes_api?(model)
             model.attribute_types[attribute_name.to_s]
           else
             LegacyAttributeType.new(model, attribute_name)
@@ -186,6 +186,11 @@ module Shoulda
           translate_options =
             { default: default_translation_keys }.merge(options)
           I18n.translate(primary_translation_key, translate_options)
+        end
+
+        def supports_full_attributes_api?(model)
+          defined?(::ActiveModel::Attributes) &&
+            model.respond_to?(:attribute_types)
         end
 
         class LegacyAttributeType
