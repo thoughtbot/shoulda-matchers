@@ -156,6 +156,14 @@ module Shoulda
           nil
         end
 
+        def attribute_type_for(model, attribute_name)
+          if model.respond_to?(:attribute_types)
+            model.attribute_types[attribute_name.to_s]
+          else
+            LegacyAttributeType.new(model, attribute_name)
+          end
+        end
+
         private
 
         def simply_generate_validation_message(
@@ -178,6 +186,25 @@ module Shoulda
           translate_options =
             { default: default_translation_keys }.merge(options)
           I18n.translate(primary_translation_key, translate_options)
+        end
+
+        class LegacyAttributeType
+          def initialize(model, attribute_name)
+            @model = model
+            @attribute_name = attribute_name
+          end
+
+          def coder
+            if model.respond_to?(:serialized_attributes)
+              ActiveSupport::Deprecation.silence do
+                model.serialized_attributes[attribute_name.to_s]
+              end
+            end
+          end
+
+          private
+
+          attr_reader :model, :attribute_name
         end
       end
     end

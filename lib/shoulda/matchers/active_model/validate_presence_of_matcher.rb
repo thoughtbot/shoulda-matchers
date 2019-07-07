@@ -234,7 +234,7 @@ validation for you? Instead of using `validate_presence_of`, try
         end
 
         def disallowed_values
-          if collection?
+          if collection_association?
             [Array.new]
           elsif attachment?
             [nil]
@@ -250,16 +250,6 @@ validation for you? Instead of using `validate_presence_of`, try
             end
 
             values
-          end
-        end
-
-        def collection?
-          if association_reflection
-            [:has_many, :has_and_belongs_to_many].include?(
-              association_reflection.macro,
-            )
-          else
-            false
           end
         end
 
@@ -318,15 +308,30 @@ validation for you? Instead of using `validate_presence_of`, try
         end
 
         def belongs_to_association_being_validated?
-          !!association_reflection &&
-            association_reflection.macro == :belongs_to
+          association? && association_reflection.macro == :belongs_to
         end
 
         def attribute_accepts_string_values?
-          !association_reflection && (
+          !association? && (
             !attribute_type.respond_to?(:coder) ||
             !attribute_type.coder ||
             attribute_type.coder.object_class == String
+          )
+        end
+
+        def association?
+          association_reflection.present?
+        end
+
+        def collection_association?
+          association? && association_reflection.macro.in?(
+            [:has_many, :has_and_belongs_to_many],
+          )
+        end
+
+        def attachment?
+          model_has_associations?(
+            ["#{@attribute}_attachment", "#{@attribute}_attachments"]
           )
         end
 
@@ -339,25 +344,17 @@ validation for you? Instead of using `validate_presence_of`, try
         end
 
         def association_reflection
-          model.respond_to?(:reflect_on_association) &&
-            model.reflect_on_association(@attribute)
-        end
-
-        def attachment?
-          model.respond_to?(:reflect_on_association) &&
-            model_has_associations?(["#{@attribute}_attachment", "#{@attribute}_attachments"])
-        end
-
-        def attribute_type
-          if model.respond_to?(:attribute_types)
-            model.attribute_types[@attribute.to_s]
-          else
-            LegacyAttributeType.new(model, @attribute)
-          end
+          model.try(:reflect_on_association, @attribute)
         end
 
         def model_has_associations?(associations)
-          associations.any? { |association| !!model.reflect_on_association(association) }
+          associations.any? do |association|
+            !!model.try(:reflect_on_association, association)
+          end
+        end
+
+        def attribute_type
+          RailsShim.attribute_type_for(model, @attribute)
         end
 
         def presence_validation_exists_on_attribute?
@@ -366,25 +363,6 @@ validation for you? Instead of using `validate_presence_of`, try
 
         def model
           @subject.class
-        end
-
-        class LegacyAttributeType
-          def initialize(model, attribute_name)
-            @model = model
-            @attribute_name = attribute_name
-          end
-
-          def coder
-            if model.respond_to?(:serialized_attributes)
-              ActiveSupport::Deprecation.silence do
-                model.serialized_attributes[attribute_name.to_s]
-              end
-            end
-          end
-
-          private
-
-          attr_reader :model, :attribute_name
         end
       end
     end
