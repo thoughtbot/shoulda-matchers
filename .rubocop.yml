@@ -43,6 +43,8 @@ Lint/ParenthesesAsGroupedExpression:
   Enabled: false
 Lint/RequireParentheses:
   Enabled: false
+Lint/SafeNavigationChain:
+  Enabled: false
 Lint/UnderscorePrefixedVariableName:
   Enabled: false
 Lint/Void:
@@ -123,6 +125,8 @@ Style/Documentation:
 Style/DoubleNegation:
   Enabled: false
 Style/EachWithObject:
+  Enabled: false
+Style/EmptyElse:
   Enabled: false
 Style/EmptyLiteral:
   Enabled: false
