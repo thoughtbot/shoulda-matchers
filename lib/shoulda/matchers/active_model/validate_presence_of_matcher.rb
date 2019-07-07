@@ -170,7 +170,7 @@ module Shoulda
               allows_and_double_checks_value_of!(value)
             end
           else
-            (expects_to_allow_nil? && !allows_value_of(nil)) ||
+            (expects_to_allow_nil? && disallows_value_of(nil)) ||
               disallowed_values.any? do |value|
                 allows_original_or_typecast_value?(value)
               end
