@@ -204,8 +204,7 @@ could not be proved.
     end
   end
 
-  # validate_presence_of an attachment only works on rails >= 6
-  if rails_gte_6_0?
+  if active_record_supports_validate_presence_on_active_storage?
     context 'a has_one_attached association with a presence validation' do
       it 'requires the attribute to be set' do
         expect(has_one_attached_child(presence: true)).to validate_presence_of(:child)

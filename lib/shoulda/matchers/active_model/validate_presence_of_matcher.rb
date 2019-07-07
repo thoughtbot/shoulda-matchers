@@ -345,7 +345,7 @@ validation for you? Instead of using `validate_presence_of`, try
 
         def attachment?
           model.respond_to?(:reflect_on_association) &&
-            model_reflect_on_associations?(["#{@attribute}_attachment", "#{@attribute}_attachments"])
+            model_has_associations?(["#{@attribute}_attachment", "#{@attribute}_attachments"])
         end
 
         def attribute_type
@@ -356,9 +356,8 @@ validation for you? Instead of using `validate_presence_of`, try
           end
         end
 
-        def model_reflect_on_associations?(associations)
-          reflections = associations.map { |association| model.reflect_on_association(association) }
-          !reflections.compact.empty?
+        def model_has_associations?(associations)
+          associations.any? { |association| !!model.reflect_on_association(association) }
         end
 
         def presence_validation_exists_on_attribute?

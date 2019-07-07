@@ -38,9 +38,5 @@ module UnitTests
     def rails_5_x?
       rails_version =~ '~> 5.0'
     end
-
-    def rails_gte_6_0?
-      rails_version >= '6.0.0.beta1'
-    end
   end
 end
