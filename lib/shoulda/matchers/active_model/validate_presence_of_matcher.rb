@@ -236,6 +236,8 @@ validation for you? Instead of using `validate_presence_of`, try
         def disallowed_values
           if collection?
             [Array.new]
+          elsif attachment?
+            [nil]
           else
             values = []
 
@@ -341,12 +343,21 @@ validation for you? Instead of using `validate_presence_of`, try
             model.reflect_on_association(@attribute)
         end
 
+        def attachment?
+          model.respond_to?(:reflect_on_association) &&
+            model_has_associations?(["#{@attribute}_attachment", "#{@attribute}_attachments"])
+        end
+
         def attribute_type
           if model.respond_to?(:attribute_types)
             model.attribute_types[@attribute.to_s]
           else
             LegacyAttributeType.new(model, @attribute)
           end
+        end
+
+        def model_has_associations?(associations)
+          associations.any? { |association| !!model.reflect_on_association(association) }
         end
 
         def presence_validation_exists_on_attribute?
