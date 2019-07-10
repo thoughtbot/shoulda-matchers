@@ -312,7 +312,7 @@ validation for you? Instead of using `validate_presence_of`, try
         end
 
         def attribute_accepts_string_values?
-          if association? || attachment?
+          if association?
             false
           elsif attribute_serializer
             attribute_serializer.object_class == String
@@ -333,7 +333,7 @@ validation for you? Instead of using `validate_presence_of`, try
 
         def attachment?
           model_has_associations?(
-            ["#{@attribute}_attachment", "#{@attribute}_attachments"]
+            ["#{@attribute}_attachment", "#{@attribute}_attachments"],
           )
         end
 

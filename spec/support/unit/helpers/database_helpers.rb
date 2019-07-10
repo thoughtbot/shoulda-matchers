@@ -5,6 +5,8 @@ module UnitTests
       example_group.extend(self)
     end
 
+    extend self
+
     def database_adapter
       Tests::Database.instance.adapter_name
     end
@@ -13,9 +15,9 @@ module UnitTests
       database_adapter == :postgresql
     end
 
-    alias_method :database_supports_array_columns?, :postgresql?
-    alias_method :database_supports_uuid_columns?, :postgresql?
-    alias_method :database_supports_money_columns?, :postgresql?
-    alias_method :database_supports_expression_indexes?, :postgresql?
+    alias :database_supports_array_columns? :postgresql?
+    alias :database_supports_uuid_columns? :postgresql?
+    alias :database_supports_money_columns? :postgresql?
+    alias :database_supports_expression_indexes? :postgresql?
   end
 end

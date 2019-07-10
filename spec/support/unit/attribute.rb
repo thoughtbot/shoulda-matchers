@@ -19,9 +19,10 @@ module UnitTests
     end
 
     def column_options
-      DEFAULT_COLUMN_OPTIONS.
-        merge(args.fetch(:column_options, {})).
-        merge(type: column_type)
+      {
+        type: column_type,
+        options: DEFAULT_COLUMN_OPTIONS.merge(args.fetch(:column_options, {}))
+      }
     end
 
     def array?

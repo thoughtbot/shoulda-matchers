@@ -89,14 +89,49 @@ this could not be proved.
       end
     end
 
-    context 'when the column backing the attribute is an array' do
-      it 'still works' do
-        record = record_validating_presence_of(
-          :possible_meeting_dates,
-          column_options: { type: :date, array: true },
-        )
+    if database_supports_array_columns? && active_record_supports_array_columns?
+      context 'when the column backing the attribute is an array' do
+        context 'of varchar' do
+          it 'still works' do
+            record = record_validating_presence_of(
+              :filters,
+              column_options: {
+                type: :varchar,
+                options: { array: true, default: [], null: false },
+              },
+            )
 
-        expect(record).to validate_presence_of(:possible_meeting_dates)
+            expect(record).to validate_presence_of(:filters)
+          end
+        end
+
+        context 'of string' do
+          it 'still works' do
+            record = record_validating_presence_of(
+              :filters,
+              column_options: {
+                type: :string,
+                options: { array: true, default: [] },
+              },
+            )
+
+            expect(record).to validate_presence_of(:filters)
+          end
+        end
+
+        context 'of a type other than string' do
+          it 'still works' do
+            record = record_validating_presence_of(
+              :possible_meeting_dates,
+              column_options: {
+                type: :date,
+                options: { array: true, default: [] },
+              },
+            )
+
+            expect(record).to validate_presence_of(:possible_meeting_dates)
+          end
+        end
       end
     end
   end
