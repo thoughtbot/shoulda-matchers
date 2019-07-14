@@ -1,3 +1,19 @@
+# 4.1.1 (Unreleased)
+
+### Bug fixes
+
+* Patch some backward-incompatible changes to `validate_presence_of` that were
+  made in the last version. As of 4.1.0 the presence matcher now checks to
+  ensure that empty string will cause the record to be invalid (in addition to
+  nil, which it was already checking against). However, this check was being
+  performed even if the attribute or column the presence matcher is being run
+  against didn't support being set to an empty string. This releases fixes this.
+  ([#1222], [#1224], [#1231])
+
+[#1222]: https://github.com/thoughtbot/shoulda-matchers/pull/1222
+[#1224]: https://github.com/thoughtbot/shoulda-matchers/pull/1224
+[#1231]: https://github.com/thoughtbot/shoulda-matchers/pull/1231
+
 # 4.1.0
 
 ### Bug fixes
