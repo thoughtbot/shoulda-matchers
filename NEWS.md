@@ -1,4 +1,4 @@
-# 4.1.1 (Unreleased)
+# 4.1.1
 
 ### Bug fixes
 
