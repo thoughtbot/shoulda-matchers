@@ -215,30 +215,48 @@ suffix to the version for pre-release versions. We usually use this to issue
 release candidates prior to an actual release. A version number in this case
 might look like `4.0.0.rc1`.
 
-### Releasing a new version
+### Preparing and releasing a new version
 
-Releasing a new version is very simple.
-
-First, you'll want to be given ownership permissions for the Ruby gem itself.
-If you want to give someone else these rights, you can use:
+In order to release any versions at all, you will need to have been added as
+an owner of the Ruby gem. If you want to give someone else these permissions,
+then run:
 
 ```bash
 gem owner shoulda-matchers -a <email address>
 ```
 
-Next, you'll want to update the `VERSION` constant in
-`lib/shoulda/matchers/version.rb`. This constant is referenced in the gemspec
-and is used in the Rake tasks to publish the gem on RubyGems as well as generate
-documentation.
+Assuming you have permission to publish a new version to RubyGems, then this is
+how you release a version:
 
-Finally, you'll want to run:
+1. First, you'll want to [make sure that the changelog is up to
+   date](#updating-the-changelog).
 
-```bash
-rake release
-```
+2. Next, [generate the documentation locally](#generating-documentation) and do
+   a quick spot-check (pull up the Classes and Methods menus, click around a
+   bit) to ensure that nothing looks awry.
 
-This will not only push the gem to RubyGems, but also publish the docs to GitHub
-Pages.
+3. Next, you'll want to update the `VERSION` constant in
+   `lib/shoulda/matchers/version.rb`. This constant is referenced in the gemspec
+   and is used in the Rake tasks to publish the gem on RubyGems as well as
+   generate documentation.
+
+4. Next, make sure that the current version is updated in the [Quick Links
+   section of the README](README.md#quick-links).
+
+5. Assuming that everything looks good, place your changes to NEWS,
+   `version.rb`, and README in their own commit titled "Bump version to
+   *X.Y.Z*". Push this to GitHub (you can use `[ci skip]`) in the body of the
+   commit message to skip CI for this commit). **There is no going back after
+   this point!**
+
+6. Once GitHub has the version-change commit, you will run:
+
+   ```bash
+   rake release
+   ```
+
+   This will not only push the gem to RubyGems, but also publish the docs to
+   GitHub Pages.
 
 ## Updating the landing page
 
