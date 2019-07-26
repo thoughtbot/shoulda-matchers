@@ -86,7 +86,7 @@ GEM
       ruby-progressbar
     multi_json (1.12.2)
     nio4r (2.3.1)
-    nokogiri (1.10.1)
+    nokogiri (1.10.3)
       mini_portile2 (~> 2.4.0)
     parallel (1.17.0)
     parser (2.6.3.0)
@@ -101,7 +101,7 @@ GEM
     puma (3.10.0)
     pygments.rb (1.1.2)
       multi_json (>= 1.0.0)
-    rack (2.0.6)
+    rack (2.0.7)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (5.0.7.2)
