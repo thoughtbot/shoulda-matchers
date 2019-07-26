@@ -69,21 +69,20 @@ module Shoulda
         end
 
         def serialized_attributes_for(model)
-          if defined?(::ActiveRecord::Type::Serialized)
-            # Rails 5+
-            serialized_columns = model.columns.select do |column|
-              model.type_for_attribute(column.name).is_a?(
-                ::ActiveRecord::Type::Serialized,
-              )
+          attribute_types_for(model).
+            inject({}) do |hash, (attribute_name, attribute_type)|
+              if attribute_type.is_a?(::ActiveRecord::Type::Serialized)
+                hash.merge(attribute_name => attribute_type.coder)
+              else
+                hash
+              end
             end
+        rescue NotImplementedError
+          {}
+        end
 
-            serialized_columns.inject({}) do |hash, column|
-              hash[column.name.to_s] = model.type_for_attribute(column.name).coder
-              hash
-            end
-          else
-            model.serialized_attributes
-          end
+        def attribute_serialization_coder_for(model, attribute_name)
+          serialized_attributes_for(model)[attribute_name.to_s]
         end
 
         def type_cast_default_for(model, column)
@@ -156,12 +155,33 @@ module Shoulda
           nil
         end
 
-        def attribute_type_for(model, attribute_name)
-          if supports_full_attributes_api?(model)
-            model.attribute_types[attribute_name.to_s]
+        def attribute_types_for(model)
+          if model.respond_to?(:attribute_types)
+            model.attribute_types
+          elsif model.respond_to?(:type_for_attribute)
+            model.columns.inject({}) do |hash, column|
+              key = column.name.to_s
+              value = model.type_for_attribute(column.name)
+              hash.merge(key => value)
+            end
           else
-            LegacyAttributeType.new(model, attribute_name)
+            raise NotImplementedError
           end
+        end
+
+        def attribute_type_for(model, attribute_name)
+          attribute_types_for(model)[attribute_name.to_s]
+        rescue NotImplementedError
+          if model.respond_to?(:type_for_attribute)
+            model.type_for_attribute(attribute_name)
+          else
+            FakeAttributeType.new(model, attribute_name)
+          end
+        end
+
+        def supports_full_attributes_api?(model)
+          defined?(::ActiveModel::Attributes) &&
+            model.respond_to?(:attribute_types)
         end
 
         private
@@ -188,23 +208,14 @@ module Shoulda
           I18n.translate(primary_translation_key, translate_options)
         end
 
-        def supports_full_attributes_api?(model)
-          defined?(::ActiveModel::Attributes) &&
-            model.respond_to?(:attribute_types)
-        end
-
-        class LegacyAttributeType
+        class FakeAttributeType
           def initialize(model, attribute_name)
             @model = model
             @attribute_name = attribute_name
           end
 
           def coder
-            if model.respond_to?(:serialized_attributes)
-              ActiveSupport::Deprecation.silence do
-                model.serialized_attributes[attribute_name.to_s]
-              end
-            end
+            nil
           end
 
           private

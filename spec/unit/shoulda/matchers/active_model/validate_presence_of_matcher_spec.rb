@@ -57,23 +57,50 @@ this could not be proved.
     end
 
     context 'when the attribute is decorated with serialize' do
-      context 'and the type is a string' do
+      context 'and the serializer is a built-in Ruby type' do
+        context 'and the type is a string' do
+          it 'still works' do
+            record = record_validating_presence_of(:traits) do
+              serialize :traits, String
+            end
+
+            expect(record).to validate_presence_of(:traits)
+          end
+        end
+
+        context 'and the type is not a string' do
+          it 'still works' do
+            record = record_validating_presence_of(:traits) do
+              serialize :traits, Array
+            end
+
+            expect(record).to validate_presence_of(:traits)
+          end
+        end
+      end
+
+      context 'and the serializer is JSON' do
         it 'still works' do
           record = record_validating_presence_of(:traits) do
-            serialize :traits, String
+            serialize :traits, JSON
           end
 
           expect(record).to validate_presence_of(:traits)
         end
       end
 
-      context 'and the type is not a string' do
+      context 'and the serializer is something custom' do
         it 'still works' do
-          record = record_validating_presence_of(:traits) do
-            serialize :traits, Array
+          serializer = Class.new do
+            define_singleton_method(:dump) { |value| value }
+            define_singleton_method(:load) { |value| value }
           end
 
-          expect(record).to validate_presence_of(:traits)
+          record = record_validating_presence_of(:data) do
+            serialize :data, serializer
+          end
+
+          expect(record).to validate_presence_of(:data)
         end
       end
     end

@@ -183,15 +183,11 @@ module Shoulda
         end
 
         def attribute_is_serialized?
-          serialized_attributes.include?(@name)
+          !!serialization_coder
         end
 
         def serialization_coder
-          serialized_attributes[@name]
-        end
-
-        def serialized_attributes
-          Shoulda::Matchers::RailsShim.serialized_attributes_for(model)
+          RailsShim.attribute_serialization_coder_for(model, @name)
         end
 
         def model

@@ -314,10 +314,11 @@ validation for you? Instead of using `validate_presence_of`, try
         def attribute_accepts_string_values?
           if association?
             false
-          elsif attribute_serializer
-            attribute_serializer.object_class == String
+          elsif attribute_serialization_coder.respond_to?(:object_class)
+            attribute_serialization_coder.object_class == String
           else
-            attribute_type.try(:type) == :string
+            RailsShim.supports_full_attributes_api?(model) &&
+              attribute_type.try(:type) == :string
           end
         end
 
@@ -355,12 +356,8 @@ validation for you? Instead of using `validate_presence_of`, try
           end
         end
 
-        def attribute_serializer
-          if attribute_type.respond_to?(:coder)
-            attribute_type.coder
-          else
-            nil
-          end
+        def attribute_serialization_coder
+          RailsShim.attribute_serialization_coder_for(model, @attribute)
         end
 
         def attribute_type
