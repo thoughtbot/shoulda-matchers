@@ -19,7 +19,7 @@ complex, and error-prone.
 
 ## Quick links
 
-📖 **[Read the documentation for the latest version (4.1.1)][rubydocs].**  
+📖 **[Read the documentation for the latest version (4.1.2)][rubydocs].**  
 📢 **[See what's changed in a recent version][news].**
 
 [rubydocs]: http://matchers.shoulda.io/docs
