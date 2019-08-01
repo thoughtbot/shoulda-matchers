@@ -1,3 +1,13 @@
+# 4.1.2
+
+### Bug fixes
+
+* Fix another regression with `validate_presence_of` so that it works against an
+  attribute that has been decorated with `serialize` using a custom serializer
+  class. ([#1236])
+
+[#1236]: https://github.com/thoughtbot/shoulda-matchers/pull/1236
+
 # 4.1.1
 
 ### Bug fixes
