@@ -368,14 +368,14 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
         end
       end
 
-      context 'when qualified with optional' do
+      context 'when qualified with optional(true)' do
         if active_record_supports_optional_for_associations?
           context 'when belongs_to is configured to be required by default' do
             it 'fails with an appropriate message' do
               with_belongs_to_as_required_by_default do
                 assertion = lambda do
                   expect(belonging_to_parent).
-                    to belong_to(:parent).optional
+                    to belong_to(:parent).optional(true)
                 end
 
                 message = format_message(<<-MESSAGE, one_line: true)
@@ -394,13 +394,50 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
           context 'when belongs_to is not configured to be required by default' do
             it 'passes' do
               with_belongs_to_as_optional_by_default do
-                expect(belonging_to_parent).to belong_to(:parent).optional
+                expect(belonging_to_parent).to belong_to(:parent).optional(true)
               end
             end
           end
         else
           it 'passes' do
-            expect(belonging_to_parent).to belong_to(:parent).optional
+            expect(belonging_to_parent).to belong_to(:parent).optional(true)
+          end
+        end
+      end
+
+      context 'when qualified with optional(false)' do
+        if active_record_supports_optional_for_associations?
+          context 'when belongs_to is configured to be required by default' do
+            it 'passes' do
+              with_belongs_to_as_required_by_default do
+                expect(belonging_to_parent).to belong_to(:parent).optional(false)
+              end
+            end
+          end
+
+          context 'when belongs_to is not configured to be required by default' do
+            it 'fails with an appropriate message' do
+              with_belongs_to_as_optional_by_default do
+                assertion = lambda do
+                  expect(belonging_to_parent).
+                    to belong_to(:parent).optional(false)
+                end
+
+                message = format_message(<<-MESSAGE, one_line: true)
+                  Expected Child to have a belongs_to association called parent
+                  (and for the record to fail validation if :parent is
+                  unset; i.e., either the association should have been defined
+                  with `optional: false`, or there should be a presence
+                  validation on :parent)
+                MESSAGE
+
+                expect(&assertion).to fail_with_message(message)
+              end
+            end
+          end
+        else
+          it 'passes' do
+            expect(belonging_to_parent).to belong_to(:parent).optional(false)
           end
         end
       end

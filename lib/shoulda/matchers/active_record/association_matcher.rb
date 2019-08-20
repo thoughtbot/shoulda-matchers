@@ -1096,12 +1096,12 @@ module Shoulda
           self
         end
 
-        def optional
+        def optional(optional = true)
           remove_submatcher(AssociationMatchers::RequiredMatcher)
           add_submatcher(
             AssociationMatchers::OptionalMatcher,
             name,
-            true,
+            optional,
           )
           self
         end
