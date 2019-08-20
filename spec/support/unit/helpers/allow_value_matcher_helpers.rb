@@ -7,6 +7,10 @@ module UnitTests
       RecordWithDifferentErrorAttributeBuilder.new(options)
     end
 
+    def builder_for_record_with_unrelated_error(options = {})
+      RecordWithUnrelatedErrorBuilder.new(options)
+    end
+
     def builder_for_record_with_different_error_attribute_using_i18n(options = {})
       builder = builder_for_record_with_different_error_attribute(options)
       RecordBuilderWithI18nValidationMessage.new(builder)
