@@ -41,7 +41,7 @@ module Shoulda
       #       end
       #
       #       it do
-      #         should_not allow_values('http://foo.com', 'buz').
+      #         should_not allow_values('foo', 'buz').
       #           for(:website_url)
       #       end
       #     end
@@ -51,7 +51,7 @@ module Shoulda
       #       should allow_values('http://foo.com', 'http://bar.com/baz').
       #         for(:website_url)
       #
-      #       should_not allow_values('http://foo.com', 'buz').
+      #       should_not allow_values('foo', 'buz').
       #         for(:website_url)
       #     end
       #
