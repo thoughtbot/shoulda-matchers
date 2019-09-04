@@ -587,7 +587,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
         end
       end
 
-      context 'when qualified with optional' do
+      context 'when qualified with optional(true)' do
         it 'fails with an appropriate message' do
           assertion = lambda do
             expect(belonging_to_parent(required: true)).
@@ -603,6 +603,13 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'when qualified with optional(false)' do
+        it 'passes' do
+          expect(belonging_to_parent(required: true)).
+            to belong_to(:parent).optional(false)
         end
       end
 
@@ -640,10 +647,28 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
           end
         end
 
-        context 'when qualified with optional' do
+        context 'when qualified with optional(true)' do
           it 'passes' do
             expect(belonging_to_parent(optional: true)).
               to belong_to(:parent).optional
+          end
+        end
+
+        context 'when qualified with optional(false)' do
+          it 'fails with an appropriate message' do
+            assertion = lambda do
+              expect(belonging_to_parent(optional: true)).
+                to belong_to(:parent).optional(false)
+            end
+
+            message = format_message(<<-MESSAGE, one_line: true)
+              Expected Child to have a belongs_to association called parent
+              (and for the record to fail validation if :parent is unset; i.e.,
+              either the association should have been defined with `optional:
+              false`, or there should be a presence validation on :parent)
+            MESSAGE
+
+            expect(&assertion).to fail_with_message(message)
           end
         end
 
