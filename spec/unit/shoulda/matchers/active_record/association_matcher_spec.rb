@@ -591,7 +591,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
         it 'fails with an appropriate message' do
           assertion = lambda do
             expect(belonging_to_parent(required: true)).
-              to belong_to(:parent).optional
+              to belong_to(:parent).optional(true)
           end
 
           message = format_message(<<-MESSAGE, one_line: true)
@@ -650,7 +650,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
         context 'when qualified with optional(true)' do
           it 'passes' do
             expect(belonging_to_parent(optional: true)).
-              to belong_to(:parent).optional
+              to belong_to(:parent).optional(true)
           end
         end
 
