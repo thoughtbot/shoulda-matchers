@@ -10,6 +10,10 @@ module UnitTests
       ModelBuilder.define_model(*args, &block)
     end
 
+    def define_model_instance(*args, &block)
+      define_model(*args, &block).new
+    end
+
     def define_model_class(*args, &block)
       ModelBuilder.define_model_class(*args, &block)
     end
