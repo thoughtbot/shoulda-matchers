@@ -121,7 +121,23 @@ group :test do
 end
 ```
 
-Now you're ready to [use matchers in your tests](#usage)!
+You no longer need to say `require: false` in your Gemfile.
+You’ll need to add the following somewhere inside Test::Unit in your test_helper:
+
+```ruby
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :minitest
+
+    # Choose a library:
+    with.library :active_record
+    with.library :active_model
+    with.library :action_controller
+    # Or, choose all of the above:
+    with.library :rails
+  end
+end
+```
 
 ## Usage
 
