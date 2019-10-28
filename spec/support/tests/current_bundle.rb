@@ -35,13 +35,7 @@ EOT
     private
 
     def available_appraisals
-      appraisals = []
-
-      Appraisal::File.each do |appraisal|
-        appraisals << appraisal.name
-      end
-
-      appraisals
+      Appraisal::AppraisalFile.each.map(&:name)
     end
 
     def current_appraisal
