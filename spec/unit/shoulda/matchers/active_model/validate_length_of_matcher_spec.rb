@@ -33,8 +33,8 @@ describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher, type: :model d
           attribute_name: :attr,
           changing_values_with: :add_character,
           expected_message: <<-MESSAGE.strip
-Example did not properly validate that the length of :attr is at least
-4.
+Expected Example to validate that the length of :attr is at least 4, but
+this could not be proved.
   After setting :attr to ‹"xxx"› -- which was read back as ‹"xxxa"› --
   the matcher expected the Example to be invalid, but it was valid
   instead.
@@ -55,6 +55,22 @@ Example did not properly validate that the length of :attr is at least
       def configure_validation_matcher(matcher)
         matcher.is_at_least(4)
       end
+    end
+
+    it 'fails when used in the negative' do
+      assertion = lambda do
+        expect(validating_length(minimum: 4)).
+          not_to validate_length_of(:attr).is_at_least(4)
+      end
+
+      message = <<-MESSAGE
+Expected Example not to validate that the length of :attr is at least 4,
+but this could not be proved.
+  After setting :attr to ‹"xxxx"›, the matcher expected the Example to
+  be invalid, but it was valid instead.
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
     end
   end
 
@@ -97,7 +113,8 @@ Example did not properly validate that the length of :attr is at least
           attribute_name: :attr,
           changing_values_with: :remove_character,
           expected_message: <<-MESSAGE.strip
-Example did not properly validate that the length of :attr is at most 4.
+Expected Example to validate that the length of :attr is at most 4, but
+this could not be proved.
   After setting :attr to ‹"xxxxx"› -- which was read back as ‹"xxxx"› --
   the matcher expected the Example to be invalid, but it was valid
   instead.
@@ -153,7 +170,8 @@ Example did not properly validate that the length of :attr is at most 4.
           attribute_name: :attr,
           changing_values_with: :add_character,
           expected_message: <<-MESSAGE.strip
-Example did not properly validate that the length of :attr is 4.
+Expected Example to validate that the length of :attr is 4, but this
+could not be proved.
   After setting :attr to ‹"xxx"› -- which was read back as ‹"xxxa"› --
   the matcher expected the Example to be invalid, but it was valid
   instead.
@@ -260,6 +278,35 @@ Example did not properly validate that the length of :attr is 4.
           expect(validating_length(is: 4)).
             to validate_length_of(:attr).is_equal_to(4)
         }.to_not raise_exception
+      end
+    end
+  end
+
+  context 'qualified with allow_nil' do
+    context 'and validating with allow_nil' do
+      it 'accepts' do
+        expect(validating_length(minimum: 1, allow_nil: true)).
+          to validate_length_of(:attr).is_at_least(1).allow_nil
+      end
+    end
+
+    context 'and not validating with allow_nil' do
+      it 'rejects' do
+        assertion = lambda do
+          expect(validating_length(minimum: 1)).
+            to validate_length_of(:attr).is_at_least(1).allow_nil
+        end
+
+        message = <<-MESSAGE
+Expected Example to validate that the length of :attr is at least 1, but
+this could not be proved.
+  After setting :attr to ‹nil›, the matcher expected the Example to be
+  valid, but it was invalid instead, producing these validation errors:
+
+  * attr: ["is too short (minimum is 1 character)"]
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
   end

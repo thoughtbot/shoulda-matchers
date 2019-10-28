@@ -17,6 +17,7 @@ module Shoulda
             :ignore_interference_by_writer,
             :ignoring_interference_by_writer,
             :matches?,
+            :does_not_match?,
             :on,
             :strict,
             :with_message,

@@ -39,10 +39,12 @@ module UnitTests
         def parent_child_table_creator
           @_parent_child_table_creator ||=
             UnitTests::ActiveRecord::CreateTable.new(
-              parent_child_table_name,
-              foreign_key_for_child_model => :integer,
-              foreign_key_for_parent_model => :integer,
-              :id => false
+              table_name: parent_child_table_name,
+              columns: {
+                foreign_key_for_child_model => :integer,
+                foreign_key_for_parent_model => :integer,
+                :id => false
+              }
             )
         end
 

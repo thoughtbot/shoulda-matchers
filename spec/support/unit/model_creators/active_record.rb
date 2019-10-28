@@ -14,7 +14,6 @@ module UnitTests
         :arguments,
         :attribute_default_values_by_name,
         :attribute_name,
-        :customize_model,
         :model_name,
       )
 

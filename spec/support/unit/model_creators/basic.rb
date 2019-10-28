@@ -79,8 +79,13 @@ module UnitTests
                 overrides[:changing_values_with]
               )
 
-              if respond_to?(:write_attribute)
-                write_attribute(new_value)
+              if (
+                respond_to?(:write_attribute) && (
+                  !self.class.respond_to?(:reflect_on_association) ||
+                  !self.class.reflect_on_association(attribute_name)
+                )
+              )
+                write_attribute(attribute_name, new_value)
               else
                 super(new_value)
               end

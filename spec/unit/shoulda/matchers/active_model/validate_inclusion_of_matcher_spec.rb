@@ -2,30 +2,11 @@ require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :model do
   shared_context 'for a generic attribute' do
-    def self.testing_values_of_option(option_name, &block)
-      [nil, true, false].each do |option_value|
-        context_name = "+ #{option_name}"
-        option_args = []
-        matches_or_not = ['matches', 'does not match']
-        to_or_not_to = [:to, :not_to]
-
-        unless option_value == nil
-          context_name << "(#{option_value})"
-          option_args = [option_value]
-        end
-
-        if option_value == false
-          matches_or_not.reverse!
-          to_or_not_to.reverse!
-        end
-      end
-    end
-
     context 'against an integer attribute' do
       it_behaves_like 'it supports in_array',
         possible_values: (1..5).to_a,
         zero: 0,
-        reserved_outside_value: described_class::ARBITRARY_OUTSIDE_FIXNUM
+        reserved_outside_value: described_class::ARBITRARY_OUTSIDE_INTEGER
 
       it_behaves_like 'it supports in_range',
         possible_values: 1..5,
@@ -38,7 +19,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         end
       end
 
-      def build_object(options = {}, &block)
+      def build_object(**options, &block)
         build_object_with_generic_attribute(
           options.merge(column_type: :integer, value: 1),
           &block
@@ -62,12 +43,12 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         expect(&assertion).not_to raise_error
       end
 
-      def build_object(options = {}, &block)
+      def build_object(**options, &block)
         build_object_with_generic_attribute(
           options.merge(
             column_type: :integer,
             column_options: { limit: 2 },
-            value: 1
+            value: 1,
           ),
           &block
         )
@@ -82,13 +63,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       it_behaves_like 'it supports in_array',
         possible_values: [1.0, 2.0, 3.0, 4.0, 5.0],
         zero: 0.0,
-        reserved_outside_value: described_class::ARBITRARY_OUTSIDE_FIXNUM
+        reserved_outside_value: described_class::ARBITRARY_OUTSIDE_INTEGER
 
       it_behaves_like 'it supports in_range',
         possible_values: 1.0..5.0,
         zero: 0.0
 
-      def build_object(options = {}, &block)
+      def build_object(**options, &block)
         build_object_with_generic_attribute(
           options.merge(column_type: :float, value: 1.0),
           &block
@@ -107,18 +88,18 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     context 'against a decimal attribute' do
       it_behaves_like 'it supports in_array',
         possible_values: [1.0, 2.0, 3.0, 4.0, 5.0].map { |number|
-          BigDecimal.new(number.to_s)
+          BigDecimal(number.to_s)
         },
-        zero: BigDecimal.new('0.0'),
+        zero: BigDecimal('0.0'),
         reserved_outside_value: described_class::ARBITRARY_OUTSIDE_DECIMAL
 
       it_behaves_like 'it supports in_range',
-        possible_values: BigDecimal.new('1.0') .. BigDecimal.new('5.0'),
-        zero: BigDecimal.new('0.0')
+        possible_values: BigDecimal('1.0')..BigDecimal('5.0'),
+        zero: BigDecimal('0.0')
 
-      def build_object(options = {}, &block)
+      def build_object(**options, &block)
         build_object_with_generic_attribute(
-          options.merge(column_type: :decimal, value: BigDecimal.new('1.0')),
+          options.merge(column_type: :decimal, value: BigDecimal('1.0')),
           &block
         )
       end
@@ -130,7 +111,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       def validation_matcher_scenario_args
         super.deep_merge(
           column_type: :decimal,
-          default_value: BigDecimal.new('1.0')
+          default_value: BigDecimal('1.0'),
         )
       end
     end
@@ -145,7 +126,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         reserved_outside_value: described_class::ARBITRARY_OUTSIDE_DATE
 
       it_behaves_like 'it supports in_range',
-        possible_values: (today .. today + 5)
+        possible_values: (today..today + 5)
 
       define_method :build_object do |options = {}, &block|
         build_object_with_generic_attribute(
@@ -173,7 +154,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         reserved_outside_value: described_class::ARBITRARY_OUTSIDE_DATETIME
 
       it_behaves_like 'it supports in_range',
-        possible_values: (now .. now + 5)
+        possible_values: (now..now + 5)
 
       define_method :build_object do |options = {}, &block|
         build_object_with_generic_attribute(
@@ -192,20 +173,20 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     end
 
     context 'against a time attribute' do
-      now = Time.now
+      default_time = Time.zone.local(2000, 1, 1)
 
-      define_method(:now) { now }
+      define_method(:default_time) { default_time }
 
       it_behaves_like 'it supports in_array',
-        possible_values: (1..5).map { |n| now + n },
-        reserved_outside_value: described_class::ARBITRARY_OUTSIDE_TIME
+        possible_values: (1..3).map { |hour| default_time.change(hour: hour) }
 
-      it_behaves_like 'it supports in_range',
-        possible_values: (now .. now + 5)
+      it_behaves_like 'it supports in_range', possible_values: (
+        default_time.change(hour: 1)..default_time.change(hour: 3)
+      )
 
       define_method :build_object do |options = {}, &block|
         build_object_with_generic_attribute(
-          options.merge(column_type: :time, value: now),
+          options.merge(column_type: :time, value: default_time),
           &block
         )
       end
@@ -215,7 +196,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       end
 
       def validation_matcher_scenario_args
-        super.deep_merge(column_type: :time, default_value: now)
+        super.deep_merge(column_type: :time, default_value: default_time)
       end
     end
 
@@ -224,7 +205,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         possible_values: %w(foo bar baz),
         reserved_outside_value: described_class::ARBITRARY_OUTSIDE_STRING
 
-      def build_object(options = {}, &block)
+      def build_object(**options, &block)
         build_object_with_generic_attribute(
           options.merge(column_type: :string),
           &block
@@ -244,48 +225,29 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
   shared_examples_for 'it supports allow_nil' do |args|
     valid_values = args.fetch(:valid_values)
 
-    testing_values_of_option 'allow_nil' do |option_args, matches_or_not, to_or_not_to|
-      it "#{matches_or_not[0]} when the validation specifies allow_nil" do
-        builder = build_object_allowing(
-          valid_values,
-          validation_options: { allow_nil: true }
-        )
+    it 'matches when the validation specifies allow_nil' do
+      builder = build_object_allowing(
+        valid_values,
+        validation_options: { allow_nil: true },
+      )
 
-        __send__("expect_#{to_or_not_to[0]}_match_on_values", builder, valid_values) do |matcher|
-          matcher.allow_nil(*option_args)
-        end
+      # rubocop:disable Style/SymbolProc
+      expect_to_match_on_values(builder, valid_values) do |matcher|
+        matcher.allow_nil
       end
-
-      it "#{matches_or_not[1]} when the validation does not specify allow_nil" do
-        builder = build_object_allowing(valid_values)
-
-        __send__("expect_#{to_or_not_to[1]}_match_on_values", builder, valid_values) do |matcher|
-          matcher.allow_nil(*option_args)
-        end
-      end
+      # rubocop:enable Style/SymbolProc
     end
 
-=begin
-    it_supports(
-      'ignoring_interference_by_writer',
-      tests: {
-        accept_if_qualified_but_changing_value_does_not_interfere: {
-          changing_values_with: -> (value) { value || valid_values.first }
-        },
-        reject_if_qualified_but_changing_value_interferes: {
-          attribute_name: :attr,
-          changing_values_with: :never_falsy,
-          expected_message_includes: <<-MESSAGE.strip
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
-          MESSAGE
-        }
-      }
-    )
-=end
+    it 'allows other qualifiers to be chained afterward' do
+      builder = build_object_allowing(valid_values)
+
+      using_matcher = -> do
+        matcher = validate_inclusion_of(builder.attribute)
+        matcher.allow_nil.allow_blank
+      end
+
+      expect(&using_matcher).not_to raise_error
+    end
 
     def validation_matcher_scenario_args
       super.deep_merge(validation_options: { allow_nil: true })
@@ -299,50 +261,18 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
   shared_examples_for 'it supports allow_blank' do |args|
     valid_values = args.fetch(:valid_values)
 
-    testing_values_of_option 'allow_blank' do |option_args, matches_or_not, to_or_not_to|
-      it "#{matches_or_not[0]} when the validation specifies allow_blank" do
-        builder = build_object_allowing(
-          valid_values,
-          validation_options: { allow_blank: true }
-        )
+    it 'matches when the validation specifies allow_blank' do
+      builder = build_object_allowing(
+        valid_values,
+        validation_options: { allow_blank: true },
+      )
 
-        __send__("expect_#{to_or_not_to[0]}_match_on_values", builder, valid_values) do |matcher|
-          matcher.allow_blank(*option_args)
-        end
+      # rubocop:disable Style/SymbolProc
+      expect_to_match_on_values(builder, valid_values) do |matcher|
+        matcher.allow_blank
       end
-
-      it "#{matches_or_not[1]} when the validation does not specify allow_blank" do
-        builder = build_object_allowing(valid_values)
-
-        __send__("expect_#{to_or_not_to[1]}_match_on_values", builder, valid_values) do |matcher|
-          matcher.allow_blank(*option_args)
-        end
-      end
+      # rubocop:enable Style/SymbolProc
     end
-
-=begin
-    it_supports(
-      'ignoring_interference_by_writer',
-      tests: {
-        accept_if_qualified_but_changing_value_does_not_interfere: {
-          changing_values_with: -> (value) {
-            value.presence || valid_values.first
-          }
-        },
-        reject_if_qualified_but_changing_value_interferes: {
-          attribute_name: :attr,
-          changing_values_with: :never_blank,
-          expected_message_includes: <<-MESSAGE.strip
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
-          MESSAGE
-        }
-      }
-    )
-=end
 
     def validation_matcher_scenario_args
       super.deep_merge(validation_options: { allow_blank: true })
@@ -360,11 +290,22 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       it 'matches when validation uses given message' do
         builder = build_object_allowing(
           valid_values,
-          validation_options: { message: 'a message' }
+          validation_options: { message: 'a message' },
         )
 
         expect_to_match_on_values(builder, valid_values) do |matcher|
           matcher.with_message('a message')
+        end
+      end
+
+      it 'matches when validation uses given message that has an interpolated variable' do
+        builder = build_object_allowing(
+          valid_values,
+          validation_options: { message: '%{value} is not included' },
+        )
+
+        expect_to_match_on_values(builder, valid_values) do |matcher|
+          matcher.with_message(/ is not included\Z/)
         end
       end
 
@@ -379,7 +320,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       it 'does not match when validation uses a message but it is not same as given' do
         builder = build_object_allowing(
           valid_values,
-          validation_options: { message: 'a different message' }
+          validation_options: { message: 'a different message' },
         )
 
         expect_not_to_match_on_values(builder, valid_values) do |matcher|
@@ -392,7 +333,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       it 'matches when validation uses a message that matches the regex' do
         builder = build_object_allowing(
           valid_values,
-          validation_options: { message: 'this is a message' }
+          validation_options: { message: 'this is a message' },
         )
 
         expect_to_match_on_values(builder, valid_values) do |matcher|
@@ -411,7 +352,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       it 'does not match when validation uses a message but it does not match regex' do
         builder = build_object_allowing(
           valid_values,
-          validation_options: { message: 'a different message' }
+          validation_options: { message: 'a different message' },
         )
 
         expect_not_to_match_on_values(builder, valid_values) do |matcher|
@@ -429,18 +370,81 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         end
       end
     end
+
+    context 'not having been qualified' do
+      it 'matches when the validation uses the default message' do
+        builder = build_object_allowing(valid_values)
+        expect_to_match_on_values(builder, valid_values)
+      end
+
+      it 'matches when the validation uses the default message and it is overridden in i18n' do
+        stubbing_translations(
+          'errors.messages.inclusion' => 'some message',
+          'errors.models.person.attributes.name.inclusion' => 'a different message',
+        ) do
+          builder = build_object_allowing(
+            valid_values,
+            model_name: 'Person',
+            attribute_name: :name,
+          )
+          expect_to_match_on_values(builder, valid_values)
+        end
+      end
+
+      it 'does not match when the validation is configured with an overridden message' do
+        builder = build_object_allowing(
+          valid_values,
+          validation_options: { message: 'some message' },
+        )
+
+        expect_not_to_match_on_values(builder, valid_values)
+      end
+    end
   end
 
   shared_examples_for 'it supports in_array' do |args|
     possible_values = args.fetch(:possible_values)
     zero = args[:zero]
-    reserved_outside_value = args.fetch(:reserved_outside_value)
+    reserved_outside_value = args[:reserved_outside_value]
 
     define_method(:valid_values) { args.fetch(:possible_values) }
 
-    it 'does not match a record with no validations' do
-      builder = build_object
-      expect_not_to_match_on_values(builder, possible_values)
+    it_behaves_like 'it supports allow_nil', valid_values: possible_values
+    it_behaves_like 'it supports allow_blank', valid_values: possible_values
+    it_behaves_like 'it supports with_message', valid_values: possible_values
+
+    it_supports(
+      'ignoring_interference_by_writer',
+      tests: {
+        reject_if_qualified_but_changing_value_interferes: {
+          attribute_name: :attr,
+          changing_values_with: :next_value,
+          expected_message_includes: <<-MESSAGE.strip,
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+          MESSAGE
+        },
+      },
+    )
+
+    context 'when the record has no validations' do
+      it 'passes when used in the negative' do
+        builder = build_object
+        expect_not_to_match_on_values(builder, possible_values)
+      end
+
+      it 'fails when used in the positive with an appropriate failure message' do
+        builder = build_object
+
+        assertion = lambda do
+          expect_to_match_on_values(builder, possible_values)
+        end
+
+        expect(&assertion).to fail
+      end
     end
 
     it 'matches given the same array of valid values' do
@@ -463,19 +467,58 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
     it 'does not match when one of the given values is invalid' do
       builder = build_object_allowing(possible_values)
-      expect_not_to_match_on_values(builder, add_outside_value_to(possible_values))
+      expect_not_to_match_on_values(
+        builder,
+        add_outside_value_to(possible_values),
+      )
     end
 
-    it 'raises an error when valid and given value is our test outside value' do
-      error_class = Shoulda::Matchers::ActiveModel::CouldNotDetermineValueOutsideOfArray
-      builder = build_object_allowing([reserved_outside_value])
+    if reserved_outside_value
+      it 'raises an error when valid and given value is our test outside value' do
+        # rubocop:disable Metrics/LineLength
+        error_class = Shoulda::Matchers::ActiveModel::CouldNotDetermineValueOutsideOfArray
+        # rubocop:enable Metrics/LineLength
+        builder = build_object_allowing([reserved_outside_value])
 
-      expect { expect_to_match_on_values(builder, [reserved_outside_value]) }.
-        to raise_error(error_class)
+        expect { expect_to_match_on_values(builder, [reserved_outside_value]) }.
+          to raise_error(error_class)
+      end
     end
 
-    it_behaves_like 'it supports allow_nil', valid_values: possible_values
-    it_behaves_like 'it supports allow_blank', valid_values: possible_values
+    it 'fails when used in the negative' do
+      builder = build_object_allowing(possible_values)
+
+      assertion = lambda do
+        expect_not_to_match_on_values(builder, possible_values)
+      end
+
+      expect(&assertion).to fail
+    end
+
+    it_behaves_like 'it supports allow_nil', valid_values: possible_values do
+      it 'does not match when the validation does not specify allow_nil' do
+        builder = build_object_allowing(valid_values)
+
+        # rubocop:disable Style/SymbolProc
+        expect_not_to_match_on_values(builder, valid_values) do |matcher|
+          matcher.allow_nil
+        end
+        # rubocop:enable Style/SymbolProc
+      end
+    end
+
+    it_behaves_like 'it supports allow_blank', valid_values: possible_values do
+      it 'does not match when the validation does not specify allow_blank' do
+        builder = build_object_allowing(valid_values)
+
+        # rubocop:disable Style/SymbolProc
+        expect_not_to_match_on_values(builder, valid_values) do |matcher|
+          matcher.allow_blank
+        end
+        # rubocop:enable Style/SymbolProc
+      end
+    end
+
     it_behaves_like 'it supports with_message', valid_values: possible_values
 
     if active_model_3_2?
@@ -484,24 +527,28 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
           it 'matches when the given values match the valid values' do
             builder = build_object_allowing(
               possible_values,
-              validation_options: { strict: true }
+              validation_options: { strict: true },
             )
 
+            # rubocop:disable Style/SymbolProc
             expect_to_match_on_values(builder, possible_values) do |matcher|
               matcher.strict
             end
+            # rubocop:enable Style/SymbolProc
           end
 
           it 'does not match when the given values do not match the valid values' do
             builder = build_object_allowing(
               possible_values,
-              validation_options: { strict: true }
+              validation_options: { strict: true },
             )
 
             values = add_outside_value_to(possible_values)
+            # rubocop:disable Style/SymbolProc
             expect_not_to_match_on_values(builder, values) do |matcher|
               matcher.strict
             end
+            # rubocop:enable Style/SymbolProc
           end
         end
 
@@ -509,30 +556,15 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
           it 'does not match' do
             builder = build_object_allowing(possible_values)
 
+            # rubocop:disable Style/SymbolProc
             expect_not_to_match_on_values(builder, possible_values) do |matcher|
               matcher.strict
             end
+            # rubocop:enable Style/SymbolProc
           end
         end
       end
     end
-
-    it_supports(
-      'ignoring_interference_by_writer',
-      tests: {
-        reject_if_qualified_but_changing_value_interferes: {
-          attribute_name: :attr,
-          changing_values_with: :next_value,
-          expected_message_includes: <<-MESSAGE.strip
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
-          MESSAGE
-        }
-      }
-    )
 
     def expect_to_match_on_values(builder, values, &block)
       expect_to_match_in_array(builder, values, &block)
@@ -556,6 +588,27 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
     define_method(:valid_values) { args.fetch(:possible_values) }
 
+    it_behaves_like 'it supports allow_nil', valid_values: possible_values
+    it_behaves_like 'it supports allow_blank', valid_values: possible_values
+    it_behaves_like 'it supports with_message', valid_values: possible_values
+
+    it_supports(
+      'ignoring_interference_by_writer',
+      tests: {
+        reject_if_qualified_but_changing_value_interferes: {
+          attribute_name: :attr,
+          changing_values_with: :next_value,
+          expected_message_includes: <<-MESSAGE.strip,
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+          MESSAGE
+        },
+      },
+    )
+
     it 'does not match a record with no validations' do
       builder = build_object
       expect_not_to_match_on_values(builder, possible_values)
@@ -568,34 +621,60 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
     it 'does not match given a range whose start value falls outside valid range' do
       builder = build_object_allowing(possible_values)
-      expect_not_to_match_on_values(builder,
-        Range.new(possible_values.first - 1, possible_values.last)
+      expect_not_to_match_on_values(
+        builder,
+        Range.new(possible_values.first - 1, possible_values.last),
       )
     end
 
     it 'does not match given a range whose start value falls inside valid range' do
       builder = build_object_allowing(possible_values)
-      expect_not_to_match_on_values(builder,
-        Range.new(possible_values.first + 1, possible_values.last)
+      expect_not_to_match_on_values(
+        builder,
+        Range.new(possible_values.first + 1, possible_values.last),
       )
     end
 
     it 'does not match given a range whose end value falls inside valid range' do
       builder = build_object_allowing(possible_values)
-      expect_not_to_match_on_values(builder,
-        Range.new(possible_values.first, possible_values.last - 1)
+      expect_not_to_match_on_values(
+        builder,
+        Range.new(possible_values.first, possible_values.last - 1),
       )
     end
 
     it 'does not match given a range whose end value falls outside valid range' do
       builder = build_object_allowing(possible_values)
-      expect_not_to_match_on_values(builder,
-        Range.new(possible_values.first, possible_values.last + 1)
+      expect_not_to_match_on_values(
+        builder,
+        Range.new(possible_values.first, possible_values.last + 1),
       )
     end
 
-    it_behaves_like 'it supports allow_nil', valid_values: possible_values
-    it_behaves_like 'it supports allow_blank', valid_values: possible_values
+    it_behaves_like 'it supports allow_nil', valid_values: possible_values do
+      it 'matches when the validation does not specify allow_nil' do
+        builder = build_object_allowing(valid_values)
+
+        # rubocop:disable Style/SymbolProc
+        expect_to_match_on_values(builder, valid_values) do |matcher|
+          matcher.allow_nil
+        end
+        # rubocop:enable Style/SymbolProc
+      end
+    end
+
+    it_behaves_like 'it supports allow_blank', valid_values: possible_values do
+      it 'matches when the validation does not specify allow_blank' do
+        builder = build_object_allowing(valid_values)
+
+        # rubocop:disable Style/SymbolProc
+        expect_to_match_on_values(builder, valid_values) do |matcher|
+          matcher.allow_blank
+        end
+        # rubocop:enable Style/SymbolProc
+      end
+    end
+
     it_behaves_like 'it supports with_message', valid_values: possible_values
 
     if active_model_3_2?
@@ -604,24 +683,28 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
           it 'matches when the given range matches the range in the validation' do
             builder = build_object_allowing(
               possible_values,
-              validation_options: { strict: true }
+              validation_options: { strict: true },
             )
 
+            # rubocop:disable Style/SymbolProc
             expect_to_match_on_values(builder, possible_values) do |matcher|
               matcher.strict
             end
+            # rubocop:enable Style/SymbolProc
           end
 
           it 'matches when the given range does not match the range in the validation' do
             builder = build_object_allowing(
               possible_values,
-              validation_options: { strict: true }
+              validation_options: { strict: true },
             )
 
             range = Range.new(possible_values.first, possible_values.last + 1)
+            # rubocop:disable Style/SymbolProc
             expect_not_to_match_on_values(builder, range) do |matcher|
               matcher.strict
             end
+            # rubocop:enable Style/SymbolProc
           end
         end
 
@@ -629,30 +712,15 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
           it 'does not match' do
             builder = build_object_allowing(possible_values)
 
+            # rubocop:disable Style/SymbolProc
             expect_not_to_match_on_values(builder, possible_values) do |matcher|
               matcher.strict
             end
+            # rubocop:enable Style/SymbolProc
           end
         end
       end
     end
-
-    it_supports(
-      'ignoring_interference_by_writer',
-      tests: {
-        reject_if_qualified_but_changing_value_interferes: {
-          attribute_name: :attr,
-          changing_values_with: :next_value,
-          expected_message_includes: <<-MESSAGE.strip
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
-          MESSAGE
-        }
-      }
-    )
 
     def expect_to_match_on_values(builder, range, &block)
       expect_to_match_in_range(builder, range, &block)
@@ -701,7 +769,9 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         it 'prints a warning' do
           valid_values = booleans
           builder = build_object_allowing(valid_values)
-          message = 'You are using `validate_inclusion_of` to assert that a boolean column allows boolean values and disallows non-boolean ones'
+          message =
+            'You are using `validate_inclusion_of` to assert that a boolean ' +
+            'column allows boolean values and disallows non-boolean ones'
 
           stderr = capture(:stderr) do
             expect_to_match_in_array(builder, valid_values)
@@ -726,7 +796,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         reserved_outside_value: described_class::ARBITRARY_OUTSIDE_DATETIME
 
       it_behaves_like 'it supports in_range',
-        possible_values: (now .. now + 5)
+        possible_values: (now..now + 5)
 
       define_method :build_object do |options = {}, &block|
         build_object_with_generic_attribute(
@@ -760,7 +830,9 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
           it 'prints a warning' do
             valid_values = [nil]
             builder = build_object_allowing(valid_values)
-            message = 'You are using `validate_inclusion_of` to assert that a boolean column allows nil'
+            message =
+              'You are using `validate_inclusion_of` to assert that a ' +
+              'boolean column allows nil'
 
             stderr = capture(:stderr) do
               expect_to_match_in_array(builder, valid_values)
@@ -770,8 +842,11 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
           end
         end
 
-        def build_object(options = {}, &block)
-          super(options.merge(column_options: { null: true }, value: true))
+        def build_object(**options, &block)
+          super(
+            options.merge(column_options: { null: true }, value: true),
+            &block
+          )
         end
       end
 
@@ -782,7 +857,9 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
           it 'raises a specific error' do
             valid_values = [nil]
             builder = build_object_allowing(valid_values)
+            # rubocop:disable Metrics/LineLength
             error_class = Shoulda::Matchers::ActiveModel::NonNullableBooleanError
+            # rubocop:enable Metrics/LineLength
 
             expect {
               expect_to_match_in_array(builder, valid_values)
@@ -790,12 +867,12 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
           end
         end
 
-        def build_object(options = {}, &block)
-          super(options.merge(column_options: { null: false }))
+        def build_object(**options, &block)
+          super(options.merge(column_options: { null: false }), &block)
         end
       end
 
-      def build_object(options = {}, &block)
+      def build_object(**options, &block)
         build_object_with_generic_attribute(
           options.merge(column_type: :boolean),
           &block
@@ -803,8 +880,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       end
     end
 
-    def define_simple_model(attribute_name: :attr, column_options: {}, &block)
-      define_model('Example', attribute_name => column_options, &block)
+    def define_simple_model(
+      model_name: 'Example',
+      attribute_name: :attr,
+      column_options: {},
+      &block
+    )
+      define_model(model_name, attribute_name => column_options, &block)
     end
 
     def validation_matcher_scenario_args
@@ -818,21 +900,26 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     context 'against a boolean attribute (designated by true)' do
       include_context 'against a boolean attribute for true and false'
 
-      def build_object(options = {}, &block)
-        build_object_with_generic_attribute(options.merge(value: true))
+      def build_object(**options, &block)
+        build_object_with_generic_attribute(options.merge(value: true), &block)
       end
     end
 
     context 'against a boolean attribute (designated by false)' do
       include_context 'against a boolean attribute for true and false'
 
-      def build_object(options = {}, &block)
-        build_object_with_generic_attribute(options.merge(value: false))
+      def build_object(**options, &block)
+        build_object_with_generic_attribute(options.merge(value: false), &block)
       end
     end
 
-    def define_simple_model(attribute_name: :attr, column_options: {}, &block)
-      define_active_model_class('Example', accessors: [attribute_name], &block)
+    def define_simple_model(
+      model_name: 'Example',
+      attribute_name: :attr,
+      **_rest,
+      &block
+    )
+      define_active_model_class(model_name, accessors: [attribute_name], &block)
     end
 
     def validation_matcher_scenario_args
@@ -847,7 +934,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
           matcher = validate_inclusion_of(:attr).in_array([true])
 
           expect(matcher.description).to eq(
-            'validate that :attr is ‹true›'
+            'validate that :attr is ‹true›',
           )
         end
       end
@@ -857,7 +944,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
           matcher = validate_inclusion_of(:attr).in_array([true, 'dog'])
 
           expect(matcher.description).to eq(
-            'validate that :attr is either ‹true› or ‹"dog"›'
+            'validate that :attr is either ‹true› or ‹"dog"›',
           )
         end
       end
@@ -867,7 +954,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
           matcher = validate_inclusion_of(:attr).in_array([true, 'dog', 'cat'])
 
           expect(matcher.description).to eq(
-            'validate that :attr is either ‹true›, ‹"dog"›, or ‹"cat"›'
+            'validate that :attr is either ‹true›, ‹"dog"›, or ‹"cat"›',
           )
         end
       end
@@ -878,26 +965,32 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         matcher = validate_inclusion_of(:attr).in_range(1..10)
 
         expect(matcher.description).to eq(
-          'validate that :attr lies inside the range ‹1› to ‹10›'
+          'validate that :attr lies inside the range ‹1› to ‹10›',
         )
       end
     end
   end
 
   def object_builder_class
-    @_object_builder_class ||= Struct.new(:attribute, :object, :validation_options)
+    @_object_builder_class ||= Struct.new(
+      :attribute,
+      :object,
+      :validation_options,
+    )
   end
 
   def build_object_with_generic_attribute(
+    model_name: nil,
     attribute_name: :attr,
     validation_options: nil,
     value: nil,
     **other_options
   )
     model = define_model_validating_inclusion(
+      model_name: model_name,
       attribute_name: attribute_name,
       validation_options: validation_options,
-      **other_options
+      **other_options,
     )
 
     object = model.new
@@ -907,6 +1000,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
   end
 
   def define_model_validating_inclusion(
+    model_name: nil,
     attribute_name: :attr,
     column_type: :string,
     column_options: {},
@@ -915,11 +1009,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     customize_model_class: -> (object) { }
   )
     column_options = { type: column_type, options: column_options }
-
-    define_simple_model(
+    model_options = {
+      model_name: model_name,
       attribute_name: attribute_name,
-      column_options: column_options
-    ) do |model|
+      column_options: column_options,
+    }.compact
+
+    define_simple_model(model_options) do |model|
       if validation_options
         model.validates_inclusion_of(attribute_name, validation_options)
       end
@@ -943,7 +1039,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
   def build_object_allowing(values, validation_options: {}, **other_options)
     build_object(
       validation_options: validation_options.merge(in: values),
-      **other_options
+      **other_options,
     )
   end
 

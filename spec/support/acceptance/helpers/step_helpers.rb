@@ -20,7 +20,7 @@ module AcceptanceTests
     def create_generic_bundler_project
       fs.clean
       fs.create
-      run_command! 'bundle init'
+      run_command_isolated_from_bundle! 'bundle init'
     end
 
     def add_shoulda_matchers_to_project(options = {})
@@ -78,6 +78,8 @@ module AcceptanceTests
         bundle.remove_gem 'byebug'
         bundle.remove_gem 'web-console'
         bundle.add_gem 'pg'
+        bundle.remove_gem 'sqlite3'
+        bundle.add_gem 'sqlite3', '~> 1.3.6'
       end
 
       fs.open('config/database.yml', 'w') do |file|

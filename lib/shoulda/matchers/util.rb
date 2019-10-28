@@ -27,12 +27,13 @@ module Shoulda
       end
 
       def self.indent(string, width)
+        return if !string
         indentation = ' ' * width
         string.split(/[\n\r]/).map { |line| indentation + line }.join("\n")
       end
 
       def self.a_or_an(next_word)
-        if next_word =~ /\A[aeiou]/i
+        if next_word =~ /\A[aeiou]/i && next_word != 'unique'
           "an #{next_word}"
         else
           "a #{next_word}"
@@ -40,7 +41,14 @@ module Shoulda
       end
 
       def self.inspect_value(value)
-        "‹#{value.inspect}›"
+        case value
+        when Hash
+          inspect_hash(value)
+        when Range
+          inspect_range(value)
+        else
+          "‹#{value.inspect}›"
+        end
       end
 
       def self.inspect_values(values)
@@ -49,6 +57,20 @@ module Shoulda
 
       def self.inspect_range(range)
         "#{inspect_value(range.first)} to #{inspect_value(range.last)}"
+      end
+
+      def self.inspect_hash(hash)
+        output = '‹{'
+
+        output << hash.map { |key, value|
+          if key.is_a?(Symbol)
+            "#{key}: #{value.inspect}"
+          else
+            "#{key.inspect} => #{value.inspect}"
+          end
+        }.join(', ')
+
+        output << '}›'
       end
 
       def self.dummy_value_for(column_type, array: false)

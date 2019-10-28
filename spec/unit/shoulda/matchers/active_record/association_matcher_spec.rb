@@ -1,6 +1,8 @@
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
+  include UnitTests::ApplicationConfigurationHelpers
+
   context 'belong_to' do
     it 'accepts a good association with the default foreign key' do
       expect(belonging_to_parent).to belong_to(:parent)
@@ -82,18 +84,18 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
     end
 
     it 'accepts an association with a valid :inverse_of option' do
-      expect(belonging_to_parent(inverse_of: :children))
-        .to belong_to(:parent).inverse_of(:children)
+      expect(belonging_to_with_inverse(:parent, :children)).
+        to belong_to(:parent).inverse_of(:children)
     end
 
     it 'rejects an association with a bad :inverse_of option' do
-      expect(belonging_to_parent(inverse_of: :other_children))
-        .not_to belong_to(:parent).inverse_of(:children)
+      expect(belonging_to_with_inverse(:parent, :other_children)).
+        not_to belong_to(:parent).inverse_of(:children)
     end
 
     it 'rejects an association that has no :inverse_of option' do
-      expect(belonging_to_parent)
-        .not_to belong_to(:parent).inverse_of(:children)
+      expect(belonging_to_parent).
+        not_to belong_to(:parent).inverse_of(:children)
     end
 
     it 'accepts an association with a valid :conditions option' do
@@ -279,11 +281,558 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       end
     end
 
-    def belonging_to_parent(options = {})
-      define_model :parent
+    context 'given the association is neither configured to be required nor optional' do
+      context 'when qualified with required(true)' do
+        if active_record_supports_optional_for_associations?
+          context 'when belongs_to is configured to be required by default' do
+            it 'passes' do
+              with_belongs_to_as_required_by_default do
+                expect(belonging_to_parent).to belong_to(:parent).required(true)
+              end
+            end
+          end
+
+          context 'when belongs_to is not configured to be required by default' do
+            it 'fails with an appropriate message' do
+              with_belongs_to_as_optional_by_default do
+                assertion = lambda do
+                  expect(belonging_to_parent).
+                    to belong_to(:parent).required(true)
+                end
+
+                message = format_message(<<-MESSAGE, one_line: true)
+                  Expected Child to have a belongs_to association called parent
+                  (and for the record to fail validation if :parent is unset;
+                  i.e., either the association should have been defined with
+                  `required: true`, or there should be a presence validation on
+                  :parent)
+                MESSAGE
+
+                expect(&assertion).to fail_with_message(message)
+              end
+            end
+          end
+        else
+          it 'fails with an appropriate message' do
+            assertion = lambda do
+              expect(belonging_to_parent).
+                to belong_to(:parent).required(true)
+            end
+
+            message = format_message(<<-MESSAGE, one_line: true)
+              Expected Child to have a belongs_to association called parent
+              (and for the record to fail validation if :parent is unset; i.e.,
+              either the association should have been defined with `required:
+              true`, or there should be a presence validation on :parent)
+            MESSAGE
+
+            expect(&assertion).to fail_with_message(message)
+          end
+        end
+      end
+
+      context 'when qualified with required(false)' do
+        if active_record_supports_optional_for_associations?
+          context 'when belongs_to is configured to be required by default' do
+            it 'fails with an appropriate message' do
+              with_belongs_to_as_required_by_default do
+                assertion = lambda do
+                  expect(belonging_to_parent).
+                    to belong_to(:parent).required(false)
+                end
+
+                message = format_message(<<-MESSAGE, one_line: true)
+                  Expected Child to have a belongs_to association called parent
+                  (and for the record not to fail validation if :parent is
+                  unset; i.e., either the association should have been defined
+                  with `required: false`, or there should not be a presence
+                  validation on :parent)
+                MESSAGE
+
+                expect(&assertion).to fail_with_message(message)
+              end
+            end
+          end
+
+          context 'when belongs_to is not configured to be required by default' do
+            it 'passes' do
+              with_belongs_to_as_optional_by_default do
+                expect(belonging_to_parent).to belong_to(:parent).required(false)
+              end
+            end
+          end
+        else
+          it 'passes' do
+            expect(belonging_to_parent).to belong_to(:parent).required(false)
+          end
+        end
+      end
+
+      context 'when qualified with optional(true)' do
+        if active_record_supports_optional_for_associations?
+          context 'when belongs_to is configured to be required by default' do
+            it 'fails with an appropriate message' do
+              with_belongs_to_as_required_by_default do
+                assertion = lambda do
+                  expect(belonging_to_parent).
+                    to belong_to(:parent).optional(true)
+                end
+
+                message = format_message(<<-MESSAGE, one_line: true)
+                  Expected Child to have a belongs_to association called parent
+                  (and for the record not to fail validation if :parent is
+                  unset; i.e., either the association should have been defined
+                  with `optional: true`, or there should not be a presence
+                  validation on :parent)
+                MESSAGE
+
+                expect(&assertion).to fail_with_message(message)
+              end
+            end
+          end
+
+          context 'when belongs_to is not configured to be required by default' do
+            it 'passes' do
+              with_belongs_to_as_optional_by_default do
+                expect(belonging_to_parent).to belong_to(:parent).optional(true)
+              end
+            end
+          end
+        else
+          it 'passes' do
+            expect(belonging_to_parent).to belong_to(:parent).optional(true)
+          end
+        end
+      end
+
+      context 'when qualified with optional(false)' do
+        if active_record_supports_optional_for_associations?
+          context 'when belongs_to is configured to be required by default' do
+            it 'passes' do
+              with_belongs_to_as_required_by_default do
+                expect(belonging_to_parent).to belong_to(:parent).optional(false)
+              end
+            end
+          end
+
+          context 'when belongs_to is not configured to be required by default' do
+            it 'fails with an appropriate message' do
+              with_belongs_to_as_optional_by_default do
+                assertion = lambda do
+                  expect(belonging_to_parent).
+                    to belong_to(:parent).optional(false)
+                end
+
+                message = format_message(<<-MESSAGE, one_line: true)
+                  Expected Child to have a belongs_to association called parent
+                  (and for the record to fail validation if :parent is
+                  unset; i.e., either the association should have been defined
+                  with `optional: false`, or there should be a presence
+                  validation on :parent)
+                MESSAGE
+
+                expect(&assertion).to fail_with_message(message)
+              end
+            end
+          end
+        else
+          it 'fails with an appropriate message' do
+            assertion = lambda do
+              expect(belonging_to_parent).
+                to belong_to(:parent).optional(false)
+            end
+
+            message = format_message(<<-MESSAGE, one_line: true)
+              Expected Child to have a belongs_to association called parent
+              (and for the record to fail validation if :parent is unset; i.e.,
+              either the association should have been defined with `optional:
+              false`, or there should be a presence validation on :parent)
+            MESSAGE
+
+            expect(&assertion).to fail_with_message(message)
+          end
+        end
+      end
+
+      context 'when qualified with nothing' do
+        if active_record_supports_optional_for_associations?
+          context 'when belongs_to is configured to be required by default' do
+            it 'passes' do
+              with_belongs_to_as_required_by_default do
+                expect(belonging_to_parent).to belong_to(:parent)
+              end
+            end
+          end
+
+          context 'when belongs_to is not configured to be required by default' do
+            it 'passes' do
+              with_belongs_to_as_optional_by_default do
+                expect(belonging_to_parent).to belong_to(:parent)
+              end
+            end
+
+            context 'and a presence validation is on the attribute instead of using required: true' do
+              it 'passes' do
+                with_belongs_to_as_optional_by_default do
+                  record = belonging_to_parent do
+                    validates_presence_of :parent
+                  end
+
+                  expect(record).to belong_to(:parent)
+                end
+              end
+            end
+
+            context 'and a presence validation is on the attribute with a condition' do
+              context 'and the condition is true' do
+                it 'passes' do
+                  with_belongs_to_as_optional_by_default do
+                    child_model = create_child_model_belonging_to_parent do
+                      attr_accessor :condition
+                      validates_presence_of :parent, if: :condition
+                    end
+
+                    record = child_model.new(condition: true)
+
+                    expect(record).to belong_to(:parent)
+                  end
+                end
+              end
+
+              context 'and the condition is false' do
+                it 'passes' do
+                  with_belongs_to_as_optional_by_default do
+                    child_model = create_child_model_belonging_to_parent do
+                      attr_accessor :condition
+                      validates_presence_of :parent, if: :condition
+                    end
+
+                    record = child_model.new(condition: false)
+
+                    expect(record).to belong_to(:parent)
+                  end
+                end
+              end
+            end
+          end
+        else
+          it 'passes' do
+            expect(belonging_to_parent).to belong_to(:parent)
+          end
+
+          context 'and a presence validation is on the attribute instead of using required: true' do
+            it 'passes' do
+              record = belonging_to_parent do
+                validates_presence_of :parent
+              end
+
+              expect(record).to belong_to(:parent)
+            end
+          end
+
+          context 'and a presence validation is on the attribute with a condition' do
+            context 'and the condition is true' do
+              it 'passes' do
+                child_model = create_child_model_belonging_to_parent do
+                  attr_accessor :condition
+                  validates_presence_of :parent, if: :condition
+                end
+
+                record = child_model.new(condition: true)
+
+                expect(record).to belong_to(:parent)
+              end
+            end
+
+            context 'and the condition is false' do
+              it 'passes' do
+                child_model = create_child_model_belonging_to_parent do
+                  attr_accessor :condition
+                  validates_presence_of :parent, if: :condition
+                end
+
+                record = child_model.new(condition: false)
+
+                expect(record).to belong_to(:parent)
+              end
+            end
+          end
+        end
+      end
+    end
+
+    context 'given the association is configured with required: true' do
+      context 'when qualified with required(true)' do
+        it 'passes' do
+          expect(belonging_to_parent(required: true)).
+            to belong_to(:parent).required(true)
+        end
+      end
+
+      context 'when qualified with required(false)' do
+        it 'passes' do
+          assertion = lambda do
+            expect(belonging_to_parent(required: true)).
+              to belong_to(:parent).required(false)
+          end
+
+          message = format_message(<<-MESSAGE, one_line: true)
+            Expected Child to have a belongs_to association called parent (and
+            for the record not to fail validation if :parent is unset; i.e.,
+            either the association should have been defined with `required:
+            false`, or there should not be a presence validation on :parent)
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'when qualified with optional(true)' do
+        it 'fails with an appropriate message' do
+          assertion = lambda do
+            expect(belonging_to_parent(required: true)).
+              to belong_to(:parent).optional(true)
+          end
+
+          message = format_message(<<-MESSAGE, one_line: true)
+            Expected Child to have a belongs_to association called parent
+            (and for the record not to fail validation if :parent is unset;
+            i.e., either the association should have been defined with
+            `optional: true`, or there should not be a presence validation on
+            :parent)
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'when qualified with optional(false)' do
+        it 'passes' do
+          expect(belonging_to_parent(required: true)).
+            to belong_to(:parent).optional(false)
+        end
+      end
+
+      context 'when qualified with nothing' do
+        it 'passes' do
+          expect(belonging_to_parent(required: true)).to belong_to(:parent)
+        end
+      end
+    end
+
+    if active_record_supports_optional_for_associations?
+      context 'given the association is configured as optional: true' do
+        context 'when qualified with required(true)' do
+          it 'fails with an appropriate message' do
+            assertion = lambda do
+              expect(belonging_to_parent(optional: true)).
+                to belong_to(:parent).required(true)
+            end
+
+            message = format_message(<<-MESSAGE, one_line: true)
+              Expected Child to have a belongs_to association called parent
+              (and for the record to fail validation if :parent is unset; i.e.,
+              either the association should have been defined with `required:
+              true`, or there should be a presence validation on :parent)
+            MESSAGE
+
+            expect(&assertion).to fail_with_message(message)
+          end
+        end
+
+        context 'when qualified with required(false)' do
+          it 'passes' do
+            expect(belonging_to_parent(optional: true)).
+              to belong_to(:parent).required(false)
+          end
+        end
+
+        context 'when qualified with optional(true)' do
+          it 'passes' do
+            expect(belonging_to_parent(optional: true)).
+              to belong_to(:parent).optional(true)
+          end
+        end
+
+        context 'when qualified with optional(false)' do
+          it 'fails with an appropriate message' do
+            assertion = lambda do
+              expect(belonging_to_parent(optional: true)).
+                to belong_to(:parent).optional(false)
+            end
+
+            message = format_message(<<-MESSAGE, one_line: true)
+              Expected Child to have a belongs_to association called parent
+              (and for the record to fail validation if :parent is unset; i.e.,
+              either the association should have been defined with `optional:
+              false`, or there should be a presence validation on :parent)
+            MESSAGE
+
+            expect(&assertion).to fail_with_message(message)
+          end
+        end
+
+        context 'when qualified with nothing' do
+          it 'fails with an appropriate message' do
+            assertion = lambda do
+              expect(belonging_to_parent(optional: true)).
+                to belong_to(:parent)
+            end
+
+            message = format_message(<<-MESSAGE, one_line: true)
+              Expected Child to have a belongs_to association called parent
+              (and for the record to fail validation if :parent is unset; i.e.,
+              either the association should have been defined with `required:
+              true`, or there should be a presence validation on :parent)
+            MESSAGE
+
+            expect(&assertion).to fail_with_message(message)
+          end
+        end
+      end
+    end
+
+    if active_record_supports_optional_for_associations?
+      context 'when the model ensures the association is set' do
+        context 'and the matcher is not qualified with anything' do
+          context 'and the matcher is not qualified with without_validating_presence' do
+            it 'fails with an appropriate message' do
+              model = create_child_model_belonging_to_parent do
+                before_validation :ensure_parent_is_set
+
+                def ensure_parent_is_set
+                  self.parent = Parent.create
+                end
+              end
+
+              assertion = lambda do
+                with_belongs_to_as_required_by_default do
+                  expect(model.new).to belong_to(:parent)
+                end
+              end
+
+              message = format_message(<<-MESSAGE, one_line: true)
+                Expected Child to have a belongs_to association called parent (and
+                for the record to fail validation if :parent is unset; i.e.,
+                either the association should have been defined with `required:
+                true`, or there should be a presence validation on :parent)
+              MESSAGE
+
+              expect(&assertion).to fail_with_message(message)
+            end
+          end
+
+          context 'and the matcher is qualified with without_validating_presence' do
+            it 'passes' do
+              model = create_child_model_belonging_to_parent do
+                before_validation :ensure_parent_is_set
+
+                def ensure_parent_is_set
+                  self.parent = Parent.create
+                end
+              end
+
+              with_belongs_to_as_required_by_default do
+                expect(model.new).
+                  to belong_to(:parent).
+                  without_validating_presence
+              end
+            end
+          end
+        end
+
+        context 'and the matcher is qualified with required' do
+          context 'and the matcher is not qualified with without_validating_presence' do
+            it 'fails with an appropriate message' do
+              model = create_child_model_belonging_to_parent do
+                before_validation :ensure_parent_is_set
+
+                def ensure_parent_is_set
+                  self.parent = Parent.create
+                end
+              end
+
+              assertion = lambda do
+                with_belongs_to_as_required_by_default do
+                  expect(model.new).to belong_to(:parent).required
+                end
+              end
+
+              message = format_message(<<-MESSAGE, one_line: true)
+                Expected Child to have a belongs_to association called parent
+                (and for the record to fail validation if :parent is unset; i.e.,
+                either the association should have been defined with `required:
+                true`, or there should be a presence validation on :parent)
+              MESSAGE
+
+              expect(&assertion).to fail_with_message(message)
+            end
+          end
+
+          context 'and the matcher is also qualified with without_validating_presence' do
+            it 'passes' do
+              model = create_child_model_belonging_to_parent do
+                before_validation :ensure_parent_is_set
+
+                def ensure_parent_is_set
+                  self.parent = Parent.create
+                end
+              end
+
+              with_belongs_to_as_required_by_default do
+                expect(model.new).
+                  to belong_to(:parent).
+                  required.
+                  without_validating_presence
+              end
+            end
+          end
+        end
+      end
+    end
+
+    def belonging_to_parent(options = {}, parent_options = {}, &block)
+      child_model = create_child_model_belonging_to_parent(
+        options,
+        parent_options,
+        &block
+      )
+      child_model.new
+    end
+
+    def create_child_model_belonging_to_parent(
+      options = {},
+      parent_options = {},
+      &block
+    )
+      define_model(:parent, parent_options)
+
       define_model :child, parent_id: :integer do
         belongs_to :parent, options
-      end.new
+
+        if block
+          class_eval(&block)
+        end
+      end
+    end
+
+    def belonging_to_with_inverse(association, inverse_association)
+      parent_model_name = association.to_s.singularize
+      child_model_name = inverse_association.to_s.singularize
+      parent_foreign_key = "#{parent_model_name}_id"
+
+      define_model parent_model_name do
+        has_many inverse_association
+      end
+
+      child_model = define_model(
+        child_model_name,
+        parent_foreign_key => :integer,
+      ) do
+        belongs_to association, inverse_of: inverse_association
+      end
+
+      child_model.new
     end
 
     def belonging_to_non_existent_class(model_name, assoc_name, options = {})
@@ -524,6 +1073,33 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       expect {
         expect(Parent.new).to have_many(:children).autosave(true)
       }.to fail_with_message(message)
+    end
+
+    if rails_5_x?
+      context 'index_errors' do
+        it 'accepts an association with a matching :index_errors option' do
+          define_model :child, parent_id: :integer
+          define_model :parent do
+            has_many :children, index_errors: true
+          end
+          expect(Parent.new).to have_many(:children).index_errors(true)
+        end
+
+        it 'rejects an association with a non-matching :index_errors option and returns the correct message' do
+          define_model :child, parent_id: :integer
+          define_model :parent do
+            has_many :children, autosave: false
+          end
+
+          message =
+            'Expected Parent to have a has_many association called children ' +
+            '(children should have index_errors set to true)'
+
+          expect {
+            expect(Parent.new).to have_many(:children).index_errors(true)
+          }.to fail_with_message(message)
+        end
+      end
     end
 
     context 'validate' do
@@ -823,6 +1399,33 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
 
       it 'matches validate(false) to having no validate option specified' do
         expect(having_one_detail).to have_one(:detail).validate(false)
+      end
+    end
+
+    if active_record_supports_optional_for_associations?
+      context 'given an association with a matching :required option' do
+        it 'passes' do
+          expect(having_one_detail(required: true)).
+            to have_one(:detail).required
+        end
+      end
+    end
+
+    context 'given an association with a non-matching :required option' do
+      it 'fails with an appropriate message' do
+        assertion = lambda do
+          expect(having_one_detail(required: false)).
+            to have_one(:detail).required
+        end
+
+        message = format_message(<<-MESSAGE, one_line: true)
+          Expected Person to have a has_one association called detail (and for
+          the record to fail validation if :detail is unset; i.e., either the
+          association should have been defined with `required: true`, or there
+          should be a presence validation on :detail)
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
       end
     end
 
@@ -1210,7 +1813,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
   def define_association_with_conditions(model, macro, name, conditions, other_options={})
     args = []
     options = {}
-    if Shoulda::Matchers::RailsShim.active_record_major_version == 4
+    if active_record_supports_relations?
       args << proc { where(conditions) }
     else
       options[:conditions] = conditions
@@ -1222,7 +1825,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
   def define_association_with_order(model, macro, name, order, other_options={})
     args = []
     options = {}
-    if Shoulda::Matchers::RailsShim.active_record_major_version == 4
+    if active_record_supports_relations?
       args << proc { order(order) }
     else
       options[:order] = order
@@ -1232,11 +1835,10 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
   end
 
   def dependent_options
-    case Rails.version
-    when /\A3/
-      [:destroy, :delete, :nullify, :restrict]
-    when /\A4/
+    if active_record_supports_more_dependent_options?
       [:destroy, :delete, :nullify, :restrict_with_exception, :restrict_with_error]
+    else
+      [:destroy, :delete, :nullify, :restrict]
     end
   end
 end

@@ -16,10 +16,11 @@ module Shoulda
           def call
             if description_clauses_for_qualifiers.any?
               main_description +
+                clause_for_allow_blank_or_nil +
                 ', ' +
                 description_clauses_for_qualifiers.to_sentence
             else
-              main_description
+              main_description + clause_for_allow_blank_or_nil
             end
           end
 
@@ -29,14 +30,18 @@ module Shoulda
 
           private
 
+          def clause_for_allow_blank_or_nil
+            if matcher.try(:expects_to_allow_blank?)
+              ' as long as it is not blank'
+            elsif matcher.try(:expects_to_allow_nil?)
+              ' as long as it is not nil'
+            else
+              ''
+            end
+          end
+
           def description_clauses_for_qualifiers
             description_clauses = []
-
-            if matcher.try(:expects_to_allow_blank?)
-              description_clauses << 'but only if it is not blank'
-            elsif matcher.try(:expects_to_allow_nil?)
-              description_clauses << 'but only if it is not nil'
-            end
 
             if matcher.try(:expects_strict?)
               description_clauses << 'raising a validation exception'

@@ -56,7 +56,7 @@ describe 'shoulda-matchers has independent matchers, specifically delegate_metho
 
     expect(result).to indicate_number_of_tests_was_run(1)
     expect(result).to have_output(
-      'Courier should delegate #deliver to #post_office object'
+      'Courier should delegate #deliver to the #post_office object'
     )
   end
 
@@ -119,7 +119,7 @@ describe 'shoulda-matchers has independent matchers, specifically delegate_metho
 
     expect(result).to indicate_number_of_tests_was_run(1)
     expect(result).to have_output(
-      /Courier\s+should delegate #deliver to #post_office object/
+      /Courier\s+should delegate #deliver to the #post_office object/
     )
   end
 end

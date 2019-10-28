@@ -411,13 +411,13 @@ module Shoulda
         end
 
         def matches?(subject)
-          @subject = subject
-          @number_of_submatchers = @submatchers.size
+          matches_or_does_not_match?(subject)
+          first_submatcher_that_fails_to_match.nil?
+        end
 
-          add_disallow_value_matcher
-          qualify_submatchers
-
-          first_failing_submatcher.nil?
+        def does_not_match?(subject)
+          matches_or_does_not_match?(subject)
+          first_submatcher_that_fails_to_not_match.nil?
         end
 
         def simple_description
@@ -440,20 +440,14 @@ module Shoulda
         def failure_message
           overall_failure_message.dup.tap do |message|
             message << "\n"
-            message << failure_message_for_first_failing_submatcher
+            message << failure_message_for_first_submatcher_that_fails_to_match
           end
         end
 
         def failure_message_when_negated
           overall_failure_message_when_negated.dup.tap do |message|
-            if submatcher_failure_message_when_negated.present?
-              raise "hmm, this needs to be implemented."
-              message << "\n"
-              message << Shoulda::Matchers.word_wrap(
-                submatcher_failure_message_when_negated,
-                indent: 2
-              )
-            end
+            message << "\n"
+            message << failure_message_for_first_submatcher_that_fails_to_not_match
           end
         end
 
@@ -464,19 +458,25 @@ module Shoulda
 
         private
 
-        def model
-          @subject.class
+        def matches_or_does_not_match?(subject)
+          @subject = subject
+          @number_of_submatchers = @submatchers.size
+
+          add_disallow_value_matcher
+          qualify_submatchers
         end
 
         def overall_failure_message
           Shoulda::Matchers.word_wrap(
-            "#{model.name} did not properly #{description}."
+            "Expected #{model.name} to #{description}, but this could not " +
+            'be proved.'
           )
         end
 
         def overall_failure_message_when_negated
           Shoulda::Matchers.word_wrap(
-            "Expected #{model.name} not to #{description}, but it did."
+            "Expected #{model.name} not to #{description}, but this could not " +
+            'be proved.'
           )
         end
 
@@ -562,39 +562,54 @@ module Shoulda
 
         def has_been_qualified?
           @submatchers.any? do |submatcher|
-            submatcher.class.parent == NumericalityMatchers
+            Shoulda::Matchers::RailsShim.parent_of(submatcher.class) ==
+              NumericalityMatchers
           end
         end
 
-        def first_failing_submatcher
+        def first_submatcher_that_fails_to_match
           @_failing_submatchers ||= @submatchers.detect do |submatcher|
             !submatcher.matches?(@subject)
           end
         end
 
-        def submatcher_failure_message
-          first_failing_submatcher.failure_message
-        end
-
-        def submatcher_failure_message_when_negated
-          first_failing_submatcher.failure_message_when_negated
-        end
-
-        def failure_message_for_first_failing_submatcher
-          submatcher = first_failing_submatcher
-
-          if number_of_submatchers_for_failure_message > 1
-            submatcher_description = submatcher.simple_description.
-              sub(/\bvalidate that\b/, 'validates').
-              sub(/\bdisallow\b/, 'disallows').
-              sub(/\ballow\b/, 'allows')
-            submatcher_message =
-              "In checking that #{model.name} #{submatcher_description}, " +
-              submatcher.failure_message[0].downcase +
-              submatcher.failure_message[1..-1]
-          else
-            submatcher_message = submatcher.failure_message
+        def first_submatcher_that_fails_to_not_match
+          @_failing_submatchers ||= @submatchers.detect do |submatcher|
+            !submatcher.does_not_match?(@subject)
           end
+        end
+
+        def failure_message_for_first_submatcher_that_fails_to_match
+          build_submatcher_failure_message_for(
+            first_submatcher_that_fails_to_match,
+            :failure_message
+          )
+        end
+
+        def failure_message_for_first_submatcher_that_fails_to_not_match
+          build_submatcher_failure_message_for(
+            first_submatcher_that_fails_to_not_match,
+            :failure_message_when_negated
+          )
+        end
+
+        def build_submatcher_failure_message_for(
+          submatcher,
+          failure_message_method
+        )
+          failure_message = submatcher.public_send(failure_message_method)
+          submatcher_description = submatcher.simple_description.
+            sub(/\bvalidate that\b/, 'validates').
+            sub(/\bdisallow\b/, 'disallows').
+            sub(/\ballow\b/, 'allows')
+          submatcher_message =
+            if number_of_submatchers_for_failure_message > 1
+              "In checking that #{model.name} #{submatcher_description}, " +
+                failure_message[0].downcase +
+                failure_message[1..-1]
+            else
+              failure_message
+            end
 
           Shoulda::Matchers.word_wrap(submatcher_message, indent: 2)
         end
@@ -615,6 +630,10 @@ module Shoulda
             end
             arr
           end
+        end
+
+        def model
+          @subject.class
         end
       end
     end

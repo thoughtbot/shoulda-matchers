@@ -162,14 +162,33 @@ module Shoulda
           if @range
             allows_lower_value &&
               disallows_minimum_value &&
-              allows_higher_value &&
-              disallows_maximum_value
+              disallows_maximum_value &&
+              allows_higher_value
           elsif @array
             disallows_all_values_in_array?
           end
         end
 
+        def does_not_match?(subject)
+          super(subject)
+
+          if @range
+            disallows_lower_value ||
+              allows_minimum_value ||
+              allows_maximum_value ||
+              disallows_higher_value
+          elsif @array
+            allows_any_values_in_array?
+          end
+        end
+
         private
+
+        def allows_any_values_in_array?
+          @array.any? do |value|
+            allows_value_of(value, @expected_message)
+          end
+        end
 
         def disallows_all_values_in_array?
           @array.all? do |value|
@@ -181,16 +200,32 @@ module Shoulda
           @minimum == 0 || allows_value_of(@minimum - 1, @expected_message)
         end
 
-        def allows_higher_value
-          allows_value_of(@maximum + 1, @expected_message)
+        def disallows_lower_value
+          @minimum != 0 && disallows_value_of(@minimum - 1, @expected_message)
+        end
+
+        def allows_minimum_value
+          allows_value_of(@minimum, @expected_message)
         end
 
         def disallows_minimum_value
           disallows_value_of(@minimum, @expected_message)
         end
 
+        def allows_maximum_value
+          allows_value_of(@maximum, @expected_message)
+        end
+
         def disallows_maximum_value
           disallows_value_of(@maximum, @expected_message)
+        end
+
+        def allows_higher_value
+          allows_value_of(@maximum + 1, @expected_message)
+        end
+
+        def disallows_higher_value
+          disallows_value_of(@maximum + 1, @expected_message)
         end
 
         def inspect_message

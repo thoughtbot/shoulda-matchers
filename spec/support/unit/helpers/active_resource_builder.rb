@@ -1,8 +1,8 @@
-require 'active_resource'
-
 module UnitTests
   module ActiveResourceBuilder
     def self.configure_example_group(example_group)
+      require 'active_resource'
+
       example_group.include ActiveResourceBuilder
 
       example_group.after do

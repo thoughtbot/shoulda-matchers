@@ -216,6 +216,27 @@ module Shoulda
       #         with_long_message('Secret key must be less than 100 characters')
       #     end
       #
+      # ##### allow_nil
+      #
+      # Use `allow_nil` to assert that the attribute allows nil.
+      #
+      #     class User
+      #       include ActiveModel::Model
+      #       attr_accessor :bio
+      #
+      #       validates_length_of :bio, minimum: 15, allow_nil: true
+      #     end
+      #
+      #     # RSpec
+      #     describe User do
+      #       it { should validate_length_of(:bio).is_at_least(15).allow_nil }
+      #     end
+      #
+      #     # Test::Unit
+      #     class UserTest < ActiveSupport::TestCase
+      #       should validate_length_of(:bio).is_at_least(15).allow_nil
+      #     end
+      #
       # @return [ValidateLengthOfMatcher]
       #
       def validate_length_of(attr)
@@ -281,6 +302,11 @@ module Shoulda
           self
         end
 
+        def allow_nil
+          @options[:allow_nil] = true
+          self
+        end
+
         def simple_description
           description = "validate that the length of :#{@attribute}"
 
@@ -302,69 +328,102 @@ module Shoulda
 
         def matches?(subject)
           super(subject)
-          translate_messages!
-          lower_bound_matches? && upper_bound_matches?
+
+          lower_bound_matches? &&
+            upper_bound_matches? &&
+            allow_nil_matches?
+        end
+
+        def does_not_match?(subject)
+          super(subject)
+
+          lower_bound_does_not_match? ||
+            upper_bound_does_not_match? ||
+            allow_nil_does_not_match?
         end
 
         private
 
-        def translate_messages!
-          if Symbol === @short_message
-            @short_message = default_error_message(@short_message,
-                                                   model_name: @subject.class.to_s.underscore,
-                                                   instance: @subject,
-                                                   attribute: @attribute,
-                                                   count: @options[:minimum])
-          end
-
-          if Symbol === @long_message
-            @long_message = default_error_message(@long_message,
-                                                  model_name: @subject.class.to_s.underscore,
-                                                  instance: @subject,
-                                                  attribute: @attribute,
-                                                  count: @options[:maximum])
-          end
+        def expects_to_allow_nil?
+          @options[:allow_nil]
         end
 
         def lower_bound_matches?
           disallows_lower_length? && allows_minimum_length?
         end
 
+        def lower_bound_does_not_match?
+          allows_lower_length? || disallows_minimum_length?
+        end
+
         def upper_bound_matches?
           disallows_higher_length? && allows_maximum_length?
         end
 
+        def upper_bound_does_not_match?
+          allows_higher_length? || disallows_maximum_length?
+        end
+
+        def allows_lower_length?
+          @options.key?(:minimum) &&
+            @options[:minimum] > 0 &&
+            allows_length_of?(
+              @options[:minimum] - 1,
+              translated_short_message
+            )
+        end
+
         def disallows_lower_length?
-          if @options.key?(:minimum)
+          !@options.key?(:minimum) ||
             @options[:minimum] == 0 ||
-              disallows_length_of?(@options[:minimum] - 1, @short_message)
-          else
-            true
-          end
+            disallows_length_of?(
+              @options[:minimum] - 1,
+              translated_short_message
+            )
+        end
+
+        def allows_higher_length?
+          @options.key?(:maximum) &&
+            allows_length_of?(
+              @options[:maximum] + 1,
+              translated_long_message
+            )
         end
 
         def disallows_higher_length?
-          if @options.key?(:maximum)
-            disallows_length_of?(@options[:maximum] + 1, @long_message)
-          else
-            true
-          end
+          !@options.key?(:maximum) ||
+            disallows_length_of?(
+              @options[:maximum] + 1,
+              translated_long_message
+            )
         end
 
         def allows_minimum_length?
-          if @options.key?(:minimum)
-            allows_length_of?(@options[:minimum], @short_message)
-          else
-            true
-          end
+          !@options.key?(:minimum) ||
+            allows_length_of?(@options[:minimum], translated_short_message)
+        end
+
+        def disallows_minimum_length?
+          @options.key?(:minimum) &&
+            disallows_length_of?(@options[:minimum], translated_short_message)
         end
 
         def allows_maximum_length?
-          if @options.key?(:maximum)
-            allows_length_of?(@options[:maximum], @long_message)
-          else
-            true
-          end
+          !@options.key?(:maximum) ||
+            allows_length_of?(@options[:maximum], translated_long_message)
+        end
+
+        def disallows_maximum_length?
+          @options.key?(:maximum) &&
+            disallows_length_of?(@options[:maximum], translated_long_message)
+        end
+
+        def allow_nil_matches?
+          !expects_to_allow_nil? || allows_value_of(nil)
+        end
+
+        def allow_nil_does_not_match?
+          expects_to_allow_nil? && disallows_value_of(nil)
         end
 
         def allows_length_of?(length, message)
@@ -381,6 +440,36 @@ module Shoulda
           else
             ['x'] * length
           end
+        end
+
+        def translated_short_message
+          @_translated_short_message ||=
+            if @short_message.is_a?(Symbol)
+              default_error_message(
+                @short_message,
+                model_name: @subject.class.to_s.underscore,
+                instance: @subject,
+                attribute: @attribute,
+                count: @options[:minimum]
+              )
+            else
+              @short_message
+            end
+        end
+
+        def translated_long_message
+          @_translated_long_message ||=
+            if @long_message.is_a?(Symbol)
+              default_error_message(
+                @long_message,
+                model_name: @subject.class.to_s.underscore,
+                instance: @subject,
+                attribute: @attribute,
+                count: @options[:maximum]
+              )
+            else
+              @long_message
+            end
         end
       end
     end

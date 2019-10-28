@@ -10,7 +10,7 @@ module Shoulda
       # pre-existing record (thereby failing the uniqueness check).
       #
       #     class Post < ActiveRecord::Base
-      #       validates_uniqueness_of :permalink
+      #       validates :permalink, uniqueness: true
       #     end
       #
       #     # RSpec
@@ -80,19 +80,19 @@ module Shoulda
       #
       #     RSpec.describe Post, type: :model do
       #       describe "validations" do
-      #         subject { Post.new(content: "Here is the content") }
+      #         subject { Post.create(content: "Here is the content") }
       #         it { should validate_uniqueness_of(:title) }
       #       end
       #     end
       #
       # Or, if you're using
-      # [FactoryGirl](http://github.com/thoughtbot/factory_girl) and you have a
+      # [FactoryBot](https://github.com/thoughtbot/factory_bot) and you have a
       # `post` factory defined which automatically fills in `content`, you can
       # say:
       #
       #     RSpec.describe Post, type: :model do
       #       describe "validations" do
-      #         subject { FactoryGirl.build(:post) }
+      #         subject { FactoryBot.create(:post) }
       #         it { should validate_uniqueness_of(:title) }
       #       end
       #     end
@@ -102,7 +102,7 @@ module Shoulda
       # Use `on` if your validation applies only under a certain context.
       #
       #     class Post < ActiveRecord::Base
-      #       validates_uniqueness_of :title, on: :create
+      #       validates :title, uniqueness: true, on: :create
       #     end
       #
       #     # RSpec
@@ -120,7 +120,7 @@ module Shoulda
       # Use `with_message` if you are using a custom validation message.
       #
       #     class Post < ActiveRecord::Base
-      #       validates_uniqueness_of :title, message: 'Please choose another title'
+      #       validates :title, uniqueness: true, message: 'Please choose another title'
       #     end
       #
       #     # RSpec
@@ -144,7 +144,7 @@ module Shoulda
       # unique, but the scoped attributes are not unique either.
       #
       #     class Post < ActiveRecord::Base
-      #       validates_uniqueness_of :slug, scope: :journal_id
+      #       validates :slug, uniqueness: { scope: :journal_id }
       #     end
       #
       #     # RSpec
@@ -165,7 +165,7 @@ module Shoulda
       # attributes in the pre-existing record.
       #
       #     class Post < ActiveRecord::Base
-      #       validates_uniqueness_of :key, case_sensitive: false
+      #       validates :key, uniqueness: { case_sensitive: false }
       #     end
       #
       #     # RSpec
@@ -193,7 +193,7 @@ module Shoulda
       # attribute.
       #
       #     class User < ActiveRecord::Base
-      #       validates_uniqueness_of :email
+      #       validates :email, uniqueness: true
       #
       #       def email=(value)
       #         super(value.downcase)
@@ -217,7 +217,7 @@ module Shoulda
       # Use `allow_nil` to assert that the attribute allows nil.
       #
       #     class Post < ActiveRecord::Base
-      #       validates_uniqueness_of :author_id, allow_nil: true
+      #       validates :author_id, uniqueness: true, allow_nil: true
       #     end
       #
       #     # RSpec
@@ -237,7 +237,7 @@ module Shoulda
       # Use `allow_blank` to assert that the attribute allows a blank value.
       #
       #     class Post < ActiveRecord::Base
-      #       validates_uniqueness_of :author_id, allow_blank: true
+      #       validates :author_id, uniqueness: true, allow_blank: true
       #     end
       #
       #     # RSpec
@@ -276,7 +276,7 @@ module Shoulda
         end
 
         def scoped_to(*scopes)
-          @options[:scopes] = [*scopes].flatten
+          @options[:scopes] = [*scopes].flatten.map(&:to_sym)
           self
         end
 
@@ -296,7 +296,7 @@ module Shoulda
         end
 
         def expects_to_allow_nil?
-          @options[:allow_nil]
+          @options[:allow_nil] == true
         end
 
         def allow_blank
@@ -305,7 +305,7 @@ module Shoulda
         end
 
         def expects_to_allow_blank?
-          @options[:allow_blank]
+          @options[:allow_blank] == true
         end
 
         def simple_description
@@ -324,14 +324,29 @@ module Shoulda
           @given_record = given_record
           @all_records = model.all
 
-          validate_attribute_present_on_model? &&
-            validate_scopes_present_on_model? &&
-            validate_scopes_match? &&
-            validate_two_records_with_same_non_blank_value_cannot_coexist? &&
-            validate_case_sensitivity? &&
-            validate_after_scope_change? &&
-            allows_nil? &&
-            allows_blank?
+          matches_presence_of_attribute? &&
+            matches_presence_of_scopes? &&
+            matches_scopes_configuration? &&
+            matches_uniqueness_without_scopes? &&
+            matches_uniqueness_with_case_sensitivity_strategy? &&
+            matches_uniqueness_with_scopes? &&
+            matches_allow_nil? &&
+            matches_allow_blank?
+        ensure
+          Uniqueness::TestModels.remove_all
+        end
+
+        def does_not_match?(given_record)
+          @given_record = given_record
+          @all_records = model.all
+
+          does_not_match_presence_of_scopes? ||
+            does_not_match_scopes_configuration? ||
+            does_not_match_uniqueness_without_scopes? ||
+            does_not_match_uniqueness_with_case_sensitivity_strategy? ||
+            does_not_match_uniqueness_with_scopes? ||
+            does_not_match_allow_nil? ||
+            does_not_match_allow_blank?
         ensure
           Uniqueness::TestModels.remove_all
         end
@@ -386,26 +401,45 @@ module Shoulda
           end
         end
 
-        def validate_scopes_match?
+        def matches_scopes_configuration?
           if scopes_match?
             true
           else
-            @failure_reason = 'Expected the validation'
+            @failure_reason = 'Expected the validation '
 
             if expected_scopes.empty?
-              @failure_reason << ' not to be scoped to anything'
+              @failure_reason << 'not to be scoped to anything, '
             else
-              @failure_reason << " to be scoped to #{inspected_expected_scopes}"
+              @failure_reason << "to be scoped to #{inspected_expected_scopes}, "
             end
 
-            if actual_sets_of_scopes.empty?
-              @failure_reason << ', but it was not scoped to anything.'
-            else
-              @failure_reason << ', but it was scoped to '
+            if actual_sets_of_scopes.any?
+              @failure_reason << 'but it was scoped to '
               @failure_reason << "#{inspected_actual_scopes} instead."
+            else
+              @failure_reason << 'but it was not scoped to anything.'
             end
 
             false
+          end
+        end
+
+        def does_not_match_scopes_configuration?
+          if scopes_match?
+            @failure_reason = 'Expected the validation '
+
+            if expected_scopes.empty?
+              @failure_reason << 'to be scoped to nothing, '
+              @failure_reason << 'but it was scoped to '
+              @failure_reason << "#{inspected_actual_scopes} instead."
+            else
+              @failure_reason << 'not to be scoped to '
+              @failure_reason << inspected_expected_scopes
+            end
+
+            false
+          else
+            true
           end
         end
 
@@ -420,8 +454,8 @@ module Shoulda
 
         def inspected_actual_scopes
           inspected_actual_sets_of_scopes.to_sentence(
-            words_connector: " or ",
-            last_word_connector: ", or"
+            words_connector: ' and ',
+            last_word_connector: ', and'
           )
         end
 
@@ -443,26 +477,36 @@ module Shoulda
 
         def actual_sets_of_scopes
           validations.map do |validation|
-            Array.wrap(validation.options[:scope])
+            Array.wrap(validation.options[:scope]).map(&:to_sym)
           end.reject(&:empty?)
         end
 
-        def allows_nil?
-          if expects_to_allow_nil?
-            update_existing_record!(nil)
+        def matches_allow_nil?
+          !expects_to_allow_nil? || (
+            update_existing_record!(nil) &&
             allows_value_of(nil, @expected_message)
-          else
-            true
-          end
+          )
         end
 
-        def allows_blank?
-          if expects_to_allow_blank?
-            update_existing_record!('')
+        def does_not_match_allow_nil?
+          expects_to_allow_nil? && (
+            update_existing_record!(nil) &&
+            (@failure_reason = nil || disallows_value_of(nil, @expected_message))
+          )
+        end
+
+        def matches_allow_blank?
+          !expects_to_allow_blank? || (
+            update_existing_record!('') &&
             allows_value_of('', @expected_message)
-          else
-            true
-          end
+          )
+        end
+
+        def does_not_match_allow_blank?
+          expects_to_allow_blank? && (
+            update_existing_record!('') &&
+            (@failure_reason = nil || disallows_value_of('', @expected_message))
+          )
         end
 
         def existing_record
@@ -494,18 +538,10 @@ module Shoulda
 
         def create_existing_record
           @given_record.tap do |existing_record|
-            ensure_secure_password_set(existing_record)
             existing_record.save(validate: false)
           end
         rescue ::ActiveRecord::StatementInvalid => error
           raise ExistingRecordInvalid.create(underlying_exception: error)
-        end
-
-        def ensure_secure_password_set(instance)
-          if has_secure_password?
-            instance.password = "password"
-            instance.password_confirmation = "password"
-          end
         end
 
         def update_existing_record!(value)
@@ -515,13 +551,16 @@ module Shoulda
             # but that would break users' existing tests
             existing_record.save(validate: false)
           end
+
+          true
         end
 
         def arbitrary_non_blank_value
+          non_blank_value = dummy_value_for(@attribute)
           limit = column_limit_for(@attribute)
-          non_blank_value = 'an arbitrary value'
 
-          if limit && limit < non_blank_value.length
+          is_string_value = non_blank_value.is_a?(String)
+          if is_string_value && limit && limit < non_blank_value.length
             'x' * limit
           else
             non_blank_value
@@ -529,9 +568,7 @@ module Shoulda
         end
 
         def has_secure_password?
-          model.ancestors.map(&:to_s).include?(
-            'ActiveModel::SecurePassword::InstanceMethodsOnActivation'
-          )
+          Shoulda::Matchers::RailsShim.has_secure_password?(subject, @attribute)
         end
 
         def build_new_record
@@ -547,7 +584,7 @@ module Shoulda
           @new_record
         end
 
-        def validate_attribute_present_on_model?
+        def matches_presence_of_attribute?
           if attribute_present_on_model?
             true
           else
@@ -557,20 +594,32 @@ module Shoulda
           end
         end
 
+        def does_not_match_presence_of_attribute?
+          if attribute_present_on_model?
+            @failure_reason =
+              ":#{attribute} seems to be an attribute on #{model.name}."
+            false
+          else
+            true
+          end
+        end
+
         def attribute_present_on_model?
           model.method_defined?("#{attribute}=") ||
             model.columns_hash.key?(attribute.to_s)
         end
 
-        def validate_scopes_present_on_model?
-          if all_scopes_present_on_model?
+        def matches_presence_of_scopes?
+          if scopes_missing_on_model.none?
             true
           else
+            inspected_scopes = scopes_missing_on_model.map(&:inspect)
+
             reason = ''
 
-            reason << inspected_scopes_missing_on_model.to_sentence
+            reason << inspected_scopes.to_sentence
 
-            if inspected_scopes_missing_on_model.many?
+            if inspected_scopes.many?
               reason << " do not seem to be attributes"
             else
               reason << " does not seem to be an attribute"
@@ -584,8 +633,34 @@ module Shoulda
           end
         end
 
-        def all_scopes_present_on_model?
-          scopes_missing_on_model.none?
+        def does_not_match_presence_of_scopes?
+          if scopes_missing_on_model.any?
+            true
+          else
+            inspected_scopes = scopes_present_on_model.map(&:inspect)
+
+            reason = ''
+
+            reason << inspected_scopes.to_sentence
+
+            if inspected_scopes.many?
+              reason << " seem to be attributes"
+            else
+              reason << " seems to be an attribute"
+            end
+
+            reason << " on #{model.name}."
+
+            @failure_reason = reason
+
+            false
+          end
+        end
+
+        def scopes_present_on_model
+          @_present_scopes ||= expected_scopes.select do |scope|
+            model.method_defined?("#{scope}=")
+          end
         end
 
         def scopes_missing_on_model
@@ -594,11 +669,7 @@ module Shoulda
           end
         end
 
-        def inspected_scopes_missing_on_model
-          scopes_missing_on_model.map(&:inspect)
-        end
-
-        def validate_two_records_with_same_non_blank_value_cannot_coexist?
+        def matches_uniqueness_without_scopes?
           if existing_value_read.blank?
             update_existing_record!(arbitrary_non_blank_value)
           end
@@ -606,8 +677,18 @@ module Shoulda
           disallows_value_of(existing_value_read, @expected_message)
         end
 
-        def validate_case_sensitivity?
-          if should_validate_case_sensitivity?
+        def does_not_match_uniqueness_without_scopes?
+          @failure_reason = nil
+
+          if existing_value_read.blank?
+            update_existing_record!(arbitrary_non_blank_value)
+          end
+
+          allows_value_of(existing_value_read, @expected_message)
+        end
+
+        def matches_uniqueness_with_case_sensitivity_strategy?
+          if should_test_case_sensitivity?
             value = existing_value_read
             swapcased_value = value.swapcase
 
@@ -629,7 +710,32 @@ module Shoulda
           end
         end
 
-        def should_validate_case_sensitivity?
+        def does_not_match_uniqueness_with_case_sensitivity_strategy?
+          if should_test_case_sensitivity?
+            @failure_reason = nil
+
+            value = existing_value_read
+            swapcased_value = value.swapcase
+
+            if case_sensitivity_strategy == :sensitive
+              disallows_value_of(swapcased_value, @expected_message)
+            else
+              if value == swapcased_value
+                raise NonCaseSwappableValueError.create(
+                  model: model,
+                  attribute: @attribute,
+                  value: value
+                )
+              end
+
+              allows_value_of(swapcased_value, @expected_message)
+            end
+          else
+            true
+          end
+        end
+
+        def should_test_case_sensitivity?
           case_sensitivity_strategy != :ignore &&
             existing_value_read.respond_to?(:swapcase) &&
             !existing_value_read.empty?
@@ -641,30 +747,42 @@ module Shoulda
           false
         end
 
-        def validate_after_scope_change?
-          if expected_scopes.empty? || all_scopes_are_booleans?
-            true
-          else
+        def matches_uniqueness_with_scopes?
+          expected_scopes.none? ||
+            all_scopes_are_booleans? ||
             expected_scopes.all? do |scope|
-              previous_value = @all_records.map(&scope).compact.max
-
-              next_value =
-                if previous_value.blank?
-                  dummy_value_for(scope)
-                else
-                  next_value_for(scope, previous_value)
-                end
-
-              set_attribute_on_new_record!(scope, next_value)
-
-              if allows_value_of(existing_value_read, @expected_message)
-                set_attribute_on_new_record!(scope, previous_value)
-                true
-              else
-                false
+              setting_next_value_for(scope) do
+                allows_value_of(existing_value_read, @expected_message)
               end
             end
-          end
+        end
+
+        def does_not_match_uniqueness_with_scopes?
+          expected_scopes.any? &&
+            !all_scopes_are_booleans? &&
+            expected_scopes.any? do |scope|
+              setting_next_value_for(scope) do
+                @failure_reason = nil
+                disallows_value_of(existing_value_read, @expected_message)
+              end
+            end
+        end
+
+        def setting_next_value_for(scope)
+          previous_value = @all_records.map(&scope).compact.max
+
+          next_value =
+            if previous_value.blank?
+              dummy_value_for(scope)
+            else
+              next_value_for(scope, previous_value)
+            end
+
+          set_attribute_on_new_record!(scope, next_value)
+
+          yield
+        ensure
+          set_attribute_on_new_record!(scope, previous_value)
         end
 
         def dummy_value_for(scope)

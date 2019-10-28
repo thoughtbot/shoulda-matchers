@@ -1,0 +1,201 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+RUBY_VERSION=$(script/supported_ruby_versions | xargs -n 1 echo | sort -V | tail -n 1)
+required_ruby_version=$(cat .ruby-version)
+
+cd "$(dirname "$(dirname "$0")")"
+
+uname=$(uname)
+
+if [[ $uname == 'Darwin' ]]; then
+  platform='mac'
+else
+  platform='linux'
+fi
+
+banner() {
+  echo -e "\033[34m== $@ ==\033[0m"
+}
+
+success() {
+  echo -e "\033[32m$@\033[0m"
+}
+
+warning() {
+  echo -e "\033[33m$@\033[0m"
+}
+
+error() {
+  echo -e "\033[31m$@\033[0m"
+}
+
+echo-wrapped() {
+  echo "$@" | fmt -w 80 | cat
+}
+
+has-executable() {
+  type "$1" &>/dev/null
+}
+
+is-running() {
+  pgrep "$1" >/dev/null
+}
+
+start() {
+  if has-executable brew; then
+    brew services start "$1"
+  else
+    sudo service "${2:-$1}" start
+  fi
+}
+
+install() {
+  local apt_package=""
+  local rpm_package=""
+  local brew_package=""
+  local default_package=""
+  local package=""
+
+  for arg in "$@"; do
+    case $arg in
+      apt=*)
+        apt_package="${arg#apt=}"
+        ;;
+      rpm=*)
+        rpm_package="${arg#rpm=}"
+        ;;
+      brew=*)
+        brew_package="${arg#brew=}"
+        ;;
+      *)
+        default_package="$arg"
+        ;;
+    esac
+  done
+
+  if has-executable brew; then
+    package="${brew_package:-$default_package}"
+
+    if [[ -n $package ]]; then
+      brew install "$package"
+    fi
+  elif has-executable apt-get; then
+    package="${apt_package:-$default_package}"
+
+    if [[ -n $package ]]; then
+      sudo apt-get install -y "$package"
+    fi
+  elif has-executable yum; then
+    package="${yum_package:-$default_package}"
+
+    if [[ -n $package ]]; then
+      sudo yum install -y "$package"
+    fi
+  else
+    error "Sorry, I'm not sure how to install $default_package."
+    exit 1
+  fi
+}
+
+check-for-build-tools() {
+  if [[ $platform == "linux" ]]; then
+    if ! has-executable apt-get; then
+      error "You don't seem to have a package manager installed."
+      echo-wrapped "\
+The setup script assumes you're using Debian or a Debian-derived flavor of
+Linux (i.e. something with Apt). If this is not the case, then we would
+gladly take a PR fixing this!"
+      exit 1
+    fi
+
+    # TODO: Check if build-essential is installed on Debian?
+  else
+    if ! has-executable brew; then
+      error "You don't seem to have Homebrew installed."
+      echo-wrapped "\
+Follow the instructions here to do this:
+
+    http://brew.sh
+
+Then re-run this script."
+      exit 1
+    fi
+
+    # TODO: Check that OS X Command Line Tools are installed?
+  fi
+}
+
+install-development-libraries() {
+  install apt=ruby-dev rpm=ruby-devel
+  install rpm=zlib-devel
+}
+
+install-dependencies() {
+  if ! has-executable sqlite3; then
+    banner 'Installing SQLite 3'
+    install sqlite3
+    install apt=libsqlite3-dev rpm=sqlite-devel
+  fi
+
+  if ! has-executable psql; then
+    banner 'Installing PostgreSQL'
+    install postgresql
+    install apt=libpq-dev rpm=postgresql-devel
+  fi
+
+  if ! is-running postgres; then
+    banner 'Starting PostgreSQL'
+    start postgresql
+  fi
+
+  if ! has-executable heroku; then
+    banner 'Installing Heroku'
+    install brew=heroku/brew/heroku heroku
+  fi
+
+  if has-executable rbenv; then
+    if ! (rbenv versions | grep $RUBY_VERSION'\>' &>/dev/null); then
+      banner "Installing Ruby $RUBY_VERSION with rbenv"
+      rbenv install --skip-existing "$RUBY_VERSION"
+    fi
+  elif has-executable chruby-exec; then
+    PREFIX='' source /usr/local/share/chruby/chruby.sh
+    if ! (chruby '' | grep $RUBY_VERSION'\>' &>/dev/null); then
+      if has-executable install-ruby; then
+      banner "Installing Ruby $RUBY_VERSION with install-ruby"
+        install-ruby "$RUBY_VERSION"
+      else
+        error "Please install Ruby $RUBY_VERSION"
+      fi
+    fi
+  elif has-executable rvm; then
+    if ! (rvm list | grep $required_ruby_version'\>' &>/dev/null); then
+      banner "Installing Ruby $required_ruby_version with rvm"
+      rvm install $required_ruby_version
+      rvm use $required_ruby_version
+    fi
+  else
+    error "You don't seem to have a Ruby manager installed."
+    echo-wrapped "\
+We recommend using rbenv. You can find instructions to install it here:
+
+    https://github.com/rbenv/rbenv#installation
+
+Make sure to follow the instructions to configure your shell so that rbenv is
+automatically loaded.
+
+When you're done, open up a new terminal tab and re-run this script."
+    exit 1
+  fi
+
+  banner 'Installing Ruby dependencies'
+  gem install bundler -v '~> 1.0' --conservative
+  bundle check || bundle install
+  bundle exec appraisal install
+}
+
+check-for-build-tools
+install-development-libraries
+install-dependencies

@@ -16,6 +16,8 @@ require 'shoulda/matchers/action_controller/session_store'
 
 module Shoulda
   module Matchers
+    # This module provides matchers that are used to test behavior within
+    # controllers.
     module ActionController
     end
   end

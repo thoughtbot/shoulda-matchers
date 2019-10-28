@@ -1,7 +1,7 @@
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model do
-  if active_model_4_0?
+  if active_model_supports_absence_validation?
     def self.available_column_types
       [
         :string,
@@ -48,6 +48,27 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
         end
       end
 
+      context 'when used in the negative' do
+        it 'fails' do
+          assertion = lambda do
+            expect(validating_absence_of(:attr)).
+              not_to validate_absence_of(:attr)
+          end
+
+          message = <<-MESSAGE
+Expected Example not to validate that :attr is empty/falsy, but this
+could not be proved.
+  After setting :attr to ‹"an arbitrary value"›, the matcher expected
+  the Example to be valid, but it was invalid instead, producing these
+  validation errors:
+
+  * attr: ["must be blank"]
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
       def validation_matcher_scenario_args
         super.deep_merge(model_creator: :active_record)
       end
@@ -58,7 +79,8 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
         record = define_model(:example, attr: :string).new
 
         message = <<-MESSAGE
-Example did not properly validate that :attr is empty/falsy.
+Expected Example to validate that :attr is empty/falsy, but this could
+not be proved.
   After setting :attr to ‹"an arbitrary value"›, the matcher expected
   the Example to be invalid, but it was valid instead.
         MESSAGE
@@ -97,7 +119,8 @@ Example did not properly validate that :attr is empty/falsy.
     context 'an ActiveModel class without an absence validation' do
       it 'rejects with the correct failure message' do
         message = <<-MESSAGE
-Example did not properly validate that :attr is empty/falsy.
+Expected Example to validate that :attr is empty/falsy, but this could
+not be proved.
   After setting :attr to ‹"an arbitrary value"›, the matcher expected
   the Example to be invalid, but it was valid instead.
         MESSAGE
@@ -161,7 +184,8 @@ Example did not properly validate that :attr is empty/falsy.
         model = having_and_belonging_to_many(:children, absence: false)
 
         message = <<-MESSAGE
-Parent did not properly validate that :children is empty/falsy.
+Expected Parent to validate that :children is empty/falsy, but this
+could not be proved.
   After setting :children to ‹[#<Child id: nil>]›, the matcher expected
   the Parent to be invalid, but it was valid instead.
         MESSAGE

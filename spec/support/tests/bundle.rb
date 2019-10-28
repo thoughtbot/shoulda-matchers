@@ -55,6 +55,10 @@ module Tests
       end
     end
 
+    def version
+      Bundler::VERSION
+    end
+
     protected
 
     attr_reader :fs

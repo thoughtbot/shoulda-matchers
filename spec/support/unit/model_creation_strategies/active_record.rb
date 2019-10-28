@@ -32,17 +32,25 @@ module UnitTests
       private
 
       def create_table_for_model
-        UnitTests::ActiveRecord::CreateTable.call(table_name, columns)
+        UnitTests::ActiveRecord::CreateTable.call(
+          table_name: table_name,
+          columns: columns,
+          connection: parent_class.connection,
+          &customize_table
+        )
       end
 
       def define_class_for_model
-        model = UnitTests::ModelBuilder.define_model_class(class_name)
+        model = UnitTests::ModelBuilder.define_model_class(
+          class_name,
+          parent_class: parent_class
+        )
 
         model_customizers.each do |block|
           run_block(model, block)
         end
 
-        if whitelist_attributes?
+        if whitelist_attributes? && model.respond_to?(:attr_accessible)
           model.attr_accessible(*columns.keys)
         end
 
@@ -67,6 +75,14 @@ module UnitTests
 
       def table_name
         class_name.tableize.gsub('/', '_')
+      end
+
+      def parent_class
+        options.fetch(:parent_class, DevelopmentRecord)
+      end
+
+      def customize_table
+        options.fetch(:customize_table) { proc {} }
       end
 
       def whitelist_attributes?

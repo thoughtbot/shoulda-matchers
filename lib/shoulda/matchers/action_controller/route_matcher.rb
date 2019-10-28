@@ -12,8 +12,8 @@ module Shoulda
       # routing test case. For instance, given these routes:
       #
       #     My::Application.routes.draw do
-      #       get '/posts', controller: 'posts', action: 'index'
-      #       get '/posts/:id' => 'posts#show'
+      #       get '/posts', to: 'posts#index'
+      #       get '/posts/:id', to: 'posts#show'
       #     end
       #
       # You could choose to write tests for these routes alongside other tests
@@ -64,6 +64,42 @@ module Shoulda
       # this controller. In the latter case we specify this using the
       # `controller` key passed to the `to` qualifier.
       #
+      # #### Specifying a port
+      #
+      # If the route you're testing has a constraint on it that limits the route
+      # to a particular port, you can specify it by passing a `port` option to
+      # the matcher:
+      #
+      #     class PortConstraint
+      #       def initialize(port)
+      #         @port = port
+      #       end
+      #
+      #       def matches?(request)
+      #         request.port == @port
+      #       end
+      #     end
+      #
+      #     My::Application.routes.draw do
+      #       get '/posts',
+      #         to: 'posts#index',
+      #         constraints: PortConstraint.new(12345)
+      #     end
+      #
+      #     # RSpec
+      #     describe 'Routing', type: :routing do
+      #       it do
+      #         should route(:get, '/posts', port: 12345).
+      #           to('posts#index')
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class RoutesTest < ActionController::IntegrationTest
+      #       should route(:get, '/posts', port: 12345).
+      #         to('posts#index')
+      #     end
+      #
       # #### Qualifiers
       #
       # ##### to
@@ -71,7 +107,9 @@ module Shoulda
       # Use `to` to specify the action (along with the controller, if needed)
       # that the route resolves to.
       #
-      #     # Three ways of saying the same thing (using the example above)
+      # `to` takes either keyword arguments (`controller` and `action`) or a
+      # string that represents the controller/action pair:
+      #
       #     route(:get, '/posts').to(action: index)
       #     route(:get, '/posts').to(controller: :posts, action: index)
       #     route(:get, '/posts').to('posts#index')
@@ -86,19 +124,20 @@ module Shoulda
       #
       # @return [RouteMatcher]
       #
-      def route(method, path)
-        RouteMatcher.new(method, path, self)
+      def route(method, path, port: nil)
+        RouteMatcher.new(self, method, path, port: port)
       end
 
       # @private
       class RouteMatcher
-        def initialize(method, path, context)
-          @method  = method
-          @path    = path
+        def initialize(context, method, path, port: nil)
           @context = context
+          @method = method
+          @path = add_port_to_path(normalize_path(path), port)
+          @params = {}
         end
 
-        attr_reader :failure_message, :failure_message_when_negated
+        attr_reader :failure_message
 
         def to(*args)
           @params = RouteParams.new(args).normalize
@@ -111,36 +150,57 @@ module Shoulda
         end
 
         def matches?(controller)
-          guess_controller!(controller)
+          guess_controller_if_necessary(controller)
+
           route_recognized?
         end
 
         def description
-          "route #{@method.to_s.upcase} #{@path} to/from #{@params.inspect}"
+          "route #{method.to_s.upcase} #{path} to/from #{params.inspect}"
+        end
+
+        def failure_message_when_negated
+          "Didn't expect to #{description}"
         end
 
         private
 
-        def guess_controller!(controller)
-          @params[:controller] ||= controller.controller_path
+        attr_reader :context, :method, :path, :params
+
+        def normalize_path(path)
+          if path.start_with?('/')
+            path
+          else
+            "/#{path}"
+          end
+        end
+
+        def add_port_to_path(path, port)
+          if port
+            "http://example.com:#{port}" + path
+          else
+            path
+          end
         end
 
 
-        def route_recognized?
-          begin
-            @context.__send__(:assert_routing,
-                          { method: @method, path: @path },
-                          @params)
+        def guess_controller_if_necessary(controller)
+          params[:controller] ||= controller.controller_path
+        end
 
-            @failure_message_when_negated = "Didn't expect to #{description}"
-            true
-          rescue ::ActionController::RoutingError => error
-            @failure_message = error.message
-            false
-          rescue Shoulda::Matchers.assertion_exception_class => error
-            @failure_message = error.message
-            false
-          end
+        def route_recognized?
+          context.send(
+            :assert_routing,
+            { method: method, path: path },
+            params,
+          )
+          true
+        rescue ::ActionController::RoutingError => error
+          @failure_message = error.message
+          false
+        rescue Shoulda::Matchers.assertion_exception_class => error
+          @failure_message = error.message
+          false
         end
       end
     end

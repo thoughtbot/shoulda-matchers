@@ -217,7 +217,7 @@ module Shoulda
       #       should belong_to(:organization).touch(true)
       #     end
       #
-      # #### autosave
+      # ##### autosave
       #
       # Use `autosave` to assert that the `:autosave` option was specified.
       #
@@ -251,6 +251,73 @@ module Shoulda
       #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should belong_to(:organization).inverse_of(:employees)
+      #     end
+      #
+      # ##### required
+      #
+      # Use `required` to assert that the association is not allowed to be nil.
+      # (Enabled by default in Rails 5+.)
+      #
+      #     class Person < ActiveRecord::Base
+      #       belongs_to :organization, required: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Person
+      #       it { should belong_to(:organization).required }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should belong_to(:organization).required
+      #     end
+      #
+      # ##### without_validating_presence
+      #
+      # Use `without_validating_presence` with `belong_to` to prevent the
+      # matcher from checking whether the association disallows nil (Rails 5+
+      # only). This can be helpful if you have a custom hook that always sets
+      # the association to a meaningful value:
+      #
+      #     class Person < ActiveRecord::Base
+      #       belongs_to :organization
+      #
+      #       before_validation :autoassign_organization
+      #
+      #       private
+      #
+      #       def autoassign_organization
+      #         self.organization = Organization.create!
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe Person
+      #       it { should belong_to(:organization).without_validating_presence }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should belong_to(:organization).without_validating_presence
+      #     end
+      #
+      # ##### optional
+      #
+      # Use `optional` to assert that the association is allowed to be nil.
+      # (Rails 5+ only.)
+      #
+      #     class Person < ActiveRecord::Base
+      #       belongs_to :organization, optional: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Person
+      #       it { should belong_to(:organization).optional }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should belong_to(:organization).optional
       #     end
       #
       # @return [AssociationMatcher]
@@ -468,7 +535,7 @@ module Shoulda
       #       should have_many(:ideas).validate(false)
       #     end
       #
-      # #### autosave
+      # ##### autosave
       #
       # Use `autosave` to assert that the `:autosave` option was specified.
       #
@@ -484,6 +551,25 @@ module Shoulda
       #     # Minitest (Shoulda)
       #     class PlayerTest < ActiveSupport::TestCase
       #       should have_many(:games).autosave(true)
+      #     end
+      #
+      # ##### index_errors
+      #
+      # Use `index_errors` to assert that the `:index_errors` option was
+      # specified.
+      #
+      #     class Player < ActiveRecord::Base
+      #       has_many :games, index_errors: true
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Player, type: :model do
+      #       it { should have_many(:games).index_errors(true) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PlayerTest < ActiveSupport::TestCase
+      #       should have_many(:games).index_errors(true)
       #     end
       #
       # ##### inverse_of
@@ -696,7 +782,7 @@ module Shoulda
       #       should have_one(:parking_card).validate(false)
       #     end
       #
-      # #### autosave
+      # ##### autosave
       #
       # Use `autosave` to assert that the `:autosave` option was specified.
       #
@@ -712,6 +798,25 @@ module Shoulda
       #     # Minitest (Shoulda)
       #     class AccountTest < ActiveSupport::TestCase
       #       should have_one(:bank).autosave(true)
+      #     end
+      #
+      # ##### required
+      #
+      # Use `required` to assert that the association is not allowed to be nil.
+      # (Rails 5+ only.)
+      #
+      #     class Person < ActiveRecord::Base
+      #       has_one :brain, required: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Person
+      #       it { should have_one(:brain).required }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should have_one(:brain).required
       #     end
       #
       # @return [AssociationMatcher]
@@ -854,7 +959,7 @@ module Shoulda
       #         validate(false)
       #     end
       #
-      # #### autosave
+      # ##### autosave
       #
       # Use `autosave` to assert that the `:autosave` option was specified.
       #
@@ -891,42 +996,63 @@ module Shoulda
           @options = {}
           @submatchers = []
           @missing = ''
+
+          if macro == :belongs_to && RailsShim.active_record_gte_5?
+            required(belongs_to_required_by_default?)
+          end
         end
 
         def through(through)
-          through_matcher = AssociationMatchers::ThroughMatcher.new(through, name)
-          add_submatcher(through_matcher)
+          add_submatcher(
+            AssociationMatchers::ThroughMatcher,
+            through,
+            name,
+          )
           self
         end
 
         def dependent(dependent)
-          dependent_matcher = AssociationMatchers::DependentMatcher.new(dependent, name)
-          add_submatcher(dependent_matcher)
+          add_submatcher(
+            AssociationMatchers::DependentMatcher,
+            dependent,
+            name,
+          )
           self
         end
 
         def order(order)
-          order_matcher = AssociationMatchers::OrderMatcher.new(order, name)
-          add_submatcher(order_matcher)
+          add_submatcher(
+            AssociationMatchers::OrderMatcher,
+            order,
+            name,
+          )
           self
         end
 
         def counter_cache(counter_cache = true)
-          counter_cache_matcher = AssociationMatchers::CounterCacheMatcher.new(counter_cache, name)
-          add_submatcher(counter_cache_matcher)
+          add_submatcher(
+            AssociationMatchers::CounterCacheMatcher,
+            counter_cache,
+            name,
+          )
           self
         end
 
         def inverse_of(inverse_of)
-          inverse_of_matcher =
-            AssociationMatchers::InverseOfMatcher.new(inverse_of, name)
-          add_submatcher(inverse_of_matcher)
+          add_submatcher(
+            AssociationMatchers::InverseOfMatcher,
+            inverse_of,
+            name,
+          )
           self
         end
 
         def source(source)
-          source_matcher = AssociationMatchers::SourceMatcher.new(source, name)
-          add_submatcher(source_matcher)
+          add_submatcher(
+            AssociationMatchers::SourceMatcher,
+            source,
+            name,
+          )
           self
         end
 
@@ -937,6 +1063,11 @@ module Shoulda
 
         def autosave(autosave)
           @options[:autosave] = autosave
+          self
+        end
+
+        def index_errors(index_errors)
+          @options[:index_errors] = index_errors
           self
         end
 
@@ -955,6 +1086,26 @@ module Shoulda
           self
         end
 
+        def required(required = true)
+          remove_submatcher(AssociationMatchers::OptionalMatcher)
+          add_submatcher(
+            AssociationMatchers::RequiredMatcher,
+            name,
+            required,
+          )
+          self
+        end
+
+        def optional(optional = true)
+          remove_submatcher(AssociationMatchers::RequiredMatcher)
+          add_submatcher(
+            AssociationMatchers::OptionalMatcher,
+            name,
+            optional,
+          )
+          self
+        end
+
         def validate(validate = true)
           @options[:validate] = validate
           self
@@ -967,6 +1118,11 @@ module Shoulda
 
         def join_table(join_table_name)
           @options[:join_table_name] = join_table_name
+          self
+        end
+
+        def without_validating_presence
+          remove_submatcher(AssociationMatchers::RequiredMatcher)
           self
         end
 
@@ -994,6 +1150,7 @@ module Shoulda
             class_name_correct? &&
             join_table_correct? &&
             autosave_correct? &&
+            index_errors_correct? &&
             conditions_correct? &&
             validate_correct? &&
             touch_correct? &&
@@ -1016,8 +1173,15 @@ module Shoulda
           @reflector ||= AssociationMatchers::ModelReflector.new(subject, name)
         end
 
-        def add_submatcher(matcher)
-          @submatchers << matcher
+        def add_submatcher(matcher_class, *args)
+          remove_submatcher(matcher_class)
+          submatchers << matcher_class.new(*args)
+        end
+
+        def remove_submatcher(matcher_class)
+          submatchers.delete_if do |submatcher|
+            submatcher.is_a?(matcher_class)
+          end
         end
 
         def macro_description
@@ -1039,12 +1203,12 @@ module Shoulda
 
         def missing_options
           missing_options = [missing, missing_options_for_failing_submatchers]
-          missing_options.flatten.compact.join(', ')
+          missing_options.flatten.select(&:present?).join(', ')
         end
 
         def failing_submatchers
-          @failing_submatchers ||= submatchers.reject do |matcher|
-            matcher.matches?(subject)
+          @failing_submatchers ||= submatchers.select do |matcher|
+            !matcher.matches?(subject)
           end
         end
 
@@ -1148,6 +1312,22 @@ module Shoulda
           end
         end
 
+        def index_errors_correct?
+          return true unless options.key?(:index_errors)
+
+          if option_verifier.correct_for_boolean?(
+            :index_errors,
+            options[:index_errors]
+          )
+            true
+          else
+            @missing =
+              "#{name} should have index_errors set to " +
+              "#{options[:index_errors]}"
+            false
+          end
+        end
+
         def conditions_correct?
           if options.key?(:conditions)
             if option_verifier.correct_for_relation_clause?(:conditions, options[:conditions])
@@ -1182,13 +1362,11 @@ module Shoulda
         def class_has_foreign_key?(klass)
           if options.key?(:foreign_key)
             option_verifier.correct_for_string?(:foreign_key, options[:foreign_key])
+          elsif column_names_for(klass).include?(foreign_key)
+            true
           else
-            if klass.column_names.include?(foreign_key)
-              true
-            else
-              @missing = "#{klass} does not have a #{foreign_key} foreign key."
-              false
-            end
+            @missing = "#{klass} does not have a #{foreign_key} foreign key."
+            false
           end
         end
 
@@ -1225,6 +1403,16 @@ module Shoulda
 
         def submatchers_match?
           failing_submatchers.empty?
+        end
+
+        def column_names_for(klass)
+          klass.column_names
+        rescue ::ActiveRecord::StatementInvalid
+          []
+        end
+
+        def belongs_to_required_by_default?
+          ::ActiveRecord::Base.belongs_to_required_by_default
         end
       end
     end

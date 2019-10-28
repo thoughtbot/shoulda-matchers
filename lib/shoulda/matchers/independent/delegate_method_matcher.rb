@@ -148,6 +148,26 @@ module Shoulda
       #         with_arguments(expedited: true)
       #     end
       #
+      # ##### allow_nil
+      #
+      # Use `allow_nil` if the delegation accounts for the fact that your
+      # delegate object could be nil. (This is mostly intended as an analogue to
+      # the `allow_nil` option that Rails' `delegate` helper takes.)
+      #
+      #     class Account
+      #       delegate :plan, to: :subscription, allow_nil: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Account do
+      #       it { should delegate_method(:plan).to(:subscription).allow_nil }
+      #     end
+      #
+      #     # Minitest
+      #     class PageTest < Minitest::Test
+      #       should delegate_method(:plan).to(:subscription).allow_nil
+      #     end
+      #
       # @return [DelegateMethodMatcher]
       #
       def delegate_method(delegating_method)
@@ -162,10 +182,11 @@ module Shoulda
           @delegate_method = @delegating_method
           @delegate_object = Doublespeak::ObjectDouble.new
 
-          @delegated_arguments = []
-          @delegate_object_reader_method = nil
+          @context = nil
           @subject = nil
-          @subject_double_collection = nil
+          @delegate_object_reader_method = nil
+          @delegated_arguments = []
+          @expects_to_allow_nil_delegate_object = false
         end
 
         def in_context(context)
@@ -180,11 +201,13 @@ module Shoulda
 
           subject_has_delegating_method? &&
             subject_has_delegate_object_reader_method? &&
-            subject_delegates_to_delegate_object_correctly?
+            subject_delegates_to_delegate_object_correctly? &&
+            subject_handles_nil_delegate_object?
         end
 
         def description
-          string = "delegate #{formatted_delegating_method_name} to " +
+          string =
+            "delegate #{formatted_delegating_method_name} to the " +
             "#{formatted_delegate_object_reader_method_name} object"
 
           if delegated_arguments.any?
@@ -193,6 +216,12 @@ module Shoulda
 
           if delegate_method != delegating_method
             string << " as #{formatted_delegate_method}"
+          end
+
+          if expects_to_allow_nil_delegate_object?
+            string << ", allowing "
+            string << formatted_delegate_object_reader_method_name
+            string << " to return nil"
           end
 
           string
@@ -220,6 +249,11 @@ module Shoulda
           self
         end
 
+        def allow_nil
+          @expects_to_allow_nil_delegate_object = true
+          self
+        end
+
         def build_delegating_method_prefix(prefix)
           case prefix
             when true, nil then delegate_object_reader_method
@@ -228,14 +262,29 @@ module Shoulda
         end
 
         def failure_message
-          "Expected #{class_under_test} to #{description}\n" +
-            "Method calls sent to " +
-            "#{formatted_delegate_object_reader_method_name(include_module: true)}:" +
-            formatted_calls_on_delegate_object
+          message = "Expected #{class_under_test} to #{description}.\n\n"
+
+          if failed_to_allow_nil_delegate_object?
+            message << formatted_delegating_method_name(include_module: true)
+            message << ' did delegate to '
+            message << formatted_delegate_object_reader_method_name
+            message << ' when it was non-nil, but it failed to account '
+            message << 'for when '
+            message << formatted_delegate_object_reader_method_name
+            message << ' *was* nil.'
+          else
+            message << 'Method calls sent to '
+            message << formatted_delegate_object_reader_method_name(
+              include_module: true,
+            )
+            message << ": #{formatted_calls_on_delegate_object}"
+          end
+
+          Shoulda::Matchers.word_wrap(message)
         end
 
         def failure_message_when_negated
-          "Expected #{class_under_test} not to #{description}, but it did"
+          "Expected #{class_under_test} not to #{description}, but it did."
         end
 
         protected
@@ -246,7 +295,6 @@ module Shoulda
           :delegating_method,
           :method,
           :delegate_method,
-          :subject_double_collection,
           :delegate_object,
           :delegate_object_reader_method
 
@@ -268,6 +316,10 @@ module Shoulda
           else
             subject.class
           end
+        end
+
+        def expects_to_allow_nil_delegate_object?
+          @expects_to_allow_nil_delegate_object
         end
 
         def formatted_delegate_method(options = {})
@@ -329,11 +381,7 @@ module Shoulda
         end
 
         def subject_delegates_to_delegate_object_correctly?
-          register_subject_double_collection
-
-          Doublespeak.with_doubles_activated do
-            subject.public_send(delegating_method, *delegated_arguments)
-          end
+          call_delegating_method_with_delegate_method_returning(delegate_object)
 
           if delegated_arguments.any?
             delegate_object_received_call_with_delegated_arguments?
@@ -342,13 +390,44 @@ module Shoulda
           end
         end
 
-        def register_subject_double_collection
+        def subject_handles_nil_delegate_object?
+          @subject_handled_nil_delegate_object =
+            if expects_to_allow_nil_delegate_object?
+              begin
+                call_delegating_method_with_delegate_method_returning(nil)
+                true
+              rescue Module::DelegationError
+                false
+              rescue NoMethodError => error
+                if error.message =~ /undefined method `#{delegate_method}' for nil:NilClass/
+                  false
+                else
+                  raise error
+                end
+              end
+            else
+              true
+            end
+        end
+
+        def failed_to_allow_nil_delegate_object?
+          expects_to_allow_nil_delegate_object? &&
+            !@subject_handled_nil_delegate_object
+        end
+
+        def call_delegating_method_with_delegate_method_returning(value)
+          register_subject_double_collection_to(value)
+
+          Doublespeak.with_doubles_activated do
+            subject.public_send(delegating_method, *delegated_arguments)
+          end
+        end
+
+        def register_subject_double_collection_to(returned_value)
           double_collection =
             Doublespeak.double_collection_for(subject.singleton_class)
           double_collection.register_stub(delegate_object_reader_method).
-            to_return(delegate_object)
-
-          @subject_double_collection = double_collection
+            to_return(returned_value)
         end
 
         def calls_to_delegate_method
@@ -363,7 +442,7 @@ module Shoulda
           string = ""
 
           if calls_on_delegate_object.any?
-            string << "\n"
+            string << "\n\n"
             calls_on_delegate_object.each_with_index do |call, i|
               name = call.method_name
               args = call.args.map { |arg| arg.inspect }.join(', ')

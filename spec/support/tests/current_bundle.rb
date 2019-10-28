@@ -32,11 +32,11 @@ EOT
       available_appraisals.sort.last
     end
 
-    private
-
     def available_appraisals
       Appraisal::AppraisalFile.each.map(&:name)
     end
+
+    private
 
     def current_appraisal
       if appraisal_in_use?

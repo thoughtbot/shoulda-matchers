@@ -21,7 +21,8 @@ describe Shoulda::Matchers::ActiveModel::ValidateAcceptanceOfMatcher, type: :mod
           attribute_name: :attr,
           changing_values_with: :always_nil,
           expected_message: <<-MESSAGE.strip
-Example did not properly validate that :attr has been set to "1".
+Expected Example to validate that :attr has been set to "1", but this
+could not be proved.
   After setting :attr to ‹false› -- which was read back as ‹nil› -- the
   matcher expected the Example to be invalid, but it was valid instead.
 
@@ -35,6 +36,23 @@ Example did not properly validate that :attr has been set to "1".
       },
       model_creator: :active_model
     )
+
+    it 'fails when used in the negative' do
+      assertion = lambda do
+        expect(record_validating_acceptance).not_to matcher
+      end
+
+      message = <<-MESSAGE
+Expected Example not to validate that :attr has been set to "1", but
+this could not be proved.
+  After setting :attr to ‹false›, the matcher expected the Example to be
+  valid, but it was invalid instead, producing these validation errors:
+
+  * attr: ["must be accepted"]
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
+    end
   end
 
   context 'a model without an acceptance validation' do

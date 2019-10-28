@@ -8,7 +8,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
       context 'without any qualifiers' do
         it 'states that it should delegate method to the right object' do
           matcher = delegate_method(:method_name).to(:delegate)
-          message = 'delegate #method_name to #delegate object'
+          message = 'delegate #method_name to the #delegate object'
 
           expect(matcher.description).to eq message
         end
@@ -17,7 +17,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
       context 'qualified with #as' do
         it 'states that it should delegate method to the right object and method' do
           matcher = delegate_method(:method_name).to(:delegate).as(:alternate)
-          message = 'delegate #method_name to #delegate object as #alternate'
+          message = 'delegate #method_name to the #delegate object as #alternate'
 
           expect(matcher.description).to eq message
         end
@@ -27,7 +27,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
         it 'states that it should delegate method to the right object with right argument' do
           matcher = delegate_method(:method_name).to(:delegate).
             with_arguments(:foo, bar: [1, 2])
-          message = 'delegate #method_name to #delegate object passing arguments [:foo, {:bar=>[1, 2]}]'
+          message = 'delegate #method_name to the #delegate object passing arguments [:foo, {:bar=>[1, 2]}]'
 
           expect(matcher.description).to eq message
         end
@@ -53,7 +53,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
 
               matcher = delegate_method(:hello).to(:country).with_prefix
               expect(matcher.description).
-                to eq('delegate #country_hello to #country object as #hello')
+                to eq('delegate #country_hello to the #country object as #hello')
             end
           end
         end
@@ -77,7 +77,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
 
               matcher = delegate_method(:hello).to(:country).with_prefix(true)
               expect(matcher.description).
-                to eq('delegate #country_hello to #country object as #hello')
+                to eq('delegate #country_hello to the #country object as #hello')
             end
           end
         end
@@ -98,7 +98,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
 
             matcher = delegate_method(:hello).to(:country).with_prefix('county')
             expect(matcher.description).
-              to eq('delegate #county_hello to #country object as #hello')
+              to eq('delegate #county_hello to the #country object as #hello')
           end
         end
       end
@@ -112,14 +112,14 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
           matcher = delegate_method(:method_name).to(:delegate)
 
           expect(matcher.description).
-            to eq 'delegate .method_name to .delegate object'
+            to eq 'delegate .method_name to the .delegate object'
         end
       end
 
       context 'qualified with #as' do
         it 'states that it should delegate method to the right object and method' do
           matcher = delegate_method(:method_name).to(:delegate).as(:alternate)
-          message = 'delegate .method_name to .delegate object as .alternate'
+          message = 'delegate .method_name to the .delegate object as .alternate'
 
           expect(matcher.description).to eq message
         end
@@ -129,7 +129,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
         it 'states that it should delegate method to the right object with right argument' do
           matcher = delegate_method(:method_name).to(:delegate).
             with_arguments(:foo, bar: [1, 2])
-          message = 'delegate .method_name to .delegate object passing arguments [:foo, {:bar=>[1, 2]}]'
+          message = 'delegate .method_name to the .delegate object passing arguments [:foo, {:bar=>[1, 2]}]'
 
           expect(matcher.description).to eq message
         end
@@ -178,7 +178,8 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
       it 'rejects with the correct failure message' do
         post_office = PostOffice.new
         message = [
-          'Expected PostOffice to delegate #deliver_mail to #mailman object',
+          'Expected PostOffice to delegate #deliver_mail to the #mailman object.',
+          '',
           'Method calls sent to PostOffice#mailman: (none)'
         ].join("\n")
 
@@ -191,7 +192,8 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
     context 'when the subject is a class' do
       it 'uses the proper syntax for class methods in errors' do
         message = [
-          'Expected PostOffice to delegate .deliver_mail to .mailman object',
+          'Expected PostOffice to delegate .deliver_mail to the .mailman object.',
+          '',
           'Method calls sent to PostOffice.mailman: (none)'
         ].join("\n")
 
@@ -225,7 +227,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
     context 'negating the matcher' do
       it 'rejects with the correct failure message' do
         post_office = PostOffice.new
-        message = 'Expected PostOffice not to delegate #deliver_mail to #mailman object, but it did'
+        message = 'Expected PostOffice not to delegate #deliver_mail to the #mailman object, but it did.'
 
         expect {
           expect(post_office).not_to delegate_method(:deliver_mail).to(:mailman)
@@ -283,7 +285,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
         context 'negating the matcher' do
           it 'rejects with the correct failure message' do
             post_office = PostOffice.new
-            message = 'Expected PostOffice not to delegate #deliver_mail to #mailman object passing arguments ["221B Baker St.", {:hastily=>true}], but it did'
+            message = 'Expected PostOffice not to delegate #deliver_mail to the #mailman object passing arguments ["221B Baker St.", {:hastily=>true}], but it did.'
 
             expect {
               expect(post_office).
@@ -299,8 +301,11 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
         it 'rejects with the correct failure message' do
           post_office = PostOffice.new
           message = [
-            'Expected PostOffice to delegate #deliver_mail to #mailman object passing arguments ["123 Nowhere Ln."]',
+            'Expected PostOffice to delegate #deliver_mail to the #mailman object',
+            'passing arguments ["123 Nowhere Ln."].',
+            '',
             'Method calls sent to PostOffice#mailman:',
+            '',
             '1) deliver_mail("221B Baker St.", {:hastily=>true})'
           ].join("\n")
 
@@ -338,7 +343,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
       context 'negating the assertion' do
         it 'rejects with the correct failure message' do
           post_office = PostOffice.new
-          message = 'Expected PostOffice not to delegate #deliver_mail to #mailman object as #deliver_mail_and_avoid_dogs, but it did'
+          message = 'Expected PostOffice not to delegate #deliver_mail to the #mailman object as #deliver_mail_and_avoid_dogs, but it did.'
 
           expect {
             expect(post_office).
@@ -354,8 +359,11 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
       it 'rejects with the correct failure message' do
         post_office = PostOffice.new
         message = [
-          'Expected PostOffice to delegate #deliver_mail to #mailman object as #watch_tv',
+          'Expected PostOffice to delegate #deliver_mail to the #mailman object as',
+          '#watch_tv.',
+          '',
           'Method calls sent to PostOffice#mailman:',
+          '',
           '1) deliver_mail_and_avoid_dogs()'
         ].join("\n")
 
@@ -401,7 +409,9 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
           end
 
           message = [
-            'Expected Person to delegate #country_hello to #country object as #hello',
+            'Expected Person to delegate #country_hello to the #country object as',
+            '#hello.',
+            '',
             'Method calls sent to Person#country: (none)'
           ].join("\n")
 
@@ -449,7 +459,9 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
           end
 
           message = [
-            'Expected Person to delegate #country_hello to #country object as #hello',
+            'Expected Person to delegate #country_hello to the #country object as',
+            '#hello.',
+            '',
             'Method calls sent to Person#country: (none)'
           ].join("\n")
 
@@ -499,7 +511,9 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
           end
 
           message = [
-            'Expected Person to delegate #county_hello to #country object as #hello',
+            'Expected Person to delegate #county_hello to the #country object as',
+            '#hello.',
+            '',
             'Method calls sent to Person#country: (none)'
           ].join("\n")
 
@@ -510,6 +524,125 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
               to delegate_method(:hello).
               to(:country).with_prefix('county')
           }.to fail_with_message(message)
+        end
+      end
+    end
+  end
+
+  context 'qualified with #allow_nil' do
+    context 'when using delegate from Rails' do
+      context 'when delegations were defined with :allow_nil' do
+        it 'accepts' do
+          define_class('Person') do
+            delegate :hello, to: :country, allow_nil: true
+            def country; end
+          end
+
+          person = Person.new
+
+          expect(person).to delegate_method(:hello).to(:country).allow_nil
+        end
+      end
+
+      context 'when delegations were not defined with :allow_nil' do
+        it 'rejects with the correct failure message' do
+          define_class('Person') do
+            delegate :hello, to: :country
+            def country; end
+          end
+
+          person = Person.new
+
+          message = <<-MESSAGE
+Expected Person to delegate #hello to the #country object, allowing
+#country to return nil.
+
+Person#hello did delegate to #country when it was non-nil, but it failed
+to account for when #country *was* nil.
+          MESSAGE
+
+          expectation = lambda do
+            expect(person).to delegate_method(:hello).to(:country).allow_nil
+          end
+
+          expect(&expectation).to fail_with_message(message)
+        end
+      end
+    end
+
+    context 'when using Forwardable' do
+      context 'when the delegate object is nil' do
+        it 'rejects with the correct failure message' do
+          define_class('Person') do
+            extend Forwardable
+
+            def_delegators :country, :hello
+
+            def country; end
+          end
+
+          person = Person.new
+
+          message = <<-MESSAGE
+Expected Person to delegate #hello to the #country object, allowing
+#country to return nil.
+
+Person#hello did delegate to #country when it was non-nil, but it failed
+to account for when #country *was* nil.
+          MESSAGE
+
+          expectation = lambda do
+            expect(person).to delegate_method(:hello).to(:country).allow_nil
+          end
+
+          expect(&expectation).to fail_with_message(message)
+        end
+      end
+    end
+
+    context 'when delegating manually' do
+      context 'when the delegating method accounts for the delegate object being nil' do
+        it 'accepts' do
+          define_class('Person') do
+            def country; end
+
+            def hello
+              return unless country
+              country.hello
+            end
+          end
+
+          person = Person.new
+
+          expect(person).to delegate_method(:hello).to(:country).allow_nil
+        end
+      end
+
+      context 'when the delegating method does not account for the delegate object being nil' do
+        it 'rejects with the correct failure message' do
+          define_class('Person') do
+            def country; end
+
+            def hello
+              country.hello
+            end
+          end
+
+          person = Person.new
+
+          message = <<-MESSAGE
+Expected Person to delegate #hello to the #country object, allowing
+#country to return nil.
+
+Person#hello did delegate to #country when it was non-nil, but it failed
+to account for when #country *was* nil.
+          MESSAGE
+
+          expectation = lambda do
+            expect(person).to delegate_method(:hello).to(:country).allow_nil
+          end
+
+          expect(&expectation).to fail_with_message(message)
         end
       end
     end

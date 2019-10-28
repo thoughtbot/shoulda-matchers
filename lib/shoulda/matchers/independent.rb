@@ -4,7 +4,8 @@ require 'shoulda/matchers/independent/delegate_method_matcher/target_not_defined
 
 module Shoulda
   module Matchers
-    # Matchers for non-Rails-dependent code.
+    # This module provides matchers that are used to test behavior outside of
+    # Rails-specific classes.
     module Independent
     end
   end

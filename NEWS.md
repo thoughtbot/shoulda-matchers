@@ -1,4 +1,272 @@
+# 4.1.2
+
+### Bug fixes
+
+* Fix another regression with `validate_presence_of` so that it works against an
+  attribute that has been decorated with `serialize` using a custom serializer
+  class. ([#1236])
+
+[#1236]: https://github.com/thoughtbot/shoulda-matchers/pull/1236
+
+# 4.1.1
+
+### Bug fixes
+
+* Patch some backward-incompatible changes to `validate_presence_of` that were
+  made in the last version. As of 4.1.0 the presence matcher now checks to
+  ensure that empty string will cause the record to be invalid (in addition to
+  nil, which it was already checking against). However, this check was being
+  performed even if the attribute or column the presence matcher is being run
+  against didn't support being set to an empty string. This releases fixes this.
+  ([#1222], [#1224], [#1231])
+
+[#1222]: https://github.com/thoughtbot/shoulda-matchers/pull/1222
+[#1224]: https://github.com/thoughtbot/shoulda-matchers/pull/1224
+[#1231]: https://github.com/thoughtbot/shoulda-matchers/pull/1231
+
+# 4.1.0
+
+### Bug fixes
+
+* Fix `validate_uniqueness_of` so that it works when a scope is defined as a
+  string instead of a symbol on the model. ([#1176])
+* Fix `have_db_index` so that it can be used against multiple models that are
+  connected to different databases. ([#1200])
+
+[#1176]: https://github.com/thoughtbot/shoulda-matchers/pull/1176
+[#1200]: https://github.com/thoughtbot/shoulda-matchers/pull/1200
+
+### Features
+
+* Add support for Rails 6. No new Rails 6 features are supported, but only
+  existing features that broke with the upgrade. ([#1193])
+* Add support for expression indexes (Rails 5, Postgres only) to
+  `have_db_index`. ([#1211])
+* Add `allow_nil` to the `validate_presence_of` matcher. ([834d8d0], [#1100])
+
+[#1193]: https://github.com/thoughtbot/shoulda-matchers/pull/1193
+[#1211]: https://github.com/thoughtbot/shoulda-matchers/pull/1211
+[834d8d0]: https://github.com/thoughtbot/shoulda-matchers/commit/834d8d0356573b9f47e63a1b910cfa8f3d815e51
+[#1100]: https://github.com/thoughtbot/shoulda-matchers/pull/1100
+
+### Improvements
+
+* Update `validate_presence_of` so that if it is being used against an
+  association which is `required: true` or `optional: false`, or it is not
+  configured as such but ActiveRecord defaults `belong_to` associations to
+  `optional: false`, and the matcher fails, the developer is reminded in the
+  failure message that the `belong_to` matcher can be used instead. ([#1214],
+  [8697b01])
+* Update `define_enum_for` so that it produces a more helpful message on
+  failure. ([#1216])
+
+[#1214]: https://github.com/thoughtbot/shoulda-matchers/pull/1214
+[8697b01]: https://github.com/thoughtbot/shoulda-matchers/commit/8697b015ed88fdbbbcf5d31bf98670f17c3df9e1
+[#1216]: https://github.com/thoughtbot/shoulda-matchers/pull/1216
+
+# 4.0.1
+
+### Bug fixes
+
+* Fix gemspec so that `setup` script isn't installed globally when gem is
+  installed. ([#1180])
+
+[#1180]: https://github.com/thoughtbot/shoulda-matchers/pull/1180
+
+# 4.0.0 (yanked)
+
+This release mainly brings the gem up to date with modern versions of Ruby and
+Rails and drops support for older, unsupported versions. The compatibility list
+is now:
+
+* **Ruby:** 2.6.0, 2.5.1, 2.4.4, 2.3.7
+* **Rails:** 5.2.2, 5.1.6.1, 5.0.7, 4.2.10
+
+### Backward-incompatible changes
+
+* Drop support for Rails 4.0 and 4.1 as well as Ruby 2.0, 2.1, and 2.2, since
+  they've been end-of-lifed. The gem now supports Ruby 2.3+ and Rails 4.2+.
+
+* `use_before_filter`, `use_after_filter`, and `use_around_filter` are no longer
+  usable when using shoulda-matchers under Rails 5.x, as the corresponding
+  controller callbacks don't exist there.
+
+  * *PR: [#1054]*
+
+### Deprecations
+
+* `define_enum_for`: `with` is deprecated in favor of `with_values`. This is to
+  prevent confusion with `with_prefix` and `with_suffix`, which are new.
+
+  * *PR: [#1077]*
+
+### Bug fixes
+
+* Fix association matchers when used under Rails 5.x so that they make use of
+  `ActiveRecord::Base.connection.data_sources` instead of
+  `ActiveRecord::Base.connection.tables`, which was deprecated.
+
+  * *Commit: [61c3654]*
+  * *PR: [#943]*
+  * *Original issue: [#933]*
+
+* Fix the `serialize` matcher so that it works with Rails 5.x.
+
+  * *Commit: [df04f87]*
+  * *PR: [#965]*
+  * *Original issue: [#913]*
+
+* Fix our custom mocking library Doublespeak, which is used by
+  `delegate_method`, so that it does not produce a warning under Ruby 2.4.
+
+  * *Commit: [8d7dcb8]*
+  * *PR: [#1038]*
+  * *Original issue: [#1006]*
+
+* Fix the `permit` matcher so that it uses the correct method signature to call
+  the controller action with params in order to prevent a warning under Rails
+  5.x.
+
+  * *Commit: [ce9624b]*
+  * *PRs: [#989], [#964], [#917]*
+  * *Original issue: [#867]*
+
+* Fix the `define_enum_for` matcher so that it once more allows string columns
+  to be used as enum attributes.
+
+  * *Commit: [5650aae]*
+  * *PR: [#1063]*
+  * *Original issue: [#912]*
+
+* Fix `validate_uniqueness_of` when used under Rails 4.2 so that when the
+  attribute you're testing is a boolean column, it will no longer emit a
+  warning.
+
+  * *PR: [#1073]*
+  * *Original issue: [#949]*
+
+* Fix `validate_inclusion_of` so that if it fails, it will no longer blow up
+  with the error "undefined method \`attribute_setter' for nil:NilClass".
+
+  * *Original issue: [#904]*
+
+* Add negative versions of all validation matchers (i.e. implement
+  `does_not_match?` for them) to prevent them from blowing up with
+  "undefined method \`attribute_setter' for nil:NilClass".
+
+  * *Original issue: [#904]*
+
+### Features
+
+* Add `required` and `optional` qualifiers to `belong_to` and `have_one`
+  matchers. (When using the `belong_to` matcher under Rails 5+, `required` is
+  assumed unless overridden.)
+
+  * *Commit: [3af3d9f]*
+  * *Original PR: [#956]*
+  * *Original issues: [#870], [#861]*
+
+* Add `without_validating_presence` qualifier to `belong_to` to get around the
+  fact that `required` is assumed, above.
+
+  * *Original issues: [#1153], [#1154]*
+
+* Add `allow_nil` qualifier to `delegate_method`.
+
+  * *Commit: [d49cfca]*
+  * *Original PR: [#798]*
+
+* Add `allow_nil` qualifier to `validate_length_of`.
+
+  * *Original PR: [#724]*
+
+* Add a `port` option to the `route` matcher to allow testing a route that has
+  a constraint on it such that only a specific port may be used to access that
+  route.
+
+  * *PRs: [#1074], [#1075]*
+  * *Original issue: [#954]*
+
+* Add `with_prefix` and `with_suffix` to `define_enum_for` to allow testing
+  the `enum` macro with corresponding `prefix` and `suffix` options (Rails 5
+  only).
+
+  * *PR: [#1077]
+  * *Original issue: [#961]
+
+* Add `index_errors` option to `has_many` (Rails 5 only).
+
+  * *Commit: [795ca68]*
+  * *PR: [#1089]*
+
+[a6d09aa]: https://github.com/thoughtbot/shoulda-matchers/commit/a6d09aa5de0d546367e7b3d7177dfde6c66f7f05
+[#943]: https://github.com/thoughtbot/shoulda-matchers/pulls/943
+[#933]: https://github.com/thoughtbot/shoulda-matchers/issues/933
+[df04f87]: https://github.com/thoughtbot/shoulda-matchers/commit/df04f8704abc3754c63c488433dac8c30573da6b
+[#965]: https://github.com/thoughtbot/shoulda-matchers/pulls/965
+[#913]: https://github.com/thoughtbot/shoulda-matchers/issues/913
+[8d7dcb8]: https://github.com/thoughtbot/shoulda-matchers/commit/8d7dcb88c3bae8315e4107a39ae17fe19a4b6786
+[#1038]: https://github.com/thoughtbot/shoulda-matchers/pulls/1038
+[#1006]: httpce9624b3c5a08b9134150e228440c771d95782b7s://github.com/thoughtbot/shoulda-matchers/issues/1006
+[ce9624b]: https://github.com/thoughtbot/shoulda-matchers/commit/ce9624b3c5a08b9134150e228440c771d95782b7
+[#989]: https://github.com/thoughtbot/shoulda-matchers/pulls/989
+[#964]: https://github.com/thoughtbot/shoulda-matchers/pulls/964
+[#917]: https://github.com/thoughtbot/shoulda-matchers/pulls/917
+[#867]: https://github.com/thoughtbot/shoulda-matchers/issues/867
+[#1054]: https://github.com/thoughtbot/shoulda-matchers/pulls/1054
+[5650aae]: https://github.com/thoughtbot/shoulda-matchers/commit/5650aae35de85aeabd75bc544324fda33ce1a092
+[#1063]: https://github.com/thoughtbot/shoulda-matchers/pulls/1063
+[#912]: https://github.com/thoughtbot/shoulda-matchers/issues/912
+[#1073]: https://github.com/thoughtbot/shoulda-matchers/pulls/1073
+[#949]: https://github.com/thoughtbot/shoulda-matchers/issues/949
+[d49cfca]: https://github.com/thoughtbot/shoulda-matchers/commit/d49cfcae1b294e12a05e06a5612cb8ebb22a7df1
+[#798]: https://github.com/thoughtbot/shoulda-matchers/pulls/798
+[#724]: https://github.com/thoughtbot/shoulda-matchers/issues/724
+[d49cfca]: https://github.com/thoughtbot/shoulda-matchers/commit/d49cfcae1b294e12a05e06a5612cb8ebb22a7df1
+[3af3d9f]: https://github.com/thoughtbot/shoulda-matchers/commit/3af3d9f7abb768c063759941724ccae48c7b76d6
+[#956]: https://github.com/thoughtbot/shoulda-matchers/pulls/956
+[#870]: https://github.com/thoughtbot/shoulda-matchers/issues/870
+[#861]: https://github.com/thoughtbot/shoulda-matchers/issues/861
+[#1153]: https://github.com/thoughtbot/shoulda-matchers/issues/1153
+[#1154]: https://github.com/thoughtbot/shoulda-matchers/issues/1154
+[#954]: https://github.com/thoughtbot/shoulda-matchers/issues/954
+[#1074]: https://github.com/thoughtbot/shoulda-matchers/pulls/1074
+[#1075]: https://github.com/thoughtbot/shoulda-matchers/pulls/1075
+[#1077]: https://github.com/thoughtbot/shoulda-matchers/pulls/1077
+[#961]: https://github.com/thoughtbot/shoulda-matchers/issues/961
+[795ca68]: https://github.com/thoughtbot/shoulda-matchers/commit/795ca688bff08590dbd2ab6f2b51ea415e0c7473
+[#1089]: https://github.com/thoughtbot/shoulda-matchers/pulls/1089
+[#904]: https://github.com/thoughtbot/shoulda-matchers/issues/904
+
+### Improvements
+
+* Replace usage of Fixnum with Integer to prevent Ruby 2.4 from emitting
+  deprecation warnings.
+
+  * *Commits: [61c3654], [03a1d21]*
+  * *PRs: [#1040], [#1031], [#1009]*
+  * *Original issue: [#1001]*
+
+[61c3654]: https://github.com/thoughtbot/shoulda-matchers/commit/61c365416a09c5cffd7fcb774a07de4abf8e9afd
+[03a1d21]: https://github.com/thoughtbot/shoulda-matchers/commit/03a1d213805a44a0aec99857e01cab8524aa0c05
+[#1040]: https://github.com/thoughtbot/shoulda-matchers/pulls/1040
+[#1031]: https://github.com/thoughtbot/shoulda-matchers/pulls/1031
+[#1009]: https://github.com/thoughtbot/shoulda-matchers/pulls/1009
+[#1001]: https://github.com/thoughtbot/shoulda-matchers/issues/1001
+
+# 3.1.3
+
+### Improvements
+
+* Update `BigDecimal.new()` to use `BigDecimal()` and avoid deprecation warnings
+  in Ruby 2.6.
+
 # 3.1.2
+
+### Deprecations
+
+* This is the **last version** that supports Rails 4.0 and 4.1 and Ruby 2.0 and
+  2.1.
 
 ### Bug fixes
 
@@ -11,6 +279,10 @@
   * *Commit: [44c019]*
   * *Issue: [#899]*
   * *Pull request: [#902]*
+
+[44c019]: https://github.com/thoughtbot/shoulda-matchers/commit/44c0198830921650af3b4a56f5d72aaae2168480
+[#899]: https://github.com/thoughtbot/shoulda-matchers/issues/899
+[#902]: https://github.com/thoughtbot/shoulda-matchers/pulls/902
 
 # 3.1.1
 

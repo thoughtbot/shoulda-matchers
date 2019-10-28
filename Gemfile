@@ -1,15 +1,17 @@
 source 'https://rubygems.org'
 
-gem 'appraisal', '~> 2.0'
+gem 'appraisal', '2.2.0'
 gem 'bundler', '~> 1.1'
-gem 'pry', git: 'https://github.com/pry/pry.git'
+gem 'pry'
 gem 'pry-byebug'
-gem 'rake', '>= 10.5.0', '< 11'
-gem 'rspec', '~> 3.2'
-gem 'zeus'
+gem 'rake', '12.3.2'
+gem 'rspec', '~> 3.6'
+gem 'rubocop', require: false
+gem 'rubocop-rails', require: false
+gem 'zeus', require: false
 
 # YARD
-gem 'yard'
-gem 'redcarpet'
-gem 'pygments.rb'
 gem 'fssm'
+gem 'pygments.rb'
+gem 'redcarpet'
+gem 'yard'
