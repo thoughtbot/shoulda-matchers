@@ -22,7 +22,7 @@ GEM
     pry-byebug (3.5.1)
       byebug (~> 9.1)
       pry (~> 0.10)
-    pygments.rb (1.1.1)
+    pygments.rb (1.1.2)
       multi_json (>= 1.0.0)
     rack (2.0.7)
     rainbow (3.0.0)
@@ -59,6 +59,7 @@ GEM
       method_source (>= 0.6.7)
 
 PLATFORMS
+  java
   ruby
 
 DEPENDENCIES
