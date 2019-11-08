@@ -23,7 +23,6 @@ gem "therubyrhino", platform: :jruby
 gem "sqlite3", "~> 1.3.6", platform: :ruby
 gem "spring"
 gem "spring-commands-rspec"
-gem "minitest-reporters"
 gem "rspec-rails", "~> 3.6"
 gem "shoulda-context", "~> 1.2.0"
 gem "rails", "~> 5.2.2.1"

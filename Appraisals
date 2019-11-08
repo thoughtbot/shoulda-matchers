@@ -21,7 +21,6 @@ shared_spring_dependencies = proc do
 end
 
 shared_test_dependencies = proc do
-  gem 'minitest-reporters'
   gem 'rspec-rails', '~> 3.6'
   gem 'shoulda-context', '~> 1.2.0'
 end

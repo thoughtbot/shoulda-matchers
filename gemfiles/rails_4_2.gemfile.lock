@@ -86,11 +86,6 @@ GEM
     mini_mime (1.0.1)
     mini_portile2 (2.4.0)
     minitest (5.11.3)
-    minitest-reporters (1.1.14)
-      ansi
-      builder
-      minitest (>= 5.0)
-      ruby-progressbar
     multi_json (1.12.2)
     nokogiri (1.10.3)
       mini_portile2 (~> 2.4.0)
@@ -235,7 +230,6 @@ DEPENDENCIES
   jquery-rails
   jruby-openssl
   json (~> 1.4)
-  minitest-reporters
   pg (~> 0.15)
   protected_attributes (~> 1.0.6)
   pry
