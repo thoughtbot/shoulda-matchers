@@ -79,11 +79,6 @@ GEM
     mini_mime (1.0.1)
     mini_portile2 (2.4.0)
     minitest (5.11.3)
-    minitest-reporters (1.1.14)
-      ansi
-      builder
-      minitest (>= 5.0)
-      ruby-progressbar
     multi_json (1.12.2)
     nio4r (2.3.1)
     nokogiri (1.10.3)
@@ -227,7 +222,6 @@ DEPENDENCIES
   jquery-rails
   jruby-openssl
   listen (~> 3.0.5)
-  minitest-reporters
   pg (~> 1.1)
   pry
   pry-byebug

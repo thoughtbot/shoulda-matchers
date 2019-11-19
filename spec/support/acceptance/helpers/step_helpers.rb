@@ -28,13 +28,8 @@ module AcceptanceTests
     end
 
     def add_minitest_to_project
-      add_gem 'minitest-reporters'
-
       append_to_file 'test/test_helper.rb', <<-FILE
         require 'minitest/autorun'
-        require 'minitest/reporters'
-
-        Minitest::Reporters.use!(Minitest::Reporters::SpecReporter.new)
       FILE
     end
 

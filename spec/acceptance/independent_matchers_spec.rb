@@ -52,7 +52,7 @@ describe 'shoulda-matchers has independent matchers, specifically delegate_metho
       FILE
     end
 
-    result = run_n_unit_tests('test/courier_test.rb')
+    result = run_n_unit_tests('test/courier_test.rb - -v')
 
     expect(result).to indicate_number_of_tests_was_run(1)
     expect(result).to have_output(
