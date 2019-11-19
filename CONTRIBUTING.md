@@ -142,7 +142,7 @@ is created and loaded every time you start running tests.
 To run a unit test, you might say something like:
 
 ```bash
-bundle exec appraisal 5.2 rspec spec/unit/shoulda/matchers/active_model/validate_inclusion_of_matcher_spec.rb
+bundle exec appraisal rails_5_2 rspec spec/unit/shoulda/matchers/active_model/validate_inclusion_of_matcher_spec.rb
 ```
 
 ### Acceptance tests
@@ -154,7 +154,7 @@ each test.
 To run an acceptance test, you might say something like:
 
 ```bash
-bundle exec appraisal 5.2 rspec spec/acceptance/rails_integration_spec.rb
+bundle exec appraisal rails_5_2 rspec spec/acceptance/rails_integration_spec.rb
 ```
 
 ### All tests
