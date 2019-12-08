@@ -4,7 +4,7 @@ gem 'appraisal', '2.2.0'
 gem 'bundler', '~> 1.1'
 gem 'pry'
 gem 'pry-byebug'
-gem 'rake', '12.3.2'
+gem 'rake', '13.0.1'
 gem 'rspec', '~> 3.9'
 gem 'rubocop', require: false
 gem 'rubocop-rails', require: false
