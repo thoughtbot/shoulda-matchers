@@ -26,7 +26,7 @@ GEM
       multi_json (>= 1.0.0)
     rack (2.0.7)
     rainbow (3.0.0)
-    rake (12.3.2)
+    rake (13.0.1)
     redcarpet (3.4.0)
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
@@ -68,7 +68,7 @@ DEPENDENCIES
   pry
   pry-byebug
   pygments.rb
-  rake (= 12.3.2)
+  rake (= 13.0.1)
   redcarpet
   rspec (~> 3.9)
   rubocop
