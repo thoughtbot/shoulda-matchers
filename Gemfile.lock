@@ -27,7 +27,7 @@ GEM
     rack (2.0.8)
     rainbow (3.0.0)
     rake (13.0.1)
-    redcarpet (3.4.0)
+    redcarpet (3.5.0)
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
       rspec-expectations (~> 3.9.0)
