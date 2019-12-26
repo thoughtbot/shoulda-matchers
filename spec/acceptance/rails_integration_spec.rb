@@ -14,7 +14,7 @@ describe 'shoulda-matchers integrates with Rails' do
       end
     FILE
 
-    run_rake_tasks!(*%w(db:drop db:create db:migrate))
+    run_rake_tasks!('db:drop', 'db:create', 'db:migrate')
 
     write_file 'app/models/user.rb', <<-FILE
       class User < ActiveRecord::Base
@@ -39,7 +39,7 @@ describe 'shoulda-matchers integrates with Rails' do
       add_gems_for_n_unit
       add_shoulda_matchers_to_project(
         test_frameworks: [default_test_framework],
-        libraries: [:rails]
+        libraries: [:rails],
       )
     end
 
@@ -51,7 +51,7 @@ describe 'shoulda-matchers integrates with Rails' do
       add_gems_for_rspec
       add_shoulda_matchers_to_project(
         test_frameworks: [:rspec],
-        libraries: [:rails]
+        libraries: [:rails],
       )
     end
 
@@ -69,7 +69,7 @@ describe 'shoulda-matchers integrates with Rails' do
       add_shoulda_matchers_to_project(
         test_frameworks: [:rspec],
         libraries: [:rails],
-        manually: true
+        manually: true,
       )
     end
 
@@ -84,7 +84,7 @@ describe 'shoulda-matchers integrates with Rails' do
       add_gems_for_rspec
       add_shoulda_matchers_to_project(
         test_frameworks: [:rspec, nil],
-        libraries: [:rails]
+        libraries: [:rails],
       )
     end
 
@@ -125,7 +125,7 @@ describe 'shoulda-matchers integrates with Rails' do
 
     expect(result).to indicate_that_tests_were_run(unit: 1, functional: 1)
     expect(result).to have_output(
-      'User should validate that :name cannot be empty/falsy'
+      'User should validate that :name cannot be empty/falsy',
     )
     expect(result).to have_output('should respond with 200')
   end
@@ -149,8 +149,8 @@ describe 'shoulda-matchers integrates with Rails' do
 
     expect(result).to have_output('2 examples, 0 failures')
     expect(result).to have_output(
-      'should validate that :name cannot be empty/falsy'
+      'is expected to validate that :name cannot be empty/falsy',
     )
-    expect(result).to have_output('should respond with 200')
+    expect(result).to have_output('is expected to respond with 200')
   end
 end

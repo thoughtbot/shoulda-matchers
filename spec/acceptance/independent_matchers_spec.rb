@@ -9,7 +9,7 @@ describe 'shoulda-matchers has independent matchers, specifically delegate_metho
       add_shoulda_context_to_project(manually: true)
       add_shoulda_matchers_to_project(
         test_frameworks: [default_test_framework],
-        manually: true
+        manually: true,
       )
     end
 
@@ -56,7 +56,7 @@ describe 'shoulda-matchers has independent matchers, specifically delegate_metho
 
     expect(result).to indicate_number_of_tests_was_run(1)
     expect(result).to have_output(
-      'Courier should delegate #deliver to the #post_office object'
+      'Courier should delegate #deliver to the #post_office object',
     )
   end
 
@@ -67,7 +67,7 @@ describe 'shoulda-matchers has independent matchers, specifically delegate_metho
       add_rspec_to_project
       add_shoulda_matchers_to_project(
         manually: true,
-        with_configuration: false
+        with_configuration: false,
       )
       write_file 'spec/spec_helper.rb', <<-FILE
         require 'shoulda/matchers/independent'
@@ -119,7 +119,7 @@ describe 'shoulda-matchers has independent matchers, specifically delegate_metho
 
     expect(result).to indicate_number_of_tests_was_run(1)
     expect(result).to have_output(
-      /Courier\s+should delegate #deliver to the #post_office object/
+      /Courier\s+is expected to delegate #deliver to the #post_office object/,
     )
   end
 end
