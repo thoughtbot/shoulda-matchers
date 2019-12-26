@@ -6,11 +6,13 @@
 * Add support for associations with `inverse_of: false` and non-standard foreign key ([#1106])
 
 ### Bug fixes
+
 * Fix typos in documentation of `allow_values` ([#1241])
 * Fix appraisal command in CONTRIBUTING.md file ([#1253])
 
-## Improvements
-* Remove minitest reporters dependency ([#1251])
+### Improvements
+
+* Remove `minitest-reporters` dependency ([#1251])
 * Development dependency updates
 
 [#1106]: https://github.com/thoughtbot/shoulda-matchers/pull/1106
