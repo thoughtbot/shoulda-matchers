@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateAcceptanceOfMatcher, type: :model do

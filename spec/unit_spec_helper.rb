@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'support/unit/load_environment'
 
 require 'rspec/rails'

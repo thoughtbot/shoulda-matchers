@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'shoulda/matchers/integrations/test_frameworks/active_support_test_case'
 require 'shoulda/matchers/integrations/test_frameworks/minitest_4'
 require 'shoulda/matchers/integrations/test_frameworks/minitest_5'

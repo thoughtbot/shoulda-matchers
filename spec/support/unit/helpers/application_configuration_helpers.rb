@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UnitTests
   module ApplicationConfigurationHelpers
     def with_belongs_to_as_required_by_default(&block)

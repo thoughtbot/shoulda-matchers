@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'filesystem'
 require_relative 'command_runner'
 require_relative 'version'

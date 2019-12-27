@@ -136,8 +136,6 @@ Style/EvenOdd:
   Enabled: false
 Style/FormatString:
   Enabled: false
-Style/FrozenStringLiteralComment:
-  Enabled: false
 Style/GlobalVars:
   Enabled: false
 Style/GuardClause:

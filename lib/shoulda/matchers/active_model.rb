@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'shoulda/matchers/active_model/helpers'
 require 'shoulda/matchers/active_model/qualifiers'
 require 'shoulda/matchers/active_model/validation_matcher'

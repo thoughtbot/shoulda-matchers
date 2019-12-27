@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UnitTests
   module ActiveModelVersions
     def self.configure_example_group(example_group)

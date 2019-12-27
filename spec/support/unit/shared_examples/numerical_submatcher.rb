@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'a numerical submatcher' do
   it 'implements the with_message method' do
     expect(subject).to respond_to(:with_message).with(1).arguments

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'helpers/base_helpers'
 require_relative 'helpers/rspec_helpers'
 

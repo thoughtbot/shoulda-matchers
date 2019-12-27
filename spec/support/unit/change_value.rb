@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UnitTests
   class ChangeValue
     def self.call(column_type, value, value_changer)

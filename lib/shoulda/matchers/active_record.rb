@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "shoulda/matchers/active_record/association_matcher"
 require "shoulda/matchers/active_record/association_matchers"
 require "shoulda/matchers/active_record/association_matchers/counter_cache_matcher"

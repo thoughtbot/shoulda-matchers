@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../tests/bundle'
 require_relative '../tests/command_runner'
 require_relative '../tests/database'

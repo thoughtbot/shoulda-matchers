@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'acceptance_spec_helper'
 
 describe 'shoulda-matchers integrates with multiple libraries' do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'base_helpers'
 require_relative 'command_helpers'
 require_relative 'file_helpers'

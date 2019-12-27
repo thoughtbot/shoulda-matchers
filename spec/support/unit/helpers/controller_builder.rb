@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UnitTests
   module ControllerBuilder
     def self.configure_example_group(example_group)

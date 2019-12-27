@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'file_helpers'
 require_relative 'gem_helpers'
 require_relative 'minitest_helpers'

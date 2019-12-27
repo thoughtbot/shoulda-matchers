@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Tests
   module DatabaseAdapters
     class SQLite3

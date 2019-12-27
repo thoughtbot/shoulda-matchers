@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class WarningsSpy
   class Reader
     attr_reader :warning_groups

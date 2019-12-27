@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'zeus'
 require 'zeus/plan'
 require_relative 'spec/support/tests/current_bundle'

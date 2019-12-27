@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../tests/current_bundle'
 require_relative 'rails_application'
 

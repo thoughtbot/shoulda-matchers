@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'support/tests/current_bundle'
 
 Tests::CurrentBundle.instance.assert_appraisal!

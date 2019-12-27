@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../helpers/array_helpers'
 require_relative '../helpers/pluralization_helpers'
 require_relative '../helpers/rails_version_helpers'

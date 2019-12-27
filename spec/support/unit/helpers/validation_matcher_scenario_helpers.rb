@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UnitTests
   module ValidationMatcherScenarioHelpers
     def self.configure_example_group(example_group)

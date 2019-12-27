@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Kernel
   # #capture, #silence_stream, and #silence_stderr are deprecated after Rails
   # 4.2 and will be removed in 5.0, so just override them completely here

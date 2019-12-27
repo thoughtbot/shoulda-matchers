@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UnitTests
   module I18nFaker
     extend self

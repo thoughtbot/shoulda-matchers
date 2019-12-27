@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'acceptance_spec_helper'
 
 describe 'shoulda-matchers has independent matchers, specifically delegate_method' do

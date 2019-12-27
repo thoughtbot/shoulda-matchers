@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'doublespeak_spec_helper'
 
 module Shoulda::Matchers::Doublespeak

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AcceptanceTests
   module Matchers
     def have_output(output)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Note: All of the dependencies here were obtained by running `rails new` with
 # various versions of Rails and copying lines from the generated Gemfile. It's
 # best to keep the gems here in the same order as they're listed there so you

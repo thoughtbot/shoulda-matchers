@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../helpers/active_record_versions'
 require_relative '../helpers/database_helpers'
 

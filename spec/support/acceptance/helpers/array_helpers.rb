@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AcceptanceTests
   module ArrayHelpers
     def to_sentence(array)

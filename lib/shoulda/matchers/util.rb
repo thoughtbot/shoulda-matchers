@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'shoulda/matchers/util/word_wrap'
 
 module Shoulda

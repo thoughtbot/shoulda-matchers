@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'shoulda/matchers/action_controller/filter_param_matcher'
 require 'shoulda/matchers/action_controller/route_params'
 require 'shoulda/matchers/action_controller/set_flash_matcher'

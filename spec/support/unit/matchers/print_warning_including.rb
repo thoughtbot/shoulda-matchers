@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UnitTests
   module Matchers
     def print_warning_including(expected_warning)

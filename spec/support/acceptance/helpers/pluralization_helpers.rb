@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AcceptanceTests
   module PluralizationHelpers
     def pluralize(count, singular_version, plural_version = nil)

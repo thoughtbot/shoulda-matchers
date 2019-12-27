@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../record_with_different_error_attribute_builder'
 require_relative '../record_builder_with_i18n_validation_message'
 

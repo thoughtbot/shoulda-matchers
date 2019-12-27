@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples_for 'ignoring_interference_by_writer' do |common_config|
   valid_tests = [
     :accept_if_qualified_but_changing_value_does_not_interfere,

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UnitTests
   module ClassBuilder
     def define_module(*args, &block)

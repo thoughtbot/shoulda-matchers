@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../record_validating_confirmation_builder'
 require_relative '../record_builder_with_i18n_validation_message'
 

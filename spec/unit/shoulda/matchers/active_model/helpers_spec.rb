@@ -1,4 +1,6 @@
 # encoding: UTF-8
+# frozen_string_literal: true
+
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::Helpers do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UnitTests
   class Attribute
     DEFAULT_COLUMN_TYPE = :string

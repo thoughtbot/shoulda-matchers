@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples_for 'set session or flash matcher' do
   context 'without any qualifiers' do
     it 'produces the right description' do
