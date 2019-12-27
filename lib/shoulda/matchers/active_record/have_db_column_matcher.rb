@@ -269,7 +269,7 @@ module Shoulda
           end
 
           def type_cast_default
-            Shoulda::Matchers::RailsShim.type_cast_default_for(model, self)
+            model.column_defaults[name]
           end
 
           def primary?

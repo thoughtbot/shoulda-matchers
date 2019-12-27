@@ -946,37 +946,23 @@ validation exception on failure, but this could not be proved.
     end
   end
 
-  if rails_lte_4?
-    context 'an active_resource model' do
-      context 'with the validation context' do
-        it 'does not raise an exception' do
-          expect do
-            expect(active_resource_model).to validate_presence_of(:attr)
-          end.to_not raise_exception
-        end
+  context 'against a pre-set password in a model that has_secure_password' do
+    it 'raises a CouldNotSetPasswordError' do
+      user_class = define_model :user, password_digest: :string do
+        has_secure_password validations: false
+        validates_presence_of :password
       end
-    end
-  end
 
-  if rails_4_x?
-    context 'against a pre-set password in a model that has_secure_password' do
-      it 'raises a CouldNotSetPasswordError' do
-        user_class = define_model :user, password_digest: :string do
-          has_secure_password validations: false
-          validates_presence_of :password
-        end
+      user = user_class.new
+      user.password = 'something'
 
-        user = user_class.new
-        user.password = 'something'
-
-        assertion = lambda do
-          expect(user).to validate_presence_of(:password)
-        end
-
-        expect(&assertion).to raise_error(
-          Shoulda::Matchers::ActiveModel::CouldNotSetPasswordError
-        )
+      assertion = lambda do
+        expect(user).to validate_presence_of(:password)
       end
+
+      expect(&assertion).to raise_error(
+        Shoulda::Matchers::ActiveModel::CouldNotSetPasswordError
+      )
     end
   end
 
