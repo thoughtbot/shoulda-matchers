@@ -146,7 +146,7 @@ module Shoulda
             "validate that :#{@attribute} lies outside the range " +
               Shoulda::Matchers::Util.inspect_range(@range)
           else
-            description = "validate that :#{@attribute}"
+            description = String.new("validate that :#{@attribute}")
 
             if @array.many?
               description << " is neither #{inspected_array}"

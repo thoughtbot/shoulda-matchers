@@ -423,7 +423,7 @@ module Shoulda
         end
 
         def simple_description
-          description = ''
+          description = String.new
 
           description << "validate that :#{@attribute} looks like "
           description << Shoulda::Matchers::Util.a_or_an(full_allowed_type)

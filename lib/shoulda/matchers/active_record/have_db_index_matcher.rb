@@ -131,8 +131,9 @@ module Shoulda
         end
 
         def failure_message
-          message =
-            "Expected #{described_table_name} to #{positive_expectation}"
+          message = String.new(
+            "Expected #{described_table_name} to #{positive_expectation}",
+          )
 
           message <<
             if index_exists?
@@ -154,7 +155,7 @@ module Shoulda
         end
 
         def description
-          description = 'have '
+          description = String.new('have ')
 
           description <<
             if qualifiers.include?(:unique)
@@ -227,7 +228,7 @@ module Shoulda
 
         def positive_expectation
           if index_exists?
-            expectation = "have an index on #{inspected_expected_columns}"
+            expectation = String.new("have an index on #{inspected_expected_columns}")
 
             if qualifiers.include?(:unique)
               expectation << " and for it to be #{index_type}"

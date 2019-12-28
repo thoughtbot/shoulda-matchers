@@ -62,7 +62,7 @@ module Shoulda
       end
 
       def self.inspect_hash(hash)
-        output = '‹{'
+        output = String.new('‹{')
 
         output << hash.map { |key, value|
           if key.is_a?(Symbol)

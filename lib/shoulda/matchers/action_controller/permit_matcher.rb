@@ -278,7 +278,7 @@ module Shoulda
           :parameters_double_registry
 
         def expectation
-          message = 'restrict parameters '
+          message = String.new('restrict parameters ')
 
           if subparameter_name
             message << "on #{subparameter_name.inspect} "

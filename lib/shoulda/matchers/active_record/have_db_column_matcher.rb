@@ -154,8 +154,9 @@ module Shoulda
           if matched_column.type.to_s == @options[:column_type].to_s
             true
           else
-            @missing = "#{model_class} has a db column named #{@column} " <<
-                       "of type #{matched_column.type}, not #{@options[:column_type]}."
+            @missing =
+              "#{model_class} has a db column named #{@column} " +
+              "of type #{matched_column.type}, not #{@options[:column_type]}."
             false
           end
         end
@@ -166,8 +167,8 @@ module Shoulda
           if matched_column.precision.to_s == @options[:precision].to_s
             true
           else
-            @missing = "#{model_class} has a db column named #{@column} " <<
-                       "of precision #{matched_column.precision}, " <<
+            @missing = "#{model_class} has a db column named #{@column} " +
+                       "of precision #{matched_column.precision}, " +
                        "not #{@options[:precision]}."
             false
           end
@@ -179,7 +180,7 @@ module Shoulda
           if matched_column.limit.to_s == @options[:limit].to_s
             true
           else
-            @missing = "#{model_class} has a db column named #{@column} " <<
+            @missing = String.new("#{model_class} has a db column named #{@column} ") <<
                        "of limit #{matched_column.limit}, " <<
                        "not #{@options[:limit]}."
             false
@@ -192,7 +193,7 @@ module Shoulda
           if matched_column.type_cast_default.to_s == @options[:default].to_s
             true
           else
-            @missing = "#{model_class} has a db column named #{@column} " <<
+            @missing = String.new("#{model_class} has a db column named #{@column} ") <<
                        "of default #{matched_column.type_cast_default}, " <<
                        "not #{@options[:default]}."
             false
@@ -205,8 +206,8 @@ module Shoulda
           if matched_column.null.to_s == @options[:null].to_s
             true
           else
-            @missing = "#{model_class} has a db column named #{@column} " <<
-                       "of null #{matched_column.null}, " <<
+            @missing = "#{model_class} has a db column named #{@column} " +
+                       "of null #{matched_column.null}, " +
                        "not #{@options[:null]}."
             false
           end
@@ -218,7 +219,7 @@ module Shoulda
           if actual_scale.to_s == @options[:scale].to_s
             true
           else
-            @missing = "#{model_class} has a db column named #{@column} "
+            @missing = String.new("#{model_class} has a db column named #{@column} ")
             @missing << "of scale #{actual_scale}, not #{@options[:scale]}."
             false
           end
@@ -230,7 +231,7 @@ module Shoulda
           if matched_column.primary? == @options[:primary]
             true
           else
-            @missing = "#{model_class} has a db column named #{@column} "
+            @missing = String.new("#{model_class} has a db column named #{@column} ")
             if @options[:primary]
               @missing << 'that is not primary, but should be'
             else

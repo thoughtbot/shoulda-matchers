@@ -310,7 +310,7 @@ module Shoulda
         end
 
         def simple_description
-          description = "validate that the length of :#{@attribute}"
+          description = String.new("validate that the length of :#{@attribute}")
 
           if @options.key?(:minimum) && @options.key?(:maximum)
             if @options[:minimum] == @options[:maximum]

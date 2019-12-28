@@ -96,13 +96,14 @@ module Shoulda
         end
 
         def description
-          description = 'render with '
-          if @expected_layout.nil?
-            description << 'a layout'
-          else
-            description << "the #{@expected_layout.inspect} layout"
-          end
-          description
+          description = String.new('render with ')
+
+          description <<
+            if @expected_layout.nil?
+              'a layout'
+            else
+              "the #{@expected_layout.inspect} layout"
+            end
         end
 
         private

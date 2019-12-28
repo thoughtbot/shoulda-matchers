@@ -173,7 +173,7 @@ module Shoulda
         end
 
         def description
-          description = "#{simple_description} backed by "
+          description = String.new("#{simple_description} backed by ")
           description << Shoulda::Matchers::Util.a_or_an(expected_column_type)
 
           if expected_enum_values.any?
@@ -232,7 +232,9 @@ module Shoulda
         end
 
         def failure_message
-          message =
+          message = String.new
+
+          message <<
             if enum_defined?
               "Expected #{model} to #{expectation}. "
             else
@@ -256,7 +258,7 @@ module Shoulda
 
         def expectation
           if enum_defined?
-            expectation = "#{simple_description} backed by "
+            expectation = String.new("#{simple_description} backed by ")
             expectation << Shoulda::Matchers::Util.a_or_an(expected_column_type)
 
             if expected_enum_values.any?
@@ -387,7 +389,7 @@ module Shoulda
           if passed
             true
           else
-            message = "#{attribute_name.inspect} does map to these "
+            message = String.new("#{attribute_name.inspect} does map to these ")
             message << 'values, but the enum is '
 
             if expected_prefix

@@ -56,7 +56,7 @@ module Shoulda
         end
 
         def description
-          description = "rescue from #{exception}"
+          description = String.new("rescue from #{exception}")
           description << " with ##{expected_method}" if expected_method
           description
         end
@@ -74,7 +74,7 @@ module Shoulda
         attr_reader :controller, :exception, :expected_method, :handlers
 
         def expectation
-          expectation = "#{controller} to rescue from #{exception}"
+          expectation = String.new("#{controller} to rescue from #{exception}")
 
           if expected_method && !method_name_matches?
             expectation << " with ##{expected_method}"

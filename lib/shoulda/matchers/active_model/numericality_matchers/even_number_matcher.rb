@@ -9,7 +9,7 @@ module Shoulda
           NON_EVEN_NUMBER_VALUE = 1
 
           def simple_description
-            description = ''
+            description = String.new
 
             if expects_strict?
               description << 'strictly '

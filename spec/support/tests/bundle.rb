@@ -76,7 +76,9 @@ module Tests
         map { |key, value| "#{key}: #{formatted_value(value)}" }.
         join(', ')
 
-      line = %(gem '#{gem}')
+      line = String.new
+
+      line << %(gem '#{gem}')
 
       if version
         line << %(, '#{version}')

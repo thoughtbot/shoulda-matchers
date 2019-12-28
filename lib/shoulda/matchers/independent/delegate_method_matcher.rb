@@ -264,7 +264,7 @@ module Shoulda
         end
 
         def failure_message
-          message = "Expected #{class_under_test} to #{description}.\n\n"
+          message = String.new("Expected #{class_under_test} to #{description}.\n\n")
 
           if failed_to_allow_nil_delegate_object?
             message << formatted_delegating_method_name(include_module: true)
@@ -441,7 +441,7 @@ module Shoulda
         end
 
         def formatted_calls_on_delegate_object
-          string = ""
+          string = String.new
 
           if calls_on_delegate_object.any?
             string << "\n\n"

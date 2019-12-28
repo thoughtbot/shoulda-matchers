@@ -46,7 +46,7 @@ module Shoulda
             description_clauses = []
 
             if matcher.try(:expects_strict?)
-              description_clauses << 'raising a validation exception'
+              description_clauses << String.new('raising a validation exception')
 
               if matcher.try(:expects_custom_validation_message?)
                 description_clauses.last << ' with a custom message'

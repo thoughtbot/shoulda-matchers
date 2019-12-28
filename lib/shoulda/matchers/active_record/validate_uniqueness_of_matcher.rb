@@ -311,7 +311,7 @@ module Shoulda
         end
 
         def simple_description
-          description = "validate that :#{@attribute} is"
+          description = String.new("validate that :#{@attribute} is")
           description << description_for_case_sensitive_qualifier
           description << ' unique'
 
@@ -407,7 +407,7 @@ module Shoulda
           if scopes_match?
             true
           else
-            @failure_reason = 'Expected the validation '
+            @failure_reason = String.new('Expected the validation ')
 
             if expected_scopes.empty?
               @failure_reason << 'not to be scoped to anything, '
@@ -428,7 +428,7 @@ module Shoulda
 
         def does_not_match_scopes_configuration?
           if scopes_match?
-            @failure_reason = 'Expected the validation '
+            @failure_reason = String.new('Expected the validation ')
 
             if expected_scopes.empty?
               @failure_reason << 'to be scoped to nothing, '
@@ -617,15 +617,16 @@ module Shoulda
           else
             inspected_scopes = scopes_missing_on_model.map(&:inspect)
 
-            reason = ''
+            reason = String.new
 
             reason << inspected_scopes.to_sentence
 
-            if inspected_scopes.many?
-              reason << " do not seem to be attributes"
-            else
-              reason << " does not seem to be an attribute"
-            end
+            reason <<
+              if inspected_scopes.many?
+                " do not seem to be attributes"
+              else
+                " does not seem to be an attribute"
+              end
 
             reason << " on #{model.name}."
 
@@ -641,7 +642,7 @@ module Shoulda
           else
             inspected_scopes = scopes_present_on_model.map(&:inspect)
 
-            reason = ''
+            reason = String.new
 
             reason << inspected_scopes.to_sentence
 
@@ -932,7 +933,7 @@ module Shoulda
         end
 
         def failure_message_preface
-          prefix = ''
+          prefix = String.new
 
           if @existing_record_created
             prefix << "After taking the given #{model.name}"
@@ -991,7 +992,7 @@ different altogether.
         end
 
         def description_for_attribute_setter(attribute_setter, same_as_existing: nil)
-          description = "its :#{attribute_setter.attribute_name} to "
+          description = String.new("its :#{attribute_setter.attribute_name} to ")
 
           if same_as_existing == false
             description << 'a different value, '

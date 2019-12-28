@@ -96,8 +96,9 @@ module Shoulda
               if protected_attributes.empty?
                 @failure_message_when_negated = 'no attributes were protected'
               else
-                @failure_message_when_negated = "#{class_name} is protecting " <<
-                  "#{protected_attributes.to_a.to_sentence}, " <<
+                @failure_message_when_negated =
+                  "#{class_name} is protecting " +
+                  "#{protected_attributes.to_a.to_sentence}, " +
                   "but not #{@attribute}."
               end
             end

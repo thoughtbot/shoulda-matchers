@@ -26,7 +26,7 @@ module Shoulda
           end
 
           def simple_description
-            description = ''
+            description = String.new
 
             if expects_strict?
               description << ' strictly'

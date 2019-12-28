@@ -12,7 +12,7 @@ module UnitTests
     end
 
     def define_controller(class_name, &block)
-      class_name = class_name.to_s
+      class_name = String.new(class_name.to_s)
       class_name << 'Controller' unless class_name =~ /Controller$/
       define_class(class_name, ActionController::Base, &block)
     end

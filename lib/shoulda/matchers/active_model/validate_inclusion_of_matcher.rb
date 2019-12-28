@@ -363,7 +363,7 @@ EOT
             "validate that :#{@attribute} lies inside the range " +
               Shoulda::Matchers::Util.inspect_range(@range)
           else
-            description = "validate that :#{@attribute}"
+            description = String.new("validate that :#{@attribute}")
 
             if @array.many?
               description << " is either #{inspected_array}"

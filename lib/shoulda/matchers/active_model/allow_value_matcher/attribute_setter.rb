@@ -34,7 +34,7 @@ module Shoulda
           end
 
           def description
-            description = ":#{attribute_name} to "
+            description = String.new(":#{attribute_name} to ")
             description << Shoulda::Matchers::Util.inspect_value(value_written)
 
             if attribute_changed_value?

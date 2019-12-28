@@ -9,7 +9,7 @@ module Shoulda
           NON_INTEGER_VALUE = 0.1
 
           def simple_description
-            description = ''
+            description = String.new
 
             if expects_strict?
               description << ' strictly'

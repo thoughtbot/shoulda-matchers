@@ -25,7 +25,7 @@ module Shoulda
             if submatcher_passes?(subject)
               true
             else
-              @missing_option = 'and for the record '
+              @missing_option = String.new('and for the record ')
 
               missing_option <<
                 if required

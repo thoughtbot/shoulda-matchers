@@ -9,7 +9,7 @@ module Shoulda
           NON_ODD_NUMBER_VALUE = 2
 
           def simple_description
-            description = ''
+            description = String.new
 
             if expects_strict?
               description << 'strictly '

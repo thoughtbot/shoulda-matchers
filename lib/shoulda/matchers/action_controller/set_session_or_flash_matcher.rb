@@ -81,7 +81,7 @@ module Shoulda
         end
 
         def expectation_description
-          string = 'set'
+          string = String.new('set')
 
           if key_set?
             string << " #{store.name}[#{key.inspect}]"
