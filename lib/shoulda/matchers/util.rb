@@ -48,6 +48,8 @@ module Shoulda
           inspect_hash(value)
         when Range
           inspect_range(value)
+        when String
+          String.new(value)
         else
           "‹#{value.inspect}›"
         end
