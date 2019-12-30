@@ -82,7 +82,7 @@ module Shoulda
           end
 
           def set
-            object.public_send("#{attribute_name}=", value_written)
+            object.public_send("#{attribute_name}=".to_sym, value_written)
             after_set_callback.call
 
             @result_of_checking = successful_check
@@ -135,7 +135,7 @@ module Shoulda
           end
 
           def value_read
-            @_value_read ||= object.public_send(attribute_name)
+            @_value_read ||= object.public_send(attribute_name.to_sym)
           end
 
           def attribute_changed_value?
