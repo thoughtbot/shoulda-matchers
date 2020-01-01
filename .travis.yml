@@ -7,24 +7,25 @@ env:
     - DATABASE_ADAPTER=sqlite3
     - DATABASE_ADAPTER=postgresql
 rvm:
-  - 2.4.6
-  - 2.5.5
-  - 2.6.3
+  - 2.6.5
+  - 2.5.7
+  - 2.4.9
 gemfile:
-  - gemfiles/rails_4_2.gemfile
-  - gemfiles/rails_5_0.gemfile
-  - gemfiles/rails_5_1.gemfile
-  - gemfiles/rails_5_2.gemfile
   - gemfiles/rails_6_0.gemfile
+  - gemfiles/rails_5_2.gemfile
+  - gemfiles/rails_5_1.gemfile
+  - gemfiles/rails_5_0.gemfile
+  - gemfiles/rails_4_2.gemfile
 matrix:
   exclude:
-    - rvm: 2.4.6
-      gemfile: gemfiles/rails_6_0.gemfile
-    - rvm: 2.6.3
+    - rvm: 2.6.5
       gemfile: gemfiles/rails_4_2.gemfile
+    - rvm: 2.4.9
+      gemfile: gemfiles/rails_6_0.gemfile
 cache: bundler
 # Source: <https://docs.travis-ci.com/user/languages/ruby/#bundler-20>
 before_install:
+  - nvm install 12
   - gem update --system '2.7.8' --no-document
   - gem uninstall -v '>= 2' -i $(rvm gemdir)@global -ax bundler || true
   - gem install bundler -v '< 2' --no-document

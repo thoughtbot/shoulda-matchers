@@ -14,7 +14,7 @@ describe 'shoulda-matchers integrates with multiple libraries' do
       end
     FILE
 
-    run_rake_tasks!(*%w(db:drop db:create db:migrate))
+    run_rake_tasks!('db:drop', 'db:create', 'db:migrate')
 
     write_file 'app/models/user.rb', <<-FILE
       class User < ActiveRecord::Base
@@ -35,7 +35,7 @@ describe 'shoulda-matchers integrates with multiple libraries' do
       add_rspec_rails_to_project!
       add_shoulda_matchers_to_project(
         test_frameworks: [:rspec],
-        libraries: [:active_record, :active_model]
+        libraries: [:active_record, :active_model],
       )
     end
   end
@@ -45,10 +45,10 @@ describe 'shoulda-matchers integrates with multiple libraries' do
       result = run_rspec_suite
       expect(result).to have_output('2 examples, 0 failures')
       expect(result).to have_output(
-        'should validate that :name cannot be empty/falsy'
+        'is expected to validate that :name cannot be empty/falsy',
       )
       expect(result).to have_output(
-        'should validate that :name is case-sensitively unique'
+        'is expected to validate that :name is case-sensitively unique',
       )
     end
   end

@@ -73,8 +73,6 @@ module AcceptanceTests
         bundle.remove_gem 'byebug'
         bundle.remove_gem 'web-console'
         bundle.add_gem 'pg'
-        bundle.remove_gem 'sqlite3'
-        bundle.add_gem 'sqlite3', '~> 1.3.6'
       end
 
       fs.open('config/database.yml', 'w') do |file|
