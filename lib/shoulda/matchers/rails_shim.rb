@@ -3,10 +3,6 @@ module Shoulda
     # @private
     module RailsShim
       class << self
-        def action_pack_gte_4_1?
-          Gem::Requirement.new('>= 4.1').satisfied_by?(action_pack_version)
-        end
-
         def action_pack_gte_5?
           Gem::Requirement.new('>= 5').satisfied_by?(action_pack_version)
         end
@@ -85,15 +81,6 @@ module Shoulda
           serialized_attributes_for(model)[attribute_name.to_s]
         end
 
-        def type_cast_default_for(model, column)
-          if model.respond_to?(:column_defaults)
-            # Rails 4.2
-            model.column_defaults[column.name]
-          else
-            column.default
-          end
-        end
-
         def tables_and_views(connection)
           if active_record_gte_5?
             connection.data_sources
@@ -103,11 +90,7 @@ module Shoulda
         end
 
         def verb_for_update
-          if action_pack_gte_4_1?
-            :patch
-          else
-            :put
-          end
+          :patch
         end
 
         def validation_message_key_for_association_required_option

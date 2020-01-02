@@ -31,10 +31,6 @@ RSpec.configure do |config|
   UnitTests::ValidationMatcherScenarioHelpers.configure_example_group(config)
   UnitTests::MessageHelpers.configure_example_group(config)
 
-  if UnitTests::RailsVersions.rails_lte_4?
-    UnitTests::ActiveResourceBuilder.configure_example_group(config)
-  end
-
   config.include UnitTests::Matchers
 
   config.infer_spec_type_from_file_location!

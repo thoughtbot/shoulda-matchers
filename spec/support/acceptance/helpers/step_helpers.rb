@@ -112,10 +112,6 @@ module AcceptanceTests
     end
 
     def add_spring_to_project
-      if rails_version < 4
-        add_gem 'spring'
-      end
-
       add_gem 'spring-commands-rspec'
     end
   end
