@@ -1,3 +1,25 @@
+# 4.2.0
+
+### Features
+
+* Add support for `optional: false` in `belongs_to` associations. ([#1237])
+* Add support for associations with `inverse_of: false` and non-standard foreign key ([#1106])
+
+### Bug fixes
+
+* Fix typos in documentation of `allow_values` ([#1241])
+* Fix appraisal command in CONTRIBUTING.md file ([#1253])
+
+### Improvements
+
+* Remove `minitest-reporters` dependency ([#1251])
+* Development dependency updates
+
+[#1106]: https://github.com/thoughtbot/shoulda-matchers/pull/1106
+[#1237]: https://github.com/thoughtbot/shoulda-matchers/pull/1237
+[#1241]: https://github.com/thoughtbot/shoulda-matchers/pull/1241
+[#1253]: https://github.com/thoughtbot/shoulda-matchers/pull/1253
+
 # 4.1.2
 
 ### Bug fixes
