@@ -334,6 +334,8 @@ about any of them, make sure to [consult the documentation][rubydocs]!
   tests your `has_one` associations.
 * **[have_readonly_attribute](lib/shoulda/matchers/active_record/have_readonly_attribute_matcher.rb)**
   tests usage of the `attr_readonly` macro.
+* **[have_rich_text](lib/shoulda/matchers/active_record/have_rich_text_matcher.rb)**
+  tests your `has_rich_text` associations.
 * **[serialize](lib/shoulda/matchers/active_record/serialize_matcher.rb)** tests
   usage of the `serialize` macro.
 * **[validate_uniqueness_of](lib/shoulda/matchers/active_record/validate_uniqueness_of_matcher.rb)**

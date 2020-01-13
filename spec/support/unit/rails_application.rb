@@ -25,6 +25,11 @@ module UnitTests
 
     def load
       load_environment
+
+      if rails_version > 5 && bundle.includes?('actiontext')
+        add_action_text_migration
+      end
+
       run_migrations
     end
 
@@ -163,6 +168,12 @@ class DevelopmentRecord < ActiveRecord::Base
   self.abstract_class = true
 end
       TEXT
+    end
+
+    def add_action_text_migration
+      fs.within_project do
+        run_command! 'bundle exec rake action_text:install:migrations'
+      end
     end
 
     def add_initializer_for_time_zone_aware_types

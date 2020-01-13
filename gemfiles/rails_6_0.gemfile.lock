@@ -262,6 +262,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  actiontext (~> 6.0.2.1)
   appraisal (= 2.2.0)
   bcrypt (~> 3.1.7)
   bootsnap (>= 1.4.2)
