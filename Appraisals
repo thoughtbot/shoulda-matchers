@@ -126,6 +126,9 @@ if Gem::Requirement.new('>= 2.5.0').satisfied_by?(Gem::Version.new(RUBY_VERSION)
     gem 'selenium-webdriver'
     gem 'webdrivers'
 
+    # Other dependencies
+    gem 'actiontext', '~> 6.0.2.1'
+
     # Database adapters
     gem 'pg', '>= 0.18', '< 2.0'
     gem 'sqlite3', '~> 1.4'
