@@ -35,7 +35,7 @@ module Shoulda
       #       include ActiveModel::Model
       #       attr_accessor :supported_os
       #
-      #       validates_exclusion_of :supported_os, in: ['Mac', 'Linux']
+      #       validates_exclusion_of :supported_os, in: 5..8
       #     end
       #
       #     # RSpec
