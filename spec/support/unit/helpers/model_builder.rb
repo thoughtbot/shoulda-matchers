@@ -71,6 +71,7 @@ module UnitTests
           options,
           &block
         )
+        model.reset_column_information
         defined_models << model
         model
       end
@@ -86,10 +87,6 @@ module UnitTests
         elsif ::ActiveRecord::Base.connection_pool.respond_to?(:clear_cache!)
           DevelopmentRecord.connection_pool.clear_cache!
           ProductionRecord.connection_pool.clear_cache!
-        end
-
-        defined_models.each do |model|
-          model.reset_column_information
         end
       end
 
