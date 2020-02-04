@@ -1,3 +1,12 @@
+# 4.3.0
+
+### Features
+
+* Add `have_rich_text` matcher for `ActionText` ([#1263])
+
+### Improvements
+* Use range on `validate_exclusion_of#in_range` documentation ([#1273])
+
 # 4.2.0
 
 ### Features
