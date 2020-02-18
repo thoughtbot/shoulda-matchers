@@ -7,6 +7,14 @@
 ### Improvements
 * Use range on `validate_exclusion_of#in_range` documentation ([#1273])
 
+### Bug fixes
+
+* Fix `missing attribute:: scope 1` intermittent test:  ([#1274])
+
+[#1263]: https://github.com/thoughtbot/shoulda-matchers/pull/1263
+[#1273]: https://github.com/thoughtbot/shoulda-matchers/pull/1273
+[#1273]: https://github.com/thoughtbot/shoulda-matchers/pull/1274
+
 # 4.2.0
 
 ### Features
