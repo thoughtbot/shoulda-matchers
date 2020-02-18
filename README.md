@@ -1,9 +1,4 @@
-# Shoulda Matchers
-[![Gem Version][version-badge]][rubygems]
-[![Build Status][travis-badge]][travis]
-[![Total Downloads][downloads-total]][rubygems]
-[![Downloads][downloads-badge]][rubygems]
-[![Hound][hound-badge]][hound]
+# Shoulda Matchers [![Gem Version][version-badge]][rubygems] [![Build Status][travis-badge]][travis] [![Total Downloads][downloads-total]][rubygems] [![Downloads][downloads-badge]][rubygems] [![Hound][hound-badge]][hound]
 
 [version-badge]: https://img.shields.io/gem/v/shoulda-matchers.svg
 [rubygems]: https://rubygems.org/gems/shoulda-matchers
