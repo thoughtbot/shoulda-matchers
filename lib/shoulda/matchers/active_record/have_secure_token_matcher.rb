@@ -41,6 +41,7 @@ module Shoulda
 
         def initialize(token_attribute)
           @token_attribute = token_attribute
+          @options = { ignore_check_for_db_index: false }
         end
 
         def description
@@ -65,6 +66,11 @@ module Shoulda
           @errors.empty?
         end
 
+        def ignoring_check_for_db_index
+          @options[:ignore_check_for_db_index] = true
+          self
+        end
+
         private
 
         def run_checks
@@ -75,7 +81,7 @@ module Shoulda
           if !has_expected_db_column?
             @errors << "missing correct column #{token_attribute}:string"
           end
-          if !has_expected_db_index?
+          if !@options[:ignore_check_for_db_index] && !has_expected_db_index?
             @errors << "missing unique index for #{table_and_column}"
           end
           @errors

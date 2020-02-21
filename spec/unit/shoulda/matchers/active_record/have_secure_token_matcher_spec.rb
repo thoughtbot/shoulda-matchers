@@ -58,6 +58,16 @@ describe Shoulda::Matchers::ActiveRecord::HaveSecureTokenMatcher,
       end
     end
 
+    it 'matches when called with ignoring_check_for_db_index without db index' do
+      create_table(:users) do |t|
+        t.string :token
+      end
+
+      valid_model = define_model_class(:User) { has_secure_token }
+      expect(valid_model.new).
+        to have_secure_token.ignoring_check_for_db_index
+    end
+
     it 'does not match when missing a token column' do
       create_table(:users)
       invalid_model = define_model_class(:User) { has_secure_token }
