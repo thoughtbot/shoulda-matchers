@@ -4,12 +4,7 @@ module Shoulda
       # The `have_secure_token` matcher tests usage of the
       # `has_secure_token` macro.
       #
-      # #### Example
-      #
       #     class User < ActiveRecord
-      #       attr_accessor :token
-      #       attr_accessor :auth_token
-      #
       #       has_secure_token
       #       has_secure_token :auth_token
       #     end
@@ -26,14 +21,32 @@ module Shoulda
       #       should have_secure_token(:auth_token)
       #     end
       #
+      # #### Qualifiers
+      #
+      # ##### ignoring_check_for_db_index
+      #
+      # By default, this matcher tests that an index is defined on your token
+      # column. Use `ignoring_check_for_db_index` if this is not the case.
+      #
+      #     class User < ActiveRecord
+      #       has_secure_token :auth_token
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe User, type: :model do
+      #       it { should have_secure_token(:auth_token).ignoring_check_for_db_index }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class UserTest < ActiveSupport::TestCase
+      #       should have_secure_token(:auth_token).ignoring_check_for_db_index
+      #     end
+      #
       # @return [HaveSecureToken]
       #
-
-      # rubocop:disable Style/PredicateName
       def have_secure_token(token_attribute = :token)
         HaveSecureTokenMatcher.new(token_attribute)
       end
-      # rubocop:enable Style/PredicateName
 
       # @private
       class HaveSecureTokenMatcher
