@@ -1,3 +1,13 @@
+# HEAD (unreleased)
+
+### Features
+
+* Add an `ignoring_check_for_db_index` qualifier to the `have_secure_token`
+  matcher, since `has_secure_token` encourages use of an index but does not
+  enforce it. ([#1278])
+
+[#1278]: https://github.com/thoughtbot/shoulda-matchers/pull/1278
+
 # 4.3.0
 
 ### Features
@@ -5,6 +15,7 @@
 * Add `have_rich_text` matcher for `ActionText` ([#1263])
 
 ### Improvements
+
 * Use range on `validate_exclusion_of#in_range` documentation ([#1273])
 
 ### Bug fixes
