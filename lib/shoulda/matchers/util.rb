@@ -33,7 +33,7 @@ module Shoulda
       end
 
       def self.a_or_an(next_word)
-        if next_word =~ /\A[aeiou]/i && next_word != 'unique'
+        if next_word =~ /\A:?[aeiou]/i && next_word != 'unique'
           "an #{next_word}"
         else
           "a #{next_word}"

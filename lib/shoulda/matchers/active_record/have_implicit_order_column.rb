@@ -1,8 +1,9 @@
 module Shoulda
   module Matchers
     module ActiveRecord
-      # The `have_implicit_order_column` matcher tests that the model has `implicit_order_column`
-      # assigned to one of the table columns. (Rails 6+ only)
+      # The `have_implicit_order_column` matcher tests that the model has
+      # `implicit_order_column` assigned to one of the table columns.
+      # (Rails 6+ only.)
       #
       #     class Product < ApplicationRecord
       #       self.implicit_order_column = :created_at
@@ -38,52 +39,70 @@ module Shoulda
         end
 
         def failure_message
-          "Expected #{expectation} (#{@details})"
+          message =
+            if details
+              "Expected #{expectation} (#{details})."
+            else
+              "Expected #{expectation}."
+            end
+
+          Shoulda::Matchers.word_wrap(message)
         end
 
         def failure_message_when_negated
-          "Did not expect #{expectation}"
+          Shoulda::Matchers.word_wrap(
+            "Did not expect #{expectation}, but it did.",
+          )
         end
 
         def description
-          "have implicit_order_column assigned to #{@column}"
+          "have an implicit_order_column of :#{column}"
         end
 
         private
 
-        def column_exists?
-          matcher = HaveDbColumnMatcher.new(@column)
+        attr_reader :column, :subject, :details
 
-          if matcher.matches?(@subject)
+        def column_exists?
+          matcher = HaveDbColumnMatcher.new(column)
+
+          if matcher.matches?(subject)
             true
           else
-            @details = "#{model_class} does not have a db column named #{@column}"
+            @details =
+              "#{model.table_name} does not have #{a_or_an(":#{column}")} " +
+              'column'
             false
           end
         end
 
         def implicit_order_column_matches?
-          model_implicit_order_column = model_class.implicit_order_column
+          model_implicit_order_column = model.implicit_order_column
 
-          if model_implicit_order_column.to_s == @column.to_s
+          if model_implicit_order_column.to_s == column.to_s
             true
           else
-            @details = if model_implicit_order_column.nil?
-                         "#{model_class} implicit_order_column is not set"
-                       else
-                         "#{model_class} implicit_order_column is " +
-                           "set to #{model_implicit_order_column}"
-                       end
+            @details =
+              if model_implicit_order_column
+                'its implicit_order_column is ' +
+                  ":#{model_implicit_order_column}"
+              else
+                'it does not have an implicit_order_column'
+              end
             false
           end
         end
 
-        def model_class
-          @subject.class
+        def expectation
+          "#{model.name} to have an implicit_order_column of :#{column}"
         end
 
-        def expectation
-          "#{model_class.name} to have implicit_order_column set to #{@column}"
+        def model
+          subject.class
+        end
+
+        def a_or_an(word)
+          Shoulda::Matchers::Util.a_or_an(word)
         end
       end
     end
