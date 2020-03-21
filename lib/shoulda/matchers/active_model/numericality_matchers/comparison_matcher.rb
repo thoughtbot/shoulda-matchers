@@ -9,7 +9,8 @@ module Shoulda
             :>= => :greater_than_or_equal_to,
             :< => :less_than,
             :<= => :less_than_or_equal_to,
-            :== => :equal_to
+            :== => :equal_to,
+            :!= => :other_than,
           }
 
           def initialize(numericality_matcher, value, operator)
@@ -125,6 +126,8 @@ module Shoulda
               [true, false, false]
             when :<=
               [true, true, false]
+            when :!=
+               [true, false, true]
             end
           end
 
@@ -146,6 +149,7 @@ module Shoulda
               when :== then "equal to"
               when :< then "less than"
               when :<= then "less than or equal to"
+              when :!= then 'other than'
             end
           end
         end
