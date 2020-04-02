@@ -88,7 +88,7 @@ install() {
       sudo apt-get install -y "$package"
     fi
   elif has-executable yum; then
-    package="${yum_package:-$default_package}"
+    package="${rpm_package:-$default_package}"
 
     if [[ -n $package ]]; then
       sudo yum install -y "$package"
@@ -101,16 +101,20 @@ install() {
 
 check-for-build-tools() {
   if [[ $platform == "linux" ]]; then
-    if ! has-executable apt-get; then
+    if has-executable apt-get; then
+      # TODO: Check if build-essential is installed on Debian?
+      true
+    elif has-executable yum; then
+      # TODO: Check if 'Development Tools' group is installed on RedHat?
+      true
+    else
       error "You don't seem to have a package manager installed."
       echo-wrapped "\
-The setup script assumes you're using Debian or a Debian-derived flavor of
-Linux (i.e. something with Apt). If this is not the case, then we would
+The setup script assumes you're using Debian, RedHat or a derived flavor of
+Linux (i.e. something with Apt or Yum). If this is not the case, then we would
 gladly take a PR fixing this!"
       exit 1
     fi
-
-    # TODO: Check if build-essential is installed on Debian?
   else
     if ! has-executable brew; then
       error "You don't seem to have Homebrew installed."
