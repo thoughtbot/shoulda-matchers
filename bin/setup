@@ -154,11 +154,6 @@ install-dependencies() {
     start postgresql
   fi
 
-  if ! has-executable heroku; then
-    banner 'Installing Heroku'
-    install brew=heroku/brew/heroku heroku
-  fi
-
   if has-executable rbenv; then
     if ! (rbenv versions | grep $RUBY_VERSION'\>' &>/dev/null); then
       banner "Installing Ruby $RUBY_VERSION with rbenv"
