@@ -25,6 +25,7 @@ module Tests
 
     def initialize(*args)
       @reader, @writer = IO.pipe
+      @command_output = ''
       options = (args.last.is_a?(Hash) ? args.pop : {})
       @args = args
       @options = options.merge(
@@ -84,7 +85,7 @@ module Tests
     def output
       @_output ||= begin
         stop
-        without_colors(reader.read)
+        without_colors(command_output)
       end
     end
 
@@ -126,7 +127,7 @@ Output:
 
     protected
 
-    attr_reader :args, :reader, :writer, :wrapper
+    attr_reader :args, :command_output, :reader, :writer, :wrapper
 
     private
 
@@ -149,8 +150,23 @@ Output:
 
     def run
       pid = spawn(env, *command, options)
+      t = Thread.new do
+        loop do
+          begin
+            @command_output += reader.read_nonblock(4096)
+          rescue IO::WaitReadable
+            IO.select([reader])
+            retry
+          rescue EOFError
+            break
+          end
+        end
+      end
       Process.waitpid(pid)
       @status = $?
+    ensure
+      writer.close unless writer.closed?
+      t.join
     end
 
     def run_with_wrapper
