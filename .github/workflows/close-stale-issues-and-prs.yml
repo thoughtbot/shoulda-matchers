@@ -1,0 +1,25 @@
+name: "Close stale issues and PRs"
+on:
+  push:
+    branches:
+      - add-stale-action
+  #schedule:
+    #- cron: "0 0 * * *"
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v2.0.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          stale-issue-message: |-
+            Hey folks. In an effort to lighten our load as maintainers and be able to serve you better in the future, the shoulda-matchers team is working on cleaning out the cobwebs in this repo by pruning the backlog. As there are few of us, there are a lot of items that will simply never earn our attention in a reasonable time frame, and rather than giving you an empty promise, we think it makes more sense to start fresh so that we can focus on more current issues. That means, unfortunately, that we must close this issue.
+
+            Don't take this the wrong way: our aim is not to diminish the effort people have made or dismiss problems that have been raised. If you feel that the pain point mentioned here still impacts your work, then please let us know so that we can reprioritize it. Thanks!
+          stale-pr-message: |-
+            Hey folks. In an effort to lighten our load as maintainers and be able to serve you better in the future, the shoulda-matchers team is working on cleaning out the cobwebs in this repo by pruning the backlog. As there are few of us, there are a lot of items that will simply never earn our attention in a reasonable time frame, and rather than giving you an empty promise, we think it makes more sense to start fresh so that we can focus on more current issues. That means, unfortunately, that we must close this issue.
+
+            Don't take this the wrong way: our aim is not to diminish the effort people have made or dismiss problems that have been raised. If you feel that the pain point mentioned here still impacts your work, then please let us know so that we can reprioritize it. Thanks!
+          days-before-stale: 60
+          days-before-close: 365
+          debug-only: true
