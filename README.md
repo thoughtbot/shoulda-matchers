@@ -41,6 +41,7 @@ complex, and error-prone.
    * [ActiveRecord matchers](#activerecord-matchers)
    * [ActionController matchers](#actioncontroller-matchers)
    * [Independent matchers](#independent-matchers)
+* [Extensions](#extensions)
 * [Compatibility](#compatibility)
 * [Contributing](#contributing)
 * [Versioning](#versioning)
@@ -382,6 +383,17 @@ about any of them, make sure to [consult the documentation][rubydocs]!
 * **[delegate_method](lib/shoulda/matchers/independent/delegate_method_matcher.rb)**
   tests that an object forwards messages to other, internal objects by way of
   delegation.
+
+## Extensions
+
+Over time our community has created extensions to Shoulda Matchers. If you've
+created something that you want to share, please [let us know][new-issue]!
+
+* **[shoulda-matchers-cucumber]** – Adds support for using Shoulda Matchers in
+  Cucumber tests.
+
+[new-issue]: https://github.com/thoughtbot/shoulda-matchers/issues/new
+[shoulda-matchers-cucumber]: https://github.com/majioa/shoulda-matchers-cucumber
 
 ## Compatibility
 
