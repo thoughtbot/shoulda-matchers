@@ -14,7 +14,7 @@ GEM
     method_source (0.9.2)
     multi_json (1.14.1)
     parallel (1.19.1)
-    parser (2.6.5.0)
+    parser (2.7.1.2)
       ast (~> 2.4.0)
     pry (0.12.2)
       coderay (~> 1.1.0)
