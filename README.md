@@ -42,10 +42,11 @@ complex, and error-prone.
    * [ActionController matchers](#actioncontroller-matchers)
    * [Independent matchers](#independent-matchers)
 * [Extensions](#extensions)
-* [Compatibility](#compatibility)
 * [Contributing](#contributing)
+* [Compatibility](#compatibility)
 * [Versioning](#versioning)
-* [License](#license)
+* [Team](#team)
+* [Copyright/License](#copyright-license)
 * [About thoughtbot](#about-thoughtbot)
 
 ## Getting started
@@ -56,21 +57,21 @@ Start by including `shoulda-matchers` in your Gemfile:
 
 ```ruby
 group :test do
-  gem 'shoulda-matchers'
+  gem 'shoulda-matchers', '~> 4.0'
 end
 ```
 
-Now you need to tell the gem a couple of things:
+Then run `bundle install`.
 
-* Which test framework you're using
-* Which portion of the matchers you want to use
+Now you need to configure the gem by telling it:
 
-You can supply this information by providing a configuration block. Where this
-goes and what this contains depends on your project.
+* which matchers you want to use in your tests
+* that you're using RSpec so that it can make those matchers available in
+  your example groups
 
 #### Rails apps
 
-Assuming you are testing a Rails app, simply place this at the bottom of
+If you're working on a Rails app, simply place this at the bottom of
 `spec/rails_helper.rb` (or in a support file if you so choose):
 
 ```ruby
@@ -82,13 +83,12 @@ Shoulda::Matchers.configure do |config|
 end
 ```
 
-Now you're ready to [use matchers in your tests](#usage)!
-
 #### Non-Rails apps
 
-If your project isn't a Rails app, but you still make use of ActiveRecord or
-ActiveModel, you can still use this gem too! In that case, you'll want to place
-the following configuration at the bottom of `spec/spec_helper.rb`:
+If you're not working on a Rails app, but you still make use of ActiveRecord or
+ActiveModel in your project, you can still use this gem too! In that case,
+you'll want to place the following configuration at the bottom of
+`spec/spec_helper.rb`:
 
 ```ruby
 Shoulda::Matchers.configure do |config|
@@ -102,45 +102,83 @@ Shoulda::Matchers.configure do |config|
 end
 ```
 
-Now you're ready to [use matchers in your tests](#usage)!
-
 ### Minitest
 
-Shoulda Matchers was originally a component of [Shoulda][shoulda], a gem that
-also provides `should` and `context` syntax via
-[`shoulda-context`][shoulda-context].
-
-[shoulda]: https://github.com/thoughtbot/shoulda
-[shoulda-context]: https://github.com/thoughtbot/shoulda-context
-
-At the moment, `shoulda` has not been updated to support `shoulda-matchers` 3.x
-and 4.x, so you'll want to add the following to your Gemfile:
+If you're using our umbrella gem [Shoulda], then make sure that you're using the
+latest version:
 
 ```ruby
 group :test do
-  gem 'shoulda', '~> 3.5'
-  gem 'shoulda-matchers', '~> 2.0'
-  gem 'rails-controller-testing'
+  gem 'shoulda', '~> 4.0'
 end
 ```
 
-Now you're ready to [use matchers in your tests](#usage)!
+[Shoulda]: https://github.com/thoughtbot/shoulda
+
+Otherwise, add `shoulda-matchers` to your Gemfile:
+
+```ruby
+group :test do
+  gem 'shoulda-matchers', '~> 4.0'
+end
+```
+
+Then run `bundle install`.
+
+Now you need to configure the gem by telling it:
+
+* which matchers you want to use in your tests
+* that you're using Minitest so that it can make those matchers available in
+  your test case classes
+
+#### Rails apps
+
+If you're working on a Rails app, simply place this at the bottom of
+`test/test_helper.rb`:
+
+```ruby
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :minitest
+    with.library :rails
+  end
+end
+```
+
+#### Non-Rails apps
+
+If you're not working on a Rails app, but you still make use of ActiveRecord or
+ActiveModel in your project, you can still use this gem too! In that case,
+you'll want to place the following configuration at the bottom of
+`test/test_helper.rb`:
+
+```ruby
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :minitest
+
+    # Keep as many of these lines as are necessary:
+    with.library :active_record
+    with.library :active_model
+  end
+end
+```
 
 ## Usage
 
-The matchers provided by this gem are divided into different categories
-depending on what you're testing within your Rails app:
+Most of the matchers provided by this gem are useful in a Rails context, and as
+such, can be used for different parts of a Rails app:
 
 * [database models backed by ActiveRecord](#activemodel-matchers)
 * [non-database models, form objects, etc. backed by
   ActiveModel](#activerecord-matchers)
 * [controllers](#actioncontroller-matchers)
 * [routes](#routing-matchers) (RSpec only)
-* [usage of Rails-specific features like `delegate`](#independent-matchers)
+* [Rails-specific features like `delegate`](#independent-matchers)
 
-All matchers are designed to be prepended primarily with the word `should`,
-which is a special directive in both RSpec and Shoulda. For instance, a model
-test case may look something like:
+As the name of the gem indicates, most matchers are designed to be used in
+"one-liner" form using the `should` macro, a special directive available in both
+RSpec and [Shoulda]. For instance, a model test case may look something like:
 
 ``` ruby
 # RSpec
@@ -168,16 +206,17 @@ class MenuItemTest < ActiveSupport::TestCase
 end
 ```
 
-For the full set of matchers you can use, [see below](#matchers).
+[See below](#matchers) for the full set of matchers that you can use.
 
 ### On the subject of `subject`
 
 For both RSpec and Shoulda, the **subject** is an implicit reference to the
-object under test, and all of the matchers make use of it internally when they
-are run. This is always set automatically by your test framework in any given
-test case; however, in certain cases it can be advantageous to override the
-subject. For instance, when testing validations in a model, it is customary to
-provide a valid model instead of a fresh one:
+object under test, and through the use of `should` as demonstrated above, all of
+the matchers make use of `subject` internally when they are run. A `subject` is
+always set automatically by your test framework in any given test case; however,
+in certain cases it can be advantageous to override it. For instance, when
+testing validations in a model, it is customary to provide a valid model instead
+of a fresh one:
 
 ``` ruby
 # RSpec
@@ -235,11 +274,19 @@ end
 
 ### Availability of RSpec matchers in example groups
 
+#### Rails projects
+
 If you're using RSpec, then you're probably familiar with the concept of example
-groups: these are different kinds of test cases, and each of them has special
-behavior around them. As alluded to [above](#usage), this gem works in a similar
-way, and there are matchers that are only available in certain types of example
-groups:
+groups. Example groups can be assigned tags order to assign different behavior
+to different kinds of example groups. This comes into play especially when using
+`rspec-rails`, where, for instance, controller example groups, tagged with
+`type: :controller`, are written differently than request example groups, tagged
+with `type: :request`. This difference in writing style arises because
+`rspec-rails` mixes different behavior and methods into controller example
+groups vs. request example groups.
+
+Relying on this behavior, Shoulda Matchers automatically makes certain matchers
+available in certain kinds of example groups:
 
 * ActiveRecord and ActiveModel matchers are available only in model example
   groups, i.e., those tagged with `type: :model` or in files located under
@@ -251,13 +298,27 @@ groups:
   tagged with `type: :routing` or in files located under `spec/routing`.
 * Independent matchers are available in all example groups.
 
-As long as you're using Rails, you don't need to worry about this — everything
-should "just work".
+As long as you're using Rails, you don't need to worry about these details —
+everything should "just work".
 
-**However, if you are using ActiveModel or ActiveRecord outside of Rails**, and
-you want to use model matchers in certain example groups, you'll need to
-manually include the module that holds those matchers. A good way to do this is
-to place the following in your `spec_helper.rb`:
+#### Non-Rails projects
+
+**What if you are using ActiveModel or ActiveRecord outside of Rails, however,
+and you want to use model matchers in a certain example group?** Then you'll
+need to manually include the module that holds those matchers into that example
+group. For instance, you might have to say:
+
+``` ruby
+RSpec.describe MySpecialModel do
+  include Shoulda::Matchers::ActiveModel
+  include Shoulda::Matchers::ActiveRecord
+end
+```
+
+If you have a lot of similar example groups in which you need to do this, then
+you might find it more helpful to tag your example groups appropriately, then
+instruct RSpec to mix these modules into any example groups that have that tag.
+For instance, you could add this to your `rails_helper.rb`:
 
 ```ruby
 RSpec.configure do |config|
@@ -266,21 +327,20 @@ RSpec.configure do |config|
 end
 ```
 
-Then you can say:
+And from then on, you could say:
 
 ```ruby
-describe MySpecialModel, type: :model do
+RSpec.describe MySpecialModel, type: :model do
   # ...
 end
 ```
 
 ### `should` vs `is_expected.to`
 
-In this README and throughout the documentation, we're using the `should` form
-of RSpec's one-liner syntax over `is_expected.to`. The `should` form works
-regardless of how you've configured RSpec — meaning you can still use it even
-when using the `expect` syntax. But if you prefer to use `is_expected.to`, you
-can do that too:
+In this README and throughout the documentation, you'll notice that we use the
+`should` form of RSpec's one-liner syntax over `is_expected.to`. Beside being
+the namesake of the gem itself, this is our preferred syntax as it's short and
+sweet. But if you prefer to use `is_expected.to`, you can do that too:
 
 ```ruby
 RSpec.describe Person, type: :model do
@@ -290,7 +350,7 @@ end
 
 ## Matchers
 
-The following is a list of matchers shipped with the gem. If you need details
+Here is the full list of matchers that ship with this gem. If you need details
 about any of them, make sure to [consult the documentation][rubydocs]!
 
 ### ActiveModel matchers
@@ -395,37 +455,40 @@ created something that you want to share, please [let us know][new-issue]!
 [new-issue]: https://github.com/thoughtbot/shoulda-matchers/issues/new
 [shoulda-matchers-cucumber]: https://github.com/majioa/shoulda-matchers-cucumber
 
+## Contributing
+
+Have a fix for a problem you've been running into or an idea for a new feature
+you think would be useful? Take a look at the [Contributing
+document](CONTRIBUTING.md) for instructions on setting up the repo on your
+machine, understanding the codebase, and creating a good pull request.
+
 ## Compatibility
 
-Shoulda Matchers is tested and supported against Ruby 2.4+, Rails 5.x, Rails
-4.2.x, RSpec 3.x, and Minitest 5.x.
+Shoulda Matchers is [tested][travis] and supported against Ruby 2.4+, Rails
+4.2+, RSpec 3.x, and Minitest 5.x.
 
 For Ruby < 2.4 and Rails < 4.1 compatibility, please use [v3.1.3][v3.1.3].
 
-[v3.1.3]: https://github.com/thoughtbot/shoulda-matchers/releases/tag/v3.1.3
-
-## Contributing
-
-Shoulda Matchers is open source, and we are grateful for
-[everyone][contributors] who's contributed so far.
-
-[contributors]: https://github.com/thoughtbot/shoulda-matchers/contributors
-
-If you'd like to contribute, please take a look at the
-[instructions](CONTRIBUTING.md) for installing dependencies and crafting a good
-pull request.
+[v3.1.3]: https://github.com/thoughtbot/shoulda-matchers/tree/v3.1.3
 
 ## Versioning
 
 Shoulda Matchers follows Semantic Versioning 2.0 as defined at
 <http://semver.org>.
 
-## License
+## Team
 
-Shoulda Matchers is copyright © 2006-2020
-[thoughtbot, inc][thoughtbot-website]. It is free software,
-and may be redistributed under the terms specified in the
-[MIT-LICENSE](MIT-LICENSE) file.
+Shoulda Matchers is maintained by [Elliot Winkler][mcmire] and [Gui
+Albuk][guialbuk].
+
+[mcmire]: https://github.com/mcmire
+[guialbuk]: https://github.com/guialbuk
+
+## Copyright/License
+
+Shoulda Matchers is copyright © 2006-2020 Tammer Saleh and [thoughtbot,
+inc][thoughtbot-website]. It is free and opensource software and may be
+redistributed under the terms specified in the [LICENSE](LICENSE) file.
 
 [thoughtbot-website]: https://thoughtbot.com
 
@@ -435,8 +498,7 @@ and may be redistributed under the terms specified in the
 
 [thoughtbot-logo]: https://presskit.thoughtbot.com/images/thoughtbot-logo-for-readmes.svg
 
-Shoulda Matchers is maintained and funded by thoughtbot, inc. The names and
-logos for thoughtbot are trademarks of thoughtbot, inc.
+The names and logos for thoughtbot are trademarks of thoughtbot, inc.
 
 We are passionate about open source software. See [our other
 projects][community]. We are [available for hire][hire].
