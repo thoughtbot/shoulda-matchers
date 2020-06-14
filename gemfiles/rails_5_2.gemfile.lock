@@ -118,7 +118,7 @@ GEM
     puma (3.12.2)
     pygments.rb (1.2.1)
       multi_json (>= 1.0.0)
-    rack (2.0.8)
+    rack (2.2.2)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (5.2.4.1)

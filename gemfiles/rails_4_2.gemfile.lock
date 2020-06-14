@@ -101,7 +101,7 @@ GEM
       pry (~> 0.10)
     pygments.rb (1.2.1)
       multi_json (>= 1.0.0)
-    rack (1.6.12)
+    rack (1.6.13)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.2.11.1)
