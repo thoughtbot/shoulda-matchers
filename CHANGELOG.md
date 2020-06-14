@@ -1,4 +1,6 @@
-# HEAD (unreleased)
+# Changelog
+
+## Unreleased
 
 ### Features
 
@@ -8,47 +10,52 @@
 
 [#1278]: https://github.com/thoughtbot/shoulda-matchers/pull/1278
 
-# 4.3.0
+## 4.3.0 - 2020-02-18
 
 ### Features
 
-* Add `have_rich_text` matcher for `ActionText` ([#1263])
+* Add `have_rich_text` matcher for `ActionText`. ([#1263])
 
 ### Improvements
 
-* Use range on `validate_exclusion_of#in_range` documentation ([#1273])
+* Use range on `validate_exclusion_of#in_range` documentation. ([#1273])
 
 ### Bug fixes
 
-* Fix `missing attribute:: scope 1` intermittent test:  ([#1274])
+* Fix `missing attribute:: scope 1` intermittent test. ([#1274])
 
 [#1263]: https://github.com/thoughtbot/shoulda-matchers/pull/1263
 [#1273]: https://github.com/thoughtbot/shoulda-matchers/pull/1273
-[#1273]: https://github.com/thoughtbot/shoulda-matchers/pull/1274
+[#1274]: https://github.com/thoughtbot/shoulda-matchers/pull/1274
 
-# 4.2.0
+## 4.2.0 - 2020-01-29
 
 ### Features
 
-* Add support for `optional: false` in `belongs_to` associations. ([#1237])
-* Add support for associations with `inverse_of: false` and non-standard foreign key ([#1106])
+* Add support for `optional: false` in `belongs_to` associations.
+  ([#1237])
+
+* Add support for associations with `inverse_of: false` and non-standard foreign
+  key ([#1106])
 
 ### Bug fixes
 
-* Fix typos in documentation of `allow_values` ([#1241])
-* Fix appraisal command in CONTRIBUTING.md file ([#1253])
+* Fix typos in documentation of `allow_values`. ([#1241])
+
+* Fix appraisal command in CONTRIBUTING.md file. ([#1253])
 
 ### Improvements
 
-* Remove `minitest-reporters` dependency ([#1251])
-* Development dependency updates
+* Remove `minitest-reporters` dependency. ([#1251])
+
+* Development dependency updates.
 
 [#1106]: https://github.com/thoughtbot/shoulda-matchers/pull/1106
 [#1237]: https://github.com/thoughtbot/shoulda-matchers/pull/1237
 [#1241]: https://github.com/thoughtbot/shoulda-matchers/pull/1241
 [#1253]: https://github.com/thoughtbot/shoulda-matchers/pull/1253
 
-# 4.1.2
+## 4.1.2 - 2019-08-01
 
 ### Bug fixes
 
@@ -58,7 +65,7 @@
 
 [#1236]: https://github.com/thoughtbot/shoulda-matchers/pull/1236
 
-# 4.1.1
+## 4.1.1 - 2019-07-16
 
 ### Bug fixes
 
@@ -74,12 +81,13 @@
 [#1224]: https://github.com/thoughtbot/shoulda-matchers/pull/1224
 [#1231]: https://github.com/thoughtbot/shoulda-matchers/pull/1231
 
-# 4.1.0
+## 4.1.0 - 2019-06-09
 
 ### Bug fixes
 
 * Fix `validate_uniqueness_of` so that it works when a scope is defined as a
   string instead of a symbol on the model. ([#1176])
+
 * Fix `have_db_index` so that it can be used against multiple models that are
   connected to different databases. ([#1200])
 
@@ -90,8 +98,10 @@
 
 * Add support for Rails 6. No new Rails 6 features are supported, but only
   existing features that broke with the upgrade. ([#1193])
+
 * Add support for expression indexes (Rails 5, Postgres only) to
   `have_db_index`. ([#1211])
+
 * Add `allow_nil` to the `validate_presence_of` matcher. ([834d8d0], [#1100])
 
 [#1193]: https://github.com/thoughtbot/shoulda-matchers/pull/1193
@@ -107,6 +117,7 @@
   `optional: false`, and the matcher fails, the developer is reminded in the
   failure message that the `belong_to` matcher can be used instead. ([#1214],
   [8697b01])
+
 * Update `define_enum_for` so that it produces a more helpful message on
   failure. ([#1216])
 
@@ -114,7 +125,7 @@
 [8697b01]: https://github.com/thoughtbot/shoulda-matchers/commit/8697b015ed88fdbbbcf5d31bf98670f17c3df9e1
 [#1216]: https://github.com/thoughtbot/shoulda-matchers/pull/1216
 
-# 4.0.1
+## 4.0.1 - 2019-02-26
 
 ### Bug fixes
 
@@ -123,7 +134,7 @@
 
 [#1180]: https://github.com/thoughtbot/shoulda-matchers/pull/1180
 
-# 4.0.0 (yanked)
+## 4.0.0 - 2019-02-26 [YANKED]
 
 This release mainly brings the gem up to date with modern versions of Ruby and
 Rails and drops support for older, unsupported versions. The compatibility list
@@ -139,115 +150,69 @@ is now:
 
 * `use_before_filter`, `use_after_filter`, and `use_around_filter` are no longer
   usable when using shoulda-matchers under Rails 5.x, as the corresponding
-  controller callbacks don't exist there.
-
-  * *PR: [#1054]*
+  controller callbacks don't exist there. ([#1054])
 
 ### Deprecations
 
 * `define_enum_for`: `with` is deprecated in favor of `with_values`. This is to
   prevent confusion with `with_prefix` and `with_suffix`, which are new.
-
-  * *PR: [#1077]*
+  ([#1077])
 
 ### Bug fixes
 
 * Fix association matchers when used under Rails 5.x so that they make use of
   `ActiveRecord::Base.connection.data_sources` instead of
-  `ActiveRecord::Base.connection.tables`, which was deprecated.
+  `ActiveRecord::Base.connection.tables`, which was deprecated. ([#933], [#943],
+  [61c3654])
 
-  * *Commit: [61c3654]*
-  * *PR: [#943]*
-  * *Original issue: [#933]*
-
-* Fix the `serialize` matcher so that it works with Rails 5.x.
-
-  * *Commit: [df04f87]*
-  * *PR: [#965]*
-  * *Original issue: [#913]*
+* Fix the `serialize` matcher so that it works with Rails 5.x. ([#913], [#965],
+  [df04f87])
 
 * Fix our custom mocking library Doublespeak, which is used by
   `delegate_method`, so that it does not produce a warning under Ruby 2.4.
-
-  * *Commit: [8d7dcb8]*
-  * *PR: [#1038]*
-  * *Original issue: [#1006]*
+  ([#1006], [#1038], [8d7dcb8])
 
 * Fix the `permit` matcher so that it uses the correct method signature to call
   the controller action with params in order to prevent a warning under Rails
-  5.x.
-
-  * *Commit: [ce9624b]*
-  * *PRs: [#989], [#964], [#917]*
-  * *Original issue: [#867]*
+  5.x. ([#867], [#917], [#964], [#989], [ce9624b])
 
 * Fix the `define_enum_for` matcher so that it once more allows string columns
-  to be used as enum attributes.
-
-  * *Commit: [5650aae]*
-  * *PR: [#1063]*
-  * *Original issue: [#912]*
+  to be used as enum attributes. ([#912], [#1063], [5650aae])
 
 * Fix `validate_uniqueness_of` when used under Rails 4.2 so that when the
   attribute you're testing is a boolean column, it will no longer emit a
-  warning.
-
-  * *PR: [#1073]*
-  * *Original issue: [#949]*
+  warning. ([#949], [#1073])
 
 * Fix `validate_inclusion_of` so that if it fails, it will no longer blow up
   with the error "undefined method \`attribute_setter' for nil:NilClass".
-
-  * *Original issue: [#904]*
+  ([#904])
 
 * Add negative versions of all validation matchers (i.e. implement
   `does_not_match?` for them) to prevent them from blowing up with
-  "undefined method \`attribute_setter' for nil:NilClass".
-
-  * *Original issue: [#904]*
+  "undefined method \`attribute_setter' for nil:NilClass". ([#904])
 
 ### Features
 
 * Add `required` and `optional` qualifiers to `belong_to` and `have_one`
   matchers. (When using the `belong_to` matcher under Rails 5+, `required` is
-  assumed unless overridden.)
-
-  * *Commit: [3af3d9f]*
-  * *Original PR: [#956]*
-  * *Original issues: [#870], [#861]*
+  assumed unless overridden.) ([#861], [#870], [#956], [3af3d9f])
 
 * Add `without_validating_presence` qualifier to `belong_to` to get around the
-  fact that `required` is assumed, above.
+  fact that `required` is assumed, above. ([#1153], [#1154])
 
-  * *Original issues: [#1153], [#1154]*
+* Add `allow_nil` qualifier to `delegate_method`. ([#798], [d49cfca])
 
-* Add `allow_nil` qualifier to `delegate_method`.
-
-  * *Commit: [d49cfca]*
-  * *Original PR: [#798]*
-
-* Add `allow_nil` qualifier to `validate_length_of`.
-
-  * *Original PR: [#724]*
+* Add `allow_nil` qualifier to `validate_length_of`. ([#724])
 
 * Add a `port` option to the `route` matcher to allow testing a route that has
   a constraint on it such that only a specific port may be used to access that
-  route.
-
-  * *PRs: [#1074], [#1075]*
-  * *Original issue: [#954]*
+  route. ([#954], [#1074], [#1075])
 
 * Add `with_prefix` and `with_suffix` to `define_enum_for` to allow testing
   the `enum` macro with corresponding `prefix` and `suffix` options (Rails 5
-  only).
+  only). ([#961], [#1077])
 
-  * *PR: [#1077]
-  * *Original issue: [#961]
-
-* Add `index_errors` option to `has_many` (Rails 5 only).
-
-  * *Commit: [795ca68]*
-  * *PR: [#1089]*
+* Add `index_errors` option to `has_many` (Rails 5 only). ([#1089], [795ca68])
 
 [a6d09aa]: https://github.com/thoughtbot/shoulda-matchers/commit/a6d09aa5de0d546367e7b3d7177dfde6c66f7f05
 [#943]: https://github.com/thoughtbot/shoulda-matchers/pulls/943
@@ -291,11 +256,8 @@ is now:
 ### Improvements
 
 * Replace usage of Fixnum with Integer to prevent Ruby 2.4 from emitting
-  deprecation warnings.
-
-  * *Commits: [61c3654], [03a1d21]*
-  * *PRs: [#1040], [#1031], [#1009]*
-  * *Original issue: [#1001]*
+  deprecation warnings. ([#1001], [#1009], [#1031], [#1040], [61c3654],
+  [03a1d21])
 
 [61c3654]: https://github.com/thoughtbot/shoulda-matchers/commit/61c365416a09c5cffd7fcb774a07de4abf8e9afd
 [03a1d21]: https://github.com/thoughtbot/shoulda-matchers/commit/03a1d213805a44a0aec99857e01cab8524aa0c05
@@ -304,14 +266,14 @@ is now:
 [#1009]: https://github.com/thoughtbot/shoulda-matchers/pulls/1009
 [#1001]: https://github.com/thoughtbot/shoulda-matchers/issues/1001
 
-# 3.1.3
+## 3.1.3 - 2019-01-29
 
 ### Improvements
 
 * Update `BigDecimal.new()` to use `BigDecimal()` and avoid deprecation warnings
   in Ruby 2.6.
 
-# 3.1.2
+## 3.1.2 - 2017-07-12
 
 ### Deprecations
 
@@ -324,26 +286,21 @@ is now:
   `params#require`, the params object was duplicated, and the matcher did not
   recognize the `#permit` call inside the controller. This behavior happened
   because the matcher overwrote double registries with the same parameter hash
-  whenever ActionController::Parameters was instantiated.
-
-  * *Commit: [44c019]*
-  * *Issue: [#899]*
-  * *Pull request: [#902]*
+  whenever ActionController::Parameters was instantiated. ([#899], [#902],
+  [44c019])
 
 [44c019]: https://github.com/thoughtbot/shoulda-matchers/commit/44c0198830921650af3b4a56f5d72aaae2168480
 [#899]: https://github.com/thoughtbot/shoulda-matchers/issues/899
 [#902]: https://github.com/thoughtbot/shoulda-matchers/pulls/902
 
-# 3.1.1
+## 3.1.1 - 2016-01-28
 
 ### Bug fixes
 
 * Some matchers make use of ActiveSupport's `in?` method, but do not include the
   file where this is defined in ActiveSupport. This causes problems with
   projects using shoulda-matchers that do not include all of ActiveSupport by
-  default. To fix this, replace `in?` with Ruby's builtin `include?`.
-
-  * *Pull request: [#879]*
+  default. To fix this, replace `in?` with Ruby's builtin `include?`. ([#879])
 
 * `validate_uniqueness_of` works by creating a record if it doesn't exist, and
   then testing against a new record with various attributes set that are equal
@@ -354,28 +311,21 @@ is now:
   before it was saved, was empty and therefore in an invalid state, it could not
   effectively be saved. While ideally this should be enforced, doing so would be
   a backward-incompatible change, so this behavior has been rolled back.
-  ([#880], [#884], [#885])
-
-  * *Commit: [45de869]*
-  * *Issues: [#880], [#884], [#885]*
+  ([#880], [#884], [#885], [45de869])
 
 * Fix an issue with `validate_uniqueness_of` + `scoped_to` when used against a
   model where the attribute has multiple uniqueness validations and each
   validation has a different set of scopes. In this case, a test written for the
   first validation (and its scopes) would pass, but tests for the other
   validations (and their scopes) would not, as the matcher only considered the
-  first set of scopes as the *actual* set of scopes.
-
-  * *Commit: [28bd9a1]*
-  * *Issues: [#830]*
+  first set of scopes as the *actual* set of scopes. ([#830], [28bd9a1])
 
 ### Improvements
 
 * Update `validate_uniqueness_of` so that if an existing record fails to be
   created because a column is non-nullable and was not filled in, raise an
   ExistingRecordInvalid exception with details on how to fix the test.
-
-  * *Commit: [78ccfc5]*
+  ([78ccfc5])
 
 [#879]: https://github.com/thoughtbot/shoulda-matchers/issues/879
 [45de869]: https://github.com/thoughtbot/shoulda-matchers/commit/45de8698487d57f559c5bf35818d1c1ee82b0e77
@@ -386,7 +336,7 @@ is now:
 [28bd9a1]: https://github.com/thoughtbot/shoulda-matchers/commit/28bd9a10c71af4d541b692d6204163c394ebd33c
 [#830]: https://github.com/thoughtbot/shoulda-matchers/issues/830
 
-# 3.1.0
+## 3.1.0 - 2016-01-11
 
 ### Bug fixes
 
@@ -394,36 +344,25 @@ is now:
   instead of immediately. Previously, qualifiers were order-dependent, meaning
   that if you used `strict` before you used, say, `odd`, then `strict` wouldn't
   actually apply to `odd`. Now the order that you specify qualifiers doesn't
-  matter.
-
-  * *Source: [6c67a5e]*
+  matter. ([6c67a5e])
 
 * Fix `allow_value` so that it does not raise an AttributeChangedValueError
   (formerly CouldNotSetAttributeError) when used against an attribute that is an
-  enum in an ActiveRecord model.
-
-  * *Source: [9e8603e]*
+  enum in an ActiveRecord model. ([9e8603e])
 
 * Add a `ignoring_interference_by_writer` qualifier to all matchers, not just
   `allow_value`. *This is enabled by default, which means that you should never
   get a CouldNotSetAttributeError again.* (You may get some more information if
-  a test fails, however.)
-
-  * *Source: [1189934], [5532f43]*
-  * *Fixes: [#786], [#799], [#801], [#804], [#817], [#841], [#849], [#872],
-    [#873], and [#874]*
+  a test fails, however.) ([#786], [#799], [#801], [#804], [#817], [#841],
+  [#849], [#872], [#873], [#874], [1189934], [5532f43])
 
 * Fix `validate_numericality_of` so that it does not blow up when used against
   a virtual attribute defined in an ActiveRecord model (that is, an attribute
   that is not present in the database but is defined using `attr_accessor`).
-
-  * *Source: [#822]*
+  ([#822])
 
 * Update `validate_numericality_of` so that it no longer raises an
-  IneffectiveTestError if used against a numeric column.
-
-  * *Source: [5ed0362]*
-  * *Fixes: [#832]*
+  IneffectiveTestError if used against a numeric column. ([#832], [5ed0362])
 
 [6c67a5e]: https://github.com/thoughtbot/shoulda-matchers/commit/6c67a5eb0df265d3a565aa7d1a7e2b645051eb5a
 [9e8603e]: https://github.com/thoughtbot/shoulda-matchers/commit/9e8603eb745bfa2a5aea6dfef85adf680d447151
@@ -448,10 +387,7 @@ is now:
 * Add a new qualifier, `ignoring_case_sensitivity`, to `validate_uniqueness_of`.
   This provides a way to test uniqueness of an attribute whose case is
   normalized, either in a custom writer method for that attribute, or in a
-  custom `before_validation` callback.
-
-  * *Source: [#840]*
-  * *Fixes: [#836]*
+  custom `before_validation` callback. ([#836], [#840])
 
 [#840]: https://github.com/thoughtbot/shoulda-matchers/pull/840
 [#836]: https://github.com/thoughtbot/shoulda-matchers/issues/836
@@ -464,40 +400,30 @@ is now:
   matchers in particular.)
 
 * Matchers now raise an error if any attributes that the matcher is attempting
-  to set do not exist on the model.
-
-  * *Source: [2962112]*
+  to set do not exist on the model. ([2962112])
 
 * Update `validate_numericality_of` so that it doesn't always run all of the
   submatchers, but stops on the first one that fails. Since failure messages
   now contain information as to what value the matcher set on the attribute when
   it failed, this change guarantees that the correct value will be shown.
-
-  * *Source: [8e24a6e]*
+  ([8e24a6e])
 
 * Continue to detect if attributes change incoming values, but now instead of
   immediately seeing a CouldNotSetAttributeError, you will only be informed
-  about it if the test you've written fails.
-
-  * *Source: [1189934]*
+  about it if the test you've written fails. ([1189934])
 
 * Add an additional check to `define_enum_for` to ensure that the column that
-  underlies the enum attribute you're testing is an integer column.
-
-  * *Source: [68dd70a]*
+  underlies the enum attribute you're testing is an integer column. ([68dd70a])
 
 * Add a test for `validate_numericality_of` so that it officially supports money
-  columns.
-
-  * *Source: [a559713]*
-  * *Refs: [#841]*
+  columns. ([#841], [a559713])
 
 [2962112]: https://github.com/thoughtbot/shoulda-matchers/commit/296211211497e624dde87adae68b385ad4cdae3a
 [8e24a6e]: https://github.com/thoughtbot/shoulda-matchers/commit/8e24a6e9b2b147f2c51fb03aa02543f213acab34
 [68dd70a]: https://github.com/thoughtbot/shoulda-matchers/commit/68dd70a23d8997a490683adcd2108a4a5cadf8ba
 [a559713]: https://github.com/thoughtbot/shoulda-matchers/commit/a559713f96303414551c0bc1767fb11eb19bcc5d
 
-# 3.0.1
+## 3.0.1 - 2015-10-23
 
 ### Bug fixes
 
@@ -523,7 +449,7 @@ is now:
 [ada9bd3]: https://github.com/thoughtbot/shoulda-matchers/commit/ada9bd3a1b9f2bb9fa74d0dfe1f8f7080314298c
 [#812]: https://github.com/thoughtbot/shoulda-matchers/pull/812
 
-# 3.0.0
+## 3.0.0 - 2015-10-01
 
 ### Backward-incompatible changes
 
@@ -830,7 +756,7 @@ is now:
 [#746]: https://github.com/thoughtbot/shoulda-matchers/pull/746
 [e0a0200]: https://github.com/thoughtbot/shoulda-matchers/commit/e0a0200fe47157c161fb206043540804bdad664e
 
-# 2.8.0
+## 2.8.0 - 2015-01-30
 
 ### Deprecations
 
@@ -927,7 +853,7 @@ is now:
 [#627]: https://github.com/thoughtbot/shoulda-matchers/pull/627
 [#631]: https://github.com/thoughtbot/shoulda-matchers/pull/631
 
-# 2.7.0
+## 2.7.0 - 2014-09-03
 
 ### Deprecations
 
@@ -978,7 +904,7 @@ is now:
 * Reword failure message for `delegate_method` so that it's a little more
   helpful.
 
-# 2.6.2
+## 2.6.2 - 2014-07-19
 
 ### Bug fixes
 
@@ -999,7 +925,7 @@ is now:
   still produces warnings under Ruby 1.9.3; we will address this in a future
   release.
 
-# 2.6.1
+## 2.6.1 - 2014-04-30
 
 ### Bug fixes
 
@@ -1048,7 +974,7 @@ is now:
   interpolation values:
   `allow_value('foo').for(:attr).with_message(:greater_than, values: { count: 20 })`.
 
-# 2.6.0
+## 2.6.0 - 2014-04-12
 
 * The boolean argument to `have_db_index`'s `unique` option is now optional, for
   consistency with other matchers.
@@ -1112,7 +1038,7 @@ is now:
   * `set_the_flash` and `have_and_belongs_to_many` no longer raise errors
   * Minitest no longer prints warnings whenever shoulda-matchers is required
 
-# v 2.5.0
+## 2.5.0 - 2014-01-10
 
 * Fix Rails/Test::Unit integration to ensure that the test case classes we are
   re-opening actually exist.
@@ -1146,12 +1072,12 @@ is now:
   your existing tests should still work -- this is just to make sure when RSpec
   3 is released you don't get a bunch of warnings.
 
-# v 2.4.0
+## 2.4.0 - 2013-09-20
 
 * Fix a bug with the `validate_numericality_of` matcher that would not allow the
   `with_message` option on certain submatchers.
 
-* Fix a regression with context-dependent validations in ActiveResource
+* Fix a regression with context-dependent validations in ActiveResource.
 
 * shoulda-matchers is now fully compatible with Rails 4.
 
@@ -1159,19 +1085,19 @@ is now:
   ActiveSupport::TestCase instead of Test::Unit::TestCase (in Rails 4
   the former no longer inherits from the latter).
 
-# v 2.3.0
+## 2.3.0 - 2013-08-16
 
 * Fix a bug in `ensure_inclusion_of` that would cause issues with using
   `in_array` with an integer value.
 
-* Add support for PostgreSQL UUID columns to `validates_uniqueness_of` (#334).
+* Add support for PostgreSQL UUID columns to `validates_uniqueness_of` ([#334]).
 
 * Fix `validates_numericality_of` so that `is_equal_to` submatcher works
-  correctly (#326).
+  correctly ([#326]).
 
-* Fix context support for validation matchers and disallowed values (#313).
+* Fix context support for validation matchers and disallowed values ([#313]).
 
-* Add a `counter_cache` submatcher for `belongs_to` associations (#311).
+* Add a `counter_cache` submatcher for `belongs_to` associations ([#311]).
 
 * Add a `rescue_from` matcher for Rails controllers which checks that the
   correct ActiveSupport call has been made and that the handlers exist without
@@ -1182,20 +1108,29 @@ is now:
 * Extracted `#order`, `#through`, and `#dependent` from AssociationMatcher as
   their own submatchers.
 
-# v 2.2.0
+[#334]: https://github.com/thoughtbot/shoulda-matchers/pull/334
+[#326]: https://github.com/thoughtbot/shoulda-matchers/pull/326
+[#313]: https://github.com/thoughtbot/shoulda-matchers/pull/313
+[#311]: https://github.com/thoughtbot/shoulda-matchers/pull/311
+[#287]: https://github.com/thoughtbot/shoulda-matchers/pull/287
+
+## 2.2.0 - 2013-06-11
 
 * Fix `have_and_belong_to_many` matcher issue for Rails 4.
 
 * Fix `validate_uniqueness_of.scoped_to` issue when the scoped field is already
-  taken (#207).
+  taken ([#207]).
 
 * Add comparison submatchers to `validate_numericality_of` to correspond to the
-  comparison options you can give to `validates_numericality_of` (#244).
+  comparison options you can give to `validates_numericality_of` ([#244]).
 
-# v 2.1.0
+[#207]: https://github.com/thoughtbot/shoulda-matchers/pull/207
+[#244]: https://github.com/thoughtbot/shoulda-matchers/pull/244
+
+## 2.1.0 - 2013-05-05
 
 * Add missing `failure_message_for_should_not` implementations to
-`validate_numericality_of` and its submatchers
+`validate_numericality_of` and its submatchers.
 
 * Support validation contexts for testing validations `on: :create` and when
   using custom contexts like `model.valid?(:my_context)`.
@@ -1218,7 +1153,8 @@ raised exceptions.
 
 * Add `allow_nil` option to the `validate_uniqueness_of` matcher.
 
-# v 2.0.0
+## 2.0.0 - 2013-04-05
+
 * Remove the following matchers:
   * `assign_to`
   * `respond_with_content_type`
@@ -1228,19 +1164,20 @@ raised exceptions.
   * `permit` (strong parameters matcher)
   * `delegate_method`
 
-* For more information about 2.0 changes, see:
-http://robots.thoughtbot.com/post/47031676783/shoulda-matchers-2-0.
+For more information about 2.0 changes, see:
+<http://robots.thoughtbot.com/post/47031676783/shoulda-matchers-2-0>.
 
-# v 1.5.6
+## 1.5.6 - 2013-03-29
+
 * Revert previous change in AllowValueMatcher that added a check for a
 properly-set attribute.
 
-# v 1.5.5
+## 1.5.5 - 2013-03-28
+
 * AllowValueMatcher checks that the right value is used for attempts at
-setting the attribute with it.
-  * Please note that previously-passing tests might now fail. It is likely that
-  it's not a bug, but please make sure that the code you're testing is written
-  properly before submitting an issue.
+  setting the attribute with it. *Please note that previously-passing tests
+  might now fail. It is likely that it's not a bug, but please make sure that
+  the code you're testing is written properly before submitting an issue.*
 
 * Use DisallowValueMatcher for `disallows_value_of` method.
 
@@ -1248,18 +1185,26 @@ setting the attribute with it.
 
 * Correct the variable used for `validate_confirmation_of` matcher description.
 
-# v 1.5.4
+## 1.5.4 - 2013-03-21
+
 * Properly-released version of 1.5.3.
 
-# v 1.5.3 - yanked due to mis-release
+## 1.5.3 - 2013-03-21 [YANKED]
+
 * Alleviate the need to add `rspec` gem to your app.
 
-# v 1.5.1
+## 1.5.2 - 2013-03-19
+
+???
+
+## 1.5.1 - 2013-03-19
+
 * Bump version dependency of Bourne to allow for Mocha upgrade.
 
 * Should fix incompatibility with MiniTest.
 
-# v 1.5.0
+## 1.5.0 - 2013-03-15
+
 * Deprecate the following matchers:
   * `assign_to`
   * `respond_with_content_type`
@@ -1275,15 +1220,18 @@ setting the attribute with it.
 * Do not force MiniTest loading when test-unit is available (this was fixed
   before 1.3.0 then reverted in 1.3.0).
 
-# v1.4.2
+## 1.4.2 - 2012-11-30
+
 * Add a new `delegate_method` matcher.
 
-# v1.4.1
+## 1.4.1 - 2012-10-15
+
 * Fix an issue when used with Test::Unit on the allow value matcher.
 
-* Fix an issue with using `ensure_inclusion_of(:attr)` given an array of true or false values.
+* Fix an issue with using `ensure_inclusion_of(:attr)` given an array of true or
+  false values.
 
-# v1.4.0
+## 1.4.0 - 2012-10-05
 
 * Add `strict` option to validation matchers.
 
@@ -1293,7 +1241,8 @@ setting the attribute with it.
 
 * You can now pass an array to `ensure_exclusion_of` using `in_array`.
 
-* Allow testing of `:foreign_key` option for `has_one` relationships using the association matcher.
+* Allow testing of `:foreign_key` option for `has_one` relationships using the
+  association matcher.
 
 * Fix bug where `ensure_length_of` would pass if the given string was too long.
 
@@ -1303,12 +1252,12 @@ setting the attribute with it.
 
 * Fix the output of the `set_the_flash` matcher.
 
-# v1.3.0
+## 1.3.0 - 2012-08-30
 
 * `validate_format_of` will accept `allow_blank(bool)` and `allow_nil(bool)`.
 
 * Prefer Test::Unit to MiniTest when loading integrations so that RubyMine is
-  happy (#88).
+  happy ([#88]).
 
 * `validates_uniqueness_of` will now create a record if one does not exist.
   Previously, users were required to create a record in the database before
@@ -1319,15 +1268,19 @@ setting the attribute with it.
   and 'shoulda-matchers' gem from the same Gemfile group, namely [:test,
   :development].
 
-* `controller.should_not render_partial` now correctly matches `render partial: "partial"`.
+* `controller.should_not render_partial` now correctly matches `render partial:
+  "partial"`.
 
-# v1.2.0
+[#88]: https://github.com/thoughtbot/shoulda-matchers/pull/80
+
+## 1.2.0 - 2012-06-14
 
 * `ensure_inclusion_of` now has an `in_array` parameter:
   `ensure_inclusion_of(:attr).in_array(['foo', 'bar'])`. It cannot be used with
   the `.in_range` option. (vpereira)
 
-* `ensure_in_inclusion_of` with `in_array` will accept `allow_blank(bool)` and `allow_nil(false)`
+* `ensure_in_inclusion_of` with `in_array` will accept `allow_blank(bool)` and
+  `allow_nil(false)`.
 
 * Test against Rails 3.2.
 
@@ -1340,16 +1293,18 @@ setting the attribute with it.
 * In 1.1.0, `have_sent_email` checked all emails to ensure they matched. It now
   checks that only one email matches, which restores 1.0.0 behavior.
 
-# v1.1.0
+## 1.1.0 - 2012-04-13
 
 * Add `only_integer` option to `validate_numericality_of`:
-  `should validate_numericality_of(:attribute).only_integer`
+  `should validate_numericality_of(:attribute).only_integer`.
 
 * Add a `query_the_database` matcher:
 
-    `it { should query_the_database(4.times).when_calling(:complicated_method) }`
-    `it { should query_the_database(4.times).or_less.when_calling(:complicated_method) }`
-    `it { should_not query_the_database.when_calling(:complicated_method) }`
+  ``` ruby
+  it { should query_the_database(4.times).when_calling(:complicated_method) }
+  it { should query_the_database(4.times).or_less.when_calling(:complicated_method) }
+  it { should_not query_the_database.when_calling(:complicated_method) }
+  ```
 
 * Database columns are now correctly checked for primality. E.G., this works
   now: `it { should have_db_column(:id).with_options(:primary => true) }`
@@ -1371,4 +1326,8 @@ setting the attribute with it.
 
 * Add `accept_nested_attributes` matcher
 
-* Our very first dependency: ActiveSupport &gt;= 3.0.0
+* Our very first dependency: ActiveSupport >= 3.0.0
+
+## 1.0.0 - 2011-11-02
+
+First release!

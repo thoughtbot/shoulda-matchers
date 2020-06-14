@@ -22,10 +22,10 @@ complex, and error-prone.
 ## Quick links
 
 📖 **[Read the documentation for the latest version][rubydocs].**  
-📢 **[See what's changed in a recent version][news].**
+📢 **[See what's changed in recent versions][changelog].**
 
 [rubydocs]: http://matchers.shoulda.io/docs
-[news]: NEWS.md
+[changelog]: CHANGELOG.md
 
 ## Table of contents
 
