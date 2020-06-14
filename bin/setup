@@ -2,37 +2,78 @@
 
 set -euo pipefail
 
-RUBY_VERSION=$(script/supported_ruby_versions | xargs -n 1 echo | sort -V | tail -n 1)
-required_ruby_version=$(cat .ruby-version)
+### PROJECT SETUP ##############################################################
 
-cd "$(dirname "$(dirname "$0")")"
+# Feel free to add whatever functions or variables you want to add in this
+# section. You may also delete this section altogether if your project doesn't
+# need a custom setup.
 
-uname=$(uname)
+USE_BUNDLER_1=1
 
-if [[ $uname == 'Darwin' ]]; then
-  platform='mac'
-else
-  platform='linux'
-fi
+### DON'T MODIFY ANYTHING BELOW THIS LINE! #####################################
+
+# This setup script was generated with setup_script_generator 0.2.3,
+# available on RubyGems.
+#
+# To regenerate this section, install the gem and run:
+#
+#     generate-setup -p ruby
+#
+
+# --- SETUP --------------------------------------------------------------------
+
+something_already_printed=0
+
+determine-platform() {
+  local uname=$(uname)
+
+  if [[ $uname == 'Darwin' ]]; then
+    echo 'mac'
+  else
+    echo 'linux'
+  fi
+}
 
 banner() {
-  echo -e "\033[34m== $@ ==\033[0m"
+  print-with-color 34 "== $@ =="
 }
 
 success() {
-  echo -e "\033[32m$@\033[0m"
+  print-with-color 32 "$@"
 }
 
 warning() {
-  echo -e "\033[33m$@\033[0m"
+  print-with-color 33 "$@"
 }
 
 error() {
-  echo -e "\033[31m$@\033[0m"
+  print-with-color 31 "$@"
 }
 
-echo-wrapped() {
-  echo "$@" | fmt -w 80 | cat
+print-with-color() {
+  pad-from-existing-output
+  echo -ne "\033[${1}m"
+  echo -n "${@:2}"
+  echo -e "\033[0m"
+  something_already_printed=1
+}
+
+print-wrapped() {
+  pad-from-existing-output
+  echo -n "$@" | fmt -w 80 | cat
+  something_already_printed=1
+}
+
+pad-from-existing-output() {
+  if [[ $something_already_printed -eq 1 ]]; then
+    echo
+  fi
+}
+
+print() {
+  pad-from-existing-output
+  echo "$@"
+  something_already_printed=1
 }
 
 has-executable() {
@@ -99,74 +140,93 @@ install() {
   fi
 }
 
-check-for-build-tools() {
-  if [[ $platform == "linux" ]]; then
-    if has-executable apt-get; then
-      # TODO: Check if build-essential is installed on Debian?
-      true
-    elif has-executable yum; then
-      # TODO: Check if 'Development Tools' group is installed on RedHat?
-      true
-    else
-      error "You don't seem to have a package manager installed."
-      echo-wrapped "\
-The setup script assumes you're using Debian, RedHat or a derived flavor of
-Linux (i.e. something with Apt or Yum). If this is not the case, then we would
+check-for-package-manager() {
+  local platform=$(determine-platform)
+
+  if [[ $platform == "linux" ]] && ! has-executable apt-get && ! has-executable yum; then
+    # TODO: Check if build-essential is installed on Debian?
+    # TODO: Check if 'Development Tools' group is installed on RedHat?
+
+    error "You don't seem to have a package manager installed."
+    print-wrapped "\
+This setup script assumes you're using a flavor of Linux derived from Debian or
+RedHat (i.e. something with Apt or Yum). If this is not the case, then we would
 gladly take a PR fixing this!"
-      exit 1
-    fi
-  else
-    if ! has-executable brew; then
-      error "You don't seem to have Homebrew installed."
-      echo-wrapped "\
-Follow the instructions here to do this:
-
-    http://brew.sh
-
-Then re-run this script."
-      exit 1
-    fi
-
+    exit 1
+  elif [[ $platform == "mac" ]] && ! has-executable brew; then
     # TODO: Check that OS X Command Line Tools are installed?
+
+    error "You don't seem to have Homebrew installed."
+    print-wrapped "\
+Visit <https://brew.sh> and follow the instructions there, then re-run this
+script."
+    exit 1
   fi
 }
 
 install-development-libraries() {
-  install apt=ruby-dev rpm=ruby-devel
   install rpm=zlib-devel
 }
 
-install-dependencies() {
-  if ! has-executable sqlite3; then
-    banner 'Installing SQLite 3'
-    install sqlite3
-    install apt=libsqlite3-dev rpm=sqlite-devel
+setup() {
+  cd "$(dirname "$(dirname "$0")")"
+  check-for-package-manager
+  install-development-libraries
+  run-provisions
+  if type provision-project &>/dev/null; then
+    provision-project
+  fi
+  success "Setup complete!"
+}
+
+# --- RUBY ---------------------------------------------------------------------
+
+provision-ruby() {
+  if [[ -f .tool-versions ]]; then
+    REQUIRED_RUBY_VERSION=$(cat .tool-versions | grep '^ruby ' | sed -Ee 's/^ruby (.+)$/\1/')
+  elif [[ -f .ruby-version ]]; then
+    REQUIRED_RUBY_VERSION=$(cat .ruby-version)
+  else
+    error "You don't seem to have a Ruby version set in your project."
+    print-wrapped "\
+You'll need to create either a .tool-versions file or .ruby-version file in your
+project before you can run this script."
+    exit 1
   fi
 
-  if ! has-executable psql; then
-    banner 'Installing PostgreSQL'
-    install postgresql
-    install apt=libpq-dev rpm=postgresql-devel
-  fi
+  ensure-ruby-development-libraries-installed
+  ensure-ruby-installed
+  ensure-project-ruby-dependencies-installed
+}
 
-  if ! is-running postgres; then
-    banner 'Starting PostgreSQL'
-    start postgresql
-  fi
+ensure-ruby-development-libraries-installed() {
+  local platform=$(determine-platform)
 
-  if has-executable rbenv; then
-    if ! (rbenv versions | grep $RUBY_VERSION'\>' &>/dev/null); then
-      banner "Installing Ruby $RUBY_VERSION with rbenv"
-      rbenv install --skip-existing "$RUBY_VERSION"
+  if [[ $platform == "linux" ]]; then
+    banner "Installing Ruby development libraries"
+    install apt=ruby-dev rpm=ruby-devel
+  fi
+}
+
+ensure-ruby-installed() {
+  if has-executable asdf; then
+    if ! (asdf current ruby | grep $REQUIRED_RUBY_VERSION'\>' &>/dev/null); then
+      banner "Installing Ruby $REQUIRED_RUBY_VERSION with asdf"
+      asdf install ruby $REQUIRED_RUBY_VERSION
+    fi
+  elif has-executable rbenv; then
+    if ! (rbenv versions | grep $REQUIRED_RUBY_VERSION'\>' &>/dev/null); then
+      banner "Installing Ruby $REQUIRED_RUBY_VERSION with rbenv"
+      rbenv install --skip-existing "$REQUIRED_RUBY_VERSION"
     fi
   elif has-executable chruby-exec; then
     PREFIX='' source /usr/local/share/chruby/chruby.sh
-    if ! (chruby '' | grep $RUBY_VERSION'\>' &>/dev/null); then
+    if ! (chruby '' | grep $REQUIRED_RUBY_VERSION'\>' &>/dev/null); then
       if has-executable install-ruby; then
-      banner "Installing Ruby $RUBY_VERSION with install-ruby"
-        install-ruby "$RUBY_VERSION"
+        banner "Installing Ruby $REQUIRED_RUBY_VERSION with install-ruby"
+        install-ruby "$REQUIRED_RUBY_VERSION"
       else
-        error "Please install Ruby $RUBY_VERSION"
+        error "Please use chruby to install Ruby $REQUIRED_RUBY_VERSION!"
       fi
     fi
   elif has-executable rvm; then
@@ -177,24 +237,40 @@ install-dependencies() {
     fi
   else
     error "You don't seem to have a Ruby manager installed."
-    echo-wrapped "\
-We recommend using rbenv. You can find instructions to install it here:
+    print-wrapped "\
+We recommend using asdf. You can find instructions to install it here:
 
-    https://github.com/rbenv/rbenv#installation
+    https://asdf-vm.com
 
-Make sure to follow the instructions to configure your shell so that rbenv is
-automatically loaded.
-
-When you're done, open up a new terminal tab and re-run this script."
+When you're done, close and re-open this terminal tab and re-run this script."
     exit 1
   fi
-
-  banner 'Installing Ruby dependencies'
-  gem install bundler -v '~> 1.0' --conservative
-  bundle check || bundle install
-  bundle exec appraisal install
 }
 
-check-for-build-tools
-install-development-libraries
-install-dependencies
+has-bundler() {
+  has-executable bundle && bundle -v &>/dev/null
+}
+
+ensure-project-ruby-dependencies-installed() {
+  banner 'Installing Ruby dependencies'
+
+  if [[ $USE_BUNDLER_1 -eq 1 ]] && (! has-bundler || [[ $(bundle -v) =~ '^1\.' ]]); then
+    gem install bundler -v '~> 1.0'
+  elif ! has-bundler; then
+    gem install bundler
+  fi
+
+  bundle check || bundle install
+}
+
+run-provisions() {
+  provision-ruby
+
+  if type provision-project &>/dev/null; then
+    provision-project
+  fi
+}
+
+# --- FIN ----------------------------------------------------------------------
+
+setup
