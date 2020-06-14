@@ -190,9 +190,9 @@ updating the API, it helps us greatly to update the docs at the same time.
 
 ## A word on the changelog
 
-You may also notice that we have a changelog in the form of [NEWS.md](NEWS.md).
-You may be tempted to include changes to this in your branch, but don't worry
-about this — we'll take care of it!
+You may also notice that we have a changelog in the form of
+[CHANGELOG.md](CHANGELOG.md). You may be tempted to include changes to this in
+your branch, but don't worry about this — we'll take care of it!
 
 ## Continuous integration
 

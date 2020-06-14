@@ -100,9 +100,9 @@ alias zr="bundle exec zeus rspec"
 ## Updating the changelog
 
 After every user-facing change makes it into master, we make a note of it in the
-changelog, which for historical reasons is kept in `NEWS.md`. The changelog is
-sorted in reverse order by release version, with the topmost version as the next
-release (tagged as "(Unreleased)").
+changelog, kept in `CHANGELOG.md`. The changelog is sorted in reverse order by
+release version, with the topmost version as the next release (tagged as
+"(Unreleased)").
 
 Within each version, there are five available categories you can divide changes
 into. They are all optional but they should appear in this order:
@@ -126,7 +126,7 @@ such PR is available). This helps users cross-reference changes if they need to.
 
 As mentioned in the [Contributing](CONTRIBUTING.md) document, we use YARD for
 documentation. YARD is configured via `.yardopts` to process the Ruby files in
-`lib/` as well as `NEWS.md` and the Markdown files in `docs/` and write the
+`lib/` as well as `CHANGELOG.md` and the Markdown files in `docs/` and write the
 documentation in HTML form to `doc`. This command will do exactly that:
 
 ```bash
@@ -240,16 +240,13 @@ how you release a version:
    and is used in the Rake tasks to publish the gem on RubyGems as well as
    generate documentation.
 
-4. Next, make sure that the current version is updated in the [Quick Links
-   section of the README](README.md#quick-links).
-
-5. Assuming that everything looks good, place your changes to NEWS,
+4. Assuming that everything looks good, place your changes to the changelog,
    `version.rb`, and README in their own commit titled "Bump version to
    *X.Y.Z*". Push this to GitHub (you can use `[ci skip]`) in the body of the
-   commit message to skip CI for this commit). **There is no going back after
-   this point!**
+   commit message to skip CI for this commit if you so choose). **There is no
+   going back after this point!**
 
-6. Once GitHub has the version-change commit, you will run:
+5. Once GitHub has the version-change commit, you will run:
 
    ```bash
    rake release
