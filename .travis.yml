@@ -25,7 +25,6 @@ matrix:
 cache: bundler
 # Source: <https://docs.travis-ci.com/user/languages/ruby/#bundler-20>
 before_install:
-  - nvm install 12
   - gem update --system '2.7.8' --no-document
   - gem uninstall -v '>= 2' -i $(rvm gemdir)@global -ax bundler || true
   - gem install bundler -v '< 2' --no-document
