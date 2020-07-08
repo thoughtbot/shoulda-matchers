@@ -5,7 +5,7 @@ module Shoulda
       TERMINAL_WIDTH = 72
 
       def word_wrap(document, options = {})
-        Document.new(document, options).wrap
+        Document.new(document, **options).wrap
       end
     end
 
