@@ -57,7 +57,7 @@ Start by including `shoulda-matchers` in your Gemfile:
 
 ```ruby
 group :test do
-  gem 'shoulda-matchers', '~> 4.0'
+  gem 'shoulda-matchers', '~> 4.3'
 end
 ```
 
@@ -119,7 +119,7 @@ Otherwise, add `shoulda-matchers` to your Gemfile:
 
 ```ruby
 group :test do
-  gem 'shoulda-matchers', '~> 4.0'
+  gem 'shoulda-matchers', '~> 4.3'
 end
 ```
 
