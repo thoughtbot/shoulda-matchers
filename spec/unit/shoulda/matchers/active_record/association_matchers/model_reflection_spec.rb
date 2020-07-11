@@ -95,11 +95,27 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
             belongs_to :country, -> { where(mood: 'nice') }
           end
           delegate_reflection = person_model.reflect_on_association(:country)
+          person = person_model.new
           reflection = described_class.new(delegate_reflection)
 
-          actual_sql = reflection.association_relation.to_sql
+          actual_sql = reflection.association_relation(person).to_sql
           expected_sql = Country.where(mood: 'nice').to_sql
           expect(actual_sql).to eq expected_sql
+        end
+
+        it 'passes the object that has the association to the block' do
+          spy = spy('spy')
+          define_model(:country)
+          person_model = define_model(:person, country_id: :integer) do
+            belongs_to :country, -> (person) { spy.receive(person) }
+          end
+          delegate_reflection = person_model.reflect_on_association(:country)
+          person = person_model.new
+          reflection = described_class.new(delegate_reflection)
+
+          reflection.association_relation(person)
+
+          expect(spy).to have_received(:receive).with(person)
         end
       end
 
@@ -110,9 +126,10 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatchers::ModelReflection d
             belongs_to :country
           end
           delegate_reflection = person_model.reflect_on_association(:country)
+          person = person_model.new
           reflection = described_class.new(delegate_reflection)
 
-          actual_sql = reflection.association_relation.to_sql
+          actual_sql = reflection.association_relation(person).to_sql
           expected_sql = Country.all.to_sql
           expect(actual_sql).to eq expected_sql
         end

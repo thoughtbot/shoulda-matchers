@@ -7,7 +7,6 @@ module Shoulda
           delegate(
             :associated_class,
             :association_foreign_key,
-            :association_relation,
             :foreign_key,
             :has_and_belongs_to_many_name,
             :join_table_name,
@@ -25,6 +24,10 @@ module Shoulda
           def initialize(subject, name)
             @subject = subject
             @name = name
+          end
+
+          def association_relation
+            reflection.association_relation(subject)
           end
 
           def reflection
