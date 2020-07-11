@@ -311,15 +311,6 @@ EOT
           self
         end
 
-        def allow_blank
-          @options[:allow_blank] = true
-          self
-        end
-
-        def expects_to_allow_blank?
-          @options[:allow_blank]
-        end
-
         def allow_nil
           @options[:allow_nil] = true
           self
@@ -423,14 +414,14 @@ EOT
           allows_all_values_in_array? &&
             disallows_all_values_outside_of_array? &&
             allows_nil_value? &&
-            allows_blank_value?
+            allow_blank_matches?
         end
 
         def does_not_match_for_array?
           disallows_any_values_in_array? ||
             allows_any_value_outside_of_array? ||
             disallows_nil_value? ||
-            disallows_blank_value?
+            allow_blank_does_not_match?
         end
 
         def allows_lower_value
@@ -614,16 +605,6 @@ EOT
 
         def disallows_nil_value?
           @options[:allow_nil] && disallows_value_of(nil)
-        end
-
-        def allows_blank_value?
-          @options[:allow_blank] != true ||
-            BLANK_VALUES.all? { |value| allows_value_of(value) }
-        end
-
-        def disallows_blank_value?
-          @options[:allow_blank] &&
-            BLANK_VALUES.any? { |value| disallows_value_of(value) }
         end
 
         def inspected_array

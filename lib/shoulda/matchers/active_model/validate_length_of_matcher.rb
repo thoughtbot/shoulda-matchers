@@ -232,12 +232,33 @@ module Shoulda
       #       it { should validate_length_of(:bio).is_at_least(15).allow_nil }
       #     end
       #
-      #     # Test::Unit
+      #     # Minitest (Shoulda)
       #     class UserTest < ActiveSupport::TestCase
       #       should validate_length_of(:bio).is_at_least(15).allow_nil
       #     end
       #
       # @return [ValidateLengthOfMatcher]
+      #
+      # # ##### allow_blank
+      #
+      # Use `allow_blank` to assert that the attribute allows blank.
+      #
+      #     class User
+      #       include ActiveModel::Model
+      #       attr_accessor :bio
+      #
+      #       validates_length_of :bio, minimum: 15, allow_blank: true
+      #     end
+      #
+      #     # RSpec
+      #     describe User do
+      #       it { should validate_length_of(:bio).is_at_least(15).allow_blank }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class UserTest < ActiveSupport::TestCase
+      #       should validate_length_of(:bio).is_at_least(15).allow_blank
+      #     end
       #
       def validate_length_of(attr)
         ValidateLengthOfMatcher.new(attr)
@@ -331,7 +352,8 @@ module Shoulda
 
           lower_bound_matches? &&
             upper_bound_matches? &&
-            allow_nil_matches?
+            allow_nil_matches? &&
+            allow_blank_matches?
         end
 
         def does_not_match?(subject)
@@ -339,7 +361,8 @@ module Shoulda
 
           lower_bound_does_not_match? ||
             upper_bound_does_not_match? ||
-            allow_nil_does_not_match?
+            allow_nil_does_not_match? ||
+            allow_blank_does_not_match?
         end
 
         private
@@ -376,6 +399,7 @@ module Shoulda
         def disallows_lower_length?
           !@options.key?(:minimum) ||
             @options[:minimum] == 0 ||
+            (@options[:minimum] == 1 && expects_to_allow_blank?) ||
             disallows_length_of?(
               @options[:minimum] - 1,
               translated_short_message

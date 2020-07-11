@@ -311,6 +311,62 @@ this could not be proved.
     end
   end
 
+  context 'qualified with allow_blank' do
+    context 'and validating with allow_blank' do
+      context 'with minimum' do
+        context 'and minimum is 1' do
+          it 'accepts' do
+            expect(validating_length(minimum: 1, allow_blank: true)).
+              to validate_length_of(:attr).is_at_least(1).allow_blank
+          end
+        end
+
+        context 'and minimum is greater than 1' do
+          it 'accepts' do
+            expect(validating_length(minimum: 2, allow_blank: true)).
+              to validate_length_of(:attr).is_at_least(2).allow_blank
+          end
+        end
+      end
+
+      context 'with maximum' do
+        context 'and maximum is 0' do
+          it 'accepts' do
+            expect(validating_length(maximum: 0, allow_blank: true)).
+              to validate_length_of(:attr).is_at_most(0).allow_blank
+          end
+        end
+
+        context 'and maximum is greater than 0' do
+          it 'accepts' do
+            expect(validating_length(maximum: 1, allow_blank: true)).
+              to validate_length_of(:attr).is_at_most(1).allow_blank
+          end
+        end
+      end
+    end
+
+    context 'and not validating with allow_blank' do
+      it 'rejects' do
+        assertion = lambda do
+          expect(validating_length(minimum: 1)).
+            to validate_length_of(:attr).is_at_least(1).allow_blank
+        end
+
+        message = <<-MESSAGE
+Expected Example to validate that the length of :attr is at least 1, but
+this could not be proved.
+  After setting :attr to ‹""›, the matcher expected the Example to be
+  valid, but it was invalid instead, producing these validation errors:
+
+  * attr: ["is too short (minimum is 1 character)"]
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+    end
+  end
+
   def define_model_validating_length(options = {})
     options = options.dup
     attribute_name = options.delete(:attribute_name) { :attr }
