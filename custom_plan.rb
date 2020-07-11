@@ -33,6 +33,13 @@ class CustomPlan < Zeus::Plan
     $LOAD_PATH << File.expand_path('../lib', __FILE__)
     $LOAD_PATH << File.expand_path('../spec', __FILE__)
 
+    # Fix Zeus for Pry 0.13.0+
+    Pry::Pager.class_eval do
+      def best_available
+        Pry::Pager::NullPager.new(pry_instance.output)
+      end
+    end
+
     require_relative 'spec/support/unit/load_environment'
   rescue Gem::LoadError => error
     raise CouldNotBootZeusError.create(underlying_error: error)
