@@ -8,7 +8,46 @@
   matcher, since `has_secure_token` encourages use of an index but does not
   enforce it. ([#1278])
 
+* Add `allow_blank` to `validate_length_of` to match other validation matchers.
+  ([#725], [#1318])
+
+* Add new matcher `have_implicit_order_column` which can be used to test the
+  `implicit_order_column` setting for ActiveRecord models under Rails 6+.
+  ([#1243])
+
 [#1278]: https://github.com/thoughtbot/shoulda-matchers/pull/1278
+[#725]: https://github.com/thoughtbot/shoulda-matchers/pull/725
+[#1318]: https://github.com/thoughtbot/shoulda-matchers/pull/1318
+[#1243]: https://github.com/thoughtbot/shoulda-matchers/pull/1243
+
+### Bug fixes
+
+* Fix `have_many` so that it is possible to test an association that has a scope
+  that takes an argument. ([#952], [#992])
+
+* Update `validate_uniqueness_of` to use the public `validators_on` instead of
+  the private `_validators` when reading validations off of a model. This
+  enables shoulda-matchers to be used with the [schema_validations] gem.
+  ([#995])
+
+* Update `validate_uniqueness_of` to work with scopes that are `time` columns.
+  ([#1190])
+
+[#952]: https://github.com/thoughtbot/shoulda-matchers/issues/952
+[#992]: https://github.com/thoughtbot/shoulda-matchers/pull/992
+[schema_validations]: https://github.com/SchemaPlus/schema_validations
+[#995]: https://github.com/thoughtbot/shoulda-matchers/pull/995
+[#1190]: https://github.com/thoughtbot/shoulda-matchers/pull/1190
+
+### Improvements
+
+* Update `have_many` when used against a `:through` association so that it fails
+  if the inverse model does not have a `belongs_to` association. ([#646],
+  [#723], [c0a1578])
+
+[#646]: https://github.com/thoughtbot/shoulda-matchers/issues/646
+[#723]: https://github.com/thoughtbot/shoulda-matchers/pull/723
+[c0a1578]: https://github.com/thoughtbot/shoulda-matchers/commit/c0a1578435f66d6fbf0db1164205bd8d99f6aa2f
 
 ## 4.3.0 - 2020-02-18
 

@@ -391,6 +391,8 @@ about any of them, make sure to [consult the documentation][rubydocs]!
   tests that the table that backs your model has a specific column.
 * **[have_db_index](lib/shoulda/matchers/active_record/have_db_index_matcher.rb)**
   tests that the table that backs your model has an index on a specific column.
+* **[have_implicit_order_column](lib/shoulda/matchers/active_record/have_implicit_order_column.rb)**
+  tests usage of `implicit_order_column`.
 * **[have_many](lib/shoulda/matchers/active_record/association_matcher.rb)**
   tests your `has_many` associations.
 * **[have_one](lib/shoulda/matchers/active_record/association_matcher.rb)**
