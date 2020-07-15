@@ -1,5 +1,4 @@
 require 'shoulda/matchers/independent/delegate_method_matcher'
-require 'shoulda/matchers/independent/delegate_method_matcher/target_not_defined_error'
 
 module Shoulda
   module Matchers

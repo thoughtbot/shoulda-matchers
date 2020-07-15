@@ -1,34 +1,9 @@
+require 'shoulda/matchers/active_model/allow_mass_assignment_of_matcher'
 require 'shoulda/matchers/active_model/helpers'
 require 'shoulda/matchers/active_model/qualifiers'
 require 'shoulda/matchers/active_model/validation_matcher'
-require 'shoulda/matchers/active_model/validation_matcher/build_description'
-require 'shoulda/matchers/active_model/validator'
-require 'shoulda/matchers/active_model/allow_value_matcher'
-require 'shoulda/matchers/active_model/allow_value_matcher/attribute_changed_value_error'
-require 'shoulda/matchers/active_model/allow_value_matcher/attribute_does_not_exist_error'
-require 'shoulda/matchers/active_model/allow_value_matcher/attribute_setter'
-require 'shoulda/matchers/active_model/allow_value_matcher/attribute_setter_and_validator'
-require 'shoulda/matchers/active_model/allow_value_matcher/attribute_setters'
-require 'shoulda/matchers/active_model/allow_value_matcher/attribute_setters_and_validators'
-require 'shoulda/matchers/active_model/allow_value_matcher/successful_check'
-require 'shoulda/matchers/active_model/allow_value_matcher/successful_setting'
-require 'shoulda/matchers/active_model/disallow_value_matcher'
-require 'shoulda/matchers/active_model/validate_length_of_matcher'
-require 'shoulda/matchers/active_model/validate_inclusion_of_matcher'
-require 'shoulda/matchers/active_model/validate_exclusion_of_matcher'
 require 'shoulda/matchers/active_model/validate_absence_of_matcher'
 require 'shoulda/matchers/active_model/validate_presence_of_matcher'
-require 'shoulda/matchers/active_model/validate_acceptance_of_matcher'
-require 'shoulda/matchers/active_model/validate_confirmation_of_matcher'
-require 'shoulda/matchers/active_model/validate_numericality_of_matcher'
-require 'shoulda/matchers/active_model/numericality_matchers/numeric_type_matcher'
-require 'shoulda/matchers/active_model/numericality_matchers/comparison_matcher'
-require 'shoulda/matchers/active_model/numericality_matchers/odd_number_matcher'
-require 'shoulda/matchers/active_model/numericality_matchers/even_number_matcher'
-require 'shoulda/matchers/active_model/numericality_matchers/only_integer_matcher'
-require 'shoulda/matchers/active_model/allow_mass_assignment_of_matcher'
-require 'shoulda/matchers/active_model/errors'
-require 'shoulda/matchers/active_model/have_secure_password_matcher'
 
 module Shoulda
   module Matchers
@@ -89,6 +64,20 @@ module Shoulda
     #     end
     #
     module ActiveModel
+      autoload :AllowValueMatcher, 'shoulda/matchers/active_model/allow_value_matcher'
+      autoload :CouldNotDetermineValueOutsideOfArray, 'shoulda/matchers/active_model/errors'
+      autoload :CouldNotSetPasswordError, 'shoulda/matchers/active_model/errors'
+      autoload :DisallowValueMatcher, 'shoulda/matchers/active_model/disallow_value_matcher'
+      autoload :HaveSecurePasswordMatcher, 'shoulda/matchers/active_model/have_secure_password_matcher'
+      autoload :NonNullableBooleanError, 'shoulda/matchers/active_model/errors'
+      autoload :NumericalityMatchers, 'shoulda/matchers/active_model/numericality_matchers'
+      autoload :ValidateAcceptanceOfMatcher, 'shoulda/matchers/active_model/validate_acceptance_of_matcher'
+      autoload :ValidateConfirmationOfMatcher, 'shoulda/matchers/active_model/validate_confirmation_of_matcher'
+      autoload :ValidateExclusionOfMatcher, 'shoulda/matchers/active_model/validate_exclusion_of_matcher'
+      autoload :ValidateInclusionOfMatcher, 'shoulda/matchers/active_model/validate_inclusion_of_matcher'
+      autoload :ValidateLengthOfMatcher, 'shoulda/matchers/active_model/validate_length_of_matcher'
+      autoload :ValidateNumericalityOfMatcher, 'shoulda/matchers/active_model/validate_numericality_of_matcher'
+      autoload :Validator, 'shoulda/matchers/active_model/validator'
     end
   end
 end

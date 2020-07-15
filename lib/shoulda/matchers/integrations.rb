@@ -2,6 +2,12 @@ module Shoulda
   module Matchers
     # @private
     module Integrations
+      autoload :Configuration, 'shoulda/matchers/integrations/configuration'
+      autoload :ConfigurationError, 'shoulda/matchers/integrations/configuration_error'
+      autoload :Inclusion, 'shoulda/matchers/integrations/inclusion'
+      autoload :Rails, 'shoulda/matchers/integrations/rails'
+      autoload :Registry, 'shoulda/matchers/integrations/registry'
+
       class << self
         def register_library(klass, name)
           library_registry.register(klass, name)
@@ -32,12 +38,6 @@ module Shoulda
     end
   end
 end
-
-require 'shoulda/matchers/integrations/configuration'
-require 'shoulda/matchers/integrations/configuration_error'
-require 'shoulda/matchers/integrations/inclusion'
-require 'shoulda/matchers/integrations/rails'
-require 'shoulda/matchers/integrations/registry'
 
 require 'shoulda/matchers/integrations/libraries'
 require 'shoulda/matchers/integrations/test_frameworks'
