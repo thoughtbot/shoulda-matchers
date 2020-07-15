@@ -1,14 +1,14 @@
 module Shoulda
   module Matchers
-    module ActiveModel
+    module ActiveRecord
       # @private
       module Uniqueness
+        autoload :Model, 'shoulda/matchers/active_record/uniqueness/model'
+        autoload :Namespace, 'shoulda/matchers/active_record/uniqueness/namespace'
+        autoload :TestModelCreator, 'shoulda/matchers/active_record/uniqueness/test_model_creator'
+        autoload :TestModels, 'shoulda/matchers/active_record/uniqueness/test_models'
       end
     end
   end
 end
 
-require 'shoulda/matchers/active_record/uniqueness/model'
-require 'shoulda/matchers/active_record/uniqueness/namespace'
-require 'shoulda/matchers/active_record/uniqueness/test_model_creator'
-require 'shoulda/matchers/active_record/uniqueness/test_models'

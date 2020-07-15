@@ -176,6 +176,9 @@ module Shoulda
 
       # @private
       class DelegateMethodMatcher
+        autoload :StubbedTarget, 'shoulda/matchers/independent/delegate_method_matcher/stubbed_target'
+        autoload :DelegateObjectNotSpecified, 'shoulda/matchers/independent/delegate_method_matcher/target_not_defined_error'
+
         def initialize(delegating_method)
           @delegating_method = delegating_method
 

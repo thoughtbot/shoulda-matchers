@@ -3,6 +3,8 @@ module Shoulda
     module ActiveModel
       # @private
       class ValidationMatcher
+        autoload :BuildDescription, 'shoulda/matchers/active_model/validation_matcher/build_description'
+
         include Qualifiers::IgnoringInterferenceByWriter
 
         def initialize(attribute)

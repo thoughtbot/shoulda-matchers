@@ -4,6 +4,14 @@ module Shoulda
   module Matchers
     # @private
     module Doublespeak
+      autoload :Double, 'shoulda/matchers/doublespeak/double'
+      autoload :DoubleCollection, 'shoulda/matchers/doublespeak/double_collection'
+      autoload :DoubleImplementationRegistry, 'shoulda/matchers/doublespeak/double_implementation_registry'
+      autoload :MethodCall, 'shoulda/matchers/doublespeak/method_call'
+      autoload :ObjectDouble, 'shoulda/matchers/doublespeak/object_double'
+      autoload :ProxyImplementation, 'shoulda/matchers/doublespeak/proxy_implementation'
+      autoload :World, 'shoulda/matchers/doublespeak/world'
+
       class << self
         extend Forwardable
 
@@ -28,11 +36,4 @@ module Shoulda
   end
 end
 
-require 'shoulda/matchers/doublespeak/double'
-require 'shoulda/matchers/doublespeak/double_collection'
-require 'shoulda/matchers/doublespeak/double_implementation_registry'
-require 'shoulda/matchers/doublespeak/method_call'
-require 'shoulda/matchers/doublespeak/object_double'
-require 'shoulda/matchers/doublespeak/proxy_implementation'
 require 'shoulda/matchers/doublespeak/stub_implementation'
-require 'shoulda/matchers/doublespeak/world'

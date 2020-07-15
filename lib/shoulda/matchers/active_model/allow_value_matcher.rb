@@ -305,6 +305,15 @@ module Shoulda
 
       # @private
       class AllowValueMatcher
+        autoload :AttributeChangedValueError, 'shoulda/matchers/active_model/allow_value_matcher/attribute_changed_value_error'
+        autoload :AttributeDoesNotExistError, 'shoulda/matchers/active_model/allow_value_matcher/attribute_does_not_exist_error'
+        autoload :AttributeSetter,  'shoulda/matchers/active_model/allow_value_matcher/attribute_setter'
+        autoload :AttributeSetterAndValidator, 'shoulda/matchers/active_model/allow_value_matcher/attribute_setter_and_validator'
+        autoload :AttributeSetters, 'shoulda/matchers/active_model/allow_value_matcher/attribute_setters'
+        autoload :AttributeSettersAndValidators, 'shoulda/matchers/active_model/allow_value_matcher/attribute_setters_and_validators'
+        autoload :SuccessfulCheck, 'shoulda/matchers/active_model/allow_value_matcher/successful_check'
+        autoload :SuccessfulSetting, 'shoulda/matchers/active_model/allow_value_matcher/successful_setting'
+
         include Helpers
         include Qualifiers::IgnoringInterferenceByWriter
 

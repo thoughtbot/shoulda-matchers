@@ -1,5 +1,3 @@
-require 'shoulda/matchers/util/word_wrap'
-
 module Shoulda
   module Matchers
     # @private
