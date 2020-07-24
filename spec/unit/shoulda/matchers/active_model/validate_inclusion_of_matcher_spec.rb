@@ -16,6 +16,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         it 'matches ensuring the correct range and messages' do
           expect_to_match_ensuring_range_and_messages(2..5, 2, 5)
           expect_to_match_ensuring_range_and_messages(2...5, 2, 4)
+          expect_to_match_ensuring_range_and_messages(2..5, 2, 5, "%{value}")
         end
       end
 
@@ -1083,17 +1084,17 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     end
   end
 
-  def expect_to_match_ensuring_range_and_messages(range, low_value, high_value)
-    low_message = 'too low'
-    high_message = 'too high'
+  def expect_to_match_ensuring_range_and_messages(range, low_value, high_value, with_value=nil)
+    low_message = menssage_constructor('low', "#{with_value}")
+    high_message = menssage_constructor('high', "#{with_value}")
 
     builder = build_object custom_validation: -> (object, attribute) {
       value = object.public_send(attribute)
 
       if value < low_value
-        object.errors.add(attribute, low_message)
+        object.errors.add(attribute, add_value_to_message(low_message, value))
       elsif value > high_value
-        object.errors.add(attribute, high_message)
+        object.errors.add(attribute, add_value_to_message(high_message, value))
       end
     }
 
@@ -1103,6 +1104,14 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         with_low_message(low_message).
         with_high_message(high_message)
     end
+  end
+
+  def add_value_to_message(message, value)
+    message.gsub(/%{value}/, value.to_s)
+  end
+
+  def menssage_constructor(string, value)
+    "#{value} too #{string}"
   end
 
   def validation_matcher_scenario_args
