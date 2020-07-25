@@ -1570,96 +1570,359 @@ Expected Parent to have a has_many association called children through conceptio
       end.to fail_with_message_including('missing columns: person_id, relative_id')
     end
 
-    context 'when the association is declared with a :join_table option' do
-      it 'accepts when testing with the same :join_table option' do
-        join_table_name = 'people_and_their_families'
+    context 'when qualified with join_table' do
+      context 'and it is a symbol' do
+        context 'and the association has been declared with a :join_table option' do
+          context 'which is the same as the matcher' do
+            context 'and the join table exists' do
+              context 'and the join table has the appropriate foreign key columns' do
+                it 'matches' do
+                  define_model :relative
 
-        define_model :relative
+                  define_model :person do
+                    has_and_belongs_to_many(
+                      :relatives,
+                      join_table: :people_and_their_families
+                    )
+                  end
 
-        define_model :person do
-          has_and_belongs_to_many(:relatives, join_table: join_table_name)
+                  create_table(:people_and_their_families, id: false) do |t|
+                    t.references :person
+                    t.references :relative
+                  end
+
+                  build_matcher = -> do
+                    have_and_belong_to_many(:relatives).
+                      join_table(:people_and_their_families)
+                  end
+
+                  expect(&build_matcher).
+                    to match_against(Person.new).
+                    or_fail_with(<<-MESSAGE)
+Did not expect Person to have a has_and_belongs_to_many association called relatives
+                  MESSAGE
+                end
+              end
+
+              context 'and the join table is missing columns' do
+                it 'does not match, producing an appropriate failure message' do
+                  define_model :relative
+
+                  define_model :person do
+                    has_and_belongs_to_many(
+                      :relatives,
+                      join_table: :people_and_their_families
+                    )
+                  end
+
+                  create_table(:people_and_their_families)
+
+                  build_matcher = -> do
+                    have_and_belong_to_many(:relatives).
+                      join_table(:people_and_their_families)
+                  end
+
+                  expect(&build_matcher).
+                    not_to match_against(Person.new).
+                    and_fail_with(<<-MESSAGE)
+Expected Person to have a has_and_belongs_to_many association called relatives (join table people_and_their_families missing columns: person_id, relative_id)
+                  MESSAGE
+                end
+              end
+            end
+
+            context 'and the join table does not exist' do
+              it 'does not match, producing an appropriate failure message' do
+                define_model :relative
+
+                define_model :person do
+                  has_and_belongs_to_many(
+                    :relatives,
+                    join_table: :people_and_their_families
+                  )
+                end
+
+                build_matcher = -> do
+                  have_and_belong_to_many(:relatives).
+                    join_table(:family_tree)
+                end
+
+                expect(&build_matcher).
+                  not_to match_against(Person.new).
+                  and_fail_with(<<-MESSAGE)
+Expected Person to have a has_and_belongs_to_many association called relatives (relatives should use :family_tree for :join_table option)
+                MESSAGE
+              end
+            end
+          end
+
+          context 'which is the not the same as the matcher' do
+            it 'does not match, producing an appropriate failure message' do
+              define_model :relative
+
+              define_model :person do
+                has_and_belongs_to_many(
+                  :relatives,
+                  join_table: :people_and_their_families
+                )
+              end
+
+              create_table(:people_and_their_families, id: false) do |t|
+                t.references :person
+                t.references :relative
+              end
+
+              build_matcher = -> do
+                have_and_belong_to_many(:relatives).join_table(:family_tree)
+              end
+
+              expect(&build_matcher).
+                not_to match_against(Person.new).
+                and_fail_with(<<-MESSAGE)
+Expected Person to have a has_and_belongs_to_many association called relatives (relatives should use :family_tree for :join_table option)
+                MESSAGE
+            end
+          end
         end
 
-        create_table(join_table_name, id: false) do |t|
-          t.references :person
-          t.references :relative
-        end
+        context 'and the association has not been declared with a :join_table option' do
+          it 'does not match, producing an appropriate failure message' do
+            define_model :relative
 
-        expect(Person.new).
-          to have_and_belong_to_many(:relatives).
-          join_table(join_table_name)
+            define_model :person do
+              has_and_belongs_to_many(:relatives)
+            end
+
+            create_table(:people_relatives, id: false) do |t|
+              t.references :person
+              t.references :relative
+            end
+
+            build_matcher = -> do
+              have_and_belong_to_many(:relatives).join_table(:family_tree)
+            end
+
+            expect(&build_matcher).
+              not_to match_against(Person.new).
+              and_fail_with(<<-MESSAGE)
+Expected Person to have a has_and_belongs_to_many association called relatives (relatives should use :family_tree for :join_table option)
+              MESSAGE
+          end
+        end
       end
 
-      it 'accepts even when not explicitly testing with a :join_table option' do
-        join_table_name = 'people_and_their_families'
+      context 'and it is a string' do
+        context 'and the association has been declared with a :join_table option' do
+          context 'which is the same as the matcher' do
+            context 'and the join table exists' do
+              context 'and the join table has the appropriate foreign key columns' do
+                it 'matches' do
+                  define_model :relative
 
-        define_model :relative
+                  define_model :person do
+                    has_and_belongs_to_many(
+                      :relatives,
+                      join_table: 'people_and_their_families'
+                    )
+                  end
 
-        define_model :person do
-          has_and_belongs_to_many(:relatives,
-            join_table: join_table_name
-          )
+                  create_table(:people_and_their_families, id: false) do |t|
+                    t.references :person
+                    t.references :relative
+                  end
+
+                  build_matcher = -> do
+                    have_and_belong_to_many(:relatives).
+                      join_table('people_and_their_families')
+                  end
+
+                  expect(&build_matcher).
+                    to match_against(Person.new).
+                    or_fail_with(<<-MESSAGE)
+Did not expect Person to have a has_and_belongs_to_many association called relatives
+                  MESSAGE
+                end
+              end
+
+              context 'and the join table is missing columns' do
+                it 'does not match, producing an appropriate failure message' do
+                  define_model :relative
+
+                  define_model :person do
+                    has_and_belongs_to_many(
+                      :relatives,
+                      join_table: 'people_and_their_families'
+                    )
+                  end
+
+                  create_table(:people_and_their_families)
+
+                  build_matcher = -> do
+                    have_and_belong_to_many(:relatives).
+                      join_table('people_and_their_families')
+                  end
+
+                  expect(&build_matcher).
+                    not_to match_against(Person.new).
+                    and_fail_with(<<-MESSAGE)
+Expected Person to have a has_and_belongs_to_many association called relatives (join table people_and_their_families missing columns: person_id, relative_id)
+                  MESSAGE
+                end
+              end
+            end
+
+            context 'and the join table does not exist' do
+              it 'does not match, producing an appropriate failure message' do
+                define_model :relative
+
+                define_model :person do
+                  has_and_belongs_to_many(
+                    :relatives,
+                    join_table: 'people_and_their_families'
+                  )
+                end
+
+                build_matcher = -> do
+                  have_and_belong_to_many(:relatives).
+                    join_table('family_tree')
+                end
+
+                expect(&build_matcher).
+                  not_to match_against(Person.new).
+                  and_fail_with(<<-MESSAGE)
+Expected Person to have a has_and_belongs_to_many association called relatives (relatives should use "family_tree" for :join_table option)
+                MESSAGE
+              end
+            end
+          end
+
+          context 'which is the not the same as the matcher' do
+            it 'does not match, producing an appropriate failure message' do
+              define_model :relative
+
+              define_model :person do
+                has_and_belongs_to_many(
+                  :relatives,
+                  join_table: 'people_and_their_families'
+                )
+              end
+
+              create_table(:people_and_their_families, id: false) do |t|
+                t.references :person
+                t.references :relative
+              end
+
+              build_matcher = -> do
+                have_and_belong_to_many(:relatives).join_table('family_tree')
+              end
+
+              expect(&build_matcher).
+                not_to match_against(Person.new).
+                and_fail_with(<<-MESSAGE)
+Expected Person to have a has_and_belongs_to_many association called relatives (relatives should use "family_tree" for :join_table option)
+                MESSAGE
+            end
+          end
         end
 
-        create_table(join_table_name, id: false) do |t|
-          t.references :person
-          t.references :relative
+        context 'and the association has not been declared with a :join_table option' do
+          it 'does not match, producing an appropriate failure message' do
+            define_model :relative
+
+            define_model :person do
+              has_and_belongs_to_many(:relatives)
+            end
+
+            create_table(:people_relatives, id: false) do |t|
+              t.references :person
+              t.references :relative
+            end
+
+            build_matcher = -> do
+              have_and_belong_to_many(:relatives).join_table('family_tree')
+            end
+
+            expect(&build_matcher).
+              not_to match_against(Person.new).
+              and_fail_with(<<-MESSAGE)
+Expected Person to have a has_and_belongs_to_many association called relatives (relatives should use "family_tree" for :join_table option)
+              MESSAGE
+          end
         end
-
-        expect(Person.new).to have_and_belong_to_many(:relatives)
-      end
-
-      it 'rejects when testing with a different :join_table option' do
-        join_table_name = 'people_and_their_families'
-
-        define_model :relative
-
-        define_model :person do
-          has_and_belongs_to_many(
-            :relatives,
-            join_table: join_table_name
-          )
-        end
-
-        create_table(join_table_name, id: false) do |t|
-          t.references :person
-          t.references :relative
-        end
-
-        assertion = lambda do
-          expect(Person.new).
-            to have_and_belong_to_many(:relatives).
-            join_table('family_tree')
-        end
-
-        expect(&assertion).to fail_with_message_including(
-         "relatives should use 'family_tree' for :join_table option"
-        )
       end
     end
 
-    context 'when the association is not declared with a :join_table option' do
-      it 'rejects when testing with a :join_table option' do
-        define_model :relative
+    context 'when the matcher is not qualified with join_table but the association has still been declared with a :join_table option' do
+      context 'and the join table exists' do
+        context 'and the join table has the appropriate foreign key columns' do
+          it 'matches' do
+            define_model :relative
 
-        define_model :person do
-          has_and_belongs_to_many(:relatives)
+            define_model :person do
+              has_and_belongs_to_many(
+                :relatives,
+                join_table: :people_and_their_families
+              )
+            end
+
+            create_table(:people_and_their_families, id: false) do |t|
+              t.references :person
+              t.references :relative
+            end
+
+            build_matcher = -> { have_and_belong_to_many(:relatives) }
+
+            expect(&build_matcher).
+              to match_against(Person.new).
+              or_fail_with(<<-MESSAGE)
+Did not expect Person to have a has_and_belongs_to_many association called relatives
+            MESSAGE
+          end
         end
 
-        create_table('people_relatives', id: false) do |t|
-          t.references :person
-          t.references :relative
-        end
+        context 'and the join table is missing columns' do
+          it 'does not match, producing an appropriate failure message' do
+            define_model :relative
 
-        assertion = lambda do
-          expect(Person.new).
-            to have_and_belong_to_many(:relatives).
-            join_table('family_tree')
-        end
+            define_model :person do
+              has_and_belongs_to_many(
+                :relatives,
+                join_table: :people_and_their_families
+              )
+            end
 
-        expect(&assertion).to fail_with_message_including(
-         "relatives should use 'family_tree' for :join_table option"
-        )
+            create_table(:people_and_their_families)
+
+            build_matcher = -> { have_and_belong_to_many(:relatives) }
+
+            expect(&build_matcher).
+              not_to match_against(Person.new).
+              and_fail_with(<<-MESSAGE)
+Expected Person to have a has_and_belongs_to_many association called relatives (join table people_and_their_families missing columns: person_id, relative_id)
+            MESSAGE
+          end
+        end
+      end
+
+      context 'and the join table does not exist' do
+        it 'does not match, producing an appropriate failure message' do
+          define_model :relative
+
+          define_model :person do
+            has_and_belongs_to_many(
+              :relatives,
+              join_table: :people_and_their_families
+            )
+          end
+
+          build_matcher = -> { have_and_belong_to_many(:relatives) }
+
+          expect(&build_matcher).
+            not_to match_against(Person.new).
+            and_fail_with(<<-MESSAGE)
+Expected Person to have a has_and_belongs_to_many association called relatives (join table people_and_their_families doesn't exist)
+          MESSAGE
+        end
       end
     end
 

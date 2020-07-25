@@ -920,21 +920,21 @@ module Shoulda
       # asserts that the table you're referring to actually exists.
       #
       #     class Person < ActiveRecord::Base
-      #       has_and_belongs_to_many :issues, join_table: 'people_tickets'
+      #       has_and_belongs_to_many :issues, join_table: :people_tickets
       #     end
       #
       #     # RSpec
       #     RSpec.describe Person, type: :model do
       #       it do
       #         should have_and_belong_to_many(:issues).
-      #           join_table('people_tickets')
+      #           join_table(:people_tickets)
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_and_belong_to_many(:issues).
-      #         join_table('people_tickets')
+      #         join_table(:people_tickets)
       #     end
       #
       # ##### validate
