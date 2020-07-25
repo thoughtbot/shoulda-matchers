@@ -15,12 +15,23 @@
   `implicit_order_column` setting for ActiveRecord models under Rails 6+.
   ([#1243])
 
+* Add a new `is_other_than` qualifier to `validate_numericality_of` to be able
+  to test the numericality validation's `:other_than` option. ([#1282])
+
+* Add a new `have_one_attached` and `have_many_attached` matchers for testing
+  the new model-level ActiveStorage macros in Rails 6. ([#1102])
+
 [#1278]: https://github.com/thoughtbot/shoulda-matchers/pull/1278
 [#725]: https://github.com/thoughtbot/shoulda-matchers/pull/725
 [#1318]: https://github.com/thoughtbot/shoulda-matchers/pull/1318
 [#1243]: https://github.com/thoughtbot/shoulda-matchers/pull/1243
+[#1282]: https://github.com/thoughtbot/shoulda-matchers/pull/1282
+[#1102]: https://github.com/thoughtbot/shoulda-matchers/pull/1102
 
 ### Bug fixes
+
+* Fix performance of `allow_value` so that it doesn't hang if the given value is
+  really long. ([#1290])
 
 * Fix `have_many` so that it is possible to test an association that has a scope
   that takes an argument. ([#952], [#992])
@@ -33,6 +44,7 @@
 * Update `validate_uniqueness_of` to work with scopes that are `time` columns.
   ([#1190])
 
+[#1290]: https://github.com/thoughtbot/shoulda-matchers/issues/952
 [#952]: https://github.com/thoughtbot/shoulda-matchers/issues/952
 [#992]: https://github.com/thoughtbot/shoulda-matchers/pull/992
 [schema_validations]: https://github.com/SchemaPlus/schema_validations
