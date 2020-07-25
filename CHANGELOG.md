@@ -44,12 +44,16 @@
 * Update `validate_uniqueness_of` to work with scopes that are `time` columns.
   ([#1190])
 
+* Fix `have_and_belong_to_many` so that when using the `join_table` qualifier
+  you can pass a symbol rather than a string. ([#1323])
+
 [#1290]: https://github.com/thoughtbot/shoulda-matchers/issues/952
 [#952]: https://github.com/thoughtbot/shoulda-matchers/issues/952
 [#992]: https://github.com/thoughtbot/shoulda-matchers/pull/992
 [schema_validations]: https://github.com/SchemaPlus/schema_validations
 [#995]: https://github.com/thoughtbot/shoulda-matchers/pull/995
 [#1190]: https://github.com/thoughtbot/shoulda-matchers/pull/1190
+[#1323]: https://github.com/thoughtbot/shoulda-matchers/pull/1323
 
 ### Improvements
 
