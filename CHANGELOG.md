@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 4.4.0 - 2020-08-25
 
 ### Bug fixes
 
