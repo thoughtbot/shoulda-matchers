@@ -10,9 +10,14 @@ set -euo pipefail
 
 USE_BUNDLER_1=1
 
+provision-project() {
+  banner "Installing Appraisals"
+  bundle exec appraisal install
+}
+
 ### DON'T MODIFY ANYTHING BELOW THIS LINE! #####################################
 
-# This setup script was generated with setup_script_generator 0.2.3,
+# This setup script was generated with setup_script_generator 0.2.7,
 # available on RubyGems.
 #
 # To regenerate this section, install the gem and run:
@@ -182,6 +187,8 @@ setup() {
 # --- RUBY ---------------------------------------------------------------------
 
 provision-ruby() {
+  USE_BUNDLER_1=0
+
   if [[ -f .tool-versions ]]; then
     REQUIRED_RUBY_VERSION=$(cat .tool-versions | grep '^ruby ' | sed -Ee 's/^ruby (.+)$/\1/')
   elif [[ -f .ruby-version ]]; then
@@ -254,7 +261,7 @@ has-bundler() {
 ensure-project-ruby-dependencies-installed() {
   banner 'Installing Ruby dependencies'
 
-  if [[ $USE_BUNDLER_1 -eq 1 ]] && (! has-bundler || [[ $(bundle -v) =~ '^1\.' ]]); then
+  if [[ $USE_BUNDLER_1 -eq 1 ]] && (! has-bundler || ! [[ $(bundle -v) =~ '^Bundler version 1\.' ]]); then
     gem install bundler -v '~> 1.0'
   elif ! has-bundler; then
     gem install bundler
@@ -265,10 +272,6 @@ ensure-project-ruby-dependencies-installed() {
 
 run-provisions() {
   provision-ruby
-
-  if type provision-project &>/dev/null; then
-    provision-project
-  fi
 }
 
 # --- FIN ----------------------------------------------------------------------
