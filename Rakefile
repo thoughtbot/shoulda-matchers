@@ -4,7 +4,7 @@ require 'rspec/core/rake_task'
 require 'appraisal'
 require_relative 'tasks/documentation'
 require_relative 'spec/support/tests/database'
-require_relative 'spec/support/tests/current_bundle'
+require_relative 'support/current_bundle'
 
 RSpec::Core::RakeTask.new('spec:unit') do |t|
   t.ruby_opts = '-w -r ./spec/report_warnings'
@@ -21,14 +21,14 @@ RSpec::Core::RakeTask.new('spec:acceptance') do |t|
 end
 
 task :default do
-  if Tests::CurrentBundle.instance.appraisal_in_use?
+  if Shoulda::Matchers::CurrentBundle.instance.appraisal_in_use?
     sh 'rake spec:unit --trace'
     sh 'rake spec:acceptance --trace'
   else
     if ENV['CI']
       exec "appraisal install && appraisal rake --trace"
     else
-      appraisal = Tests::CurrentBundle.instance.latest_appraisal
+      appraisal = Shoulda::Matchers::CurrentBundle.instance.latest_appraisal
       exec "appraisal install && appraisal #{appraisal} rake --trace"
     end
   end
@@ -36,7 +36,7 @@ end
 
 namespace :appraisal do
   task :list do
-    appraisals = Tests::CurrentBundle.instance.available_appraisals
+    appraisals = Shoulda::Matchers::CurrentBundle.instance.available_appraisals
     puts "Valid appraisals: #{appraisals.join(', ')}"
   end
 end

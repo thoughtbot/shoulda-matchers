@@ -1,6 +1,6 @@
-require_relative 'support/tests/current_bundle'
+require_relative '../support/current_bundle'
 
-Tests::CurrentBundle.instance.assert_appraisal!
+Shoulda::Matchers::CurrentBundle.instance.assert_appraisal!
 
 #---
 

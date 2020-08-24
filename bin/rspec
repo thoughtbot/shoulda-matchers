@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require_relative '../support/current_bundle'
+
+current_bundle = Shoulda::Matchers::CurrentBundle.instance
+
+ENV['BUNDLE_GEMFILE'] ||= current_bundle.latest_appraisal.gemfile_path.to_s
+
+exec('bundle', 'exec', 'rspec', *ARGV)

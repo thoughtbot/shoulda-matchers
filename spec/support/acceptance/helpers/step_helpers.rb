@@ -58,13 +58,37 @@ module AcceptanceTests
 
     def create_rails_application
       fs.clean
+
+      options = [
+        '--no-rc',
+        '--skip-bundle',
+        '--skip-javascript',
+        '--skip-listen',
+        '--skip-spring',
+        '--skip-sprockets',
+        '--skip-turbolinks',
+      ]
+
       if rails_version =~ '~> 6.0'
-        command = "bundle exec rails new #{fs.project_directory} --skip-bundle --skip-javascript --no-rc"
-      else
-        command = "bundle exec rails new #{fs.project_directory} --skip-bundle --no-rc"
+        options += [
+          '--skip-action-cable',
+          '--skip-action-mailbox',
+          '--skip-action-text',
+          '--skip-bootsnap',
+          '--skip-webpack-install',
+        ]
       end
 
-      run_command!(command) do |runner|
+      command = [
+        'bundle',
+        'exec',
+        'rails',
+        'new',
+        fs.project_directory.to_s,
+        *options,
+      ]
+
+      run_command!(*command) do |runner|
         runner.directory = nil
       end
 

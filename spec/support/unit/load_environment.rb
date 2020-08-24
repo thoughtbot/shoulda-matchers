@@ -1,7 +1,7 @@
-require_relative '../tests/current_bundle'
+require_relative '../support/current_bundle'
 require_relative 'rails_application'
 
-Tests::CurrentBundle.instance.assert_appraisal!
+Shoulda::Matchers::CurrentBundle.instance.assert_appraisal!
 
 $test_app = UnitTests::RailsApplication.new
 $test_app.create

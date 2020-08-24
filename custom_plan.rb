@@ -1,6 +1,6 @@
 require 'zeus'
 require 'zeus/plan'
-require_relative 'spec/support/tests/current_bundle'
+require_relative 'support/current_bundle'
 
 class CouldNotBootZeusError < StandardError
   def self.create(underlying_error:)
@@ -64,7 +64,7 @@ class CustomPlan < Zeus::Plan
   end
 
   def current_bundle
-    Tests::CurrentBundle.instance
+    Shoulda::Matchers::CurrentBundle.instance
   end
 
   def file_paths_to_run
