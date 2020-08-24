@@ -1,4 +1,4 @@
-require_relative '../support/current_bundle'
+require_relative '../current_bundle'
 require_relative 'rails_application'
 
 Shoulda::Matchers::CurrentBundle.instance.assert_appraisal!
