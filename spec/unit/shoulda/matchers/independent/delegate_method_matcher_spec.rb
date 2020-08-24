@@ -418,7 +418,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
           person = Person.new
 
           expect {
-            expect(person).to delegate_method(:hello). to(:country).with_prefix
+            expect(person).to delegate_method(:hello).to(:country).with_prefix
           }.to fail_with_message(message)
         end
       end
@@ -592,7 +592,9 @@ to account for when #country *was* nil.
           MESSAGE
 
           expectation = lambda do
-            expect(person).to delegate_method(:hello).to(:country).allow_nil
+            silence_warnings do
+              expect(person).to delegate_method(:hello).to(:country).allow_nil
+            end
           end
 
           expect(&expectation).to fail_with_message(message)

@@ -233,6 +233,7 @@ module Shoulda::Matchers::Doublespeak
         doubles[0].activate
 
         was_called = false
+        klass.__send__(:remove_method, method_name)
         klass.__send__(:define_method, method_name) do
           was_called = true
         end
