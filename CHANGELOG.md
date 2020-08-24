@@ -2,32 +2,6 @@
 
 ## Unreleased
 
-### Features
-
-* Add an `ignoring_check_for_db_index` qualifier to the `have_secure_token`
-  matcher, since `has_secure_token` encourages use of an index but does not
-  enforce it. ([#1278])
-
-* Add `allow_blank` to `validate_length_of` to match other validation matchers.
-  ([#725], [#1318])
-
-* Add new matcher `have_implicit_order_column` which can be used to test the
-  `implicit_order_column` setting for ActiveRecord models under Rails 6+.
-  ([#1243])
-
-* Add a new `is_other_than` qualifier to `validate_numericality_of` to be able
-  to test the numericality validation's `:other_than` option. ([#1282])
-
-* Add a new `have_one_attached` and `have_many_attached` matchers for testing
-  the new model-level ActiveStorage macros in Rails 6. ([#1102])
-
-[#1278]: https://github.com/thoughtbot/shoulda-matchers/pull/1278
-[#725]: https://github.com/thoughtbot/shoulda-matchers/pull/725
-[#1318]: https://github.com/thoughtbot/shoulda-matchers/pull/1318
-[#1243]: https://github.com/thoughtbot/shoulda-matchers/pull/1243
-[#1282]: https://github.com/thoughtbot/shoulda-matchers/pull/1282
-[#1102]: https://github.com/thoughtbot/shoulda-matchers/pull/1102
-
 ### Bug fixes
 
 * Fix performance of `allow_value` so that it doesn't hang if the given value is
@@ -55,6 +29,32 @@
 [#1190]: https://github.com/thoughtbot/shoulda-matchers/pull/1190
 [#1323]: https://github.com/thoughtbot/shoulda-matchers/pull/1323
 
+### Features
+
+* Add an `ignoring_check_for_db_index` qualifier to the `have_secure_token`
+  matcher, since `has_secure_token` encourages use of an index but does not
+  enforce it. ([#1278])
+
+* Add `allow_blank` to `validate_length_of` to match other validation matchers.
+  ([#725], [#1318])
+
+* Add new matcher `have_implicit_order_column` which can be used to test the
+  `implicit_order_column` setting for ActiveRecord models under Rails 6+.
+  ([#1243])
+
+* Add a new `is_other_than` qualifier to `validate_numericality_of` to be able
+  to test the numericality validation's `:other_than` option. ([#1282])
+
+* Add a new `have_one_attached` and `have_many_attached` matchers for testing
+  the new model-level ActiveStorage macros in Rails 6. ([#1102])
+
+[#1278]: https://github.com/thoughtbot/shoulda-matchers/pull/1278
+[#725]: https://github.com/thoughtbot/shoulda-matchers/pull/725
+[#1318]: https://github.com/thoughtbot/shoulda-matchers/pull/1318
+[#1243]: https://github.com/thoughtbot/shoulda-matchers/pull/1243
+[#1282]: https://github.com/thoughtbot/shoulda-matchers/pull/1282
+[#1102]: https://github.com/thoughtbot/shoulda-matchers/pull/1102
+
 ### Improvements
 
 * Update `have_many` when used against a `:through` association so that it fails
@@ -76,6 +76,10 @@
 
 ## 4.3.0 - 2020-02-18
 
+### Bug fixes
+
+* Fix `missing attribute:: scope 1` intermittent test. ([#1274])
+
 ### Features
 
 * Add `have_rich_text` matcher for `ActionText`. ([#1263])
@@ -84,15 +88,17 @@
 
 * Use range on `validate_exclusion_of#in_range` documentation. ([#1273])
 
-### Bug fixes
-
-* Fix `missing attribute:: scope 1` intermittent test. ([#1274])
-
 [#1263]: https://github.com/thoughtbot/shoulda-matchers/pull/1263
 [#1273]: https://github.com/thoughtbot/shoulda-matchers/pull/1273
 [#1274]: https://github.com/thoughtbot/shoulda-matchers/pull/1274
 
 ## 4.2.0 - 2020-01-29
+
+### Bug fixes
+
+* Fix typos in documentation of `allow_values`. ([#1241])
+
+* Fix appraisal command in CONTRIBUTING.md file. ([#1253])
 
 ### Features
 
@@ -101,12 +107,6 @@
 
 * Add support for associations with `inverse_of: false` and non-standard foreign
   key ([#1106])
-
-### Bug fixes
-
-* Fix typos in documentation of `allow_values`. ([#1241])
-
-* Fix appraisal command in CONTRIBUTING.md file. ([#1253])
 
 ### Improvements
 
