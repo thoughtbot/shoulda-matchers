@@ -38,6 +38,4 @@ before_install:
   - gem install bundler -v '< 2' --no-document
 install: "bundle install --jobs=3 --retry=3"
 script: "bundle exec rake"
-branches:
-  only:
-    - master
+if: branch = master OR commit_message =~ /\[ci run\]/ OR commit_message =~ /\[run ci\]/
