@@ -54,6 +54,7 @@ GEM
     ruby-progressbar (1.10.1)
     thor (0.20.0)
     unicode-display_width (1.6.0)
+    warnings_logger (0.1.1)
     yard (0.9.20)
     zeus (0.15.14)
       method_source (>= 0.6.7)
@@ -73,6 +74,7 @@ DEPENDENCIES
   rspec (~> 3.9)
   rubocop
   rubocop-rails
+  warnings_logger
   yard
   zeus
 

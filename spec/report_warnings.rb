@@ -1,7 +1,8 @@
-require File.expand_path('../warnings_spy', __FILE__)
+require 'warnings_logger'
 
-# Adapted from <http://myronmars.to/n/dev-blog/2011/08/making-your-gem-warning-free>
+WarningsLogger.configure do |config|
+  config.project_name = 'shoulda-matchers'
+  config.project_directory = Pathname.new('..').expand_path(__dir__)
+end
 
-warnings_spy = WarningsSpy.new('shoulda-matchers')
-warnings_spy.capture_warnings
-warnings_spy.report_warnings_at_exit
+WarningsLogger.enable
