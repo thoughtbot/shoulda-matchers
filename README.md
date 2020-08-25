@@ -395,8 +395,12 @@ about any of them, make sure to [consult the documentation][rubydocs]!
   tests usage of `implicit_order_column`.
 * **[have_many](lib/shoulda/matchers/active_record/association_matcher.rb)**
   tests your `has_many` associations.
+* **[have_many_attached](lib/shoulda/matchers/active_record/have_attached_matcher.rb)**
+  tests your `has_many_attached` associations.
 * **[have_one](lib/shoulda/matchers/active_record/association_matcher.rb)**
   tests your `has_one` associations.
+* **[have_one_attached](lib/shoulda/matchers/active_record/have_attached_matcher.rb)**
+  tests your `has_one_attached` associations.
 * **[have_readonly_attribute](lib/shoulda/matchers/active_record/have_readonly_attribute_matcher.rb)**
   tests usage of the `attr_readonly` macro.
 * **[have_rich_text](lib/shoulda/matchers/active_record/have_rich_text_matcher.rb)**
