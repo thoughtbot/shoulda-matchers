@@ -67,12 +67,15 @@
 
 * Remove warnings emitted on Ruby 2.7 in Doublespeak. ([#1328])
 
+* Clean up requires within the code by converting them to `autoload`s. ([#1320])
+
 [#646]: https://github.com/thoughtbot/shoulda-matchers/issues/646
 [#723]: https://github.com/thoughtbot/shoulda-matchers/pull/723
 [c0a1578]: https://github.com/thoughtbot/shoulda-matchers/commit/c0a1578435f66d6fbf0db1164205bd8d99f6aa2f
 [#1310]: https://github.com/thoughtbot/shoulda-matchers/pull/1310
 [#1314]: https://github.com/thoughtbot/shoulda-matchers/pull/1314
 [#1328]: https://github.com/thoughtbot/shoulda-matchers/pull/1328
+[#1320]: https://github.com/thoughtbot/shoulda-matchers/pull/1320
 
 ## 4.3.0 - 2020-02-18
 
