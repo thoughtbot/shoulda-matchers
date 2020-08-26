@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.4.1 - 2020-08-26
+
+### Bug fixes
+
+* Revert reorganization around autoloading introduced in 4.4.0 which prevented
+  matchers from being loaded. ([#1334])
+
+[#1334]: https://github.com/thoughtbot/shoulda-matchers/pulls/1334
+
 ## 4.4.0 - 2020-08-25
 
 ### Bug fixes
