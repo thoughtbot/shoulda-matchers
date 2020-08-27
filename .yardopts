@@ -6,5 +6,5 @@
 --hide-tag param
 -e ./doc_config/yard/setup.rb
 -
-NEWS.md
+CHANGELOG.md
 docs/**/*.md
