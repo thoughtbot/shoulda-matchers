@@ -177,7 +177,7 @@ module Shoulda
 
         def add_port_to_path(path, port)
           if port
-            "http://example.com:#{port}" + path
+            "https://example.com:#{port}" + path
           else
             path
           end

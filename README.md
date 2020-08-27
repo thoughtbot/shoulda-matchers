@@ -24,7 +24,7 @@ complex, and error-prone.
 📖 **[Read the documentation for the latest version][rubydocs].**  
 📢 **[See what's changed in recent versions][changelog].**
 
-[rubydocs]: http://matchers.shoulda.io/docs
+[rubydocs]: https://matchers.shoulda.io/docs
 [changelog]: CHANGELOG.md
 
 ## Table of contents
@@ -480,7 +480,7 @@ For Ruby < 2.4 and Rails < 4.1 compatibility, please use [v3.1.3][v3.1.3].
 ## Versioning
 
 Shoulda Matchers follows Semantic Versioning 2.0 as defined at
-<http://semver.org>.
+<https://semver.org>.
 
 ## Team
 

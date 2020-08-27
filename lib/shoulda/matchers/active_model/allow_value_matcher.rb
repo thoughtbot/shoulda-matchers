@@ -18,14 +18,14 @@ module Shoulda
       #
       #     # RSpec
       #     RSpec.describe UserProfile, type: :model do
-      #       it { should allow_value('http://foo.com').for(:website_url) }
-      #       it { should allow_value('http://bar.com').for(:website_url) }
+      #       it { should allow_value('https://foo.com').for(:website_url) }
+      #       it { should allow_value('https://bar.com').for(:website_url) }
       #     end
       #
       #     # Minitest (Shoulda)
       #     class UserProfileTest < ActiveSupport::TestCase
-      #       should allow_value('http://foo.com').for(:website_url)
-      #       should allow_value('http://bar.com').for(:website_url)
+      #       should allow_value('https://foo.com').for(:website_url)
+      #       should allow_value('https://bar.com').for(:website_url)
       #     end
       #
       # You can also test multiple values in one go, if you like. In the
@@ -36,7 +36,7 @@ module Shoulda
       #     # RSpec
       #     RSpec.describe UserProfile, type: :model do
       #       it do
-      #         should allow_values('http://foo.com', 'http://bar.com').
+      #         should allow_values('https://foo.com', 'https://bar.com').
       #           for(:website_url)
       #       end
       #
@@ -48,7 +48,7 @@ module Shoulda
       #
       #     # Minitest (Shoulda)
       #     class UserProfileTest < ActiveSupport::TestCase
-      #       should allow_values('http://foo.com', 'http://bar.com/baz').
+      #       should allow_values('https://foo.com', 'https://bar.com/baz').
       #         for(:website_url)
       #
       #       should_not allow_values('foo', 'buz').
