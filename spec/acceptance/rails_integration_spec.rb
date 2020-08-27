@@ -3,35 +3,12 @@ require 'acceptance_spec_helper'
 describe 'shoulda-matchers integrates with Rails' do
   before do
     create_rails_application
+    write_files_in_rails_application
 
-    write_file 'db/migrate/1_create_users.rb', <<-FILE
-      class CreateUsers < #{migration_class_name}
-        def self.up
-          create_table :users do |t|
-            t.string :name
-          end
-        end
-      end
-    FILE
+    # TODO: ActionController matchers
+    # configure_routes_with_single_wildcard_route
 
     run_rake_tasks!('db:drop', 'db:create', 'db:migrate')
-
-    write_file 'app/models/user.rb', <<-FILE
-      class User < ActiveRecord::Base
-        validates_presence_of :name
-      end
-    FILE
-
-    write_file 'app/controllers/examples_controller.rb', <<-FILE
-      class ExamplesController < ApplicationController
-        def show
-          @example = 'hello'
-          head :ok
-        end
-      end
-    FILE
-
-    configure_routes_with_single_wildcard_route
   end
 
   specify 'in a project that uses the default test framework' do
@@ -105,52 +82,52 @@ describe 'shoulda-matchers integrates with Rails' do
       require 'test_helper'
 
       class UserTest < ActiveSupport::TestCase
-        should validate_presence_of(:name)
+        # ActiveModel matchers
+        should allow_value('https://foo.com').for(:website_url)
+        should have_secure_password
+        should validate_absence_of(:first_name)
+        should validate_acceptance_of(:terms_of_service)
+        should validate_confirmation_of(:email)
+        should validate_exclusion_of(:age).in_array(0..17)
+        should validate_inclusion_of(:role).in_array(%w( admin manager ))
+        should validate_length_of(:password).is_at_least(10).on(:create)
+        should validate_numericality_of(:number_of_dependents).on(:create)
+        should validate_presence_of(:email)
+
+        # TODO: ActiveRecord matchers
       end
     FILE
 
-    write_file 'test/functional/examples_controller_test.rb', <<-FILE
-      require 'test_helper'
-
-      class ExamplesControllerTest < ActionController::TestCase
-        def setup
-          get :show
-        end
-
-        should respond_with(:success)
-      end
-    FILE
+    # TODO: ActionController matchers tests
 
     result = run_n_unit_test_suite
 
-    expect(result).to indicate_that_tests_were_run(unit: 1, functional: 1)
-    expect(result).to have_output(
-      'User should validate that :name cannot be empty/falsy',
-    )
-    expect(result).to have_output('should respond with 200')
+    expect(result).to indicate_that_tests_were_run(unit: 10)
   end
 
   def run_tests_for_rspec
     add_rspec_file 'spec/models/user_spec.rb', <<-FILE
       describe User do
-        it { should validate_presence_of(:name) }
+        # ActiveModel matchers
+        it { should allow_value('https://foo.com').for(:website_url) }
+        it { should have_secure_password }
+        it { should validate_absence_of(:first_name) }
+        it { should validate_acceptance_of(:terms_of_service) }
+        it { should validate_confirmation_of(:email) }
+        it { should validate_exclusion_of(:age).in_array(0..17) }
+        it { should validate_inclusion_of(:role).in_array(%w( admin manager )) }
+        it { should validate_length_of(:password).is_at_least(10).on(:create) }
+        it { should validate_numericality_of(:number_of_dependents).on(:create) }
+        it { should validate_presence_of(:email) }
+
+        # TODO: ActiveRecord matchers
       end
     FILE
 
-    add_rspec_file 'spec/controllers/examples_controller_spec.rb', <<-FILE
-      describe ExamplesController, "show" do
-        before { get :show }
-
-        it { should respond_with(:success) }
-      end
-    FILE
+    # TODO: ActionController matchers tests
 
     result = run_rspec_suite
 
-    expect(result).to have_output('2 examples, 0 failures')
-    expect(result).to have_output(
-      'is expected to validate that :name cannot be empty/falsy',
-    )
-    expect(result).to have_output('is expected to respond with 200')
+    expect(result).to have_output('10 examples, 0 failures')
   end
 end

@@ -75,12 +75,77 @@ module AcceptanceTests
         bundle.remove_gem 'debugger'
         bundle.remove_gem 'byebug'
         bundle.remove_gem 'web-console'
+        bundle.add_gem 'bcrypt'
         bundle.add_gem 'pg'
       end
 
       fs.open('config/database.yml', 'w') do |file|
         YAML.dump(database.config.to_hash, file)
       end
+    end
+
+    def write_files_in_rails_application
+      write_file 'db/migrate/1_create_users.rb', <<-FILE
+        class CreateUsers < #{migration_class_name}
+          def self.up
+            create_table :categories_users do |t|
+              t.integer :category_id
+              t.integer :user_id
+            end
+
+            create_table :categories do |t|
+            end
+
+            create_table :issues do |t|
+              t.integer :user_id
+            end
+
+            create_table :users do |t|
+              t.integer :age
+              t.string  :email
+              t.string  :first_name
+              t.integer :number_of_dependents
+              t.string  :gender
+              t.string  :password_digest
+              t.string  :role
+              t.string  :website_url
+            end
+          end
+        end
+      FILE
+
+      write_file 'app/models/category.rb', <<-FILE
+        class Category < ActiveRecord::Base
+        end
+      FILE
+
+      write_file 'app/models/issue.rb', <<-FILE
+        class Issue < ActiveRecord::Base
+        end
+      FILE
+
+      write_file 'app/models/user.rb', <<-FILE
+        class User < ActiveRecord::Base
+          # Note: All of these validations are listed in the same order as what's
+          # defined in the test (see below)
+
+          # ActiveModel
+          validates_format_of       :website_url, with: URI.regexp
+          has_secure_password
+          validates_absence_of      :first_name
+          validates_acceptance_of   :terms_of_service
+          validates_confirmation_of :email
+          validates_exclusion_of    :age, in: 0..17
+          validates_inclusion_of    :role, in: %w( admin manager )
+          validates_length_of       :password, minimum: 10, on: :create
+          validates_numericality_of :number_of_dependents, on: :create
+          validates_presence_of     :email
+
+          # TODO: ActiveRecord
+        end
+      FILE
+
+      # TODO: Controller file
     end
 
     def configure_routes_with_single_wildcard_route
