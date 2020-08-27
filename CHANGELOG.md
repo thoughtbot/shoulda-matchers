@@ -7,7 +7,7 @@
 * Revert reorganization around autoloading introduced in 4.4.0 which prevented
   matchers from being loaded. ([#1334])
 
-[#1334]: https://github.com/thoughtbot/shoulda-matchers/pulls/1334
+[#1334]: https://github.com/thoughtbot/shoulda-matchers/pull/1334
 
 ## 4.4.0 - 2020-08-25
 
@@ -291,42 +291,42 @@ is now:
 * Add `index_errors` option to `has_many` (Rails 5 only). ([#1089], [795ca68])
 
 [a6d09aa]: https://github.com/thoughtbot/shoulda-matchers/commit/a6d09aa5de0d546367e7b3d7177dfde6c66f7f05
-[#943]: https://github.com/thoughtbot/shoulda-matchers/pulls/943
+[#943]: https://github.com/thoughtbot/shoulda-matchers/pull/943
 [#933]: https://github.com/thoughtbot/shoulda-matchers/issues/933
 [df04f87]: https://github.com/thoughtbot/shoulda-matchers/commit/df04f8704abc3754c63c488433dac8c30573da6b
-[#965]: https://github.com/thoughtbot/shoulda-matchers/pulls/965
+[#965]: https://github.com/thoughtbot/shoulda-matchers/pull/965
 [#913]: https://github.com/thoughtbot/shoulda-matchers/issues/913
 [8d7dcb8]: https://github.com/thoughtbot/shoulda-matchers/commit/8d7dcb88c3bae8315e4107a39ae17fe19a4b6786
-[#1038]: https://github.com/thoughtbot/shoulda-matchers/pulls/1038
+[#1038]: https://github.com/thoughtbot/shoulda-matchers/pull/1038
 [#1006]: httpce9624b3c5a08b9134150e228440c771d95782b7s://github.com/thoughtbot/shoulda-matchers/issues/1006
 [ce9624b]: https://github.com/thoughtbot/shoulda-matchers/commit/ce9624b3c5a08b9134150e228440c771d95782b7
-[#989]: https://github.com/thoughtbot/shoulda-matchers/pulls/989
-[#964]: https://github.com/thoughtbot/shoulda-matchers/pulls/964
-[#917]: https://github.com/thoughtbot/shoulda-matchers/pulls/917
+[#989]: https://github.com/thoughtbot/shoulda-matchers/pull/989
+[#964]: https://github.com/thoughtbot/shoulda-matchers/pull/964
+[#917]: https://github.com/thoughtbot/shoulda-matchers/pull/917
 [#867]: https://github.com/thoughtbot/shoulda-matchers/issues/867
-[#1054]: https://github.com/thoughtbot/shoulda-matchers/pulls/1054
+[#1054]: https://github.com/thoughtbot/shoulda-matchers/pull/1054
 [5650aae]: https://github.com/thoughtbot/shoulda-matchers/commit/5650aae35de85aeabd75bc544324fda33ce1a092
-[#1063]: https://github.com/thoughtbot/shoulda-matchers/pulls/1063
+[#1063]: https://github.com/thoughtbot/shoulda-matchers/pull/1063
 [#912]: https://github.com/thoughtbot/shoulda-matchers/issues/912
-[#1073]: https://github.com/thoughtbot/shoulda-matchers/pulls/1073
+[#1073]: https://github.com/thoughtbot/shoulda-matchers/pull/1073
 [#949]: https://github.com/thoughtbot/shoulda-matchers/issues/949
 [d49cfca]: https://github.com/thoughtbot/shoulda-matchers/commit/d49cfcae1b294e12a05e06a5612cb8ebb22a7df1
-[#798]: https://github.com/thoughtbot/shoulda-matchers/pulls/798
+[#798]: https://github.com/thoughtbot/shoulda-matchers/pull/798
 [#724]: https://github.com/thoughtbot/shoulda-matchers/issues/724
 [d49cfca]: https://github.com/thoughtbot/shoulda-matchers/commit/d49cfcae1b294e12a05e06a5612cb8ebb22a7df1
 [3af3d9f]: https://github.com/thoughtbot/shoulda-matchers/commit/3af3d9f7abb768c063759941724ccae48c7b76d6
-[#956]: https://github.com/thoughtbot/shoulda-matchers/pulls/956
+[#956]: https://github.com/thoughtbot/shoulda-matchers/pull/956
 [#870]: https://github.com/thoughtbot/shoulda-matchers/issues/870
 [#861]: https://github.com/thoughtbot/shoulda-matchers/issues/861
 [#1153]: https://github.com/thoughtbot/shoulda-matchers/issues/1153
 [#1154]: https://github.com/thoughtbot/shoulda-matchers/issues/1154
 [#954]: https://github.com/thoughtbot/shoulda-matchers/issues/954
-[#1074]: https://github.com/thoughtbot/shoulda-matchers/pulls/1074
-[#1075]: https://github.com/thoughtbot/shoulda-matchers/pulls/1075
-[#1077]: https://github.com/thoughtbot/shoulda-matchers/pulls/1077
+[#1074]: https://github.com/thoughtbot/shoulda-matchers/pull/1074
+[#1075]: https://github.com/thoughtbot/shoulda-matchers/pull/1075
+[#1077]: https://github.com/thoughtbot/shoulda-matchers/pull/1077
 [#961]: https://github.com/thoughtbot/shoulda-matchers/issues/961
 [795ca68]: https://github.com/thoughtbot/shoulda-matchers/commit/795ca688bff08590dbd2ab6f2b51ea415e0c7473
-[#1089]: https://github.com/thoughtbot/shoulda-matchers/pulls/1089
+[#1089]: https://github.com/thoughtbot/shoulda-matchers/pull/1089
 [#904]: https://github.com/thoughtbot/shoulda-matchers/issues/904
 
 ### Improvements
@@ -337,9 +337,9 @@ is now:
 
 [61c3654]: https://github.com/thoughtbot/shoulda-matchers/commit/61c365416a09c5cffd7fcb774a07de4abf8e9afd
 [03a1d21]: https://github.com/thoughtbot/shoulda-matchers/commit/03a1d213805a44a0aec99857e01cab8524aa0c05
-[#1040]: https://github.com/thoughtbot/shoulda-matchers/pulls/1040
-[#1031]: https://github.com/thoughtbot/shoulda-matchers/pulls/1031
-[#1009]: https://github.com/thoughtbot/shoulda-matchers/pulls/1009
+[#1040]: https://github.com/thoughtbot/shoulda-matchers/pull/1040
+[#1031]: https://github.com/thoughtbot/shoulda-matchers/pull/1031
+[#1009]: https://github.com/thoughtbot/shoulda-matchers/pull/1009
 [#1001]: https://github.com/thoughtbot/shoulda-matchers/issues/1001
 
 ## 3.1.3 - 2019-01-29
@@ -367,7 +367,7 @@ is now:
 
 [44c019]: https://github.com/thoughtbot/shoulda-matchers/commit/44c0198830921650af3b4a56f5d72aaae2168480
 [#899]: https://github.com/thoughtbot/shoulda-matchers/issues/899
-[#902]: https://github.com/thoughtbot/shoulda-matchers/pulls/902
+[#902]: https://github.com/thoughtbot/shoulda-matchers/pull/902
 
 ## 3.1.1 - 2016-01-28
 
