@@ -54,7 +54,7 @@ module Shoulda
 
             FSSM.monitor do
               path project_directory do
-                glob '{README.md,NEWS.md,.yardopts,docs/**/*.md,doc_config/yard/**/*.{rb,js,css,erb},lib/**/*.rb}'
+                glob '{README.md,CHANGELOG.md,.yardopts,docs/**/*.md,doc_config/yard/**/*.{rb,js,css,erb},lib/**/*.rb}'
                 create(&regenerate_docs)
                 update(&regenerate_docs)
               end
