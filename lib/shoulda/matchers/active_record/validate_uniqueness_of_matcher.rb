@@ -1109,7 +1109,7 @@ b) If you meant for the validation to be case-insensitive, then you need to
 
 For more information, please see:
 
-http://matchers.shoulda.io/docs/v#{Shoulda::Matchers::VERSION}/file.NonCaseSwappableValueError.html
+https://matchers.shoulda.io/docs/v#{Shoulda::Matchers::VERSION}/file.NonCaseSwappableValueError.html
             MESSAGE
           end
         end

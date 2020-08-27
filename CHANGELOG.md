@@ -1241,7 +1241,7 @@ raised exceptions.
   * `delegate_method`
 
 For more information about 2.0 changes, see:
-<http://robots.thoughtbot.com/post/47031676783/shoulda-matchers-2-0>.
+<https://robots.thoughtbot.com/post/47031676783/shoulda-matchers-2-0>.
 
 ## 1.5.6 - 2013-03-29
 

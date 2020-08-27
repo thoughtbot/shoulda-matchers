@@ -116,7 +116,7 @@ module UnitTests
 
     def fix_available_locales_warning
       # See here for more on this:
-      # http://stackoverflow.com/questions/20361428/rails-i18n-validation-deprecation-warning
+      # https://stackoverflow.com/questions/20361428/rails-i18n-validation-deprecation-warning
       fs.transform('config/application.rb') do |lines|
         lines.insert(-3, <<-EOT)
 if I18n.respond_to?(:enforce_available_locales=)

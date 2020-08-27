@@ -31,7 +31,7 @@ need to do something different.
 If you need help, feel free to ask a question on the shoulda-matchers
 issues list:
 
-http://github.com/thoughtbot/shoulda-matchers/issues
+https://github.com/thoughtbot/shoulda-matchers/issues
             MESSAGE
           end
 
