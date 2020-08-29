@@ -1,9 +1,8 @@
 require: rubocop-rails
 AllCops:
+  NewCops: disable
   TargetRubyVersion: 2.4
-Layout/AlignArguments:
-  EnforcedStyle: with_fixed_indentation
-Layout/AlignParameters:
+Layout/ArgumentAlignment:
   EnforcedStyle: with_fixed_indentation
 Layout/CommentIndentation:
   Enabled: false
@@ -13,10 +12,22 @@ Layout/DotPosition:
   EnforcedStyle: trailing
 Layout/EmptyLineBetweenDefs:
   AllowAdjacentOneLineDefs: true
-Layout/IndentHeredoc:
+Layout/HeredocIndentation:
   Enabled: false
+Layout/LineLength:
+  IgnoredPatterns:
+    - "^[ ]*#.+$"
+    - "^[ ]*describe.+$"
+    - "^[ ]*context.+$"
+    - "^[ ]*shared_context.+$"
+    - "^[ ]*shared_examples_for.+$"
+    - "^[ ]*it.+$"
+    - "^[ ]*'.+?' => '.+?',?$"
+    - "^[ ]*\".+?\" => \".+?\",?$"
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
+Layout/ParameterAlignment:
+  EnforcedStyle: with_fixed_indentation
 Layout/SpaceInsideBlockBraces:
   Enabled: false
 Layout/SpaceInLambdaLiteral:
@@ -33,8 +44,6 @@ Lint/ElseLayout:
   Enabled: false
 Lint/FlipFlop:
   Enabled: false
-Lint/HandleExceptions:
-  Enabled: false
 Lint/LiteralInInterpolation:
   Enabled: false
 Lint/Loop:
@@ -44,6 +53,8 @@ Lint/ParenthesesAsGroupedExpression:
 Lint/RequireParentheses:
   Enabled: false
 Lint/SafeNavigationChain:
+  Enabled: false
+Lint/SuppressedException:
   Enabled: false
 Lint/UnderscorePrefixedVariableName:
   Enabled: false
@@ -55,16 +66,6 @@ Metrics/BlockLength:
   Enabled: false
 Metrics/ClassLength:
   Enabled: false
-Metrics/LineLength:
-  IgnoredPatterns:
-    - "^[ ]*#.+$"
-    - "^[ ]*describe.+$"
-    - "^[ ]*context.+$"
-    - "^[ ]*shared_context.+$"
-    - "^[ ]*shared_examples_for.+$"
-    - "^[ ]*it.+$"
-    - "^[ ]*'.+?' => '.+?',?$"
-    - "^[ ]*\".+?\" => \".+?\",?$"
 Metrics/MethodLength:
   Max: 30
 Metrics/ParameterLists:
