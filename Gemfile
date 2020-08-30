@@ -13,6 +13,6 @@ gem 'zeus', require: false
 
 # YARD
 gem 'fssm'
-gem 'pygments.rb'
+gem 'rouge'
 gem 'redcarpet'
 gem 'yard'

@@ -13,7 +13,7 @@ gem "rubocop-rails", require: false
 gem "warnings_logger"
 gem "zeus", require: false
 gem "fssm"
-gem "pygments.rb"
+gem "rouge"
 gem "redcarpet"
 gem "yard"
 gem "spring"
