@@ -58,7 +58,7 @@ GEM
     thor (0.20.0)
     unicode-display_width (1.7.0)
     warnings_logger (0.1.1)
-    yard (0.9.20)
+    yard (0.9.25)
     zeus (0.15.14)
       method_source (>= 0.6.7)
 
