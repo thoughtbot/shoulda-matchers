@@ -385,7 +385,7 @@ about any of them, make sure to [consult the documentation][rubydocs]!
   tests your `belongs_to` associations.
 * **[define_enum_for](lib/shoulda/matchers/active_record/define_enum_for_matcher.rb)**
   tests usage of the `enum` macro.
-* **[have_and_belong_to_many](lib/shoulda/matchers/active_record/association_matcher.rb)**
+* **[have_and_belong_to_many](lib/shoulda/matchers/active_record/association_matcher.rb#L827)**
   tests your `has_and_belongs_to_many` associations.
 * **[have_db_column](lib/shoulda/matchers/active_record/have_db_column_matcher.rb)**
   tests that the table that backs your model has a specific column.
@@ -393,11 +393,11 @@ about any of them, make sure to [consult the documentation][rubydocs]!
   tests that the table that backs your model has an index on a specific column.
 * **[have_implicit_order_column](lib/shoulda/matchers/active_record/have_implicit_order_column.rb)**
   tests usage of `implicit_order_column`.
-* **[have_many](lib/shoulda/matchers/active_record/association_matcher.rb)**
+* **[have_many](lib/shoulda/matchers/active_record/association_matcher.rb#L328)**
   tests your `has_many` associations.
 * **[have_many_attached](lib/shoulda/matchers/active_record/have_attached_matcher.rb)**
   tests your `has_many_attached` associations.
-* **[have_one](lib/shoulda/matchers/active_record/association_matcher.rb)**
+* **[have_one](lib/shoulda/matchers/active_record/association_matcher.rb#L598)**
   tests your `has_one` associations.
 * **[have_one_attached](lib/shoulda/matchers/active_record/have_attached_matcher.rb)**
   tests your `has_one_attached` associations.
