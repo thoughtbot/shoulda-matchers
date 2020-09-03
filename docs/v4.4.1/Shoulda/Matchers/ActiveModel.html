@@ -1,0 +1,2625 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Module: Shoulda::Matchers::ActiveModel
+  
+    &mdash; Documentation by YARD 0.9.25
+  
+</title>
+
+  <link rel="stylesheet" href="../../css/solarized.css" type="text/css" />
+
+  <link rel="stylesheet" href="../../css/bootstrap.css" type="text/css" />
+
+  <link rel="stylesheet" href="../../css/global.css" type="text/css" />
+
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" />
+
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" />
+
+<script type="text/javascript">
+  pathId = "Shoulda::Matchers::ActiveModel";
+  relpath = '../../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="../../index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class='title'><span class='object_link'><a href="../../Shoulda.html" title="Shoulda (module)">Shoulda</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Matchers.html" title="Shoulda::Matchers (module)">Matchers</a></span></span>
+     &raquo; 
+    <span class="title">ActiveModel</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="../../class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="../../method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="../../file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><h1>Module: Shoulda::Matchers::ActiveModel
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+  
+    
+  
+    
+  
+  
+</dl>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>This module provides matchers that are used to test behavior within
+ActiveModel or ActiveRecord classes.</p>
+
+<h3 id="testing-conditional-validations">Testing conditional validations</h3>
+
+<p>If your model defines a validation conditionally -- meaning that the
+validation is declared with an <code>:if</code> or <code>:unless</code> option -- how do you
+test it? You might expect the validation matchers here to have
+corresponding <code>if</code> or <code>unless</code> qualifiers, but this isn&#39;t what you use.
+Instead, before using the matcher in question, you place the record
+you&#39;re testing in a state such that the validation you&#39;re also testing
+will be run. A common way to do this is to make a new <code>context</code> and
+override the subject to populate the record accordingly. You&#39;ll also want
+to make sure to test that the validation is <em>not</em> run when the
+conditional fails.</p>
+
+<p>Here&#39;s an example to illustrate what we mean:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">User</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+
+  <span class="nb">attr_accessor</span> <span class="ss">:role</span><span class="p">,</span> <span class="ss">:admin</span>
+
+  <span class="n">validates_presence_of</span> <span class="ss">:role</span><span class="p">,</span> <span class="ss">if: :admin</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">User</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">context</span> <span class="s2">"when an admin"</span> <span class="k">do</span>
+    <span class="n">subject</span> <span class="p">{</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">admin: </span><span class="kp">true</span><span class="p">)</span> <span class="p">}</span>
+
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_presence_of</span><span class="p">(</span><span class="ss">:role</span><span class="p">)</span> <span class="p">}</span>
+  <span class="k">end</span>
+
+  <span class="n">context</span> <span class="s2">"when not an admin"</span> <span class="k">do</span>
+    <span class="n">subject</span> <span class="p">{</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">admin: </span><span class="kp">false</span><span class="p">)</span> <span class="p">}</span>
+
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">validate_presence_of</span><span class="p">(</span><span class="ss">:role</span><span class="p">)</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">context</span> <span class="s2">"when an admin"</span> <span class="k">do</span>
+    <span class="n">subject</span> <span class="p">{</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">admin: </span><span class="kp">true</span><span class="p">)</span> <span class="p">}</span>
+
+    <span class="n">should</span> <span class="n">validate_presence_of</span><span class="p">(</span><span class="ss">:role</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="n">context</span> <span class="s2">"when not an admin"</span> <span class="k">do</span>
+    <span class="n">subject</span> <span class="p">{</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">admin: </span><span class="kp">false</span><span class="p">)</span> <span class="p">}</span>
+
+    <span class="n">should_not</span> <span class="n">validate_presence_of</span><span class="p">(</span><span class="ss">:role</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+
+
+
+
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#allow_mass_assignment_of-instance_method" title="#allow_mass_assignment_of (instance method)">#<strong>allow_mass_assignment_of</strong>(value)  &#x21d2; AllowMassAssignmentOfMatcher </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>allow_mass_assignment_of</code> matcher tests usage of Rails 3&#39;s <code>attr_accessible</code> and <code>attr_protected</code> macros, asserting that an attribute in your model is contained in either the whitelist or blacklist and thus can or cannot be set via mass assignment.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#allow_value-instance_method" title="#allow_value (instance method)">#<strong>allow_value</strong>(*values)  &#x21d2; AllowValueMatcher </a>
+    
+
+    
+      (also: #allow_values)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>allow_value</code> matcher (or its alias, <code>allow_values</code>) is used to ensure that an attribute is valid or invalid if set to one or more values.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#have_secure_password-instance_method" title="#have_secure_password (instance method)">#<strong>have_secure_password</strong>  &#x21d2; HaveSecurePasswordMatcher </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>have_secure_password</code> matcher tests usage of the <code>has_secure_password</code> macro.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#validate_absence_of-instance_method" title="#validate_absence_of (instance method)">#<strong>validate_absence_of</strong>(attr)  &#x21d2; ValidateAbsenceOfMatcher </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>validate_absence_of</code> matcher tests the usage of the <code>validates_absence_of</code> validation.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#validate_acceptance_of-instance_method" title="#validate_acceptance_of (instance method)">#<strong>validate_acceptance_of</strong>(attr)  &#x21d2; ValidateAcceptanceOfMatcher </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>validate_acceptance_of</code> matcher tests usage of the <code>validates_acceptance_of</code> validation.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#validate_confirmation_of-instance_method" title="#validate_confirmation_of (instance method)">#<strong>validate_confirmation_of</strong>(attr)  &#x21d2; ValidateConfirmationOfMatcher </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>validate_confirmation_of</code> matcher tests usage of the <code>validates_confirmation_of</code> validation.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#validate_exclusion_of-instance_method" title="#validate_exclusion_of (instance method)">#<strong>validate_exclusion_of</strong>(attr)  &#x21d2; ValidateExclusionOfMatcher </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>validate_exclusion_of</code> matcher tests usage of the <code>validates_exclusion_of</code> validation, asserting that an attribute cannot take a blacklist of values, and inversely, can take values outside of this list.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#validate_inclusion_of-instance_method" title="#validate_inclusion_of (instance method)">#<strong>validate_inclusion_of</strong>(attr)  &#x21d2; ValidateInclusionOfMatcher </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>validate_inclusion_of</code> matcher tests usage of the <code>validates_inclusion_of</code> validation, asserting that an attribute can take a whitelist of values and cannot take values outside of this list.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#validate_length_of-instance_method" title="#validate_length_of (instance method)">#<strong>validate_length_of</strong>(attr)  &#x21d2; ValidateLengthOfMatcher </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>validate_length_of</code> matcher tests usage of the <code>validates_length_of</code> matcher.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#validate_numericality_of-instance_method" title="#validate_numericality_of (instance method)">#<strong>validate_numericality_of</strong>(attr)  &#x21d2; ValidateNumericalityOfMatcher </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>validate_numericality_of</code> matcher tests usage of the <code>validates_numericality_of</code> validation.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#validate_presence_of-instance_method" title="#validate_presence_of (instance method)">#<strong>validate_presence_of</strong>(attr)  &#x21d2; ValidatePresenceOfMatcher </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <code>validate_presence_of</code> matcher tests usage of the <code>validates_presence_of</code> validation.</p>
+</div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="allow_mass_assignment_of-instance_method">
+  
+    #<strong>allow_mass_assignment_of</strong>(value)  &#x21d2; <tt><span class='object_link'>AllowMassAssignmentOfMatcher</span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>allow_mass_assignment_of</code> matcher tests usage of Rails 3&#39;s
+<code>attr_accessible</code> and <code>attr_protected</code> macros, asserting that an
+attribute in your model is contained in either the whitelist or
+blacklist and thus can or cannot be set via mass assignment.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Post</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">MassAssignmentSecurity</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:title</span>
+
+  <span class="n">attr_accessible</span> <span class="ss">:title</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">User</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">MassAssignmentSecurity</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:encrypted_password</span>
+
+  <span class="n">attr_protected</span> <span class="ss">:encrypted_password</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Post</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">allow_mass_assignment_of</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">User</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">allow_mass_assignment_of</span><span class="p">(</span><span class="ss">:encrypted_password</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">PostTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">allow_mass_assignment_of</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should_not</span> <span class="n">allow_mass_assignment_of</span><span class="p">(</span><span class="ss">:encrypted_password</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4 id="optional-qualifiers">Optional qualifiers</h4>
+
+<h5 id="as">as</h5>
+
+<p>Use <code>as</code> if your mass-assignment rules apply only under a certain role
+<em>(Rails &gt;= 3.1 only)</em>.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Post</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">MassAssignmentSecurity</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:title</span>
+
+  <span class="n">attr_accessible</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">as: :admin</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Post</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">allow_mass_assignment_of</span><span class="p">(</span><span class="ss">:title</span><span class="p">).</span><span class="nf">as</span><span class="p">(</span><span class="ss">:admin</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">PostTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">allow_mass_assignment_of</span><span class="p">(</span><span class="ss">:title</span><span class="p">).</span><span class="nf">as</span><span class="p">(</span><span class="ss">:admin</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+70
+71
+72</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_model/allow_mass_assignment_of_matcher.rb', line 70</span>
+
+<span class="k">def</span> <span class="nf">allow_mass_assignment_of</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+  <span class="no">AllowMassAssignmentOfMatcher</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+<span class="k">end</span></pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="allow_value-instance_method">
+  
+    #<strong>allow_value</strong>(*values)  &#x21d2; <tt><span class='object_link'>AllowValueMatcher</span></tt> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='allow_values-instance_method'>allow_values</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>allow_value</code> matcher (or its alias, <code>allow_values</code>) is used to
+ensure that an attribute is valid or invalid if set to one or more
+values.</p>
+
+<p>Take this model for example:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">UserProfile</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:website_url</span>
+
+  <span class="n">validates_format_of</span> <span class="ss">:website_url</span><span class="p">,</span> <span class="ss">with: </span><span class="no">URI</span><span class="p">.</span><span class="nf">regexp</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>You can use <code>allow_value</code> to test one value at a time:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">UserProfile</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">allow_value</span><span class="p">(</span><span class="s1">'https://foo.com'</span><span class="p">).</span><span class="nf">for</span><span class="p">(</span><span class="ss">:website_url</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">allow_value</span><span class="p">(</span><span class="s1">'https://bar.com'</span><span class="p">).</span><span class="nf">for</span><span class="p">(</span><span class="ss">:website_url</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserProfileTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">allow_value</span><span class="p">(</span><span class="s1">'https://foo.com'</span><span class="p">).</span><span class="nf">for</span><span class="p">(</span><span class="ss">:website_url</span><span class="p">)</span>
+  <span class="n">should</span> <span class="n">allow_value</span><span class="p">(</span><span class="s1">'https://bar.com'</span><span class="p">).</span><span class="nf">for</span><span class="p">(</span><span class="ss">:website_url</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>You can also test multiple values in one go, if you like. In the
+positive sense, this makes an assertion that none of the values cause the
+record to be invalid. In the negative sense, this makes an assertion
+that none of the values cause the record to be valid:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">UserProfile</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">allow_values</span><span class="p">(</span><span class="s1">'https://foo.com'</span><span class="p">,</span> <span class="s1">'https://bar.com'</span><span class="p">).</span>
+      <span class="nf">for</span><span class="p">(</span><span class="ss">:website_url</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should_not</span> <span class="n">allow_values</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">,</span> <span class="s1">'buz'</span><span class="p">).</span>
+      <span class="nf">for</span><span class="p">(</span><span class="ss">:website_url</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserProfileTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">allow_values</span><span class="p">(</span><span class="s1">'https://foo.com'</span><span class="p">,</span> <span class="s1">'https://bar.com/baz'</span><span class="p">).</span>
+    <span class="nf">for</span><span class="p">(</span><span class="ss">:website_url</span><span class="p">)</span>
+
+  <span class="n">should_not</span> <span class="n">allow_values</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">,</span> <span class="s1">'buz'</span><span class="p">).</span>
+    <span class="nf">for</span><span class="p">(</span><span class="ss">:website_url</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4 id="caveats">Caveats</h4>
+
+<p>When using <code>allow_value</code> or any matchers that depend on it, you may
+encounter an AttributeChangedValueError. This exception is raised if the
+matcher, in attempting to set a value on the attribute, detects that
+the value set is different from the value that the attribute returns
+upon reading it back.</p>
+
+<p>This usually happens if the writer method (<code>foo=</code>, <code>bar=</code>, etc.) for
+that attribute has custom logic to ignore certain incoming values or
+change them in any way. Here are three examples we&#39;ve seen:</p>
+
+<ul>
+<li><p>You&#39;re attempting to assert that an attribute should not allow nil,
+yet the attribute&#39;s writer method contains a conditional to do nothing
+if the attribute is set to nil:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Foo</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+
+  <span class="nb">attr_reader</span> <span class="ss">:bar</span>
+
+  <span class="k">def</span> <span class="nf">bar</span><span class="o">=</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="k">if</span> <span class="n">value</span><span class="p">.</span><span class="nf">nil?</span>
+    <span class="vi">@bar</span> <span class="o">=</span> <span class="n">value</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Foo</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">foo</span> <span class="o">=</span> <span class="no">Foo</span><span class="p">.</span><span class="nf">new</span>
+    <span class="n">foo</span><span class="p">.</span><span class="nf">bar</span> <span class="o">=</span> <span class="s2">"baz"</span>
+    <span class="c1"># This will raise an AttributeChangedValueError since `foo.bar` is now "123"</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">foo</span><span class="p">).</span><span class="nf">not_to</span> <span class="n">allow_value</span><span class="p">(</span><span class="kp">nil</span><span class="p">).</span><span class="nf">for</span><span class="p">(</span><span class="ss">:bar</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></li>
+<li><p>You&#39;re attempting to assert that a numeric attribute should not allow
+a string that contains non-numeric characters, yet the writer method
+for that attribute strips out non-numeric characters:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Foo</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+
+  <span class="nb">attr_reader</span> <span class="ss">:bar</span>
+
+  <span class="k">def</span> <span class="nf">bar</span><span class="o">=</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="vi">@bar</span> <span class="o">=</span> <span class="n">value</span><span class="p">.</span><span class="nf">gsub</span><span class="p">(</span><span class="sr">/\D+/</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Foo</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">foo</span> <span class="o">=</span> <span class="no">Foo</span><span class="p">.</span><span class="nf">new</span>
+    <span class="c1"># This will raise an AttributeChangedValueError since `foo.bar` is now "123"</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">foo</span><span class="p">).</span><span class="nf">not_to</span> <span class="n">allow_value</span><span class="p">(</span><span class="s2">"abc123"</span><span class="p">).</span><span class="nf">for</span><span class="p">(</span><span class="ss">:bar</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></li>
+<li><p>You&#39;re passing a value to <code>allow_value</code> that the model typecasts into
+another value:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Foo</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="c1"># Assume that `attr` is a string</span>
+  <span class="c1"># This will raise an AttributeChangedValueError since `attr` typecasts `[]` to `"[]"`</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">allow_value</span><span class="p">([]).</span><span class="nf">for</span><span class="p">(</span><span class="ss">:attr</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+</code></pre></li>
+</ul>
+
+<p>Fortunately, if you understand why this is happening, and wish to get
+around this exception, it is possible to do so. You can use the
+<code>ignoring_interference_by_writer</code> qualifier like so:</p>
+
+<pre class="code ruby"><code class="ruby">    <span class="n">it</span> <span class="k">do</span>
+      <span class="n">should_not</span> <span class="n">allow_value</span><span class="p">([]).</span>
+        <span class="nf">for</span><span class="p">(</span><span class="ss">:attr</span><span class="p">).</span>
+        <span class="nf">ignoring_interference_by_writer</span>
+    <span class="k">end</span>
+</code></pre>
+
+<p>Please note, however, that this qualifier won&#39;t magically cause your
+test to pass. It may just so happen that the final value that ends up
+being set causes the model to fail validation. In that case, you&#39;ll have
+to figure out what to do. You may need to write your own test, or
+perhaps even remove your test altogether.</p>
+
+<h4 id="qualifiers">Qualifiers</h4>
+
+<h5 id="on">on</h5>
+
+<p>Use <code>on</code> if your validation applies only under a certain context.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">UserProfile</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:birthday_as_string</span>
+
+  <span class="n">validates_format_of</span> <span class="ss">:birthday_as_string</span><span class="p">,</span>
+    <span class="ss">with: </span><span class="sr">/^(\d+)-(\d+)-(\d+)$/</span><span class="p">,</span>
+    <span class="ss">on: :create</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">UserProfile</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">allow_value</span><span class="p">(</span><span class="s1">'2013-01-01'</span><span class="p">).</span>
+      <span class="nf">for</span><span class="p">(</span><span class="ss">:birthday_as_string</span><span class="p">).</span>
+      <span class="nf">on</span><span class="p">(</span><span class="ss">:create</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserProfileTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">allow_value</span><span class="p">(</span><span class="s1">'2013-01-01'</span><span class="p">).</span>
+    <span class="nf">for</span><span class="p">(</span><span class="ss">:birthday_as_string</span><span class="p">).</span>
+    <span class="nf">on</span><span class="p">(</span><span class="ss">:create</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="with_message">with_message</h5>
+
+<p>Use <code>with_message</code> if you are using a custom validation message.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">UserProfile</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:state</span>
+
+  <span class="n">validates_format_of</span> <span class="ss">:state</span><span class="p">,</span>
+    <span class="ss">with: </span><span class="sr">/^(open|closed)$/</span><span class="p">,</span>
+    <span class="ss">message: </span><span class="s1">'State must be open or closed'</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">UserProfile</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">allow_value</span><span class="p">(</span><span class="s1">'open'</span><span class="p">,</span> <span class="s1">'closed'</span><span class="p">).</span>
+      <span class="nf">for</span><span class="p">(</span><span class="ss">:state</span><span class="p">).</span>
+      <span class="nf">with_message</span><span class="p">(</span><span class="s1">'State must be open or closed'</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserProfileTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">allow_value</span><span class="p">(</span><span class="s1">'open'</span><span class="p">,</span> <span class="s1">'closed'</span><span class="p">).</span>
+    <span class="nf">for</span><span class="p">(</span><span class="ss">:state</span><span class="p">).</span>
+    <span class="nf">with_message</span><span class="p">(</span><span class="s1">'State must be open or closed'</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Use <code>with_message</code> with a regexp to perform a partial match:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">UserProfile</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:state</span>
+
+  <span class="n">validates_format_of</span> <span class="ss">:state</span><span class="p">,</span>
+    <span class="ss">with: </span><span class="sr">/^(open|closed)$/</span><span class="p">,</span>
+    <span class="ss">message: </span><span class="s1">'State must be open or closed'</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">UserProfile</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">allow_value</span><span class="p">(</span><span class="s1">'open'</span><span class="p">,</span> <span class="s1">'closed'</span><span class="p">).</span>
+      <span class="nf">for</span><span class="p">(</span><span class="ss">:state</span><span class="p">).</span>
+      <span class="nf">with_message</span><span class="p">(</span><span class="sr">/open or closed/</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserProfileTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">allow_value</span><span class="p">(</span><span class="s1">'open'</span><span class="p">,</span> <span class="s1">'closed'</span><span class="p">).</span>
+    <span class="nf">for</span><span class="p">(</span><span class="ss">:state</span><span class="p">).</span>
+    <span class="nf">with_message</span><span class="p">(</span><span class="sr">/open or closed/</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Use <code>with_message</code> with the <code>:against</code> option if the attribute the
+validation message is stored under is different from the attribute
+being validated:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">UserProfile</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:sports_team</span>
+
+  <span class="n">validate</span> <span class="ss">:sports_team_must_be_valid</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">sports_team_must_be_valid</span>
+    <span class="k">if</span> <span class="n">sports_team</span> <span class="o">!~</span> <span class="sr">/^(Broncos|Titans)$/i</span>
+      <span class="nb">self</span><span class="p">.</span><span class="nf">errors</span><span class="p">.</span><span class="nf">add</span> <span class="ss">:chosen_sports_team</span><span class="p">,</span>
+        <span class="s1">'Must be either a Broncos fan or a Titans fan'</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">UserProfile</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">allow_value</span><span class="p">(</span><span class="s1">'Broncos'</span><span class="p">,</span> <span class="s1">'Titans'</span><span class="p">).</span>
+      <span class="nf">for</span><span class="p">(</span><span class="ss">:sports_team</span><span class="p">).</span>
+      <span class="nf">with_message</span><span class="p">(</span><span class="s1">'Must be either a Broncos or Titans fan'</span><span class="p">,</span>
+        <span class="ss">against: :chosen_sports_team</span>
+      <span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserProfileTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">allow_value</span><span class="p">(</span><span class="s1">'Broncos'</span><span class="p">,</span> <span class="s1">'Titans'</span><span class="p">).</span>
+    <span class="nf">for</span><span class="p">(</span><span class="ss">:sports_team</span><span class="p">).</span>
+    <span class="nf">with_message</span><span class="p">(</span><span class="s1">'Must be either a Broncos or Titans fan'</span><span class="p">,</span>
+      <span class="ss">against: :chosen_sports_team</span>
+    <span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="ignoring_interference_by_writer">ignoring_interference_by_writer</h5>
+
+<p>Use <code>ignoring_interference_by_writer</code> to bypass an
+AttributeChangedValueError that you have encountered. Please read the
+Caveats section above for more information.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Address</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="c1"># Address has a zip_code field which is a string</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Address</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should_not</span> <span class="n">allow_value</span><span class="p">([]).</span>
+      <span class="nf">for</span><span class="p">(</span><span class="ss">:zip_code</span><span class="p">).</span>
+      <span class="nf">ignoring_interference_by_writer</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">AddressTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should_not</span> <span class="n">allow_value</span><span class="p">([]).</span>
+    <span class="nf">for</span><span class="p">(</span><span class="ss">:zip_code</span><span class="p">).</span>
+    <span class="nf">ignoring_interference_by_writer</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+296
+297
+298
+299
+300
+301
+302</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_model/allow_value_matcher.rb', line 296</span>
+
+<span class="k">def</span> <span class="nf">allow_value</span><span class="p">(</span><span class="o">*</span><span class="n">values</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">values</span><span class="p">.</span><span class="nf">empty?</span>
+    <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s1">'need at least one argument'</span>
+  <span class="k">else</span>
+    <span class="no">AllowValueMatcher</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="o">*</span><span class="n">values</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span></pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="have_secure_password-instance_method">
+  
+    #<strong>have_secure_password</strong>  &#x21d2; <tt><span class='object_link'>HaveSecurePasswordMatcher</span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>have_secure_password</code> matcher tests usage of the
+<code>has_secure_password</code> macro.</p>
+
+<h4 id="example">Example</h4>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">User</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">SecurePassword</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:password</span>
+
+  <span class="n">has_secure_password</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">User</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_secure_password</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">have_secure_password</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+29
+30
+31</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_model/have_secure_password_matcher.rb', line 29</span>
+
+<span class="k">def</span> <span class="nf">have_secure_password</span>
+  <span class="no">HaveSecurePasswordMatcher</span><span class="p">.</span><span class="nf">new</span>
+<span class="k">end</span></pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="validate_absence_of-instance_method">
+  
+    #<strong>validate_absence_of</strong>(attr)  &#x21d2; <tt><span class='object_link'>ValidateAbsenceOfMatcher</span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>validate_absence_of</code> matcher tests the usage of the
+<code>validates_absence_of</code> validation.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">PowerHungryCountry</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:nuclear_weapons</span>
+
+  <span class="n">validates_absence_of</span> <span class="ss">:nuclear_weapons</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">PowerHungryCountry</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_absence_of</span><span class="p">(</span><span class="ss">:nuclear_weapons</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">PowerHungryCountryTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_absence_of</span><span class="p">(</span><span class="ss">:nuclear_weapons</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4 id="qualifiers">Qualifiers</h4>
+
+<h5 id="on">on</h5>
+
+<p>Use <code>on</code> if your validation applies only under a certain context.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">PowerHungryCountry</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:nuclear_weapons</span>
+
+  <span class="n">validates_absence_of</span> <span class="ss">:nuclear_weapons</span><span class="p">,</span> <span class="ss">on: :create</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">PowerHungryCountry</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_absence_of</span><span class="p">(</span><span class="ss">:nuclear_weapons</span><span class="p">).</span><span class="nf">on</span><span class="p">(</span><span class="ss">:create</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">PowerHungryCountryTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_absence_of</span><span class="p">(</span><span class="ss">:nuclear_weapons</span><span class="p">).</span><span class="nf">on</span><span class="p">(</span><span class="ss">:create</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="with_message">with_message</h5>
+
+<p>Use <code>with_message</code> if you are using a custom validation message.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">PowerHungryCountry</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:nuclear_weapons</span>
+
+  <span class="n">validates_absence_of</span> <span class="ss">:nuclear_weapons</span><span class="p">,</span>
+    <span class="ss">message: </span><span class="s2">"there shall be peace on Earth"</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">PowerHungryCountry</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_absence_of</span><span class="p">(</span><span class="ss">:nuclear_weapons</span><span class="p">).</span>
+      <span class="nf">with_message</span><span class="p">(</span><span class="s2">"there shall be peace on Earth"</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">PowerHungryCountryTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_absence_of</span><span class="p">(</span><span class="ss">:nuclear_weapons</span><span class="p">).</span>
+    <span class="nf">with_message</span><span class="p">(</span><span class="s2">"there shall be peace on Earth"</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+75
+76
+77</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_model/validate_absence_of_matcher.rb', line 75</span>
+
+<span class="k">def</span> <span class="nf">validate_absence_of</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+  <span class="no">ValidateAbsenceOfMatcher</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+<span class="k">end</span></pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="validate_acceptance_of-instance_method">
+  
+    #<strong>validate_acceptance_of</strong>(attr)  &#x21d2; <tt><span class='object_link'>ValidateAcceptanceOfMatcher</span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>validate_acceptance_of</code> matcher tests usage of the
+<code>validates_acceptance_of</code> validation.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Registration</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:eula</span>
+
+  <span class="n">validates_acceptance_of</span> <span class="ss">:eula</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Registration</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_acceptance_of</span><span class="p">(</span><span class="ss">:eula</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">RegistrationTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_acceptance_of</span><span class="p">(</span><span class="ss">:eula</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4 id="qualifiers">Qualifiers</h4>
+
+<h5 id="on">on</h5>
+
+<p>Use <code>on</code> if your validation applies only under a certain context.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Registration</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:terms_of_service</span>
+
+  <span class="n">validates_acceptance_of</span> <span class="ss">:terms_of_service</span><span class="p">,</span> <span class="ss">on: :create</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Registration</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_acceptance_of</span><span class="p">(</span><span class="ss">:terms_of_service</span><span class="p">).</span>
+      <span class="nf">on</span><span class="p">(</span><span class="ss">:create</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">RegistrationTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_acceptance_of</span><span class="p">(</span><span class="ss">:terms_of_service</span><span class="p">).</span><span class="nf">on</span><span class="p">(</span><span class="ss">:create</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="with_message">with_message</h5>
+
+<p>Use <code>with_message</code> if you are using a custom validation message.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Registration</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:terms_of_service</span>
+
+  <span class="n">validates_acceptance_of</span> <span class="ss">:terms_of_service</span><span class="p">,</span>
+    <span class="ss">message: </span><span class="s1">'You must accept the terms of service'</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Registration</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_acceptance_of</span><span class="p">(</span><span class="ss">:terms_of_service</span><span class="p">).</span>
+      <span class="nf">with_message</span><span class="p">(</span><span class="s1">'You must accept the terms of service'</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">RegistrationTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_acceptance_of</span><span class="p">(</span><span class="ss">:terms_of_service</span><span class="p">).</span>
+    <span class="nf">with_message</span><span class="p">(</span><span class="s1">'You must accept the terms of service'</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+78
+79
+80</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_model/validate_acceptance_of_matcher.rb', line 78</span>
+
+<span class="k">def</span> <span class="nf">validate_acceptance_of</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+  <span class="no">ValidateAcceptanceOfMatcher</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+<span class="k">end</span></pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="validate_confirmation_of-instance_method">
+  
+    #<strong>validate_confirmation_of</strong>(attr)  &#x21d2; <tt><span class='object_link'>ValidateConfirmationOfMatcher</span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>validate_confirmation_of</code> matcher tests usage of the
+<code>validates_confirmation_of</code> validation.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">User</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:email</span>
+
+  <span class="n">validates_confirmation_of</span> <span class="ss">:email</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">User</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_confirmation_of</span><span class="p">(</span><span class="ss">:email</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_confirmation_of</span><span class="p">(</span><span class="ss">:email</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4 id="qualifiers">Qualifiers</h4>
+
+<h5 id="on">on</h5>
+
+<p>Use <code>on</code> if your validation applies only under a certain context.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">User</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:password</span>
+
+  <span class="n">validates_confirmation_of</span> <span class="ss">:password</span><span class="p">,</span> <span class="ss">on: :create</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">User</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_confirmation_of</span><span class="p">(</span><span class="ss">:password</span><span class="p">).</span><span class="nf">on</span><span class="p">(</span><span class="ss">:create</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_confirmation_of</span><span class="p">(</span><span class="ss">:password</span><span class="p">).</span><span class="nf">on</span><span class="p">(</span><span class="ss">:create</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="with_message">with_message</h5>
+
+<p>Use <code>with_message</code> if you are using a custom validation message.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">User</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:password</span>
+
+  <span class="n">validates_confirmation_of</span> <span class="ss">:password</span><span class="p">,</span>
+    <span class="ss">message: </span><span class="s1">'Please re-enter your password'</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">User</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_confirmation_of</span><span class="p">(</span><span class="ss">:password</span><span class="p">).</span>
+      <span class="nf">with_message</span><span class="p">(</span><span class="s1">'Please re-enter your password'</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_confirmation_of</span><span class="p">(</span><span class="ss">:password</span><span class="p">).</span>
+    <span class="nf">with_message</span><span class="p">(</span><span class="s1">'Please re-enter your password'</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+75
+76
+77</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_model/validate_confirmation_of_matcher.rb', line 75</span>
+
+<span class="k">def</span> <span class="nf">validate_confirmation_of</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+  <span class="no">ValidateConfirmationOfMatcher</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+<span class="k">end</span></pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="validate_exclusion_of-instance_method">
+  
+    #<strong>validate_exclusion_of</strong>(attr)  &#x21d2; <tt><span class='object_link'>ValidateExclusionOfMatcher</span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>validate_exclusion_of</code> matcher tests usage of the
+<code>validates_exclusion_of</code> validation, asserting that an attribute cannot
+take a blacklist of values, and inversely, can take values outside of
+this list.</p>
+
+<p>If your blacklist is an array of values, use <code>in_array</code>:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Game</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:supported_os</span>
+
+  <span class="n">validates_exclusion_of</span> <span class="ss">:supported_os</span><span class="p">,</span> <span class="ss">in: </span><span class="p">[</span><span class="s1">'Mac'</span><span class="p">,</span> <span class="s1">'Linux'</span><span class="p">]</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Game</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_exclusion_of</span><span class="p">(</span><span class="ss">:supported_os</span><span class="p">).</span>
+      <span class="nf">in_array</span><span class="p">([</span><span class="s1">'Mac'</span><span class="p">,</span> <span class="s1">'Linux'</span><span class="p">])</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">GameTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_exclusion_of</span><span class="p">(</span><span class="ss">:supported_os</span><span class="p">).</span>
+    <span class="nf">in_array</span><span class="p">([</span><span class="s1">'Mac'</span><span class="p">,</span> <span class="s1">'Linux'</span><span class="p">])</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>If your blacklist is a range of values, use <code>in_range</code>:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Game</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:supported_os</span>
+
+  <span class="n">validates_exclusion_of</span> <span class="ss">:supported_os</span><span class="p">,</span> <span class="ss">in: </span><span class="mi">5</span><span class="o">..</span><span class="mi">8</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Game</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_exclusion_of</span><span class="p">(</span><span class="ss">:floors_with_enemies</span><span class="p">).</span>
+      <span class="nf">in_range</span><span class="p">(</span><span class="mi">5</span><span class="o">..</span><span class="mi">8</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">GameTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_exclusion_of</span><span class="p">(</span><span class="ss">:floors_with_enemies</span><span class="p">).</span>
+    <span class="nf">in_range</span><span class="p">(</span><span class="mi">5</span><span class="o">..</span><span class="mi">8</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4 id="qualifiers">Qualifiers</h4>
+
+<h5 id="on">on</h5>
+
+<p>Use <code>on</code> if your validation applies only under a certain context.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Game</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:weapon</span>
+
+  <span class="n">validates_exclusion_of</span> <span class="ss">:weapon</span><span class="p">,</span>
+    <span class="ss">in: </span><span class="p">[</span><span class="s1">'pistol'</span><span class="p">,</span> <span class="s1">'paintball gun'</span><span class="p">,</span> <span class="s1">'stick'</span><span class="p">],</span>
+    <span class="ss">on: :create</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Game</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_exclusion_of</span><span class="p">(</span><span class="ss">:weapon</span><span class="p">).</span>
+      <span class="nf">in_array</span><span class="p">([</span><span class="s1">'pistol'</span><span class="p">,</span> <span class="s1">'paintball gun'</span><span class="p">,</span> <span class="s1">'stick'</span><span class="p">]).</span>
+      <span class="nf">on</span><span class="p">(</span><span class="ss">:create</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">GameTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_exclusion_of</span><span class="p">(</span><span class="ss">:weapon</span><span class="p">).</span>
+    <span class="nf">in_array</span><span class="p">([</span><span class="s1">'pistol'</span><span class="p">,</span> <span class="s1">'paintball gun'</span><span class="p">,</span> <span class="s1">'stick'</span><span class="p">]).</span>
+    <span class="nf">on</span><span class="p">(</span><span class="ss">:create</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="with_message">with_message</h5>
+
+<p>Use <code>with_message</code> if you are using a custom validation message.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Game</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:weapon</span>
+
+  <span class="n">validates_exclusion_of</span> <span class="ss">:weapon</span><span class="p">,</span>
+    <span class="ss">in: </span><span class="p">[</span><span class="s1">'pistol'</span><span class="p">,</span> <span class="s1">'paintball gun'</span><span class="p">,</span> <span class="s1">'stick'</span><span class="p">],</span>
+    <span class="ss">message: </span><span class="s1">'You chose a puny weapon'</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Game</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_exclusion_of</span><span class="p">(</span><span class="ss">:weapon</span><span class="p">).</span>
+      <span class="nf">in_array</span><span class="p">([</span><span class="s1">'pistol'</span><span class="p">,</span> <span class="s1">'paintball gun'</span><span class="p">,</span> <span class="s1">'stick'</span><span class="p">]).</span>
+      <span class="nf">with_message</span><span class="p">(</span><span class="s1">'You chose a puny weapon'</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">GameTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_exclusion_of</span><span class="p">(</span><span class="ss">:weapon</span><span class="p">).</span>
+    <span class="nf">in_array</span><span class="p">([</span><span class="s1">'pistol'</span><span class="p">,</span> <span class="s1">'paintball gun'</span><span class="p">,</span> <span class="s1">'stick'</span><span class="p">]).</span>
+    <span class="nf">with_message</span><span class="p">(</span><span class="s1">'You chose a puny weapon'</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+117
+118
+119</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_model/validate_exclusion_of_matcher.rb', line 117</span>
+
+<span class="k">def</span> <span class="nf">validate_exclusion_of</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+  <span class="no">ValidateExclusionOfMatcher</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+<span class="k">end</span></pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="validate_inclusion_of-instance_method">
+  
+    #<strong>validate_inclusion_of</strong>(attr)  &#x21d2; <tt><span class='object_link'>ValidateInclusionOfMatcher</span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>validate_inclusion_of</code> matcher tests usage of the
+<code>validates_inclusion_of</code> validation, asserting that an attribute can
+take a whitelist of values and cannot take values outside of this list.</p>
+
+<p>If your whitelist is an array of values, use <code>in_array</code>:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Issue</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:state</span>
+
+  <span class="n">validates_inclusion_of</span> <span class="ss">:state</span><span class="p">,</span>
+    <span class="ss">in: </span><span class="p">[</span><span class="s1">'open'</span><span class="p">,</span> <span class="s1">'resolved'</span><span class="p">,</span> <span class="s1">'unresolved'</span><span class="p">]</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Issue</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_inclusion_of</span><span class="p">(</span><span class="ss">:state</span><span class="p">).</span>
+      <span class="nf">in_array</span><span class="p">([</span><span class="s1">'open'</span><span class="p">,</span> <span class="s1">'resolved'</span><span class="p">,</span> <span class="s1">'unresolved'</span><span class="p">])</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">IssueTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_inclusion_of</span><span class="p">(</span><span class="ss">:state</span><span class="p">).</span>
+    <span class="nf">in_array</span><span class="p">([</span><span class="s1">'open'</span><span class="p">,</span> <span class="s1">'resolved'</span><span class="p">,</span> <span class="s1">'unresolved'</span><span class="p">])</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>If your whitelist is a range of values, use <code>in_range</code>:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Issue</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:priority</span>
+
+  <span class="n">validates_inclusion_of</span> <span class="ss">:priority</span><span class="p">,</span> <span class="ss">in: </span><span class="mi">1</span><span class="o">..</span><span class="mi">5</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Issue</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_inclusion_of</span><span class="p">(</span><span class="ss">:state</span><span class="p">).</span><span class="nf">in_range</span><span class="p">(</span><span class="mi">1</span><span class="o">..</span><span class="mi">5</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">IssueTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_inclusion_of</span><span class="p">(</span><span class="ss">:state</span><span class="p">).</span><span class="nf">in_range</span><span class="p">(</span><span class="mi">1</span><span class="o">..</span><span class="mi">5</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4 id="caveats">Caveats</h4>
+
+<p>We discourage using <code>validate_inclusion_of</code> with boolean columns. In
+fact, there is never a case where a boolean column will be anything but
+true, false, or nil, as ActiveRecord will type-cast an incoming value to
+one of these three values. That means there isn&#39;t any way we can refute
+this logic in a test. Hence, this will produce a warning:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="n">it</span> <span class="k">do</span>
+  <span class="n">should</span> <span class="n">validate_inclusion_of</span><span class="p">(</span><span class="ss">:imported</span><span class="p">).</span>
+    <span class="nf">in_array</span><span class="p">([</span><span class="kp">true</span><span class="p">,</span> <span class="kp">false</span><span class="p">])</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>The only case where <code>validate_inclusion_of</code> <em>could</em> be appropriate is
+for ensuring that a boolean column accepts nil, but we recommend
+using <code>allow_value</code> instead, like this:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">allow_value</span><span class="p">(</span><span class="kp">nil</span><span class="p">).</span><span class="nf">for</span><span class="p">(</span><span class="ss">:imported</span><span class="p">)</span> <span class="p">}</span>
+</code></pre>
+
+<h4 id="qualifiers">Qualifiers</h4>
+
+<p>Use <code>on</code> if your validation applies only under a certain context.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Issue</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:severity</span>
+
+  <span class="n">validates_inclusion_of</span> <span class="ss">:severity</span><span class="p">,</span>
+    <span class="ss">in: </span><span class="sx">%w(low medium high)</span><span class="p">,</span>
+    <span class="ss">on: :create</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Issue</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_inclusion_of</span><span class="p">(</span><span class="ss">:severity</span><span class="p">).</span>
+      <span class="nf">in_array</span><span class="p">(</span><span class="sx">%w(low medium high)</span><span class="p">).</span>
+      <span class="nf">on</span><span class="p">(</span><span class="ss">:create</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">IssueTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_inclusion_of</span><span class="p">(</span><span class="ss">:severity</span><span class="p">).</span>
+    <span class="nf">in_array</span><span class="p">(</span><span class="sx">%w(low medium high)</span><span class="p">).</span>
+    <span class="nf">on</span><span class="p">(</span><span class="ss">:create</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="with_message">with_message</h5>
+
+<p>Use <code>with_message</code> if you are using a custom validation message.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Issue</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:severity</span>
+
+  <span class="n">validates_inclusion_of</span> <span class="ss">:severity</span><span class="p">,</span>
+    <span class="ss">in: </span><span class="sx">%w(low medium high)</span><span class="p">,</span>
+    <span class="ss">message: </span><span class="s1">'Severity must be low, medium, or high'</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Issue</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_inclusion_of</span><span class="p">(</span><span class="ss">:severity</span><span class="p">).</span>
+      <span class="nf">in_array</span><span class="p">(</span><span class="sx">%w(low medium high)</span><span class="p">).</span>
+      <span class="nf">with_message</span><span class="p">(</span><span class="s1">'Severity must be low, medium, or high'</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">IssueTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_inclusion_of</span><span class="p">(</span><span class="ss">:severity</span><span class="p">).</span>
+    <span class="nf">in_array</span><span class="p">(</span><span class="sx">%w(low medium high)</span><span class="p">).</span>
+    <span class="nf">with_message</span><span class="p">(</span><span class="s1">'Severity must be low, medium, or high'</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="with_low_message">with_low_message</h5>
+
+<p>Use <code>with_low_message</code> if you have a custom validation message for when
+a given value is too low.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:age</span>
+
+  <span class="n">validate</span> <span class="ss">:age_must_be_valid</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">age_must_be_valid</span>
+    <span class="k">if</span> <span class="n">age</span> <span class="o">&lt;</span> <span class="mi">65</span>
+      <span class="nb">self</span><span class="p">.</span><span class="nf">errors</span><span class="p">.</span><span class="nf">add</span> <span class="ss">:age</span><span class="p">,</span> <span class="s1">'You do not receive any benefits'</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Person</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_inclusion_of</span><span class="p">(</span><span class="ss">:age</span><span class="p">).</span>
+      <span class="nf">in_range</span><span class="p">(</span><span class="mi">0</span><span class="o">..</span><span class="mi">65</span><span class="p">).</span>
+      <span class="nf">with_low_message</span><span class="p">(</span><span class="s1">'You do not receive any benefits'</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_inclusion_of</span><span class="p">(</span><span class="ss">:age</span><span class="p">).</span>
+    <span class="nf">in_range</span><span class="p">(</span><span class="mi">0</span><span class="o">..</span><span class="mi">65</span><span class="p">).</span>
+    <span class="nf">with_low_message</span><span class="p">(</span><span class="s1">'You do not receive any benefits'</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="with_high_message">with_high_message</h5>
+
+<p>Use <code>with_high_message</code> if you have a custom validation message for
+when a given value is too high.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:age</span>
+
+  <span class="n">validate</span> <span class="ss">:age_must_be_valid</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">age_must_be_valid</span>
+    <span class="k">if</span> <span class="n">age</span> <span class="o">&gt;</span> <span class="mi">21</span>
+      <span class="nb">self</span><span class="p">.</span><span class="nf">errors</span><span class="p">.</span><span class="nf">add</span> <span class="ss">:age</span><span class="p">,</span> <span class="s2">"You're too old for this stuff"</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Person</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_inclusion_of</span><span class="p">(</span><span class="ss">:age</span><span class="p">).</span>
+      <span class="nf">in_range</span><span class="p">(</span><span class="mi">0</span><span class="o">..</span><span class="mi">21</span><span class="p">).</span>
+      <span class="nf">with_high_message</span><span class="p">(</span><span class="s2">"You're too old for this stuff"</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_inclusion_of</span><span class="p">(</span><span class="ss">:age</span><span class="p">).</span>
+    <span class="nf">in_range</span><span class="p">(</span><span class="mi">0</span><span class="o">..</span><span class="mi">21</span><span class="p">).</span>
+    <span class="nf">with_high_message</span><span class="p">(</span><span class="s2">"You're too old for this stuff"</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="allow_nil">allow_nil</h5>
+
+<p>Use <code>allow_nil</code> to assert that the attribute allows nil.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Issue</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:state</span>
+
+  <span class="n">validates_presence_of</span> <span class="ss">:state</span>
+  <span class="n">validates_inclusion_of</span> <span class="ss">:state</span><span class="p">,</span>
+    <span class="ss">in: </span><span class="p">[</span><span class="s1">'open'</span><span class="p">,</span> <span class="s1">'resolved'</span><span class="p">,</span> <span class="s1">'unresolved'</span><span class="p">],</span>
+    <span class="ss">allow_nil: </span><span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Issue</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_inclusion_of</span><span class="p">(</span><span class="ss">:state</span><span class="p">).</span>
+      <span class="nf">in_array</span><span class="p">([</span><span class="s1">'open'</span><span class="p">,</span> <span class="s1">'resolved'</span><span class="p">,</span> <span class="s1">'unresolved'</span><span class="p">]).</span>
+      <span class="nf">allow_nil</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">IssueTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_inclusion_of</span><span class="p">(</span><span class="ss">:state</span><span class="p">).</span>
+    <span class="nf">in_array</span><span class="p">([</span><span class="s1">'open'</span><span class="p">,</span> <span class="s1">'resolved'</span><span class="p">,</span> <span class="s1">'unresolved'</span><span class="p">]).</span>
+    <span class="nf">allow_nil</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="allow_blank">allow_blank</h5>
+
+<p>Use <code>allow_blank</code> to assert that the attribute allows blank.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Issue</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:state</span>
+
+  <span class="n">validates_presence_of</span> <span class="ss">:state</span>
+  <span class="n">validates_inclusion_of</span> <span class="ss">:state</span><span class="p">,</span>
+    <span class="ss">in: </span><span class="p">[</span><span class="s1">'open'</span><span class="p">,</span> <span class="s1">'resolved'</span><span class="p">,</span> <span class="s1">'unresolved'</span><span class="p">],</span>
+    <span class="ss">allow_blank: </span><span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Issue</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_inclusion_of</span><span class="p">(</span><span class="ss">:state</span><span class="p">).</span>
+      <span class="nf">in_array</span><span class="p">([</span><span class="s1">'open'</span><span class="p">,</span> <span class="s1">'resolved'</span><span class="p">,</span> <span class="s1">'unresolved'</span><span class="p">]).</span>
+      <span class="nf">allow_blank</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">IssueTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_inclusion_of</span><span class="p">(</span><span class="ss">:state</span><span class="p">).</span>
+    <span class="nf">in_array</span><span class="p">([</span><span class="s1">'open'</span><span class="p">,</span> <span class="s1">'resolved'</span><span class="p">,</span> <span class="s1">'unresolved'</span><span class="p">]).</span>
+    <span class="nf">allow_blank</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+265
+266
+267</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_model/validate_inclusion_of_matcher.rb', line 265</span>
+
+<span class="k">def</span> <span class="nf">validate_inclusion_of</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+  <span class="no">ValidateInclusionOfMatcher</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+<span class="k">end</span></pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="validate_length_of-instance_method">
+  
+    #<strong>validate_length_of</strong>(attr)  &#x21d2; <tt><span class='object_link'>ValidateLengthOfMatcher</span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>validate_length_of</code> matcher tests usage of the
+<code>validates_length_of</code> matcher. Note that this matcher is intended to be
+used against string columns and not integer columns.</p>
+
+<h4 id="qualifiers">Qualifiers</h4>
+
+<p>Use <code>on</code> if your validation applies only under a certain context.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">User</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:password</span>
+
+  <span class="n">validates_length_of</span> <span class="ss">:password</span><span class="p">,</span> <span class="ss">minimum: </span><span class="mi">10</span><span class="p">,</span> <span class="ss">on: :create</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">User</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_length_of</span><span class="p">(</span><span class="ss">:password</span><span class="p">).</span>
+      <span class="nf">is_at_least</span><span class="p">(</span><span class="mi">10</span><span class="p">).</span>
+      <span class="nf">on</span><span class="p">(</span><span class="ss">:create</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_length_of</span><span class="p">(</span><span class="ss">:password</span><span class="p">).</span>
+    <span class="nf">is_at_least</span><span class="p">(</span><span class="mi">10</span><span class="p">).</span>
+    <span class="nf">on</span><span class="p">(</span><span class="ss">:create</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="is_at_least">is_at_least</h5>
+
+<p>Use <code>is_at_least</code> to test usage of the <code>:minimum</code> option. This asserts
+that the attribute can take a string which is equal to or longer than
+the given length and cannot take a string which is shorter.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">User</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:bio</span>
+
+  <span class="n">validates_length_of</span> <span class="ss">:bio</span><span class="p">,</span> <span class="ss">minimum: </span><span class="mi">15</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">User</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_length_of</span><span class="p">(</span><span class="ss">:bio</span><span class="p">).</span><span class="nf">is_at_least</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+
+<span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_length_of</span><span class="p">(</span><span class="ss">:bio</span><span class="p">).</span><span class="nf">is_at_least</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="is_at_most">is_at_most</h5>
+
+<p>Use <code>is_at_most</code> to test usage of the <code>:maximum</code> option. This asserts
+that the attribute can take a string which is equal to or shorter than
+the given length and cannot take a string which is longer.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">User</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:status_update</span>
+
+  <span class="n">validates_length_of</span> <span class="ss">:status_update</span><span class="p">,</span> <span class="ss">maximum: </span><span class="mi">140</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">User</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_length_of</span><span class="p">(</span><span class="ss">:status_update</span><span class="p">).</span><span class="nf">is_at_most</span><span class="p">(</span><span class="mi">140</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_length_of</span><span class="p">(</span><span class="ss">:status_update</span><span class="p">).</span><span class="nf">is_at_most</span><span class="p">(</span><span class="mi">140</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="is_equal_to">is_equal_to</h5>
+
+<p>Use <code>is_equal_to</code> to test usage of the <code>:is</code> option. This asserts that
+the attribute can take a string which is exactly equal to the given
+length and cannot take a string which is shorter or longer.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">User</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:favorite_superhero</span>
+
+  <span class="n">validates_length_of</span> <span class="ss">:favorite_superhero</span><span class="p">,</span> <span class="ss">is: </span><span class="mi">6</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">User</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_length_of</span><span class="p">(</span><span class="ss">:favorite_superhero</span><span class="p">).</span><span class="nf">is_equal_to</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_length_of</span><span class="p">(</span><span class="ss">:favorite_superhero</span><span class="p">).</span><span class="nf">is_equal_to</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="is_at_least-is_at_most">is_at_least + is_at_most</h5>
+
+<p>Use <code>is_at_least</code> and <code>is_at_most</code> together to test usage of the <code>:in</code>
+option.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">User</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:password</span>
+
+  <span class="n">validates_length_of</span> <span class="ss">:password</span><span class="p">,</span> <span class="ss">in: </span><span class="mi">5</span><span class="o">..</span><span class="mi">30</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">User</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_length_of</span><span class="p">(</span><span class="ss">:password</span><span class="p">).</span>
+      <span class="nf">is_at_least</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="nf">is_at_most</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_length_of</span><span class="p">(</span><span class="ss">:password</span><span class="p">).</span>
+    <span class="nf">is_at_least</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="nf">is_at_most</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="with_message">with_message</h5>
+
+<p>Use <code>with_message</code> if you are using a custom validation message.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">User</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:password</span>
+
+  <span class="n">validates_length_of</span> <span class="ss">:password</span><span class="p">,</span>
+    <span class="ss">minimum: </span><span class="mi">10</span><span class="p">,</span>
+    <span class="ss">message: </span><span class="s2">"Password isn't long enough"</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">User</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_length_of</span><span class="p">(</span><span class="ss">:password</span><span class="p">).</span>
+      <span class="nf">is_at_least</span><span class="p">(</span><span class="mi">10</span><span class="p">).</span>
+      <span class="nf">with_message</span><span class="p">(</span><span class="s2">"Password isn't long enough"</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_length_of</span><span class="p">(</span><span class="ss">:password</span><span class="p">).</span>
+    <span class="nf">is_at_least</span><span class="p">(</span><span class="mi">10</span><span class="p">).</span>
+    <span class="nf">with_message</span><span class="p">(</span><span class="s2">"Password isn't long enough"</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="with_short_message">with_short_message</h5>
+
+<p>Use <code>with_short_message</code> if you are using a custom &quot;too short&quot; message.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">User</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:secret_key</span>
+
+  <span class="n">validates_length_of</span> <span class="ss">:secret_key</span><span class="p">,</span>
+    <span class="ss">in: </span><span class="mi">15</span><span class="o">..</span><span class="mi">100</span><span class="p">,</span>
+    <span class="ss">too_short: </span><span class="s1">'Secret key must be more than 15 characters'</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">User</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_length_of</span><span class="p">(</span><span class="ss">:secret_key</span><span class="p">).</span>
+      <span class="nf">is_at_least</span><span class="p">(</span><span class="mi">15</span><span class="p">).</span>
+      <span class="nf">with_short_message</span><span class="p">(</span><span class="s1">'Secret key must be more than 15 characters'</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_length_of</span><span class="p">(</span><span class="ss">:secret_key</span><span class="p">).</span>
+    <span class="nf">is_at_least</span><span class="p">(</span><span class="mi">15</span><span class="p">).</span>
+    <span class="nf">with_short_message</span><span class="p">(</span><span class="s1">'Secret key must be more than 15 characters'</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="with_long_message">with_long_message</h5>
+
+<p>Use <code>with_long_message</code> if you are using a custom &quot;too long&quot; message.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">User</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:secret_key</span>
+
+  <span class="n">validates_length_of</span> <span class="ss">:secret_key</span><span class="p">,</span>
+    <span class="ss">in: </span><span class="mi">15</span><span class="o">..</span><span class="mi">100</span><span class="p">,</span>
+    <span class="ss">too_long: </span><span class="s1">'Secret key must be less than 100 characters'</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">User</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_length_of</span><span class="p">(</span><span class="ss">:secret_key</span><span class="p">).</span>
+      <span class="nf">is_at_most</span><span class="p">(</span><span class="mi">100</span><span class="p">).</span>
+      <span class="nf">with_long_message</span><span class="p">(</span><span class="s1">'Secret key must be less than 100 characters'</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_length_of</span><span class="p">(</span><span class="ss">:secret_key</span><span class="p">).</span>
+    <span class="nf">is_at_most</span><span class="p">(</span><span class="mi">100</span><span class="p">).</span>
+    <span class="nf">with_long_message</span><span class="p">(</span><span class="s1">'Secret key must be less than 100 characters'</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="allow_nil">allow_nil</h5>
+
+<p>Use <code>allow_nil</code> to assert that the attribute allows nil.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">User</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:bio</span>
+
+  <span class="n">validates_length_of</span> <span class="ss">:bio</span><span class="p">,</span> <span class="ss">minimum: </span><span class="mi">15</span><span class="p">,</span> <span class="ss">allow_nil: </span><span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_length_of</span><span class="p">(</span><span class="ss">:bio</span><span class="p">).</span><span class="nf">is_at_least</span><span class="p">(</span><span class="mi">15</span><span class="p">).</span><span class="nf">allow_nil</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_length_of</span><span class="p">(</span><span class="ss">:bio</span><span class="p">).</span><span class="nf">is_at_least</span><span class="p">(</span><span class="mi">15</span><span class="p">).</span><span class="nf">allow_nil</span>
+<span class="k">end</span>
+</code></pre>
+
+<h1 id="allow_blank">##### allow_blank</h1>
+
+<p>Use <code>allow_blank</code> to assert that the attribute allows blank.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">User</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:bio</span>
+
+  <span class="n">validates_length_of</span> <span class="ss">:bio</span><span class="p">,</span> <span class="ss">minimum: </span><span class="mi">15</span><span class="p">,</span> <span class="ss">allow_blank: </span><span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_length_of</span><span class="p">(</span><span class="ss">:bio</span><span class="p">).</span><span class="nf">is_at_least</span><span class="p">(</span><span class="mi">15</span><span class="p">).</span><span class="nf">allow_blank</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_length_of</span><span class="p">(</span><span class="ss">:bio</span><span class="p">).</span><span class="nf">is_at_least</span><span class="p">(</span><span class="mi">15</span><span class="p">).</span><span class="nf">allow_blank</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+263
+264
+265</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_model/validate_length_of_matcher.rb', line 263</span>
+
+<span class="k">def</span> <span class="nf">validate_length_of</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+  <span class="no">ValidateLengthOfMatcher</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+<span class="k">end</span></pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="validate_numericality_of-instance_method">
+  
+    #<strong>validate_numericality_of</strong>(attr)  &#x21d2; <tt><span class='object_link'>ValidateNumericalityOfMatcher</span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>validate_numericality_of</code> matcher tests usage of the
+<code>validates_numericality_of</code> validation.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:gpa</span>
+
+  <span class="n">validates_numericality_of</span> <span class="ss">:gpa</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Person</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:gpa</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:gpa</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4 id="qualifiers">Qualifiers</h4>
+
+<h5 id="on">on</h5>
+
+<p>Use <code>on</code> if your validation applies only under a certain context.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:number_of_dependents</span>
+
+  <span class="n">validates_numericality_of</span> <span class="ss">:number_of_dependents</span><span class="p">,</span> <span class="ss">on: :create</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Person</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:number_of_dependents</span><span class="p">).</span>
+      <span class="nf">on</span><span class="p">(</span><span class="ss">:create</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:number_of_dependents</span><span class="p">).</span><span class="nf">on</span><span class="p">(</span><span class="ss">:create</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="only_integer">only_integer</h5>
+
+<p>Use <code>only_integer</code> to test usage of the <code>:only_integer</code> option. This
+asserts that your attribute only allows integer numbers and disallows
+non-integer ones.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:age</span>
+
+  <span class="n">validates_numericality_of</span> <span class="ss">:age</span><span class="p">,</span> <span class="ss">only_integer: </span><span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Person</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:age</span><span class="p">).</span><span class="nf">only_integer</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:age</span><span class="p">).</span><span class="nf">only_integer</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="is_less_than">is_less_than</h5>
+
+<p>Use <code>is_less_than</code> to test usage of the the <code>:less_than</code> option. This
+asserts that the attribute can take a number which is less than the
+given value and cannot take a number which is greater than or equal to
+it.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:number_of_cars</span>
+
+  <span class="n">validates_numericality_of</span> <span class="ss">:number_of_cars</span><span class="p">,</span> <span class="ss">less_than: </span><span class="mi">2</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Person</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:number_of_cars</span><span class="p">).</span>
+      <span class="nf">is_less_than</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:number_of_cars</span><span class="p">).</span>
+    <span class="nf">is_less_than</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="is_less_than_or_equal_to">is_less_than_or_equal_to</h5>
+
+<p>Use <code>is_less_than_or_equal_to</code> to test usage of the
+<code>:less_than_or_equal_to</code> option. This asserts that the attribute can
+take a number which is less than or equal to the given value and cannot
+take a number which is greater than it.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:birth_year</span>
+
+  <span class="n">validates_numericality_of</span> <span class="ss">:birth_year</span><span class="p">,</span> <span class="ss">less_than_or_equal_to: </span><span class="mi">1987</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Person</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:birth_year</span><span class="p">).</span>
+      <span class="nf">is_less_than_or_equal_to</span><span class="p">(</span><span class="mi">1987</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:birth_year</span><span class="p">).</span>
+    <span class="nf">is_less_than_or_equal_to</span><span class="p">(</span><span class="mi">1987</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="is_equal_to">is_equal_to</h5>
+
+<p>Use <code>is_equal_to</code> to test usage of the <code>:equal_to</code> option. This asserts
+that the attribute can take a number which is equal to the given value
+and cannot take a number which is not equal.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:weight</span>
+
+  <span class="n">validates_numericality_of</span> <span class="ss">:weight</span><span class="p">,</span> <span class="ss">equal_to: </span><span class="mi">150</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Person</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:weight</span><span class="p">).</span><span class="nf">is_equal_to</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:weight</span><span class="p">).</span><span class="nf">is_equal_to</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="is_greater_than_or_equal_to">is_greater_than_or_equal_to</h5>
+
+<p>Use <code>is_greater_than_or_equal_to</code> to test usage of the
+<code>:greater_than_or_equal_to</code> option. This asserts that the attribute can
+take a number which is greater than or equal to the given value and
+cannot take a number which is less than it.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:height</span>
+
+  <span class="n">validates_numericality_of</span> <span class="ss">:height</span><span class="p">,</span> <span class="ss">greater_than_or_equal_to: </span><span class="mi">55</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Person</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:height</span><span class="p">).</span>
+      <span class="nf">is_greater_than_or_equal_to</span><span class="p">(</span><span class="mi">55</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:height</span><span class="p">).</span>
+    <span class="nf">is_greater_than_or_equal_to</span><span class="p">(</span><span class="mi">55</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="is_greater_than">is_greater_than</h5>
+
+<p>Use <code>is_greater_than</code> to test usage of the <code>:greater_than</code> option.
+This asserts that the attribute can take a number which is greater than
+the given value and cannot take a number less than or equal to it.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:legal_age</span>
+
+  <span class="n">validates_numericality_of</span> <span class="ss">:legal_age</span><span class="p">,</span> <span class="ss">greater_than: </span><span class="mi">21</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Person</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:legal_age</span><span class="p">).</span>
+      <span class="nf">is_greater_than</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:legal_age</span><span class="p">).</span>
+    <span class="nf">is_greater_than</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="is_other_than">is_other_than</h5>
+
+<p>Use <code>is_other_than</code> to test usage of the <code>:other_than</code> option.
+This asserts that the attribute can take a number which is not equal to
+the given value.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:legal_age</span>
+
+  <span class="n">validates_numericality_of</span> <span class="ss">:legal_age</span><span class="p">,</span> <span class="ss">other_than: </span><span class="mi">21</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Person</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:legal_age</span><span class="p">).</span>
+      <span class="nf">is_other_than</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:legal_age</span><span class="p">).</span>
+    <span class="nf">is_other_than</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="even">even</h5>
+
+<p>Use <code>even</code> to test usage of the <code>:even</code> option. This asserts that the
+attribute can take odd numbers and cannot take even ones.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:birth_month</span>
+
+  <span class="n">validates_numericality_of</span> <span class="ss">:birth_month</span><span class="p">,</span> <span class="ss">even: </span><span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Person</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:birth_month</span><span class="p">).</span><span class="nf">even</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:birth_month</span><span class="p">).</span><span class="nf">even</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="odd">odd</h5>
+
+<p>Use <code>odd</code> to test usage of the <code>:odd</code> option. This asserts that the
+attribute can take a number which is odd and cannot take a number which
+is even.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:birth_day</span>
+
+  <span class="n">validates_numericality_of</span> <span class="ss">:birth_day</span><span class="p">,</span> <span class="ss">odd: </span><span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Person</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:birth_day</span><span class="p">).</span><span class="nf">odd</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:birth_day</span><span class="p">).</span><span class="nf">odd</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="with_message">with_message</h5>
+
+<p>Use <code>with_message</code> if you are using a custom validation message.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Person</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:number_of_dependents</span>
+
+  <span class="n">validates_numericality_of</span> <span class="ss">:number_of_dependents</span><span class="p">,</span>
+    <span class="ss">message: </span><span class="s1">'Number of dependents must be a number'</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Person</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:number_of_dependents</span><span class="p">).</span>
+      <span class="nf">with_message</span><span class="p">(</span><span class="s1">'Number of dependents must be a number'</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:number_of_dependents</span><span class="p">).</span>
+    <span class="nf">with_message</span><span class="p">(</span><span class="s1">'Number of dependents must be a number'</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="allow_nil">allow_nil</h5>
+
+<p>Use <code>allow_nil</code> to assert that the attribute allows nil.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Post</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:age</span>
+
+  <span class="n">validates_numericality_of</span> <span class="ss">:age</span><span class="p">,</span> <span class="ss">allow_nil: </span><span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Post</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:age</span><span class="p">).</span><span class="nf">allow_nil</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">PostTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_numericality_of</span><span class="p">(</span><span class="ss">:age</span><span class="p">).</span><span class="nf">allow_nil</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+328
+329
+330</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_model/validate_numericality_of_matcher.rb', line 328</span>
+
+<span class="k">def</span> <span class="nf">validate_numericality_of</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+  <span class="no">ValidateNumericalityOfMatcher</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+<span class="k">end</span></pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="validate_presence_of-instance_method">
+  
+    #<strong>validate_presence_of</strong>(attr)  &#x21d2; <tt><span class='object_link'>ValidatePresenceOfMatcher</span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <code>validate_presence_of</code> matcher tests usage of the
+<code>validates_presence_of</code> validation.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Robot</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:arms</span>
+
+  <span class="n">validates_presence_of</span> <span class="ss">:arms</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Robot</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_presence_of</span><span class="p">(</span><span class="ss">:arms</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">RobotTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_presence_of</span><span class="p">(</span><span class="ss">:arms</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h4 id="caveats">Caveats</h4>
+
+<p>Under Rails 4 and greater, if your model <code>has_secure_password</code> and you
+are validating presence of the password using a record whose password
+has already been set prior to calling the matcher, you will be
+instructed to use a record whose password is empty instead.</p>
+
+<p>For example, given this scenario:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_secure_password</span> <span class="ss">validations: </span><span class="kp">false</span>
+
+  <span class="n">validates_presence_of</span> <span class="ss">:password</span>
+<span class="k">end</span>
+
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">User</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">subject</span> <span class="p">{</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">password: </span><span class="s1">'123456'</span><span class="p">)</span> <span class="p">}</span>
+
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_presence_of</span><span class="p">(</span><span class="ss">:password</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>the above test will raise an error like this:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="no">The</span> <span class="n">validation</span> <span class="n">failed</span> <span class="n">because</span> <span class="n">your</span> <span class="no">User</span> <span class="n">model</span> <span class="n">declares</span>
+<span class="sb">`has_secure_password`</span><span class="p">,</span> <span class="n">and</span> <span class="sb">`validate_presence_of`</span> <span class="n">was</span> <span class="n">called</span> <span class="n">on</span> <span class="n">a</span>
+<span class="n">user</span> <span class="n">which</span> <span class="n">has</span> <span class="sb">`password`</span> <span class="n">already</span> <span class="n">set</span> <span class="n">to</span> <span class="n">a</span> <span class="n">value</span><span class="o">.</span> <span class="no">Please</span> <span class="n">use</span> <span class="n">a</span> <span class="n">user</span>
+<span class="n">with</span> <span class="n">an</span> <span class="n">empty</span> <span class="sb">`password`</span> <span class="n">instead</span><span class="o">.</span>
+</code></pre>
+
+<p>This happens because <code>has_secure_password</code> itself overrides your model
+so that it is impossible to set <code>password</code> to nil. This means that it is
+impossible to test that setting <code>password</code> to nil places your model in
+an invalid state (which in turn means that the validation itself is
+unnecessary).</p>
+
+<h4 id="qualifiers">Qualifiers</h4>
+
+<h5 id="allow_nil">allow_nil</h5>
+
+<p>Use <code>allow_nil</code> if your model has an optional attribute.</p>
+
+<p>class Robot
+    include ActiveModel::Model
+    attr_accessor :nickname</p>
+
+<pre class="code ruby"><code class="ruby"><span class="n">validates_presence_of</span> <span class="ss">:nickname</span><span class="p">,</span> <span class="ss">allow_nil: </span><span class="kp">true</span>
+</code></pre>
+
+<p>end</p>
+
+<p># RSpec
+  RSpec.describe Robot, type: :model do
+    it { should validate_presence_of(:nickname).allow_nil }
+  end</p>
+
+<p># Minitest (Shoulda)
+  class RobotTest &lt; ActiveSupport::TestCase
+    should validate_presence_of(:nickname).allow_nil
+  end</p>
+
+<h5 id="on">on</h5>
+
+<p>Use <code>on</code> if your validation applies only under a certain context.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Robot</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:arms</span>
+
+  <span class="n">validates_presence_of</span> <span class="ss">:arms</span><span class="p">,</span> <span class="ss">on: :create</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Robot</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_presence_of</span><span class="p">(</span><span class="ss">:arms</span><span class="p">).</span><span class="nf">on</span><span class="p">(</span><span class="ss">:create</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">RobotTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_presence_of</span><span class="p">(</span><span class="ss">:arms</span><span class="p">).</span><span class="nf">on</span><span class="p">(</span><span class="ss">:create</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<h5 id="with_message">with_message</h5>
+
+<p>Use <code>with_message</code> if you are using a custom validation message.</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Robot</span>
+  <span class="kp">include</span> <span class="no">ActiveModel</span><span class="o">::</span><span class="no">Model</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:legs</span>
+
+  <span class="n">validates_presence_of</span> <span class="ss">:legs</span><span class="p">,</span> <span class="ss">message: </span><span class="s1">'Robot has no legs'</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Robot</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="k">do</span>
+    <span class="n">should</span> <span class="n">validate_presence_of</span><span class="p">(</span><span class="ss">:legs</span><span class="p">).</span>
+      <span class="nf">with_message</span><span class="p">(</span><span class="s1">'Robot has no legs'</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">RobotTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">validate_presence_of</span><span class="p">(</span><span class="ss">:legs</span><span class="p">).</span>
+    <span class="nf">with_message</span><span class="p">(</span><span class="s1">'Robot has no legs'</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td class="lines">
+      <pre>
+
+
+129
+130
+131</pre>
+    </td>
+    <td class="code">
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_model/validate_presence_of_matcher.rb', line 129</span>
+
+<span class="k">def</span> <span class="nf">validate_presence_of</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+  <span class="no">ValidatePresenceOfMatcher</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="kp">attr</span><span class="p">)</span>
+<span class="k">end</span></pre>
+    </td>
+  </tr>
+</table>
+
+</div>
+    
+  </div>
+
+</div>
+
+      <div id="footer">
+  Generated on
+  September 3, 2020
+  by
+  <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">YARD</a>.
+</div>
+
+    </div>
+
+  </body>
+</html>
