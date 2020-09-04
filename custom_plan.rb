@@ -30,8 +30,8 @@ class CustomPlan < Zeus::Plan
 
     require 'bundler/setup'
 
-    $LOAD_PATH << File.expand_path('../lib', __FILE__)
-    $LOAD_PATH << File.expand_path('../spec', __FILE__)
+    $LOAD_PATH << File.expand_path('lib', __dir__)
+    $LOAD_PATH << File.expand_path('spec', __dir__)
 
     # Fix Zeus for Pry 0.13.0+
     Pry::Pager.class_eval do
