@@ -237,14 +237,14 @@ could not be proved.
   context 'using translations' do
     after { I18n.backend.reload! }
 
-    context "a too_long translation containing %{attribute}, %{model}" do
+    context 'a too_long translation containing %{attribute}, %{model}' do
       before do
         stub_translation(
-          "activerecord.errors.messages.too_long",
-          "The %{attribute} of your %{model} is too long (maximum is %{count} characters)")
+          'activerecord.errors.messages.too_long',
+          'The %{attribute} of your %{model} is too long (maximum is %{count} characters)')
       end
 
-      it "does not raise an exception" do
+      it 'does not raise an exception' do
         expect {
           expect(validating_length(maximum: 4)).
             to validate_length_of(:attr).is_at_most(4)
@@ -252,28 +252,28 @@ could not be proved.
       end
     end
 
-    context "a too_short translation containing %{attribute}, %{model}" do
+    context 'a too_short translation containing %{attribute}, %{model}' do
       before do
         stub_translation(
-          "activerecord.errors.messages.too_short",
-          "The %{attribute} of your %{model} is too short (minimum is %{count} characters)")
+          'activerecord.errors.messages.too_short',
+          'The %{attribute} of your %{model} is too short (minimum is %{count} characters)')
       end
 
-      it "does not raise an exception" do
+      it 'does not raise an exception' do
         expect {
           expect(validating_length(minimum: 4)).to validate_length_of(:attr).is_at_least(4)
         }.to_not raise_exception
       end
     end
 
-    context "a wrong_length translation containing %{attribute}, %{model}" do
+    context 'a wrong_length translation containing %{attribute}, %{model}' do
       before do
         stub_translation(
-          "activerecord.errors.messages.wrong_length",
-          "The %{attribute} of your %{model} is the wrong length (should be %{count} characters)")
+          'activerecord.errors.messages.wrong_length',
+          'The %{attribute} of your %{model} is the wrong length (should be %{count} characters)')
       end
 
-      it "does not raise an exception" do
+      it 'does not raise an exception' do
         expect {
           expect(validating_length(is: 4)).
             to validate_length_of(:attr).is_equal_to(4)

@@ -40,7 +40,7 @@ EOT
 
     def current_appraisal
       if appraisal_in_use?
-        File.basename(path, ".gemfile")
+        File.basename(path, '.gemfile')
       end
     end
 

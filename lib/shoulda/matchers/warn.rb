@@ -5,8 +5,8 @@ module Shoulda
 
     # @private
     def self.warn(message)
-      header = "Warning from shoulda-matchers:"
-      divider = "*" * TERMINAL_MAX_WIDTH
+      header = 'Warning from shoulda-matchers:'
+      divider = '*' * TERMINAL_MAX_WIDTH
       wrapped_message = word_wrap(message)
       full_message = [
         divider,

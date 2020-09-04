@@ -8,7 +8,7 @@ def javascripts
 end
 
 def class_list(root = Registry.root, tree = TreeContext.new)
-  out = String.new("")
+  out = String.new('')
   children = run_verifier(root.children)
   if root == Registry.root
     children += @items.select {|o| o.namespace.is_a?(CodeObjects::Proxy) }
@@ -24,12 +24,12 @@ def class_list(root = Registry.root, tree = TreeContext.new)
     out << " &lt; #{child.superclass.name}" if child.is_a?(CodeObjects::ClassObject) && child.superclass
     out << "<small class='search_info'>"
     out << child.namespace.title
-    out << "</small>"
-    out << "</div>"
+    out << '</small>'
+    out << '</div>'
     tree.nest do
       out << "<ul>#{class_list(child, tree)}</ul>" if has_children
     end
-    out << "</li>"
+    out << '</li>'
   end
   out
 end

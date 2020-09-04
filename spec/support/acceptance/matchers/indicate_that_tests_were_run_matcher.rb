@@ -75,7 +75,7 @@ module AcceptanceTests
         if matching_expected_output
           "Expected output:\n#{matching_actual_output}"
         else
-          "Expected output: (n/a)"
+          'Expected output: (n/a)'
         end
       end
 
@@ -85,7 +85,7 @@ module AcceptanceTests
 
       def formatted_actual_output
         if actual_output.empty?
-          "Actual output: (empty)"
+          'Actual output: (empty)'
         else
           "Actual output:\n#{actual_output}"
         end

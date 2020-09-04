@@ -17,7 +17,7 @@ def diskfile
   end
 
   data = htmlify(contents, @file.attributes[:markup])
-  "<div id='filecontents'>" + data + "</div>"
+  "<div id='filecontents'>" + data + '</div>'
 end
 
 def preprocess_index(contents)

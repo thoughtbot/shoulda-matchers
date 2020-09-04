@@ -11,20 +11,20 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher, type: :model do
     end
   end
 
-  context "an attribute with a context-dependent validation" do
-    context "without the validation context" do
-      it "does not match" do
-        expect(validating_format(with: /abc/, on: :customisable)).not_to matcher("xyz").for(:attr)
+  context 'an attribute with a context-dependent validation' do
+    context 'without the validation context' do
+      it 'does not match' do
+        expect(validating_format(with: /abc/, on: :customisable)).not_to matcher('xyz').for(:attr)
       end
     end
 
-    context "with the validation context" do
-      it "disallows a bad value" do
-        expect(validating_format(with: /abc/, on: :customisable)).to matcher("xyz").for(:attr).on(:customisable)
+    context 'with the validation context' do
+      it 'disallows a bad value' do
+        expect(validating_format(with: /abc/, on: :customisable)).to matcher('xyz').for(:attr).on(:customisable)
       end
 
-      it "does not match a good value" do
-        expect(validating_format(with: /abc/, on: :customisable)).not_to matcher("abcde").for(:attr).on(:customisable)
+      it 'does not match a good value' do
+        expect(validating_format(with: /abc/, on: :customisable)).not_to matcher('abcde').for(:attr).on(:customisable)
       end
     end
   end

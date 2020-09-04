@@ -9,7 +9,7 @@ describe Shoulda::Matchers::ActiveModel, type: :model do
 end
 
 describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
-  context "#description" do
+  context '#description' do
     it 'describes itself with two values' do
       matcher = allow_value('foo', 'bar').for(:baz)
 
@@ -43,7 +43,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
     end
 
     it 'truncates the description when long' do
-      matcher = allow_value("A" * 10000).for(:baz)
+      matcher = allow_value('A' * 10000).for(:baz)
 
       expect(matcher.description).to eq "allow :baz to be ‹\"#{"A" * 499}...›"
     end
@@ -325,7 +325,7 @@ errors instead:
 
           record = record_with_custom_validation(options) do
             if self.attr == 'xyz'
-              self.errors.add :attr, "some other error"
+              self.errors.add :attr, 'some other error'
             end
           end
 
@@ -385,7 +385,7 @@ errors instead:
         context 'if the messages do not match' do
           it 'technically accepts' do
             builder = builder_for_record_with_different_error_attribute(
-              message: "a different error"
+              message: 'a different error'
             )
             invalid_value = "#{builder.valid_value} (invalid)"
 
@@ -394,7 +394,7 @@ errors instead:
                 not_to allow_value(invalid_value).
                 for(builder.attribute_to_validate).
                 with_message(
-                  "some error",
+                  'some error',
                   against: builder.attribute_that_receives_error
                 )
             end
@@ -440,20 +440,20 @@ indeed invalid, but it produced these validation errors instead:
     end
   end
 
-  context "an attribute with a context-dependent validation" do
-    context "without the validation context" do
-      it "allows a bad value" do
-        expect(validating_format(with: /abc/, on: :customisable)).to allow_value("xyz").for(:attr)
+  context 'an attribute with a context-dependent validation' do
+    context 'without the validation context' do
+      it 'allows a bad value' do
+        expect(validating_format(with: /abc/, on: :customisable)).to allow_value('xyz').for(:attr)
       end
     end
 
-    context "with the validation context" do
-      it "allows a good value" do
-        expect(validating_format(with: /abc/, on: :customisable)).to allow_value("abcde").for(:attr).on(:customisable)
+    context 'with the validation context' do
+      it 'allows a good value' do
+        expect(validating_format(with: /abc/, on: :customisable)).to allow_value('abcde').for(:attr).on(:customisable)
       end
 
-      it "rejects a bad value" do
-        expect(validating_format(with: /abc/, on: :customisable)).not_to allow_value("xyz").for(:attr).on(:customisable)
+      it 'rejects a bad value' do
+        expect(validating_format(with: /abc/, on: :customisable)).not_to allow_value('xyz').for(:attr).on(:customisable)
       end
     end
   end
@@ -490,7 +490,7 @@ indeed invalid, but it produced these validation errors instead:
         ignoring_interference_by_writer
     end
 
-    it "does not match given good values along with bad values" do
+    it 'does not match given good values along with bad values' do
       message = <<-MESSAGE.strip_heredoc
 After setting :attr to ‹"12345"›, the matcher expected the Example to be
 invalid, but it was valid instead.
@@ -503,7 +503,7 @@ invalid, but it was valid instead.
       expect(&assertion).to fail_with_message(message)
     end
 
-    it "does not match given bad values along with good values" do
+    it 'does not match given bad values along with good values' do
       message = <<-MESSAGE.strip_heredoc
 After setting :attr to ‹"12345"›, the matcher expected the Example to be
 invalid, but it was valid instead.
