@@ -16,7 +16,7 @@ module Shoulda
 
           file DocumentationPublisher.docs_dir => DocumentationPublisher.gh_pages_dir
 
-          task :setup => DocumentationPublisher.docs_dir do
+          task setup: DocumentationPublisher.docs_dir do
             publisher.reset_repo_directory
           end
 
@@ -76,7 +76,7 @@ module Shoulda
           end
 
           desc "Generate docs for version #{DocumentationPublisher.current_version} and push them to GitHub"
-          task :publish_latest => :setup do
+          task publish_latest: :setup do
             publisher.publish_latest_version
           end
         end
