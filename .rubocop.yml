@@ -30,10 +30,10 @@ Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 Layout/ParameterAlignment:
   EnforcedStyle: with_fixed_indentation
-Layout/SpaceInsideBlockBraces:
-  Enabled: false
 Layout/SpaceInLambdaLiteral:
   EnforcedStyle: require_space
+Layout/SpaceInsideBlockBraces:
+  Enabled: false
 Lint/AmbiguousOperator:
   Enabled: false
 Lint/AmbiguousRegexpLiteral:
@@ -80,25 +80,19 @@ Naming/AsciiIdentifiers:
   Enabled: false
 Naming/BinaryOperatorParameterName:
   Enabled: false
+Naming/FileName:
+  Enabled: false
 Naming/MemoizedInstanceVariableName:
   EnforcedStyleForLeadingUnderscores: required
 Naming/PredicateName:
-  Enabled: false
-Style/BlockDelimiters:
-  Enabled: false
-Style/ClassVars:
-  Enabled: false
-Style/ColonMethodCall:
-  Enabled: false
-Naming/FileName:
   Enabled: false
 Rails/Date:
   Enabled: false
 Rails/Delegate:
   Enabled: false
-Rails/TimeZone:
-  Enabled: false
 Rails/HttpPositionalArguments:
+  Enabled: false
+Rails/TimeZone:
   Enabled: false
 Style/Alias:
   Enabled: false
@@ -108,19 +102,25 @@ Style/AsciiComments:
   Enabled: false
 Style/Attr:
   Enabled: false
+Style/BlockDelimiters:
+  Enabled: false
 Style/CaseEquality:
   Enabled: false
 Style/CharacterLiteral:
   Enabled: false
 Style/ClassAndModuleChildren:
   Enabled: false
+Style/ClassVars:
+  Enabled: false
 Style/CollectionMethods:
   Enabled: true
   PreferredMethods:
-    find: detect
-    reduce: inject
     collect: map
+    find: detect
     find_all: select
+    reduce: inject
+Style/ColonMethodCall:
+  Enabled: false
 Style/CommentAnnotation:
   Enabled: false
 Style/Documentation:
@@ -213,11 +213,11 @@ Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: consistent_comma
 Style/TrivialAccessors:
   Enabled: false
+Style/VariableInterpolation:
+  Enabled: false
 Style/WhenThen:
   Enabled: false
 Style/WhileUntilModifier:
   Enabled: false
 Style/WordArray:
-  Enabled: false
-Style/VariableInterpolation:
   Enabled: false
