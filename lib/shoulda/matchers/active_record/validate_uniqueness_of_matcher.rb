@@ -626,9 +626,9 @@ module Shoulda
             reason << inspected_scopes.to_sentence
 
             if inspected_scopes.many?
-              reason << " do not seem to be attributes"
+              reason << ' do not seem to be attributes'
             else
-              reason << " does not seem to be an attribute"
+              reason << ' does not seem to be an attribute'
             end
 
             reason << " on #{model.name}."
@@ -650,9 +650,9 @@ module Shoulda
             reason << inspected_scopes.to_sentence
 
             if inspected_scopes.many?
-              reason << " seem to be attributes"
+              reason << ' seem to be attributes'
             else
-              reason << " seems to be an attribute"
+              reason << ' seems to be an attribute'
             end
 
             reason << " on #{model.name}."
@@ -951,7 +951,7 @@ module Shoulda
               prefix << "‹#{existing_value_read.inspect}›"
             end
 
-            prefix << ", and saving it as the existing record, then"
+            prefix << ', and saving it as the existing record, then'
           else
             if attribute_setter_for_existing_record
               prefix << "Given an existing #{model.name},"

@@ -2022,7 +2022,7 @@ could not be proved.
     end
 
     context 'qualified with odd + is_greater_than_or_equal_to' do
-      it "describes that it allows odd numbers greater than or equal to a certain value" do
+      it 'describes that it allows odd numbers greater than or equal to a certain value' do
         matcher = validate_numericality_of(:attr).
           odd.
           is_greater_than_or_equal_to(18)

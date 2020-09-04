@@ -895,7 +895,7 @@ within the scope of :scope1, but this could not be proved.
       end
     end
 
-    context "when an existing record that is not the first has a nil value for the scoped attribute" do
+    context 'when an existing record that is not the first has a nil value for the scoped attribute' do
       # This fails intermittently
       # it 'still works' do
         # model = define_model_validating_uniqueness(scopes: [:scope])

@@ -34,8 +34,8 @@ RSpec.configure do |config|
   config.include UnitTests::Matchers
 
   config.infer_spec_type_from_file_location!
-  config.example_status_persistence_file_path = "spec/examples.txt"
-  config.alias_it_behaves_like_to(:it_supports, "it supports")
+  config.example_status_persistence_file_path = 'spec/examples.txt'
+  config.alias_it_behaves_like_to(:it_supports, 'it supports')
 
   config.before(:all, type: :controller) do
     self.class.controller(ApplicationController) { }

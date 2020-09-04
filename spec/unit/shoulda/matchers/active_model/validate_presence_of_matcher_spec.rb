@@ -882,16 +882,16 @@ could not be proved.
     end
   end
 
-  context "an i18n translation containing %{attribute} and %{model}" do
+  context 'an i18n translation containing %{attribute} and %{model}' do
     before do
       stub_translation(
-        "activerecord.errors.messages.blank",
-        "Please enter a %{attribute} for your %{model}")
+        'activerecord.errors.messages.blank',
+        'Please enter a %{attribute} for your %{model}')
     end
 
     after { I18n.backend.reload! }
 
-    it "does not raise an exception" do
+    it 'does not raise an exception' do
       expect {
         expect(validating_presence).to validate_presence_of(:attr)
       }.to_not raise_exception
@@ -932,15 +932,15 @@ validation exception on failure, but this could not be proved.
     end
   end
 
-  context "an attribute with a context-dependent validation" do
-    context "without the validation context" do
-      it "does not match" do
+  context 'an attribute with a context-dependent validation' do
+    context 'without the validation context' do
+      it 'does not match' do
         expect(validating_presence(on: :customisable)).not_to matcher
       end
     end
 
-    context "with the validation context" do
-      it "matches" do
+    context 'with the validation context' do
+      it 'matches' do
         expect(validating_presence(on: :customisable)).to matcher.on(:customisable)
       end
     end

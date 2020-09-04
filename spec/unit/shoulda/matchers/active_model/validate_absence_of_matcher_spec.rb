@@ -28,7 +28,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
 
       available_column_types.each do |type|
         context "when column is of type #{type}" do
-          it "accepts" do
+          it 'accepts' do
             expect(validating_absence_of(:attr, {}, type: type)).
               to validate_absence_of(:attr)
           end
@@ -198,12 +198,12 @@ could not be proved.
       end
     end
 
-    context "an i18n translation containing %{attribute} and %{model}" do
+    context 'an i18n translation containing %{attribute} and %{model}' do
       after { I18n.backend.reload! }
 
-      it "does not raise an exception" do
-        stub_translation("activerecord.errors.messages.present",
-                         "%{attribute} must be blank in a %{model}")
+      it 'does not raise an exception' do
+        stub_translation('activerecord.errors.messages.present',
+                         '%{attribute} must be blank in a %{model}')
 
         expect {
           expect(validating_absence_of(:attr)).to validate_absence_of(:attr)
@@ -211,15 +211,15 @@ could not be proved.
       end
     end
 
-    context "an attribute with a context-dependent validation" do
-      context "without the validation context" do
-        it "does not match" do
+    context 'an attribute with a context-dependent validation' do
+      context 'without the validation context' do
+        it 'does not match' do
           expect(validating_absence_of(:attr, on: :customisable)).not_to validate_absence_of(:attr)
         end
       end
 
-      context "with the validation context" do
-        it "matches" do
+      context 'with the validation context' do
+        it 'matches' do
           expect(validating_absence_of(:attr, on: :customisable)).to validate_absence_of(:attr).on(:customisable)
         end
       end

@@ -10,7 +10,7 @@ module UnitTests
       stripped_message = message.strip_heredoc.strip
 
       if one_line
-        stripped_message.tr("\n", " ").squeeze(" ")
+        stripped_message.tr("\n", ' ').squeeze(' ')
       else
         word_wrap(stripped_message)
       end

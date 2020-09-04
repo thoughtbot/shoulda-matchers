@@ -144,11 +144,11 @@ module Shoulda
 
           def comparison_expectation
             case @operator
-              when :> then "greater than"
-              when :>= then "greater than or equal to"
-              when :== then "equal to"
-              when :< then "less than"
-              when :<= then "less than or equal to"
+              when :> then 'greater than'
+              when :>= then 'greater than or equal to'
+              when :== then 'equal to'
+              when :< then 'less than'
+              when :<= then 'less than or equal to'
               when :!= then 'other than'
             end
           end

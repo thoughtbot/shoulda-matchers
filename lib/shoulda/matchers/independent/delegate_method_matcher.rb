@@ -219,9 +219,9 @@ module Shoulda
           end
 
           if expects_to_allow_nil_delegate_object?
-            string << ", allowing "
+            string << ', allowing '
             string << formatted_delegate_object_reader_method_name
-            string << " to return nil"
+            string << ' to return nil'
           end
 
           string
@@ -344,7 +344,7 @@ module Shoulda
           if options[:include_module]
             class_under_test.to_s
           else
-            ""
+            ''
           end
         end
 
@@ -439,7 +439,7 @@ module Shoulda
         end
 
         def formatted_calls_on_delegate_object
-          string = ""
+          string = ''
 
           if calls_on_delegate_object.any?
             string << "\n\n"
@@ -449,7 +449,7 @@ module Shoulda
               string << "#{i+1}) #{name}(#{args})\n"
             end
           else
-            string << " (none)"
+            string << ' (none)'
           end
 
           string.rstrip!

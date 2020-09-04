@@ -23,11 +23,11 @@ module Shoulda
           desc 'Generate docs for a particular version'
           task :generate, [:version, :latest_version] => :setup do |t, args|
             unless args.version
-              raise ArgumentError, "Missing version"
+              raise ArgumentError, 'Missing version'
             end
 
             unless args.latest_version
-              raise ArgumentError, "Missing latest_version"
+              raise ArgumentError, 'Missing latest_version'
             end
 
             publisher.generate_docs_for(args.version, latest_version: args.latest_version)
@@ -37,7 +37,7 @@ module Shoulda
           task :autogenerate do
             require 'fssm'
 
-            project_directory = File.expand_path(File.dirname(__FILE__) + "/..")
+            project_directory = File.expand_path(File.dirname(__FILE__) + '/..')
 
             regenerate_docs = proc do
               print 'Regenerating docs... '
@@ -64,11 +64,11 @@ module Shoulda
           desc 'Generate docs for a particular version and push them to GitHub'
           task :publish, [:version, :latest_version] => :setup do |t, args|
             unless args.version
-              raise ArgumentError, "Missing version"
+              raise ArgumentError, 'Missing version'
             end
 
             unless args.latest_version
-              raise ArgumentError, "Missing latest_version"
+              raise ArgumentError, 'Missing latest_version'
             end
 
             publisher.generate_docs_for(args.version, latest_version: args.latest_version)

@@ -50,7 +50,7 @@ module UnitTests
 
       def actual_warning
         if captured_stderr.empty?
-          "nothing"
+          'nothing'
         else
           "\n  #{captured_stderr}"
         end

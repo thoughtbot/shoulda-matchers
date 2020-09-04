@@ -81,7 +81,7 @@ module Shoulda
           if model.implicit_order_column.to_s != column_name.to_s
             message =
               if model.implicit_order_column.nil?
-                "implicit_order_column is not set"
+                'implicit_order_column is not set'
               else
                 "it is :#{model.implicit_order_column}"
               end

@@ -36,9 +36,9 @@ module Shoulda
             description << Shoulda::Matchers::Util.inspect_value(value_written)
 
             if attribute_changed_value?
-              description << " -- which was read back as "
+              description << ' -- which was read back as '
               description << Shoulda::Matchers::Util.inspect_value(value_read)
-              description << " --"
+              description << ' --'
             end
 
             description

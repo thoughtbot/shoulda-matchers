@@ -18,7 +18,7 @@ module Shoulda
       end
 
       def message
-        ""
+        ''
       end
 
       def inspect
