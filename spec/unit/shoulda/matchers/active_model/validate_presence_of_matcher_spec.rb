@@ -16,13 +16,13 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
       'ignoring_interference_by_writer',
       tests: {
         accept_if_qualified_but_changing_value_does_not_interfere: {
-          changing_values_with: :nil_to_blank
+          changing_values_with: :nil_to_blank,
         },
         reject_if_qualified_but_changing_value_interferes: {
           model_name: 'Example',
           attribute_name: :attr,
           changing_values_with: :never_falsy,
-          expected_message: <<-MESSAGE
+          expected_message: <<-MESSAGE,
 Expected Example to validate that :attr cannot be empty/falsy, but this
 could not be proved.
   After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
@@ -35,8 +35,8 @@ could not be proved.
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
           MESSAGE
-        }
-      }
+        },
+      },
     )
 
     it 'fails when used in the negative' do
@@ -202,13 +202,13 @@ could not be proved.
       'ignoring_interference_by_writer',
       tests: {
         accept_if_qualified_but_changing_value_does_not_interfere: {
-          changing_values_with: :nil_to_blank
+          changing_values_with: :nil_to_blank,
         },
         reject_if_qualified_but_changing_value_interferes: {
           model_name: 'Example',
           attribute_name: :attr,
           changing_values_with: :never_falsy,
-          expected_message: <<-MESSAGE
+          expected_message: <<-MESSAGE,
 Expected Example to validate that :attr cannot be empty/falsy, but this
 could not be proved.
   After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
@@ -221,8 +221,8 @@ could not be proved.
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
           MESSAGE
-        }
-      }
+        },
+      },
     )
 
     if active_model_supports_full_attributes_api?
@@ -305,13 +305,13 @@ could not be proved.
         'ignoring_interference_by_writer',
         tests: {
           accept_if_qualified_but_changing_value_does_not_interfere: {
-            changing_values_with: :nil_to_blank
+            changing_values_with: :nil_to_blank,
           },
           reject_if_qualified_but_changing_value_interferes: {
             model_name: 'Example',
             attribute_name: :attr,
             changing_values_with: :never_falsy,
-            expected_message: <<-MESSAGE
+            expected_message: <<-MESSAGE,
 Expected Example to validate that :attr cannot be empty/falsy, but this
 could not be proved.
   After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
@@ -324,8 +324,8 @@ could not be proved.
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
             MESSAGE
-          }
-        }
+          },
+        },
       )
     end
 
@@ -345,13 +345,13 @@ could not be proved.
         'ignoring_interference_by_writer',
         tests: {
           accept_if_qualified_but_changing_value_does_not_interfere: {
-            changing_values_with: :nil_to_blank
+            changing_values_with: :nil_to_blank,
           },
           reject_if_qualified_but_changing_value_interferes: {
             model_name: 'Example',
             attribute_name: :attr,
             changing_values_with: :never_falsy,
-            expected_message: <<-MESSAGE
+            expected_message: <<-MESSAGE,
 Expected Example to validate that :attr cannot be empty/falsy, but this
 could not be proved.
   After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
@@ -364,8 +364,8 @@ could not be proved.
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
             MESSAGE
-          }
-        }
+          },
+        },
       )
     end
 
@@ -386,13 +386,13 @@ could not be proved.
       'ignoring_interference_by_writer',
       tests: {
         accept_if_qualified_but_changing_value_does_not_interfere: {
-          changing_values_with: :nil_to_blank
+          changing_values_with: :nil_to_blank,
         },
         reject_if_qualified_but_changing_value_interferes: {
           model_name: 'Example',
           attribute_name: :attr,
           changing_values_with: :never_falsy,
-          expected_message: <<-MESSAGE
+          expected_message: <<-MESSAGE,
 Expected Example to validate that :attr cannot be empty/falsy, but this
 could not be proved.
   After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
@@ -405,8 +405,8 @@ could not be proved.
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
           MESSAGE
-        }
-      }
+        },
+      },
     )
 
     def model_creator
@@ -445,13 +445,13 @@ could not be proved.
       'ignoring_interference_by_writer',
       tests: {
         accept_if_qualified_but_changing_value_does_not_interfere: {
-          changing_values_with: :nil_to_blank
+          changing_values_with: :nil_to_blank,
         },
         reject_if_qualified_but_changing_value_interferes: {
           model_name: 'Example',
           attribute_name: :attr,
           changing_values_with: :never_falsy,
-          expected_message: <<-MESSAGE
+          expected_message: <<-MESSAGE,
 Expected Example to validate that :attr cannot be empty/falsy, but this
 could not be proved.
   After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
@@ -464,8 +464,8 @@ could not be proved.
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
           MESSAGE
-        }
-      }
+        },
+      },
     )
 
     def model_creator
@@ -886,7 +886,7 @@ could not be proved.
     before do
       stub_translation(
         'activerecord.errors.messages.blank',
-        'Please enter a %{attribute} for your %{model}')
+        'Please enter a %{attribute} for your %{model}',)
     end
 
     after { I18n.backend.reload! }
@@ -961,7 +961,7 @@ validation exception on failure, but this could not be proved.
       end
 
       expect(&assertion).to raise_error(
-        Shoulda::Matchers::ActiveModel::CouldNotSetPasswordError
+        Shoulda::Matchers::ActiveModel::CouldNotSetPasswordError,
       )
     end
   end
@@ -1189,7 +1189,7 @@ this could not be proved.
   def validation_matcher_scenario_args
     super.deep_merge(
       matcher_name: :validate_presence_of,
-      model_creator: :active_record
+      model_creator: :active_record,
     )
   end
 end

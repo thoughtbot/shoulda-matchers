@@ -610,7 +610,7 @@ EOT
         def inspected_array
           Shoulda::Matchers::Util.inspect_values(@array).to_sentence(
             two_words_connector: ' or ',
-            last_word_connector: ', or '
+            last_word_connector: ', or ',
           )
         end
       end

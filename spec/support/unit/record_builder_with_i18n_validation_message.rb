@@ -32,7 +32,7 @@ module UnitTests
     def stub_default_validation_message
       keys = [
         'activerecord.errors.messages',
-        validation_message_key
+        validation_message_key,
       ]
 
       I18nFaker.stub_translation(keys, default_message)
@@ -43,12 +43,12 @@ module UnitTests
         'activerecord.errors',
         "models.#{builder.model_name.to_s.underscore}",
         "attributes.#{builder.attribute_that_receives_error}",
-        validation_message_key
+        validation_message_key,
       ]
 
       I18nFaker.stub_translation(
         keys,
-        message_for_attribute_that_receives_error
+        message_for_attribute_that_receives_error,
       )
     end
 
@@ -62,7 +62,7 @@ module UnitTests
 
     def default_options
       {
-        validation_message_key: :validation_message_key
+        validation_message_key: :validation_message_key,
       }
     end
   end

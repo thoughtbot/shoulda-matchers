@@ -2,7 +2,7 @@ require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActionController::RespondWithMatcher, type: :controller do
   statuses = { success: 200, redirect: 301, missing: 404, error: 500,
-    not_implemented: 501 }
+    not_implemented: 501, }
 
   statuses.each do |human_name, numeric_code|
     context "a controller responding with #{human_name}" do

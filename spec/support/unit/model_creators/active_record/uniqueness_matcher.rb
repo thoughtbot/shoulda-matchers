@@ -20,7 +20,7 @@ module UnitTests
         def initialize(args)
           @arguments = CreateModelArguments::UniquenessMatcher.wrap(args)
           @model_creator = UnitTests::ModelCreators::ActiveRecord.new(
-            arguments
+            arguments,
           )
         end
 
@@ -36,7 +36,7 @@ module UnitTests
 
     register(
       :"active_record/uniqueness_matcher",
-      ActiveRecord::UniquenessMatcher
+      ActiveRecord::UniquenessMatcher,
     )
   end
 end

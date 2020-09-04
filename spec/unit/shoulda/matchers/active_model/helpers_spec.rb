@@ -81,7 +81,7 @@ describe Shoulda::Matchers::ActiveModel::Helpers do
     context 'if ActiveModel::Errors#generate_message behavior has changed' do
       it 'provides the right error message for validate_presence_of' do
         stub_active_model_message_generation(type: :blank,
-                                              message: 'Behavior has diverged.')
+                                              message: 'Behavior has diverged.',)
         assert_presence_validation_has_correct_message
       end
     end
@@ -110,19 +110,19 @@ describe Shoulda::Matchers::ActiveModel::Helpers do
           models: {
             example: {
               attributes: {
-                attr: {}
-              }
-            }
+                attr: {},
+              },
+            },
           },
-          messages: {}
-        }
+          messages: {},
+        },
       },
       errors: {
         attributes: {
-          attr: {}
+          attr: {},
         },
-        messages: {}
-      }
+        messages: {},
+      },
     }
 
     unless options[:without].include?(:model_attribute)

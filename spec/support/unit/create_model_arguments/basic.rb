@@ -22,7 +22,7 @@ module UnitTests
         :column_type,
         :column_options,
         :default_value,
-        :value_type
+        :value_type,
       )
 
       def initialize(args)
@@ -61,7 +61,7 @@ module UnitTests
         @_all_attribute_overrides ||= begin
           attribute_overrides = args.slice(
             :changing_values_with,
-            :default_value
+            :default_value,
           )
 
           overrides =
@@ -127,7 +127,7 @@ module UnitTests
 
       def attribute_args
         args.slice(:column_type).deep_merge(
-          attribute_overrides.deep_merge(name: attribute_name)
+          attribute_overrides.deep_merge(name: attribute_name),
         )
       end
     end

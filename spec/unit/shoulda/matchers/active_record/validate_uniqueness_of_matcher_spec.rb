@@ -12,15 +12,15 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
           record = build_record_validating_uniqueness(
             scopes: [
               build_attribute(name: :scope1),
-              { name: :scope2 }
-            ]
+              { name: :scope2 },
+            ],
           )
           expect(record).to validate_uniqueness.scoped_to(:scope1, :scope2)
         end
 
         it 'still accepts if the scope is unset beforehand' do
           record = build_record_validating_uniqueness(
-            scopes: [ build_attribute(name: :scope, value: nil) ]
+            scopes: [ build_attribute(name: :scope, value: nil) ],
           )
 
           expect(record).to validate_uniqueness.scoped_to(:scope)
@@ -32,8 +32,8 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
           record = create_record_validating_uniqueness(
             scopes: [
               build_attribute(name: :scope1),
-              { name: :scope2 }
-            ]
+              { name: :scope2 },
+            ],
           )
 
           expect(record).to validate_uniqueness.scoped_to(:scope1, :scope2)
@@ -41,7 +41,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
 
         it 'still accepts if the scope is unset beforehand' do
           record = create_record_validating_uniqueness(
-            scopes: [ build_attribute(name: :scope, value: nil) ]
+            scopes: [ build_attribute(name: :scope, value: nil) ],
           )
 
           expect(record).to validate_uniqueness.scoped_to(:scope)
@@ -55,7 +55,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
         value2 = next_version_of(value1, value_type)
         value3 = next_version_of(value2, value_type)
         model = define_model_validating_uniqueness(
-          scopes: [ build_attribute(name: :scope) ]
+          scopes: [ build_attribute(name: :scope) ],
         )
         create_record_from(model, scope: value2)
         create_record_from(model, scope: value3)
@@ -70,9 +70,9 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
         record = build_record_validating_uniqueness(
           scopes: [
             build_attribute(name: :scope1),
-            build_attribute(name: :scope2)
+            build_attribute(name: :scope2),
           ],
-          additional_attributes: [:other]
+          additional_attributes: [:other],
         )
 
         assertion = lambda do
@@ -98,7 +98,7 @@ proved.
         record = build_record_validating_uniqueness(
           scopes: [
             build_attribute(name: :scope1),
-            build_attribute(name: :scope2)
+            build_attribute(name: :scope2),
           ],
         )
 
@@ -123,7 +123,7 @@ within the scope of :scope1, but this could not be proved.
       it 'rejects with an appropriate failure message' do
         record = build_record_validating_uniqueness(
           scopes: [ build_attribute(name: :other) ],
-          additional_attributes: [:scope]
+          additional_attributes: [:scope],
         )
         assertion = lambda do
           expect(record).
@@ -145,7 +145,7 @@ within the scope of :scope, but this could not be proved.
     context 'when no scope is specified' do
       it 'rejects with an appropriate failure message' do
         record = build_record_validating_uniqueness(
-          scopes: [ build_attribute(name: :scope) ]
+          scopes: [ build_attribute(name: :scope) ],
         )
 
         assertion = lambda do
@@ -165,7 +165,7 @@ this could not be proved.
       context 'if the scope attribute is unset in the record given to the matcher' do
         it 'rejects with an appropriate failure message' do
           record = build_record_validating_uniqueness(
-            scopes: [ build_attribute(name: :scope, value: nil) ]
+            scopes: [ build_attribute(name: :scope, value: nil) ],
           )
 
           assertion = lambda do
@@ -188,7 +188,7 @@ this could not be proved.
       context 'when there is more than one scope' do
         it 'rejects with an appropriate failure message (and does not raise an error)' do
           record = build_record_validating_uniqueness(
-            scopes: [ build_attribute(name: :scope) ]
+            scopes: [ build_attribute(name: :scope) ],
           )
 
           assertion = lambda do
@@ -208,13 +208,13 @@ within the scope of :non_existent, but this could not be proved.
       context 'when there is more than one scope' do
         it 'rejects with an appropriate failure message (and does not raise an error)' do
           record = build_record_validating_uniqueness(
-            scopes: [ build_attribute(name: :scope) ]
+            scopes: [ build_attribute(name: :scope) ],
           )
 
           assertion = lambda do
             expect(record).to validate_uniqueness.scoped_to(
               :non_existent1,
-              :non_existent2
+              :non_existent2,
             )
           end
 
@@ -265,24 +265,24 @@ not be proved.
               'Example',
               attribute_name => :string,
               scope1: column_type,
-              scope2: column_type
+              scope2: column_type,
             ) do |m|
               m.validates_uniqueness_of(
                 attribute_name,
                 scope: [:scope1],
-                message: 'first message'
+                message: 'first message',
               )
               m.validates_uniqueness_of(
                 attribute_name,
                 scope: [:scope2],
-                message: 'second message'
+                message: 'second message',
               )
             end
 
             model.create!(
               attribute_name => dummy_value_for(:string),
               scope1: dummy_value_for(column_type),
-              scope2: dummy_value_for(column_type)
+              scope2: dummy_value_for(column_type),
             )
 
             expect(model.new).
@@ -321,7 +321,7 @@ not be proved.
       attribute_options.deep_merge(
         column_type: column_type,
         value_type: value_type,
-        options: { array: array }
+        options: { array: array },
       )
     end
   end
@@ -352,7 +352,7 @@ this could not be proved.
       it 'accepts' do
         record = build_record_validating_uniqueness(
           attribute_type: :string,
-          attribute_options: { limit: 1 }
+          attribute_options: { limit: 1 },
         )
 
         expect(record).to validate_uniqueness
@@ -405,7 +405,7 @@ this could not be proved.
           it 'can save the subject without the attributes being set' do
             options = {
               attribute_name: :attr,
-              additional_attributes: [:required_attribute]
+              additional_attributes: [:required_attribute],
             }
             model = define_model_validating_uniqueness(options) do |m|
               m.validates_presence_of :attr
@@ -434,8 +434,8 @@ this could not be proved.
             it 'can save the subject' do
               options = {
                 additional_attributes: [
-                  { name: :required_attribute, options: { null: false } }
-                ]
+                  { name: :required_attribute, options: { null: false } },
+                ],
               }
               model = define_model_validating_uniqueness(options)
               record = model.new
@@ -449,8 +449,8 @@ this could not be proved.
             it 'raises a useful exception' do
               options = {
                 additional_attributes: [
-                  { name: :required_attribute, options: { null: false } }
-                ]
+                  { name: :required_attribute, options: { null: false } },
+                ],
               }
               model = define_model_validating_uniqueness(options)
 
@@ -459,7 +459,7 @@ this could not be proved.
               end
 
               expect(&assertion).to raise_error(
-                described_class::ExistingRecordInvalid
+                described_class::ExistingRecordInvalid,
               )
             end
           end
@@ -468,7 +468,7 @@ this could not be proved.
         context 'and the model has required attributes other than the attribute being validated' do
           it 'can save the subject without the attributes being set' do
             options = {
-              additional_attributes: [:required_attribute]
+              additional_attributes: [:required_attribute],
             }
             model = define_model_validating_uniqueness(options) do |m|
               m.validates_presence_of :required_attribute
@@ -493,8 +493,8 @@ this could not be proved.
           it 'can save the subject' do
             options = {
               additional_attributes: [
-                { name: :required_attribute, options: { null: false } }
-              ]
+                { name: :required_attribute, options: { null: false } },
+              ],
             }
             model = define_model_validating_uniqueness(options)
 
@@ -506,7 +506,7 @@ this could not be proved.
         context 'and the model has required attributes other than the attribute being validated, set beforehand' do
           it 'can save the subject' do
             options = {
-              additional_attributes: [:required_attribute]
+              additional_attributes: [:required_attribute],
             }
             model = define_model_validating_uniqueness(options) do |m|
               m.validates_presence_of :required_attribute
@@ -522,7 +522,7 @@ this could not be proved.
     context 'when the validation has no scope and a scope is specified' do
       it 'rejects with an appropriate failure message' do
         model = define_model_validating_uniqueness(
-          additional_attributes: [:other]
+          additional_attributes: [:other],
         )
         create_record_from(model)
         record = build_record_from(model)
@@ -547,7 +547,7 @@ within the scope of :other, but this could not be proved.
         it 'rejects with an appropriate failure message' do
           record = build_record_validating_uniqueness(
             attribute_value: 'some value',
-            validation_options: { message: 'bad value' }
+            validation_options: { message: 'bad value' },
           )
 
           assertion = lambda do
@@ -576,7 +576,7 @@ this could not be proved.
           it 'rejects with an appropriate failure message' do
             record = build_record_validating_uniqueness(
               attribute_value: 'some value',
-              validation_options: { message: 'something else entirely' }
+              validation_options: { message: 'something else entirely' },
             )
 
             assertion = lambda do
@@ -606,7 +606,7 @@ proved.
         context 'when the given and actual messages match' do
           it 'accepts' do
             record = build_record_validating_uniqueness(
-              validation_options: { message: 'bad value' }
+              validation_options: { message: 'bad value' },
             )
             expect(record).
               to validate_uniqueness.
@@ -620,7 +620,7 @@ proved.
           it 'rejects with an appropriate failure message' do
             record = build_record_validating_uniqueness(
               attribute_value: 'some value',
-              validation_options: { message: 'something else entirely' }
+              validation_options: { message: 'something else entirely' },
             )
 
             assertion = lambda do
@@ -650,7 +650,7 @@ proved.
         context 'when the given and actual messages match' do
           it 'accepts' do
             record = build_record_validating_uniqueness(
-              validation_options: { message: 'bad value' }
+              validation_options: { message: 'bad value' },
             )
             expect(record).
               to validate_uniqueness.
@@ -668,7 +668,7 @@ proved.
           attribute_name: :attr,
           default_value: 'some value',
           changing_values_with: :next_value,
-          expected_message: <<-MESSAGE.strip
+          expected_message: <<-MESSAGE.strip,
 Expected Example to validate that :attr is case-sensitively unique, but
 this could not be proved.
   After taking the given Example, whose :attr is ‹"some valuf"›, and
@@ -687,15 +687,15 @@ this could not be proved.
   yourself, or do something different altogether.
 
           MESSAGE
-        }
-      }
+        },
+      },
     )
 
     it 'fails when used in the negative' do
       assertion = lambda do
         record = build_record_validating_uniqueness(
           attribute_type: :string,
-          attribute_options: { limit: 1 }
+          attribute_options: { limit: 1 },
         )
 
         expect(record).not_to validate_uniqueness
@@ -730,8 +730,8 @@ but this could not be proved.
         record = build_record_validating_uniqueness(
           scopes: [
             { type: :boolean, name: :scope1, value: true },
-            { type: :boolean, name: :scope2, value: true }
-          ]
+            { type: :boolean, name: :scope2, value: true },
+          ],
         )
         expect(record).to validate_uniqueness.scoped_to(:scope1, :scope2)
       end
@@ -740,8 +740,8 @@ but this could not be proved.
         record = build_record_validating_uniqueness(
           scopes: [
             { type: :boolean, name: :scope1, value: false },
-            { type: :boolean, name: :scope2, value: false }
-          ]
+            { type: :boolean, name: :scope2, value: false },
+          ],
         )
         expect(record).to validate_uniqueness.scoped_to(:scope1, :scope2)
       end
@@ -750,8 +750,8 @@ but this could not be proved.
         record = build_record_validating_uniqueness(
           scopes: [
             { type: :boolean, name: :scope1, value: true },
-            { type: :boolean, name: :scope2, value: false }
-          ]
+            { type: :boolean, name: :scope2, value: false },
+          ],
         )
         expect(record).to validate_uniqueness.scoped_to(:scope1, :scope2)
       end
@@ -764,7 +764,7 @@ but this could not be proved.
       context 'when one of the scoped attributes is an enum' do
         it 'accepts' do
           record = build_record_validating_scoped_uniqueness_with_enum(
-            enum_scope: :scope
+            enum_scope: :scope,
           )
           expect(record).to validate_uniqueness.scoped_to(:scope)
         end
@@ -774,7 +774,7 @@ but this could not be proved.
             record = build_record_validating_scoped_uniqueness_with_enum(
               enum_scope: :scope1,
               additional_scopes: [:scope2],
-              additional_attributes: [:other]
+              additional_attributes: [:other],
             )
 
             assertion = lambda do
@@ -799,7 +799,7 @@ proved.
           it 'rejects with an appropriate failure message' do
             record = build_record_validating_scoped_uniqueness_with_enum(
               enum_scope: :scope1,
-              additional_scopes: [:scope2]
+              additional_scopes: [:scope2],
             )
 
             assertion = lambda do
@@ -913,7 +913,7 @@ within the scope of :scope1, but this could not be proved.
       it 'accepts' do
         record = build_record_validating_uniqueness(
           attribute_type: :string,
-          validation_options: { case_sensitive: true }
+          validation_options: { case_sensitive: true },
         )
 
         expect(record).to validate_uniqueness
@@ -939,7 +939,7 @@ within the scope of :scope1, but this could not be proved.
         record = build_record_validating_uniqueness(
           attribute_type: :string,
           attribute_value: 'some value',
-          validation_options: { case_sensitive: true }
+          validation_options: { case_sensitive: true },
         )
 
         assertion = lambda do
@@ -965,7 +965,7 @@ but this could not be proved.
       it 'rejects with an appropriate failure message' do
         record = build_record_validating_uniqueness(
           attribute_type: :string,
-          validation_options: { case_sensitive: false }
+          validation_options: { case_sensitive: false },
         )
 
         assertion = lambda do
@@ -992,7 +992,7 @@ this could not be proved.
       it 'accepts' do
         record = build_record_validating_uniqueness(
           attribute_type: :string,
-          validation_options: { case_sensitive: false }
+          validation_options: { case_sensitive: false },
         )
 
         expect(record).to validate_uniqueness.case_insensitive
@@ -1006,7 +1006,7 @@ this could not be proved.
             attribute_name: :attr,
             default_value: 'some value',
             changing_values_with: :next_value,
-            expected_message: <<-MESSAGE.strip
+            expected_message: <<-MESSAGE.strip,
 Expected Example to validate that :attr is case-insensitively unique,
 but this could not be proved.
   After taking the given Example, whose :attr is ‹"some valuf"›, and
@@ -1024,8 +1024,8 @@ but this could not be proved.
   of the uniqueness matcher. Otherwise, you may need to write the test
   yourself, or do something different altogether.
             MESSAGE
-          }
-        }
+          },
+        },
       )
 
       def validation_matcher_scenario_args
@@ -1042,7 +1042,7 @@ but this could not be proved.
     context 'given a new record whose attribute is nil' do
       it 'accepts' do
         model = define_model_validating_uniqueness(
-          validation_options: { allow_nil: true }
+          validation_options: { allow_nil: true },
         )
         record = build_record_from(model, attribute_name => nil)
         expect(record).to validate_uniqueness.allow_nil
@@ -1052,7 +1052,7 @@ but this could not be proved.
     context 'given an existing record whose attribute is nil' do
       it 'accepts' do
         model = define_model_validating_uniqueness(
-          validation_options: { allow_nil: true }
+          validation_options: { allow_nil: true },
         )
         record = create_record_from(model, attribute_name => nil)
         expect(record).to validate_uniqueness.allow_nil
@@ -1114,7 +1114,7 @@ long as it is not nil, but this could not be proved.
     context 'given a new record whose attribute is nil' do
       it 'accepts' do
         model = define_model_validating_uniqueness(
-          validation_options: { allow_blank: true }
+          validation_options: { allow_blank: true },
         )
         record = build_record_from(model, attribute_name => nil)
         expect(record).to validate_uniqueness.allow_blank
@@ -1124,7 +1124,7 @@ long as it is not nil, but this could not be proved.
     context 'given an existing record whose attribute is nil' do
       it 'accepts' do
         model = define_model_validating_uniqueness(
-          validation_options: { allow_blank: true }
+          validation_options: { allow_blank: true },
         )
         record = create_record_from(model, attribute_name => nil)
         expect(record).to validate_uniqueness.allow_blank
@@ -1135,7 +1135,7 @@ long as it is not nil, but this could not be proved.
       it 'accepts' do
         model = define_model_validating_uniqueness(
           attribute_type: :string,
-          validation_options: { allow_blank: true }
+          validation_options: { allow_blank: true },
         )
         record = build_record_from(model, attribute_name => '')
         expect(record).to validate_uniqueness.allow_blank
@@ -1146,7 +1146,7 @@ long as it is not nil, but this could not be proved.
       it 'accepts' do
         model = define_model_validating_uniqueness(
           attribute_type: :string,
-          validation_options: { allow_blank: true }
+          validation_options: { allow_blank: true },
         )
         record = create_record_from(model, attribute_name => '')
         expect(record).to validate_uniqueness.allow_blank
@@ -1159,7 +1159,7 @@ long as it is not nil, but this could not be proved.
           it 'accepts' do
             model = define_model_validating_uniqueness(
               validation_options: { allow_blank: true },
-              additional_attributes: [{ name: :password_digest, type: :string }]
+              additional_attributes: [{ name: :password_digest, type: :string }],
             ) do |m|
               m.has_secure_password
             end
@@ -1175,7 +1175,7 @@ long as it is not nil, but this could not be proved.
             model = define_model_validating_uniqueness(
               attribute_type: :string,
               validation_options: { allow_blank: true },
-              additional_attributes: [{ name: :password_digest, type: :string }]
+              additional_attributes: [{ name: :password_digest, type: :string }],
             ) do |m|
               m.has_secure_password
             end
@@ -1241,7 +1241,7 @@ long as it is not blank, but this could not be proved.
     context 'given a new record whose attribute is empty' do
       it 'rejects with an appropriate failure message' do
         model = define_model_validating_uniqueness(
-          attribute_type: :string
+          attribute_type: :string,
         )
         record = build_record_from(model, attribute_name => '')
 
@@ -1267,7 +1267,7 @@ long as it is not blank, but this could not be proved.
     context 'given an existing record whose attribute is empty' do
       it 'rejects with an appropriate failure message' do
         model = define_model_validating_uniqueness(
-          attribute_type: :string
+          attribute_type: :string,
         )
         record = create_record_from(model, attribute_name => '')
 
@@ -1296,7 +1296,7 @@ long as it is not blank, but this could not be proved.
       user_model = define_model 'User'
       favorite_columns = {
         favoriteable_id: { type: :integer, options: { null: false } },
-        favoriteable_type: { type: :string, options: { null: false } }
+        favoriteable_type: { type: :string, options: { null: false } },
       }
       favorite_model = define_model 'Favorite', favorite_columns do
         if respond_to?(:attr_accessible)
@@ -1324,7 +1324,7 @@ long as it is not blank, but this could not be proved.
         user_model = define_model 'Models::User'
         favorite_columns = {
           favoriteable_id: { type: :integer, options: { null: false } },
-          favoriteable_type: { type: :string, options: { null: false } }
+          favoriteable_type: { type: :string, options: { null: false } },
         }
         favorite_model = define_model 'Models::Favorite', favorite_columns do
           if respond_to?(:attr_accessible)
@@ -1370,7 +1370,7 @@ this could not be proved.
       context 'and the matcher is ensuring that the validation is case-sensitive' do
         it 'rejects with an appropriate failure message' do
           model = define_model_validating_uniqueness(
-            attribute_name: :name
+            attribute_name: :name,
           )
 
           model.class_eval do
@@ -1412,7 +1412,7 @@ this could not be proved.
       context 'and the matcher is ignoring case sensitivity' do
         it 'accepts (and not raise an error)' do
           model = define_model_validating_uniqueness(
-            attribute_name: :name
+            attribute_name: :name,
           )
 
           model.class_eval do
@@ -1492,7 +1492,7 @@ this could not be proved.
     {
       value_type: :string,
       column_type: :string,
-      options: { array: false, null: true }
+      options: { array: false, null: true },
     }
   end
 
@@ -1521,7 +1521,7 @@ this could not be proved.
     attributes.inject({}) do |options, attribute|
       options[attribute[:name]] = {
         type: attribute[:column_type],
-        options: attribute.fetch(:options, {})
+        options: attribute.fetch(:options, {}),
       }
       options
     end
@@ -1535,7 +1535,7 @@ this could not be proved.
         else
           dummy_value_for(
             attribute[:value_type],
-            array: attribute[:options][:array]
+            array: attribute[:options][:array],
           )
         end
       end
@@ -1579,7 +1579,7 @@ this could not be proved.
       name: attribute_name,
       value_type: attribute_type,
       column_type: attribute_type,
-      options: attribute_options
+      options: attribute_options,
     )
 
     if options.key?(:attribute_value)
@@ -1589,7 +1589,7 @@ this could not be proved.
     scope_attributes = normalize_attributes(options.fetch(:scopes, []))
     scope_attribute_names = scope_attributes.map { |attr| attr[:name] }
     additional_attributes = normalize_attributes(
-      options.fetch(:additional_attributes, [])
+      options.fetch(:additional_attributes, []),
     )
     attributes = [attribute] + scope_attributes + additional_attributes
     validation_options = options.fetch(:validation_options, {})
@@ -1662,7 +1662,7 @@ this could not be proved.
   def validation_matcher_scenario_args
     super.deep_merge(
       matcher_name: :validate_uniqueness_of,
-      model_creator: :"active_record/uniqueness_matcher"
+      model_creator: :"active_record/uniqueness_matcher",
     )
   end
 end

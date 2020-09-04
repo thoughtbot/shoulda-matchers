@@ -8,7 +8,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
       end
 
       expect(controller).to permit_with_conditional_slice_of_params(
-        permit(:name).for(:create)
+        permit(:name).for(:create),
       )
     end
 
@@ -18,7 +18,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
       end
 
       expect(controller).to permit_with_conditional_slice_of_params(
-        permit(:name, :age).for(:create)
+        permit(:name, :age).for(:create),
       )
     end
 
@@ -28,7 +28,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
       end
 
       expect(controller).not_to permit_with_conditional_slice_of_params(
-        permit(:name, :admin).for(:create)
+        permit(:name, :admin).for(:create),
       )
     end
 
@@ -36,14 +36,14 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
       define_controller_with_strong_parameters(action: :create)
 
       expect(controller).not_to permit_with_conditional_slice_of_params(
-        permit(:name).for(:create)
+        permit(:name).for(:create),
       )
     end
 
     it 'tracks multiple calls to #permit for different subparameters' do
       sets_of_attributes = [
         [:eta, :diner_id],
-        [:phone_number, :address_1, :address_2, :city, :state, :zip]
+        [:phone_number, :address_1, :address_2, :city, :state, :zip],
       ]
 
       define_controller_with_strong_parameters(action: :create) do |ctrl|
@@ -57,13 +57,13 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
       expect(controller).to permit_with_conditional_slice_of_params(
         permit(*sets_of_attributes[0]).for(:create),
         all_params: [:order, :diner],
-        selected_param: :order
+        selected_param: :order,
       )
 
       expect(controller).to permit_with_conditional_slice_of_params(
         permit(*sets_of_attributes[1]).for(:create),
         all_params: [:order, :diner],
-        selected_param: :diner
+        selected_param: :diner,
       )
     end
   end
@@ -141,8 +141,8 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
       params = {
         foo: {
           bar: 'some value',
-          baz: 'some value'
-        }
+          baz: 'some value',
+        },
       }
       expect(controller).
         to permit(:bar).
@@ -168,7 +168,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
     options = {
       controller_name: 'Posts',
       action: :show,
-      routes: -> { get '/posts/:slug', to: 'posts#show' }
+      routes: -> { get '/posts/:slug', to: 'posts#show' },
     }
 
     define_controller_with_strong_parameters(options) do
@@ -217,7 +217,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
         actual_foo_param = nil
         matcher = permit(:name).for(
           :create,
-          params: { user: { some: 'params' } }
+          params: { user: { some: 'params' } },
         )
 
         define_controller_with_strong_parameters(action: :create) do
@@ -239,7 +239,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
         actual_user_params = nil
         matcher = permit(:name).for(
           :update,
-          params: { id: 1, user: expected_user_params }
+          params: { id: 1, user: expected_user_params },
         )
 
         define_controller_with_strong_parameters(action: :update) do
@@ -294,7 +294,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
 
       matcher = described_class.new([:name, :age, :height]).for(:create)
       expect(matcher.description).to eq(
-        '(for POST #create) restrict parameters to :name, :age, and :height'
+        '(for POST #create) restrict parameters to :name, :age, and :height',
       )
     end
 
@@ -310,7 +310,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
           new([:name]).
           for(:some_action, verb: :put)
         expect(matcher.description).to eq(
-          '(for PUT #some_action) restrict parameters to :name'
+          '(for PUT #some_action) restrict parameters to :name',
         )
       end
     end
@@ -391,8 +391,8 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
               params = {
                 person: {
                   name: 'some name',
-                  age: 'some age'
-                }
+                  age: 'some age',
+                },
               }
               expect(@controller).
                 to permit(:name, :age, :city, :country).
@@ -419,8 +419,8 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
               params = {
                 person: {
                   name: 'some name',
-                  age: 'some age'
-                }
+                  age: 'some age',
+                },
               }
               expect(@controller).
                 to permit(:name, :age, :city, :country).
@@ -470,8 +470,8 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
           params = {
             person: {
               name: 'some name',
-              age: 'some age'
-            }
+              age: 'some age',
+            },
           }
           expect(@controller).
             not_to permit(:name, :age).

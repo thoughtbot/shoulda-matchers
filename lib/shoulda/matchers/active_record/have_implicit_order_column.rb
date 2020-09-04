@@ -42,19 +42,19 @@ module Shoulda
         rescue SecondaryCheckFailedError => error
           @failure_message = Shoulda::Matchers.word_wrap(
             "Expected #{model.name} to #{expectation}, " +
-            "but that could not be proved: #{error.message}."
+            "but that could not be proved: #{error.message}.",
           )
           false
         rescue PrimaryCheckFailedError => error
           @failure_message = Shoulda::Matchers.word_wrap(
-            "Expected #{model.name} to #{expectation}, but #{error.message}."
+            "Expected #{model.name} to #{expectation}, but #{error.message}.",
           )
           false
         end
 
         def failure_message_when_negated
           Shoulda::Matchers.word_wrap(
-            "Expected #{model.name} not to #{expectation}, but it did."
+            "Expected #{model.name} not to #{expectation}, but it did.",
           )
         end
 
@@ -72,7 +72,7 @@ module Shoulda
           if !matcher.matches?(@subject)
             raise SecondaryCheckFailedError.new(
               "The :#{model.table_name} table does not have a " +
-              ":#{column_name} column"
+              ":#{column_name} column",
             )
           end
         end

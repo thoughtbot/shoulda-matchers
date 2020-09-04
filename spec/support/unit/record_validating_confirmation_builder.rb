@@ -31,7 +31,7 @@ module UnitTests
     def confirmation_attribute
       options.fetch(
         :confirmation_attribute,
-        :"#{attribute_to_confirm}_confirmation"
+        :"#{attribute_to_confirm}_confirmation",
       )
     end
 

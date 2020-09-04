@@ -82,7 +82,7 @@ module Shoulda
               method_name: _method_name,
               args: args,
               block: block,
-              caller: caller
+              caller: caller,
             )
             implementation.call(call)
           end

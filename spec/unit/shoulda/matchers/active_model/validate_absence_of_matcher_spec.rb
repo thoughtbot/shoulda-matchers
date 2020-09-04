@@ -13,7 +13,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
         :timestamp,
         :time,
         :date,
-        :binary
+        :binary,
       ]
     end
 
@@ -37,9 +37,9 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
             'ignoring_interference_by_writer',
             tests: {
               accept_if_qualified_but_changing_value_does_not_interfere: {
-                changing_values_with: :next_value
+                changing_values_with: :next_value,
               },
-            }
+            },
           )
 
           define_method(:validation_matcher_scenario_args) do |*args|
@@ -106,9 +106,9 @@ not be proved.
         'ignoring_interference_by_writer',
         tests: {
           accept_if_qualified_but_changing_value_does_not_interfere: {
-            changing_values_with: :upcase
+            changing_values_with: :upcase,
           },
-        }
+        },
       )
 
       def validation_matcher_scenario_args
@@ -142,9 +142,9 @@ not be proved.
         'ignoring_interference_by_writer',
         tests: {
           accept_if_qualified_but_changing_value_does_not_interfere: {
-            changing_values_with: :next_value
+            changing_values_with: :next_value,
           },
-        }
+        },
       )
 
       def validation_matcher_scenario_args
@@ -169,9 +169,9 @@ not be proved.
         'ignoring_interference_by_writer',
         tests: {
           accept_if_qualified_but_changing_value_does_not_interfere: {
-            changing_values_with: :next_value
+            changing_values_with: :next_value,
           },
-        }
+        },
       )
 
       def validation_matcher_scenario_args
@@ -203,7 +203,7 @@ could not be proved.
 
       it 'does not raise an exception' do
         stub_translation('activerecord.errors.messages.present',
-                         '%{attribute} must be blank in a %{model}')
+                         '%{attribute} must be blank in a %{model}',)
 
         expect {
           expect(validating_absence_of(:attr)).to validate_absence_of(:attr)
@@ -242,7 +242,7 @@ could not be proved.
       model = define_model_validating_absence_of(
         attr,
         validation_options,
-        given_column_options
+        given_column_options,
       )
       model.new
     end

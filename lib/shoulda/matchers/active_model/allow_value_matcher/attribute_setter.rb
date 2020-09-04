@@ -23,7 +23,7 @@ module Shoulda
             @value_written = args.fetch(:value)
             @ignore_interference_by_writer = args.fetch(
               :ignore_interference_by_writer,
-              Qualifiers::IgnoreInterferenceByWriter.new
+              Qualifiers::IgnoreInterferenceByWriter.new,
             )
             @after_set_callback = args.fetch(:after_set_callback, -> { })
 
@@ -206,7 +206,7 @@ module Shoulda
               model: object.class,
               attribute_name: attribute_name,
               value_written: value_written,
-              value_read: value_read
+              value_read: value_read,
             )
           end
 
@@ -218,7 +218,7 @@ module Shoulda
             AttributeDoesNotExistError.create(
               model: object.class,
               attribute_name: attribute_name,
-              value: value_written
+              value: value_written,
             )
           end
 

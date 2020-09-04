@@ -46,7 +46,7 @@ module Shoulda::Matchers::Doublespeak
             double: double,
             object: expected_object,
             args: expected_args,
-            block: expected_block
+            block: expected_block,
           )
           actual_object, actual_args, actual_block = []
           implementation = described_class.new

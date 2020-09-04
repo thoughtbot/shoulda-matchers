@@ -313,7 +313,7 @@ module Shoulda
           :attribute_to_check_message_against,
           :attribute_to_set,
           :context,
-          :instance
+          :instance,
         )
 
         attr_writer(
@@ -459,7 +459,7 @@ module Shoulda
                 if expected_message.is_a?(Regexp)
                   message << ' matching '
                   message << Shoulda::Matchers::Util.inspect_value(
-                    expected_message
+                    expected_message,
                   )
                 else
                   message << " #{expected_message.inspect}"
@@ -597,14 +597,14 @@ pass, or do something else entirely.
           @_attribute_setters_and_validators_for_values_to_set ||=
             AttributeSettersAndValidators.new(
               self,
-              values_to_set.map { |value| [attribute_to_set, value] }
+              values_to_set.map { |value| [attribute_to_set, value] },
             )
         end
 
         def inspected_values_to_set
           Shoulda::Matchers::Util.inspect_values(values_to_set).to_sentence(
             two_words_connector: ' or ',
-            last_word_connector: ', or '
+            last_word_connector: ', or ',
           )
         end
 
@@ -619,7 +619,7 @@ pass, or do something else entirely.
         def default_attribute_message
           default_error_message(
             options[:expected_message],
-            default_attribute_message_values
+            default_attribute_message_values,
           )
         end
 
@@ -639,7 +639,7 @@ pass, or do something else entirely.
 
         def human_attribute_name
           instance.class.human_attribute_name(
-            attribute_to_check_message_against
+            attribute_to_check_message_against,
           )
         end
       end

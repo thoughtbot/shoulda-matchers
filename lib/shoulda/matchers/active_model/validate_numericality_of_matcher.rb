@@ -364,7 +364,7 @@ module Shoulda
 
         def only_integer
           prepare_submatcher(
-            NumericalityMatchers::OnlyIntegerMatcher.new(self, @attribute)
+            NumericalityMatchers::OnlyIntegerMatcher.new(self, @attribute),
           )
           self
         end
@@ -374,7 +374,7 @@ module Shoulda
           prepare_submatcher(
             AllowValueMatcher.new(nil)
               .for(@attribute)
-              .with_message(:not_a_number)
+              .with_message(:not_a_number),
           )
           self
         end
@@ -385,14 +385,14 @@ module Shoulda
 
         def odd
           prepare_submatcher(
-            NumericalityMatchers::OddNumberMatcher.new(self, @attribute)
+            NumericalityMatchers::OddNumberMatcher.new(self, @attribute),
           )
           self
         end
 
         def even
           prepare_submatcher(
-            NumericalityMatchers::EvenNumberMatcher.new(self, @attribute)
+            NumericalityMatchers::EvenNumberMatcher.new(self, @attribute),
           )
           self
         end
@@ -501,14 +501,14 @@ module Shoulda
         def overall_failure_message
           Shoulda::Matchers.word_wrap(
             "Expected #{model.name} to #{description}, but this could not " +
-            'be proved.'
+            'be proved.',
           )
         end
 
         def overall_failure_message_when_negated
           Shoulda::Matchers.word_wrap(
             "Expected #{model.name} not to #{description}, but this could not " +
-            'be proved.'
+            'be proved.',
           )
         end
 
@@ -579,7 +579,7 @@ module Shoulda
             end
 
             submatcher.ignoring_interference_by_writer(
-              ignore_interference_by_writer
+              ignore_interference_by_writer,
             )
           end
         end
@@ -614,14 +614,14 @@ module Shoulda
         def failure_message_for_first_submatcher_that_fails_to_match
           build_submatcher_failure_message_for(
             first_submatcher_that_fails_to_match,
-            :failure_message
+            :failure_message,
           )
         end
 
         def failure_message_for_first_submatcher_that_fails_to_not_match
           build_submatcher_failure_message_for(
             first_submatcher_that_fails_to_not_match,
-            :failure_message_when_negated
+            :failure_message_when_negated,
           )
         end
 

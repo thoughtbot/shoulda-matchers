@@ -1582,7 +1582,7 @@ Expected Parent to have a has_many association called children through conceptio
                   define_model :person do
                     has_and_belongs_to_many(
                       :relatives,
-                      join_table: :people_and_their_families
+                      join_table: :people_and_their_families,
                     )
                   end
 
@@ -1611,7 +1611,7 @@ Did not expect Person to have a has_and_belongs_to_many association called relat
                   define_model :person do
                     has_and_belongs_to_many(
                       :relatives,
-                      join_table: :people_and_their_families
+                      join_table: :people_and_their_families,
                     )
                   end
 
@@ -1638,7 +1638,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
                 define_model :person do
                   has_and_belongs_to_many(
                     :relatives,
-                    join_table: :people_and_their_families
+                    join_table: :people_and_their_families,
                   )
                 end
 
@@ -1663,7 +1663,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
               define_model :person do
                 has_and_belongs_to_many(
                   :relatives,
-                  join_table: :people_and_their_families
+                  join_table: :people_and_their_families,
                 )
               end
 
@@ -1722,7 +1722,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
                   define_model :person do
                     has_and_belongs_to_many(
                       :relatives,
-                      join_table: 'people_and_their_families'
+                      join_table: 'people_and_their_families',
                     )
                   end
 
@@ -1751,7 +1751,7 @@ Did not expect Person to have a has_and_belongs_to_many association called relat
                   define_model :person do
                     has_and_belongs_to_many(
                       :relatives,
-                      join_table: 'people_and_their_families'
+                      join_table: 'people_and_their_families',
                     )
                   end
 
@@ -1778,7 +1778,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
                 define_model :person do
                   has_and_belongs_to_many(
                     :relatives,
-                    join_table: 'people_and_their_families'
+                    join_table: 'people_and_their_families',
                   )
                 end
 
@@ -1803,7 +1803,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
               define_model :person do
                 has_and_belongs_to_many(
                   :relatives,
-                  join_table: 'people_and_their_families'
+                  join_table: 'people_and_their_families',
                 )
               end
 
@@ -1861,7 +1861,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
             define_model :person do
               has_and_belongs_to_many(
                 :relatives,
-                join_table: :people_and_their_families
+                join_table: :people_and_their_families,
               )
             end
 
@@ -1887,7 +1887,7 @@ Did not expect Person to have a has_and_belongs_to_many association called relat
             define_model :person do
               has_and_belongs_to_many(
                 :relatives,
-                join_table: :people_and_their_families
+                join_table: :people_and_their_families,
               )
             end
 
@@ -1911,7 +1911,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
           define_model :person do
             has_and_belongs_to_many(
               :relatives,
-              join_table: :people_and_their_families
+              join_table: :people_and_their_families,
             )
           end
 

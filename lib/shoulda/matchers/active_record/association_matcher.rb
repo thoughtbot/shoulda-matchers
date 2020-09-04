@@ -1333,7 +1333,7 @@ module Shoulda
 
           if option_verifier.correct_for_boolean?(
             :index_errors,
-            options[:index_errors]
+            options[:index_errors],
           )
             true
           else

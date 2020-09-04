@@ -180,7 +180,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
         message = [
           'Expected PostOffice to delegate #deliver_mail to the #mailman object.',
           '',
-          'Method calls sent to PostOffice#mailman: (none)'
+          'Method calls sent to PostOffice#mailman: (none)',
         ].join("\n")
 
         expect {
@@ -194,7 +194,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
         message = [
           'Expected PostOffice to delegate .deliver_mail to the .mailman object.',
           '',
-          'Method calls sent to PostOffice.mailman: (none)'
+          'Method calls sent to PostOffice.mailman: (none)',
         ].join("\n")
 
         expect {
@@ -306,7 +306,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
             '',
             'Method calls sent to PostOffice#mailman:',
             '',
-            '1) deliver_mail("221B Baker St.", {:hastily=>true})'
+            '1) deliver_mail("221B Baker St.", {:hastily=>true})',
           ].join("\n")
 
           expect {
@@ -364,7 +364,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
           '',
           'Method calls sent to PostOffice#mailman:',
           '',
-          '1) deliver_mail_and_avoid_dogs()'
+          '1) deliver_mail_and_avoid_dogs()',
         ].join("\n")
 
         expect {
@@ -412,7 +412,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
             'Expected Person to delegate #country_hello to the #country object as',
             '#hello.',
             '',
-            'Method calls sent to Person#country: (none)'
+            'Method calls sent to Person#country: (none)',
           ].join("\n")
 
           person = Person.new
@@ -462,7 +462,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
             'Expected Person to delegate #country_hello to the #country object as',
             '#hello.',
             '',
-            'Method calls sent to Person#country: (none)'
+            'Method calls sent to Person#country: (none)',
           ].join("\n")
 
           person = Person.new
@@ -514,7 +514,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
             'Expected Person to delegate #county_hello to the #country object as',
             '#hello.',
             '',
-            'Method calls sent to Person#country: (none)'
+            'Method calls sent to Person#country: (none)',
           ].join("\n")
 
           person = Person.new

@@ -14,7 +14,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
       matcher = allow_value('foo', 'bar').for(:baz)
 
       expect(matcher.description).to eq(
-        'allow :baz to be ‹"foo"› or ‹"bar"›'
+        'allow :baz to be ‹"foo"› or ‹"bar"›',
       )
     end
 
@@ -22,7 +22,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
       matcher = allow_value('foo', 'bar', 'qux').for(:baz)
 
       expect(matcher.description).to eq(
-        'allow :baz to be ‹"foo"›, ‹"bar"›, or ‹"qux"›'
+        'allow :baz to be ‹"foo"›, ‹"bar"›, or ‹"qux"›',
       )
     end
 
@@ -37,7 +37,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
         strict_matcher = allow_value('xyz').for(:attr).strict
 
         expect(strict_matcher.description).to eq(
-          'allow :attr to be ‹"xyz"›, raising a validation exception on failure'
+          'allow :attr to be ‹"xyz"›, raising a validation exception on failure',
         )
       end
     end
@@ -300,7 +300,7 @@ errors instead:
         it 'accepts' do
           options = {
             attribute_name: :attr,
-            attribute_type: :string
+            attribute_type: :string,
           }
 
           record = record_with_custom_validation(options) do
@@ -320,7 +320,7 @@ errors instead:
         it 'rejects with an appropriate failure message' do
           options = {
             attribute_name: :attr,
-            attribute_type: :string
+            attribute_type: :string,
           }
 
           record = record_with_custom_validation(options) do
@@ -363,7 +363,7 @@ errors instead:
             for(builder.attribute_to_validate).
             with_message(
               builder.message,
-              against: builder.attribute_that_receives_error
+              against: builder.attribute_that_receives_error,
             )
         end
       end
@@ -378,14 +378,14 @@ errors instead:
             for(builder.attribute_to_validate).
             with_message(
               builder.message,
-              against: builder.attribute_that_receives_error
+              against: builder.attribute_that_receives_error,
             )
         end
 
         context 'if the messages do not match' do
           it 'technically accepts' do
             builder = builder_for_record_with_different_error_attribute(
-              message: 'a different error'
+              message: 'a different error',
             )
             invalid_value = "#{builder.valid_value} (invalid)"
 
@@ -395,7 +395,7 @@ errors instead:
                 for(builder.attribute_to_validate).
                 with_message(
                   'some error',
-                  against: builder.attribute_that_receives_error
+                  against: builder.attribute_that_receives_error,
                 )
             end
 
@@ -422,7 +422,7 @@ indeed invalid, but it produced these validation errors instead:
           for(builder.attribute_to_validate).
           with_message(
             builder.validation_message_key,
-            against: builder.attribute_that_receives_error
+            against: builder.attribute_that_receives_error,
           )
       end
 
@@ -434,7 +434,7 @@ indeed invalid, but it produced these validation errors instead:
           for(builder.attribute_to_validate).
           with_message(
             builder.validation_message_key,
-            against: builder.attribute_that_receives_error
+            against: builder.attribute_that_receives_error,
           )
       end
     end
@@ -741,7 +741,7 @@ that attribute does not exist.
 
         expect(&assertion).to raise_error(
           described_class::AttributeDoesNotExistError,
-          message
+          message,
         )
       end
     end
@@ -761,7 +761,7 @@ that attribute does not exist.
 
         expect(&assertion).to raise_error(
           described_class::AttributeDoesNotExistError,
-          message
+          message,
         )
       end
     end
@@ -788,7 +788,7 @@ value", but that attribute does not exist.
 
           expect(&assertion).to raise_error(
             described_class::AttributeDoesNotExistError,
-            message
+            message,
           )
         end
       end
@@ -814,7 +814,7 @@ value", but that attribute does not exist.
 
           expect(&assertion).to raise_error(
             described_class::AttributeDoesNotExistError,
-            message
+            message,
           )
         end
       end

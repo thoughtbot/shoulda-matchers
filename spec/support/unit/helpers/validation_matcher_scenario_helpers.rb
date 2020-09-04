@@ -6,7 +6,7 @@ module UnitTests
 
     def build_scenario_for_validation_matcher(args)
       UnitTests::ValidationMatcherScenario.new(
-        build_validation_matcher_scenario_args(args)
+        build_validation_matcher_scenario_args(args),
       )
     end
 
@@ -27,7 +27,7 @@ module UnitTests
         deep_merge(validation_matcher_scenario_args).
         deep_merge(
           matcher_name: matcher_name,
-          matcher_proc: method(matcher_name)
+          matcher_proc: method(matcher_name),
         )
     end
 

@@ -67,8 +67,8 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
           name: :on,
           argument: :customizable,
           validation_name: :on,
-          validation_value: :customizable
-        }
+          validation_value: :customizable,
+        },
       ]
     end
 
@@ -144,7 +144,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
             model_name: 'Example',
             attribute_name: :attr,
             changing_values_with: :numeric_value,
-            expected_message: <<-MESSAGE.strip
+            expected_message: <<-MESSAGE.strip,
 Expected Example to validate that :attr looks like a number, but this
 could not be proved.
   After setting :attr to ‹"abcd"› -- which was read back as ‹"1"› -- the
@@ -156,8 +156,8 @@ could not be proved.
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
             MESSAGE
-          }
-        }
+          },
+        },
       )
 
       context 'when the attribute is a virtual attribute in an ActiveRecord model' do
@@ -254,7 +254,7 @@ could not be proved.
             model_name: 'Example',
             attribute_name: :attr,
             changing_values_with: :next_value_or_non_numeric_value,
-            expected_message: <<-MESSAGE.strip
+            expected_message: <<-MESSAGE.strip,
 Expected Example to validate that :attr looks like a number as long as
 it is not nil, but this could not be proved.
   In checking that Example allows :attr to be ‹nil›, after setting :attr
@@ -270,8 +270,8 @@ it is not nil, but this could not be proved.
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
             MESSAGE
-          }
-        }
+          },
+        },
       ) do
         def validation_matcher_scenario_args
           super.deep_merge(validation_options: { allow_nil: true })
@@ -340,7 +340,7 @@ this could not be proved.
             model_name: 'Example',
             attribute_name: :attr,
             changing_values_with: :numeric_value,
-            expected_message: <<-MESSAGE.strip
+            expected_message: <<-MESSAGE.strip,
 Expected Example to validate that :attr looks like an integer, but this
 could not be proved.
   After setting :attr to ‹"0.1"› -- which was read back as ‹"1"› -- the
@@ -352,8 +352,8 @@ could not be proved.
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
             MESSAGE
-          }
-        }
+          },
+        },
       ) do
         def validation_matcher_scenario_args
           super.deep_merge(validation_options: { only_integer: true })
@@ -419,7 +419,7 @@ but this could not be proved.
             model_name: 'Example',
             attribute_name: :attr,
             changing_values_with: :next_value,
-            expected_message: <<-MESSAGE.strip
+            expected_message: <<-MESSAGE.strip,
 Expected Example to validate that :attr looks like an odd number, but
 this could not be proved.
   After setting :attr to ‹"2"› -- which was read back as ‹"3"› -- the
@@ -431,8 +431,8 @@ this could not be proved.
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
             MESSAGE
-          }
-        }
+          },
+        },
       ) do
         def validation_matcher_scenario_args
           super.deep_merge(validation_options: { odd: true })
@@ -446,7 +446,7 @@ this could not be proved.
       context 'when the attribute is a virtual attribute in ActiveRecord model' do
         it 'accepts' do
           record = build_record_validating_numericality_of_virtual_attribute(
-            odd: true
+            odd: true,
           )
           expect(record).to validate_numericality.odd
         end
@@ -456,7 +456,7 @@ this could not be proved.
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :integer,
-            odd: true
+            odd: true,
           )
 
           expect(record).to validate_numericality.odd
@@ -467,7 +467,7 @@ this could not be proved.
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :float,
-            odd: true
+            odd: true,
           )
 
           expect(record).to validate_numericality.odd
@@ -540,7 +540,7 @@ but this could not be proved.
             model_name: 'Example',
             attribute_name: :attr,
             changing_values_with: :next_value,
-            expected_message: <<-MESSAGE.strip
+            expected_message: <<-MESSAGE.strip,
 Expected Example to validate that :attr looks like an even number, but
 this could not be proved.
   After setting :attr to ‹"1"› -- which was read back as ‹"2"› -- the
@@ -552,8 +552,8 @@ this could not be proved.
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
             MESSAGE
-          }
-        }
+          },
+        },
       ) do
         def validation_matcher_scenario_args
           super.deep_merge(validation_options: { even: true })
@@ -577,7 +577,7 @@ this could not be proved.
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :integer,
-            even: true
+            even: true,
           )
 
           expect(record).to validate_numericality.even
@@ -588,7 +588,7 @@ this could not be proved.
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :float,
-            even: true
+            even: true,
           )
 
           expect(record).to validate_numericality.even
@@ -660,7 +660,7 @@ than or equal to 18, but this could not be proved.
             model_name: 'Example',
             attribute_name: :attr,
             changing_values_with: :next_value,
-            expected_message: <<-MESSAGE.strip
+            expected_message: <<-MESSAGE.strip,
 Expected Example to validate that :attr looks like a number less than or
 equal to 18, but this could not be proved.
   After setting :attr to ‹"18"› -- which was read back as ‹"19"› -- the
@@ -675,12 +675,12 @@ equal to 18, but this could not be proved.
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
             MESSAGE
-          }
-        }
+          },
+        },
       ) do
         def validation_matcher_scenario_args
           super.deep_merge(
-            validation_options: { less_than_or_equal_to: 18 }
+            validation_options: { less_than_or_equal_to: 18 },
           )
         end
 
@@ -702,7 +702,7 @@ equal to 18, but this could not be proved.
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :integer,
-            less_than_or_equal_to: 18
+            less_than_or_equal_to: 18,
           )
 
           expect(record).to validate_numericality.is_less_than_or_equal_to(18)
@@ -713,7 +713,7 @@ equal to 18, but this could not be proved.
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :float,
-            less_than_or_equal_to: 18
+            less_than_or_equal_to: 18,
           )
 
           expect(record).to validate_numericality.is_less_than_or_equal_to(18)
@@ -786,7 +786,7 @@ than 18, but this could not be proved.
             model_name: 'Example',
             attribute_name: :attr,
             changing_values_with: :next_value,
-            expected_message: <<-MESSAGE.strip
+            expected_message: <<-MESSAGE.strip,
 Expected Example to validate that :attr looks like a number less than
 18, but this could not be proved.
   After setting :attr to ‹"17"› -- which was read back as ‹"18"› -- the
@@ -801,8 +801,8 @@ Expected Example to validate that :attr looks like a number less than
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
             MESSAGE
-          }
-        }
+          },
+        },
       ) do
         def validation_matcher_scenario_args
           super.deep_merge(validation_options: { less_than: 18 })
@@ -826,7 +826,7 @@ Expected Example to validate that :attr looks like a number less than
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :integer,
-            less_than: 18
+            less_than: 18,
           )
 
           expect(record).to validate_numericality.is_less_than(18)
@@ -837,7 +837,7 @@ Expected Example to validate that :attr looks like a number less than
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :float,
-            less_than: 18
+            less_than: 18,
           )
 
           expect(record).to validate_numericality.is_less_than(18)
@@ -908,7 +908,7 @@ Expected Example not to validate that :attr looks like a number equal to
             model_name: 'Example',
             attribute_name: :attr,
             changing_values_with: :next_value,
-            expected_message: <<-MESSAGE.strip
+            expected_message: <<-MESSAGE.strip,
 Expected Example to validate that :attr looks like a number equal to 18,
 but this could not be proved.
   After setting :attr to ‹"18"› -- which was read back as ‹"19"› -- the
@@ -923,8 +923,8 @@ but this could not be proved.
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
             MESSAGE
-          }
-        }
+          },
+        },
       ) do
         def validation_matcher_scenario_args
           super.deep_merge(validation_options: { equal_to: 18 })
@@ -948,7 +948,7 @@ but this could not be proved.
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :integer,
-            equal_to: 18
+            equal_to: 18,
           )
 
           expect(record).to validate_numericality.is_equal_to(18)
@@ -959,7 +959,7 @@ but this could not be proved.
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :float,
-            equal_to: 18
+            equal_to: 18,
           )
 
           expect(record).to validate_numericality.is_equal_to(18)
@@ -1030,7 +1030,7 @@ than 18, but this could not be proved.
             model_name: 'Example',
             attribute_name: :attr,
             changing_values_with: :next_value,
-            expected_message: <<-MESSAGE.strip
+            expected_message: <<-MESSAGE.strip,
 Expected Example to validate that :attr looks like a number other than
 18, but this could not be proved.
   After setting :attr to ‹"18"› -- which was read back as ‹"19"› -- the
@@ -1042,8 +1042,8 @@ Expected Example to validate that :attr looks like a number other than
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
             MESSAGE
-          }
-        }
+          },
+        },
       ) do
         def validation_matcher_scenario_args
           super.deep_merge(validation_options: { other_than: 18 })
@@ -1067,7 +1067,7 @@ Expected Example to validate that :attr looks like a number other than
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :integer,
-            other_than: 18
+            other_than: 18,
           )
 
           expect(record).to validate_numericality.is_other_than(18)
@@ -1078,7 +1078,7 @@ Expected Example to validate that :attr looks like a number other than
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :float,
-            other_than: 18
+            other_than: 18,
           )
 
           expect(record).to validate_numericality.is_other_than(18)
@@ -1121,7 +1121,7 @@ Expected Example to validate that :attr looks like a number other than
     context 'validating with greater_than_or_equal_to' do
       it 'accepts' do
         record = build_record_validating_numericality(
-          greater_than_or_equal_to: 18
+          greater_than_or_equal_to: 18,
         )
         expect(record).
           to validate_numericality.
@@ -1156,7 +1156,7 @@ than or equal to 18, but this could not be proved.
             model_name: 'Example',
             attribute_name: :attr,
             changing_values_with: :next_value,
-            expected_message: <<-MESSAGE.strip
+            expected_message: <<-MESSAGE.strip,
 Expected Example to validate that :attr looks like a number greater than
 or equal to 18, but this could not be proved.
   After setting :attr to ‹"17"› -- which was read back as ‹"18"› -- the
@@ -1168,12 +1168,12 @@ or equal to 18, but this could not be proved.
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
             MESSAGE
-          }
-        }
+          },
+        },
       ) do
         def validation_matcher_scenario_args
           super.deep_merge(
-            validation_options: { greater_than_or_equal_to: 18 }
+            validation_options: { greater_than_or_equal_to: 18 },
           )
         end
 
@@ -1196,7 +1196,7 @@ or equal to 18, but this could not be proved.
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :integer,
-            greater_than_or_equal_to: 18
+            greater_than_or_equal_to: 18,
           )
 
           expect(record).
@@ -1209,7 +1209,7 @@ or equal to 18, but this could not be proved.
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :float,
-            greater_than_or_equal_to: 18
+            greater_than_or_equal_to: 18,
           )
 
           expect(record).
@@ -1288,7 +1288,7 @@ than 18, but this could not be proved.
             model_name: 'Example',
             attribute_name: :attr,
             changing_values_with: :next_value,
-            expected_message: <<-MESSAGE.strip
+            expected_message: <<-MESSAGE.strip,
 Expected Example to validate that :attr looks like a number greater than
 18, but this could not be proved.
   After setting :attr to ‹"18"› -- which was read back as ‹"19"› -- the
@@ -1300,8 +1300,8 @@ Expected Example to validate that :attr looks like a number greater than
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
             MESSAGE
-          }
-        }
+          },
+        },
       ) do
         def validation_matcher_scenario_args
           super.deep_merge(validation_options: { greater_than: 18 })
@@ -1325,7 +1325,7 @@ Expected Example to validate that :attr looks like a number greater than
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :integer,
-            greater_than: 18
+            greater_than: 18,
           )
 
           expect(record).
@@ -1338,7 +1338,7 @@ Expected Example to validate that :attr looks like a number greater than
         it 'accepts (and does not raise an error)' do
           record = build_record_validating_numericality(
             column_type: :float,
-            greater_than: 18
+            greater_than: 18,
           )
 
           expect(record).
@@ -1518,7 +1518,7 @@ could not be proved.
       specify 'such as validating even but testing that only_integer is validated' do
         record = build_record_validating_numericality(
           even: true,
-          greater_than: 18
+          greater_than: 18,
         )
 
         assertion = lambda do
@@ -1571,7 +1571,7 @@ than 18, but this could not be proved.
       specify 'such as validating greater_than_or_equal_to (+ even) but testing that greater_than is validated' do
         record = build_record_validating_numericality(
           even: true,
-          greater_than_or_equal_to: 18
+          greater_than_or_equal_to: 18,
         )
 
         assertion = lambda do
@@ -1595,7 +1595,7 @@ greater than 18, but this could not be proved.
       specify 'such as validating odd (+ greater_than) but testing that even is validated' do
         record = build_record_validating_numericality(
           odd: true,
-          greater_than: 18
+          greater_than: 18,
         )
 
         assertion = lambda do
@@ -1623,7 +1623,7 @@ greater than 18, but this could not be proved.
       specify 'such as validating greater_than_or_equal_to (+ odd) but testing that is_less_than_or_equal_to is validated' do
         record = build_record_validating_numericality(
           odd: true,
-          greater_than_or_equal_to: 99
+          greater_than_or_equal_to: 99,
         )
 
         assertion = lambda do
@@ -1648,7 +1648,7 @@ than or equal to 99, but this could not be proved.
         record = build_record_validating_numericality(
           only_integer: true,
           greater_than_or_equal_to: 18,
-          less_than: 99
+          less_than: 99,
         )
 
         assertion = lambda do
@@ -1675,7 +1675,7 @@ than 18 and less than 99, but this could not be proved.
       specify 'such as testing greater_than (+ only_integer) with lower value' do
         record = build_record_validating_numericality(
           only_integer: true,
-          greater_than: 19
+          greater_than: 19,
         )
 
         assertion = lambda do
@@ -1703,7 +1703,7 @@ than 18, but this could not be proved.
       specify 'such as testing greater_than (+ only_integer) with higher value' do
         record = build_record_validating_numericality(
           only_integer: true,
-          greater_than: 17
+          greater_than: 17,
         )
 
         assertion = lambda do
@@ -1727,7 +1727,7 @@ than 18, but this could not be proved.
       specify 'such as testing greater_than (+ even) with lower value' do
         record = build_record_validating_numericality(
           even: true,
-          greater_than: 20
+          greater_than: 20,
         )
 
         assertion = lambda do
@@ -1755,7 +1755,7 @@ greater than 18, but this could not be proved.
       specify 'such as testing greater than (+ even) with higher value' do
         record = build_record_validating_numericality(
           even: true,
-          greater_than: 16
+          greater_than: 16,
         )
 
         assertion = lambda do
@@ -1779,7 +1779,7 @@ greater than 18, but this could not be proved.
       specify 'such as testing less_than_or_equal_to (+ odd) with lower value' do
         record = build_record_validating_numericality(
           odd: true,
-          less_than_or_equal_to: 101
+          less_than_or_equal_to: 101,
         )
 
         assertion = lambda do
@@ -1803,7 +1803,7 @@ than or equal to 99, but this could not be proved.
       specify 'such as testing less_than_or_equal_to (+ odd) with higher value' do
         record = build_record_validating_numericality(
           odd: true,
-          less_than_or_equal_to: 97
+          less_than_or_equal_to: 97,
         )
 
         assertion = lambda do
@@ -1833,7 +1833,7 @@ than or equal to 99, but this could not be proved.
         record = build_record_validating_numericality(
           only_integer: true,
           greater_than: 19,
-          less_than: 99
+          less_than: 99,
         )
 
         assertion = lambda do
@@ -1863,7 +1863,7 @@ than 18 and less than 99, but this could not be proved.
         record = build_record_validating_numericality(
           only_integer: true,
           greater_than: 18,
-          less_than: 100
+          less_than: 100,
         )
 
         assertion = lambda do
@@ -1904,7 +1904,7 @@ than 18 and less than 99, but this could not be proved.
 
     it do
       record = build_record_validating_numericality(
-        greater_than_or_equal_to: 100_000
+        greater_than_or_equal_to: 100_000,
       )
       expect(record).
         to validate_numericality.
@@ -1913,7 +1913,7 @@ than 18 and less than 99, but this could not be proved.
 
     it do
       record = build_record_validating_numericality(
-        less_than_or_equal_to: 100_000
+        less_than_or_equal_to: 100_000,
       )
       expect(record).
         to validate_numericality.
@@ -1955,7 +1955,7 @@ than 18 and less than 99, but this could not be proved.
           model_name: 'Example',
           attribute_name: :attr,
           changing_values_with: :numeric_value,
-          expected_message: <<-MESSAGE.strip
+          expected_message: <<-MESSAGE.strip,
 Expected Example to validate that :attr looks like a number, but this
 could not be proved.
   After setting :attr to ‹"abcd"› -- which was read back as ‹"1"› -- the
@@ -1967,8 +1967,8 @@ could not be proved.
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
           MESSAGE
-        }
-      }
+        },
+      },
     )
 
     def validation_matcher_scenario_args
@@ -1981,7 +1981,7 @@ could not be proved.
       it 'describes that it allows numbers' do
         matcher = validate_numericality_of(:attr)
         expect(matcher.description).to eq(
-          'validate that :attr looks like a number'
+          'validate that :attr looks like a number',
         )
       end
     end
@@ -1990,7 +1990,7 @@ could not be proved.
       it 'describes that it allows integers' do
         matcher = validate_numericality_of(:attr).only_integer
         expect(matcher.description).to eq(
-          'validate that :attr looks like an integer'
+          'validate that :attr looks like an integer',
         )
       end
     end
@@ -2000,7 +2000,7 @@ could not be proved.
         it "describes that it allows #{qualifier[:name]} numbers" do
           matcher = validate_numericality_of(:attr).__send__(qualifier[:name])
           expect(matcher.description).to eq(
-            "validate that :attr looks like an #{qualifier[:name]} number"
+            "validate that :attr looks like an #{qualifier[:name]} number",
           )
         end
       end
@@ -2015,7 +2015,7 @@ could not be proved.
             __send__(qualifier[:name], 18)
 
           expect(matcher.description).to eq(
-            "validate that :attr looks like a number #{comparison_phrase} 18"
+            "validate that :attr looks like a number #{comparison_phrase} 18",
           )
         end
       end
@@ -2028,7 +2028,7 @@ could not be proved.
           is_greater_than_or_equal_to(18)
 
         expect(matcher.description).to eq(
-          'validate that :attr looks like an odd number greater than or equal to 18'
+          'validate that :attr looks like an odd number greater than or equal to 18',
         )
       end
     end
@@ -2041,7 +2041,7 @@ could not be proved.
           is_less_than_or_equal_to(100)
 
         expect(matcher.description).to eq(
-          'validate that :attr looks like an integer greater than 18 and less than or equal to 100'
+          'validate that :attr looks like an integer greater than 18 and less than or equal to 100',
         )
       end
     end
@@ -2050,7 +2050,7 @@ could not be proved.
       it 'describes that it relies upon a strict validation' do
         matcher = validate_numericality_of(:attr).strict
         expect(matcher.description).to eq(
-          'validate that :attr looks like a number, raising a validation exception on failure'
+          'validate that :attr looks like a number, raising a validation exception on failure',
         )
       end
 
@@ -2058,7 +2058,7 @@ could not be proved.
         it 'places the comparison description after "strictly"' do
           matcher = validate_numericality_of(:attr).is_less_than(18).strict
           expect(matcher.description).to eq(
-            'validate that :attr looks like a number less than 18, raising a validation exception on failure'
+            'validate that :attr looks like a number less than 18, raising a validation exception on failure',
           )
         end
       end
@@ -2129,7 +2129,7 @@ could not be proved.
   def validation_matcher_scenario_args
     super.deep_merge(
       matcher_name: :validate_numericality_of,
-      model_creator: :active_record
+      model_creator: :active_record,
     )
   end
 end

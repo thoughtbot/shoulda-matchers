@@ -43,7 +43,7 @@ module AcceptanceTests
         add_configuration_block_to(
           test_helper_file,
           test_framework,
-          library
+          library,
         )
       end
     end

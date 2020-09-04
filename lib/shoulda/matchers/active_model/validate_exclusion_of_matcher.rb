@@ -239,7 +239,7 @@ module Shoulda
         def inspected_array
           Shoulda::Matchers::Util.inspect_values(@array).to_sentence(
             two_words_connector: ' nor ',
-            last_word_connector: ', nor '
+            last_word_connector: ', nor ',
           )
         end
       end

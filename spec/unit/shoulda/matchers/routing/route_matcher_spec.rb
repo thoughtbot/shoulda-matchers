@@ -15,7 +15,7 @@ describe 'Shoulda::Matchers::Routing::RouteMatcher', type: :routing do
           method: :get,
           path: '/',
           controller: 'things',
-          action: 'index'
+          action: 'index',
         )
 
         is_expected.to(matcher)
@@ -34,7 +34,7 @@ describe 'Shoulda::Matchers::Routing::RouteMatcher', type: :routing do
             method: :get,
             path: '/',
             controller: :things,
-            action: 'index'
+            action: 'index',
           )
 
           is_expected.to(matcher)

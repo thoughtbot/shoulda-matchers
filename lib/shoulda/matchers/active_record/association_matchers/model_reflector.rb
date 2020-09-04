@@ -12,13 +12,13 @@ module Shoulda
             :join_table_name,
             :polymorphic?,
             :validate_inverse_of_through_association!,
-            to: :reflection
+            to: :reflection,
           )
 
           delegate(
             :through?,
             to: :reflection,
-            allow_nil: true
+            allow_nil: true,
           )
 
           def initialize(subject, name)

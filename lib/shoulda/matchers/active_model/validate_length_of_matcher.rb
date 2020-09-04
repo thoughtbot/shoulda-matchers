@@ -392,7 +392,7 @@ module Shoulda
             @options[:minimum] > 0 &&
             allows_length_of?(
               @options[:minimum] - 1,
-              translated_short_message
+              translated_short_message,
             )
         end
 
@@ -402,7 +402,7 @@ module Shoulda
             (@options[:minimum] == 1 && expects_to_allow_blank?) ||
             disallows_length_of?(
               @options[:minimum] - 1,
-              translated_short_message
+              translated_short_message,
             )
         end
 
@@ -410,7 +410,7 @@ module Shoulda
           @options.key?(:maximum) &&
             allows_length_of?(
               @options[:maximum] + 1,
-              translated_long_message
+              translated_long_message,
             )
         end
 
@@ -418,7 +418,7 @@ module Shoulda
           !@options.key?(:maximum) ||
             disallows_length_of?(
               @options[:maximum] + 1,
-              translated_long_message
+              translated_long_message,
             )
         end
 
@@ -470,7 +470,7 @@ module Shoulda
                 model_name: @subject.class.to_s.underscore,
                 instance: @subject,
                 attribute: @attribute,
-                count: @options[:minimum]
+                count: @options[:minimum],
               )
             else
               @short_message
@@ -485,7 +485,7 @@ module Shoulda
                 model_name: @subject.class.to_s.underscore,
                 instance: @subject,
                 attribute: @attribute,
-                count: @options[:maximum]
+                count: @options[:maximum],
               )
             else
               @long_message

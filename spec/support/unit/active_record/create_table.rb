@@ -36,14 +36,14 @@ module UnitTests
           UnitTests::ModelBuilder.create_table(
             table_name,
             connection: connection,
-            id: false
+            id: false,
           ) do |table|
             add_columns_to_table(table)
           end
         else
           UnitTests::ModelBuilder.create_table(
             table_name,
-            connection: connection
+            connection: connection,
           ) do |table|
             add_columns_to_table(table)
           end

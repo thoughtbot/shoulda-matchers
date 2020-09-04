@@ -26,7 +26,7 @@ module Shoulda
             attribute.to_sym,
             type,
             model_name,
-            options
+            options,
           )
         end
       end

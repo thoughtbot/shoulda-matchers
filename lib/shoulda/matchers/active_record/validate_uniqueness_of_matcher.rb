@@ -270,14 +270,14 @@ module Shoulda
           super(attribute)
           @expected_message = :taken
           @options = {
-            case_sensitivity_strategy: :sensitive
+            case_sensitivity_strategy: :sensitive,
           }
           @existing_record_created = false
           @failure_reason = nil
           @failure_reason_when_negated = nil
           @attribute_setters = {
             existing_record: AttributeSetters.new,
-            new_record: AttributeSetters.new
+            new_record: AttributeSetters.new,
           }
         end
 
@@ -461,7 +461,7 @@ module Shoulda
         def inspected_actual_scopes
           inspected_actual_sets_of_scopes.to_sentence(
             words_connector: ' and ',
-            last_word_connector: ', and'
+            last_word_connector: ', and',
           )
         end
 
@@ -583,7 +583,7 @@ module Shoulda
           attribute_names_under_test.each do |attribute_name|
             set_attribute_on_new_record!(
               attribute_name,
-              existing_record.public_send(attribute_name)
+              existing_record.public_send(attribute_name),
             )
           end
 
@@ -703,7 +703,7 @@ module Shoulda
                 raise NonCaseSwappableValueError.create(
                   model: model,
                   attribute: @attribute,
-                  value: value
+                  value: value,
                 )
               end
 
@@ -730,7 +730,7 @@ module Shoulda
                 raise NonCaseSwappableValueError.create(
                   model: model,
                   attribute: @attribute,
-                  value: value
+                  value: value,
                 )
               end
 
@@ -863,7 +863,7 @@ module Shoulda
           attribute_setter = build_attribute_setter(
             record,
             attribute_name,
-            value
+            value,
           )
           attribute_setter.set!
 
@@ -875,7 +875,7 @@ module Shoulda
             :existing_record,
             existing_record,
             attribute_name,
-            value
+            value,
           )
         end
 
@@ -884,7 +884,7 @@ module Shoulda
             :new_record,
             new_record,
             attribute_name,
-            value
+            value,
           )
         end
 
@@ -907,7 +907,7 @@ module Shoulda
             object: record,
             attribute_name: attribute_name,
             value: value,
-            ignore_interference_by_writer: ignore_interference_by_writer
+            ignore_interference_by_writer: ignore_interference_by_writer,
           )
         end
 
@@ -944,7 +944,7 @@ module Shoulda
             if attribute_setter_for_existing_record
               prefix << ', setting '
               prefix << description_for_attribute_setter(
-                attribute_setter_for_existing_record
+                attribute_setter_for_existing_record,
               )
             else
               prefix << ", whose :#{attribute} is "
@@ -956,14 +956,14 @@ module Shoulda
             prefix << "Given an existing #{model.name},"
             prefix << ' after setting '
             prefix << description_for_attribute_setter(
-              attribute_setter_for_existing_record
+              attribute_setter_for_existing_record,
             )
             prefix << ', then'
           else
             prefix << "Given an existing #{model.name} whose :#{attribute}"
             prefix << ' is '
             prefix << Shoulda::Matchers::Util.inspect_value(
-              existing_value_read
+              existing_value_read,
             )
             prefix << ', after'
           end
@@ -1000,13 +1000,13 @@ different altogether.
           end
 
           description << Shoulda::Matchers::Util.inspect_value(
-            attribute_setter.value_written
+            attribute_setter.value_written,
           )
 
           if attribute_setter.attribute_changed_value?
             description << ' (read back as '
             description << Shoulda::Matchers::Util.inspect_value(
-              attribute_setter.value_read
+              attribute_setter.value_read,
             )
             description << ')'
           end
@@ -1030,7 +1030,7 @@ different altogether.
             )
             description_for_attribute_setter(
               attribute_setter,
-              same_as_existing: same_as_existing
+              same_as_existing: same_as_existing,
             )
           end
         end

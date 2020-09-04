@@ -43,7 +43,7 @@ module UnitTests
         model_creator = model_creation_strategy.new(
           model_name,
           columns,
-          arguments
+          arguments,
         )
 
         model_creator.customize_model do |model|
@@ -76,7 +76,7 @@ module UnitTests
             model.send(:define_method, "#{attribute_name}=") do |value|
               new_value = _change_value.call(
                 value,
-                overrides[:changing_values_with]
+                overrides[:changing_values_with],
               )
 
               if (
