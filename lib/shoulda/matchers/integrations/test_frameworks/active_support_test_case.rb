@@ -6,8 +6,7 @@ module Shoulda
         class ActiveSupportTestCase
           Integrations.register_test_framework(self, :active_support_test_case)
 
-          def validate!
-          end
+          def validate!; end
 
           def include(*modules, **options)
             test_case_class.include(*modules)

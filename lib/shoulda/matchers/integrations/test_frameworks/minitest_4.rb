@@ -6,8 +6,7 @@ module Shoulda
         class Minitest4
           Integrations.register_test_framework(self, :minitest_4)
 
-          def validate!
-          end
+          def validate!; end
 
           def include(*modules, **options)
             test_case_class.class_eval do
