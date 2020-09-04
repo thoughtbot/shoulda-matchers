@@ -32,7 +32,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher, type: :model d
           model_name: 'Example',
           attribute_name: :attr,
           changing_values_with: :add_character,
-          expected_message: <<-MESSAGE.strip
+          expected_message: <<-MESSAGE.strip,
 Expected Example to validate that the length of :attr is at least 4, but
 this could not be proved.
   After setting :attr to ‹"xxx"› -- which was read back as ‹"xxxa"› --
@@ -45,8 +45,8 @@ this could not be proved.
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
           MESSAGE
-        }
-      }
+        },
+      },
     ) do
       def validation_matcher_scenario_args
         super.deep_merge(validation_options: { minimum: 4 })
@@ -112,7 +112,7 @@ but this could not be proved.
           model_name: 'Example',
           attribute_name: :attr,
           changing_values_with: :remove_character,
-          expected_message: <<-MESSAGE.strip
+          expected_message: <<-MESSAGE.strip,
 Expected Example to validate that the length of :attr is at most 4, but
 this could not be proved.
   After setting :attr to ‹"xxxxx"› -- which was read back as ‹"xxxx"› --
@@ -125,8 +125,8 @@ this could not be proved.
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
           MESSAGE
-        }
-      }
+        },
+      },
     ) do
       def validation_matcher_scenario_args
         super.deep_merge(validation_options: { maximum: 4 })
@@ -169,7 +169,7 @@ this could not be proved.
           model_name: 'Example',
           attribute_name: :attr,
           changing_values_with: :add_character,
-          expected_message: <<-MESSAGE.strip
+          expected_message: <<-MESSAGE.strip,
 Expected Example to validate that the length of :attr is 4, but this
 could not be proved.
   After setting :attr to ‹"xxx"› -- which was read back as ‹"xxxa"› --
@@ -182,8 +182,8 @@ could not be proved.
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
           MESSAGE
-        }
-      }
+        },
+      },
     ) do
       def validation_matcher_scenario_args
         super.deep_merge(validation_options: { is: 4 })
@@ -241,7 +241,7 @@ could not be proved.
       before do
         stub_translation(
           'activerecord.errors.messages.too_long',
-          'The %{attribute} of your %{model} is too long (maximum is %{count} characters)')
+          'The %{attribute} of your %{model} is too long (maximum is %{count} characters)',)
       end
 
       it 'does not raise an exception' do
@@ -256,7 +256,7 @@ could not be proved.
       before do
         stub_translation(
           'activerecord.errors.messages.too_short',
-          'The %{attribute} of your %{model} is too short (minimum is %{count} characters)')
+          'The %{attribute} of your %{model} is too short (minimum is %{count} characters)',)
       end
 
       it 'does not raise an exception' do
@@ -270,7 +270,7 @@ could not be proved.
       before do
         stub_translation(
           'activerecord.errors.messages.wrong_length',
-          'The %{attribute} of your %{model} is the wrong length (should be %{count} characters)')
+          'The %{attribute} of your %{model} is the wrong length (should be %{count} characters)',)
       end
 
       it 'does not raise an exception' do
@@ -385,7 +385,7 @@ this could not be proved.
   def validation_matcher_scenario_args
     super.deep_merge(
       matcher_name: :validate_length_of,
-      model_creator: :active_model
+      model_creator: :active_model,
     )
   end
 end

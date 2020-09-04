@@ -11,7 +11,7 @@ module Shoulda
       full_message = [
         divider,
         [header, wrapped_message.strip].join("\n\n"),
-        divider
+        divider,
       ].join("\n")
 
       Kernel.warn(full_message)

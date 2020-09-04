@@ -40,7 +40,7 @@ module Shoulda
             else
               type_cast_expected_value = type_cast(
                 type,
-                expected_value_for(type, name, expected_value)
+                expected_value_for(type, name, expected_value),
               )
               actual_value = type_cast(type, actual_value_for(name))
               type_cast_expected_value == actual_value
@@ -94,7 +94,7 @@ module Shoulda
 
           def expected_value_for_constant(name)
             namespace = Shoulda::Matchers::Util.deconstantize(
-              reflector.model_class.to_s
+              reflector.model_class.to_s,
             )
 
             ["#{namespace}::#{name}", name].each do |path|

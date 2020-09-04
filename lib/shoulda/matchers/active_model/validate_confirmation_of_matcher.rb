@@ -148,12 +148,12 @@ module Shoulda
 
         def qualify_matcher(matcher, confirmation_attribute_value)
           matcher.values_to_preset = {
-            confirmation_attribute => confirmation_attribute_value
+            confirmation_attribute => confirmation_attribute_value,
           }
           matcher.with_message(
             @expected_message,
             against: confirmation_attribute,
-            values: { attribute: attribute }
+            values: { attribute: attribute },
           )
         end
       end

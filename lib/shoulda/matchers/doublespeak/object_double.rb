@@ -27,7 +27,7 @@ module Shoulda
             method_name: method_name,
             args: args,
             block: block,
-            caller: ::Kernel.caller
+            caller: ::Kernel.caller,
           )
           calls << call
           (calls_by_method_name[method_name] ||= []) << call

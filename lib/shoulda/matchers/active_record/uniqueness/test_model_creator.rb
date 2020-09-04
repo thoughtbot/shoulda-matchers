@@ -37,7 +37,7 @@ module Shoulda
           def new_model
             @_new_model ||= Model.next_unique_copy_of(
               model_name_without_namespace,
-              namespace
+              namespace,
             )
           end
 

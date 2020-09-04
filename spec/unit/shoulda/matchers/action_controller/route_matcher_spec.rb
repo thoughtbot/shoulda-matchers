@@ -13,8 +13,8 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
           route(:get, '/'),
           build_expected_route_options(
             include_controller_in_expected_route_options,
-            action: 'index'
-          )
+            action: 'index',
+          ),
         )
       end
 
@@ -27,8 +27,8 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
               route(:get, '/'),
               build_expected_route_options(
                 include_controller_in_expected_route_options,
-                action: 'index'
-              )
+                action: 'index',
+              ),
             )
           end
         end
@@ -42,8 +42,8 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
             route(:get, '/'),
             build_expected_route_options(
               include_controller_in_expected_route_options,
-              action: :index
-            )
+              action: :index,
+            ),
           )
         end
       end
@@ -54,7 +54,7 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
         assert_rejects add_target_to(
           route(:get, '/non_existent_route'),
           controller: 'no_controller',
-          action: 'no_action'
+          action: 'no_action',
         )
       end
     end
@@ -67,8 +67,8 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
           route(:get, '/'),
           build_expected_route_options(
             include_controller_in_expected_route_options,
-            action: 'index'
-          )
+            action: 'index',
+          ),
         )
       end
     end
@@ -81,8 +81,8 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
           route(:get, '/different_path'),
           build_expected_route_options(
             include_controller_in_expected_route_options,
-            action: 'index'
-          )
+            action: 'index',
+          ),
         )
       end
     end
@@ -96,8 +96,8 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
             route(:get, '/'),
             build_expected_route_options(
               include_controller_in_expected_route_options,
-              action: 'index'
-            )
+              action: 'index',
+            ),
           )
         end
       end
@@ -111,8 +111,8 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
           route(:get, '/'),
           build_expected_route_options(
             include_controller_in_expected_route_options,
-            action: 'another_action'
-          )
+            action: 'another_action',
+          ),
         )
       end
     end
@@ -128,7 +128,7 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
             route(:get, "/#{controller_name}/1"),
             controller: controller_name,
             action: 'show',
-            id: '1'
+            id: '1',
           )
         end
 
@@ -140,7 +140,7 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
               route(:get, "/#{controller_name}/1"),
               controller: controller_name,
               action: 'show',
-              id: 1
+              id: 1,
             )
           end
         end
@@ -154,11 +154,11 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
             controller: controller_name,
             action: 'show',
             some: 'other',
-            params: 'here'
+            params: 'here',
           }
           assert_rejects add_target_to(
             route(:get, "/#{controller_name}/:id"),
-            params
+            params,
           )
         end
       end
@@ -176,7 +176,7 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
               route(:post, "/#{controller_name}"),
               controller: controller_name,
               action: 'create',
-              format: :json
+              format: :json,
             )
           end
         end
@@ -191,7 +191,7 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
               route(:post, "/#{controller_name}"),
               controller: controller_name,
               action: 'create',
-              format: 'json'
+              format: 'json',
             )
           end
         end
@@ -207,7 +207,7 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
             route(:get, "/#{controller_name}/foo/bar"),
             controller: controller_name,
             action: 'whatever',
-            id: 'foo/bar'
+            id: 'foo/bar',
           )
         end
       end
@@ -219,7 +219,7 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
           assert_rejects add_target_to(
             route(:get, "/#{controller_name}"),
             controller: controller_name,
-            action: 'whatever'
+            action: 'whatever',
           )
         end
       end
@@ -307,7 +307,7 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
       public_send(
         method,
         path,
-        args.merge(controller: controller, action: action)
+        args.merge(controller: controller, action: action),
       )
     end
   end

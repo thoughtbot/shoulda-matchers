@@ -52,7 +52,7 @@ module Shoulda
             [
               "#{name} should have",
               (dependent == true ? 'a' : dependent),
-              'dependency'
+              'dependency',
             ].join(' ')
           end
         end

@@ -52,7 +52,7 @@ module UnitTests
         valid_value: valid_value,
         attribute_to_validate: attribute_to_validate,
         attribute_that_receives_error: attribute_that_receives_error,
-        message: message
+        message: message,
       }
     end
 
@@ -77,7 +77,7 @@ module UnitTests
     def model_columns
       {
         attribute_to_validate => :string,
-        attribute_that_receives_error => :string
+        attribute_that_receives_error => :string,
       }
     end
 
@@ -85,7 +85,7 @@ module UnitTests
       {
         attribute_that_receives_error: :attribute_that_receives_error,
         attribute_to_validate: :attribute_to_validate,
-        message: 'some message'
+        message: 'some message',
       }
     end
   end

@@ -29,7 +29,7 @@ module Shoulda::Matchers::Doublespeak
           build_world,
           :klass,
           :a_method,
-          implementation
+          implementation,
         )
         double.to_return(&sent_block)
         expect(actual_block).to eq sent_block
@@ -41,7 +41,7 @@ module Shoulda::Matchers::Doublespeak
           build_world,
           :klass,
           :a_method,
-          implementation
+          implementation,
         )
         double.to_return(:implementation)
 
@@ -60,7 +60,7 @@ module Shoulda::Matchers::Doublespeak
           build_world,
           :klass,
           :a_method,
-          implementation
+          implementation,
         )
         double.to_return(:value, &sent_block)
         expect(actual_block).to eq sent_block
@@ -77,7 +77,7 @@ module Shoulda::Matchers::Doublespeak
           build_world,
           klass,
           method_name,
-          implementation
+          implementation,
         )
         args = [:any, :args]
         block = -> {}
@@ -87,7 +87,7 @@ module Shoulda::Matchers::Doublespeak
           method_name: method_name,
           args: args,
           block: block,
-          caller: :some_caller
+          caller: :some_caller,
         )
 
         double.activate
@@ -103,14 +103,14 @@ module Shoulda::Matchers::Doublespeak
       it 'restores the original method after being doubled' do
         klass = create_class(a_method: 42)
         world = build_world(
-          original_method_for: klass.instance_method(:a_method)
+          original_method_for: klass.instance_method(:a_method),
         )
         instance = klass.new
         double = described_class.new(
           world,
           klass,
           :a_method,
-          build_implementation
+          build_implementation,
         )
 
         double.activate
@@ -122,14 +122,14 @@ module Shoulda::Matchers::Doublespeak
         method_name = :a_method
         klass = create_class(method_name => 42)
         world = build_world(
-          original_method_for: klass.instance_method(:a_method)
+          original_method_for: klass.instance_method(:a_method),
         )
         instance = klass.new
         double = described_class.new(
           world,
           klass,
           :a_method,
-          build_implementation
+          build_implementation,
         )
 
         double.activate
@@ -145,7 +145,7 @@ module Shoulda::Matchers::Doublespeak
           build_world,
           klass,
           :a_method,
-          build_implementation
+          build_implementation,
         )
 
         double.deactivate
@@ -159,7 +159,7 @@ module Shoulda::Matchers::Doublespeak
           build_world,
           :a_klass,
           :a_method,
-          :an_implementation
+          :an_implementation,
         )
         double.record_call(:some_call)
         expect(double.calls.last).to eq :some_call
@@ -179,20 +179,20 @@ module Shoulda::Matchers::Doublespeak
           method_called = true
         end
         world = build_world(
-          original_method_for: klass.instance_method(method_name)
+          original_method_for: klass.instance_method(method_name),
         )
         instance = klass.new
         call = double('call',
           object: instance,
           method_name: method_name,
           args: expected_args,
-          block: expected_block
+          block: expected_block,
         )
         double = described_class.new(
           world,
           klass,
           method_name,
-          :an_implementation
+          :an_implementation,
         )
 
         double.activate
@@ -211,7 +211,7 @@ module Shoulda::Matchers::Doublespeak
           world,
           :klass,
           method_name,
-          :an_implementation
+          :an_implementation,
         )
         expect { double.call_original_method(call) }.not_to raise_error
       end
@@ -225,7 +225,7 @@ module Shoulda::Matchers::Doublespeak
             world,
             klass,
             method_name,
-            build_implementation
+            build_implementation,
           )
         end
         instance = klass.new
@@ -264,7 +264,7 @@ module Shoulda::Matchers::Doublespeak
       defaults = {
         original_method_for: nil,
         store_original_method_for: nil,
-        doubles_activated?: nil
+        doubles_activated?: nil,
       }
       double('world', defaults.merge(methods))
     end

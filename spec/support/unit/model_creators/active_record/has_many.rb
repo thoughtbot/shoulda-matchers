@@ -38,14 +38,14 @@ module UnitTests
         def child_model_creator
           @_child_model_creator ||=
             UnitTests::ModelCreationStrategies::ActiveRecord.new(
-              child_model_name
+              child_model_name,
             )
         end
 
         def parent_model_creator
           @_parent_model_creator ||= begin
             model_creator = UnitTests::ModelCreators::ActiveRecord.new(
-              parent_model_creator_arguments
+              parent_model_creator_arguments,
             )
 
             model_creator.customize_model do |model|

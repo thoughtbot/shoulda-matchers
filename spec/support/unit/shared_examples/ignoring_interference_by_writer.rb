@@ -1,7 +1,7 @@
 shared_examples_for 'ignoring_interference_by_writer' do |common_config|
   valid_tests = [
     :accept_if_qualified_but_changing_value_does_not_interfere,
-    :reject_if_qualified_but_changing_value_interferes
+    :reject_if_qualified_but_changing_value_interferes,
   ]
   tests = common_config.fetch(:tests)
   tests.assert_valid_keys(valid_tests)

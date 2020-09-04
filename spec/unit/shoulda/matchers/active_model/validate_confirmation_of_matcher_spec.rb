@@ -35,7 +35,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :m
           model_name: 'Example',
           attribute_name: :password,
           changing_values_with: :next_value,
-          expected_message: <<-MESSAGE.strip
+          expected_message: <<-MESSAGE.strip,
 Expected Example to validate that :password_confirmation matches
 :password, but this could not be proved.
   After setting :password_confirmation to ‹"same value"›, then setting
@@ -53,14 +53,14 @@ Expected Example to validate that :password_confirmation matches
           MESSAGE
         },
       },
-      model_creator: :active_model
+      model_creator: :active_model,
     )
 
     it 'fails when used in the negative' do
       builder = builder_for_record_validating_confirmation(
         model_name: 'Example',
         attribute: :password,
-        confirmation_attribute: :password_confirmation
+        confirmation_attribute: :password_confirmation,
       )
 
       assertion = lambda do
@@ -95,7 +95,7 @@ Example to "some value", but that attribute does not exist.
 
       expect(&assertion).to raise_error(
         Shoulda::Matchers::ActiveModel::AllowValueMatcher::AttributeDoesNotExistError,
-        message
+        message,
       )
     end
   end
@@ -115,7 +115,7 @@ The matcher attempted to set :attribute_to_confirm on the Example to
 
       expect(&assertion).to raise_error(
         Shoulda::Matchers::ActiveModel::AllowValueMatcher::AttributeDoesNotExistError,
-        message
+        message,
       )
     end
   end

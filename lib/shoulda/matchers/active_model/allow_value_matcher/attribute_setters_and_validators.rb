@@ -11,7 +11,7 @@ module Shoulda
               AttributeSetterAndValidator.new(
                 allow_value_matcher,
                 attribute_name,
-                value
+                value,
               )
             end
           end

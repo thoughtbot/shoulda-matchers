@@ -20,8 +20,8 @@ module UnitTests
           options.merge(
             attribute.name => {
               type: attribute.column_type,
-              options: attribute.column_options
-            }
+              options: attribute.column_options,
+            },
           )
         end
       end
@@ -54,13 +54,13 @@ module UnitTests
 
       def scope_attributes
         @_scope_attributes ||= self.class.normalize_attributes(
-          args.fetch(:scopes, [])
+          args.fetch(:scopes, []),
         )
       end
 
       def additional_attributes
         @_additional_attributes ||= self.class.normalize_attributes(
-          args.fetch(:additional_attributes, [])
+          args.fetch(:additional_attributes, []),
         )
       end
 

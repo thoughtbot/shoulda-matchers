@@ -3,7 +3,7 @@ module UnitTests
     DEFAULT_COLUMN_TYPE = :string
     DEFAULT_COLUMN_OPTIONS = {
       null: false,
-      array: false
+      array: false,
     }
 
     def initialize(args)
@@ -21,7 +21,7 @@ module UnitTests
     def column_options
       {
         type: column_type,
-        options: DEFAULT_COLUMN_OPTIONS.merge(args.fetch(:column_options, {}))
+        options: DEFAULT_COLUMN_OPTIONS.merge(args.fetch(:column_options, {})),
       }
     end
 

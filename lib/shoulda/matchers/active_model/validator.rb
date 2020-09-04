@@ -108,14 +108,14 @@ module Shoulda
           {
             all_validation_errors: all_validation_errors,
             validation_error_messages: validation_error_messages,
-            validation_exception_message: nil
+            validation_exception_message: nil,
           }
         rescue ::ActiveModel::StrictValidationFailed => exception
           @captured_validation_exception = true
           {
             all_validation_errors: nil,
             validation_error_messages: [],
-            validation_exception_message: exception.message
+            validation_exception_message: exception.message,
           }
         end
       end

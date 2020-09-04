@@ -43,22 +43,22 @@ module UnitTests
               columns: {
                 foreign_key_for_child_model => :integer,
                 foreign_key_for_parent_model => :integer,
-                :id => false
-              }
+                :id => false,
+              },
             )
         end
 
         def child_model_creator
           @_child_model_creator ||=
             UnitTests::ModelCreationStrategies::ActiveRecord.new(
-              child_model_name
+              child_model_name,
             )
         end
 
         def parent_model_creator
           @_parent_model_creator ||= begin
             model_creator = UnitTests::ModelCreators::ActiveRecord.new(
-              parent_model_creator_arguments
+              parent_model_creator_arguments,
             )
 
             # TODO: doesn't this need to be a has_many :through?

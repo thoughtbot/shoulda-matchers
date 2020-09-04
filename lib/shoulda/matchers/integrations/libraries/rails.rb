@@ -12,7 +12,7 @@ module Shoulda
             :active_model,
             :active_record,
             :action_controller,
-            :routing
+            :routing,
           ]
 
           def integrate_with(test_framework)

@@ -67,7 +67,7 @@ module Shoulda
               message << "\n"
               message << Shoulda::Matchers.word_wrap(
                 failure_reason,
-                indent: 2
+                indent: 2,
               )
             end
           end
@@ -79,7 +79,7 @@ module Shoulda
               message << "\n"
               message << Shoulda::Matchers.word_wrap(
                 failure_reason,
-                indent: 2
+                indent: 2,
               )
             end
           end
@@ -138,14 +138,14 @@ module Shoulda
         def overall_failure_message
           Shoulda::Matchers.word_wrap(
             "Expected #{model.name} to #{description}, but this could not be " +
-            'proved.'
+            'proved.',
           )
         end
 
         def overall_failure_message_when_negated
           Shoulda::Matchers.word_wrap(
             "Expected #{model.name} not to #{description}, but this could " +
-            'not be proved.'
+            'not be proved.',
           )
         end
 

@@ -20,7 +20,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateAcceptanceOfMatcher, type: :mod
           model_name: 'Example',
           attribute_name: :attr,
           changing_values_with: :always_nil,
-          expected_message: <<-MESSAGE.strip
+          expected_message: <<-MESSAGE.strip,
 Expected Example to validate that :attr has been set to "1", but this
 could not be proved.
   After setting :attr to ‹false› -- which was read back as ‹nil› -- the
@@ -34,7 +34,7 @@ could not be proved.
           MESSAGE
         },
       },
-      model_creator: :active_model
+      model_creator: :active_model,
     )
 
     it 'fails when used in the negative' do

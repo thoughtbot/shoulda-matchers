@@ -39,7 +39,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateExclusionOfMatcher, type: :mode
           model_name: 'Example',
           attribute_name: :attr,
           changing_values_with: :next_value,
-          expected_message: <<-MESSAGE.strip
+          expected_message: <<-MESSAGE.strip,
 Expected Example to validate that :attr lies outside the range ‹2› to
 ‹5›, but this could not be proved.
   After setting :attr to ‹1› -- which was read back as ‹2› -- the
@@ -56,7 +56,7 @@ Expected Example to validate that :attr lies outside the range ‹2› to
           MESSAGE
         },
       },
-      model_creator: :active_model
+      model_creator: :active_model,
     ) do
       def validation_matcher_scenario_args
         super.deep_merge(validation_options: { in: 2..5 })
@@ -136,7 +136,7 @@ to ‹5›, but this could not be proved.
       matcher = validate_exclusion_of(:attr).in_range(1..10)
 
       expect(matcher.description).to eq(
-        'validate that :attr lies outside the range ‹1› to ‹10›'
+        'validate that :attr lies outside the range ‹1› to ‹10›',
       )
     end
   end
@@ -169,7 +169,7 @@ to ‹5›, but this could not be proved.
         matcher = validate_exclusion_of(:attr).in_array([true, 'dog'])
 
         expect(matcher.description).to eq(
-          'validate that :attr is neither ‹true› nor ‹"dog"›'
+          'validate that :attr is neither ‹true› nor ‹"dog"›',
         )
       end
     end
@@ -179,7 +179,7 @@ to ‹5›, but this could not be proved.
         matcher = validate_exclusion_of(:attr).in_array([true, 'dog', 'cat'])
 
         expect(matcher.description).to eq(
-          'validate that :attr is neither ‹true›, ‹"dog"›, nor ‹"cat"›'
+          'validate that :attr is neither ‹true›, ‹"dog"›, nor ‹"cat"›',
         )
       end
     end
@@ -191,7 +191,7 @@ to ‹5›, but this could not be proved.
           model_name: 'Example',
           attribute_name: :attr,
           changing_values_with: :next_value,
-          expected_message: <<-MESSAGE.strip
+          expected_message: <<-MESSAGE.strip,
 Expected Example to validate that :attr is neither ‹"one"› nor ‹"two"›,
 but this could not be proved.
   After setting :attr to ‹"one"› -- which was read back as ‹"onf"› --
@@ -206,7 +206,7 @@ but this could not be proved.
         MESSAGE
         },
       },
-      model_creator: :active_model
+      model_creator: :active_model,
     ) do
       def validation_matcher_scenario_args
         super.deep_merge(validation_options: { in: ['one', 'two'] })

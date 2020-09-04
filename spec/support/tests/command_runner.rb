@@ -30,7 +30,7 @@ module Tests
       @args = args
       @options = options.merge(
         err: [:child, :out],
-        out: writer
+        out: writer,
       )
       @env = extract_env_from(@options)
 

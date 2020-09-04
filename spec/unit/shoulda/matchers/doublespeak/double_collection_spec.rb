@@ -156,7 +156,7 @@ module Shoulda::Matchers::Doublespeak
 
         actual_calls = [
           { args: [:some, :args, :here] },
-          { args: [:some, :args], block: -> { :whatever } }
+          { args: [:some, :args], block: -> { :whatever } },
         ]
         instance = klass.new
         instance.a_method(*actual_calls[0][:args])

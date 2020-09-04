@@ -346,7 +346,7 @@ module Shoulda
 
           def register
             double_collection = Doublespeak.double_collection_for(
-              ::ActionController::Parameters.singleton_class
+              ::ActionController::Parameters.singleton_class,
             )
             double_collection.register_proxy(:new).to_return do |call|
               params = call.return_value
@@ -389,7 +389,7 @@ module Shoulda
 
             if double_collections_by_parameter_name.key?(subparameter_name)
               self.class.permitted_parameter_names_within(
-                double_collections_by_parameter_name[subparameter_name]
+                double_collections_by_parameter_name[subparameter_name],
               )
             else
               []

@@ -43,7 +43,7 @@ module UnitTests
       def define_class_for_model
         model = UnitTests::ModelBuilder.define_model_class(
           class_name,
-          parent_class: parent_class
+          parent_class: parent_class,
         )
 
         model_customizers.each do |block|

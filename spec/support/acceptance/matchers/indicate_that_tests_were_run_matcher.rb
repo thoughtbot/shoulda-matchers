@@ -39,7 +39,7 @@ module AcceptanceTests
         [
           expected_output_for_rails_3,
           expected_output_for_turn,
-          expected_output_for_rails_4
+          expected_output_for_rails_4,
         ]
       end
 

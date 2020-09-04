@@ -10,7 +10,7 @@ describe Shoulda::Matchers::ActiveRecord::HaveImplicitOrderColumnMatcher, type: 
               record = record_with_implicit_order_column_on(
                 :created_at,
                 class_name: 'Employee',
-                columns: [:created_at]
+                columns: [:created_at],
               )
 
               expect { have_implicit_order_column(:created_at) }
@@ -27,7 +27,7 @@ describe Shoulda::Matchers::ActiveRecord::HaveImplicitOrderColumnMatcher, type: 
               record = record_with_implicit_order_column_on(
                 :created_at,
                 class_name: 'Employee',
-                columns: [:created_at]
+                columns: [:created_at],
               )
 
               expect { have_implicit_order_column('created_at') }
@@ -46,7 +46,7 @@ describe Shoulda::Matchers::ActiveRecord::HaveImplicitOrderColumnMatcher, type: 
               record = record_with_implicit_order_column_on(
                 :created_at,
                 class_name: 'Employee',
-                columns: [:created_at, :email]
+                columns: [:created_at, :email],
               )
 
               expect { have_implicit_order_column(:email) }
@@ -63,7 +63,7 @@ describe Shoulda::Matchers::ActiveRecord::HaveImplicitOrderColumnMatcher, type: 
               record = record_with_implicit_order_column_on(
                 :created_at,
                 class_name: 'Employee',
-                columns: [:created_at, :email]
+                columns: [:created_at, :email],
               )
 
               expect { have_implicit_order_column('email') }
@@ -82,7 +82,7 @@ describe Shoulda::Matchers::ActiveRecord::HaveImplicitOrderColumnMatcher, type: 
           it 'does not match, producing an appropriate message' do
             record = record_without_implicit_order_column(
               class_name: 'Employee',
-              columns: [:created_at]
+              columns: [:created_at],
             )
 
             expect { have_implicit_order_column(:created_at) }
@@ -98,7 +98,7 @@ describe Shoulda::Matchers::ActiveRecord::HaveImplicitOrderColumnMatcher, type: 
           it 'does not match, producing an appropriate message' do
             record = record_without_implicit_order_column(
               class_name: 'Employee',
-              columns: [:created_at]
+              columns: [:created_at],
             )
 
             expect { have_implicit_order_column('created_at') }
@@ -147,7 +147,7 @@ describe Shoulda::Matchers::ActiveRecord::HaveImplicitOrderColumnMatcher, type: 
         matcher = have_implicit_order_column(:created_at)
 
         expect(matcher.description).to eq(
-          'have an implicit_order_column of :created_at'
+          'have an implicit_order_column of :created_at',
         )
       end
     end

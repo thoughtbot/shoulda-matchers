@@ -25,7 +25,7 @@ class CustomPlan < Zeus::Plan
   def boot
     ENV['BUNDLE_GEMFILE'] = File.expand_path(
       "../gemfiles/#{latest_appraisal}.gemfile",
-      __FILE__
+      __FILE__,
     )
 
     require 'bundler/setup'
@@ -97,7 +97,7 @@ class CustomPlan < Zeus::Plan
     file_path, location = match.captures
     expanded_file_path = File.expand_path(
       "../spec/unit/shoulda/matchers/#{file_path}",
-      __FILE__
+      __FILE__,
     )
 
     [expanded_file_path, location]
