@@ -8,7 +8,7 @@ require 'spec_helper'
 
 $VERBOSE = true
 
-Dir[ File.join(File.expand_path('../support/unit/**/*.rb', __FILE__)) ].sort.each do |file|
+Dir[ File.join(File.expand_path('support/unit/**/*.rb', __dir__)) ].sort.each do |file|
   require file
 end
 

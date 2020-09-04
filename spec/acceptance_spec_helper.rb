@@ -8,7 +8,7 @@ require 'rspec/core'
 
 require 'spec_helper'
 
-Dir[ File.join(File.expand_path('../support/acceptance/**/*.rb', __FILE__)) ].sort.each do |file|
+Dir[ File.join(File.expand_path('support/acceptance/**/*.rb', __dir__)) ].sort.each do |file|
   require file
 end
 
