@@ -90,14 +90,12 @@ module Shoulda
           if attr_mass_assignable?
             if whitelisting?
               @failure_message_when_negated = "#{@attribute} was made accessible"
+            elsif protected_attributes.empty?
+              @failure_message_when_negated = 'no attributes were protected'
             else
-              if protected_attributes.empty?
-                @failure_message_when_negated = 'no attributes were protected'
-              else
-                @failure_message_when_negated = "#{class_name} is protecting " <<
-                  "#{protected_attributes.to_a.to_sentence}, " <<
-                  "but not #{@attribute}."
-              end
+              @failure_message_when_negated = "#{class_name} is protecting " <<
+                "#{protected_attributes.to_a.to_sentence}, " <<
+                "but not #{@attribute}."
             end
             true
           else

@@ -952,22 +952,20 @@ module Shoulda
             end
 
             prefix << ', and saving it as the existing record, then'
+          elsif attribute_setter_for_existing_record
+            prefix << "Given an existing #{model.name},"
+            prefix << ' after setting '
+            prefix << description_for_attribute_setter(
+              attribute_setter_for_existing_record
+            )
+            prefix << ', then'
           else
-            if attribute_setter_for_existing_record
-              prefix << "Given an existing #{model.name},"
-              prefix << ' after setting '
-              prefix << description_for_attribute_setter(
-                attribute_setter_for_existing_record
-              )
-              prefix << ', then'
-            else
-              prefix << "Given an existing #{model.name} whose :#{attribute}"
-              prefix << ' is '
-              prefix << Shoulda::Matchers::Util.inspect_value(
-                existing_value_read
-              )
-              prefix << ', after'
-            end
+            prefix << "Given an existing #{model.name} whose :#{attribute}"
+            prefix << ' is '
+            prefix << Shoulda::Matchers::Util.inspect_value(
+              existing_value_read
+            )
+            prefix << ', after'
           end
 
           prefix << " making a new #{model.name} and setting "

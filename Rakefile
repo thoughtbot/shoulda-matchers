@@ -24,13 +24,11 @@ task :default do
   if Tests::CurrentBundle.instance.appraisal_in_use?
     sh 'rake spec:unit --trace'
     sh 'rake spec:acceptance --trace'
+  elsif ENV['CI']
+    exec 'appraisal install && appraisal rake --trace'
   else
-    if ENV['CI']
-      exec 'appraisal install && appraisal rake --trace'
-    else
-      appraisal = Tests::CurrentBundle.instance.latest_appraisal
-      exec "appraisal install && appraisal #{appraisal} rake --trace"
-    end
+    appraisal = Tests::CurrentBundle.instance.latest_appraisal
+    exec "appraisal install && appraisal #{appraisal} rake --trace"
   end
 end
 

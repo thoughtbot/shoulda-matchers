@@ -141,13 +141,11 @@ module Shoulda
             klass = serialization_coder
             if klass == @options[:type]
               true
+            elsif klass.respond_to?(:object_class) && klass.object_class == @options[:type]
+              true
             else
-              if klass.respond_to?(:object_class) && klass.object_class == @options[:type]
-                true
-              else
-                @missing = ":#{@name} should be a type of #{@options[:type]}"
-                false
-              end
+              @missing = ":#{@name} should be a type of #{@options[:type]}"
+              false
             end
           else
             true
