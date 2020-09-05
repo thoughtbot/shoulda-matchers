@@ -421,9 +421,9 @@ module Shoulda
         def expected_prefix
           if options.include?(:prefix)
             if options[:prefix] == true
-              attribute_name#.to_sym
+              attribute_name # .to_sym
             else
-              options[:prefix]#.to_sym
+              options[:prefix] # .to_sym
             end
           end
         end
@@ -431,9 +431,9 @@ module Shoulda
         def expected_suffix
           if options.include?(:suffix)
             if options[:suffix] == true
-              attribute_name#.to_sym
+              attribute_name # .to_sym
             else
-              options[:suffix]#.to_sym
+              options[:suffix] # .to_sym
             end
           end
         end

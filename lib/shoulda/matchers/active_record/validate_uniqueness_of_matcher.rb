@@ -795,7 +795,7 @@ module Shoulda
           column = column_for(scope)
 
           if column.respond_to?(:array) && column.array
-            [ dummy_scalar_value_for(column) ]
+            [dummy_scalar_value_for(column)]
           else
             dummy_scalar_value_for(column)
           end
@@ -807,7 +807,7 @@ module Shoulda
 
         def next_value_for(scope, previous_value)
           if previous_value.is_a?(Array)
-            [ next_scalar_value_for(scope, previous_value[0]) ]
+            [next_scalar_value_for(scope, previous_value[0])]
           else
             next_scalar_value_for(scope, previous_value)
           end

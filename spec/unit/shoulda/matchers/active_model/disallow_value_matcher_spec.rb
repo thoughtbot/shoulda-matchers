@@ -37,8 +37,7 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher, type: :model do
 
     it "delegates its failure message to its allow matcher's negative failure message" do
       allow_matcher = double('allow_matcher',
-        failure_message_when_negated: 'allow matcher failure',
-      ).as_null_object
+        failure_message_when_negated: 'allow matcher failure',).as_null_object
       allow(Shoulda::Matchers::ActiveModel::AllowValueMatcher).
         to receive(:new).
         and_return(allow_matcher)

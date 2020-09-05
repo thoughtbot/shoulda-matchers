@@ -27,7 +27,7 @@ module UnitTests
         layout false
         define_method(action, &block)
       end
-      controller_class.view_paths = [ $test_app.temp_views_directory.to_s ]
+      controller_class.view_paths = [$test_app.temp_views_directory.to_s]
 
       define_routes do
         get 'examples', to: "examples##{action}"

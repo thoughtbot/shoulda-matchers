@@ -22,7 +22,7 @@ module AcceptanceTests
 
       def failure_message
         message = "Expected output to indicate that #{some_tests_were_run}.\n" +
-          "Expected output: #{expected_output}\n"
+                  "Expected output: #{expected_output}\n"
 
         if actual_output.empty?
           message << 'Actual output: (empty)'

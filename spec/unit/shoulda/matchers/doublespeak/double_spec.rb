@@ -186,8 +186,7 @@ module Shoulda::Matchers::Doublespeak
           object: instance,
           method_name: method_name,
           args: expected_args,
-          block: expected_block,
-        )
+          block: expected_block,)
         double = described_class.new(
           world,
           klass,

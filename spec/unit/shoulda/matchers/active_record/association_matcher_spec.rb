@@ -858,10 +858,9 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
 
     it 'accepts a valid association with a :through option' do
       define_model :child
-      define_model :conception, child_id: :integer,
-        parent_id: :integer do
+      define_model :conception, child_id: :integer, parent_id: :integer do
         belongs_to :child
-        end
+      end
       define_model :parent do
         has_many :conceptions
         has_many :children, through: :conceptions
@@ -877,11 +876,9 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
         has_many :children, through: :conceptions
       end
 
-      expect { have_many(:children) }
-        .not_to match_against(parent_class.new)
-        .and_fail_with(<<-MESSAGE)
+      expect { have_many(:children) }.not_to match_against(parent_class.new).and_fail_with(<<-MESSAGE)
 Expected Parent to have a has_many association called children through conceptions (Could not find the source association(s) "child" or :children in model Conception. Try 'has_many :children, :through => :conceptions, :source => <name>'. Is it one of ?)
-        MESSAGE
+      MESSAGE
     end
 
     it 'accepts a valid association with an :as option' do
@@ -920,7 +917,7 @@ Expected Parent to have a has_many association called children through conceptio
 
     it 'rejects an association with a bad :as option' do
       define_model :child, caretaker_type: :string,
-        caretaker_id: :integer
+                           caretaker_id: :integer
       define_model :parent do
         has_many :children, as: :guardian
       end
@@ -940,7 +937,7 @@ Expected Parent to have a has_many association called children through conceptio
       define_model :child
 
       define_model :conception, child_id: :integer,
-        parent_id: :integer do
+                                parent_id: :integer do
         belongs_to :child
       end
 
@@ -1251,7 +1248,7 @@ Expected Parent to have a has_many association called children through conceptio
 
     it 'accepts a valid association with an :as option' do
       define_model :detail, detailable_id: :integer,
-        detailable_type: :string
+                            detailable_type: :string
       define_model :person do
         has_one :detail, as: :detailable
       end
@@ -1294,7 +1291,7 @@ Expected Parent to have a has_many association called children through conceptio
 
     it 'rejects an association with a bad :as option' do
       define_model :detail, detailable_id: :integer,
-        detailable_type: :string
+                            detailable_type: :string
       define_model :person do
         has_one :detail, as: :describable
       end
@@ -1442,7 +1439,6 @@ Expected Parent to have a has_many association called children through conceptio
       }.to fail_with_message(message)
     end
 
-
     it 'accepts an association with a through' do
       define_model :detail
 
@@ -1539,7 +1535,7 @@ Expected Parent to have a has_many association called children through conceptio
       define_model :relative
       define_model :person
       define_model :people_relative, id: false, person_id: :integer,
-        relative_id: :integer
+                                     relative_id: :integer
 
       expect(Person.new).not_to have_and_belong_to_many(:relatives)
     end
@@ -1967,19 +1963,17 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
         define_model :relative
         define_model :person do
           has_and_belongs_to_many :relatives,
-                                  foreign_key: :some_foreign_key_id,
-                                  association_foreign_key: :custom_association_foreign_key_id
+            foreign_key: :some_foreign_key_id,
+            association_foreign_key: :custom_association_foreign_key_id
         end
 
         define_model :people_relative,
-                     id: false,
-                     custom_association_foreign_key_id: :integer,
-                     some_foreign_key_id: :integer
+          id: false,
+          custom_association_foreign_key_id: :integer,
+          some_foreign_key_id: :integer
 
         expect(Person.new).to have_and_belong_to_many(:relatives)
-
       end
-
     end
 
     it 'rejects an association of the wrong type' do
@@ -1997,7 +1991,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
         define_association_with_conditions(model, :has_and_belongs_to_many, :relatives, adopted: true)
       end
       define_model :people_relative, id: false, person_id: :integer,
-        relative_id: :integer
+                                     relative_id: :integer
 
       expect(Person.new).to have_and_belong_to_many(:relatives).conditions(adopted: true)
     end
@@ -2008,7 +2002,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
         has_and_belongs_to_many :relatives
       end
       define_model :people_relative, id: false, person_id: :integer,
-        relative_id: :integer
+                                     relative_id: :integer
 
       expect(Person.new).not_to have_and_belong_to_many(:relatives).conditions(adopted: true)
     end
@@ -2025,7 +2019,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
       end
 
       define_model :people_person_relative, person_id: :integer,
-        person_relative_id: :integer
+                                            person_relative_id: :integer
 
       expect(Person.new).to have_and_belong_to_many(:relatives).class_name('PersonRelative')
     end
@@ -2141,7 +2135,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
     def having_and_belonging_to_many_relatives(options = {})
       define_model :relative
       define_model :people_relative, id: false, person_id: :integer,
-        relative_id: :integer
+                                     relative_id: :integer
       define_model :person do
         has_and_belongs_to_many :relatives
       end.new
@@ -2154,7 +2148,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
     end
   end
 
-  def define_association_with_conditions(model, macro, name, conditions, other_options={})
+  def define_association_with_conditions(model, macro, name, conditions, other_options = {})
     args = []
     options = {}
     if active_record_supports_relations?

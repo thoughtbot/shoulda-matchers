@@ -40,11 +40,11 @@ module Shoulda
           else
             if readonly_attributes.empty?
               @failure_message = "#{class_name} attribute #{@attribute} " <<
-                'is not read-only'
+                                 'is not read-only'
             else
               @failure_message = "#{class_name} is making " <<
-                "#{readonly_attributes.to_a.to_sentence} " <<
-                "read-only, but not #{@attribute}."
+                                 "#{readonly_attributes.to_a.to_sentence} " <<
+                                 "read-only, but not #{@attribute}."
             end
             false
           end

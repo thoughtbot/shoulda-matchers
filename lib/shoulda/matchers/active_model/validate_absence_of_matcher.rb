@@ -103,7 +103,7 @@ module Shoulda
           if reflection
             obj = reflection.klass.new
             if collection?
-              [ obj ]
+              [obj]
             else
               obj
             end

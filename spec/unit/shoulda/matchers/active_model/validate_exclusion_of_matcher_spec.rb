@@ -105,7 +105,7 @@ to ‹5›, but this could not be proved.
     it 'accepts ensuring the correct range with an interpolated variable in the message' do
       matcher = validating_exclusion(in: 2..4, message: '%{value} is not good')
       expect(matcher).
-      to validate_exclusion_of(:attr).
+        to validate_exclusion_of(:attr).
         in_range(2..4).
         with_message(/^[234] is not good$/)
     end
@@ -203,7 +203,7 @@ but this could not be proved.
   this test is failing. If you've overridden the writer method for this
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
-        MESSAGE
+          MESSAGE
         },
       },
       model_creator: :active_model,

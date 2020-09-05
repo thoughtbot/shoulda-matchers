@@ -203,7 +203,7 @@ could not be proved.
 
       it 'does not raise an exception' do
         stub_translation('activerecord.errors.messages.present',
-                         '%{attribute} must be blank in a %{model}',)
+          '%{attribute} must be blank in a %{model}',)
 
         expect {
           expect(validating_absence_of(:attr)).to validate_absence_of(:attr)

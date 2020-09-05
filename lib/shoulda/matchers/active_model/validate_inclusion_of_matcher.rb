@@ -545,10 +545,10 @@ EOT
           values = []
 
           values << case @array
-            when [true]  then false
-            when [false] then true
-            else              raise CouldNotDetermineValueOutsideOfArray
-          end
+                    when [true]  then false
+                    when [false] then true
+                    else              raise CouldNotDetermineValueOutsideOfArray
+                    end
 
           if attribute_allows_nil?
             values << nil

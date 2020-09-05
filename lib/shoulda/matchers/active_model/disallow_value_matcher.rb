@@ -46,7 +46,7 @@ module Shoulda
           self
         end
 
-        def with_message(message, options={})
+        def with_message(message, options = {})
           allow_matcher.with_message(message, options)
           self
         end

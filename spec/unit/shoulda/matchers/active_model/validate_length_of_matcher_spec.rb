@@ -241,7 +241,8 @@ could not be proved.
       before do
         stub_translation(
           'activerecord.errors.messages.too_long',
-          'The %{attribute} of your %{model} is too long (maximum is %{count} characters)',)
+          'The %{attribute} of your %{model} is too long (maximum is %{count} characters)',
+        )
       end
 
       it 'does not raise an exception' do
@@ -256,7 +257,8 @@ could not be proved.
       before do
         stub_translation(
           'activerecord.errors.messages.too_short',
-          'The %{attribute} of your %{model} is too short (minimum is %{count} characters)',)
+          'The %{attribute} of your %{model} is too short (minimum is %{count} characters)',
+        )
       end
 
       it 'does not raise an exception' do
@@ -270,7 +272,8 @@ could not be proved.
       before do
         stub_translation(
           'activerecord.errors.messages.wrong_length',
-          'The %{attribute} of your %{model} is the wrong length (should be %{count} characters)',)
+          'The %{attribute} of your %{model} is the wrong length (should be %{count} characters)',
+        )
       end
 
       it 'does not raise an exception' do

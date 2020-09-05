@@ -185,7 +185,7 @@ module Shoulda
           leftover = ''
         else
           fitted_line = line[0..index].rstrip
-          leftover = line[index + 1 .. -1]
+          leftover = line[index + 1..-1]
         end
 
         { fitted_line: fitted_line, leftover: leftover }

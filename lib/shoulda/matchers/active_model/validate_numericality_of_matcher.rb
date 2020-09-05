@@ -372,9 +372,9 @@ module Shoulda
         def allow_nil
           @expects_to_allow_nil = true
           prepare_submatcher(
-            AllowValueMatcher.new(nil)
-              .for(@attribute)
-              .with_message(:not_a_number),
+            AllowValueMatcher.new(nil).
+              for(@attribute).
+              with_message(:not_a_number),
           )
           self
         end

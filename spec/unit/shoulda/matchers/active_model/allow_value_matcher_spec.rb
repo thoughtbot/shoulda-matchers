@@ -464,7 +464,7 @@ indeed invalid, but it produced these validation errors instead:
         validates_presence_of     :attr
         validates_length_of       :attr, within: 1..5
         validates_numericality_of :attr, greater_than_or_equal_to: 1,
-          less_than_or_equal_to: 50000
+                                         less_than_or_equal_to: 50000
       end.new
     end
 
@@ -784,7 +784,7 @@ that attribute does not exist.
           message = <<-MESSAGE.rstrip
 The matcher attempted to set :nonexistent on the Example to "some
 value", but that attribute does not exist.
-        MESSAGE
+          MESSAGE
 
           expect(&assertion).to raise_error(
             described_class::AttributeDoesNotExistError,
@@ -810,7 +810,7 @@ value", but that attribute does not exist.
           message = <<-MESSAGE.rstrip
 The matcher attempted to set :nonexistent on the Example to "some
 value", but that attribute does not exist.
-        MESSAGE
+          MESSAGE
 
           expect(&assertion).to raise_error(
             described_class::AttributeDoesNotExistError,

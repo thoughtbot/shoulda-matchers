@@ -71,11 +71,11 @@ describe Shoulda::Matchers::ActiveRecord::HaveRichTextMatcher, type: :model do
 
   def new_post(has_invalid_content: false, is_rich_text_association: false)
     columns = {}
-  
+
     if has_invalid_content
       columns[:invalid_content] = :string
     end
-  
+
     define_model 'Post', columns do
       if is_rich_text_association
         has_rich_text :content

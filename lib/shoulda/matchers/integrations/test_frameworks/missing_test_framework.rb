@@ -20,7 +20,7 @@ Shoulda::Matchers.configure do |config|
     with.test_framework :test_unit
   end
 end
-EOT
+            EOT
           end
 
           def include(*modules, **options); end

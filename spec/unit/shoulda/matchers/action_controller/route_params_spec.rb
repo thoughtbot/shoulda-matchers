@@ -19,7 +19,7 @@ describe Shoulda::Matchers::ActionController::RouteParams, type: :controller do
     context 'when the route params is a string' do
       it 'produces a hash of route params' do
         expect(build_route_params('examples#index').normalize).
-          to eq({ controller: 'examples', action: 'index'})
+          to eq({ controller: 'examples', action: 'index' })
       end
     end
   end

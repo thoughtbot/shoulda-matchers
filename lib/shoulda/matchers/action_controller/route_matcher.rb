@@ -183,7 +183,6 @@ module Shoulda
           end
         end
 
-
         def guess_controller_if_necessary(controller)
           params[:controller] ||= controller.controller_path
         end

@@ -63,12 +63,14 @@ module Shoulda
 
         def failure_message
           return if !@errors
+
           "Expected #{@subject.class} to #{description} but the following " \
           "errors were found: #{@errors.join(', ')}"
         end
 
         def failure_message_when_negated
           return if !@errors
+
           "Did not expect #{@subject.class} to have secure token " \
           ":#{token_attribute}"
         end

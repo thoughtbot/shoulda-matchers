@@ -245,7 +245,7 @@ module Shoulda
         def with_prefix(prefix = nil)
           @delegating_method =
             :"#{build_delegating_method_prefix(prefix)}_#{delegate_method}"
-            delegate_method
+          delegate_method
           self
         end
 
@@ -446,7 +446,7 @@ module Shoulda
             calls_on_delegate_object.each_with_index do |call, i|
               name = call.method_name
               args = call.args.map { |arg| arg.inspect }.join(', ')
-              string << "#{i+1}) #{name}(#{args})\n"
+              string << "#{i + 1}) #{name}(#{args})\n"
             end
           else
             string << ' (none)'
