@@ -3,11 +3,23 @@ require 'acceptance_spec_helper'
 describe 'shoulda-matchers integrates with Rails' do
   before do
     create_rails_application
-    write_files_in_rails_application
+    create_files_in_rails_application
 
     # TODO: ActionController matchers
     # configure_routes_with_single_wildcard_route
 
+    # if rails_gt_5? && bundle.includes?('actiontext')
+    #   run_rake_tasks!('action_text:install:migrations')
+    # end
+
+    # if rails_gte_5_2? && bundle.includes?('activestorage')
+    #   run_rake_tasks!('active_storage:install:migrations')
+    # end
+
+    # TODO: Fix uninitialized constant Rails
+
+    run_rake_tasks!('action_text:install:migrations')
+    run_rake_tasks!('active_storage:install:migrations')
     run_rake_tasks!('db:drop', 'db:create', 'db:migrate')
   end
 
@@ -94,7 +106,22 @@ describe 'shoulda-matchers integrates with Rails' do
         should validate_numericality_of(:number_of_dependents).on(:create)
         should validate_presence_of(:email)
 
-        # TODO: ActiveRecord matchers
+        # ActiveRecord matchers
+        should have_many(:issues)
+        should accept_nested_attributes_for(:issues)
+        should belong_to(:organization)
+        should define_enum_for(:status)
+        should have_and_belong_to_many(:categories)
+        should have_db_column(:email)
+        should have_db_index(:organization_id)
+        should have_implicit_order_column(:created_at)
+        should have_many_attached(:photos)
+        should have_one(:profile)
+        should have_one_attached(:avatar)
+        should have_readonly_attribute(:username)
+        should have_rich_text(:description)
+        should serialize(:social_networks)
+        should validate_uniqueness_of(:email)
       end
     FILE
 
@@ -102,7 +129,7 @@ describe 'shoulda-matchers integrates with Rails' do
 
     result = run_n_unit_test_suite
 
-    expect(result).to indicate_that_tests_were_run(unit: 10)
+    expect(result).to indicate_that_tests_were_run(unit: number_of_unit_tests)
   end
 
   def run_tests_for_rspec
@@ -120,7 +147,22 @@ describe 'shoulda-matchers integrates with Rails' do
         it { should validate_numericality_of(:number_of_dependents).on(:create) }
         it { should validate_presence_of(:email) }
 
-        # TODO: ActiveRecord matchers
+        # ActiveRecord matchers
+        it { should have_many(:issues) }
+        it { should accept_nested_attributes_for(:issues) }
+        it { should belong_to(:organization) }
+        it { should define_enum_for(:status) }
+        it { should have_and_belong_to_many(:categories) }
+        it { should have_db_column(:email) }
+        it { should have_db_index(:organization_id) }
+        it { should have_implicit_order_column(:created_at) } # Rails 6 +
+        it { should have_many_attached(:photos) }             # Rails 5.2 +
+        it { should have_one(:profile) }
+        it { should have_one_attached(:avatar) }              # Rails 5.2 +
+        it { should have_readonly_attribute(:username) }
+        it { should have_rich_text(:description) }            # Rails 6 +
+        it { should serialize(:social_networks) }
+        it { should validate_uniqueness_of(:email) }
       end
     FILE
 
@@ -128,6 +170,27 @@ describe 'shoulda-matchers integrates with Rails' do
 
     result = run_rspec_suite
 
-    expect(result).to have_output('10 examples, 0 failures')
+    expect(result).to have_output("#{number_of_unit_tests} examples, 0 failures")
+  end
+
+  # TODO: Change the number depending the rails version
+  def number_of_unit_tests
+    # if rails_gt_5?
+    #   25
+    # elsif rails_gte_5_2?
+    #   # Note: It should not test:
+    #   # - have_implicit_order_column
+    #   # - have_rich_text
+    #   23
+    # else
+    #   # Note: It should not test:
+    #   # - have_implicit_order_column
+    #   # - have_many_attached matchers
+    #   # - have_one_attached
+    #   # - have_rich_text
+    #   21
+    # end
+
+    25
   end
 end

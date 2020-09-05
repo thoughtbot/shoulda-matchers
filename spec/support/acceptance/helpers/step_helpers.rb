@@ -84,7 +84,7 @@ module AcceptanceTests
       end
     end
 
-    def write_files_in_rails_application
+    def create_files_in_rails_application
       write_file 'db/migrate/1_create_users.rb', <<-FILE
         class CreateUsers < #{migration_class_name}
           def self.up
@@ -100,16 +100,29 @@ module AcceptanceTests
               t.integer :user_id
             end
 
-            create_table :users do |t|
-              t.integer :age
-              t.string  :email
-              t.string  :first_name
-              t.integer :number_of_dependents
-              t.string  :gender
-              t.string  :password_digest
-              t.string  :role
-              t.string  :website_url
+            create_table :profiles do |t|
+              t.integer :user_id
             end
+
+            create_table :organizations do |t|
+            end
+
+            create_table :users do |t|
+              t.integer  :age
+              t.string   :email
+              t.string   :first_name
+              t.integer  :number_of_dependents
+              t.string   :gender
+              t.integer  :organization_id
+              t.string   :password_digest
+              t.string   :role
+              t.integer  :status
+              t.string   :social_networks
+              t.string   :website_url
+              t.datetime :created_at
+            end
+
+            add_index :users, :organization_id
           end
         end
       FILE
@@ -121,6 +134,16 @@ module AcceptanceTests
 
       write_file 'app/models/issue.rb', <<-FILE
         class Issue < ActiveRecord::Base
+        end
+      FILE
+
+      write_file 'app/models/organization.rb', <<-FILE
+        class Organization < ActiveRecord::Base
+        end
+      FILE
+
+      write_file 'app/models/profile.rb', <<-FILE
+        class Profile < ActiveRecord::Base
         end
       FILE
 
@@ -141,7 +164,20 @@ module AcceptanceTests
           validates_numericality_of :number_of_dependents, on: :create
           validates_presence_of     :email
 
-          # TODO: ActiveRecord
+          # ActiveRecord
+          has_many                      :issues
+          accepts_nested_attributes_for :issues
+          belongs_to                    :organization
+          enum status:                  [:active, :blocked]
+          has_and_belongs_to_many       :categories
+          self.implicit_order_column    = :created_at
+          has_many_attached             :photos
+          has_one                       :profile
+          has_one_attached              :avatar
+          attr_readonly                 :username
+          has_rich_text                 :description
+          serialize                     :social_networks
+          validates                     :email, uniqueness: true
         end
       FILE
 
