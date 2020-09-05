@@ -23,7 +23,6 @@ describe Shoulda::Matchers::ActionController::RenderWithLayoutMatcher, type: :co
   end
 
   context 'a controller that renders without a layout' do
-
     it 'rejects rendering with a layout' do
       controller_without_layout = build_fake_response { render layout: false }
 

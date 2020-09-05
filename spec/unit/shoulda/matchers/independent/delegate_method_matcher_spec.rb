@@ -610,6 +610,7 @@ to account for when #country *was* nil.
 
             def hello
               return unless country
+
               country.hello
             end
           end

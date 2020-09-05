@@ -20,7 +20,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
 
         it 'still accepts if the scope is unset beforehand' do
           record = build_record_validating_uniqueness(
-            scopes: [ build_attribute(name: :scope, value: nil) ],
+            scopes: [build_attribute(name: :scope, value: nil)],
           )
 
           expect(record).to validate_uniqueness.scoped_to(:scope)
@@ -41,7 +41,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
 
         it 'still accepts if the scope is unset beforehand' do
           record = create_record_validating_uniqueness(
-            scopes: [ build_attribute(name: :scope, value: nil) ],
+            scopes: [build_attribute(name: :scope, value: nil)],
           )
 
           expect(record).to validate_uniqueness.scoped_to(:scope)
@@ -55,7 +55,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
         value2 = next_version_of(value1, value_type)
         value3 = next_version_of(value2, value_type)
         model = define_model_validating_uniqueness(
-          scopes: [ build_attribute(name: :scope) ],
+          scopes: [build_attribute(name: :scope)],
         )
         create_record_from(model, scope: value2)
         create_record_from(model, scope: value3)
@@ -122,7 +122,7 @@ within the scope of :scope1, but this could not be proved.
     context 'when a different scope is specified' do
       it 'rejects with an appropriate failure message' do
         record = build_record_validating_uniqueness(
-          scopes: [ build_attribute(name: :other) ],
+          scopes: [build_attribute(name: :other)],
           additional_attributes: [:scope],
         )
         assertion = lambda do
@@ -145,7 +145,7 @@ within the scope of :scope, but this could not be proved.
     context 'when no scope is specified' do
       it 'rejects with an appropriate failure message' do
         record = build_record_validating_uniqueness(
-          scopes: [ build_attribute(name: :scope) ],
+          scopes: [build_attribute(name: :scope)],
         )
 
         assertion = lambda do
@@ -165,7 +165,7 @@ this could not be proved.
       context 'if the scope attribute is unset in the record given to the matcher' do
         it 'rejects with an appropriate failure message' do
           record = build_record_validating_uniqueness(
-            scopes: [ build_attribute(name: :scope, value: nil) ],
+            scopes: [build_attribute(name: :scope, value: nil)],
           )
 
           assertion = lambda do
@@ -188,7 +188,7 @@ this could not be proved.
       context 'when there is more than one scope' do
         it 'rejects with an appropriate failure message (and does not raise an error)' do
           record = build_record_validating_uniqueness(
-            scopes: [ build_attribute(name: :scope) ],
+            scopes: [build_attribute(name: :scope)],
           )
 
           assertion = lambda do
@@ -208,7 +208,7 @@ within the scope of :non_existent, but this could not be proved.
       context 'when there is more than one scope' do
         it 'rejects with an appropriate failure message (and does not raise an error)' do
           record = build_record_validating_uniqueness(
-            scopes: [ build_attribute(name: :scope) ],
+            scopes: [build_attribute(name: :scope)],
           )
 
           assertion = lambda do
@@ -1548,7 +1548,7 @@ this could not be proved.
 
   def next_version_of(value, value_type)
     if value.is_a?(Array)
-      [ next_version_of(value[0], value_type) ]
+      [next_version_of(value[0], value_type)]
     elsif value_type == :uuid
       SecureRandom.uuid
     elsif value.is_a?(Time)
@@ -1632,7 +1632,7 @@ this could not be proved.
     options = options.dup
     enum_scope_attribute =
       normalize_attribute(options.delete(:enum_scope)).
-      merge(value_type: :integer, column_type: :integer)
+        merge(value_type: :integer, column_type: :integer)
     additional_scopes = options.delete(:additional_scopes) { [] }
     options[:scopes] = [enum_scope_attribute] + additional_scopes
     dummy_enum_values = [:foo, :bar]

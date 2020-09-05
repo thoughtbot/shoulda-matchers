@@ -94,7 +94,7 @@ module AcceptanceTests
       files = []
 
       if integrates_with_nunit_and_rails?(test_framework, libraries) ||
-        integrates_with_nunit_only?(test_framework)
+         integrates_with_nunit_only?(test_framework)
         files << 'test/test_helper.rb'
       end
 

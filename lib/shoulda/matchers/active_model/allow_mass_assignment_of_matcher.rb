@@ -94,8 +94,8 @@ module Shoulda
               @failure_message_when_negated = 'no attributes were protected'
             else
               @failure_message_when_negated = "#{class_name} is protecting " <<
-                "#{protected_attributes.to_a.to_sentence}, " <<
-                "but not #{@attribute}."
+                                              "#{protected_attributes.to_a.to_sentence}, " <<
+                                              "but not #{@attribute}."
             end
             true
           else

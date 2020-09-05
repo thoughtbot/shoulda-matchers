@@ -18,6 +18,7 @@ module Shoulda
             unless numericality_matcher.respond_to? :diff_to_compare
               raise ArgumentError, 'numericality_matcher is invalid'
             end
+
             @numericality_matcher = numericality_matcher
             @value = value
             @operator = operator
@@ -127,7 +128,7 @@ module Shoulda
             when :<=
               [true, true, false]
             when :!=
-               [true, false, true]
+              [true, false, true]
             end
           end
 

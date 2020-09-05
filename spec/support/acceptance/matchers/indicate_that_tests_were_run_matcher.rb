@@ -61,7 +61,7 @@ module AcceptanceTests
       def expected_output_for_turn
         full_report = series.map do |number|
           "pass: #{number},  fail: 0,  error: 0"
-      end.join('.+')
+        end.join('.+')
 
         Regexp.new(full_report, Regexp::MULTILINE)
       end

@@ -886,7 +886,8 @@ could not be proved.
     before do
       stub_translation(
         'activerecord.errors.messages.blank',
-        'Please enter a %{attribute} for your %{model}',)
+        'Please enter a %{attribute} for your %{model}',
+      )
     end
 
     after { I18n.backend.reload! }

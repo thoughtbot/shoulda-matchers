@@ -8,7 +8,7 @@ module Shoulda
 
       def self.deconstantize(path)
         if defined?(ActiveSupport::Inflector) &&
-          ActiveSupport::Inflector.respond_to?(:deconstantize)
+           ActiveSupport::Inflector.respond_to?(:deconstantize)
           ActiveSupport::Inflector.deconstantize(path)
         else
           path.to_s[0...(path.to_s.rindex('::') || 0)]
@@ -17,7 +17,7 @@ module Shoulda
 
       def self.safe_constantize(camel_cased_word)
         if defined?(ActiveSupport::Inflector) &&
-          ActiveSupport::Inflector.respond_to?(:safe_constantize)
+           ActiveSupport::Inflector.respond_to?(:safe_constantize)
           ActiveSupport::Inflector.safe_constantize(camel_cased_word)
         else
           begin
@@ -30,6 +30,7 @@ module Shoulda
 
       def self.indent(string, width)
         return if !string
+
         indentation = ' ' * width
         string.split(/[\n\r]/).map { |line| indentation + line }.join("\n")
       end

@@ -60,7 +60,7 @@ describe Shoulda::Matchers::ActionController::RenderTemplateMatcher, type: :cont
   context 'a controller that renders a partial several times' do
     it 'accepts rendering that partial twice' do
       controller = build_fake_response(partial: '_customer') do
-        render partial: 'customer', collection: [1,2]
+        render partial: 'customer', collection: [1, 2]
       end
 
       expect(controller).to render_template(partial: '_customer', count: 2)

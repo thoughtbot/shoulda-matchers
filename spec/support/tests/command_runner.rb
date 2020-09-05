@@ -34,7 +34,7 @@ module Tests
       )
       @env = extract_env_from(@options)
 
-      @wrapper = ->(block) { block.call }
+      @wrapper = -> (block) { block.call }
       @command_prefix = ''
       self.directory = Dir.pwd
       @run_quickly = false
