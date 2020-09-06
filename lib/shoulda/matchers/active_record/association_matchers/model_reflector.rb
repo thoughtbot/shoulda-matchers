@@ -31,7 +31,7 @@ module Shoulda
           end
 
           def reflection
-            @reflection ||= reflect_on_association(name)
+            @_reflection ||= reflect_on_association(name)
           end
 
           def reflect_on_association(name)
@@ -48,9 +48,9 @@ module Shoulda
 
           def build_relation_with_clause(name, value)
             case name
-              when :conditions then associated_class.where(value)
-              when :order      then associated_class.order(value)
-              else                  raise ArgumentError, "Unknown clause '#{name}'"
+            when :conditions then associated_class.where(value)
+            when :order      then associated_class.order(value)
+            else                  raise ArgumentError, "Unknown clause '#{name}'"
             end
           end
 

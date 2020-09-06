@@ -25,13 +25,7 @@ module Shoulda
           end
 
           def join_table_name
-            join_table_name =
-              if has_and_belongs_to_many_name_table_name
-                has_and_belongs_to_many_name_table_name
-              else
-                reflection.join_table
-              end
-
+            join_table_name = has_and_belongs_to_many_name_table_name || reflection.join_table
             join_table_name.to_s
           end
 
@@ -82,9 +76,7 @@ module Shoulda
           private
 
           def has_and_belongs_to_many_name_table_name
-            if has_and_belongs_to_many_reflection
-              has_and_belongs_to_many_reflection.table_name
-            end
+            has_and_belongs_to_many_reflection&.table_name
           end
 
           def has_and_belongs_to_many_reflection

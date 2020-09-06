@@ -63,9 +63,9 @@ module Tests
       wrap(path).dirname.mkpath
     end
 
-    def append_to_file(path, content, options = {})
+    def append_to_file(path, content, _options = {})
       create_parents_of(path)
-      open(path, 'a') { |f| f.puts(content + "\n") }
+      File.open(path, 'a') { |f| f.puts(content + "\n") }
     end
 
     def remove_from_file(path, pattern)

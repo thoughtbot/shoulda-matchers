@@ -99,11 +99,11 @@ module AcceptanceTests
       end
 
       if integrates_with_rspec?(test_framework)
-        if bundle.includes?('rspec-rails')
-          files << 'spec/rails_helper.rb'
-        else
-          files << 'spec/spec_helper.rb'
-        end
+        files << if bundle.includes?('rspec-rails')
+                   'spec/rails_helper.rb'
+                 else
+                   'spec/spec_helper.rb'
+                 end
       end
 
       files
@@ -118,7 +118,7 @@ module AcceptanceTests
       test_framework == :rspec
     end
 
-    def integrates_with_rspec_rails_3_x?(test_framework, libraries)
+    def integrates_with_rspec_rails_3_x?(_test_framework, libraries)
       integrates_with_rails?(libraries) && rspec_rails_version >= 3
     end
 

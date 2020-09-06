@@ -32,7 +32,7 @@ module Shoulda
           attr_accessor :subject, :inverse_of, :name
 
           def option_verifier
-            @option_verifier ||= OptionVerifier.new(subject)
+            @_option_verifier ||= OptionVerifier.new(subject)
           end
         end
       end

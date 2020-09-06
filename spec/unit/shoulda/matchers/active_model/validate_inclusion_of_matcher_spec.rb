@@ -475,9 +475,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
     if reserved_outside_value
       it 'raises an error when valid and given value is our test outside value' do
-        # rubocop:disable Metrics/LineLength
         error_class = Shoulda::Matchers::ActiveModel::CouldNotDetermineValueOutsideOfArray
-        # rubocop:enable Metrics/LineLength
         builder = build_object_allowing([reserved_outside_value])
 
         expect { expect_to_match_on_values(builder, [reserved_outside_value]) }.
@@ -857,10 +855,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
           it 'raises a specific error' do
             valid_values = [nil]
             builder = build_object_allowing(valid_values)
-            # rubocop:disable Metrics/LineLength
             error_class = Shoulda::Matchers::ActiveModel::NonNullableBooleanError
-            # rubocop:enable Metrics/LineLength
-
             expect {
               expect_to_match_in_array(builder, valid_values)
             }.to raise_error(error_class)

@@ -4,7 +4,9 @@ module Shoulda
       # @private
       module DoubleImplementationRegistry
         class << self
+          # rubocop:disable Style/MutableConstant
           REGISTRY = {}
+          # rubocop:enable Style/MutableConstant
 
           def find(type)
             find_class!(type).create

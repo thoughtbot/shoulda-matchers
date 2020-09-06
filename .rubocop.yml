@@ -17,15 +17,13 @@ Layout/EmptyLineBetweenDefs:
 Layout/HeredocIndentation:
   Enabled: false
 Layout/LineLength:
+  Exclude:
+    - spec/**/*
   IgnoredPatterns:
-    - "^[ ]*#.+$"
-    - "^[ ]*describe.+$"
-    - "^[ ]*context.+$"
-    - "^[ ]*shared_context.+$"
-    - "^[ ]*shared_examples_for.+$"
-    - "^[ ]*it.+$"
-    - "^[ ]*'.+?' => '.+?',?$"
-    - "^[ ]*\".+?\" => \".+?\",?$"
+    - '^[ ]*#.+$'
+    - '^[ ]*''.+?'' => ''.+?'',?$'
+    - '^[ ]*".+?" => ".+?",?$'
+  Max: 120
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 Layout/ParameterAlignment:
@@ -34,6 +32,9 @@ Layout/SpaceInLambdaLiteral:
   EnforcedStyle: require_space
 Layout/SpaceInsideBlockBraces:
   Enabled: false
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - spec/**/*
 Lint/AmbiguousOperator:
   Enabled: false
 Lint/AmbiguousRegexpLiteral:
@@ -70,6 +71,10 @@ Metrics/ClassLength:
   Enabled: false
 Metrics/MethodLength:
   Max: 30
+Metrics/ModuleLength:
+  Enabled: true
+  Exclude:
+    - spec/**/*
 Metrics/ParameterLists:
   CountKeywordArgs: false
 Metrics/PerceivedComplexity:
@@ -82,6 +87,8 @@ Naming/BinaryOperatorParameterName:
   Enabled: false
 Naming/FileName:
   Enabled: false
+Naming/HeredocDelimiterNaming:
+  Enabled: false
 Naming/MemoizedInstanceVariableName:
   EnforcedStyleForLeadingUnderscores: required
 Naming/PredicateName:
@@ -92,6 +99,9 @@ Rails/Delegate:
   Enabled: false
 Rails/HttpPositionalArguments:
   Enabled: false
+Rails/SkipsModelValidations:
+  Exclude:
+    - spec/**/*
 Rails/TimeZone:
   Enabled: false
 Style/Alias:
@@ -139,6 +149,8 @@ Style/EvenOdd:
   Enabled: false
 Style/FormatString:
   Enabled: false
+Style/FormatStringToken:
+  EnforcedStyle: template
 Style/FrozenStringLiteralComment:
   Enabled: false
 Style/GlobalVars:

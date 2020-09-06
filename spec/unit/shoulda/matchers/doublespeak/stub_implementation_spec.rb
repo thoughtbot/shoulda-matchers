@@ -41,7 +41,9 @@ module Shoulda::Matchers::Doublespeak
       context 'if the implementation was set as a block' do
         it 'calls the block with the MethodCall object the implementation was called with' do
           double = build_double
-          expected_object, expected_args, expected_block = :object, :args, :block
+          expected_object = :object
+          expected_args = :args
+          expected_block = :block
           call = build_call(
             double: double,
             object: expected_object,

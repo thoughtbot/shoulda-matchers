@@ -2132,7 +2132,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
       end
     end
 
-    def having_and_belonging_to_many_relatives(options = {})
+    def having_and_belonging_to_many_relatives(_options = {})
       define_model :relative
       define_model :people_relative, id: false, person_id: :integer,
                                      relative_id: :integer
@@ -2148,7 +2148,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
     end
   end
 
-  def define_association_with_conditions(model, macro, name, conditions, other_options = {})
+  def define_association_with_conditions(model, macro, name, conditions, _other_options = {})
     args = []
     options = {}
     if active_record_supports_relations?
@@ -2160,7 +2160,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
     model.__send__(macro, name, *args)
   end
 
-  def define_association_with_order(model, macro, name, order, other_options={})
+  def define_association_with_order(model, macro, name, order, _other_options = {})
     args = []
     options = {}
     if active_record_supports_relations?

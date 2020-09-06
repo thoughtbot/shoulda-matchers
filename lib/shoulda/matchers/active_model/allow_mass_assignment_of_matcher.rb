@@ -99,11 +99,11 @@ module Shoulda
             end
             true
           else
-            if whitelisting?
-              @failure_message = "Expected #{@attribute} to be accessible"
-            else
-              @failure_message = "Did not expect #{@attribute} to be protected"
-            end
+            @failure_message = if whitelisting?
+                                 "Expected #{@attribute} to be accessible"
+                               else
+                                 "Did not expect #{@attribute} to be protected"
+                               end
             false
           end
         end
@@ -129,15 +129,15 @@ module Shoulda
         end
 
         def protected_attributes
-          @protected_attributes ||= (@subject.class.protected_attributes || [])
+          @_protected_attributes ||= (@subject.class.protected_attributes || [])
         end
 
         def accessible_attributes
-          @accessible_attributes ||= (@subject.class.accessible_attributes || [])
+          @_accessible_attributes ||= (@subject.class.accessible_attributes || [])
         end
 
         def whitelisting?
-          authorizer.kind_of?(::ActiveModel::MassAssignmentSecurity::WhiteList)
+          authorizer.is_a?(::ActiveModel::MassAssignmentSecurity::WhiteList)
         end
 
         def attr_mass_assignable?

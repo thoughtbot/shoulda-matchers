@@ -303,11 +303,11 @@ module Shoulda
 
         def actual_permitted_parameter_names
           @_actual_permitted_parameter_names ||= begin
-            if subparameter_name
-              options = { for: subparameter_name }
-            else
-              options = {}
-            end
+            options = if subparameter_name
+                        { for: subparameter_name }
+                      else
+                        {}
+                      end
 
             parameters_double_registry.permitted_parameter_names(options)
           end
@@ -329,8 +329,8 @@ module Shoulda
 
         def default_verb
           case action
-            when :create then :post
-            when :update then RailsShim.verb_for_update
+          when :create then :post
+          when :update then RailsShim.verb_for_update
           end
         end
 

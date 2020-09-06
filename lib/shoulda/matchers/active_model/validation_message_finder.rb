@@ -50,7 +50,7 @@ module Shoulda
         end
 
         def validated_instance
-          @validated_instance ||= validate_instance
+          @_validated_instance ||= validate_instance
         end
 
         def validate_instance

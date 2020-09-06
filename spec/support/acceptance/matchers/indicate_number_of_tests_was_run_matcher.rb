@@ -24,11 +24,11 @@ module AcceptanceTests
         message = "Expected output to indicate that #{some_tests_were_run}.\n" +
                   "Expected output: #{expected_output}\n"
 
-        if actual_output.empty?
-          message << 'Actual output: (empty)'
-        else
-          message << "Actual output:\n#{actual_output}"
-        end
+        message << if actual_output.empty?
+                     'Actual output: (empty)'
+                   else
+                     "Actual output:\n#{actual_output}"
+                   end
 
         message
       end

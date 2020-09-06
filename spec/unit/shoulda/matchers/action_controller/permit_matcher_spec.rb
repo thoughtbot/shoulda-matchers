@@ -88,11 +88,11 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
 
   context 'when operating on the entire params hash' do
     include_context 'basic tests' do
-      def permit_with_conditional_slice_of_params(permit, options = {})
+      def permit_with_conditional_slice_of_params(permit, _options = {})
         permit
       end
 
-      def params_with_conditional_require(params, *filters)
+      def params_with_conditional_require(params, *_filters)
         params
       end
     end
@@ -105,7 +105,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
         all_params: [:user],
         selected_param: :user
       )
-        params = all_params.reduce({}) do |hash, param|
+        params = all_params.inject({}) do |hash, param|
           hash.merge(param => { any: 'value' })
         end
 
@@ -246,7 +246,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
           actual_user_params = params.require(:user)
           begin
             actual_user_params.permit(:name)
-          rescue
+          rescue StandardError
           end
         end
 

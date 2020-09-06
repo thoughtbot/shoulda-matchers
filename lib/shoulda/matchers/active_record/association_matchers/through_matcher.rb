@@ -35,7 +35,7 @@ module Shoulda
           end
 
           def through_reflection
-            @through_reflection ||= subject.reflect_on_association(through)
+            @_through_reflection ||= subject.reflect_on_association(through)
           end
 
           def through_association_correct?
@@ -54,7 +54,7 @@ module Shoulda
           attr_accessor :through, :name, :subject
 
           def option_verifier
-            @option_verifier ||= OptionVerifier.new(subject)
+            @_option_verifier ||= OptionVerifier.new(subject)
           end
         end
       end

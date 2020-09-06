@@ -41,8 +41,8 @@ class CustomPlan < Zeus::Plan
     end
 
     require_relative 'spec/support/unit/load_environment'
-  rescue Gem::LoadError => error
-    raise CouldNotBootZeusError.create(underlying_error: error)
+  rescue Gem::LoadError => e
+    raise CouldNotBootZeusError.create(underlying_error: e)
   end
 
   def after_fork; end

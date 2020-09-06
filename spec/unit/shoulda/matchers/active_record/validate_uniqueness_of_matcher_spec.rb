@@ -1159,13 +1159,9 @@ long as it is not nil, but this could not be proved.
           it 'accepts' do
             model = define_model_validating_uniqueness(
               validation_options: { allow_blank: true },
-              additional_attributes: [{ name: :password_digest, type: :string }],
-            ) do |m|
-              m.has_secure_password
-            end
-
+              additional_attributes: [{ name: :password_digest, type: :string }], &:has_secure_password
+            )
             record = build_record_from(model, attribute_name => nil)
-
             expect(record).to validate_uniqueness.allow_blank
           end
         end
@@ -1175,13 +1171,9 @@ long as it is not nil, but this could not be proved.
             model = define_model_validating_uniqueness(
               attribute_type: :string,
               validation_options: { allow_blank: true },
-              additional_attributes: [{ name: :password_digest, type: :string }],
-            ) do |m|
-              m.has_secure_password
-            end
-
+              additional_attributes: [{ name: :password_digest, type: :string }], &:has_secure_password
+            )
             record = build_record_from(model, attribute_name => '')
-
             expect(record).to validate_uniqueness.allow_blank
           end
         end
@@ -1566,9 +1558,7 @@ this could not be proved.
   end
 
   def create_record_from(model, extra_attributes = {})
-    build_record_from(model, extra_attributes).tap do |record|
-      record.save!
-    end
+    build_record_from(model, extra_attributes).tap(&:save!)
   end
 
   def define_model_validating_uniqueness(options = {}, &block)
@@ -1605,7 +1595,7 @@ this could not be proved.
         end
       end
 
-      block.call(m) if block
+      block&.call(m)
     end
 
     model_attributes[model] = attributes
@@ -1621,9 +1611,7 @@ this could not be proved.
     :build_record_validating_uniqueness
 
   def create_record_validating_uniqueness(options = {}, &block)
-    build_record_validating_uniqueness(options, &block).tap do |record|
-      record.save!
-    end
+    build_record_validating_uniqueness(options, &block).tap(&:save!)
   end
   alias_method :existing_record_validating_uniqueness,
     :create_record_validating_uniqueness

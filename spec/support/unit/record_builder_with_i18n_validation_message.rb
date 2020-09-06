@@ -19,7 +19,7 @@ module UnitTests
     private
 
     def model
-      @_model ||= super.tap do |model|
+      @_model ||= super.tap do |_model|
         stub_validation_messages
       end
     end

@@ -4,7 +4,7 @@ module UnitTests
       example_group.include(self)
     end
 
-    def define_mailer(name, paths, &block)
+    def define_mailer(name, _paths, &block)
       class_name = name.to_s.pluralize.classify
       define_class(class_name, ActionMailer::Base, &block)
     end

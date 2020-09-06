@@ -7,8 +7,6 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher, type: :model do
   end
 
   describe 'the matcher' do
-    # rubocop:disable Layout/MultilineBlockLayout
-    # rubocop:disable Layout/SpaceAroundBlockParameters
     shared_examples 'for when the matcher is qualified' do |
       index:,
       other_index:,
@@ -16,8 +14,6 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher, type: :model do
       qualifier_args:,
       columns: { index => :string }
     |
-    # rubocop:enable Layout/MultilineBlockLayout
-    # rubocop:enable Layout/SpaceAroundBlockParameters
       if unique
         index_type = 'unique'
         inverse_description = 'not unique'
@@ -359,15 +355,7 @@ does not.
   end
 
   describe '#description' do
-    # rubocop:disable Layout/MultilineBlockLayout
-    # rubocop:disable Layout/SpaceAroundBlockParameters
-    shared_examples 'for when the matcher is qualified' do |
-      index:,
-      index_type:,
-      qualifier_args:
-    |
-    # rubocop:enable Layout/MultilineBlockLayout
-    # rubocop:enable Layout/SpaceAroundBlockParameters
+    shared_examples 'for when the matcher is qualified' do |index:, index_type:, qualifier_args:|
       it 'returns the correct description' do
         matcher = have_db_index(index).unique(*qualifier_args)
 

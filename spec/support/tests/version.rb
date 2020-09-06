@@ -38,8 +38,8 @@ module Tests
 
     private
 
-    def compare?(op, other_version)
-      Gem::Requirement.new("#{op} #{other_version}").satisfied_by?(version)
+    def compare?(operator, other_version)
+      Gem::Requirement.new("#{operator} #{other_version}").satisfied_by?(version)
     end
   end
 end

@@ -447,11 +447,11 @@ module Shoulda
                 else
                   message << ' produce'
 
-                  if expected_message.is_a?(Regexp)
-                    message << ' a'
-                  else
-                    message << ' the'
-                  end
+                  message << if expected_message.is_a?(Regexp)
+                               ' a'
+                             else
+                               ' the'
+                             end
 
                   message << ' validation error'
                 end

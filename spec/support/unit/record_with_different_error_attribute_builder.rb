@@ -64,7 +64,7 @@ module UnitTests
 
         define_method(_context[:validation_method_name]) do
           if self[_context[:attribute_to_validate]] != _context[:valid_value]
-            self.errors.add(_context[:attribute_that_receives_error], _context[:message])
+            errors.add(_context[:attribute_that_receives_error], _context[:message])
           end
         end
       end

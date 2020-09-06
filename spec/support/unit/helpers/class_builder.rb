@@ -28,7 +28,7 @@ module UnitTests
 
         remove_defined_module(module_name)
 
-        eval <<-RUBY
+        eval <<-RUBY, binding, __FILE__, __LINE__ + 1 # rubocop:disable Security/Eval
           module #{namespace}::#{name_without_namespace}
           end
         RUBY
@@ -49,7 +49,7 @@ module UnitTests
 
         remove_defined_module(class_name)
 
-        eval <<-RUBY
+        eval <<-RUBY, binding, __FILE__, __LINE__ + 1 # rubocop:disable Security/Eval
           class #{namespace}::#{name_without_namespace} < ::#{parent_class}
           end
         RUBY

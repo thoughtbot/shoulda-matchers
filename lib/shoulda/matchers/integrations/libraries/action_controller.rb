@@ -13,9 +13,8 @@ module Shoulda
             test_framework.include(matchers_module, type: :controller)
 
             include_into(::ActionController::TestCase, matchers_module) do
-              def subject
-                @controller
-              end
+              subject = -> { @controller }
+              subject.call
             end
           end
 

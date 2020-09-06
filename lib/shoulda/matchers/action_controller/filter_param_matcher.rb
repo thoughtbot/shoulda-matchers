@@ -31,7 +31,7 @@ module Shoulda
           @key = key
         end
 
-        def matches?(controller)
+        def matches?(_controller)
           filters_key?
         end
 

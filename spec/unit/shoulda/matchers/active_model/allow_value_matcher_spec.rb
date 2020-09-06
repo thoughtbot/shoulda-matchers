@@ -45,7 +45,7 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
     it 'truncates the description when long' do
       matcher = allow_value('A' * 10000).for(:baz)
 
-      expect(matcher.description).to eq "allow :baz to be ‹\"#{"A" * 499}...›"
+      expect(matcher.description).to eq "allow :baz to be ‹\"#{'A' * 499}...›"
     end
   end
 
@@ -304,8 +304,8 @@ errors instead:
           }
 
           record = record_with_custom_validation(options) do
-            if self.attr == 'xyz'
-              self.errors.add :attr, :greater_than, count: 2
+            if attr == 'xyz'
+              errors.add :attr, :greater_than, count: 2
             end
           end
 
@@ -324,8 +324,8 @@ errors instead:
           }
 
           record = record_with_custom_validation(options) do
-            if self.attr == 'xyz'
-              self.errors.add :attr, 'some other error'
+            if attr == 'xyz'
+              errors.add :attr, 'some other error'
             end
           end
 
@@ -694,7 +694,7 @@ something else entirely.
           model = define_active_model_class 'Example', accessors: [:name] do
             validates_format_of :name, with: /another name/
 
-            def name=(value)
+            def name=(_value)
               super('constant name')
             end
           end

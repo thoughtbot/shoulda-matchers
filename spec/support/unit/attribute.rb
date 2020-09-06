@@ -4,7 +4,7 @@ module UnitTests
     DEFAULT_COLUMN_OPTIONS = {
       null: false,
       array: false,
-    }
+    }.freeze
 
     def initialize(args)
       @args = args

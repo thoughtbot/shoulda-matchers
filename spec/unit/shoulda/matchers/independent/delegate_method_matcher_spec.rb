@@ -264,7 +264,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
       define_class('Mailman')
 
       define_class('PostOffice') do
-        def deliver_mail(*args)
+        def deliver_mail(*_args)
           mailman.deliver_mail('221B Baker St.', hastily: true)
         end
 

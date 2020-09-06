@@ -1,7 +1,7 @@
 module Shoulda
   module Matchers
     # @private
-    module RailsShim
+    module RailsShim # rubocop:disable Metrics/ModuleLength
       class << self
         def action_pack_gte_5?
           Gem::Requirement.new('>= 5').satisfied_by?(action_pack_version)

@@ -29,7 +29,7 @@ EOT
     end
 
     def latest_appraisal
-      available_appraisals.sort.last
+      available_appraisals.max
     end
 
     def available_appraisals

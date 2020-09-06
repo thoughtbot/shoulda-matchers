@@ -6,7 +6,7 @@ module Shoulda
         module IgnoringInterferenceByWriter
           attr_reader :ignore_interference_by_writer
 
-          def initialize(*args)
+          def initialize(*_args)
             @ignore_interference_by_writer = IgnoreInterferenceByWriter.new
           end
 

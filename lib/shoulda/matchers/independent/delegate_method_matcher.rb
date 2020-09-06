@@ -256,8 +256,8 @@ module Shoulda
 
         def build_delegating_method_prefix(prefix)
           case prefix
-            when true, nil then delegate_object_reader_method
-            else prefix
+          when true, nil then delegate_object_reader_method
+          else prefix
           end
         end
 
@@ -398,11 +398,11 @@ module Shoulda
                 true
               rescue Module::DelegationError
                 false
-              rescue NoMethodError => error
-                if error.message =~ /undefined method `#{delegate_method}' for nil:NilClass/
+              rescue NoMethodError => e
+                if e.message =~ /undefined method `#{delegate_method}' for nil:NilClass/
                   false
                 else
-                  raise error
+                  raise e
                 end
               end
             else
@@ -445,7 +445,7 @@ module Shoulda
             string << "\n\n"
             calls_on_delegate_object.each_with_index do |call, i|
               name = call.method_name
-              args = call.args.map { |arg| arg.inspect }.join(', ')
+              args = call.args.map(&:inspect).join(', ')
               string << "#{i + 1}) #{name}(#{args})\n"
             end
           else

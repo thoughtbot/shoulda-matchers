@@ -3,7 +3,7 @@ require 'delegate'
 
 module Tests
   class DatabaseConfiguration < SimpleDelegator
-    ENVIRONMENTS = %w(development test production)
+    ENVIRONMENTS = %w(development test production).freeze
 
     attr_reader :adapter_class
 

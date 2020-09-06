@@ -11,7 +11,7 @@ module Shoulda
             :<= => :less_than_or_equal_to,
             :== => :equal_to,
             :!= => :other_than,
-          }
+          }.freeze
 
           def initialize(numericality_matcher, value, operator)
             super(nil)
@@ -77,7 +77,7 @@ module Shoulda
 
           def failing_submatchers
             submatchers_and_results.
-              select { |x| !x[:matched] }.
+              reject { |x| x[:matched] }.
               map { |x| x[:matcher] }
           end
 
@@ -145,12 +145,12 @@ module Shoulda
 
           def comparison_expectation
             case @operator
-              when :> then 'greater than'
-              when :>= then 'greater than or equal to'
-              when :== then 'equal to'
-              when :< then 'less than'
-              when :<= then 'less than or equal to'
-              when :!= then 'other than'
+            when :> then 'greater than'
+            when :>= then 'greater than or equal to'
+            when :== then 'equal to'
+            when :< then 'less than'
+            when :<= then 'less than or equal to'
+            when :!= then 'other than'
             end
           end
         end

@@ -9,7 +9,7 @@ module Tests
       @fs = Filesystem.new
     end
 
-    def updating(&block)
+    def updating(&_block)
       if already_updating?
         yield self
         return

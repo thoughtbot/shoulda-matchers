@@ -60,7 +60,7 @@ EOT
         end
 
         def no_test_frameworks_added?
-          @test_frameworks.empty? || !@test_frameworks.any?(&:present?)
+          @test_frameworks.empty? || @test_frameworks.none?(&:present?)
         end
 
         def no_libraries_added?

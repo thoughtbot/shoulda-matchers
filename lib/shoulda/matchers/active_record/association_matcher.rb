@@ -1163,7 +1163,7 @@ module Shoulda
         end
 
         def option_verifier
-          @option_verifier ||= AssociationMatchers::OptionVerifier.new(reflector)
+          @_option_verifier ||= AssociationMatchers::OptionVerifier.new(reflector)
         end
 
         protected
@@ -1171,7 +1171,7 @@ module Shoulda
         attr_reader :submatchers, :missing, :subject, :macro
 
         def reflector
-          @reflector ||= AssociationMatchers::ModelReflector.new(subject, name)
+          @_reflector ||= AssociationMatchers::ModelReflector.new(subject, name)
         end
 
         def add_submatcher(matcher_class, *args)
@@ -1215,9 +1215,7 @@ module Shoulda
         end
 
         def failing_submatchers
-          @failing_submatchers ||= submatchers.select do |matcher|
-            !matcher.matches?(subject)
-          end
+          @_failing_submatchers ||= submatchers.reject { |matcher| matcher.matches?(subject) }
         end
 
         def missing_options_for_failing_submatchers
@@ -1252,8 +1250,8 @@ module Shoulda
         def validate_inverse_of_through_association
           reflector.validate_inverse_of_through_association!
           true
-        rescue ::ActiveRecord::ActiveRecordError => error
-          @missing = error.message
+        rescue ::ActiveRecord::ActiveRecordError => e
+          @missing = e.message
           false
         end
 
@@ -1303,8 +1301,7 @@ module Shoulda
         end
 
         def join_table_matcher
-          @join_table_matcher ||=
-            AssociationMatchers::JoinTableMatcher.new(self, reflector)
+          @_join_table_matcher ||= AssociationMatchers::JoinTableMatcher.new(self, reflector)
         end
 
         def class_exists?
@@ -1339,7 +1336,7 @@ module Shoulda
           else
             @missing =
               "#{name} should have index_errors set to " +
-              "#{options[:index_errors]}"
+              options[:index_errors].to_s
             false
           end
         end
@@ -1410,7 +1407,8 @@ module Shoulda
         end
 
         def foreign_key_reflection
-          if [:has_one, :has_many].include?(macro) && reflection.options.include?(:inverse_of) && reflection.options[:inverse_of] != false
+          if [:has_one, :has_many].include?(macro) && reflection.options.include?(:inverse_of) && \
+             reflection.options[:inverse_of] != false
             associated_class.reflect_on_association(reflection.options[:inverse_of])
           else
             reflection

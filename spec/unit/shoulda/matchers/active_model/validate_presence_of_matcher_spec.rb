@@ -972,7 +972,7 @@ validation exception on failure, but this could not be proved.
       model = define_active_model_class :example, accessors: [:foo] do
         validates_presence_of :foo
 
-        def foo=(value)
+        def foo=(_value)
           super([])
         end
       end

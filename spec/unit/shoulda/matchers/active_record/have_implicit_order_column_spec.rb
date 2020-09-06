@@ -13,9 +13,9 @@ describe Shoulda::Matchers::ActiveRecord::HaveImplicitOrderColumnMatcher, type: 
                 columns: [:created_at],
               )
 
-              expect { have_implicit_order_column(:created_at) }
-                .to match_against(record)
-                .or_fail_with(<<~MESSAGE, wrap: true)
+              expect { have_implicit_order_column(:created_at) }.
+                to match_against(record).
+                or_fail_with(<<~MESSAGE, wrap: true)
                   Expected Employee not to have an implicit_order_column of
                   :created_at, but it did.
                 MESSAGE
@@ -30,9 +30,9 @@ describe Shoulda::Matchers::ActiveRecord::HaveImplicitOrderColumnMatcher, type: 
                 columns: [:created_at],
               )
 
-              expect { have_implicit_order_column('created_at') }
-                .to match_against(record)
-                .or_fail_with(<<~MESSAGE, wrap: true)
+              expect { have_implicit_order_column('created_at') }.
+                to match_against(record).
+                or_fail_with(<<~MESSAGE, wrap: true)
                   Expected Employee not to have an implicit_order_column of
                   :created_at, but it did.
                 MESSAGE
@@ -49,9 +49,9 @@ describe Shoulda::Matchers::ActiveRecord::HaveImplicitOrderColumnMatcher, type: 
                 columns: [:created_at, :email],
               )
 
-              expect { have_implicit_order_column(:email) }
-                .not_to match_against(record)
-                .and_fail_with(<<-MESSAGE, wrap: true)
+              expect { have_implicit_order_column(:email) }.
+                not_to match_against(record).
+                and_fail_with(<<-MESSAGE, wrap: true)
                   Expected Employee to have an implicit_order_column of :email,
                   but it is :created_at.
                 MESSAGE
@@ -66,9 +66,9 @@ describe Shoulda::Matchers::ActiveRecord::HaveImplicitOrderColumnMatcher, type: 
                 columns: [:created_at, :email],
               )
 
-              expect { have_implicit_order_column('email') }
-                .not_to match_against(record)
-                .and_fail_with(<<-MESSAGE, wrap: true)
+              expect { have_implicit_order_column('email') }.
+                not_to match_against(record).
+                and_fail_with(<<-MESSAGE, wrap: true)
                   Expected Employee to have an implicit_order_column of :email,
                   but it is :created_at.
                 MESSAGE
@@ -85,9 +85,9 @@ describe Shoulda::Matchers::ActiveRecord::HaveImplicitOrderColumnMatcher, type: 
               columns: [:created_at],
             )
 
-            expect { have_implicit_order_column(:created_at) }
-              .not_to match_against(record)
-              .and_fail_with(<<-MESSAGE, wrap: true)
+            expect { have_implicit_order_column(:created_at) }.
+              not_to match_against(record).
+              and_fail_with(<<-MESSAGE, wrap: true)
                 Expected Employee to have an implicit_order_column of
                 :created_at, but implicit_order_column is not set.
               MESSAGE
@@ -101,9 +101,9 @@ describe Shoulda::Matchers::ActiveRecord::HaveImplicitOrderColumnMatcher, type: 
               columns: [:created_at],
             )
 
-            expect { have_implicit_order_column('created_at') }
-              .not_to match_against(record)
-              .and_fail_with(<<-MESSAGE, wrap: true)
+            expect { have_implicit_order_column('created_at') }.
+              not_to match_against(record).
+              and_fail_with(<<-MESSAGE, wrap: true)
                 Expected Employee to have an implicit_order_column of
                 :created_at, but implicit_order_column is not set.
               MESSAGE
@@ -117,9 +117,9 @@ describe Shoulda::Matchers::ActiveRecord::HaveImplicitOrderColumnMatcher, type: 
         it 'does not match, producing an appropriate message' do
           record = record_without_any_columns(class_name: 'Employee')
 
-          expect { have_implicit_order_column(:whatever) }
-            .not_to match_against(record)
-            .and_fail_with(<<-MESSAGE, wrap: true)
+          expect { have_implicit_order_column(:whatever) }.
+            not_to match_against(record).
+            and_fail_with(<<-MESSAGE, wrap: true)
               Expected Employee to have an implicit_order_column of :whatever,
               but that could not be proved: The :employees table does not have a
               :whatever column.
@@ -131,9 +131,9 @@ describe Shoulda::Matchers::ActiveRecord::HaveImplicitOrderColumnMatcher, type: 
         it 'does not match, producing an appropriate message' do
           record = record_without_any_columns(class_name: 'Employee')
 
-          expect { have_implicit_order_column('whatever') }
-            .not_to match_against(record)
-            .and_fail_with(<<-MESSAGE, wrap: true)
+          expect { have_implicit_order_column('whatever') }.
+            not_to match_against(record).
+            and_fail_with(<<-MESSAGE, wrap: true)
               Expected Employee to have an implicit_order_column of :whatever,
               but that could not be proved: The :employees table does not have a
               :whatever column.

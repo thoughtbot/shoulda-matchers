@@ -20,7 +20,8 @@ module Shoulda
         def to(expected_value = nil, &block)
           if block
             unless context_set?
-              message = "When specifying a value as a block, a context must be specified beforehand, e.g., #{store.name}.in_context(context).to { ... }"
+              message = "When specifying a value as a block, a context must be specified beforehand,
+                         e.g., #{store.name}.in_context(context).to { ... }"
               raise ArgumentError, message
             end
 
@@ -81,18 +82,18 @@ module Shoulda
         def expectation_description
           string = 'set'
 
-          if key_set?
-            string << " #{store.name}[#{key.inspect}]"
-          else
-            string << " any key in #{store.name}"
-          end
+          string << if key_set?
+                      " #{store.name}[#{key.inspect}]"
+                    else
+                      " any key in #{store.name}"
+                    end
 
           if expected_value_set?
-            if expected_value.is_a?(Regexp)
-              string << " to a value matching #{expected_value.inspect}"
-            else
-              string << " to #{expected_value.inspect}"
-            end
+            string << if expected_value.is_a?(Regexp)
+                        " to a value matching #{expected_value.inspect}"
+                      else
+                        " to #{expected_value.inspect}"
+                      end
           end
 
           string

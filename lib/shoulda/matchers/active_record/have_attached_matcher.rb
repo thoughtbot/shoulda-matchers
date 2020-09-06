@@ -134,10 +134,8 @@ Did not expect #{expectation}, but it does.
 
         def attachments_association_name
           case macro
-          when :one then
-            "#{name}_attachment"
-          when :many then
-            "#{name}_attachments"
+          when :one then "#{name}_attachment"
+          when :many then "#{name}_attachments"
           end
         end
 
@@ -163,10 +161,8 @@ Did not expect #{expectation}, but it does.
 
         def blobs_association_name
           case macro
-          when :one then
-            "#{name}_blob"
-          when :many then
-            "#{name}_blobs"
+          when :one then "#{name}_blob"
+          when :many then "#{name}_blobs"
           end
         end
 
