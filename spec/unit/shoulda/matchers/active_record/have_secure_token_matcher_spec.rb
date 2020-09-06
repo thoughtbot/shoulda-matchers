@@ -1,6 +1,5 @@
 require 'unit_spec_helper'
 
-# rubocop:disable Metrics/BlockLength
 describe Shoulda::Matchers::ActiveRecord::HaveSecureTokenMatcher,
   type: :model do
   if active_record_supports_has_secure_token?

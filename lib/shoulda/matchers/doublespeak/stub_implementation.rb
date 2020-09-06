@@ -14,11 +14,7 @@ module Shoulda
         end
 
         def returns(value = nil, &block)
-          if block
-            @implementation = block
-          else
-            @implementation = proc { value }
-          end
+          @implementation = block || proc { value }
         end
 
         def call(call)

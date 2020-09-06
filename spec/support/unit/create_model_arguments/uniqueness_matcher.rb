@@ -16,7 +16,7 @@ module UnitTests
       end
 
       def columns
-        attributes.reduce({}) do |options, attribute|
+        attributes.inject({}) do |options, attribute|
           options.merge(
             attribute.name => {
               type: attribute.column_type,
@@ -31,7 +31,7 @@ module UnitTests
       end
 
       def attribute_default_values_by_name
-        attributes.reduce({}) do |values, attribute|
+        attributes.inject({}) do |values, attribute|
           values.merge(attribute.name => attribute.default_value)
         end
       end

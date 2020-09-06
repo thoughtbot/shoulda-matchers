@@ -3,7 +3,7 @@ module Shoulda
     module ActionController
       # @private
       class RouteParams
-        PARAMS_TO_SYMBOLIZE = %i{format}
+        PARAMS_TO_SYMBOLIZE = %i{format}.freeze
 
         def initialize(args)
           @args = args

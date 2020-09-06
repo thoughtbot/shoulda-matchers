@@ -6,7 +6,7 @@ module Shoulda
         class OptionVerifier
           delegate :reflection, to: :reflector
 
-          RELATION_OPTIONS = [:conditions, :order]
+          RELATION_OPTIONS = [:conditions, :order].freeze
 
           def initialize(reflector)
             @reflector = reflector

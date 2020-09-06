@@ -413,11 +413,11 @@ module Shoulda
           else
             @failure_reason = 'Expected the validation '
 
-            if expected_scopes.empty?
-              @failure_reason << 'not to be scoped to anything, '
-            else
-              @failure_reason << "to be scoped to #{inspected_expected_scopes}, "
-            end
+            @failure_reason << if expected_scopes.empty?
+                                 'not to be scoped to anything, '
+                               else
+                                 "to be scoped to #{inspected_expected_scopes}, "
+                               end
 
             if actual_sets_of_scopes.any?
               @failure_reason << 'but it was scoped to '
@@ -534,20 +534,15 @@ module Shoulda
 
         def find_existing_record
           record = model.first
-
-          if record.present?
-            record
-          else
-            nil
-          end
+          record.presence
         end
 
         def create_existing_record
           @given_record.tap do |existing_record|
             existing_record.save(validate: false)
           end
-        rescue ::ActiveRecord::StatementInvalid => error
-          raise ExistingRecordInvalid.create(underlying_exception: error)
+        rescue ::ActiveRecord::StatementInvalid => e
+          raise ExistingRecordInvalid.create(underlying_exception: e)
         end
 
         def update_existing_record!(value)
@@ -625,11 +620,11 @@ module Shoulda
 
             reason << inspected_scopes.to_sentence
 
-            if inspected_scopes.many?
-              reason << ' do not seem to be attributes'
-            else
-              reason << ' does not seem to be an attribute'
-            end
+            reason << if inspected_scopes.many?
+                        ' do not seem to be attributes'
+                      else
+                        ' does not seem to be an attribute'
+                      end
 
             reason << " on #{model.name}."
 
@@ -649,11 +644,11 @@ module Shoulda
 
             reason << inspected_scopes.to_sentence
 
-            if inspected_scopes.many?
-              reason << ' seem to be attributes'
-            else
-              reason << ' seems to be an attribute'
-            end
+            reason << if inspected_scopes.many?
+                        ' seem to be attributes'
+                      else
+                        ' seems to be an attribute'
+                      end
 
             reason << " on #{model.name}."
 
@@ -664,14 +659,14 @@ module Shoulda
         end
 
         def scopes_present_on_model
-          @_present_scopes ||= expected_scopes.select do |scope|
+          @_scopes_present_on_model ||= expected_scopes.select do |scope|
             model.method_defined?("#{scope}=")
           end
         end
 
         def scopes_missing_on_model
-          @_missing_scopes ||= expected_scopes.select do |scope|
-            !model.method_defined?("#{scope}=")
+          @_scopes_missing_on_model ||= expected_scopes.reject do |scope|
+            model.method_defined?("#{scope}=")
           end
         end
 

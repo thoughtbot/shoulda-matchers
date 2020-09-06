@@ -2,7 +2,7 @@ require_relative 'database_configuration'
 
 module Tests
   class Database
-    NAME = 'shoulda-matchers-test'
+    NAME = 'shoulda-matchers-test'.freeze
     ADAPTER_NAME = ENV.fetch('DATABASE_ADAPTER', 'sqlite3').to_sym
 
     include Singleton

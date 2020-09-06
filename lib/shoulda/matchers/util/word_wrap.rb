@@ -41,7 +41,7 @@ module Shoulda
 
     # @private
     class Text < ::String
-      LIST_ITEM_REGEXP = /\A((?:[a-z0-9]+(?:\)|\.)|\*) )/
+      LIST_ITEM_REGEXP = /\A((?:[a-z0-9]+(?:\)|\.)|\*) )/.freeze
 
       def indented?
         self =~ /\A[ ]+/
@@ -88,7 +88,7 @@ module Shoulda
       end
 
       def combine_list_item_lines(lines)
-        lines.reduce([]) do |combined_lines, line|
+        lines.inject([]) do |combined_lines, line|
           if line.list_item?
             combined_lines << line
           else
@@ -114,7 +114,7 @@ module Shoulda
 
     # @private
     class Line
-      OFFSETS = { left: -1, right: +1 }
+      OFFSETS = { left: -1, right: +1 }.freeze
 
       def initialize(line, indent: 0)
         @indent = indent
@@ -169,7 +169,7 @@ module Shoulda
         end
       end
 
-      def wrap_line(line, direction: :left)
+      def wrap_line(line, _direction: :left)
         index = nil
 
         if line.length > Shoulda::Matchers::WordWrap::TERMINAL_WIDTH

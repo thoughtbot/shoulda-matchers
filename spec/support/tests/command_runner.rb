@@ -57,9 +57,7 @@ module Tests
     end
 
     def formatted_command
-      [formatted_env, Shellwords.join(command)].
-        select { |value| !value.empty? }.
-        join(' ')
+      [formatted_env, Shellwords.join(command)].reject(&:empty?).join(' ')
     end
 
     def call
@@ -202,18 +200,16 @@ Output:
     end
 
     def possibly_retrying
-      begin
-        @num_times_run += 1
-        yield
-      rescue => error
-        debug { "#{error.class}: #{error.message}" }
+      @num_times_run += 1
+      yield
+    rescue StandardError => e
+      debug { "#{e.class}: #{e.message}" }
 
-        if @num_times_run < @retries
-          sleep @num_times_run
-          retry
-        else
-          raise error
-        end
+      if @num_times_run < @retries
+        sleep @num_times_run
+        retry
+      else
+        raise e
       end
     end
 

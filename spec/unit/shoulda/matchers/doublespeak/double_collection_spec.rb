@@ -178,7 +178,7 @@ module Shoulda::Matchers::Doublespeak
     def create_class(methods = {})
       Class.new.tap do |klass|
         methods.each do |name, value|
-          klass.__send__(:define_method, name) { |*args| value }
+          klass.__send__(:define_method, name) { |*_args| value }
         end
       end
     end

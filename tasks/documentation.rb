@@ -21,7 +21,7 @@ module Shoulda
           end
 
           desc 'Generate docs for a particular version'
-          task :generate, [:version, :latest_version] => :setup do |t, args|
+          task :generate, [:version, :latest_version] => :setup do |_t, args|
             unless args.version
               raise ArgumentError, 'Missing version'
             end
@@ -62,7 +62,7 @@ module Shoulda
           end
 
           desc 'Generate docs for a particular version and push them to GitHub'
-          task :publish, [:version, :latest_version] => :setup do |t, args|
+          task :publish, [:version, :latest_version] => :setup do |_t, args|
             unless args.version
               raise ArgumentError, 'Missing version'
             end
@@ -85,10 +85,10 @@ module Shoulda
 
     class DocumentationPublisher
       CURRENT_VERSION = Shoulda::Matchers::VERSION
-      GITHUB_USERNAME = 'thoughtbot'
+      GITHUB_USERNAME = 'thoughtbot'.freeze
       # GITHUB_USERNAME = 'mcmire'
-      GH_PAGES_DIR = ".#{GITHUB_USERNAME}-gh-pages"
-      DOCS_DIR = "#{GH_PAGES_DIR}/docs"
+      GH_PAGES_DIR = ".#{GITHUB_USERNAME}-gh-pages".freeze
+      DOCS_DIR = "#{GH_PAGES_DIR}/docs".freeze
 
       def self.current_version
         CURRENT_VERSION
@@ -130,7 +130,7 @@ module Shoulda
         end
       end
 
-      def publish_docs_for(version, options = {})
+      def publish_docs_for(version, _options = {})
         message = build_commit_message(version)
 
         within_gh_pages_dir do

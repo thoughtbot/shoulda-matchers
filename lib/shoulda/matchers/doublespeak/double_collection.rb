@@ -18,19 +18,19 @@ module Shoulda
         end
 
         def activate
-          doubles_by_method_name.each do |method_name, double|
+          doubles_by_method_name.each do |_method_name, double|
             double.activate
           end
         end
 
         def deactivate
-          doubles_by_method_name.each do |method_name, double|
+          doubles_by_method_name.each do |_method_name, double|
             double.deactivate
           end
         end
 
         def calls_by_method_name
-          doubles_by_method_name.reduce({}) do |hash, (method_name, double)|
+          doubles_by_method_name.inject({}) do |hash, (method_name, double)|
             hash.merge method_name => double.calls.map(&:args)
           end
         end

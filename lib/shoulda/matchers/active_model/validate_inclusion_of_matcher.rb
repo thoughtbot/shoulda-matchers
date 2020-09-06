@@ -268,20 +268,20 @@ module Shoulda
 
       # @private
       class ValidateInclusionOfMatcher < ValidationMatcher
-        BLANK_VALUES = ['', ' ', "\n", "\r", "\t", "\f"]
-        ARBITRARY_OUTSIDE_STRING = 'shoulda-matchers test string'
+        BLANK_VALUES = ['', ' ', "\n", "\r", "\t", "\f"].freeze
+        ARBITRARY_OUTSIDE_STRING = 'shoulda-matchers test string'.freeze
         ARBITRARY_OUTSIDE_INTEGER = 123456789
         ARBITRARY_OUTSIDE_DECIMAL = BigDecimal('0.123456789')
         ARBITRARY_OUTSIDE_DATE = Date.jd(9999999)
         ARBITRARY_OUTSIDE_DATETIME = DateTime.jd(9999999)
         ARBITRARY_OUTSIDE_TIME = Time.at(9999999999)
-        BOOLEAN_ALLOWS_BOOLEAN_MESSAGE = <<EOT
+        BOOLEAN_ALLOWS_BOOLEAN_MESSAGE = <<EOT.freeze
 You are using `validate_inclusion_of` to assert that a boolean column allows
 boolean values and disallows non-boolean ones. Be aware that it is not possible
 to fully test this, as boolean columns will automatically convert non-boolean
 values to boolean ones. Hence, you should consider removing this test.
 EOT
-        BOOLEAN_ALLOWS_NIL_MESSAGE = <<EOT
+        BOOLEAN_ALLOWS_NIL_MESSAGE = <<EOT.freeze
 You are using `validate_inclusion_of` to assert that a boolean column allows nil.
 Be aware that it is not possible to fully test this, as anything other than
 true, false or nil will be converted to false. Hence, you should consider
@@ -354,11 +354,11 @@ EOT
           else
             description = "validate that :#{@attribute}"
 
-            if @array.many?
-              description << " is either #{inspected_array}"
-            else
-              description << " is #{inspected_array}"
-            end
+            description << if @array.many?
+                             " is either #{inspected_array}"
+                           else
+                             " is #{inspected_array}"
+                           end
 
             description
           end
@@ -581,21 +581,21 @@ EOT
 
         def column_type_to_attribute_type(type)
           case type
-            when :float then :integer
-            when :timestamp then :datetime
-            else type
+          when :float then :integer
+          when :timestamp then :datetime
+          else type
           end
         end
 
         def value_to_attribute_type(value)
           case value
-            when true, false then :boolean
-            when BigDecimal then :decimal
-            when Integer then :integer
-            when Date then :date
-            when DateTime then :datetime
-            when Time then :time
-            else :unknown
+          when true, false then :boolean
+          when BigDecimal then :decimal
+          when Integer then :integer
+          when Date then :date
+          when DateTime then :datetime
+          when Time then :time
+          else :unknown
           end
         end
 

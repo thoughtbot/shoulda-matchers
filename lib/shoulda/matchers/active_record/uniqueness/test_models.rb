@@ -1,5 +1,3 @@
-require 'thread'
-
 module Shoulda
   module Matchers
     module ActiveRecord

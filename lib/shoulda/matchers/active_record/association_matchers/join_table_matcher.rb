@@ -18,7 +18,7 @@ module Shoulda
             @reflector = reflector
           end
 
-          def matches?(subject)
+          def matches?(_subject)
             join_table_option_correct? &&
               join_table_exists? &&
               join_table_has_correct_columns?
@@ -64,8 +64,8 @@ module Shoulda
           delegate :foreign_key, :association_foreign_key, to: :reflector
 
           def missing_columns
-            @missing_columns ||= expected_join_table_columns.select do |key|
-              !actual_join_table_columns.include?(key.to_s)
+            @_missing_columns ||= expected_join_table_columns.reject do |key|
+              actual_join_table_columns.include?(key.to_s)
             end
           end
 

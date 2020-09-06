@@ -9,14 +9,14 @@ module Kernel
   def capture(stream)
     stream = stream.to_s
     captured_stream = Tempfile.new(stream)
-    stream_io = eval("$#{stream}")
+    stream_io = eval("$#{stream}", binding, __FILE__, __LINE__) # rubocop:disable Security/Eval
     origin_stream = stream_io.dup
     stream_io.reopen(captured_stream)
 
     yield
 
     stream_io.rewind
-    return captured_stream.read
+    captured_stream.read
   ensure
     captured_stream.unlink
     stream_io.reopen(origin_stream)

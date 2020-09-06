@@ -3,7 +3,7 @@ require 'forwardable'
 module UnitTests
   module CreateModelArguments
     class Basic
-      DEFAULT_MODEL_NAME = 'Example'
+      DEFAULT_MODEL_NAME = 'Example'.freeze
       DEFAULT_ATTRIBUTE_NAME = :attr
       DEFAULT_COLUMN_TYPE = :string
 

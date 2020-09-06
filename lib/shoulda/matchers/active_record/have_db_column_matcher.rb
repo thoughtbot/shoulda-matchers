@@ -229,11 +229,11 @@ module Shoulda
             true
           else
             @missing = "#{model_class} has a db column named #{@column} "
-            if @options[:primary]
-              @missing << 'that is not primary, but should be'
-            else
-              @missing << 'that is primary, but should not be'
-            end
+            @missing << if @options[:primary]
+                          'that is not primary, but should be'
+                        else
+                          'that is primary, but should not be'
+                        end
             false
           end
         end

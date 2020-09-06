@@ -19,8 +19,8 @@ module UnitTests
 
         begin
           block.call
-        rescue RSpec::Expectations::ExpectationNotMetError => ex
-          @actual = ex.message
+        rescue RSpec::Expectations::ExpectationNotMetError => e
+          @actual = e.message
         end
 
         @actual && @actual == expected.sub(/\n\z/, '')

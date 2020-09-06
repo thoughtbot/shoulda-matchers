@@ -68,12 +68,8 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher, type: :model do
     def record_with_custom_validation
       define_model :example, attr: :string, attr2: :string do
         validate :custom_validation
-
-        def custom_validation
-          if self[:attr] != 'good value'
-            self.errors[:attr2] << 'some message'
-          end
-        end
+        custom_validation = -> { errors[:attr2] << 'some message' if self[:attr] != 'good value' }
+        custom_validation.call
       end.new
     end
   end

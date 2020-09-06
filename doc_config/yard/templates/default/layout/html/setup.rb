@@ -10,11 +10,11 @@ end
 def diskfile
   @file.attributes[:markup] ||= markup_for_file('', @file.filename)
 
-  if @file.filename == 'README.md'
-    contents = preprocess_index(@file.contents)
-  else
-    contents = @file.contents
-  end
+  contents = if @file.filename == 'README.md'
+               preprocess_index(@file.contents)
+             else
+               @file.contents
+             end
 
   data = htmlify(contents, @file.attributes[:markup])
   "<div id='filecontents'>" + data + '</div>'
@@ -24,7 +24,8 @@ def preprocess_index(contents)
   regex = /\[ (\w+) \] \( lib \/ ([^()]+) \.rb (?:\#L\d+)? \)/x
 
   contents.gsub(regex) do
-    method_name, file_path = $1, $2
+    method_name = $1
+    file_path = $2
 
     module_name = file_path.split('/')[0..2].
       map do |value|

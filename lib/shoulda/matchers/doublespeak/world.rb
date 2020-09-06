@@ -39,13 +39,13 @@ module Shoulda
         private
 
         def activate
-          double_collections_by_class.each do |klass, double_collection|
+          double_collections_by_class.each do |_klass, double_collection|
             double_collection.activate
           end
         end
 
         def deactivate
-          double_collections_by_class.each do |klass, double_collection|
+          double_collections_by_class.each do |_klass, double_collection|
             double_collection.deactivate
           end
         end

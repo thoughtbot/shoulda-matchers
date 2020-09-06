@@ -35,7 +35,7 @@ describe Shoulda::Matchers::ActiveRecord::SerializeMatcher, type: :model do
     end
 
     def unserialized_model
-      @model ||= define_model(:example, attr: :string).new
+      @_unserialized_model ||= define_model(:example, attr: :string).new
     end
   end
 
@@ -79,8 +79,8 @@ describe Shoulda::Matchers::ActiveRecord::SerializeMatcher, type: :model do
 
   def define_serializer(name)
     define_class(name) do
-      def load(*); end
-      def dump(*); end
+      def load(*); end # rubocop:disable Lint/NestedMethodDefinition
+      def dump(*); end # rubocop:disable Lint/NestedMethodDefinition
     end
   end
 end

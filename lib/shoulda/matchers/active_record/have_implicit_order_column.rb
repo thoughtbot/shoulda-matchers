@@ -39,15 +39,15 @@ module Shoulda
           check_column_exists!
           check_implicit_order_column_matches!
           true
-        rescue SecondaryCheckFailedError => error
+        rescue SecondaryCheckFailedError => e
           @failure_message = Shoulda::Matchers.word_wrap(
             "Expected #{model.name} to #{expectation}, " +
-            "but that could not be proved: #{error.message}.",
+            "but that could not be proved: #{e.message}.",
           )
           false
-        rescue PrimaryCheckFailedError => error
+        rescue PrimaryCheckFailedError => e
           @failure_message = Shoulda::Matchers.word_wrap(
-            "Expected #{model.name} to #{expectation}, but #{error.message}.",
+            "Expected #{model.name} to #{expectation}, but #{e.message}.",
           )
           false
         end

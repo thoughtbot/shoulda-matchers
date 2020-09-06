@@ -1,4 +1,5 @@
 require 'forwardable'
+require 'logger'
 
 module Shoulda
   module Matchers
@@ -20,7 +21,7 @@ module Shoulda
 
         def debug(&block)
           if debugging_enabled?
-            puts block.call
+            Logger.new(STDOUT).debug block.call
           end
         end
       end

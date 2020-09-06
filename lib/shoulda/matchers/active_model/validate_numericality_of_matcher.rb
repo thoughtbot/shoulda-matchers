@@ -331,8 +331,8 @@ module Shoulda
 
       # @private
       class ValidateNumericalityOfMatcher
-        NUMERIC_NAME = 'number'
-        NON_NUMERIC_VALUE = 'abcd'
+        NUMERIC_NAME = 'number'.freeze
+        NON_NUMERIC_VALUE = 'abcd'.freeze
         DEFAULT_DIFF_TO_COMPARE = 1
 
         include Qualifiers::IgnoringInterferenceByWriter
@@ -600,13 +600,13 @@ module Shoulda
         end
 
         def first_submatcher_that_fails_to_match
-          @_failing_submatchers ||= @submatchers.detect do |submatcher|
+          @_first_submatcher_that_fails_to_match ||= @submatchers.detect do |submatcher|
             !submatcher.matches?(@subject)
           end
         end
 
         def first_submatcher_that_fails_to_not_match
-          @_failing_submatchers ||= @submatchers.detect do |submatcher|
+          @_first_submatcher_that_fails_to_not_match ||= @submatchers.detect do |submatcher|
             !submatcher.does_not_match?(@subject)
           end
         end

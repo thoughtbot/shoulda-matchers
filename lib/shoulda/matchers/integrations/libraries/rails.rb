@@ -13,7 +13,7 @@ module Shoulda
             :active_record,
             :action_controller,
             :routing,
-          ]
+          ].freeze
 
           def integrate_with(test_framework)
             Shoulda::Matchers.assertion_exception_class =

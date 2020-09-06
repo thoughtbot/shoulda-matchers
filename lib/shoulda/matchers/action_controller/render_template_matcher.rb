@@ -71,14 +71,12 @@ module Shoulda
         private
 
         def renders_template?
-          begin
-            @context.__send__(:assert_template, @options, @message)
-            @failure_message_when_negated = "Didn't expect to render #{@template}"
-            true
-          rescue Shoulda::Matchers.assertion_exception_class => error
-            @failure_message = error.message
-            false
-          end
+          @context.__send__(:assert_template, @options, @message)
+          @failure_message_when_negated = "Didn't expect to render #{@template}"
+          true
+        rescue Shoulda::Matchers.assertion_exception_class => e
+          @failure_message = e.message
+          false
         end
       end
     end

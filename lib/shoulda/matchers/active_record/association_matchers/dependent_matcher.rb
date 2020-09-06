@@ -34,7 +34,7 @@ module Shoulda
           private
 
           def option_verifier
-            @option_verifier ||= OptionVerifier.new(subject)
+            @_option_verifier ||= OptionVerifier.new(subject)
           end
 
           def option_matches?
@@ -43,8 +43,8 @@ module Shoulda
 
           def option_type
             case dependent
-              when true, false then :boolean
-              else :string
+            when true, false then :boolean
+            else :string
             end
           end
 

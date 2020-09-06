@@ -64,11 +64,11 @@ module Shoulda
       # @private
       class RenderWithLayoutMatcher
         def initialize(expected_layout)
-          if expected_layout
-            @expected_layout = expected_layout.to_s
-          else
-            @expected_layout = nil
-          end
+          @expected_layout = if expected_layout
+                               expected_layout.to_s
+                             else
+                               nil
+                             end
 
           @controller = nil
         end
@@ -95,11 +95,11 @@ module Shoulda
 
         def description
           description = 'render with '
-          if @expected_layout.nil?
-            description << 'a layout'
-          else
-            description << "the #{@expected_layout.inspect} layout"
-          end
+          description << if @expected_layout.nil?
+                           'a layout'
+                         else
+                           "the #{@expected_layout.inspect} layout"
+                         end
           description
         end
 

@@ -75,14 +75,12 @@ module Shoulda
         private
 
         def redirects_to_url?
-          begin
-            @context.__send__(:assert_redirected_to, url)
-            @failure_message_when_negated = "Didn't expect to redirect to #{url}"
-            true
-          rescue Shoulda::Matchers.assertion_exception_class => error
-            @failure_message = error.message
-            false
-          end
+          @context.__send__(:assert_redirected_to, url)
+          @failure_message_when_negated = "Didn't expect to redirect to #{url}"
+          true
+        rescue Shoulda::Matchers.assertion_exception_class => e
+          @failure_message = e.message
+          false
         end
 
         def url
