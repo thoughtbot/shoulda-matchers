@@ -1,4 +1,6 @@
-require: rubocop-rails
+require:
+  - rubocop-packaging
+  - rubocop-rails
 AllCops:
   NewCops: disable
   TargetRubyVersion: 2.4
