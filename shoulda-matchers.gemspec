@@ -27,10 +27,7 @@ Gem::Specification.new do |s|
     'source_code_uri' => 'https://github.com/thoughtbot/shoulda-matchers',
   }
 
-  s.files = Dir.chdir(File.expand_path(__dir__)) do
-    `git ls-files -z -- {docs,lib,README.md,MIT-LICENSE,shoulda-matchers.gemspec}`.
-      split("\x0")
-  end
+  s.files = Dir['{docs,lib}/**/*', 'README.md', 'MIT-LICENSE', 'shoulda-matchers.gemspec']
   s.require_paths = ['lib']
 
   s.required_ruby_version = '>= 2.4.0'
