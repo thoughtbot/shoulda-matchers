@@ -1,4 +1,4 @@
-require_relative '../lib/shoulda/matchers/version'
+require 'shoulda/matchers/version'
 require 'erb'
 
 module Shoulda
