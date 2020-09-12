@@ -157,6 +157,12 @@ module Shoulda
       #       should validate_uniqueness_of(:slug).scoped_to(:journal_id)
       #     end
       #
+      # NOTE: Support for testing uniqueness validation scoped to an array of
+      # associations is not available.
+      #
+      # For more information, please refer to
+      # https://github.com/thoughtbot/shoulda-matchers/issues/814
+      #
       # ##### case_insensitive
       #
       # Use `case_insensitive` to test usage of the `:case_sensitive` option
