@@ -10,49 +10,49 @@ module Shoulda
       #       include ActiveModel::Model
       #       include ActiveModel::SecurePassword
       #       attr_accessor :password
+      #       attr_accessor :reset_password
       #
       #       has_secure_password
+      #       has_secure_password :reset_password
       #     end
       #
       #     # RSpec
       #     RSpec.describe User, type: :model do
       #       it { should have_secure_password }
+      #       it { should have_secure_password(:reset_password) }
       #     end
       #
       #     # Minitest (Shoulda)
       #     class UserTest < ActiveSupport::TestCase
       #       should have_secure_password
+      #       should have_secure_password(:reset_password)
       #     end
       #
       # @return [HaveSecurePasswordMatcher]
       #
-      def have_secure_password
-        HaveSecurePasswordMatcher.new
+      def have_secure_password(attr = :password)
+        HaveSecurePasswordMatcher.new(attr)
       end
 
       # @private
       class HaveSecurePasswordMatcher
         attr_reader :failure_message
 
-        CORRECT_PASSWORD = "aBcDe12345"
-        INCORRECT_PASSWORD = "password"
-
-        EXPECTED_METHODS = [
-          :authenticate,
-          :password=,
-          :password_confirmation=,
-          :password_digest,
-          :password_digest=,
-        ]
+        CORRECT_PASSWORD = "aBcDe12345".freeze
+        INCORRECT_PASSWORD = "password".freeze
 
         MESSAGES = {
-          authenticated_incorrect_password: "expected %{subject} to not authenticate an incorrect password",
-          did_not_authenticate_correct_password: "expected %{subject} to authenticate the correct password",
+          authenticated_incorrect_password: "expected %{subject} to not authenticate an incorrect %{attribute}",
+          did_not_authenticate_correct_password: "expected %{subject} to authenticate the correct %{attribute}",
           method_not_found: "expected %{subject} to respond to %{methods}"
-        }
+        }.freeze
+
+        def initialize(attribute)
+          @attribute = attribute.to_sym
+        end
 
         def description
-          "have a secure password"
+          "have a secure password, defined on #{@attribute} attribute"
         end
 
         def matches?(subject)
@@ -71,19 +71,39 @@ module Shoulda
         attr_reader :subject
 
         def validate
-          missing_methods = EXPECTED_METHODS.select {|m| !subject.respond_to?(m) }
+          missing_methods = expected_methods.reject {|m| subject.respond_to?(m) }
 
           if missing_methods.present?
             [:method_not_found, { methods: missing_methods.to_sentence }]
           else
-            subject.password = CORRECT_PASSWORD
-            subject.password_confirmation = CORRECT_PASSWORD
+            subject.send("#{@attribute}=", CORRECT_PASSWORD)
+            subject.send("#{@attribute}_confirmation=", CORRECT_PASSWORD)
 
-            if not subject.authenticate(CORRECT_PASSWORD)
-              [:did_not_authenticate_correct_password, {}]
-            elsif subject.authenticate(INCORRECT_PASSWORD)
-              [:authenticated_incorrect_password, {}]
+            if not subject.send(authenticate_method, CORRECT_PASSWORD)
+              [:did_not_authenticate_correct_password, { attribute: @attribute }]
+            elsif subject.send(authenticate_method, INCORRECT_PASSWORD)
+              [:authenticated_incorrect_password, { attribute: @attribute }]
             end
+          end
+        end
+
+        private
+
+        def expected_methods
+          @expected_methods ||= %I[
+            #{authenticate_method}
+            #{@attribute}=
+            #{@attribute}_confirmation=
+            #{@attribute}_digest
+            #{@attribute}_digest=
+          ]
+        end
+
+        def authenticate_method
+          if @attribute == :password
+            :authenticate
+          else
+            "authenticate_#{@attribute}".to_sym
           end
         end
       end
