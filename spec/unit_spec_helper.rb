@@ -15,6 +15,7 @@ end
 RSpec.configure do |config|
   config.include RSpec::Matchers::FailMatchers
 
+  Tests::RailsVersions.configure_example_group(config)
   UnitTests::ActionPackVersions.configure_example_group(config)
   UnitTests::ActiveModelHelpers.configure_example_group(config)
   UnitTests::ActiveModelVersions.configure_example_group(config)
@@ -23,7 +24,6 @@ RSpec.configure do |config|
   UnitTests::I18nFaker.configure_example_group(config)
   UnitTests::MailerBuilder.configure_example_group(config)
   UnitTests::ModelBuilder.configure_example_group(config)
-  UnitTests::RailsVersions.configure_example_group(config)
   UnitTests::ActiveRecordVersions.configure_example_group(config)
   UnitTests::ActiveModelVersions.configure_example_group(config)
   UnitTests::DatabaseHelpers.configure_example_group(config)

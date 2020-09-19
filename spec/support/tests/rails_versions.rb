@@ -1,4 +1,4 @@
-module UnitTests
+module Tests
   module RailsVersions
     extend self
 
