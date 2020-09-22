@@ -1,7 +1,9 @@
 require_relative 'file_helpers'
 require_relative 'gem_helpers'
 require_relative 'minitest_helpers'
+require_relative '../../tests/rails_versions'
 
+require 'rails'
 require 'yaml'
 
 module AcceptanceTests
@@ -9,6 +11,7 @@ module AcceptanceTests
     include FileHelpers
     include GemHelpers
     include MinitestHelpers
+    include Tests::RailsVersions
 
     extend RSpec::Matchers::DSL
 
@@ -84,7 +87,54 @@ module AcceptanceTests
       end
     end
 
+    def configure_routes_with_single_wildcard_route
+      write_file 'config/routes.rb', <<-FILE
+        Rails.application.routes.draw do
+          get ':controller(/:action(/:id(.:format)))'
+        end
+      FILE
+    end
+
+    def add_rspec_to_project
+      add_gem 'rspec-core', rspec_core_version
+      add_gem 'rspec-expectations', rspec_expectations_version
+      append_to_file 'spec/spec_helper.rb', <<-FILE
+        require 'rspec/core'
+        require 'rspec/expectations'
+      FILE
+    end
+
+    def add_rspec_rails_to_project!
+      add_gem 'rspec-rails', rspec_rails_version
+      run_command_within_bundle!('rails g rspec:install')
+      remove_from_file '.rspec', '--warnings'
+    end
+
+    def run_rspec_tests(*paths)
+      run_command_within_bundle 'rspec --format documentation --backtrace', *paths
+    end
+
+    def run_rspec_suite
+      run_rake_tasks('spec', env: { SPEC_OPTS: '-fd' })
+    end
+
+    def add_spring_to_project
+      add_gem 'spring-commands-rspec'
+    end
+
     def create_files_in_rails_application
+      create_files_to_test_matchers_below_version_5_2
+
+      if rails_gte_5_2?
+        create_files_to_test_matchers_of_version_5_2
+      end
+
+      if rails_6_x?
+        create_files_to_test_matchers_above_version_5_2
+      end
+    end
+
+    def create_files_to_test_matchers_below_version_5_2
       write_file 'db/migrate/1_create_users.rb', <<-FILE
         class CreateUsers < #{migration_class_name}
           def self.up
@@ -108,18 +158,17 @@ module AcceptanceTests
             end
 
             create_table :users do |t|
-              t.integer  :age
-              t.string   :email
-              t.string   :first_name
-              t.integer  :number_of_dependents
-              t.string   :gender
-              t.integer  :organization_id
-              t.string   :password_digest
-              t.string   :role
-              t.integer  :status
-              t.string   :social_networks
-              t.string   :website_url
-              t.datetime :created_at
+              t.integer :age
+              t.string  :email
+              t.string  :first_name
+              t.integer :number_of_dependents
+              t.string  :gender
+              t.integer :organization_id
+              t.string  :password_digest
+              t.string  :role
+              t.integer :status
+              t.string  :social_networks
+              t.string  :website_url
             end
 
             add_index :users, :organization_id
@@ -170,12 +219,8 @@ module AcceptanceTests
           belongs_to                    :organization
           enum status:                  [:active, :blocked]
           has_and_belongs_to_many       :categories
-          self.implicit_order_column    = :created_at
-          has_many_attached             :photos
           has_one                       :profile
-          has_one_attached              :avatar
           attr_readonly                 :username
-          has_rich_text                 :description
           serialize                     :social_networks
           validates                     :email, uniqueness: true
         end
@@ -184,39 +229,207 @@ module AcceptanceTests
       # TODO: Controller file
     end
 
-    def configure_routes_with_single_wildcard_route
-      write_file 'config/routes.rb', <<-FILE
-        Rails.application.routes.draw do
-          get ':controller(/:action(/:id(.:format)))'
+    def create_files_to_test_matchers_of_version_5_2
+      run_rake_tasks!('active_storage:install:migrations')
+
+      write_file 'db/migrate/2_create_photo_albums.rb', <<-FILE
+        class CreatePhotoAlbums < #{migration_class_name}
+          def self.up
+            create_table :photo_albums do |t|
+            end
+          end
+        end
+      FILE
+
+      write_file 'app/models/photo_album.rb', <<-FILE
+        class PhotoAlbum < ActiveRecord::Base
+          # Note: All of these validations are listed in the same order as what's
+          # defined in the test (see below)
+
+          # ActiveRecord
+          has_many_attached :photos
+          has_one_attached  :cover
         end
       FILE
     end
 
-    def add_rspec_to_project
-      add_gem 'rspec-core', rspec_core_version
-      add_gem 'rspec-expectations', rspec_expectations_version
-      append_to_file 'spec/spec_helper.rb', <<-FILE
-        require 'rspec/core'
-        require 'rspec/expectations'
+    def create_files_to_test_matchers_above_version_5_2
+      run_rake_tasks!('action_text:install:migrations')
+
+      write_file 'db/migrate/3_create_posts.rb', <<-FILE
+        class CreatePosts < #{migration_class_name}
+          def self.up
+            create_table :posts do |t|
+              t.datetime :created_at
+            end
+          end
+        end
+      FILE
+
+      write_file 'app/models/post.rb', <<-FILE
+        class Post < ActiveRecord::Base
+          # Note: All of these validations are listed in the same order as what's
+          # defined in the test (see below)
+
+          # ActiveRecord
+          self.implicit_order_column = :created_at
+          has_rich_text                :description
+        end
       FILE
     end
 
-    def add_rspec_rails_to_project!
-      add_gem 'rspec-rails', rspec_rails_version
-      run_command_within_bundle!('rails g rspec:install')
-      remove_from_file '.rspec', '--warnings'
+    def create_files_for_minitest
+      create_minitest_files_to_version_below_5_2
+
+      if rails_gte_5_2?
+        create_minitest_files_to_version_5_2
+      end
+
+      if rails_6_x?
+        create_minitest_files_to_version_above_5_2
+      end
     end
 
-    def run_rspec_tests(*paths)
-      run_command_within_bundle 'rspec --format documentation --backtrace', *paths
+    def create_minitest_files_to_version_below_5_2
+      write_file 'test/unit/user_test.rb', <<-FILE
+        require 'test_helper'
+
+        class UserTest < ActiveSupport::TestCase
+          # ActiveModel matchers
+          should allow_value('https://foo.com').for(:website_url)
+          should have_secure_password
+          should validate_absence_of(:first_name)
+          should validate_acceptance_of(:terms_of_service)
+          should validate_confirmation_of(:email)
+          should validate_exclusion_of(:age).in_array(0..17)
+          should validate_inclusion_of(:role).in_array(%w( admin manager ))
+          should validate_length_of(:password).is_at_least(10).on(:create)
+          should validate_numericality_of(:number_of_dependents).on(:create)
+          should validate_presence_of(:email)
+
+          # ActiveRecord matchers
+          should have_many(:issues)
+          should accept_nested_attributes_for(:issues)
+          should belong_to(:organization)
+          should define_enum_for(:status)
+          should have_and_belong_to_many(:categories)
+          should have_db_column(:email)
+          should have_db_index(:organization_id)
+          should have_one(:profile)
+          should have_readonly_attribute(:username)
+          should serialize(:social_networks)
+          should validate_uniqueness_of(:email)
+        end
+      FILE
+
+      # TODO: ActionController matchers tests
     end
 
-    def run_rspec_suite
-      run_rake_tasks('spec', env: { SPEC_OPTS: '-fd' })
+    def create_minitest_files_to_version_5_2
+      write_file 'test/unit/photo_album_test.rb', <<-FILE
+        require 'test_helper'
+
+        class PhotoAlbumTest < ActiveSupport::TestCase
+          # ActiveRecord matchers
+          should have_many_attached(:photos)
+          should have_one_attached(:cover)
+        end
+      FILE
     end
 
-    def add_spring_to_project
-      add_gem 'spring-commands-rspec'
+    def create_minitest_files_to_version_above_5_2
+      write_file 'test/unit/post_test.rb', <<-FILE
+        require 'test_helper'
+
+        class PostTest < ActiveSupport::TestCase
+          # ActiveRecord matchers
+          should have_implicit_order_column(:created_at)
+          should have_rich_text(:description)
+        end
+      FILE
+    end
+
+    def create_files_for_rspec
+      create_specs_files_to_version_below_5_2
+
+      if rails_gte_5_2?
+        create_specs_files_to_version_5_2
+      end
+
+      if rails_6_x?
+        create_specs_files_to_version_above_5_2
+      end
+    end
+
+    def create_specs_files_to_version_below_5_2
+      add_rspec_file 'spec/models/user_spec.rb', <<-FILE
+        describe User do
+          # ActiveModel matchers
+          it { should allow_value('https://foo.com').for(:website_url) }
+          it { should have_secure_password }
+          it { should validate_absence_of(:first_name) }
+          it { should validate_acceptance_of(:terms_of_service) }
+          it { should validate_confirmation_of(:email) }
+          it { should validate_exclusion_of(:age).in_array(0..17) }
+          it { should validate_inclusion_of(:role).in_array(%w( admin manager )) }
+          it { should validate_length_of(:password).is_at_least(10).on(:create) }
+          it { should validate_numericality_of(:number_of_dependents).on(:create) }
+          it { should validate_presence_of(:email) }
+
+          # ActiveRecord matchers
+          it { should have_many(:issues) }
+          it { should accept_nested_attributes_for(:issues) }
+          it { should belong_to(:organization) }
+          it { should define_enum_for(:status) }
+          it { should have_and_belong_to_many(:categories) }
+          it { should have_db_column(:email) }
+          it { should have_db_index(:organization_id) }
+          it { should have_one(:profile) }
+          it { should have_readonly_attribute(:username) }
+          it { should serialize(:social_networks) }
+          it { should validate_uniqueness_of(:email) }
+        end
+      FILE
+
+      # TODO: ActionController matchers tests
+    end
+
+    def create_specs_files_to_version_5_2
+      add_rspec_file 'spec/models/photo_album_spec.rb', <<-FILE
+        describe PhotoAlbum do
+          # ActiveRecord matchers
+          it { should have_many_attached(:photos) }
+          it { should have_one_attached(:cover) }
+        end
+      FILE
+    end
+
+    def create_specs_files_to_version_above_5_2
+      add_rspec_file 'spec/models/post_spec.rb', <<-FILE
+        describe Post do
+          # ActiveRecord matchers
+          it { should have_implicit_order_column(:created_at) }
+          it { should have_rich_text(:description) }
+        end
+      FILE
+    end
+
+    def number_of_unit_tests
+      if rails_6_x?
+        25
+      elsif rails_gte_5_2?
+        # Note: It should not test:
+        # - have_implicit_order_column (Rails 6+)
+        # - have_rich_text             (Rails 6+)
+        23
+      else
+        # Note: It should not test:
+        # - have_implicit_order_column (Rails 6+)
+        # - have_many_attached         (Rails 5.2+)
+        # - have_one_attached          (Rails 5.2+)
+        # - have_rich_text             (Rails 6+)
+        21
+      end
     end
   end
 end

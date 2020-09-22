@@ -19,8 +19,8 @@ module Tests
       rails_version =~ '~> 5.0'
     end
 
-    def rails_gt_5?
-      rails_version > 5
+    def rails_6_x?
+      rails_version =~ '~> 6.0'
     end
 
     def rails_gte_5_2?
