@@ -78,6 +78,7 @@ module Tests
       end
     end
 
+    # TODO
     def comment_lines_matching(path, pattern)
       transform(path) do |lines|
         lines.map do |line|

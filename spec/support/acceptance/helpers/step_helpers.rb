@@ -226,7 +226,39 @@ module AcceptanceTests
         end
       FILE
 
-      # TODO: Controller file
+      # ActionController matchers
+      write_file 'app/controllers/users_controller.rb', <<-FILE
+        class UsersController < ApplicationController
+          # Note: All of these validations are listed in the same order as what's
+          # defined in the test (see below)
+
+          def show
+            @example = 'hello'
+            head :ok
+          end
+
+          def create
+            user_params
+          end
+
+          private
+  
+          def user_params
+            params.require(:user).permit(
+              :email,
+              :password
+            )
+          end
+        end
+      FILE
+
+      fs.transform('config/application.rb') do |lines|
+        lines.insert(-3, <<-TEXT)
+          config.filter_parameters << :secret_key
+        TEXT
+      end
+
+      configure_routes_with_single_wildcard_route
     end
 
     def create_files_to_test_matchers_of_version_5_2
@@ -322,7 +354,32 @@ module AcceptanceTests
         end
       FILE
 
-      # TODO: ActionController matchers tests
+      write_file 'test/functional/users_controller_test.rb', <<-FILE
+        require 'test_helper'
+
+        class UsersControllerTest < ActionController::TestCase
+          # ActionController matchers
+          def setup
+            get :show
+          end
+
+          should filter_param(:secret_key)
+          should "(for POST #create) restrict parameters on :user to email, and password" do
+            params = {
+              user: {
+                email: 'johndoe@example.com',
+                password: 'password'
+              }
+            }
+            matcher = permit(:email, :password).
+              for(:create, params: params).
+              on(:user)
+            assert_accepts matcher, subject
+          end
+
+          should respond_with(:success)
+        end
+      FILE
     end
 
     def create_minitest_files_to_version_5_2
@@ -391,7 +448,27 @@ module AcceptanceTests
         end
       FILE
 
-      # TODO: ActionController matchers tests
+      add_rspec_file 'spec/controllers/users_controller_spec.rb', <<-FILE
+        describe UsersController, "show" do
+          it { should filter_param(:secret_key) }
+          it do
+            params = {
+              user: {
+                email: 'johndoe@example.com',
+                password: 'password'
+              }
+            }
+            should permit(:email, :password).
+              for(:create, params: params).
+              on(:user)
+          end
+
+          context '.respond_with' do
+            before { get :show }
+            it { should respond_with(:success) }
+          end
+        end
+      FILE
     end
 
     def create_specs_files_to_version_5_2

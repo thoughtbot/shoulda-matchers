@@ -5,9 +5,6 @@ describe 'shoulda-matchers integrates with Rails' do
     create_rails_application
     create_files_in_rails_application
 
-    # TODO: ActionController matchers
-    # configure_routes_with_single_wildcard_route
-
     run_rake_tasks!('db:drop', 'db:create', 'db:migrate')
   end
 
@@ -82,7 +79,7 @@ describe 'shoulda-matchers integrates with Rails' do
 
     result = run_n_unit_test_suite
 
-    expect(result).to indicate_that_tests_were_run(unit: number_of_unit_tests)
+    expect(result).to indicate_that_tests_were_run(unit: number_of_unit_tests, functional: number_of_functional_tests)
   end
 
   def run_tests_for_rspec
@@ -90,6 +87,12 @@ describe 'shoulda-matchers integrates with Rails' do
 
     result = run_rspec_suite
 
-    expect(result).to have_output("#{number_of_unit_tests} examples, 0 failures")
+    expect(result).to have_output("#{tests_count} examples, 0 failures")
   end
+
+  def tests_count
+    number_of_unit_tests + number_of_functional_tests
+  end
+
+  let(:number_of_functional_tests) { 3 }
 end
