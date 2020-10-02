@@ -84,6 +84,8 @@ module Shoulda
 
       # @private
       class HaveDbColumnMatcher
+        OPTIONS = %i(precision limit default null scale primary)
+
         def initialize(column)
           @column = column
           @options = {}
@@ -95,7 +97,8 @@ module Shoulda
         end
 
         def with_options(opts = {})
-          %w(precision limit default null scale primary).each do |attribute|
+          validate_options(opts)
+          OPTIONS.each do |attribute|
             if opts.key?(attribute.to_sym)
               @options[attribute.to_sym] = opts[attribute.to_sym]
             end
@@ -136,6 +139,13 @@ module Shoulda
         end
 
         protected
+
+        def validate_options(opts)
+          invalid_options = opts.keys.map(&:to_sym) - OPTIONS
+          if invalid_options.any?
+            raise ArgumentError, "Unknown option(s): #{invalid_options.map(&:inspect).join(", ")}"
+          end
+        end
 
         def column_exists?
           if model_class.column_names.include?(@column.to_s)
