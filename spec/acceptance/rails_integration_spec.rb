@@ -24,14 +24,13 @@ describe 'shoulda-matchers integrates with Rails' do
 
     write_file 'app/controllers/examples_controller.rb', <<-FILE
       class ExamplesController < ApplicationController
-        def show
-          @example = 'hello'
+        def index
           head :ok
         end
       end
     FILE
 
-    configure_routes_with_single_wildcard_route
+    configure_routes
   end
 
   specify 'in a project that uses the default test framework' do
@@ -114,7 +113,7 @@ describe 'shoulda-matchers integrates with Rails' do
 
       class ExamplesControllerTest < ActionController::TestCase
         def setup
-          get :show
+          get :index
         end
 
         should respond_with(:success)
@@ -139,7 +138,7 @@ describe 'shoulda-matchers integrates with Rails' do
 
     add_rspec_file 'spec/controllers/examples_controller_spec.rb', <<-FILE
       describe ExamplesController, "show" do
-        before { get :show }
+        before { get :index }
 
         it { should respond_with(:success) }
       end

@@ -83,10 +83,10 @@ module AcceptanceTests
       end
     end
 
-    def configure_routes_with_single_wildcard_route
+    def configure_routes
       write_file 'config/routes.rb', <<-FILE
         Rails.application.routes.draw do
-          get ':controller(/:action(/:id(.:format)))'
+          resources :examples, only: :index
         end
       FILE
     end
