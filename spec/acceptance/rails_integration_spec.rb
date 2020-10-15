@@ -137,7 +137,7 @@ describe 'shoulda-matchers integrates with Rails' do
     FILE
 
     add_rspec_file 'spec/controllers/examples_controller_spec.rb', <<-FILE
-      describe ExamplesController, "show" do
+      describe ExamplesController, "index" do
         before { get :index }
 
         it { should respond_with(:success) }
