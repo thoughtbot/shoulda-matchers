@@ -80,7 +80,7 @@ module Shoulda
       #
       #     RSpec.describe Post, type: :model do
       #       describe "validations" do
-      #         subject { Post.create(content: "Here is the content") }
+      #         subject { Post.new(content: "Here is the content") }
       #         it { should validate_uniqueness_of(:title) }
       #       end
       #     end
@@ -92,7 +92,7 @@ module Shoulda
       #
       #     RSpec.describe Post, type: :model do
       #       describe "validations" do
-      #         subject { FactoryBot.create(:post) }
+      #         subject { FactoryBot.build(:post) }
       #         it { should validate_uniqueness_of(:title) }
       #       end
       #     end
