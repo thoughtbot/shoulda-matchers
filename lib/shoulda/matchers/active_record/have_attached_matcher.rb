@@ -1,10 +1,52 @@
 module Shoulda
   module Matchers
     module ActiveRecord
+      # The `have_one_attached` matcher tests usage of the
+      # `has_one_attached` macro.
+      #
+      # #### Example
+      #
+      #     class User < ApplicationRecord
+      #       has_one_attached :avatar
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe User, type: :model do
+      #       it { should have_one_attached(:avatar) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class UserTest < ActiveSupport::TestCase
+      #       should have_one_attached(:avatar)
+      #     end
+      #
+      # @return [HaveAttachedMatcher]
+      #
       def have_one_attached(name)
         HaveAttachedMatcher.new(:one, name)
       end
 
+      # The `have_many_attached` matcher tests usage of the
+      # `has_many_attached` macro.
+      #
+      # #### Example
+      #
+      #     class Message < ApplicationRecord
+      #       has_many_attached :images
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Message, type: :model do
+      #       it { should have_many_attached(:images) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class MessageTest < ActiveSupport::TestCase
+      #       should have_many_attached(:images)
+      #     end
+      #
+      # @return [HaveAttachedMatcher]
+      #
       def have_many_attached(name)
         HaveAttachedMatcher.new(:many, name)
       end
