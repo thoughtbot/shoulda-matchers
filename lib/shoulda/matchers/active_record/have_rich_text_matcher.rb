@@ -12,7 +12,7 @@ module Shoulda
       #
       #     # RSpec
       #     RSpec.describe Post, type: :model do
-      #       it { is_expected.to have_rich_text(:content) }
+      #       it { should have_rich_text(:content) }
       #     end
       #
       #     # Minitest (Shoulda)
