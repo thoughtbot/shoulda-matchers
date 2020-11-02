@@ -1,6 +1,6 @@
 require 'unit_spec_helper'
 
-describe Shoulda::Matchers::ActiveRecord::HaveRichText, type: :model do
+describe Shoulda::Matchers::ActiveRecord::HaveRichTextMatcher, type: :model do
   def self.rich_text_is_defined?
     defined?(ActionText::RichText)
   end
