@@ -20,14 +20,14 @@ module Shoulda
       #       should have_rich_text(:content)
       #     end
       #
-      # @return [HaveRichText]
+      # @return [HaveRichTextMatcher]
       #
       def have_rich_text(rich_text_attribute)
-        HaveRichText.new(rich_text_attribute)
+        HaveRichTextMatcher.new(rich_text_attribute)
       end
 
       # @private
-      class HaveRichText
+      class HaveRichTextMatcher
         def initialize(rich_text_attribute)
           @rich_text_attribute = rich_text_attribute
         end
