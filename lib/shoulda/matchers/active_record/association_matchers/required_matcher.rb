@@ -33,9 +33,9 @@ module Shoulda
                 end
 
               missing_option << (
-                'fail validation if ' +
-                ":#{attribute_name} is unset; i.e., either the association " +
-                'should have been defined with `required: ' +
+                'fail validation if '\
+                ":#{attribute_name} is unset; i.e., either the association "\
+                'should have been defined with `required: '\
                 "#{required.inspect}`, or there "
               )
 

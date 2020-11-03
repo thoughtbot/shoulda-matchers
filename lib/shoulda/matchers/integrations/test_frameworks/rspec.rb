@@ -6,7 +6,8 @@ module Shoulda
         class Rspec
           Integrations.register_test_framework(self, :rspec)
 
-          def validate!; end
+          def validate!
+          end
 
           def include(*modules, **options)
             ::RSpec.configure do |config|

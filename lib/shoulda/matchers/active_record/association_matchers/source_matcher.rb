@@ -22,7 +22,8 @@ module Shoulda
             if option_verifier.correct_for_string?(:source, source)
               true
             else
-              self.missing_option = "#{name} should have #{source} as source option"
+              self.missing_option =
+                "#{name} should have #{source} as source option"
               false
             end
           end

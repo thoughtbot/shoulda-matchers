@@ -81,8 +81,10 @@ describe Shoulda::Matchers::ActiveModel::Helpers do
 
     context 'if ActiveModel::Errors#generate_message behavior has changed' do
       it 'provides the right error message for validate_presence_of' do
-        stub_active_model_message_generation(type: :blank,
-                                             message: 'Behavior has diverged.',)
+        stub_active_model_message_generation(
+          type: :blank,
+          message: 'Behavior has diverged.',
+        )
         assert_presence_validation_has_correct_message
       end
     end
@@ -102,7 +104,7 @@ describe Shoulda::Matchers::ActiveModel::Helpers do
     expect(record).to validate_length_of(:attr).is_equal_to(40)
   end
 
-  def store_translations(options = { without: [] })
+  def store_translations(options = { without: [] }) # rubocop:disable Metrics/MethodLength
     options[:without] = Array.wrap(options[:without] || [])
 
     translations = {

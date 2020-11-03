@@ -48,9 +48,12 @@ module Shoulda
 
           def build_relation_with_clause(name, value)
             case name
-            when :conditions then associated_class.where(value)
-            when :order      then associated_class.order(value)
-            else                  raise ArgumentError, "Unknown clause '#{name}'"
+            when :conditions
+              associated_class.where(value)
+            when :order
+              associated_class.order(value)
+            else
+              raise ArgumentError, "Unknown clause '#{name}'"
             end
           end
 
@@ -59,7 +62,9 @@ module Shoulda
             when :conditions
               relation.where_values_hash
             when :order
-              relation.order_values.map { |value| value_as_sql(value) }.join(', ')
+              relation.order_values.map do |value|
+                value_as_sql(value)
+              end.join(', ')
             else
               raise ArgumentError, "Unknown clause '#{name}'"
             end

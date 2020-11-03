@@ -5,7 +5,8 @@ module Tests
         :sqlite3
       end
 
-      def initialize(_database); end
+      def initialize(_database)
+      end
 
       def adapter
         self.class.name

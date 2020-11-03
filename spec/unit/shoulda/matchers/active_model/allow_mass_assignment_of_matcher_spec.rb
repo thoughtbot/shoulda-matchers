@@ -32,8 +32,11 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher, type: :mo
 
     context 'an attribute that is not whitelisted for mass-assignment' do
       it 'rejects being mass-assignable' do
-        model = define_model(:example, not_whitelisted: :string,
-                                       whitelisted: :string,) do
+        model = define_model(
+          :example,
+          not_whitelisted: :string,
+          whitelisted: :string,
+        ) do
           attr_accessible :whitelisted
         end.new
 
@@ -51,8 +54,11 @@ describe Shoulda::Matchers::ActiveModel::AllowMassAssignmentOfMatcher, type: :mo
 
     context 'an attribute not included in the mass-assignment blacklist' do
       it 'accepts being mass-assignable' do
-        model = define_model(:example, not_blacklisted: :string,
-                                       blacklisted: :string,) do
+        model = define_model(
+          :example,
+          not_blacklisted: :string,
+          blacklisted: :string,
+        ) do
           attr_protected :blacklisted
         end.new
 

@@ -1,7 +1,7 @@
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::HaveSecurePasswordMatcher, type: :model do
-  context "with no arguments passed to has_secure_password" do
+  context 'with no arguments passed to has_secure_password' do
     it 'matches when the subject configures has_secure_password with default options' do
       working_model = define_model(:example, password_digest: :string) { has_secure_password }
       expect(working_model.new).to have_secure_password
@@ -19,7 +19,7 @@ describe Shoulda::Matchers::ActiveModel::HaveSecurePasswordMatcher, type: :model
   end
 
   if active_model_supports_custom_has_secure_password_attribute?
-    context "when custom attribute is given to has_secure_password" do
+    context 'when custom attribute is given to has_secure_password' do
       it 'matches when the subject configures has_secure_password with correct options' do
         working_model = define_model(:example, reset_password_digest: :string) { has_secure_password :reset_password }
         expect(working_model.new).to have_secure_password :reset_password

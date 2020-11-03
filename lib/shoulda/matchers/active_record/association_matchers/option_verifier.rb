@@ -107,7 +107,10 @@ module Shoulda
           end
 
           def actual_value_for_relation_clause(name)
-            reflector.extract_relation_clause_from(reflector.association_relation, name)
+            reflector.extract_relation_clause_from(
+              reflector.association_relation,
+              name,
+            )
           end
 
           def actual_value_for_class_name

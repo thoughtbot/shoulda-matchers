@@ -4,6 +4,11 @@ require:
 AllCops:
   NewCops: disable
   TargetRubyVersion: 2.4
+  Exclude:
+    - 'gemfiles/*'
+Bundler/OrderedGems:
+  Include:
+    - '**/Gemfile'
 Layout/ArgumentAlignment:
   EnforcedStyle: with_fixed_indentation
 Layout/CommentIndentation:
@@ -20,10 +25,12 @@ Layout/LineLength:
   Exclude:
     - spec/**/*
   IgnoredPatterns:
+    - !ruby/regexp /\A +(it|describe|context|shared_examples|include_examples|it_behaves_like) ["']/
+    - !ruby/regexp /\A(require|require_relative) ["']/
     - '^[ ]*#.+$'
     - '^[ ]*''.+?'' => ''.+?'',?$'
     - '^[ ]*".+?" => ".+?",?$'
-  Max: 120
+  Max: 80
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 Layout/ParameterAlignment:
@@ -51,6 +58,8 @@ Lint/LiteralInInterpolation:
   Enabled: false
 Lint/Loop:
   Enabled: false
+Lint/MissingSuper:
+  Enabled: false
 Lint/ParenthesesAsGroupedExpression:
   Enabled: false
 Lint/RequireParentheses:
@@ -64,10 +73,12 @@ Lint/UnderscorePrefixedVariableName:
 Lint/Void:
   Enabled: false
 Metrics/AbcSize:
-  Max: 25
+  Enabled: false
 Metrics/BlockLength:
   Enabled: false
 Metrics/ClassLength:
+  Enabled: false
+Metrics/CyclomaticComplexity:
   Enabled: false
 Metrics/MethodLength:
   Max: 30
@@ -78,7 +89,7 @@ Metrics/ModuleLength:
 Metrics/ParameterLists:
   CountKeywordArgs: false
 Metrics/PerceivedComplexity:
-  Max: 10
+  Enabled: false
 Naming/AccessorMethodName:
   Enabled: false
 Naming/AsciiIdentifiers:
@@ -92,6 +103,8 @@ Naming/HeredocDelimiterNaming:
 Naming/MemoizedInstanceVariableName:
   EnforcedStyleForLeadingUnderscores: required
 Naming/PredicateName:
+  Enabled: false
+Naming/RescuedExceptionsVariableName:
   Enabled: false
 Rails/Date:
   Enabled: false
@@ -143,6 +156,8 @@ Style/EmptyElse:
   Enabled: false
 Style/EmptyLiteral:
   Enabled: false
+Style/EmptyMethod:
+  EnforcedStyle: expanded
 Style/Encoding:
   Enabled: false
 Style/EvenOdd:
@@ -162,6 +177,8 @@ Style/IfUnlessModifier:
 Style/IfWithSemicolon:
   Enabled: false
 Style/InlineComment:
+  Enabled: false
+Style/InverseMethods:
   Enabled: false
 Style/Lambda:
   Enabled: false
@@ -188,6 +205,8 @@ Style/NumericLiterals:
 Style/NumericPredicate:
   Enabled: false
 Style/OneLineConditional:
+  Enabled: false
+Style/OptionalBooleanParameter:
   Enabled: false
 Style/ParenthesesAroundCondition:
   Enabled: false

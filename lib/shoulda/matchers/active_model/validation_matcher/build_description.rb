@@ -15,10 +15,8 @@ module Shoulda
 
           def call
             if description_clauses_for_qualifiers.any?
-              main_description +
-                clause_for_allow_blank_or_nil +
-                ', ' +
-                description_clauses_for_qualifiers.to_sentence
+              "#{main_description}#{clause_for_allow_blank_or_nil},"\
+              " #{description_clauses_for_qualifiers.to_sentence}"
             else
               main_description + clause_for_allow_blank_or_nil
             end

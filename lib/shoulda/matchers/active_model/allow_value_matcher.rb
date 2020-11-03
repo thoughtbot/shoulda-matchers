@@ -423,40 +423,41 @@ module Shoulda
           end
 
           if include_attribute_changed_value_message?
-            message << "\n\n" + attribute_changed_value_message.call
+            message << "\n\n#{attribute_changed_value_message.call}"
           end
 
           Shoulda::Matchers.word_wrap(message)
         end
 
-        def failure_message_when_negated
+        def failure_message_when_negated # rubocop:disable Metrics/MethodLength
           attribute_setter = result.attribute_setter
 
           if attribute_setter.unsuccessfully_checked?
             message = attribute_setter.failure_message
           else
             validator = result.validator
-            message = failure_message_preface.call + ' invalid'
+            message = "#{failure_message_preface.call} invalid"
 
             if validator.type_of_message_matched?
               if validator.has_messages?
                 message << ' and to'
 
-                if validator.captured_validation_exception?
+                if validator.captured_validation_exception? # rubocop:disable Metrics/BlockNesting
                   message << ' raise a validation exception with message'
                 else
                   message << ' produce'
 
-                  message << if expected_message.is_a?(Regexp)
-                               ' a'
-                             else
-                               ' the'
-                             end
+                  message <<
+                    if expected_message.is_a?(Regexp) # rubocop:disable Metrics/BlockNesting
+                      ' a'
+                    else
+                      ' the'
+                    end
 
                   message << ' validation error'
                 end
 
-                if expected_message.is_a?(Regexp)
+                if expected_message.is_a?(Regexp) # rubocop:disable Metrics/BlockNesting
                   message << ' matching '
                   message << Shoulda::Matchers::Util.inspect_value(
                     expected_message,
@@ -465,13 +466,13 @@ module Shoulda
                   message << " #{expected_message.inspect}"
                 end
 
-                unless validator.captured_validation_exception?
+                unless validator.captured_validation_exception? # rubocop:disable Metrics/BlockNesting
                   message << " on :#{attribute_to_check_message_against}"
                 end
 
                 message << '. The record was indeed invalid, but'
 
-                if validator.captured_validation_exception?
+                if validator.captured_validation_exception? # rubocop:disable Metrics/BlockNesting
                   message << ' the exception message was '
                   message << validator.validation_exception_message.inspect
                   message << ' instead.'
@@ -492,7 +493,7 @@ module Shoulda
           end
 
           if include_attribute_changed_value_message?
-            message << "\n\n" + attribute_changed_value_message.call
+            message << "\n\n#{attribute_changed_value_message.call}"
           end
 
           Shoulda::Matchers.word_wrap(message)
@@ -531,7 +532,8 @@ module Shoulda
 
         def run(strategy)
           attribute_setters_for_values_to_preset.first_failing ||
-            attribute_setters_and_validators_for_values_to_set.public_send(strategy)
+            attribute_setters_and_validators_for_values_to_set.
+              public_send(strategy)
         end
 
         def failure_message_preface

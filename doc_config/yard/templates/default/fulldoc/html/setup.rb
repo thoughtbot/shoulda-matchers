@@ -17,12 +17,15 @@ def class_list(root = Registry.root, tree = TreeContext.new)
     next unless child.is_a?(CodeObjects::NamespaceObject)
 
     name = child.namespace.is_a?(CodeObjects::Proxy) ? child.path : child.name
-    has_children = run_verifier(child.children).any? {|o| o.is_a?(CodeObjects::NamespaceObject) }
+    has_children = run_verifier(child.children).
+      any? {|o| o.is_a?(CodeObjects::NamespaceObject) }
     out << "<li id='object_#{child.path}' class='#{tree.classes.join(' ')}'>"
     out << "<div class='item'>"
     out << "<a class='toggle'></a> " if has_children
     out << linkify(child, name)
-    out << " &lt; #{child.superclass.name}" if child.is_a?(CodeObjects::ClassObject) && child.superclass
+    if child.is_a?(CodeObjects::ClassObject) && child.superclass
+      out << " &lt; #{child.superclass.name}"
+    end
     out << "<small class='search_info'>"
     out << child.namespace.title
     out << '</small>'

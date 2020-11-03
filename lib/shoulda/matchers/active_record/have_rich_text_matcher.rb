@@ -33,7 +33,8 @@ module Shoulda
         end
 
         def description
-          "have configured :#{rich_text_attribute} as a ActionText::RichText association"
+          "have configured :#{rich_text_attribute} as a "\
+          'ActionText::RichText association'
         end
 
         def failure_message
@@ -41,7 +42,8 @@ module Shoulda
         end
 
         def failure_message_when_negated
-          "Did not expect #{subject.class} to have ActionText::RichText :#{rich_text_attribute}"
+          "Did not expect #{subject.class} to have ActionText::RichText"\
+          " :#{rich_text_attribute}"
         end
 
         def matches?(subject)
@@ -67,7 +69,9 @@ module Shoulda
         end
 
         def has_expected_action_text?
-          @subject.send(rich_text_attribute).class.name == 'ActionText::RichText'
+          defined?(ActionText::RichText) &&
+            @subject.send(rich_text_attribute).
+              instance_of?(ActionText::RichText)
         end
 
         def error_description

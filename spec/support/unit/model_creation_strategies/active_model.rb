@@ -107,7 +107,7 @@ module UnitTests
           middle = '%s:0x%014x%s' % [ # rubocop:disable Style/FormatStringToken
             self.class,
             object_id * 2,
-            ' ' + inspected_attributes.join(' '),
+            " #{inspected_attributes.join(' ')}",
           ]
 
           "#<#{middle.strip}>"

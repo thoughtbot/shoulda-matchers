@@ -18,10 +18,13 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://matchers.shoulda.io/'
   s.summary     = 'Simple one-liner tests for common Rails functionality'
   s.license     = 'MIT'
-  s.description = 'Shoulda Matchers provides RSpec- and Minitest-compatible one-liners to test
-                   common Rails functionality that, if written by hand, would be much longer, more complex,
-                   and error-prone.'
-  s.metadata    = {
+  s.description = <<~DESC.tr("\n", ' ').squeeze(' ')
+    Shoulda Matchers provides RSpec- and Minitest-compatible one-liners to test
+    common Rails functionality that, if written by hand, would be much
+    longer, more complex, and error-prone.
+  DESC
+
+  s.metadata = {
     'bug_tracker_uri' => 'https://github.com/thoughtbot/shoulda-matchers/issues',
     'changelog_uri' => 'https://github.com/thoughtbot/shoulda-matchers/blob/master/CHANGELOG.md',
     'documentation_uri' => 'https://matchers.shoulda.io/docs',
@@ -29,7 +32,8 @@ Gem::Specification.new do |s|
     'source_code_uri' => 'https://github.com/thoughtbot/shoulda-matchers',
   }
 
-  s.files = Dir['{docs,lib}/**/*', 'README.md', 'LICENSE', 'shoulda-matchers.gemspec']
+  s.files = Dir['{docs,lib}/**/*', 'README.md', 'LICENSE',
+    'shoulda-matchers.gemspec']
   s.require_paths = ['lib']
 
   s.required_ruby_version = '>= 2.4.0'

@@ -156,7 +156,7 @@ module Shoulda
 
           description <<
             if qualifiers.include?(:unique)
-              Shoulda::Matchers::Util.a_or_an(index_type) + ' '
+              "#{Shoulda::Matchers::Util.a_or_an(index_type)} "
             else
               'an '
             end

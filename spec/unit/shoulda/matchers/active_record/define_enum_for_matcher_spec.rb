@@ -24,7 +24,8 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
   context 'if a method to hold enum values exists on the model but was not created via the enum macro' do
     it 'rejects with an appropriate failure message' do
       model = define_model 'Example' do
-        def self.statuses; end
+        def self.statuses
+        end
       end
 
       message = format_message(<<-MESSAGE)

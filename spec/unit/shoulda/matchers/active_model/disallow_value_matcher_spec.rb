@@ -36,8 +36,10 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher, type: :model do
     end
 
     it "delegates its failure message to its allow matcher's negative failure message" do
-      allow_matcher = double('allow_matcher',
-        failure_message_when_negated: 'allow matcher failure',).as_null_object
+      allow_matcher = double(
+        'allow_matcher',
+        failure_message_when_negated: 'allow matcher failure',
+      ).as_null_object
       allow(Shoulda::Matchers::ActiveModel::AllowValueMatcher).
         to receive(:new).
         and_return(allow_matcher)
@@ -68,8 +70,12 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher, type: :model do
     def record_with_custom_validation
       define_model :example, attr: :string, attr2: :string do
         validate :custom_validation
-        custom_validation = -> { errors[:attr2] << 'some message' if self[:attr] != 'good value' }
-        custom_validation.call
+
+        def custom_validation # rubocop:disable Lint/NestedMethodDefinition
+          if self[:attr] != 'good value'
+            errors[:attr2] << 'some message'
+          end
+        end
       end.new
     end
   end

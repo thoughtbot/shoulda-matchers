@@ -24,11 +24,12 @@ module AcceptanceTests
         message = "Expected output to indicate that #{some_tests_were_run}.\n" +
                   "Expected output: #{expected_output}\n"
 
-        message << if actual_output.empty?
-                     'Actual output: (empty)'
-                   else
-                     "Actual output:\n#{actual_output}"
-                   end
+        message <<
+          if actual_output.empty?
+            'Actual output: (empty)'
+          else
+            "Actual output:\n#{actual_output}"
+          end
 
         message
       end
@@ -48,7 +49,7 @@ module AcceptanceTests
       end
 
       def some_tests_were_run
-        pluralize(number, 'test was', 'tests were') + ' run'
+        "#{pluralize(number, 'test was', 'tests were')} run"
       end
     end
   end

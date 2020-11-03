@@ -489,6 +489,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
                   with_belongs_to_as_optional_by_default do
                     child_model = create_child_model_belonging_to_parent do
                       attr_accessor :condition
+
                       validates_presence_of :parent, if: :condition
                     end
 
@@ -504,6 +505,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
                   with_belongs_to_as_optional_by_default do
                     child_model = create_child_model_belonging_to_parent do
                       attr_accessor :condition
+
                       validates_presence_of :parent, if: :condition
                     end
 
@@ -535,6 +537,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
               it 'passes' do
                 child_model = create_child_model_belonging_to_parent do
                   attr_accessor :condition
+
                   validates_presence_of :parent, if: :condition
                 end
 
@@ -548,6 +551,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
               it 'passes' do
                 child_model = create_child_model_belonging_to_parent do
                   attr_accessor :condition
+
                   validates_presence_of :parent, if: :condition
                 end
 
@@ -916,8 +920,11 @@ Expected Parent to have a has_many association called children through conceptio
     end
 
     it 'rejects an association with a bad :as option' do
-      define_model :child, caretaker_type: :string,
-                           caretaker_id: :integer
+      define_model(
+        :child,
+        caretaker_type: :string,
+        caretaker_id: :integer,
+      )
       define_model :parent do
         has_many :children, as: :guardian
       end
@@ -1159,7 +1166,7 @@ Expected Parent to have a has_many association called children through conceptio
           end
 
           message =
-            'Expected Parent to have a has_many association called children ' +
+            'Expected Parent to have a has_many association called children '\
             '(children should have index_errors set to true)'
 
           expect {

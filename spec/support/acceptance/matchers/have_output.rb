@@ -15,10 +15,10 @@ module AcceptanceTests
       end
 
       def failure_message
-        "Expected command to have output, but did not.\n\n" +
-          "Command: #{runner.formatted_command}\n\n" +
+        "Expected command to have output, but did not.\n\n"\
+          "Command: #{runner.formatted_command}\n\n"\
           "Expected output:\n" +
-          output.inspect + "\n\n" +
+          output.inspect + "\n\n"\
           "Actual output:\n" +
           runner.output
       end

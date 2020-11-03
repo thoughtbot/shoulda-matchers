@@ -41,6 +41,6 @@ module Kernel
   end
 
   def silence_stderr
-    silence_stream(STDERR) { yield }
+    silence_stream($stderr) { yield if block_given? }
   end
 end

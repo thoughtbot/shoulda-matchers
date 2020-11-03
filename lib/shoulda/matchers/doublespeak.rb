@@ -21,7 +21,7 @@ module Shoulda
 
         def debug(&block)
           if debugging_enabled?
-            Logger.new(STDOUT).debug block.call
+            puts block.call # rubocop:disable Rails/Output
           end
         end
       end

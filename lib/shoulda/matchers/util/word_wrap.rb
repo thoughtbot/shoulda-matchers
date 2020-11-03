@@ -44,7 +44,7 @@ module Shoulda
       LIST_ITEM_REGEXP = /\A((?:[a-z0-9]+(?:\)|\.)|\*) )/.freeze
 
       def indented?
-        self =~ /\A[ ]+/
+        self =~ /\A +/
       end
 
       def list_item?
@@ -92,7 +92,7 @@ module Shoulda
           if line.list_item?
             combined_lines << line
           else
-            combined_lines.last << (' ' + line).squeeze(' ')
+            combined_lines.last << (" #{line}").squeeze(' ')
           end
 
           combined_lines
@@ -169,7 +169,7 @@ module Shoulda
         end
       end
 
-      def wrap_line(line, _direction: :left)
+      def wrap_line(line)
         index = nil
 
         if line.length > Shoulda::Matchers::WordWrap::TERMINAL_WIDTH

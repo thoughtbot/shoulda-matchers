@@ -9,7 +9,7 @@ module Tests
       @fs = Filesystem.new
     end
 
-    def updating(&_block)
+    def updating
       if already_updating?
         yield self
         return
@@ -35,7 +35,7 @@ module Tests
 
     def remove_gem(gem)
       updating do
-        fs.comment_lines_matching('Gemfile', /^[ ]*gem ("|')#{gem}\1/)
+        fs.comment_lines_matching('Gemfile', /^ *gem ("|')#{gem}\1/)
       end
     end
 

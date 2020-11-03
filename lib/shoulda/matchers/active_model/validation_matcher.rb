@@ -137,14 +137,14 @@ module Shoulda
 
         def overall_failure_message
           Shoulda::Matchers.word_wrap(
-            "Expected #{model.name} to #{description}, but this could not be " +
+            "Expected #{model.name} to #{description}, but this could not be "\
             'proved.',
           )
         end
 
         def overall_failure_message_when_negated
           Shoulda::Matchers.word_wrap(
-            "Expected #{model.name} not to #{description}, but this could " +
+            "Expected #{model.name} not to #{description}, but this could "\
             'not be proved.',
           )
         end

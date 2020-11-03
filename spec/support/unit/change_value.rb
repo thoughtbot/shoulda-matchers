@@ -85,7 +85,7 @@ module UnitTests
     end
 
     def add_character
-      value + 'a'
+      "#{value}a"
     end
 
     def remove_character

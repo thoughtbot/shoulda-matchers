@@ -768,7 +768,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
           valid_values = booleans
           builder = build_object_allowing(valid_values)
           message =
-            'You are using `validate_inclusion_of` to assert that a boolean ' +
+            'You are using `validate_inclusion_of` to assert that a boolean '\
             'column allows boolean values and disallows non-boolean ones'
 
           stderr = capture(:stderr) do
@@ -829,7 +829,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
             valid_values = [nil]
             builder = build_object_allowing(valid_values)
             message =
-              'You are using `validate_inclusion_of` to assert that a ' +
+              'You are using `validate_inclusion_of` to assert that a '\
               'boolean column allows nil'
 
             stderr = capture(:stderr) do

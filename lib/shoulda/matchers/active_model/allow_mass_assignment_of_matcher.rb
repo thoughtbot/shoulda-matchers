@@ -89,21 +89,24 @@ module Shoulda
           @subject = subject
           if attr_mass_assignable?
             if whitelisting?
-              @failure_message_when_negated = "#{@attribute} was made accessible"
+              @failure_message_when_negated = "#{@attribute} was made "\
+                'accessible'
             elsif protected_attributes.empty?
               @failure_message_when_negated = 'no attributes were protected'
             else
-              @failure_message_when_negated = "#{class_name} is protecting " <<
-                                              "#{protected_attributes.to_a.to_sentence}, " <<
-                                              "but not #{@attribute}."
+              @failure_message_when_negated =
+                "#{class_name} is protecting " <<
+                "#{protected_attributes.to_a.to_sentence}, " <<
+                "but not #{@attribute}."
             end
             true
           else
-            @failure_message = if whitelisting?
-                                 "Expected #{@attribute} to be accessible"
-                               else
-                                 "Did not expect #{@attribute} to be protected"
-                               end
+            @failure_message =
+              if whitelisting?
+                "Expected #{@attribute} to be accessible"
+              else
+                "Did not expect #{@attribute} to be protected"
+              end
             false
           end
         end
@@ -133,7 +136,8 @@ module Shoulda
         end
 
         def accessible_attributes
-          @_accessible_attributes ||= (@subject.class.accessible_attributes || [])
+          @_accessible_attributes ||=
+            (@subject.class.accessible_attributes || [])
         end
 
         def whitelisting?

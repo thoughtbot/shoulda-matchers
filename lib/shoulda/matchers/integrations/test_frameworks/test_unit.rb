@@ -6,7 +6,8 @@ module Shoulda
         class TestUnit
           Integrations.register_test_framework(self, :test_unit)
 
-          def validate!; end
+          def validate!
+          end
 
           def include(*modules, **_options)
             test_case_class.class_eval do

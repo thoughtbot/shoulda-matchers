@@ -237,7 +237,7 @@ module Shoulda
               "Expected #{model} to #{expectation}, but "
             end
 
-          message << failure_message_continuation + '.'
+          message << "#{failure_message_continuation}."
 
           Shoulda::Matchers.word_wrap(message)
         end
@@ -252,7 +252,7 @@ module Shoulda
         attr_reader :attribute_name, :options, :record,
           :failure_message_continuation
 
-        def expectation
+        def expectation # rubocop:disable Metrics/MethodLength
           if enum_defined?
             expectation = "#{simple_description} backed by "
             expectation << Shoulda::Matchers::Util.a_or_an(expected_column_type)
@@ -358,8 +358,8 @@ module Shoulda
             true
           else
             @failure_message_continuation =
-              "However, #{attribute_name.inspect} is " +
-              Shoulda::Matchers::Util.a_or_an(column.type) +
+              "However, #{attribute_name.inspect} is "\
+              "#{Shoulda::Matchers::Util.a_or_an(column.type)}"\
               ' column'
             false
           end
@@ -421,9 +421,9 @@ module Shoulda
         def expected_prefix
           if options.include?(:prefix)
             if options[:prefix] == true
-              attribute_name # .to_sym
+              attribute_name
             else
-              options[:prefix] # .to_sym
+              options[:prefix]
             end
           end
         end
@@ -431,9 +431,9 @@ module Shoulda
         def expected_suffix
           if options.include?(:suffix)
             if options[:suffix] == true
-              attribute_name # .to_sym
+              attribute_name
             else
-              options[:suffix] # .to_sym
+              options[:suffix]
             end
           end
         end

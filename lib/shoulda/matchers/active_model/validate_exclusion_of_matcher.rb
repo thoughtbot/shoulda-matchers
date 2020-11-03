@@ -146,11 +146,12 @@ module Shoulda
           else
             description = "validate that :#{@attribute}"
 
-            description << if @array.many?
-                             " is neither #{inspected_array}"
-                           else
-                             " is not #{inspected_array}"
-                           end
+            description <<
+              if @array.many?
+                " is neither #{inspected_array}"
+              else
+                " is not #{inspected_array}"
+              end
 
             description
           end

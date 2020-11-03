@@ -413,11 +413,12 @@ module Shoulda
           else
             @failure_reason = 'Expected the validation '
 
-            @failure_reason << if expected_scopes.empty?
-                                 'not to be scoped to anything, '
-                               else
-                                 "to be scoped to #{inspected_expected_scopes}, "
-                               end
+            @failure_reason <<
+              if expected_scopes.empty?
+                'not to be scoped to anything, '
+              else
+                "to be scoped to #{inspected_expected_scopes}, "
+              end
 
             if actual_sets_of_scopes.any?
               @failure_reason << 'but it was scoped to '
@@ -497,7 +498,9 @@ module Shoulda
         def does_not_match_allow_nil?
           expects_to_allow_nil? && (
             update_existing_record!(nil) &&
-            (@failure_reason = nil || disallows_value_of(nil, @expected_message))
+            (@failure_reason = nil ||
+              disallows_value_of(nil, @expected_message)
+            )
           )
         end
 
@@ -533,8 +536,7 @@ module Shoulda
         end
 
         def find_existing_record
-          record = model.first
-          record.presence
+          model.first.presence
         end
 
         def create_existing_record
@@ -620,11 +622,12 @@ module Shoulda
 
             reason << inspected_scopes.to_sentence
 
-            reason << if inspected_scopes.many?
-                        ' do not seem to be attributes'
-                      else
-                        ' does not seem to be an attribute'
-                      end
+            reason <<
+              if inspected_scopes.many?
+                ' do not seem to be attributes'
+              else
+                ' does not seem to be an attribute'
+              end
 
             reason << " on #{model.name}."
 
@@ -644,11 +647,12 @@ module Shoulda
 
             reason << inspected_scopes.to_sentence
 
-            reason << if inspected_scopes.many?
-                        ' seem to be attributes'
-                      else
-                        ' seems to be an attribute'
-                      end
+            reason <<
+              if inspected_scopes.many?
+                ' seem to be attributes'
+              else
+                ' seems to be an attribute'
+              end
 
             reason << " on #{model.name}."
 
@@ -897,13 +901,14 @@ module Shoulda
         end
 
         def build_attribute_setter(record, attribute_name, value)
-          Shoulda::Matchers::ActiveModel::AllowValueMatcher::AttributeSetter.new(
-            matcher_name: :validate_uniqueness_of,
-            object: record,
-            attribute_name: attribute_name,
-            value: value,
-            ignore_interference_by_writer: ignore_interference_by_writer,
-          )
+          Shoulda::Matchers::ActiveModel::AllowValueMatcher::AttributeSetter.
+            new(
+              matcher_name: :validate_uniqueness_of,
+              object: record,
+              attribute_name: attribute_name,
+              value: value,
+              ignore_interference_by_writer: ignore_interference_by_writer,
+            )
         end
 
         def existing_value_read
@@ -930,7 +935,7 @@ module Shoulda
           @given_record.class
         end
 
-        def failure_message_preface
+        def failure_message_preface # rubocop:disable Metrics/MethodLength
           prefix = ''
 
           if @existing_record_created
@@ -987,7 +992,10 @@ different altogether.
           MESSAGE
         end
 
-        def description_for_attribute_setter(attribute_setter, same_as_existing: nil)
+        def description_for_attribute_setter(
+          attribute_setter,
+          same_as_existing: nil
+        )
           description = "its :#{attribute_setter.attribute_name} to "
 
           if same_as_existing == false

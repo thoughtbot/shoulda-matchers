@@ -33,7 +33,7 @@ task :default do
 end
 
 namespace :appraisal do
-  task :list do
+  task list: :environment do
     appraisals = Tests::CurrentBundle.instance.available_appraisals
     puts "Valid appraisals: #{appraisals.join(', ')}"
   end

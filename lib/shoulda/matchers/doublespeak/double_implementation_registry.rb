@@ -4,24 +4,25 @@ module Shoulda
       # @private
       module DoubleImplementationRegistry
         class << self
-          # rubocop:disable Style/MutableConstant
-          REGISTRY = {}
-          # rubocop:enable Style/MutableConstant
-
           def find(type)
             find_class!(type).create
           end
 
           def register(klass, type)
-            REGISTRY[type] = klass
+            registry[type] = klass
           end
 
           private
 
           def find_class!(type)
-            REGISTRY.fetch(type) do
-              raise ArgumentError, "No double implementation class found for '#{type}'"
+            registry.fetch(type) do
+              raise ArgumentError, 'No double implementation class found for'\
+                " '#{type}'"
             end
+          end
+
+          def registry
+            @_registry ||= {}
           end
         end
       end

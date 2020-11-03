@@ -985,6 +985,13 @@ module Shoulda
 
       # @private
       class AssociationMatcher
+        MACROS = {
+          'belongs_to' => 'belong to',
+          'has_many' => 'have many',
+          'has_one' => 'have one',
+          'has_and_belongs_to_many' => 'have and belong to many',
+        }.freeze
+
         delegate :reflection, :model_class, :associated_class, :through?,
           :polymorphic?, to: :reflector
 
@@ -1128,7 +1135,9 @@ module Shoulda
 
         def description
           description = "#{macro_description} #{name}"
-          description += " class_name => #{options[:class_name]}" if options.key?(:class_name)
+          if options.key?(:class_name)
+            description += " class_name => #{options[:class_name]}"
+          end
           [description, submatchers.map(&:description)].flatten.join(' ')
         end
 
@@ -1163,7 +1172,8 @@ module Shoulda
         end
 
         def option_verifier
-          @_option_verifier ||= AssociationMatchers::OptionVerifier.new(reflector)
+          @_option_verifier ||=
+            AssociationMatchers::OptionVerifier.new(reflector)
         end
 
         protected
@@ -1186,16 +1196,7 @@ module Shoulda
         end
 
         def macro_description
-          case macro.to_s
-          when 'belongs_to'
-            'belong to'
-          when 'has_many'
-            'have many'
-          when 'has_one'
-            'have one'
-          when 'has_and_belongs_to_many'
-            'have and belong to many'
-          end
+          MACROS[macro.to_s]
         end
 
         def expectation
@@ -1215,12 +1216,14 @@ module Shoulda
         end
 
         def failing_submatchers
-          @_failing_submatchers ||= submatchers.reject { |matcher| matcher.matches?(subject) }
+          @_failing_submatchers ||= submatchers.reject do |matcher|
+            matcher.matches?(subject)
+          end
         end
 
         def missing_options_for_failing_submatchers
-          if defined?(@failing_submatchers)
-            @failing_submatchers.map(&:missing_option)
+          if defined?(@_failing_submatchers)
+            @_failing_submatchers.map(&:missing_option)
           else
             []
           end
@@ -1280,10 +1283,14 @@ module Shoulda
 
         def class_name_correct?
           if options.key?(:class_name)
-            if option_verifier.correct_for_constant?(:class_name, options[:class_name])
+            if option_verifier.correct_for_constant?(
+              :class_name,
+              options[:class_name],
+            )
               true
             else
-              @missing = "#{name} should resolve to #{options[:class_name]} for class_name"
+              @missing = "#{name} should resolve to #{options[:class_name]}"\
+                ' for class_name'
               false
             end
           else
@@ -1292,7 +1299,10 @@ module Shoulda
         end
 
         def join_table_correct?
-          if macro != :has_and_belongs_to_many || join_table_matcher.matches?(@subject)
+          if (
+            macro != :has_and_belongs_to_many ||
+            join_table_matcher.matches?(@subject)
+          )
             true
           else
             @missing = join_table_matcher.failure_message
@@ -1301,7 +1311,10 @@ module Shoulda
         end
 
         def join_table_matcher
-          @_join_table_matcher ||= AssociationMatchers::JoinTableMatcher.new(self, reflector)
+          @_join_table_matcher ||= AssociationMatchers::JoinTableMatcher.new(
+            self,
+            reflector,
+          )
         end
 
         def class_exists?
@@ -1314,10 +1327,14 @@ module Shoulda
 
         def autosave_correct?
           if options.key?(:autosave)
-            if option_verifier.correct_for_boolean?(:autosave, options[:autosave])
+            if option_verifier.correct_for_boolean?(
+              :autosave,
+              options[:autosave],
+            )
               true
             else
-              @missing = "#{name} should have autosave set to #{options[:autosave]}"
+              @missing = "#{name} should have autosave set to"\
+                " #{options[:autosave]}"
               false
             end
           else
@@ -1343,10 +1360,14 @@ module Shoulda
 
         def conditions_correct?
           if options.key?(:conditions)
-            if option_verifier.correct_for_relation_clause?(:conditions, options[:conditions])
+            if option_verifier.correct_for_relation_clause?(
+              :conditions,
+              options[:conditions],
+            )
               true
             else
-              @missing = "#{name} should have the following conditions: #{options[:conditions]}"
+              @missing = "#{name} should have the following conditions:" +
+                         " #{options[:conditions]}"
               false
             end
           else
@@ -1374,7 +1395,10 @@ module Shoulda
 
         def class_has_foreign_key?(klass)
           if options.key?(:foreign_key)
-            option_verifier.correct_for_string?(:foreign_key, options[:foreign_key])
+            option_verifier.correct_for_string?(
+              :foreign_key,
+              options[:foreign_key],
+            )
           elsif column_names_for(klass).include?(foreign_key)
             true
           else
@@ -1385,10 +1409,14 @@ module Shoulda
 
         def primary_key_correct?(klass)
           if options.key?(:primary_key)
-            if option_verifier.correct_for_string?(:primary_key, options[:primary_key])
+            if option_verifier.correct_for_string?(
+              :primary_key,
+              options[:primary_key],
+            )
               true
             else
-              @missing = "#{klass} does not have a #{options[:primary_key]} primary key"
+              @missing = "#{klass} does not have a #{options[:primary_key]}"\
+                ' primary key'
               false
             end
           else
@@ -1407,9 +1435,14 @@ module Shoulda
         end
 
         def foreign_key_reflection
-          if [:has_one, :has_many].include?(macro) && reflection.options.include?(:inverse_of) && \
-             reflection.options[:inverse_of] != false
-            associated_class.reflect_on_association(reflection.options[:inverse_of])
+          if (
+            [:has_one, :has_many].include?(macro) &&
+            reflection.options.include?(:inverse_of) &&
+            reflection.options[:inverse_of] != false
+          )
+            associated_class.reflect_on_association(
+              reflection.options[:inverse_of],
+            )
           else
             reflection
           end

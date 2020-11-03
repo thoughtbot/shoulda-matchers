@@ -180,10 +180,12 @@ module Shoulda
           options
         )
           default_translation_keys = [
-            :"activemodel.errors.models.#{model_name}.attributes.#{attribute}.#{type}",
+            :"activemodel.errors.models.#{model_name}.attributes.#{attribute}
+              .#{type}",
             :"activemodel.errors.models.#{model_name}.#{type}",
             :"activemodel.errors.messages.#{type}",
-            :"activerecord.errors.models.#{model_name}.attributes.#{attribute}.#{type}",
+            :"activerecord.errors.models.#{model_name}.attributes.#{attribute}
+              .#{type}",
             :"activerecord.errors.models.#{model_name}.#{type}",
             :"activerecord.errors.messages.#{type}",
             :"errors.attributes.#{attribute}.#{type}",

@@ -1,7 +1,7 @@
 module Tests
   class Version
     def initialize(version)
-      @version = Gem::Version.new(version.to_s + '')
+      @version = Gem::Version.new(version.to_s)
     end
 
     def <(other_version)
