@@ -209,7 +209,8 @@ module Shoulda
         attr_writer :stubbed_params
 
         def initialize(expected_permitted_parameter_names)
-          @expected_permitted_parameter_names = expected_permitted_parameter_names
+          @expected_permitted_parameter_names =
+            expected_permitted_parameter_names
           @action = nil
           @verb = nil
           @request_params = {}
@@ -262,18 +263,20 @@ module Shoulda
         end
 
         def failure_message
-          "Expected #{verb.upcase} ##{action} to #{expectation},\nbut #{reality}."
+          "Expected #{verb.upcase} ##{action} to #{expectation},"\
+          "\nbut #{reality}."
         end
 
         def failure_message_when_negated
-          "Expected #{verb.upcase} ##{action} not to #{expectation},\nbut it did."
+          "Expected #{verb.upcase} ##{action} not to #{expectation},"\
+          "\nbut it did."
         end
 
         protected
 
-        attr_reader :controller, :double_collections_by_parameter_name, :action, :verb,
-          :request_params, :expected_permitted_parameter_names, :context, :subparameter_name,
-          :parameters_double_registry
+        attr_reader :controller, :double_collections_by_parameter_name, :action,
+          :verb, :request_params, :expected_permitted_parameter_names,
+          :context, :subparameter_name, :parameters_double_registry
 
         def expectation
           message = 'restrict parameters '
@@ -282,7 +285,8 @@ module Shoulda
             message << "on #{subparameter_name.inspect} "
           end
 
-          message << 'to ' + format_parameter_names(expected_permitted_parameter_names)
+          message << 'to '\
+            "#{format_parameter_names(expected_permitted_parameter_names)}"
 
           message
         end
@@ -291,9 +295,9 @@ module Shoulda
           if actual_permitted_parameter_names.empty?
             'it did not restrict any parameters'
           else
-            'the restricted parameters were ' +
-              format_parameter_names(actual_permitted_parameter_names) +
-              ' instead'
+            'the restricted parameters were '\
+            "#{format_parameter_names(actual_permitted_parameter_names)}"\
+            ' instead'
           end
         end
 
@@ -303,12 +307,12 @@ module Shoulda
 
         def actual_permitted_parameter_names
           @_actual_permitted_parameter_names ||= begin
-            options = if subparameter_name
-                        { for: subparameter_name }
-                      else
-                        {}
-                      end
-
+            options =
+              if subparameter_name
+                { for: subparameter_name }
+              else
+                {}
+              end
             parameters_double_registry.permitted_parameter_names(options)
           end
         end
@@ -436,7 +440,8 @@ module Shoulda
         # @private
         class VerbNotDefinedError < StandardError
           def message
-            'You must specify an HTTP verb when using a non-RESTful action. For example: for(:authorize, verb: :post)'
+            'You must specify an HTTP verb when using a non-RESTful action.'\
+            ' For example: for(:authorize, verb: :post)'
           end
         end
       end

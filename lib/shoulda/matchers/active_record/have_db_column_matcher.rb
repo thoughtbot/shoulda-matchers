@@ -125,13 +125,17 @@ module Shoulda
 
         def description
           desc = "have db column named #{@column}"
-          desc << " of type #{@options[:column_type]}"    if @options.key?(:column_type)
-          desc << " of precision #{@options[:precision]}" if @options.key?(:precision)
-          desc << " of limit #{@options[:limit]}"         if @options.key?(:limit)
-          desc << " of default #{@options[:default]}"     if @options.key?(:default)
-          desc << " of null #{@options[:null]}"           if @options.key?(:null)
-          desc << " of primary #{@options[:primary]}"     if @options.key?(:primary)
-          desc << " of scale #{@options[:scale]}"         if @options.key?(:scale)
+          if @options.key?(:column_type)
+            desc << " of type #{@options[:column_type]}"
+          end
+          if @options.key?(:precision)
+            desc << " of precision #{@options[:precision]}"
+          end
+          desc << " of limit #{@options[:limit]}" if @options.key?(:limit)
+          desc << " of default #{@options[:default]}" if @options.key?(:default)
+          desc << " of null #{@options[:null]}" if @options.key?(:null)
+          desc << " of primary #{@options[:primary]}" if @options.key?(:primary)
+          desc << " of scale #{@options[:scale]}" if @options.key?(:scale)
           desc
         end
 
@@ -141,7 +145,8 @@ module Shoulda
           if model_class.column_names.include?(@column.to_s)
             true
           else
-            @missing = "#{model_class} does not have a db column named #{@column}."
+            @missing =
+              "#{model_class} does not have a db column named #{@column}."
             false
           end
         end
@@ -152,8 +157,9 @@ module Shoulda
           if matched_column.type.to_s == @options[:column_type].to_s
             true
           else
-            @missing = "#{model_class} has a db column named #{@column} " <<
-                       "of type #{matched_column.type}, not #{@options[:column_type]}."
+            @missing =
+              "#{model_class} has a db column named #{@column} " <<
+              "of type #{matched_column.type}, not #{@options[:column_type]}."
             false
           end
         end
@@ -229,18 +235,21 @@ module Shoulda
             true
           else
             @missing = "#{model_class} has a db column named #{@column} "
-            @missing << if @options[:primary]
-                          'that is not primary, but should be'
-                        else
-                          'that is primary, but should not be'
-                        end
+            @missing <<
+              if @options[:primary]
+                'that is not primary, but should be'
+              else
+                'that is primary, but should not be'
+              end
             false
           end
         end
 
         def matched_column
           @_matched_column ||= begin
-            column = model_class.columns.detect { |each| each.name == @column.to_s }
+            column = model_class.columns.detect do |each|
+              each.name == @column.to_s
+            end
             DecoratedColumn.new(model_class, column)
           end
         end

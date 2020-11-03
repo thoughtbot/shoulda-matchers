@@ -354,11 +354,12 @@ EOT
           else
             description = "validate that :#{@attribute}"
 
-            description << if @array.many?
-                             " is either #{inspected_array}"
-                           else
-                             " is #{inspected_array}"
-                           end
+            description <<
+              if @array.many?
+                " is either #{inspected_array}"
+              else
+                " is #{inspected_array}"
+              end
 
             description
           end

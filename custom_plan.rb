@@ -45,7 +45,8 @@ class CustomPlan < Zeus::Plan
     raise CouldNotBootZeusError.create(underlying_error: e)
   end
 
-  def after_fork; end
+  def after_fork
+  end
 
   def test_environment
     require_relative 'spec/unit_spec_helper'

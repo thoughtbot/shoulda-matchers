@@ -29,7 +29,8 @@ module Shoulda
             if through_reflection.present?
               true
             else
-              self.missing_option = "#{name} does not have any relationship to #{through}"
+              self.missing_option =
+                "#{name} does not have any relationship to #{through}"
               false
             end
           end
@@ -43,8 +44,9 @@ module Shoulda
               true
             else
               self.missing_option =
-                "Expected #{name} to have #{name} through #{through}, " +
-                "but got it through #{option_verifier.actual_value_for(:through)}"
+                "Expected #{name} to have #{name} through #{through}, "\
+                'but got it through ' +
+                option_verifier.actual_value_for(:through).to_s
               false
             end
           end

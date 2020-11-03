@@ -66,7 +66,7 @@ posuere diam ex ut velit.
     wrapped_message = described_class.word_wrap(<<-MESSAGE.rstrip)
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean luctus, ipsum sit amet efficitur feugiat, dolor mauris fringilla erat, sed posuere diam ex ut velit.
 
-Etiam ultrices cursus ligula eget feugiat. Vestibulum eget tincidunt risus, non faucibus sem. 
+Etiam ultrices cursus ligula eget feugiat. Vestibulum eget tincidunt risus, non faucibus sem.
     MESSAGE
 
     expect(wrapped_message).to eq(<<-MESSAGE.rstrip)

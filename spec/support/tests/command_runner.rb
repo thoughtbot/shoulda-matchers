@@ -177,7 +177,7 @@ Output:
 
       run_with_wrapper
 
-      debug { "\n" + divider('START') + output + divider('END') }
+      debug { "\n#{divider('START')}#{output}#{divider('END')}" }
     end
 
     def possibly_running_quickly(&block)
@@ -188,7 +188,7 @@ Output:
           stop
 
           message =
-            "Command timed out after #{timeout} seconds: #{formatted_command}\n" +
+            "Command timed out after #{timeout} seconds: #{formatted_command}\n"\
             "Output:\n" +
             output
 

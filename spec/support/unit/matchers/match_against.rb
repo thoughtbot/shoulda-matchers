@@ -48,7 +48,7 @@ module UnitTests
 
         if expected_message && should_be_negated?
           raise ArgumentError.new(
-            'Use `or_fail_with`, not `and_fail_with`, when using ' +
+            'Use `or_fail_with`, not `and_fail_with`, when using '\
             '`should match_against(...)`!',
           )
         end
@@ -73,7 +73,7 @@ Expected the matcher to match in the positive, but it failed with this message:
 
         if expected_message && !should_be_negated?
           raise ArgumentError.new(
-            'Use `and_fail_with`, not `or_fail_with`, when using ' +
+            'Use `and_fail_with`, not `or_fail_with`, when using '\
             '`should_not match_against(...)`!',
           )
         end
@@ -148,7 +148,7 @@ Diff:
           end
         else
           @failure_message =
-            'Expected the negative version of the matcher not to match, ' +
+            'Expected the negative version of the matcher not to match, '\
             'but it did.'
           false
         end
@@ -198,7 +198,7 @@ Diff:
           end
         else
           @failure_message_when_negated =
-            'Expected the positive version of the matcher not to match, ' +
+            'Expected the positive version of the matcher not to match, '\
             'but it did.'
           false
         end

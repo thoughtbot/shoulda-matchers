@@ -7,8 +7,10 @@ module Shoulda
       MAXIMUM_LENGTH_OF_VALUE_TO_DISPLAY = 500
 
       def self.deconstantize(path)
-        if defined?(ActiveSupport::Inflector) &&
-           ActiveSupport::Inflector.respond_to?(:deconstantize)
+        if (
+          defined?(ActiveSupport::Inflector) &&
+          ActiveSupport::Inflector.respond_to?(:deconstantize)
+        )
           ActiveSupport::Inflector.deconstantize(path)
         else
           path.to_s[0...(path.to_s.rindex('::') || 0)]
@@ -16,8 +18,10 @@ module Shoulda
       end
 
       def self.safe_constantize(camel_cased_word)
-        if defined?(ActiveSupport::Inflector) &&
-           ActiveSupport::Inflector.respond_to?(:safe_constantize)
+        if (
+          defined?(ActiveSupport::Inflector) &&
+          ActiveSupport::Inflector.respond_to?(:safe_constantize)
+        )
           ActiveSupport::Inflector.safe_constantize(camel_cased_word)
         else
           begin

@@ -58,11 +58,12 @@ module AcceptanceTests
 
     def create_rails_application
       fs.clean
-      command = if rails_version =~ '~> 6.0'
-                  "bundle exec rails new #{fs.project_directory} --skip-bundle --skip-javascript --no-rc"
-                else
-                  "bundle exec rails new #{fs.project_directory} --skip-bundle --no-rc"
-                end
+      command =
+        if rails_version =~ '~> 6.0'
+          "bundle exec rails new #{fs.project_directory} --skip-bundle --skip-javascript --no-rc"
+        else
+          "bundle exec rails new #{fs.project_directory} --skip-bundle --no-rc"
+        end
 
       run_command!(command) do |runner|
         runner.directory = nil

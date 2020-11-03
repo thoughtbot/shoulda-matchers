@@ -158,17 +158,20 @@ module Shoulda
         end
 
         def allow_destroy_correct?
-          failure_message = "#{should_or_should_not(@options[:allow_destroy])} allow destroy"
+          failure_message = "#{should_or_should_not(@options[:allow_destroy])}"\
+            ' allow destroy'
           verify_option_is_correct(:allow_destroy, failure_message)
         end
 
         def limit_correct?
-          failure_message = "limit should be #{@options[:limit]}, got #{config[:limit]}"
+          failure_message = "limit should be #{@options[:limit]},"\
+            " got #{config[:limit]}"
           verify_option_is_correct(:limit, failure_message)
         end
 
         def update_only_correct?
-          failure_message = "#{should_or_should_not(@options[:update_only])} be update only"
+          failure_message = "#{should_or_should_not(@options[:update_only])}"\
+            ' be update only'
           verify_option_is_correct(:update_only, failure_message)
         end
 

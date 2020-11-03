@@ -179,11 +179,13 @@ module Shoulda
         end
 
         def failure_message
-          "Expected that #{controller_class.name} would have :#{method_name} as a #{kind}_#{callback_type}"
+          "Expected that #{controller_class.name} would have :#{method_name}"\
+            " as a #{kind}_#{callback_type}"
         end
 
         def failure_message_when_negated
-          "Expected that #{controller_class.name} would not have :#{method_name} as a #{kind}_#{callback_type}"
+          "Expected that #{controller_class.name} would not have"\
+            " :#{method_name} as a #{kind}_#{callback_type}"
         end
 
         def description

@@ -79,8 +79,11 @@ describe Shoulda::Matchers::ActiveRecord::SerializeMatcher, type: :model do
 
   def define_serializer(name)
     define_class(name) do
-      def load(*); end # rubocop:disable Lint/NestedMethodDefinition
-      def dump(*); end # rubocop:disable Lint/NestedMethodDefinition
+      def load(*) # rubocop:disable Lint/NestedMethodDefinition
+      end
+
+      def dump(*) # rubocop:disable Lint/NestedMethodDefinition
+      end
     end
   end
 end

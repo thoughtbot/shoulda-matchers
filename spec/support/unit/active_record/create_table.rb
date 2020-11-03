@@ -102,16 +102,16 @@ module UnitTests
         if column_options[:array]
           if !active_record_supports_array_columns?
             raise ArgumentError.new(
-              'An array column is being added to a table, but this version ' +
-              "of ActiveRecord (#{active_record_version}) " +
+              'An array column is being added to a table, but this version '\
+              "of ActiveRecord (#{active_record_version}) "\
               'does not support array columns.',
             )
           end
 
           if !database_supports_array_columns?
             raise ArgumentError.new(
-              'An array column is being added to a table, but this ' +
-              "database adapter (#{database_adapter}) " +
+              'An array column is being added to a table, but this '\
+              "database adapter (#{database_adapter}) "\
               'does not support array columns.',
             )
           end
@@ -119,8 +119,8 @@ module UnitTests
 
         if column_specification.any?
           raise ArgumentError.new(
-            "Invalid column specification.\nYou need to put " +
-            "#{column_specification.keys.map(&:inspect).to_sentence} " +
+            "Invalid column specification.\nYou need to put "\
+            "#{column_specification.keys.map(&:inspect).to_sentence} "\
             'inside an :options key!',
           )
         end

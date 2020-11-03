@@ -5,12 +5,30 @@ module Shoulda
         # @private
         class ComparisonMatcher < ValidationMatcher
           ERROR_MESSAGES = {
-            :> => :greater_than,
-            :>= => :greater_than_or_equal_to,
-            :< => :less_than,
-            :<= => :less_than_or_equal_to,
-            :== => :equal_to,
-            :!= => :other_than,
+            :> => {
+              label: :greater_than,
+              assertions: [false, false, true],
+            },
+            :>= => {
+              label: :greater_than_or_equal_to,
+              assertions: [false, true, true],
+            },
+            :< => {
+              label: :less_than,
+              assertions: [true, false, false],
+            },
+            :<= => {
+              label: :less_than_or_equal_to,
+              assertions: [true, true, false],
+            },
+            :== => {
+              label: :equal_to,
+              assertions: [false, true, false],
+            },
+            :!= => {
+              label: :other_than,
+              assertions: [true, false, true],
+            },
           }.freeze
 
           def initialize(numericality_matcher, value, operator)
@@ -22,7 +40,7 @@ module Shoulda
             @numericality_matcher = numericality_matcher
             @value = value
             @operator = operator
-            @message = ERROR_MESSAGES[operator]
+            @message = ERROR_MESSAGES[operator][:label]
           end
 
           def simple_description
@@ -77,7 +95,7 @@ module Shoulda
 
           def failing_submatchers
             submatchers_and_results.
-              reject { |x| x[:matched] }.
+              select { |x| !x[:matched] }.
               map { |x| x[:matcher] }
           end
 
@@ -95,10 +113,9 @@ module Shoulda
           end
 
           def submatchers_and_results
-            @_submatchers_and_results ||=
-              submatchers.map do |matcher|
-                { matcher: matcher, matched: matcher.matches?(@subject) }
-              end
+            @_submatchers_and_results ||= submatchers.map do |matcher|
+              { matcher: matcher, matched: matcher.matches?(@subject) }
+            end
           end
 
           def comparison_combos
@@ -116,20 +133,7 @@ module Shoulda
           end
 
           def assertions
-            case @operator
-            when :>
-              [false, false, true]
-            when :>=
-              [false, true, true]
-            when :==
-              [false, true, false]
-            when :<
-              [true, false, false]
-            when :<=
-              [true, true, false]
-            when :!=
-              [true, false, true]
-            end
+            ERROR_MESSAGES[@operator][:assertions]
           end
 
           def diffs_to_compare
@@ -144,14 +148,7 @@ module Shoulda
           end
 
           def comparison_expectation
-            case @operator
-            when :> then 'greater than'
-            when :>= then 'greater than or equal to'
-            when :== then 'equal to'
-            when :< then 'less than'
-            when :<= then 'less than or equal to'
-            when :!= then 'other than'
-            end
+            ERROR_MESSAGES[@operator][:label].to_s.tr('_', ' ')
           end
         end
       end

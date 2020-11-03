@@ -9,8 +9,10 @@ module UnitTests
 
     def builder_for_record_validating_confirmation_with_18n_message(options = {})
       builder = builder_for_record_validating_confirmation(options)
-      RecordBuilderWithI18nValidationMessage.new(builder,
-        validation_message_key: :confirmation,)
+      RecordBuilderWithI18nValidationMessage.new(
+        builder,
+        validation_message_key: :confirmation,
+      )
     end
   end
 end

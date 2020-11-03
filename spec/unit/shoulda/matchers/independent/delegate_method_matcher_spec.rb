@@ -264,7 +264,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
       define_class('Mailman')
 
       define_class('PostOffice') do
-        def deliver_mail(*_args)
+        def deliver_mail(*)
           mailman.deliver_mail('221B Baker St.', hastily: true)
         end
 
@@ -394,7 +394,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
           end
 
           person = Person.new
-          expect(person).to delegate_method(:hello). to(:country).with_prefix
+          expect(person).to delegate_method(:hello).to(:country).with_prefix
         end
       end
 
@@ -535,7 +535,8 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
         it 'accepts' do
           define_class('Person') do
             delegate :hello, to: :country, allow_nil: true
-            def country; end
+            def country
+            end
           end
 
           person = Person.new
@@ -548,7 +549,8 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
         it 'rejects with the correct failure message' do
           define_class('Person') do
             delegate :hello, to: :country
-            def country; end
+            def country
+            end
           end
 
           person = Person.new
@@ -578,7 +580,8 @@ to account for when #country *was* nil.
 
             def_delegators :country, :hello
 
-            def country; end
+            def country
+            end
           end
 
           person = Person.new
@@ -606,7 +609,8 @@ to account for when #country *was* nil.
       context 'when the delegating method accounts for the delegate object being nil' do
         it 'accepts' do
           define_class('Person') do
-            def country; end
+            def country
+            end
 
             def hello
               return unless country
@@ -624,7 +628,8 @@ to account for when #country *was* nil.
       context 'when the delegating method does not account for the delegate object being nil' do
         it 'rejects with the correct failure message' do
           define_class('Person') do
-            def country; end
+            def country
+            end
 
             def hello
               country.hello

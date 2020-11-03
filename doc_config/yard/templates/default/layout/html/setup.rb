@@ -10,14 +10,15 @@ end
 def diskfile
   @file.attributes[:markup] ||= markup_for_file('', @file.filename)
 
-  contents = if @file.filename == 'README.md'
-               preprocess_index(@file.contents)
-             else
-               @file.contents
-             end
+  contents =
+    if @file.filename == 'README.md'
+      preprocess_index(@file.contents)
+    else
+      @file.contents
+    end
 
   data = htmlify(contents, @file.attributes[:markup])
-  "<div id='filecontents'>" + data + '</div>'
+  "<div id='filecontents'>#{data}</div>"
 end
 
 def preprocess_index(contents)

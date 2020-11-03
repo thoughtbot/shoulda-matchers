@@ -79,7 +79,8 @@ module Shoulda
           end
 
           unless handler_exists?
-            expectation << " but #{controller} does not respond to #{expected_method}"
+            expectation << " but #{controller} does not respond to"\
+              " #{expected_method}"
           end
           expectation
         end

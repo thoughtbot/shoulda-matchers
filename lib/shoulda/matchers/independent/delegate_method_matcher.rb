@@ -399,7 +399,8 @@ module Shoulda
               rescue Module::DelegationError
                 false
               rescue NoMethodError => e
-                if e.message =~ /undefined method `#{delegate_method}' for nil:NilClass/
+                if e.message =~
+                   /undefined method `#{delegate_method}' for nil:NilClass/
                   false
                 else
                   raise e

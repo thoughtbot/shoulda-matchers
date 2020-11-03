@@ -13,8 +13,9 @@ module Shoulda
             test_framework.include(matchers_module, type: :controller)
 
             include_into(::ActionController::TestCase, matchers_module) do
-              subject = -> { @controller }
-              subject.call
+              def subject # rubocop:disable Lint/NestedMethodDefinition
+                @controller
+              end
             end
           end
 

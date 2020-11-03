@@ -260,11 +260,11 @@ validation for you? Instead of using `validate_presence_of`, try
 
         def reason_for_existing_presence_validation
           if belongs_to_association_configured_to_be_required?
-            "you've instructed your `belongs_to` association to add a " +
+            "you've instructed your `belongs_to` association to add a "\
               'presence validation to the attribute'
           else
             # assume ::ActiveRecord::Base.belongs_to_required_by_default == true
-            'ActiveRecord is configured to add a presence validation to all ' +
+            'ActiveRecord is configured to add a presence validation to all '\
               '`belongs_to` associations, and this includes yours'
           end
         end

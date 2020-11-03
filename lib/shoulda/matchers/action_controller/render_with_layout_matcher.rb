@@ -64,12 +64,12 @@ module Shoulda
       # @private
       class RenderWithLayoutMatcher
         def initialize(expected_layout)
-          @expected_layout = if expected_layout
-                               expected_layout.to_s
-                             else
-                               nil
-                             end
-
+          @expected_layout =
+            if expected_layout
+              expected_layout.to_s
+            else
+              nil
+            end
           @controller = nil
         end
 
@@ -95,11 +95,12 @@ module Shoulda
 
         def description
           description = 'render with '
-          description << if @expected_layout.nil?
-                           'a layout'
-                         else
-                           "the #{@expected_layout.inspect} layout"
-                         end
+          description <<
+            if @expected_layout.nil?
+              'a layout'
+            else
+              "the #{@expected_layout.inspect} layout"
+            end
           description
         end
 
@@ -118,7 +119,9 @@ module Shoulda
         end
 
         def rendered_layouts
-          recorded_layouts.keys.compact.map { |layout| layout.sub(%r{^layouts/}, '') }
+          recorded_layouts.keys.compact.map { |layout|
+            layout.sub(%r{^layouts/}, '')
+          }
         end
 
         def recorded_layouts
@@ -135,7 +138,7 @@ module Shoulda
 
         def result
           if rendered_with_layout?
-            'rendered with ' + rendered_layouts.map(&:inspect).join(', ')
+            "rendered with #{rendered_layouts.map(&:inspect).join(', ')}"
           else
             'rendered without a layout'
           end

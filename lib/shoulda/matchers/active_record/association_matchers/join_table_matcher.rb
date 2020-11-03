@@ -26,10 +26,14 @@ module Shoulda
 
           def join_table_option_correct?
             if options.key?(:join_table_name)
-              if option_verifier.correct_for_string?(:join_table, options[:join_table_name])
+              if option_verifier.correct_for_string?(
+                :join_table,
+                options[:join_table_name],
+              )
                 true
               else
-                @failure_message = "#{name} should use #{options[:join_table_name].inspect} for :join_table option"
+                @failure_message = "#{name} should use"\
+                  " #{options[:join_table_name].inspect} for :join_table option"
                 false
               end
             else
@@ -38,7 +42,8 @@ module Shoulda
           end
 
           def join_table_exists?
-            if RailsShim.tables_and_views(connection).include?(join_table_name.to_s)
+            if RailsShim.tables_and_views(connection).
+                include?(join_table_name.to_s)
               true
             else
               @failure_message = missing_table_message

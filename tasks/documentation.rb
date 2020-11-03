@@ -6,7 +6,7 @@ module Shoulda
     module DocumentationTasks
       extend Rake::DSL
 
-      def self.create
+      def self.create # rubocop:disable Metrics/MethodLength
         publisher = DocumentationPublisher.new
 
         namespace :docs do
@@ -14,7 +14,8 @@ module Shoulda
             publisher.create_reference_to_gh_pages_branch
           end
 
-          file DocumentationPublisher.docs_dir => DocumentationPublisher.gh_pages_dir
+          file DocumentationPublisher.docs_dir =>
+            DocumentationPublisher.gh_pages_dir
 
           task setup: DocumentationPublisher.docs_dir do
             publisher.reset_repo_directory
@@ -30,14 +31,18 @@ module Shoulda
               raise ArgumentError, 'Missing latest_version'
             end
 
-            publisher.generate_docs_for(args.version, latest_version: args.latest_version)
+            publisher.generate_docs_for(
+              args.version,
+              latest_version: args.latest_version,
+            )
           end
 
-          desc 'Watch source files for this project for changes and autogenerate docs accordingly'
+          desc 'Watch source files for this project for changes and'\
+            ' autogenerate docs accordingly'
           task :autogenerate do
             require 'fssm'
 
-            project_directory = File.expand_path(File.dirname(__FILE__) + '/..')
+            project_directory = File.expand_path("#{File.dirname(__FILE__)}/..")
 
             regenerate_docs = proc do
               print 'Regenerating docs... '
@@ -54,7 +59,8 @@ module Shoulda
 
             FSSM.monitor do
               path project_directory do
-                glob '{README.md,CHANGELOG.md,.yardopts,docs/**/*.md,doc_config/yard/**/*.{rb,js,css,erb},lib/**/*.rb}'
+                glob '{README.md,CHANGELOG.md,.yardopts,docs/**/*.md,'\
+                  'doc_config/yard/**/*.{rb,js,css,erb},lib/**/*.rb}'
                 create(&regenerate_docs)
                 update(&regenerate_docs)
               end
@@ -71,11 +77,18 @@ module Shoulda
               raise ArgumentError, 'Missing latest_version'
             end
 
-            publisher.generate_docs_for(args.version, latest_version: args.latest_version)
-            publisher.publish_docs_for(args.version, latest_version: args.latest_version)
+            publisher.generate_docs_for(
+              args.version,
+              latest_version: args.latest_version,
+            )
+            publisher.publish_docs_for(
+              args.version,
+              latest_version: args.latest_version,
+            )
           end
 
-          desc "Generate docs for version #{DocumentationPublisher.current_version} and push them to GitHub"
+          desc 'Generate docs for version'\
+            " #{DocumentationPublisher.current_version} and push them to GitHub"
           task publish_latest: :setup do
             publisher.publish_latest_version
           end
@@ -103,7 +116,8 @@ module Shoulda
       end
 
       def create_reference_to_gh_pages_branch
-        system "git clone git@github.com:#{GITHUB_USERNAME}/shoulda-matchers.git #{GH_PAGES_DIR} --branch gh-pages"
+        system "git clone git@github.com:#{GITHUB_USERNAME}"\
+          "/shoulda-matchers.git #{GH_PAGES_DIR} --branch gh-pages"
       end
 
       def reset_repo_directory
@@ -126,7 +140,9 @@ module Shoulda
         end
 
         if options[:latest_version]
-          generate_file_that_redirects_to_latest_version(options[:latest_version])
+          generate_file_that_redirects_to_latest_version(
+            options[:latest_version],
+          )
         end
       end
 
@@ -158,7 +174,10 @@ module Shoulda
         within_docs_dir do
           filename = "#{ref}/index.html"
           content = File.read(filename)
-          content.sub!(%r{<h1>shoulda-matchers.+</h1>}, "<h1>shoulda-matchers (#{version})</h1>")
+          content.sub!(
+            %r{<h1>shoulda-matchers.+</h1>},
+            "<h1>shoulda-matchers (#{version})</h1>",
+          )
           File.open(filename, 'w') {|f| f.write(content) }
         end
       end
@@ -177,7 +196,7 @@ module Shoulda
 
       def determine_ref_from(version)
         if version =~ /^\d+\.\d+\.\d+/
-          'v' + version
+          "v#{version}"
         else
           version
         end

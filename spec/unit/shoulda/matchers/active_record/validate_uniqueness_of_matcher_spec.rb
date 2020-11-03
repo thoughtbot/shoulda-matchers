@@ -1471,9 +1471,7 @@ this could not be proved.
       record = build_record_validating_uniqueness(attribute_type: :boolean)
       running_validation = -> { expect(record).to validate_uniqueness }
       message =
-        'You attempted to assign a value which is not explicitly `true` or ' +
-        '`false`'
-
+        'You attempted to assign a value which is not explicitly `true` or `false`'
       expect(&running_validation).not_to print_warning_including(message)
     end
   end
@@ -1590,9 +1588,7 @@ this could not be proved.
         validation_options.merge(scope: scope_attribute_names)
 
       if m.respond_to?(:attr_accessible)
-        attributes.each do |attr|
-          m.attr_accessible(attr[:name])
-        end
+        attributes.each { |attr| m.attr_accessible(attr[:name]) }
       end
 
       block&.call(m)

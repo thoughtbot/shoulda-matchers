@@ -121,7 +121,9 @@ module Shoulda
 
         def description
           description = "serialize :#{@name}"
-          description += " class_name => #{@options[:type]}" if @options.key?(:type)
+          if @options.key?(:type)
+            description += " class_name => #{@options[:type]}"
+          end
           description
         end
 
@@ -141,7 +143,8 @@ module Shoulda
             klass = serialization_coder
             if klass == @options[:type]
               true
-            elsif klass.respond_to?(:object_class) && klass.object_class == @options[:type]
+            elsif klass.respond_to?(:object_class) &&
+                  klass.object_class == @options[:type]
               true
             else
               @missing = ":#{@name} should be a type of #{@options[:type]}"
@@ -174,9 +177,12 @@ module Shoulda
         end
 
         def expectation
-          expectation = "#{model_class.name} to serialize the attribute called :#{@name}"
+          expectation = "#{model_class.name} to serialize the attribute called"\
+            " :#{@name}"
           expectation += " with a type of #{@options[:type]}" if @options[:type]
-          expectation += " with an instance of #{@options[:instance_type]}" if @options[:instance_type]
+          if @options[:instance_type]
+            expectation += " with an instance of #{@options[:instance_type]}"
+          end
           expectation
         end
 

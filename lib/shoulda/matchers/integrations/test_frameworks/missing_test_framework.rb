@@ -23,7 +23,8 @@ end
             EOT
           end
 
-          def include(*modules, **options); end
+          def include(*modules, **options)
+          end
 
           def n_unit?
             false

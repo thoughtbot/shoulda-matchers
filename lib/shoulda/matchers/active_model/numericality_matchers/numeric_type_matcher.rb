@@ -44,7 +44,7 @@ module Shoulda
 
           attr_reader :attribute
 
-          def wrap_disallow_value_matcher(matcher)
+          def wrap_disallow_value_matcher(_matcher)
             raise NotImplementedError
           end
 

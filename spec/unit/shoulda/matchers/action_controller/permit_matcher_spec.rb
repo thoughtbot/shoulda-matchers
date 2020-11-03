@@ -328,8 +328,8 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
         end
 
         message =
-          'Expected POST #create to restrict parameters to ' +
-          ":name, :age, :city, and :country,\n" +
+          'Expected POST #create to restrict parameters to '\
+          ":name, :age, :city, and :country,\n"\
           'but it did not restrict any parameters.'
 
         expect(&assertion).to fail_with_message(message)
@@ -349,8 +349,8 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
         end
 
         message =
-          'Expected POST #create to restrict parameters to ' +
-          ":name, :age, :city, and :country,\n" +
+          'Expected POST #create to restrict parameters to '\
+          ":name, :age, :city, and :country,\n"\
           'but the restricted parameters were :name and :age instead.'
 
         expect(&assertion).to fail_with_message(message)
@@ -372,8 +372,8 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
           end
 
           message =
-            'Expected POST #create to restrict parameters on :person to ' +
-            ":name, :age, :city, and :country,\n" +
+            'Expected POST #create to restrict parameters on :person to '\
+            ":name, :age, :city, and :country,\n"\
             'but it did not restrict any parameters.'
 
           expect(&assertion).to fail_with_message(message)
@@ -401,8 +401,8 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
             end
 
             message =
-              'Expected POST #create to restrict parameters on :person to ' +
-              ":name, :age, :city, and :country,\n" +
+              'Expected POST #create to restrict parameters on :person to '\
+              ":name, :age, :city, and :country,\n"\
               'but it did not restrict any parameters.'
 
             expect(&assertion).to fail_with_message(message)
@@ -429,8 +429,8 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
             end
 
             message =
-              'Expected POST #create to restrict parameters on :person to ' +
-              ":name, :age, :city, and :country,\n" +
+              'Expected POST #create to restrict parameters on :person to '\
+              ":name, :age, :city, and :country,\n"\
               'but the restricted parameters were :name and :age instead.'
 
             expect(&assertion).to fail_with_message(message)
@@ -453,8 +453,8 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
       end
 
       message =
-        'Expected POST #create not to restrict parameters to ' +
-        ":name, :age, :city, and :country,\n" +
+        'Expected POST #create not to restrict parameters to '\
+        ":name, :age, :city, and :country,\n"\
         'but it did.'
 
       expect(&assertion).to fail_with_message(message)
@@ -480,8 +480,8 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
         end
 
         message =
-          'Expected POST #create not to restrict parameters on :person to ' +
-          ":name and :age,\n" +
+          'Expected POST #create not to restrict parameters on :person to '\
+          ":name and :age,\n"\
           'but it did.'
 
         expect(&assertion).to fail_with_message(message)

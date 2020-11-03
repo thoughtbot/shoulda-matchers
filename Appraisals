@@ -107,7 +107,8 @@ appraise 'rails_5_2' do
   gem 'sqlite3', '~> 1.3.6'
 end
 
-if Gem::Requirement.new('>= 2.5.0').satisfied_by?(Gem::Version.new(RUBY_VERSION))
+if Gem::Requirement.new('>= 2.5.0').
+    satisfied_by?(Gem::Version.new(RUBY_VERSION))
   appraise 'rails_6_0' do
     instance_eval(&shared_dependencies)
     instance_eval(&controller_test_dependency)

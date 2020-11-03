@@ -2,7 +2,7 @@ require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :model do
   class << self
-    def all_qualifiers
+    def all_qualifiers # rubocop:disable Metrics/MethodLength
       [
         {
           category: :comparison,

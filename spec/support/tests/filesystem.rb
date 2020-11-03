@@ -65,12 +65,12 @@ module Tests
 
     def append_to_file(path, content, _options = {})
       create_parents_of(path)
-      File.open(path, 'a') { |f| f.puts(content + "\n") }
+      open(path, 'a') { |f| f.puts("#{content}\n") } # rubocop: disable Security/Open
     end
 
     def remove_from_file(path, pattern)
       unless pattern.is_a?(Regexp)
-        pattern = Regexp.new('^' + Regexp.escape(pattern) + '$')
+        pattern = Regexp.new("^#{Regexp.escape(pattern)}$")
       end
 
       transform(path) do |lines|
@@ -94,7 +94,7 @@ module Tests
       content = read(path)
       lines = content.split(/\n/)
       transformed_lines = yield lines
-      write(path, transformed_lines.join("\n") + "\n")
+      write(path, "#{transformed_lines.join("\n")}\n")
     end
   end
 end

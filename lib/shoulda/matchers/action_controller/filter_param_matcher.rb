@@ -36,7 +36,8 @@ module Shoulda
         end
 
         def failure_message
-          "Expected #{@key} to be filtered; filtered keys: #{filtered_keys.join(', ')}"
+          "Expected #{@key} to be filtered; filtered keys:"\
+            " #{filtered_keys.join(', ')}"
         end
 
         def failure_message_when_negated

@@ -19,7 +19,10 @@ module Shoulda
           def matches?(subject)
             self.subject = ModelReflector.new(subject, name)
 
-            if option_verifier.correct_for_string?(:counter_cache, counter_cache)
+            if option_verifier.correct_for_string?(
+              :counter_cache,
+              counter_cache,
+            )
               true
             else
               self.missing_option = "#{name} should have #{description}"

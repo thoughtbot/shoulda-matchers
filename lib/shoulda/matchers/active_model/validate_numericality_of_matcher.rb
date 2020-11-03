@@ -332,7 +332,6 @@ module Shoulda
       # @private
       class ValidateNumericalityOfMatcher
         NUMERIC_NAME = 'number'.freeze
-        NON_NUMERIC_VALUE = 'abcd'.freeze
         DEFAULT_DIFF_TO_COMPARE = 1
 
         include Qualifiers::IgnoringInterferenceByWriter
@@ -459,7 +458,7 @@ module Shoulda
           description << Shoulda::Matchers::Util.a_or_an(full_allowed_type)
 
           if comparison_descriptions.present?
-            description << ' ' + comparison_descriptions
+            description << " #{comparison_descriptions}"
           end
 
           description
@@ -479,7 +478,8 @@ module Shoulda
         def failure_message_when_negated
           overall_failure_message_when_negated.dup.tap do |message|
             message << "\n"
-            message << failure_message_for_first_submatcher_that_fails_to_not_match
+            message <<
+              failure_message_for_first_submatcher_that_fails_to_not_match
           end
         end
 
@@ -500,14 +500,14 @@ module Shoulda
 
         def overall_failure_message
           Shoulda::Matchers.word_wrap(
-            "Expected #{model.name} to #{description}, but this could not " +
+            "Expected #{model.name} to #{description}, but this could not "\
             'be proved.',
           )
         end
 
         def overall_failure_message_when_negated
           Shoulda::Matchers.word_wrap(
-            "Expected #{model.name} not to #{description}, but this could not " +
+            "Expected #{model.name} not to #{description}, but this could not "\
             'be proved.',
           )
         end
@@ -530,7 +530,7 @@ module Shoulda
 
         def add_disallow_value_matcher
           disallow_value_matcher = DisallowValueMatcher.
-            new(NON_NUMERIC_VALUE).
+            new(non_numeric_value).
             for(@attribute).
             with_message(:not_a_number)
 
@@ -558,7 +558,10 @@ module Shoulda
           end
 
           if submatcher.respond_to?(:diff_to_compare)
-            @diff_to_compare = [@diff_to_compare, submatcher.diff_to_compare].max
+            @diff_to_compare = [
+              @diff_to_compare,
+              submatcher.diff_to_compare,
+            ].max
           end
 
           @submatchers << submatcher
@@ -600,15 +603,17 @@ module Shoulda
         end
 
         def first_submatcher_that_fails_to_match
-          @_first_submatcher_that_fails_to_match ||= @submatchers.detect do |submatcher|
-            !submatcher.matches?(@subject)
-          end
+          @_first_submatcher_that_fails_to_match ||=
+            @submatchers.detect do |submatcher|
+              !submatcher.matches?(@subject)
+            end
         end
 
         def first_submatcher_that_fails_to_not_match
-          @_first_submatcher_that_fails_to_not_match ||= @submatchers.detect do |submatcher|
-            !submatcher.does_not_match?(@subject)
-          end
+          @_first_submatcher_that_fails_to_not_match ||=
+            @submatchers.detect do |submatcher|
+              !submatcher.does_not_match?(@subject)
+            end
         end
 
         def failure_message_for_first_submatcher_that_fails_to_match
@@ -652,7 +657,11 @@ module Shoulda
 
         def comparison_descriptions
           description_array = submatcher_comparison_descriptions
-          description_array.empty? ? '' : submatcher_comparison_descriptions.join(' and ')
+          if description_array.empty?
+            ''
+          else
+            submatcher_comparison_descriptions.join(' and ')
+          end
         end
 
         def submatcher_comparison_descriptions
@@ -666,6 +675,10 @@ module Shoulda
 
         def model
           @subject.class
+        end
+
+        def non_numeric_value
+          'abcd'
         end
       end
     end

@@ -38,13 +38,15 @@ module Shoulda
       class HaveSecurePasswordMatcher
         attr_reader :failure_message
 
-        CORRECT_PASSWORD = "aBcDe12345".freeze
-        INCORRECT_PASSWORD = "password".freeze
+        CORRECT_PASSWORD = 'aBcDe12345'.freeze
+        INCORRECT_PASSWORD = 'password'.freeze
 
         MESSAGES = {
-          authenticated_incorrect_password: "expected %{subject} to not authenticate an incorrect %{attribute}",
-          did_not_authenticate_correct_password: "expected %{subject} to authenticate the correct %{attribute}",
-          method_not_found: "expected %{subject} to respond to %{methods}"
+          authenticated_incorrect_password: 'expected %{subject} to not'\
+            ' authenticate an incorrect %{attribute}',
+          did_not_authenticate_correct_password: 'expected %{subject} to'\
+            ' authenticate the correct %{attribute}',
+          method_not_found: 'expected %{subject} to respond to %{methods}',
         }.freeze
 
         def initialize(attribute)
@@ -60,7 +62,8 @@ module Shoulda
 
           if failure = validate
             key, params = failure
-            @failure_message = MESSAGES[key] % { subject: subject.class }.merge(params)
+            @failure_message =
+              MESSAGES[key] % { subject: subject.class }.merge(params)
           end
 
           failure.nil?
@@ -71,7 +74,9 @@ module Shoulda
         attr_reader :subject
 
         def validate
-          missing_methods = expected_methods.reject {|m| subject.respond_to?(m) }
+          missing_methods = expected_methods.reject do |m|
+            subject.respond_to?(m)
+          end
 
           if missing_methods.present?
             [:method_not_found, { methods: missing_methods.to_sentence }]
@@ -80,7 +85,8 @@ module Shoulda
             subject.send("#{@attribute}_confirmation=", CORRECT_PASSWORD)
 
             if not subject.send(authenticate_method, CORRECT_PASSWORD)
-              [:did_not_authenticate_correct_password, { attribute: @attribute }]
+              [:did_not_authenticate_correct_password,
+               { attribute: @attribute },]
             elsif subject.send(authenticate_method, INCORRECT_PASSWORD)
               [:authenticated_incorrect_password, { attribute: @attribute }]
             end
@@ -90,7 +96,7 @@ module Shoulda
         private
 
         def expected_methods
-          @expected_methods ||= %I[
+          @_expected_methods ||= %I[
             #{authenticate_method}
             #{@attribute}=
             #{@attribute}_confirmation=
