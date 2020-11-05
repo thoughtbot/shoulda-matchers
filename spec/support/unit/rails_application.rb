@@ -2,12 +2,15 @@ require_relative '../tests/bundle'
 require_relative '../tests/command_runner'
 require_relative '../tests/database'
 require_relative '../tests/filesystem'
+require_relative 'helpers/active_record_versions'
 require_relative 'helpers/rails_versions'
 
 require 'yaml'
 
 module UnitTests
   class RailsApplication
+    include UnitTests::ActiveRecordVersions
+
     def initialize
       @fs = Tests::Filesystem.new
       @bundle = Tests::Bundle.new
@@ -26,6 +29,7 @@ module UnitTests
     def load
       load_environment
 
+      add_active_storage_migration if active_record_supports_active_storage?
       add_action_text_migration if bundle.includes?('actiontext')
 
       run_migrations
@@ -168,6 +172,12 @@ end
       TEXT
     end
 
+    def add_active_storage_migration
+      fs.within_project do
+        run_command! 'bundle exec rake active_storage:install:migrations'
+      end
+    end
+
     def add_action_text_migration
       fs.within_project do
         run_command! 'bundle exec rake action_text:install:migrations'
@@ -189,7 +199,8 @@ end
 
     def run_migrations
       fs.within_project do
-        run_command! 'bundle exec rake db:drop:all db:create:all db:migrate'
+        run_command! 'bundle exec rake db:drop:all db:create:all'
+        run_command! 'bundle exec rake db:migrate'
       end
     end
 
