@@ -17,7 +17,7 @@ provision-project() {
 
 ### DON'T MODIFY ANYTHING BELOW THIS LINE! #####################################
 
-# This setup script was generated with setup_script_generator 0.2.7,
+# This setup script was generated with setup_script_generator 0.3.1,
 # available on RubyGems.
 #
 # To regenerate this section, install the gem and run:
@@ -190,20 +190,25 @@ provision-ruby() {
   USE_BUNDLER_1=0
 
   if [[ -f .tool-versions ]]; then
-    REQUIRED_RUBY_VERSION=$(cat .tool-versions | grep '^ruby ' | sed -Ee 's/^ruby (.+)$/\1/')
+    REQUIRED_RUBY_VERSION=$(cat .tool-versions | grep '^ruby ' | head -n 1 | sed -Ee 's/^ruby (.+)$/\1/')
   elif [[ -f .ruby-version ]]; then
-    REQUIRED_RUBY_VERSION=$(cat .ruby-version)
-  else
-    error "You don't seem to have a Ruby version set in your project."
+    REQUIRED_RUBY_VERSION=$(cat .ruby-version | head -n 1 | sed -Ee 's/^ruby-([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+)$/\1/')
+  fi
+
+  if [[ -z $REQUIRED_RUBY_VERSION ]]; then
+    error "Could not determine required Ruby version for this project."
     print-wrapped "\
-You'll need to create either a .tool-versions file or .ruby-version file in your
-project before you can run this script."
+Your project needs to include either a valid .tool-versions file with a 'ruby'
+line or a valid .ruby-version file."
     exit 1
   fi
 
   ensure-ruby-development-libraries-installed
   ensure-ruby-installed
-  ensure-project-ruby-dependencies-installed
+
+  if [[ -f Gemfile ]]; then
+    ensure-project-ruby-dependencies-installed
+  fi
 }
 
 ensure-ruby-development-libraries-installed() {
@@ -236,12 +241,6 @@ ensure-ruby-installed() {
         error "Please use chruby to install Ruby $REQUIRED_RUBY_VERSION!"
       fi
     fi
-  elif has-executable rvm; then
-    if ! (rvm list | grep $required_ruby_version'\>' &>/dev/null); then
-      banner "Installing Ruby $required_ruby_version with rvm"
-      rvm install $required_ruby_version
-      rvm use $required_ruby_version
-    fi
   else
     error "You don't seem to have a Ruby manager installed."
     print-wrapped "\
@@ -262,7 +261,7 @@ ensure-project-ruby-dependencies-installed() {
   banner 'Installing Ruby dependencies'
 
   if [[ $USE_BUNDLER_1 -eq 1 ]] && (! has-bundler || ! [[ $(bundle -v) =~ '^Bundler version 1\.' ]]); then
-    gem install bundler -v '~> 1.0'
+    gem install bundler:'~> 1.0'
   elif ! has-bundler; then
     gem install bundler
   fi
