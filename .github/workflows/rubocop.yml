@@ -1,0 +1,38 @@
+name: Rubocop
+
+on: [push, pull_request]
+
+jobs:
+  run-linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.2
+
+      - name: Set up bundle cache
+        uses: actions/cache@v2
+        with:
+          path: /vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('./Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+
+      - name: Install Ruby dependencies
+        run: |
+          bundle config path /vendor/bundle
+          bundle install --jobs 4 --retry 3
+
+      - name: Run linters
+        uses: wearerequired/lint-action@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          rubocop: true
+          rubocop_command_prefix: bundle exec
+          rubocop_args: -c ./.rubocop.yml
