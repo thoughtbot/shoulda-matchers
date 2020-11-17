@@ -6,6 +6,11 @@ module Shoulda
         class OptionVerifier
           delegate :reflection, to: :reflector
 
+          DEFAULT_VALUE_OF_OPTIONS = {
+            has_many: {
+              validate: true,
+            },
+          }.freeze
           RELATION_OPTIONS = [:conditions, :order].freeze
 
           def initialize(reflector)
@@ -55,7 +60,7 @@ module Shoulda
               if respond_to?(method_name, true)
                 __send__(method_name)
               else
-                reflection.options[name]
+                actual_value_for_option(name)
               end
             end
           end
@@ -115,6 +120,16 @@ module Shoulda
 
           def actual_value_for_class_name
             reflector.associated_class
+          end
+
+          def actual_value_for_option(name)
+            option_value = reflection.options[name]
+
+            if option_value.nil?
+              DEFAULT_VALUE_OF_OPTIONS.dig(reflection.macro, name)
+            else
+              option_value
+            end
           end
         end
       end

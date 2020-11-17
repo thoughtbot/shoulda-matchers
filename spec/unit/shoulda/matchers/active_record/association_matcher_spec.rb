@@ -1177,20 +1177,40 @@ Expected Parent to have a has_many association called children through conceptio
     end
 
     context 'validate' do
-      it 'accepts when the :validate option matches' do
+      it 'accepts validate(false) when the :validate option is false' do
         expect(having_many_children(validate: false)).to have_many(:children).validate(false)
       end
 
-      it 'rejects when the :validate option does not match' do
+      it 'accepts validate(true) when the :validate option is true' do
+        expect(having_many_children(validate: true)).to have_many(:children).validate(true)
+      end
+
+      it 'rejects validate(false) when the :validate option is true' do
         expect(having_many_children(validate: true)).not_to have_many(:children).validate(false)
       end
 
+      it 'rejects validate(true) when the :validate option is false' do
+        expect(having_many_children(validate: false)).not_to have_many(:children).validate(true)
+      end
+
       it 'assumes validate() means validate(true)' do
+        expect(having_many_children(validate: true)).to have_many(:children).validate
+      end
+
+      it 'rejects validate() when :validate option is false' do
         expect(having_many_children(validate: false)).not_to have_many(:children).validate
       end
 
-      it 'matches validate(false) to having no validate option specified' do
-        expect(having_many_children).to have_many(:children).validate(false)
+      it 'rejects validate(false) when no :validate option was specified' do
+        expect(having_many_children).not_to have_many(:children).validate(false)
+      end
+
+      it 'accepts validate(true) when no :validate option was specified' do
+        expect(having_many_children).to have_many(:children).validate(true)
+      end
+
+      it 'accepts validate() when no :validate option was specified' do
+        expect(having_many_children).to have_many(:children).validate
       end
     end
 
