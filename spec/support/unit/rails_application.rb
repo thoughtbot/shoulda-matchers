@@ -26,7 +26,7 @@ module UnitTests
     def load
       load_environment
 
-      add_action_text_migration if bundle.includes?('actiontext')
+      add_action_text_migration if rails_version >= 6
 
       run_migrations
     end
@@ -76,7 +76,6 @@ module UnitTests
 
     def generate
       rails_new
-      fix_available_locales_warning
       remove_bootsnap
       write_database_configuration
       write_activerecord_model_with_default_connection
@@ -109,18 +108,6 @@ module UnitTests
           '--skip-bundle',
           '--no-rc',
         ]
-      end
-    end
-
-    def fix_available_locales_warning
-      # See here for more on this:
-      # https://stackoverflow.com/questions/20361428/rails-i18n-validation-deprecation-warning
-      fs.transform('config/application.rb') do |lines|
-        lines.insert(-3, <<-EOT)
-if I18n.respond_to?(:enforce_available_locales=)
-  I18n.enforce_available_locales = false
-end
-        EOT
       end
     end
 
@@ -202,7 +189,7 @@ end
         bundle.remove_gem 'byebug'
         bundle.remove_gem 'web-console'
         bundle.add_gem 'pg'
-        bundle.add_gem 'sqlite', '~> 1.3.6'
+        bundle.add_gem 'sqlite'
       end
     end
 

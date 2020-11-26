@@ -116,7 +116,7 @@ this could not be proved.
       end
     end
 
-    if database_supports_array_columns? && active_record_supports_array_columns?
+    if database_supports_array_columns?
       context 'when the column backing the attribute is an array' do
         context 'of varchar' do
           it 'still works' do
@@ -502,68 +502,67 @@ this could not be proved.
   end
 
   context 'against a belongs_to association' do
-    if active_record_supports_optional_for_associations?
-      context 'declared with optional: true' do
-        context 'and an explicit presence validation is on the association' do
-          it 'matches' do
-            record = record_belonging_to(
-              :parent,
-              optional: true,
-              validate_presence: true,
-            )
+    context 'declared with optional: true' do
+      context 'and an explicit presence validation is on the association' do
+        it 'matches' do
+          record = record_belonging_to(
+            :parent,
+            optional: true,
+            validate_presence: true,
+          )
 
-            expect { validate_presence_of(:parent) }.to match_against(record)
-          end
+          expect { validate_presence_of(:parent) }.to match_against(record)
         end
+      end
 
-        context 'and an explicit presence validation is not on the association' do
-          it 'does not match' do
-            record = record_belonging_to(
-              :parent,
-              optional: true,
-              validate_presence: false,
-              model_name: 'Child',
-              parent_model_name: 'Parent',
-            )
+      context 'and an explicit presence validation is not on the association' do
+        it 'does not match' do
+          record = record_belonging_to(
+            :parent,
+            optional: true,
+            validate_presence: false,
+            model_name: 'Child',
+            parent_model_name: 'Parent',
+          )
 
-            expect { validate_presence_of(:parent) }.
-              not_to match_against(record).
-              and_fail_with(<<-MESSAGE)
+          expect { validate_presence_of(:parent) }.
+            not_to match_against(record).
+            and_fail_with(<<-MESSAGE)
 Expected Child to validate that :parent cannot be empty/falsy, but this
 could not be proved.
   After setting :parent to ‹nil›, the matcher expected the Child to be
   invalid, but it was valid instead.
-              MESSAGE
-          end
+            MESSAGE
+        end
+      end
+    end
+
+    context 'declared with optional: false' do
+      context 'and an explicit presence validation is on the association' do
+        it 'matches' do
+          record = record_belonging_to(
+            :parent,
+            optional: false,
+            validate_presence: true,
+          )
+
+          expect { validate_presence_of(:parent) }.to match_against(record)
         end
       end
 
-      context 'declared with optional: false' do
-        context 'and an explicit presence validation is on the association' do
-          it 'matches' do
-            record = record_belonging_to(
-              :parent,
-              optional: false,
-              validate_presence: true,
-            )
+      context 'and an explicit presence validation is not on the association' do
+        it 'does not match, instructing the user to use belongs_to instead' do
+          record = record_belonging_to(
+            :parent,
+            optional: false,
+            validate_presence: false,
+            model_name: 'Child',
+            parent_model_name: 'Parent',
+          )
 
-            expect { validate_presence_of(:parent) }.to match_against(record)
-          end
-        end
-
-        context 'and an explicit presence validation is not on the association' do
-          it 'does not match, instructing the user to use belongs_to instead' do
-            record = record_belonging_to(
-              :parent,
-              optional: false,
-              validate_presence: false,
-              model_name: 'Child',
-              parent_model_name: 'Parent',
-            )
-
-            expect { validate_presence_of(:parent) }.
-              not_to match_against(record).
-              and_fail_with(<<-MESSAGE)
+          expect { validate_presence_of(:parent) }.
+            not_to match_against(record).
+            and_fail_with(<<-MESSAGE)
 Expected Child to validate that :parent cannot be empty/falsy, but this
 could not be proved.
   After setting :parent to ‹nil›, the matcher expected the Child to be
@@ -584,37 +583,37 @@ could not be proved.
 
       it { should belong_to(:parent).optional(false) }
       it { should belong_to(:parent).required(true) }
-              MESSAGE
-          end
+            MESSAGE
+        end
+      end
+    end
+
+    context 'declared with required: true' do
+      context 'and an explicit presence validation is on the association' do
+        it 'matches' do
+          record = record_belonging_to(
+            :parent,
+            required: true,
+            validate_presence: true,
+          )
+
+          expect { validate_presence_of(:parent) }.to match_against(record)
         end
       end
 
-      context 'declared with required: true' do
-        context 'and an explicit presence validation is on the association' do
-          it 'matches' do
-            record = record_belonging_to(
-              :parent,
-              required: true,
-              validate_presence: true,
-            )
+      context 'and an explicit presence validation is not on the association' do
+        it 'does not match, instructing the user to use belongs_to instead' do
+          record = record_belonging_to(
+            :parent,
+            required: true,
+            validate_presence: false,
+            model_name: 'Child',
+            parent_model_name: 'Parent',
+          )
 
-            expect { validate_presence_of(:parent) }.to match_against(record)
-          end
-        end
-
-        context 'and an explicit presence validation is not on the association' do
-          it 'does not match, instructing the user to use belongs_to instead' do
-            record = record_belonging_to(
-              :parent,
-              required: true,
-              validate_presence: false,
-              model_name: 'Child',
-              parent_model_name: 'Parent',
-            )
-
-            expect { validate_presence_of(:parent) }.
-              not_to match_against(record).
-              and_fail_with(<<-MESSAGE)
+          expect { validate_presence_of(:parent) }.
+            not_to match_against(record).
+            and_fail_with(<<-MESSAGE)
 Expected Child to validate that :parent cannot be empty/falsy, but this
 could not be proved.
   After setting :parent to ‹nil›, the matcher expected the Child to be
@@ -635,75 +634,75 @@ could not be proved.
 
       it { should belong_to(:parent).optional(false) }
       it { should belong_to(:parent).required(true) }
-              MESSAGE
-          end
+            MESSAGE
+        end
+      end
+    end
+
+    context 'declared with required: false' do
+      context 'and an explicit presence validation is on the association' do
+        it 'matches' do
+          record = record_belonging_to(
+            :parent,
+            required: false,
+            validate_presence: true,
+          )
+
+          expect { validate_presence_of(:parent) }.to match_against(record)
         end
       end
 
-      context 'declared with required: false' do
-        context 'and an explicit presence validation is on the association' do
-          it 'matches' do
-            record = record_belonging_to(
-              :parent,
-              required: false,
-              validate_presence: true,
-            )
+      context 'and an explicit presence validation is not on the association' do
+        it 'does not match' do
+          record = record_belonging_to(
+            :parent,
+            required: false,
+            validate_presence: false,
+            model_name: 'Child',
+            parent_model_name: 'Parent',
+          )
 
-            expect { validate_presence_of(:parent) }.to match_against(record)
-          end
-        end
-
-        context 'and an explicit presence validation is not on the association' do
-          it 'does not match' do
-            record = record_belonging_to(
-              :parent,
-              required: false,
-              validate_presence: false,
-              model_name: 'Child',
-              parent_model_name: 'Parent',
-            )
-
-            expect { validate_presence_of(:parent) }.
-              not_to match_against(record).
-              and_fail_with(<<-MESSAGE)
+          expect { validate_presence_of(:parent) }.
+            not_to match_against(record).
+            and_fail_with(<<-MESSAGE)
 Expected Child to validate that :parent cannot be empty/falsy, but this
 could not be proved.
   After setting :parent to ‹nil›, the matcher expected the Child to be
   invalid, but it was valid instead.
-              MESSAGE
-          end
+            MESSAGE
         end
       end
+    end
 
-      context 'not declared with an optional or required option' do
-        context 'when belongs_to is configured to be required by default' do
-          context 'and an explicit presence validation is on the association' do
-            it 'matches' do
-              with_belongs_to_as_required_by_default do
-                record = record_belonging_to(
-                  :parent,
-                  validate_presence: true,
-                )
+    context 'not declared with an optional or required option' do
+      context 'when belongs_to is configured to be required by default' do
+        context 'and an explicit presence validation is on the association' do
+          it 'matches' do
+            with_belongs_to_as_required_by_default do
+              record = record_belonging_to(
+                :parent,
+                validate_presence: true,
+              )
 
-                expect { validate_presence_of(:parent) }.
-                  to match_against(record)
-              end
+              expect { validate_presence_of(:parent) }.
+                to match_against(record)
             end
           end
+        end
 
-          context 'and an explicit presence validation is not on the association' do
-            it 'does not match, instructing the user to use belong_to instead' do
-              with_belongs_to_as_required_by_default do
-                record = record_belonging_to(
-                  :parent,
-                  validate_presence: false,
-                  model_name: 'Child',
-                  parent_model_name: 'Parent',
-                )
+        context 'and an explicit presence validation is not on the association' do
+          it 'does not match, instructing the user to use belong_to instead' do
+            with_belongs_to_as_required_by_default do
+              record = record_belonging_to(
+                :parent,
+                validate_presence: false,
+                model_name: 'Child',
+                parent_model_name: 'Parent',
+              )
 
-                expect { validate_presence_of(:parent) }.
-                  not_to match_against(record).
-                  and_fail_with(<<-MESSAGE)
+              expect { validate_presence_of(:parent) }.
+                not_to match_against(record).
+                and_fail_with(<<-MESSAGE)
 Expected Child to validate that :parent cannot be empty/falsy, but this
 could not be proved.
   After setting :parent to ‹nil›, the matcher expected the Child to be
@@ -723,133 +722,46 @@ could not be proved.
   the following instead:
 
       it { should belong_to(:parent) }
-                  MESSAGE
-              end
-            end
-          end
-        end
-
-        context 'when belongs_to is configured to be optional by default' do
-          context 'and an explicit presence validation is on the association' do
-            it 'matches' do
-              with_belongs_to_as_optional_by_default do
-                record = record_belonging_to(
-                  :parent,
-                  validate_presence: true,
-                )
-
-                expect { validate_presence_of(:parent) }.
-                  to match_against(record)
-              end
-            end
-          end
-
-          context 'and an explicit presence validation is not on the association' do
-            it 'does not match' do
-              with_belongs_to_as_optional_by_default do
-                record = record_belonging_to(
-                  :parent,
-                  validate_presence: false,
-                  model_name: 'Child',
-                  parent_model_name: 'Parent',
-                )
-
-                expect { validate_presence_of(:parent) }.
-                  not_to match_against(record).
-                  and_fail_with(<<-MESSAGE)
-Expected Child to validate that :parent cannot be empty/falsy, but this
-could not be proved.
-  After setting :parent to ‹nil›, the matcher expected the Child to be
-  invalid, but it was valid instead.
-                  MESSAGE
-              end
+                MESSAGE
             end
           end
         end
       end
-    else
-      context 'declared with required: true' do
+
+      context 'when belongs_to is configured to be optional by default' do
         context 'and an explicit presence validation is on the association' do
           it 'matches' do
-            record = record_belonging_to(
-              :parent,
-              required: true,
-              validate_presence: true,
-            )
+            with_belongs_to_as_optional_by_default do
+              record = record_belonging_to(
+                :parent,
+                validate_presence: true,
+              )
 
-            expect { validate_presence_of(:parent) }.to match_against(record)
-          end
-        end
-
-        context 'and an explicit presence validation is not on the association' do
-          it 'still matches' do
-            record = record_belonging_to(
-              :parent,
-              required: true,
-              validate_presence: false,
-            )
-
-            expect { validate_presence_of(:parent) }.to match_against(record)
-          end
-        end
-      end
-
-      context 'declared with required: false' do
-        context 'and an explicit presence validation is on the association' do
-          it 'matches' do
-            record = record_belonging_to(
-              :parent,
-              required: false,
-              validate_presence: true,
-            )
-
-            expect { validate_presence_of(:parent) }.to match_against(record)
+              expect { validate_presence_of(:parent) }.
+                to match_against(record)
+            end
           end
         end
 
         context 'and an explicit presence validation is not on the association' do
           it 'does not match' do
-            record = record_belonging_to(
-              :parent,
-              required: false,
-              validate_presence: false,
-              model_name: 'Child',
-              parent_model_name: 'Parent',
-            )
+            with_belongs_to_as_optional_by_default do
+              record = record_belonging_to(
+                :parent,
+                validate_presence: false,
+                model_name: 'Child',
+                parent_model_name: 'Parent',
+              )
 
-            expect { validate_presence_of(:parent) }.
-              not_to match_against(record).
-              and_fail_with(<<-MESSAGE)
+              expect { validate_presence_of(:parent) }.
+                not_to match_against(record).
+                and_fail_with(<<-MESSAGE)
 Expected Child to validate that :parent cannot be empty/falsy, but this
 could not be proved.
   After setting :parent to ‹nil›, the matcher expected the Child to be
   invalid, but it was valid instead.
-              MESSAGE
-          end
-        end
-      end
-
-      context 'not declared with a required option' do
-        context 'and an explicit presence validation is on the association' do
-          it 'matches' do
-            record = record_belonging_to(:parent, validate_presence: true)
-
-            expect { validate_presence_of(:parent) }.to match_against(record)
-          end
-        end
-
-        context 'and an explicit presence validation is not on the association' do
-          it 'does not match' do
-            record = record_belonging_to(:parent, validate_presence: false)
-
-            expect { validate_presence_of(:parent) }.
-              not_to match_against(record).
-              and_fail_with(<<-MESSAGE)
-Expected Child to validate that :parent cannot be empty/falsy, but this
-could not be proved.
-  After setting :parent to ‹nil›, the matcher expected the Child to be
-  invalid, but it was valid instead.
-              MESSAGE
+                MESSAGE
+            end
           end
         end
       end

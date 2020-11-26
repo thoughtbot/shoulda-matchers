@@ -1,11 +1,10 @@
 source 'https://rubygems.org'
 
-gem 'appraisal', '2.2.0'
-gem 'bundler', '~> 1.1'
+gem 'appraisal'
 gem 'pry'
 gem 'pry-byebug'
-gem 'rake', '13.0.1'
-gem 'rspec', '~> 3.9'
+gem 'rake'
+gem 'rspec'
 gem 'rubocop', require: false
 gem 'rubocop-packaging', require: false
 gem 'rubocop-rails', require: false

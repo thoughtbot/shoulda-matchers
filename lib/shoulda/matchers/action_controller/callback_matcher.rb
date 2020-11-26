@@ -1,64 +1,6 @@
 module Shoulda
   module Matchers
     module ActionController
-      # The `use_before_filter` matcher is used to test that a before_filter
-      # callback is defined within your controller.
-      #
-      #     class UsersController < ApplicationController
-      #       before_filter :authenticate_user!
-      #     end
-      #
-      #     # RSpec
-      #     RSpec.describe UsersController, type: :controller do
-      #       it { should use_before_filter(:authenticate_user!) }
-      #       it { should_not use_before_filter(:prevent_ssl) }
-      #     end
-      #
-      #     # Minitest (Shoulda)
-      #     class UsersControllerTest < ActionController::TestCase
-      #       should use_before_filter(:authenticate_user!)
-      #       should_not use_before_filter(:prevent_ssl)
-      #     end
-      #
-      # @note This method is only available when using shoulda-matchers under
-      # Rails 4.x.
-      # @return [CallbackMatcher]
-      #
-      if RailsShim.action_pack_lt_5?
-        def use_before_filter(callback)
-          CallbackMatcher.new(callback, :before, :filter)
-        end
-      end
-
-      # The `use_after_filter` matcher is used to test that an after_filter
-      # callback is defined within your controller.
-      #
-      #     class IssuesController < ApplicationController
-      #       after_filter :log_activity
-      #     end
-      #
-      #     # RSpec
-      #     RSpec.describe IssuesController, type: :controller do
-      #       it { should use_after_filter(:log_activity) }
-      #       it { should_not use_after_filter(:destroy_user) }
-      #     end
-      #
-      #     # Minitest (Shoulda)
-      #     class IssuesControllerTest < ActionController::TestCase
-      #       should use_after_filter(:log_activity)
-      #       should_not use_after_filter(:destroy_user)
-      #     end
-      #
-      # @note This method is only available when using shoulda-matchers under
-      # Rails 4.x.
-      # @return [CallbackMatcher]
-      #
-      if RailsShim.action_pack_lt_5?
-        def use_after_filter(callback)
-          CallbackMatcher.new(callback, :after, :filter)
-        end
-      end
-
       # The `use_before_action` matcher is used to test that a before_action
       # callback is defined within your controller.
       #
@@ -107,35 +49,6 @@ module Shoulda
       #
       def use_after_action(callback)
         CallbackMatcher.new(callback, :after, :action)
-      end
-
-      # The `use_around_filter` matcher is used to test that an around_filter
-      # callback is defined within your controller.
-      #
-      #     class ChangesController < ApplicationController
-      #       around_filter :wrap_in_transaction
-      #     end
-      #
-      #     # RSpec
-      #     RSpec.describe ChangesController, type: :controller do
-      #       it { should use_around_filter(:wrap_in_transaction) }
-      #       it { should_not use_around_filter(:save_view_context) }
-      #     end
-      #
-      #     # Minitest (Shoulda)
-      #     class ChangesControllerTest < ActionController::TestCase
-      #       should use_around_filter(:wrap_in_transaction)
-      #       should_not use_around_filter(:save_view_context)
-      #     end
-      #
-      # @note This method is only available when using shoulda-matchers under
-      # Rails 4.x.
-      # @return [CallbackMatcher]
-      #
-      if RailsShim.action_pack_lt_5?
-        def use_around_filter(callback)
-          CallbackMatcher.new(callback, :around, :filter)
-        end
       end
 
       # The `use_around_action` matcher is used to test that an around_action

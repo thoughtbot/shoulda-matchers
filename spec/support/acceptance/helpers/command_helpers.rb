@@ -23,7 +23,7 @@ module AcceptanceTests
     def run_command_isolated_from_bundle(*args)
       run_command(*args) do |runner|
         runner.around_command do |run_command|
-          Bundler.with_clean_env(&run_command)
+          Bundler.with_unbundled_env(&run_command)
         end
 
         yield runner if block_given?

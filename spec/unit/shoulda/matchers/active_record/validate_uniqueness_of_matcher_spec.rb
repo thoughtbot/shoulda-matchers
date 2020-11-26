@@ -852,11 +852,7 @@ within the scope of :scope1, but this could not be proved.
       end
     end
 
-    if (
-      database_supports_array_columns? &&
-      active_record_supports_array_columns? &&
-      active_record_uniqueness_supports_array_columns?
-    )
+    if database_supports_array_columns?
       context 'when one of the scoped attributes is a array-of-string column' do
         include_examples 'it supports scoped attributes of a certain type',
           column_type: :string,
@@ -1153,29 +1149,27 @@ long as it is not nil, but this could not be proved.
       end
     end
 
-    if active_record_supports_has_secure_password?
-      context 'when the model is declared with has_secure_password' do
-        context 'given a record whose attribute is nil' do
-          it 'accepts' do
-            model = define_model_validating_uniqueness(
-              validation_options: { allow_blank: true },
-              additional_attributes: [{ name: :password_digest, type: :string }], &:has_secure_password
-            )
-            record = build_record_from(model, attribute_name => nil)
-            expect(record).to validate_uniqueness.allow_blank
-          end
+    context 'when the model is declared with has_secure_password' do
+      context 'given a record whose attribute is nil' do
+        it 'accepts' do
+          model = define_model_validating_uniqueness(
+            validation_options: { allow_blank: true },
+            additional_attributes: [{ name: :password_digest, type: :string }], &:has_secure_password
+          )
+          record = build_record_from(model, attribute_name => nil)
+          expect(record).to validate_uniqueness.allow_blank
         end
+      end
 
-        context 'given a record whose attribute is empty' do
-          it 'accepts' do
-            model = define_model_validating_uniqueness(
-              attribute_type: :string,
-              validation_options: { allow_blank: true },
-              additional_attributes: [{ name: :password_digest, type: :string }], &:has_secure_password
-            )
-            record = build_record_from(model, attribute_name => '')
-            expect(record).to validate_uniqueness.allow_blank
-          end
+      context 'given a record whose attribute is empty' do
+        it 'accepts' do
+          model = define_model_validating_uniqueness(
+            attribute_type: :string,
+            validation_options: { allow_blank: true },
+            additional_attributes: [{ name: :password_digest, type: :string }], &:has_secure_password
+          )
+          record = build_record_from(model, attribute_name => '')
+          expect(record).to validate_uniqueness.allow_blank
         end
       end
     end

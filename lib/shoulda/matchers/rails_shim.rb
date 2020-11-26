@@ -3,14 +3,6 @@ module Shoulda
     # @private
     module RailsShim # rubocop:disable Metrics/ModuleLength
       class << self
-        def action_pack_gte_5?
-          Gem::Requirement.new('>= 5').satisfied_by?(action_pack_version)
-        end
-
-        def action_pack_lt_5?
-          Gem::Requirement.new('< 5').satisfied_by?(action_pack_version)
-        end
-
         def action_pack_version
           Gem::Version.new(::ActionPack::VERSION::STRING)
         rescue NameError
@@ -58,14 +50,7 @@ module Shoulda
         end
 
         def make_controller_request(context, verb, action, request_params)
-          params =
-            if action_pack_gte_5?
-              { params: request_params }
-            else
-              request_params
-            end
-
-          context.__send__(verb, action, params)
+          context.__send__(verb, action, { params: request_params })
         end
 
         def serialized_attributes_for(model)

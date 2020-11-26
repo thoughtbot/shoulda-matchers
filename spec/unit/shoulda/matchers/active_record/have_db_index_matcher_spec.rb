@@ -2,8 +2,7 @@ require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher, type: :model do
   def self.can_test_expression_indexes?
-    active_record_supports_expression_indexes? &&
-      database_supports_expression_indexes?
+    database_supports_expression_indexes?
   end
 
   describe 'the matcher' do

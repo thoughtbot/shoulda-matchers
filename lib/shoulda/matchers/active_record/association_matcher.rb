@@ -1004,7 +1004,7 @@ module Shoulda
           @submatchers = []
           @missing = ''
 
-          if macro == :belongs_to && RailsShim.active_record_gte_5?
+          if macro == :belongs_to
             required(belongs_to_required_by_default?)
           end
         end

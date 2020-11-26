@@ -55,12 +55,6 @@ module UnitTests
       attr_reader :table_name, :columns, :connection, :customizer
 
       delegate(
-        :active_record_supports_array_columns?,
-        :active_record_version,
-        to: UnitTests::ActiveRecordVersions,
-      )
-
-      delegate(
         :database_supports_array_columns?,
         :database_adapter,
         to: UnitTests::DatabaseHelpers,
@@ -99,22 +93,12 @@ module UnitTests
         column_type = column_specification.delete(:type)
         column_options = column_specification.delete(:options) { {} }
 
-        if column_options[:array]
-          if !active_record_supports_array_columns?
-            raise ArgumentError.new(
-              'An array column is being added to a table, but this version '\
-              "of ActiveRecord (#{active_record_version}) "\
-              'does not support array columns.',
-            )
-          end
-
-          if !database_supports_array_columns?
-            raise ArgumentError.new(
-              'An array column is being added to a table, but this '\
-              "database adapter (#{database_adapter}) "\
-              'does not support array columns.',
-            )
-          end
+        if column_options[:array] && !database_supports_array_columns?
+          raise ArgumentError.new(
+            'An array column is being added to a table, but this '\
+            "database adapter (#{database_adapter}) "\
+            'does not support array columns.',
+          )
         end
 
         if column_specification.any?
