@@ -48,6 +48,49 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
         end
       end
 
+      if database_supports_array_columns? && active_record_supports_array_columns?
+        context 'when the column backing the attribute is an array' do
+          context 'of varchar' do
+            it 'still works' do
+              record = validating_absence_of(
+                :attr,
+                {},
+                type: :varchar,
+                options: { array: true, default: [], null: false },
+              )
+
+              expect(record).to validate_absence_of(:attr)
+            end
+          end
+
+          context 'of string' do
+            it 'still works' do
+              record = validating_absence_of(
+                :attr,
+                {},
+                type: :string,
+                options: { array: true, default: [], null: false },
+              )
+
+              expect(record).to validate_absence_of(:attr)
+            end
+          end
+
+          context 'of a type other than string' do
+            it 'still works' do
+              record = validating_absence_of(
+                :possible_meeting_dates,
+                {},
+                type: :date,
+                options: { array: true, default: [], null: false },
+              )
+
+              expect(record).to validate_absence_of(:possible_meeting_dates)
+            end
+          end
+        end
+      end
+
       context 'when used in the negative' do
         it 'fails' do
           assertion = lambda do

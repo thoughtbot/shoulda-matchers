@@ -107,6 +107,8 @@ module Shoulda
             else
               obj
             end
+          elsif array_column?
+            ['an arbitary value']
           else
             case column_type
             when :integer, :float then 1
@@ -136,6 +138,12 @@ module Shoulda
         def reflection
           @subject.class.respond_to?(:reflect_on_association) &&
             @subject.class.reflect_on_association(@attribute)
+        end
+
+        def array_column?
+          @subject.class.respond_to?(:columns_hash) &&
+            @subject.class.columns_hash[@attribute.to_s].respond_to?(:array) &&
+            @subject.class.columns_hash[@attribute.to_s].array
         end
       end
     end
