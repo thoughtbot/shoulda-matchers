@@ -11,13 +11,14 @@ be too low-level for contributors.
 * [Communication](#communication)
 * [Managing the community](#managing-the-community)
 * [Workflow](#workflow)
+* [Issuing a new release](#issuing-a-new-release)
 * [Architecture](#architecture)
 * [Running tests](#running-tests)
 * [Updating the changelog](#updating-the-changelog)
 * [Documentation](#documentation)
 * [Versioning](#versioning)
 * [Updating the landing page](#updating-the-landing-page)
-* [Addendum: Labels](#addendum-labels)
+* [Labels in GitHub](#labels-in-github)
 
 ## Communication
 
@@ -28,7 +29,7 @@ We have several ways that we can communicate with each other:
   serves both as an announcement to the community as well as an area to keep a
   checklist.
 * To track progress for the next release, **GitHub milestones** are useful.
-* To track progress on the movement of issues, [**labels**](#addendum-labels)
+* To track progress on the movement of issues, [**labels**](#labels-in-github)
   are useful.
 * To communicate small-scale changes, **pull requests** are effective, as
   mentioned above.
@@ -36,8 +37,8 @@ We have several ways that we can communicate with each other:
 
 ## Managing the community
 
-As anyone who has played a sim game before, it's important to make your patrons
-happy. We do this by:
+As anyone who has played a sim game before knows, it's important to make your
+patrons happy. We do this by:
 
 * Answering questions from members of the community
 * Closing stale issues and feature requests
@@ -63,8 +64,9 @@ workflow is as follows:
 
 ## Architecture
 
-Besides the matchers, there are files in `lib` which you may need to reference
-or update:
+Besides the matchers, which are covered in
+[Contributing](CONTRIBUTING.md#matchers), there are files in `lib` which you may
+need to reference or update:
 
 * `lib/shoulda/matchers/doublespeak*` — a small handrolled mocking library
   which is used by the `permit` matcher
@@ -97,6 +99,59 @@ alias zr="bundle exec zeus rspec"
 
 [Zeus]: https://github.com/burke/zeus
 
+## Issuing a new release
+
+Every so often you may need to issue a new release. Here are the steps that we
+follow to accomplish this:
+
+1. First, [make sure you have access to publish new gems to
+   RubyGems](#granting-rubygems-access).
+
+1. Next, you'll want to [decide which version number you're about to
+   release](#naming-a-new-version). In most cases, you are deciding between a
+   patch release and a minor release, and you can ask whether a new
+   feature is being added that didn't exist before to determine which one it
+   should be.
+
+1. Next, you'll want to [make sure that the changelog is up to
+   date](#updating-the-changelog) and has a section at the top for the new
+   version with all its changes and references to the appropriate pull requests
+   or commits.
+
+1. Next, [generate the documentation
+   locally](#generating-and-viewing-documentation-locally) and do a quick
+   spot-check (pull up the Classes and Methods menus, click around a bit) to
+   ensure that nothing looks awry.
+
+1. Next, [update the `VERSION` constant in
+   `lib/shoulda/matchers/version.rb`](#naming-a-new-version). This constant is
+   referenced in the gemspec and is used in the Rake tasks to publish the gem on
+   RubyGems as well as generate documentation.
+
+1. Assuming that everything looks good, place your changes to the changelog,
+   `version.rb`, and README in their own commit titled "Bump version to
+   *X.Y.Z*". Push this to GitHub (you can use `[ci skip]`) in the body of the
+   commit message to skip CI for this commit if you so choose). **There is no
+   going back after this point!**
+
+1. Once GitHub has the version-change commit, you will run:
+
+   ```bash
+   rake release
+   ```
+
+   This will not only push the gem to RubyGems, but also publish the docs to
+   GitHub Pages.
+
+1. Finally, you'll want to make sure that GitHub's Releases section reflects the
+   latest version. Copy the newest section in the changelog, [draft a new
+   Release][github-releases], paste what you copied from the changelog as
+   the description, then publish that release.
+
+That's it!
+
+[github-releases]: https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/managing-releases-in-a-repository
+
 ## Updating the changelog
 
 After every user-facing change makes it into master, we make a note of it in the
@@ -122,12 +177,13 @@ such PR is available). This helps users cross-reference changes if they need to.
 
 ## Documentation
 
-### Generating documentation
+### Generating and viewing documentation locally
 
 As mentioned in the [Contributing](CONTRIBUTING.md) document, we use YARD for
 documentation. YARD is configured via `.yardopts` to process the Ruby files in
 `lib/` as well as `CHANGELOG.md` and the Markdown files in `docs/` and write the
-documentation in HTML form to `doc`. This command will do exactly that:
+documentation in HTML form to `doc`. This command will generate said
+documentation:
 
 ```bash
 bundle exec yard doc
@@ -194,12 +250,18 @@ This would publish the docs for 4.0.0 at
 they've got `matchers.shoulda.io` set up on the DNS level as an alias for
 `thoughtbot.github.io/shoulda-matchers`.*
 
-## Versioning
+## Naming a new version
 
-### Naming a new version
+The version for the gem is stored in
+[`lib/shoulda/matchers/version.rb`][version-rb]. This contains a constant which
+is referenced by [`shoulda-matchers.gemspec`][gemspec].
 
-As designated in the README, we follow [SemVer 2.0][semver]. This offers a
-meaningful baseline for deciding how to name versions. Generally speaking:
+[version-rb]: lib/shoulda/matchers/version.rb
+[gemspec]: shoulda-matchers.gemspec
+
+How do we change the version number over time? As designated in the README, we
+follow [SemVer 2.0][semver]. This offers a meaningful baseline for deciding how
+to name versions. Generally speaking:
 
 [semver]: https://semver.org/spec/v2.0.0.html
 
@@ -215,45 +277,15 @@ suffix to the version for pre-release versions. We usually use this to issue
 release candidates prior to an actual release. A version number in this case
 might look like `4.0.0.rc1`.
 
-### Preparing and releasing a new version
+## Granting RubyGems access
 
-In order to release any versions at all, you will need to have been added as
-an owner of the Ruby gem. If you want to give someone else these permissions,
-then run:
+In order to publish a new version of the gem to RubyGems, you will need to have
+been added as an owner. If you want to give someone else these permissions, then
+run:
 
 ```bash
 gem owner shoulda-matchers -a <email address>
 ```
-
-Assuming you have permission to publish a new version to RubyGems, then this is
-how you release a version:
-
-1. First, you'll want to [make sure that the changelog is up to
-   date](#updating-the-changelog).
-
-2. Next, [generate the documentation locally](#generating-documentation) and do
-   a quick spot-check (pull up the Classes and Methods menus, click around a
-   bit) to ensure that nothing looks awry.
-
-3. Next, you'll want to update the `VERSION` constant in
-   `lib/shoulda/matchers/version.rb`. This constant is referenced in the gemspec
-   and is used in the Rake tasks to publish the gem on RubyGems as well as
-   generate documentation.
-
-4. Assuming that everything looks good, place your changes to the changelog,
-   `version.rb`, and README in their own commit titled "Bump version to
-   *X.Y.Z*". Push this to GitHub (you can use `[ci skip]`) in the body of the
-   commit message to skip CI for this commit if you so choose). **There is no
-   going back after this point!**
-
-5. Once GitHub has the version-change commit, you will run:
-
-   ```bash
-   rake release
-   ```
-
-   This will not only push the gem to RubyGems, but also publish the docs to
-   GitHub Pages.
 
 ## Updating the landing page
 
@@ -266,7 +298,7 @@ instructions there for maintaining and publishing it.
 
 [site-branch]: https://github.com/thoughtbot/shoulda-matchers/tree/site
 
-## Addendum: Labels
+## Labels in GitHub
 
 Considering that we work on the gem in our spare time, we've found [labels] to
 be useful for cataloguing and marking progress. Over time we've added quite a
