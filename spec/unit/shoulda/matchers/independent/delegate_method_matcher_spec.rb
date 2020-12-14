@@ -259,6 +259,37 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
     end
   end
 
+  context 'when delegating method to a class' do
+    let(:post_office) { PostOffice.new }
+
+    before do
+      define_class('Mailman') do
+        def self.deliver_mail
+          'Deliver Mail'
+        end
+      end
+
+      define_class('PostOffice') do
+        delegate :deliver_mail, to: Mailman
+      end
+    end
+
+    it 'accepts when the class and the delegated method exist' do
+      expect(post_office).to delegate_method(:deliver_mail).to(Mailman)
+    end
+
+    xit 'rejects when the delegated method does not exist' do
+      message = 'TODO: failure description'
+
+      # binding.pry
+      expect {
+        expect(post_office).
+          not_to delegate_method(:typo).
+          to(Mailman)
+      }.to fail_with_message(message)
+    end
+  end
+
   context 'qualified with #with_arguments' do
     before do
       define_class('Mailman')

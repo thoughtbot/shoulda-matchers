@@ -200,9 +200,15 @@ module Shoulda
           ensure_delegate_object_has_been_specified!
 
           subject_has_delegating_method? &&
-            subject_has_delegate_object_reader_method? &&
-            subject_delegates_to_delegate_object_correctly? &&
-            subject_handles_nil_delegate_object?
+            subject_handles_nil_delegate_object? && (
+              (
+                delegate_object_reader_method_is_a_class? &&
+                  delegate_object_reader_method_has_delegating_method?
+              ) || (
+                subject_has_delegate_object_reader_method? &&
+                  subject_delegates_to_delegate_object_correctly?
+              )
+            )
         end
 
         def description
@@ -308,6 +314,14 @@ module Shoulda
           else
             context.subject_is_a_class?
           end
+        end
+
+        def delegate_object_reader_method_is_a_class?
+          @delegate_object_reader_method.is_a?(Class)
+        end
+
+        def delegate_object_reader_method_has_delegating_method?
+          delegate_object_reader_method.respond_to?(delegating_method)
         end
 
         def class_under_test
