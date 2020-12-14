@@ -102,7 +102,7 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbColumnMatcher, type: :model do
     it 'raises an error with the unknown options' do
       expect {
         have_db_column(:salary).with_options(preccision: 5, primaryy: true)
-      }.to raise_error("Unknown option(s): :preccision, :primaryy")
+      }.to raise_error('Unknown option(s): :preccision, :primaryy')
     end
   end
 
