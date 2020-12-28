@@ -1,5 +1,39 @@
 # Changelog
 
+## Unreleased
+
+### Bug fixes
+
+* Fix `bundle exec yard doc` replacing pygments.rb with rouge to keep the documentation up to date. ([#1343])
+* Fix have_db_column.with_options not raising an error when the user adds an invalid value. ([#1358])
+* Fix default value of assossiation_matcher.validate option. It was returning false instead of true. ([#1378])
+* Fix validate_absence_of failing for array columns. ([#1383])
+
+[#1340]: https://github.com/thoughtbot/shoulda-matchers/pull/1340
+[#1358]: https://github.com/thoughtbot/shoulda-matchers/pull/1358
+[#1378]: https://github.com/thoughtbot/shoulda-matchers/pull/1378
+[#1383]: https://github.com/thoughtbot/shoulda-matchers/pull/1383
+
+### Features
+
+* Add support for has_secure_password custom attributes. ([#1356])
+
+[#1356]: https://github.com/thoughtbot/shoulda-matchers/pull/1356
+
+### Improvements
+
+* Replace all links with http to https. ([#1340])
+* Update the links for have_and_belong_to_many, have_many and have_one in the README to redirect the user to where the matcher description starts. ([#1348])
+* Drop `git ls-files` in gemspec to help downstreams maintenance, because they often need to build packages in an environment that does not have git. ([#1354])
+* Add comment about no support of validate_uniqueness_of(:item).scoped_to(array). ([#1355])
+* Improve error message for assossiation_matcher.with_foreign_key option. ([#1376])
+
+[#1343]: https://github.com/thoughtbot/shoulda-matchers/pull/1343
+[#1348]: https://github.com/thoughtbot/shoulda-matchers/pull/1348
+[#1354]: https://github.com/thoughtbot/shoulda-matchers/pull/1354
+[#1355]: https://github.com/thoughtbot/shoulda-matchers/pull/1355
+[#1376]: https://github.com/thoughtbot/shoulda-matchers/pull/1376
+
 ## 4.4.1 - 2020-08-26
 
 ### Bug fixes
@@ -30,7 +64,7 @@
 * Fix `have_and_belong_to_many` so that when using the `join_table` qualifier
   you can pass a symbol rather than a string. ([#1323])
 
-[#1290]: https://github.com/thoughtbot/shoulda-matchers/issues/952
+[#1290]: https://github.com/thoughtbot/shoulda-matchers/issues/1290
 [#952]: https://github.com/thoughtbot/shoulda-matchers/issues/952
 [#992]: https://github.com/thoughtbot/shoulda-matchers/pull/992
 [schema_validations]: https://github.com/SchemaPlus/schema_validations
