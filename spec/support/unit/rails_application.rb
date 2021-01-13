@@ -97,6 +97,7 @@ module UnitTests
           'rails',
           'new',
           fs.project_directory.to_s,
+          "--database=#{database.adapter_name}",
           '--skip-bundle',
           '--no-rc',
           '--skip-webpack-install',
@@ -106,6 +107,7 @@ module UnitTests
           'rails',
           'new',
           fs.project_directory.to_s,
+          "--database=#{database.adapter_name}",
           '--skip-bundle',
           '--no-rc',
         ]
@@ -135,7 +137,7 @@ end
     end
 
     def write_database_configuration
-      YAML.dump(database.config.to_hash, fs.open('config/database.yml', 'w'))
+      YAML.dump(database.config.load_file, fs.open('config/database.yml', 'w'))
     end
 
     def write_activerecord_model_with_different_connection
@@ -201,8 +203,6 @@ end
         bundle.remove_gem 'debugger'
         bundle.remove_gem 'byebug'
         bundle.remove_gem 'web-console'
-        bundle.add_gem 'pg'
-        bundle.add_gem 'sqlite', '~> 1.3.6'
       end
     end
 

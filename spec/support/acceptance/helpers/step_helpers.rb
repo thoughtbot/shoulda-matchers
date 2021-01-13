@@ -58,14 +58,8 @@ module AcceptanceTests
 
     def create_rails_application
       fs.clean
-      command =
-        if rails_version =~ '~> 6.0'
-          "bundle exec rails new #{fs.project_directory} --skip-bundle --skip-javascript --no-rc"
-        else
-          "bundle exec rails new #{fs.project_directory} --skip-bundle --no-rc"
-        end
 
-      run_command!(command) do |runner|
+      run_command!(rails_new_command) do |runner|
         runner.directory = nil
       end
 
@@ -76,11 +70,18 @@ module AcceptanceTests
         bundle.remove_gem 'debugger'
         bundle.remove_gem 'byebug'
         bundle.remove_gem 'web-console'
-        bundle.add_gem 'pg'
       end
 
       fs.open('config/database.yml', 'w') do |file|
-        YAML.dump(database.config.to_hash, file)
+        YAML.dump(database.config.load_file, file)
+      end
+    end
+
+    def rails_new_command
+      if rails_version =~ '~> 6.0'
+        "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --skip-javascript --no-rc"
+      else
+        "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --no-rc"
       end
     end
 

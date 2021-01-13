@@ -3,8 +3,6 @@ require 'delegate'
 
 module Tests
   class DatabaseConfiguration < SimpleDelegator
-    ENVIRONMENTS = %w(development test production).freeze
-
     attr_reader :adapter_class
 
     def self.for(database_name, adapter_name)
@@ -18,13 +16,8 @@ module Tests
       super(config)
     end
 
-    def to_hash
-      ENVIRONMENTS.each_with_object({}) do |env, config_as_hash|
-        config_as_hash[env] = {
-          'adapter' => adapter.to_s,
-          'database' => "#{database}_#{env}",
-        }
-      end
+    def load_file
+      YAML::load_file(File.join(__dir__, "database_adapters/config/#{adapter}.yml"))
     end
   end
 end
