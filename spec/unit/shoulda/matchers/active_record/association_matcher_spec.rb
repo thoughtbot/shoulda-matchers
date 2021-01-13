@@ -1414,7 +1414,7 @@ Expected Parent to have a has_many association called children through conceptio
       expect(having_one_non_existent(:person, :detail, class_name: 'Detail')).not_to have_one(:detail)
     end
 
-    it 'rejects an association with a valid :class_name and a bad :primary_key option' do
+    it 'rejects an association with a valid :class_name and a bad :foreign_key option' do
       define_model :person_detail
       define_model :person do
         has_one :detail, class_name: 'PersonDetail', foreign_key: :person_detail_id
@@ -1426,6 +1426,48 @@ Expected Parent to have a has_many association called children through conceptio
       expect { have_one(:detail).class_name('PersonDetail').with_foreign_key(:custom_primary_id) }.
         not_to match_against(Person.new).
         and_fail_with(expected_message)
+    end
+
+    it 'rejects an association with a valid :class_name and a bad :foreign_key option (CPK)' do
+      define_model :person_detail
+      define_model :person do
+        has_one :detail, class_name: 'PersonDetail', foreign_key: %i[company_id person_detail_id]
+      end
+
+      expected_message = 'Expected Person to have a has_one association called detail ' \
+        '(PersonDetail does not have a [:foo_id, :bar_id] foreign key.)'
+
+      expect do
+        have_one(:detail).class_name('PersonDetail').
+          with_foreign_key(%i[foo_id bar_id])
+      end.not_to match_against(Person.new).and_fail_with(expected_message)
+    end
+
+    it 'rejects an association with a valid :class_name and :foreign_key option (CPK), but no columns' do
+      define_model :person_detail
+      define_model :person do
+        has_one :detail, class_name: 'PersonDetail', foreign_key: %i[company_id person_detail_id]
+      end
+
+      expected_message = 'Expected Person to have a has_one association called detail ' \
+        '(PersonDetail does not have a ["company_id", "person_detail_id"] foreign key.)'
+
+      expect do
+        have_one(:detail).class_name('PersonDetail').
+          with_foreign_key(%i[company_id person_detail_id])
+      end.not_to match_against(Person.new).and_fail_with(expected_message)
+    end
+
+    it 'accepts an association with a valid :class_name and :foreign_key option (CPK)' do
+      define_model :person_detail, company_id: :integer, person_detail_id: :integer
+      define_model :person do
+        has_one :detail, class_name: 'PersonDetail', foreign_key: %i[company_id person_detail_id]
+      end
+
+      expect(Person.new).
+        to have_one(:detail).
+        class_name('PersonDetail').
+        with_foreign_key(%i[company_id person_detail_id])
     end
 
     it 'adds error message when rejecting an association with non-existent class' do
