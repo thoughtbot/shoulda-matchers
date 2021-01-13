@@ -1394,15 +1394,13 @@ module Shoulda
         end
 
         def class_has_foreign_key?(klass)
-          if options.key?(:foreign_key) && !foreign_key_correct?
-            @missing = foreign_key_failure_message(klass, options[:foreign_key])
-            false
-          elsif !column_names_for(klass).include?(foreign_key)
-            @missing = foreign_key_failure_message(klass, foreign_key)
-            false
-          else
-            true
-          end
+          @missing = if options.key?(:foreign_key) && !foreign_key_correct?
+                       foreign_key_failure_message(klass, options[:foreign_key])
+                     elsif !column_names_for(klass).include?(foreign_key)
+                       foreign_key_failure_message(klass, foreign_key)
+                     end
+
+          @missing.nil?
         end
 
         def foreign_key_correct?
