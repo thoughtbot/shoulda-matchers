@@ -1397,11 +1397,20 @@ module Shoulda
           if options.key?(:foreign_key) && !foreign_key_correct?
             @missing = foreign_key_failure_message(klass, options[:foreign_key])
             false
-          elsif !column_names_for(klass).include?(foreign_key)
+          elsif !has_column?(klass, foreign_key)
             @missing = foreign_key_failure_message(klass, foreign_key)
             false
           else
             true
+          end
+        end
+
+        def has_column?(klass, column)
+          case column
+          when Array
+            column.all? { |c| has_column?(klass, c) }
+          else
+            column_names_for(klass).include?(column)
           end
         end
 
@@ -1434,12 +1443,18 @@ module Shoulda
         end
 
         def foreign_key
-          if foreign_key_reflection
-            if foreign_key_reflection.respond_to?(:foreign_key)
-              foreign_key_reflection.foreign_key.to_s
-            else
-              foreign_key_reflection.primary_key_name.to_s
-            end
+          key = if foreign_key_reflection
+                  if foreign_key_reflection.respond_to?(:foreign_key)
+                    foreign_key_reflection.foreign_key
+                  else
+                    foreign_key_reflection.primary_key_name
+                  end
+                end
+
+          if key.is_a?(Array)
+            key.map(&:to_s)
+          else
+            key.to_s
           end
         end
 
