@@ -7,7 +7,7 @@ env:
     - DATABASE_ADAPTER=sqlite3
     - DATABASE_ADAPTER=postgresql
 rvm:
-  - head
+  - ruby-head
   - 2.7.2
   - 2.6.6
   - 2.5.8
