@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Bug fixes
+
+* Update `belongs_to` to work with composite primary keys. ([#1396])
+
+[#1396]: https://github.com/thoughtbot/shoulda-matchers/pull/1396
+
 ## 4.5.0 - 2020-12-28
 
 ### Bug fixes
