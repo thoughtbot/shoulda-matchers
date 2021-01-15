@@ -1,0 +1,65 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    types:
+      - opened
+      - synchronize
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  build:
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: [ '5432:5432' ]
+        options: --health-cmd pg_isready --health-interval 2s --health-timeout 1s --health-retries 10
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - 2.7.2
+          - 2.6.6
+          - 2.5.8
+          - 2.4.10
+        gemfile:
+          - rails_6_0
+          - rails_5_2
+          - rails_5_1
+          - rails_5_0
+          - rails_4_2
+        adapter:
+          - sqlite3
+          - postgresql
+        exclude:
+          - { ruby: 2.7.2, gemfile: rails_4_2 }
+          - { ruby: 2.6.6, gemfile: rails_4_2 }
+          - { ruby: 2.4.10, gemfile: rails_6_0 }
+
+    env:
+      DATABASE_ADAPTER: ${{ matrix.adapter }}
+      BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
+      RAILS_ENV: test
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: sudo apt-get -y install libpq-dev
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+
+      - run: bundle exec rake
