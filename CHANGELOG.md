@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 4.5.1 - 2021-01-15
 
 ### Bug fixes
 
