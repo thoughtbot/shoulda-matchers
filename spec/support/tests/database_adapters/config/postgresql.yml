@@ -1,0 +1,19 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
+  host: <%= ENV.fetch("DB_HOST", "localhost") %>
+  username: <%= ENV.fetch("DB_USER", "postgres") %>
+  password: <%= ENV.fetch("DB_USER_PASSWORD", "postgres") %>
+
+development:
+  <<: *default
+  database: shoulda-matchers-test_development
+
+test:
+  <<: *default
+  database: shoulda-matchers-test_test
+
+production:
+  <<: *default
+  database: shoulda-matchers-test_production

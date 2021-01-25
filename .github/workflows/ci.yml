@@ -1,0 +1,66 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    types:
+      - opened
+      - synchronize
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  build:
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: [ '5432:5432' ]
+        options: --health-cmd pg_isready --health-interval 2s --health-timeout 1s --health-retries 10
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - 2.7.2
+          - 2.6.6
+          - 2.5.8
+          - 2.4.10
+        appraisal:
+          - rails_6_0
+          - rails_5_2
+          - rails_5_1
+          - rails_5_0
+          - rails_4_2
+        adapter:
+          - sqlite3
+          - postgresql
+        exclude:
+          - { ruby: 2.7.2, appraisal: rails_4_2 }
+          - { ruby: 2.6.6, appraisal: rails_4_2 }
+          - { ruby: 2.4.10, appraisal: rails_6_0 }
+    env:
+      DATABASE_ADAPTER: ${{ matrix.adapter }}
+      BUNDLE_GEMFILE: gemfiles/${{ matrix.appraisal }}.gemfile
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        id: set-up-ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: v1-rubygems-local-${{ runner.os }}-${{ matrix.ruby }}-${{ hashFiles(format('gemfiles/{0}.gemfile.lock', matrix.rails_appraisal)) }}
+      - name: Install dependencies
+        run: bundle install --jobs=3 --retry=3
+      - name: Run Unit Tests
+        run: bundle exec rake spec:unit --trace
+      - name: Run Acceptance Tests
+        run: bundle exec rake spec:acceptance --trace
