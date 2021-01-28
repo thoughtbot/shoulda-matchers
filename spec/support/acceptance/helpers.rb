@@ -1,4 +1,5 @@
 require_relative 'helpers/active_model_helpers'
+require_relative 'helpers/active_record_helpers'
 require_relative 'helpers/base_helpers'
 require_relative 'helpers/command_helpers'
 require_relative 'helpers/gem_helpers'
@@ -20,6 +21,7 @@ module AcceptanceTests
     end
 
     include ActiveModelHelpers
+    include ActiveRecordHelpers
     include BaseHelpers
     include CommandHelpers
     include GemHelpers
