@@ -327,8 +327,8 @@ validation for you? Instead of using `validate_presence_of`, try
         end
 
         def collection_association?
-          association? && association_reflection.macro.in?(
-            [:has_many, :has_and_belongs_to_many],
+          association? && [:has_many, :has_and_belongs_to_many].include?(
+            association_reflection.macro,
           )
         end
 

@@ -17,6 +17,19 @@ module AcceptanceTests
       add_gem 'activemodel', active_model_version
     end
 
+    def create_active_record_project
+      create_generic_bundler_project
+      add_gem 'activemodel',  active_model_version
+      add_gem 'activerecord', active_record_version
+      add_gem 'rake'
+
+      if rails_version =~ '~> 6.0'
+        add_gem 'sqlite3', '~>1.4'
+      else
+        add_gem 'sqlite3', '~>1.3.6'
+      end
+    end
+
     def create_generic_bundler_project
       fs.clean
       fs.create
