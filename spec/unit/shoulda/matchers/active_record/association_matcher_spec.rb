@@ -714,7 +714,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       define_model(:parent, parent_options)
 
       define_model :child, parent_id: :integer do
-        belongs_to :parent, options
+        belongs_to :parent, **options
 
         if block
           class_eval(&block)
@@ -743,7 +743,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
 
     def belonging_to_non_existent_class(model_name, assoc_name, options = {})
       define_model model_name, "#{assoc_name}_id" => :integer do
-        belongs_to assoc_name, options
+        belongs_to assoc_name, **options
       end.new
     end
   end
@@ -1158,14 +1158,14 @@ Expected Parent to have a has_many association called children through conceptio
           order = options.delete(:order)
           define_association_with_order(model, :has_many, :children, order, options)
         else
-          model.has_many :children, options
+          model.has_many :children, **options
         end
       end.new
     end
 
     def having_many_non_existent_class(model_name, assoc_name, options = {})
       define_model model_name do
-        has_many assoc_name, options
+        has_many assoc_name, **options
       end.new
     end
   end
@@ -1496,14 +1496,14 @@ Expected Parent to have a has_many association called children through conceptio
           order = options.delete(:order)
           define_association_with_order(model, :has_one, :detail, order, options)
         else
-          model.has_one :detail, options
+          model.has_one :detail, **options
         end
       end.new
     end
 
     def having_one_non_existent(model_name, assoc_name, options = {})
       define_model model_name do
-        has_one assoc_name, options
+        has_one assoc_name, **options
       end.new
     end
   end
@@ -2126,25 +2126,17 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
 
     def having_and_belonging_to_many_non_existent_class(model_name, assoc_name, options = {})
       define_model model_name do
-        has_and_belongs_to_many assoc_name, options
+        has_and_belongs_to_many assoc_name, **options
       end.new
     end
   end
 
   def define_association_with_conditions(model, macro, name, conditions, _other_options = {})
-    args = []
-    options = {}
-    args << proc { where(conditions) }
-    args << options
-    model.__send__(macro, name, *args)
+    model.__send__(macro, name, proc { where(conditions) }, **{})
   end
 
   def define_association_with_order(model, macro, name, order, _other_options = {})
-    args = []
-    options = {}
-    args << proc { order(order) }
-    args << options
-    model.__send__(macro, name, *args)
+    model.__send__(macro, name, proc { order(order) }, **{})
   end
 
   def dependent_options

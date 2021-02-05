@@ -112,7 +112,7 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbColumnMatcher, type: :model do
 
   def with_table(column_name, column_type, options)
     create_table 'employees' do |table|
-      table.__send__(column_type, column_name, options)
+      table.__send__(column_type, column_name, **options)
     end
     define_model_class('Employee').new
   end
