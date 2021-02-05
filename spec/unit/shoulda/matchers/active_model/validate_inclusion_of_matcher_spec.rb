@@ -21,7 +21,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
       def build_object(**options, &block)
         build_object_with_generic_attribute(
-          options.merge(column_type: :integer, value: 1),
+          **options.merge(column_type: :integer, value: 1),
           &block
         )
       end
@@ -45,7 +45,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
       def build_object(**options, &block)
         build_object_with_generic_attribute(
-          options.merge(
+          **options.merge(
             column_type: :integer,
             column_options: { limit: 2 },
             value: 1,
@@ -71,7 +71,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
       def build_object(**options, &block)
         build_object_with_generic_attribute(
-          options.merge(column_type: :float, value: 1.0),
+          **options.merge(column_type: :float, value: 1.0),
           &block
         )
       end
@@ -99,7 +99,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
       def build_object(**options, &block)
         build_object_with_generic_attribute(
-          options.merge(column_type: :decimal, value: BigDecimal('1.0')),
+          **options.merge(column_type: :decimal, value: BigDecimal('1.0')),
           &block
         )
       end
@@ -130,7 +130,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
       define_method :build_object do |options = {}, &block|
         build_object_with_generic_attribute(
-          options.merge(column_type: :date, value: today),
+          **options.merge(column_type: :date, value: today),
           &block
         )
       end
@@ -158,7 +158,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
       define_method :build_object do |options = {}, &block|
         build_object_with_generic_attribute(
-          options.merge(column_type: :datetime, value: now),
+          **options.merge(column_type: :datetime, value: now),
           &block
         )
       end
@@ -186,7 +186,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
       define_method :build_object do |options = {}, &block|
         build_object_with_generic_attribute(
-          options.merge(column_type: :time, value: default_time),
+          **options.merge(column_type: :time, value: default_time),
           &block
         )
       end
@@ -207,7 +207,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
       def build_object(**options, &block)
         build_object_with_generic_attribute(
-          options.merge(column_type: :string),
+          **options.merge(column_type: :string),
           &block
         )
       end
@@ -798,7 +798,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
       define_method :build_object do |options = {}, &block|
         build_object_with_generic_attribute(
-          options.merge(column_type: :timestamp, value: now),
+          **options.merge(column_type: :timestamp, value: now),
           &block
         )
       end
@@ -842,7 +842,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
         def build_object(**options, &block)
           super(
-            options.merge(column_options: { null: true }, value: true),
+            **options.merge(column_options: { null: true }, value: true),
             &block
           )
         end
@@ -863,13 +863,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         end
 
         def build_object(**options, &block)
-          super(options.merge(column_options: { null: false }), &block)
+          super(**options.merge(column_options: { null: false }), &block)
         end
       end
 
       def build_object(**options, &block)
         build_object_with_generic_attribute(
-          options.merge(column_type: :boolean),
+          **options.merge(column_type: :boolean),
           &block
         )
       end
@@ -896,7 +896,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       include_context 'against a boolean attribute for true and false'
 
       def build_object(**options, &block)
-        build_object_with_generic_attribute(options.merge(value: true), &block)
+        build_object_with_generic_attribute(**options.merge(value: true), &block)
       end
     end
 
@@ -904,7 +904,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       include_context 'against a boolean attribute for true and false'
 
       def build_object(**options, &block)
-        build_object_with_generic_attribute(options.merge(value: false), &block)
+        build_object_with_generic_attribute(**options.merge(value: false), &block)
       end
     end
 
@@ -1010,7 +1010,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       column_options: column_options,
     }.compact
 
-    define_simple_model(model_options) do |model|
+    define_simple_model(**model_options) do |model|
       if validation_options
         model.validates_inclusion_of(attribute_name, validation_options)
       end
