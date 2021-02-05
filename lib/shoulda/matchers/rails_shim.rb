@@ -65,7 +65,7 @@ module Shoulda
               request_params
             end
 
-          context.__send__(verb, action, params)
+          context.__send__(verb, action, **params)
         end
 
         def serialized_attributes_for(model)
