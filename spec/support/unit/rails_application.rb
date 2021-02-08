@@ -132,7 +132,7 @@ end
       # Zeus anyhow)
       fs.comment_lines_matching(
         'config/boot.rb',
-        %r{\Arequire 'bootsnap/setup'},
+        %r{\Arequire ['"]bootsnap/setup['"]},
       )
     end
 
