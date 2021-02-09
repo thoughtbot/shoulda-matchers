@@ -983,6 +983,8 @@ Expected Parent to have a has_many association called children through conceptio
     end
 
     it 'accepts an association with a valid :source option' do
+      pending "Rails 6.1 require :through option"
+
       expect(having_many_children(source: :user)).
         to have_many(:children).source(:user)
     end
