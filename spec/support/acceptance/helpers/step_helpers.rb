@@ -83,6 +83,7 @@ module AcceptanceTests
         bundle.remove_gem 'debugger'
         bundle.remove_gem 'byebug'
         bundle.remove_gem 'web-console'
+        bundle.remove_gem 'rack-mini-profiler'
       end
 
       fs.open('config/database.yml', 'w') do |file|
