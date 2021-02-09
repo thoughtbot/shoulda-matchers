@@ -125,7 +125,7 @@ module UnitTests
           )
         end
 
-        table.column(column_name, column_type, column_options)
+        table.column(column_name, column_type, **column_options)
       end
     end
   end

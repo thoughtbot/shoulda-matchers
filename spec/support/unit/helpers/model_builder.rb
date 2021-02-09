@@ -2,24 +2,24 @@ require_relative 'class_builder'
 
 module UnitTests
   module ModelBuilder
-    def create_table(*args, &block)
-      ModelBuilder.create_table(*args, &block)
+    def create_table(*args, **options, &block)
+      ModelBuilder.create_table(*args, **options, &block)
     end
 
-    def define_model(*args, &block)
-      ModelBuilder.define_model(*args, &block)
+    def define_model(*args, **options, &block)
+      ModelBuilder.define_model(*args, **options, &block)
     end
 
-    def define_model_instance(*args, &block)
-      define_model(*args, &block).new
+    def define_model_instance(*args, **options, &block)
+      define_model(*args, **options, &block).new
     end
 
-    def define_model_class(*args, &block)
-      ModelBuilder.define_model_class(*args, &block)
+    def define_model_class(*args, **options, &block)
+      ModelBuilder.define_model_class(*args, **options, &block)
     end
 
-    def define_active_model_class(*args, &block)
-      ModelBuilder.define_active_model_class(*args, &block)
+    def define_active_model_class(*args, **options, &block)
+      ModelBuilder.define_active_model_class(*args, **options, &block)
     end
 
     class << self
@@ -38,13 +38,13 @@ module UnitTests
         defined_models.clear
       end
 
-      def create_table(table_name, options = {}, &block)
+      def create_table(table_name, **options, &block)
         connection =
           options.delete(:connection) || DevelopmentRecord.connection
 
         begin
           connection.execute("DROP TABLE IF EXISTS #{table_name}")
-          connection.create_table(table_name, options, &block)
+          connection.create_table(table_name, **options, &block)
           created_tables << table_name
           connection
         rescue StandardError => e

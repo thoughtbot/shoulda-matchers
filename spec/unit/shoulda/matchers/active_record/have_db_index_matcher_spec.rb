@@ -494,7 +494,7 @@ does not.
       columns,
       parent_class: parent_class,
       customize_table: -> (table) {
-        table.index(column_name_or_names, index_options)
+        table.index(column_name_or_names, **index_options)
       },
     )
     model.new
