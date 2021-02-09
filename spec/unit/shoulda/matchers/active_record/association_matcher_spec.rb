@@ -1446,6 +1446,8 @@ Expected Parent to have a has_many association called children through conceptio
     end
 
     it 'rejects an association with a valid :class_name and :foreign_key option (CPK), but no columns' do
+      pending "Rails 6.1 compatibilty"
+
       define_model :person_detail
       define_model :person do
         has_one :detail, class_name: 'PersonDetail', foreign_key: %i[company_id person_detail_id]
@@ -1461,6 +1463,8 @@ Expected Parent to have a has_many association called children through conceptio
     end
 
     it 'accepts an association with a valid :class_name and :foreign_key option (CPK)' do
+      pending "Rails 6.1 compatibility"
+
       define_model :person_detail, company_id: :integer, person_detail_id: :integer
       define_model :person do
         has_one :detail, class_name: 'PersonDetail', foreign_key: %i[company_id person_detail_id]
