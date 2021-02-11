@@ -36,6 +36,6 @@ Gem::Specification.new do |s|
     'shoulda-matchers.gemspec']
   s.require_paths = ['lib']
 
-  s.required_ruby_version = '>= 2.4.0'
+  s.required_ruby_version = '>= 2.5.0'
   s.add_dependency('activesupport', '>= 4.2.0')
 end
