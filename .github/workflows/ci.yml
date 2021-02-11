@@ -30,7 +30,6 @@ jobs:
           - 2.7.2
           - 2.6.6
           - 2.5.8
-          - 2.4.10
         appraisal:
           - rails_6_0
           - rails_5_2
@@ -43,7 +42,6 @@ jobs:
         exclude:
           - { ruby: 2.7.2, appraisal: rails_4_2 }
           - { ruby: 2.6.6, appraisal: rails_4_2 }
-          - { ruby: 2.4.10, appraisal: rails_6_0 }
     env:
       DATABASE_ADAPTER: ${{ matrix.adapter }}
       BUNDLE_GEMFILE: gemfiles/${{ matrix.appraisal }}.gemfile
