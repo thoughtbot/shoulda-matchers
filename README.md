@@ -1,9 +1,9 @@
-# Shoulda Matchers [![Gem Version][version-badge]][rubygems] [![Build Status][travis-badge]][travis] [![Total Downloads][downloads-total]][rubygems] [![Downloads][downloads-badge]][rubygems]
+# Shoulda Matchers [![Gem Version][version-badge]][rubygems] [![Build Status][github-actions-badge]][github-actions] [![Total Downloads][downloads-total]][rubygems] [![Downloads][downloads-badge]][rubygems]
 
 [version-badge]: https://img.shields.io/gem/v/shoulda-matchers.svg
 [rubygems]: https://rubygems.org/gems/shoulda-matchers
-[travis-badge]: https://img.shields.io/travis/thoughtbot/shoulda-matchers/master.svg
-[travis]: https://travis-ci.org/thoughtbot/shoulda-matchers
+[github-actions-badge]: https://img.shields.io/github/workflow/status/thoughtbot/shoulda-matchers/Test
+[github-actions]: https://github.com/thoughtbot/shoulda-matchers/actions
 [downloads-total]: https://img.shields.io/gem/dt/shoulda-matchers.svg
 [downloads-badge]: https://img.shields.io/gem/dtv/shoulda-matchers.svg
 [downloads-badge]: https://img.shields.io/gem/dtv/shoulda-matchers.svg
@@ -468,11 +468,11 @@ machine, understanding the codebase, and creating a good pull request.
 
 ## Compatibility
 
-Shoulda Matchers is [tested][travis] and supported against Ruby 2.5+, Rails
+Shoulda Matchers is tested and supported against Ruby 2.5+, Rails
 4.2+, RSpec 3.x, and Minitest 5.x.
 
-For Ruby < 2.4 and Rails < 4.1 compatibility, please use [v3.1.3][v3.1.3].
-For Ruby < 3.0 and Rails < 6.1 compatibility, please use [v4.5.1][v4.5.1].
+- For Ruby < 2.4 and Rails < 4.1 compatibility, please use [v3.1.3][v3.1.3].
+- For Ruby < 3.0 and Rails < 6.1 compatibility, please use [v4.5.1][v4.5.1].
 
 [v3.1.3]: https://github.com/thoughtbot/shoulda-matchers/tree/v3.1.3
 [v4.5.1]: https://github.com/thoughtbot/shoulda-matchers/tree/v4.5.1
