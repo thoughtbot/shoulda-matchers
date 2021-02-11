@@ -150,14 +150,12 @@ Output:
       pid = spawn(env, *command, options)
       t = Thread.new do
         loop do
-          begin
-            @command_output += reader.read_nonblock(4096)
-          rescue IO::WaitReadable
-            IO.select([reader])
-            retry
-          rescue EOFError
-            break
-          end
+          @command_output += reader.read_nonblock(4096)
+        rescue IO::WaitReadable
+          IO.select([reader])
+          retry
+        rescue EOFError
+          break
         end
       end
       Process.waitpid(pid)
