@@ -468,7 +468,7 @@ machine, understanding the codebase, and creating a good pull request.
 
 ## Compatibility
 
-Shoulda Matchers is tested and supported against Ruby 2.5+, Rails
+Shoulda Matchers is tested and supported against Ruby 2.6+, Rails
 5.0+, RSpec 3.x, and Minitest 5.x.
 
 - For Ruby < 2.4 and Rails < 4.1 compatibility, please use [v3.1.3][v3.1.3].
