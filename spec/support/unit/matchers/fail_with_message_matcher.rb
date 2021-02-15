@@ -31,7 +31,7 @@ module UnitTests
         lines << Shoulda::Matchers::Util.indent(expected, 2)
 
         if @actual
-          diff = differ.diff(@actual, expected)[1..-1]
+          diff = differ.diff(@actual, expected)[1..]
 
           lines << 'Actually failed with:'
           lines << Shoulda::Matchers::Util.indent(@actual, 2)

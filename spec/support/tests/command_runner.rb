@@ -95,7 +95,7 @@ module Tests
         new_lines << "(...#{lines.size - 10} more lines...)"
       end
 
-      new_lines << lines[-5..-1]
+      new_lines << lines[-5..]
       new_lines.join("\n")
     end
 

@@ -205,7 +205,7 @@ Diff:
       end
 
       def diff(expected, actual)
-        differ.diff(expected, actual)[1..-1]
+        differ.diff(expected, actual)[1..]
       end
 
       def differ
