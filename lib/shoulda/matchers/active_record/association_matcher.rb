@@ -1394,23 +1394,25 @@ module Shoulda
         end
 
         def class_has_foreign_key?(klass)
+          @missing = validate_foreign_key(klass)
+
+          @missing.nil?
+        end
+
+        def validate_foreign_key(klass)
           if options.key?(:foreign_key) && !foreign_key_correct?
-            @missing = foreign_key_failure_message(klass, options[:foreign_key])
-            false
-          elsif !has_column?(klass, foreign_key)
-            @missing = foreign_key_failure_message(klass, foreign_key)
-            false
-          else
-            true
+            foreign_key_failure_message(klass, options[:foreign_key])
+          elsif !has_column?(klass, actual_foreign_key)
+            foreign_key_failure_message(klass, actual_foreign_key)
           end
         end
 
         def has_column?(klass, column)
           case column
           when Array
-            column.all? { |c| has_column?(klass, c) }
+            column.all? { |c| has_column?(klass, c.to_s) }
           else
-            column_names_for(klass).include?(column)
+            column_names_for(klass).include?(column.to_s)
           end
         end
 
@@ -1442,19 +1444,13 @@ module Shoulda
           end
         end
 
-        def foreign_key
-          key = if foreign_key_reflection
-                  if foreign_key_reflection.respond_to?(:foreign_key)
-                    foreign_key_reflection.foreign_key
-                  else
-                    foreign_key_reflection.primary_key_name
-                  end
-                end
+        def actual_foreign_key
+          return unless foreign_key_reflection
 
-          if key.is_a?(Array)
-            key.map(&:to_s)
+          if foreign_key_reflection.respond_to?(:foreign_key)
+            foreign_key_reflection.foreign_key
           else
-            key.to_s
+            foreign_key_reflection.primary_key_name
           end
         end
 

@@ -1350,7 +1350,7 @@ Expected Parent to have a has_many association called children through conceptio
       end
 
       expected_message = 'Expected Person to have a has_one association called detail ' \
-        '(PersonDetail does not have a ["company_id", "person_detail_id"] foreign key.)'
+        '(PersonDetail does not have a [:company_id, :person_detail_id] foreign key.)'
 
       expect do
         have_one(:detail).class_name('PersonDetail').
