@@ -113,7 +113,7 @@ module Shoulda
             case column_type
             when :integer, :float then 1
             when :decimal then BigDecimal(1, 0)
-            when :datetime, :time, :timestamp then Time.now
+            when :datetime, :time, :timestamp then Time.current
             when :date then Date.new
             when :binary then '0'
             else 'an arbitrary value'
