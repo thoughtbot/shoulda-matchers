@@ -6,16 +6,22 @@ module Shoulda
       #
       #     class Process < ActiveRecord::Base
       #       enum status: [:running, :stopped, :suspended]
+      #
+      #       alias_attribute :kind, :SomeLegacyField
+      #
+      #       enum kind: [:foo, :bar]
       #     end
       #
       #     # RSpec
       #     RSpec.describe Process, type: :model do
       #       it { should define_enum_for(:status) }
+      #       it { should define_enum_for(:kind) }
       #     end
       #
       #     # Minitest (Shoulda)
       #     class ProcessTest < ActiveSupport::TestCase
       #       should define_enum_for(:status)
+      #       should define_enum_for(:kind)
       #     end
       #
       # #### Qualifiers
@@ -370,7 +376,10 @@ module Shoulda
         end
 
         def column
-          model.columns_hash[attribute_name.to_s]
+          key = attribute_name.to_s
+          column_name = model.attribute_alias(key) || key
+
+          model.columns_hash[column_name]
         end
 
         def model

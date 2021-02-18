@@ -796,13 +796,27 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     end
   end
 
+  context 'if the attribute is defined as an enum but is an alias' do
+    it 'matches' do
+      record = build_record_with_array_values(attribute_name: :attr, attribute_alias: :attr_alias)
+
+      expect { define_enum_for(:attr_alias) }.
+        to match_against(record).
+        or_fail_with(<<-MESSAGE, wrap: true)
+          Expected Example not to define :attr_alias as an enum backed by an
+          integer, but it did.
+        MESSAGE
+    end
+  end
+
   def build_record_with_array_values(
     model_name: 'Example',
     attribute_name: :attr,
     column_type: :integer,
     values: ['published', 'unpublished', 'draft'],
     prefix: false,
-    suffix: false
+    suffix: false,
+    attribute_alias: nil
   )
     build_record_with_enum_attribute(
       model_name: model_name,
@@ -811,6 +825,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
       values: values,
       prefix: prefix,
       suffix: suffix,
+      attribute_alias: attribute_alias,
     )
   end
 
@@ -828,6 +843,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
       values: values,
       prefix: prefix,
       suffix: suffix,
+      attribute_alias: nil,
     )
   end
 
@@ -836,18 +852,22 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     attribute_name:,
     column_type:,
     values:,
+    attribute_alias:,
     prefix: false,
     suffix: false
   )
+    enum_name = attribute_alias || attribute_name
     model = define_model(
       model_name,
       attribute_name => { type: column_type },
-    )
+    ) do
+      alias_attribute attribute_alias, attribute_name
+    end
 
     if active_record_enum_supports_prefix_and_suffix?
-      model.enum(attribute_name => values, _prefix: prefix, _suffix: suffix)
+      model.enum(enum_name => values, _prefix: prefix, _suffix: suffix)
     else
-      model.enum(attribute_name => values)
+      model.enum(enum_name => values)
     end
 
     model.new
