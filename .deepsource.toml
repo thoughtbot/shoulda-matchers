@@ -1,0 +1,14 @@
+version = 1
+
+test_patterns = ["spec/**"]
+
+exclude_patterns = [
+    "bin/**",
+    "doc_config/**",
+    "docs/errors/**",
+    "gemfiles/**"
+]
+
+[[analyzers]]
+name = "ruby"
+enabled = true

@@ -39,7 +39,7 @@ module Shoulda
           end
 
           def attribute_setter_description
-            attribute_setter.description
+            attribute_setter&.description
           end
 
           def validator

@@ -36,7 +36,7 @@ module Shoulda
         end
 
         def empty?
-          flash.empty?
+          flash&.empty?
         end
 
         def use_now!

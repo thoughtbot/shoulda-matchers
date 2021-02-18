@@ -20,7 +20,7 @@ module Shoulda
         end
 
         def empty?
-          session.empty?
+          session&.empty?
         end
 
         private
