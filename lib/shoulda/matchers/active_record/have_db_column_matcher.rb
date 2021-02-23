@@ -84,7 +84,8 @@ module Shoulda
 
       # @private
       class HaveDbColumnMatcher
-        OPTIONS = %i(precision limit default null scale primary).freeze
+        OPTIONS = %i(precision limit default null scale primary foreign_key).
+          freeze
 
         def initialize(column)
           @column = column
@@ -133,6 +134,9 @@ module Shoulda
           end
           if @options.key?(:precision)
             desc << " of precision #{@options[:precision]}"
+          end
+          if @options.key?(:foreign_key)
+            desc << " of foreign_key #{@options[:foreign_key]}"
           end
           desc << " of limit #{@options[:limit]}" if @options.key?(:limit)
           desc << " of default #{@options[:default]}" if @options.key?(:default)

@@ -106,6 +106,24 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbColumnMatcher, type: :model do
     end
   end
 
+  context 'with foreign_key option' do
+    it 'accepts a column that is has a foreign_key' do
+      expect(with_table(:author_id, :integer, foreign_key: true)).
+        to have_db_column(:author_id).with_options(foreign_key: true)
+    end
+
+    it 'accepts a column that is has a foreign_key with options' do
+      expect(with_table(:author_id, :integer, foreign_key: { to_table: :users })).
+        to have_db_column(:author_id).with_options(foreign_key: { to_table: :users })
+    end
+
+    it 'raises an error with the unknown options' do
+      expect {
+        have_db_column(:author_id).with_options(foreign_keyy: true)
+      }.to raise_error('Unknown option(s): :foreign_keyy')
+    end
+  end
+
   def model(options = {})
     define_model(:employee, options).new
   end
