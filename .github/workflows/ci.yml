@@ -35,13 +35,9 @@ jobs:
           - rails_5_2
           - rails_5_1
           - rails_5_0
-          - rails_4_2
         adapter:
           - sqlite3
           - postgresql
-        exclude:
-          - { ruby: 2.7.2, appraisal: rails_4_2 }
-          - { ruby: 2.6.6, appraisal: rails_4_2 }
     env:
       DATABASE_ADAPTER: ${{ matrix.adapter }}
       BUNDLE_GEMFILE: gemfiles/${{ matrix.appraisal }}.gemfile
