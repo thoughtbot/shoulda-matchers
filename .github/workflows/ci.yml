@@ -29,7 +29,6 @@ jobs:
         ruby:
           - 2.7.2
           - 2.6.6
-          - 2.5.8
         appraisal:
           - rails_6_0
           - rails_5_2

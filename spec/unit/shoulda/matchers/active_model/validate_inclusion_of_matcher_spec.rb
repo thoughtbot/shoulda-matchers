@@ -454,7 +454,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
     it 'matches given a subset of the valid values' do
       builder = build_object_allowing(possible_values)
-      expect_to_match_on_values(builder, possible_values[1..-1])
+      expect_to_match_on_values(builder, possible_values[1..])
     end
 
     if zero

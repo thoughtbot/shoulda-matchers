@@ -32,7 +32,7 @@ def preprocess_index(contents)
       map do |value|
         value.
           split('_').
-          map { |word| word[0].upcase + word[1..-1] }.
+          map { |word| word[0].upcase + word[1..] }.
           join
       end.
       join('::')

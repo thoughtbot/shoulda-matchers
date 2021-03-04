@@ -643,7 +643,7 @@ module Shoulda
             if number_of_submatchers_for_failure_message > 1
               "In checking that #{model.name} #{submatcher_description}, " +
                 failure_message[0].downcase +
-                failure_message[1..-1]
+                failure_message[1..]
             else
               failure_message
             end
