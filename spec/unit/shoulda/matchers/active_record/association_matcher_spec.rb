@@ -1239,7 +1239,7 @@ Expected Parent to have a has_many association called children through conceptio
 
     it 'accepts an association with a nonstandard reverse foreign type, using :inverse_of' do
       define_model :visitor, location_id: :integer, facility_type: :string do
-        belongs_to :location, foreign_type: :facility_type, 
+        belongs_to :location, foreign_type: :facility_type,
                               inverse_of: :visitors,
                               polymorphic: true
       end

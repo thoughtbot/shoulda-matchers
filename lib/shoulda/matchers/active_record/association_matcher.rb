@@ -1581,10 +1581,10 @@ module Shoulda
 
         def foreign_type
           type = if [:has_one, :has_many].include?(macro)
-            reflection.type
-          else
-            reflection.foreign_type
-          end
+                   reflection.type
+                 else
+                   reflection.foreign_type
+                 end
 
           type.to_s
         end
