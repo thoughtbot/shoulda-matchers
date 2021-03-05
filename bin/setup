@@ -241,6 +241,11 @@ ensure-ruby-installed() {
         error "Please use chruby to install Ruby $REQUIRED_RUBY_VERSION!"
       fi
     fi
+  elif has-executable rvm; then
+    if ! (rvm list | grep $REQUIRED_RUBY_VERSION'\>' &>/dev/null); then
+      banner "Installing Ruby $REQUIRED_RUBY_VERSION with rvm"
+      rvm install $REQUIRED_RUBY_VERSION
+    fi
   else
     error "You don't seem to have a Ruby manager installed."
     print-wrapped "\
