@@ -482,7 +482,7 @@ module Shoulda
       # Use `with_foreign_type` to test usage of the `:foreign_type` option.
       #
       #     class Hotel < ActiveRecord::Base
-      #       has_many :visitors, foreign_key: 'facility_type'
+      #       has_many :visitors, foreign_key: 'facility_type', as: :location
       #     end
       #
       #     # RSpec
@@ -771,7 +771,7 @@ module Shoulda
       # Use `with_foreign_type` to test usage of the `:foreign_type` option.
       #
       #     class Hotel < ActiveRecord::Base
-      #       has_one :special_guest, foreign_type: 'facility_type'
+      #       has_one :special_guest, foreign_type: 'facility_type', as: :location
       #     end
       #
       #     # RSpec
