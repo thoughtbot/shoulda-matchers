@@ -8,6 +8,7 @@ module Shoulda
             :associated_class,
             :association_foreign_key,
             :foreign_key,
+            :foreign_type,
             :has_and_belongs_to_many_name,
             :join_table_name,
             :polymorphic?,
