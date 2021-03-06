@@ -116,7 +116,7 @@ this could not be proved.
       end
     end
 
-    if database_supports_array_columns? && active_record_supports_array_columns?
+    if database_supports_array_columns?
       context 'when the column backing the attribute is an array' do
         context 'of varchar' do
           it 'still works' do

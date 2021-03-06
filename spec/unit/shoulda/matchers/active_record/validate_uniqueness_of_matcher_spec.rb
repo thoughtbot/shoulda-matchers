@@ -854,7 +854,6 @@ within the scope of :scope1, but this could not be proved.
 
     if (
       database_supports_array_columns? &&
-      active_record_supports_array_columns? &&
       active_record_uniqueness_supports_array_columns?
     )
       context 'when one of the scoped attributes is a array-of-string column' do

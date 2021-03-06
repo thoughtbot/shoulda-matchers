@@ -11,10 +11,6 @@ module UnitTests
       Tests::Version.new(::ActiveRecord::VERSION::STRING)
     end
 
-    def active_record_supports_array_columns?
-      active_record_version > 4.2
-    end
-
     def active_record_supports_relations?
       active_record_version >= 4
     end
