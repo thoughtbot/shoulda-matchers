@@ -367,331 +367,361 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     end
   end
 
-  if active_record_enum_supports_prefix_and_suffix?
-    context 'qualified with #with_prefix' do
-      context 'when the prefix is explicit' do
-        context 'if the attribute was not defined with a prefix' do
-          it 'rejects with an appropriate failure message' do
-            record = build_record_with_array_values(
-              model_name: 'Example',
-              attribute_name: :attr,
-              column_type: :integer,
-              values: [:active, :archived],
-            )
+  context 'qualified with #with_prefix' do
+    context 'when the prefix is explicit' do
+      context 'if the attribute was not defined with a prefix' do
+        it 'rejects with an appropriate failure message' do
+          record = build_record_with_array_values(
+            model_name: 'Example',
+            attribute_name: :attr,
+            column_type: :integer,
+            values: [:active, :archived],
+          )
 
-            assertion = lambda do
-              expect(record).
-                to define_enum_for(:attr).
-                with_values([:active, :archived]).
-                with_prefix(:foo)
-            end
-
-            message = format_message(<<-MESSAGE)
-              Expected Example to define :attr as an enum backed by an integer,
-              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and prefixing
-              accessor methods with "foo_". :attr does map to these values, but
-              the enum is configured with either a different prefix or no prefix
-              at all (we can't tell which).
-            MESSAGE
-
-            expect(&assertion).to fail_with_message(message)
-          end
-        end
-
-        context 'if the attribute was defined with a different prefix' do
-          it 'rejects with an appropriate failure message' do
-            record = build_record_with_array_values(
-              model_name: 'Example',
-              attribute_name: :attr,
-              column_type: :integer,
-              values: [:active, :archived],
-              prefix: :foo,
-            )
-
-            assertion = lambda do
-              expect(record).
-                to define_enum_for(:attr).
-                with_values([:active, :archived]).
-                with_prefix(:bar)
-            end
-
-            message = format_message(<<-MESSAGE)
-              Expected Example to define :attr as an enum backed by an integer,
-              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and prefixing
-              accessor methods with "bar_". :attr does map to these values, but
-              the enum is configured with either a different prefix or no prefix
-              at all (we can't tell which).
-            MESSAGE
-
-            expect(&assertion).to fail_with_message(message)
-          end
-        end
-
-        context 'if the attribute was defined with the same prefix' do
-          it 'matches' do
-            record = build_record_with_array_values(
-              model_name: 'Example',
-              attribute_name: :attr,
-              values: [:active, :archived],
-              prefix: :foo,
-            )
-
-            matcher = lambda do
-              define_enum_for(:attr).
-                with_values([:active, :archived]).
-                with_prefix(:foo)
-            end
-
-            expect(&matcher).
-              to match_against(record).
-              or_fail_with(<<-MESSAGE, wrap: true)
-                Expected Example not to define :attr as an enum backed by an
-                integer, mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and
-                prefixing accessor methods with "foo_", but it did.
-            MESSAGE
-          end
-
-          it 'has the right description' do
-            matcher = define_enum_for(:attr).
+          assertion = lambda do
+            expect(record).
+              to define_enum_for(:attr).
               with_values([:active, :archived]).
               with_prefix(:foo)
-
-            expect(matcher.description).to eq(<<~MESSAGE.strip)
-              define :attr as an enum backed by an integer with values ‹[:active, :archived]›, prefix: :foo
-            MESSAGE
           end
+
+          message = format_message(<<-MESSAGE)
+            Expected Example to define :attr as an enum backed by an integer,
+            mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and prefixing
+            accessor methods with "foo_". :attr does map to these values, but
+            the enum is configured with either a different prefix or no prefix
+            at all (we can't tell which).
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
         end
       end
 
-      context 'when the prefix is implicit' do
-        context 'if the attribute was not defined with a prefix' do
-          it 'rejects with an appropriate failure message' do
-            record = build_record_with_array_values(
-              model_name: 'Example',
-              attribute_name: :attr,
-              column_type: :integer,
-              values: [:active, :archived],
-            )
+      context 'if the attribute was defined with a different prefix' do
+        it 'rejects with an appropriate failure message' do
+          record = build_record_with_array_values(
+            model_name: 'Example',
+            attribute_name: :attr,
+            column_type: :integer,
+            values: [:active, :archived],
+            prefix: :foo,
+          )
 
-            assertion = lambda do
-              expect(record).
-                to define_enum_for(:attr).
-                with_values([:active, :archived]).
-                with_prefix
-            end
-
-            message = format_message(<<-MESSAGE)
-              Expected Example to define :attr as an enum backed by an integer,
-              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and prefixing
-              accessor methods with "attr_". :attr does map to these values, but
-              the enum is configured with either a different prefix or no prefix
-              at all (we can't tell which).
-            MESSAGE
-
-            expect(&assertion).to fail_with_message(message)
+          assertion = lambda do
+            expect(record).
+              to define_enum_for(:attr).
+              with_values([:active, :archived]).
+              with_prefix(:bar)
           end
+
+          message = format_message(<<-MESSAGE)
+            Expected Example to define :attr as an enum backed by an integer,
+            mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and prefixing
+            accessor methods with "bar_". :attr does map to these values, but
+            the enum is configured with either a different prefix or no prefix
+            at all (we can't tell which).
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'if the attribute was defined with the same prefix' do
+        it 'matches' do
+          record = build_record_with_array_values(
+            model_name: 'Example',
+            attribute_name: :attr,
+            values: [:active, :archived],
+            prefix: :foo,
+          )
+
+          matcher = lambda do
+            define_enum_for(:attr).
+              with_values([:active, :archived]).
+              with_prefix(:foo)
+          end
+
+          expect(&matcher).
+            to match_against(record).
+            or_fail_with(<<-MESSAGE, wrap: true)
+              Expected Example not to define :attr as an enum backed by an
+              integer, mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and
+              prefixing accessor methods with "foo_", but it did.
+          MESSAGE
         end
 
-        context 'if the attribute was defined with a prefix' do
-          it 'matches' do
-            record = build_record_with_array_values(
-              model_name: 'Example',
-              attribute_name: :attr,
-              values: [:active, :archived],
-              prefix: true,
-            )
+        it 'has the right description' do
+          matcher = define_enum_for(:attr).
+            with_values([:active, :archived]).
+            with_prefix(:foo)
 
-            matcher = lambda do
-              define_enum_for(:attr).
-                with_values([:active, :archived]).
-                with_prefix
-            end
+          expect(matcher.description).to eq(<<~MESSAGE.strip)
+            define :attr as an enum backed by an integer with values ‹[:active, :archived]›, prefix: :foo
+          MESSAGE
+        end
+      end
+    end
 
-            expect(&matcher).
-              to match_against(record).
-              or_fail_with(<<-MESSAGE, wrap: true)
-                Expected Example not to define :attr as an enum backed by an
-                integer, mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and
-                prefixing accessor methods with "attr_", but it did.
-              MESSAGE
-          end
+    context 'when the prefix is implicit' do
+      context 'if the attribute was not defined with a prefix' do
+        it 'rejects with an appropriate failure message' do
+          record = build_record_with_array_values(
+            model_name: 'Example',
+            attribute_name: :attr,
+            column_type: :integer,
+            values: [:active, :archived],
+          )
 
-          it 'has the right description' do
-            matcher = define_enum_for(:attr).
+          assertion = lambda do
+            expect(record).
+              to define_enum_for(:attr).
               with_values([:active, :archived]).
               with_prefix
-
-            expect(matcher.description).to eq(<<~MESSAGE.strip)
-              define :attr as an enum backed by an integer with values ‹[:active, :archived]›, prefix: true
-            MESSAGE
           end
+
+          message = format_message(<<-MESSAGE)
+            Expected Example to define :attr as an enum backed by an integer,
+            mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and prefixing
+            accessor methods with "attr_". :attr does map to these values, but
+            the enum is configured with either a different prefix or no prefix
+            at all (we can't tell which).
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'if the attribute was defined with a prefix' do
+        it 'matches' do
+          record = build_record_with_array_values(
+            model_name: 'Example',
+            attribute_name: :attr,
+            values: [:active, :archived],
+            prefix: true,
+          )
+
+          matcher = lambda do
+            define_enum_for(:attr).
+              with_values([:active, :archived]).
+              with_prefix
+          end
+
+          expect(&matcher).
+            to match_against(record).
+            or_fail_with(<<-MESSAGE, wrap: true)
+              Expected Example not to define :attr as an enum backed by an
+              integer, mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and
+              prefixing accessor methods with "attr_", but it did.
+            MESSAGE
+        end
+
+        it 'has the right description' do
+          matcher = define_enum_for(:attr).
+            with_values([:active, :archived]).
+            with_prefix
+
+          expect(matcher.description).to eq(<<~MESSAGE.strip)
+            define :attr as an enum backed by an integer with values ‹[:active, :archived]›, prefix: true
+          MESSAGE
         end
       end
     end
+  end
 
-    context 'qualified with #with_suffix' do
-      context 'when the suffix is explicit' do
-        context 'if the attribute was not defined with a suffix' do
-          it 'rejects with an appropriate failure message' do
-            record = build_record_with_array_values(
-              model_name: 'Example',
-              attribute_name: :attr,
-              column_type: :integer,
-              values: [:active, :archived],
-            )
+  context 'qualified with #with_suffix' do
+    context 'when the suffix is explicit' do
+      context 'if the attribute was not defined with a suffix' do
+        it 'rejects with an appropriate failure message' do
+          record = build_record_with_array_values(
+            model_name: 'Example',
+            attribute_name: :attr,
+            column_type: :integer,
+            values: [:active, :archived],
+          )
 
-            assertion = lambda do
-              expect(record).
-                to define_enum_for(:attr).
-                with_values([:active, :archived]).
-                with_suffix(:foo)
-            end
-
-            message = format_message(<<-MESSAGE)
-              Expected Example to define :attr as an enum backed by an integer,
-              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and suffixing
-              accessor methods with "_foo". :attr does map to these values, but
-              the enum is configured with either a different suffix or no suffix
-              at all (we can't tell which).
-            MESSAGE
-
-            expect(&assertion).to fail_with_message(message)
-          end
-        end
-
-        context 'if the attribute was defined with a different suffix' do
-          it 'rejects with an appropriate failure message' do
-            record = build_record_with_array_values(
-              model_name: 'Example',
-              attribute_name: :attr,
-              column_type: :integer,
-              values: [:active, :archived],
-              suffix: :foo,
-            )
-
-            assertion = lambda do
-              expect(record).
-                to define_enum_for(:attr).
-                with_values([:active, :archived]).
-                with_suffix(:bar)
-            end
-
-            message = format_message(<<-MESSAGE)
-              Expected Example to define :attr as an enum backed by an integer,
-              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and suffixing
-              accessor methods with "_bar". :attr does map to these values, but
-              the enum is configured with either a different suffix or no suffix
-              at all (we can't tell which).
-            MESSAGE
-
-            expect(&assertion).to fail_with_message(message)
-          end
-        end
-
-        context 'if the attribute was defined with the same suffix' do
-          it 'matches' do
-            record = build_record_with_array_values(
-              model_name: 'Example',
-              attribute_name: :attr,
-              values: [:active, :archived],
-              suffix: :foo,
-            )
-
-            matcher = lambda do
-              define_enum_for(:attr).
-                with_values([:active, :archived]).
-                with_suffix(:foo)
-            end
-
-            expect(&matcher).
-              to match_against(record).
-              or_fail_with(<<-MESSAGE, wrap: true)
-                Expected Example not to define :attr as an enum backed by an
-                integer, mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and
-                suffixing accessor methods with "_foo", but it did.
-              MESSAGE
-          end
-
-          it 'has the right description' do
-            matcher = define_enum_for(:attr).
+          assertion = lambda do
+            expect(record).
+              to define_enum_for(:attr).
               with_values([:active, :archived]).
               with_suffix(:foo)
-
-            expect(matcher.description).to eq(<<~MESSAGE.strip)
-              define :attr as an enum backed by an integer with values ‹[:active, :archived]›, suffix: :foo
-            MESSAGE
           end
+
+          message = format_message(<<-MESSAGE)
+            Expected Example to define :attr as an enum backed by an integer,
+            mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and suffixing
+            accessor methods with "_foo". :attr does map to these values, but
+            the enum is configured with either a different suffix or no suffix
+            at all (we can't tell which).
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
         end
       end
 
-      context 'when the suffix is implicit' do
-        context 'if the attribute was not defined with a suffix' do
-          it 'rejects with an appropriate failure message' do
-            record = build_record_with_array_values(
-              model_name: 'Example',
-              attribute_name: :attr,
-              column_type: :integer,
-              values: [:active, :archived],
-            )
+      context 'if the attribute was defined with a different suffix' do
+        it 'rejects with an appropriate failure message' do
+          record = build_record_with_array_values(
+            model_name: 'Example',
+            attribute_name: :attr,
+            column_type: :integer,
+            values: [:active, :archived],
+            suffix: :foo,
+          )
 
-            assertion = lambda do
-              expect(record).
-                to define_enum_for(:attr).
-                with_values([:active, :archived]).
-                with_suffix
-            end
-
-            message = format_message(<<-MESSAGE)
-              Expected Example to define :attr as an enum backed by an integer,
-              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and suffixing
-              accessor methods with "_attr". :attr does map to these values, but
-              the enum is configured with either a different suffix or no suffix
-              at all (we can't tell which).
-            MESSAGE
-
-            expect(&assertion).to fail_with_message(message)
+          assertion = lambda do
+            expect(record).
+              to define_enum_for(:attr).
+              with_values([:active, :archived]).
+              with_suffix(:bar)
           end
+
+          message = format_message(<<-MESSAGE)
+            Expected Example to define :attr as an enum backed by an integer,
+            mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and suffixing
+            accessor methods with "_bar". :attr does map to these values, but
+            the enum is configured with either a different suffix or no suffix
+            at all (we can't tell which).
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'if the attribute was defined with the same suffix' do
+        it 'matches' do
+          record = build_record_with_array_values(
+            model_name: 'Example',
+            attribute_name: :attr,
+            values: [:active, :archived],
+            suffix: :foo,
+          )
+
+          matcher = lambda do
+            define_enum_for(:attr).
+              with_values([:active, :archived]).
+              with_suffix(:foo)
+          end
+
+          expect(&matcher).
+            to match_against(record).
+            or_fail_with(<<-MESSAGE, wrap: true)
+              Expected Example not to define :attr as an enum backed by an
+              integer, mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and
+              suffixing accessor methods with "_foo", but it did.
+            MESSAGE
         end
 
-        context 'if the attribute was defined with a suffix' do
-          it 'matches' do
-            record = build_record_with_array_values(
-              model_name: 'Example',
-              attribute_name: :attr,
-              values: [:active, :archived],
-              suffix: true,
-            )
+        it 'has the right description' do
+          matcher = define_enum_for(:attr).
+            with_values([:active, :archived]).
+            with_suffix(:foo)
 
-            matcher = lambda do
-              define_enum_for(:attr).
-                with_values([:active, :archived]).
-                with_suffix
-            end
-
-            expect(&matcher).
-              to match_against(record).
-              or_fail_with(<<-MESSAGE, wrap: true)
-                Expected Example not to define :attr as an enum backed by an
-                integer, mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and
-                suffixing accessor methods with "_attr", but it did.
-              MESSAGE
-          end
-
-          it 'has the right description' do
-            matcher = define_enum_for(:attr).
-              with_values([:active, :archived]).
-              with_suffix
-
-            expect(matcher.description).to eq(<<~MESSAGE.strip)
-              define :attr as an enum backed by an integer with values ‹[:active, :archived]›, suffix: true
-            MESSAGE
-          end
+          expect(matcher.description).to eq(<<~MESSAGE.strip)
+            define :attr as an enum backed by an integer with values ‹[:active, :archived]›, suffix: :foo
+          MESSAGE
         end
       end
     end
 
-    context 'qualified with both #with_prefix and #with_suffix' do
-      context 'if the attribute was not defined with a different prefix' do
+    context 'when the suffix is implicit' do
+      context 'if the attribute was not defined with a suffix' do
+        it 'rejects with an appropriate failure message' do
+          record = build_record_with_array_values(
+            model_name: 'Example',
+            attribute_name: :attr,
+            column_type: :integer,
+            values: [:active, :archived],
+          )
+
+          assertion = lambda do
+            expect(record).
+              to define_enum_for(:attr).
+              with_values([:active, :archived]).
+              with_suffix
+          end
+
+          message = format_message(<<-MESSAGE)
+            Expected Example to define :attr as an enum backed by an integer,
+            mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and suffixing
+            accessor methods with "_attr". :attr does map to these values, but
+            the enum is configured with either a different suffix or no suffix
+            at all (we can't tell which).
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'if the attribute was defined with a suffix' do
+        it 'matches' do
+          record = build_record_with_array_values(
+            model_name: 'Example',
+            attribute_name: :attr,
+            values: [:active, :archived],
+            suffix: true,
+          )
+
+          matcher = lambda do
+            define_enum_for(:attr).
+              with_values([:active, :archived]).
+              with_suffix
+          end
+
+          expect(&matcher).
+            to match_against(record).
+            or_fail_with(<<-MESSAGE, wrap: true)
+              Expected Example not to define :attr as an enum backed by an
+              integer, mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1› and
+              suffixing accessor methods with "_attr", but it did.
+            MESSAGE
+        end
+
+        it 'has the right description' do
+          matcher = define_enum_for(:attr).
+            with_values([:active, :archived]).
+            with_suffix
+
+          expect(matcher.description).to eq(<<~MESSAGE.strip)
+            define :attr as an enum backed by an integer with values ‹[:active, :archived]›, suffix: true
+          MESSAGE
+        end
+      end
+    end
+  end
+
+  context 'qualified with both #with_prefix and #with_suffix' do
+    context 'if the attribute was not defined with a different prefix' do
+      it 'rejects with an appropriate failure message' do
+        record = build_record_with_array_values(
+          model_name: 'Example',
+          attribute_name: :attr,
+          column_type: :integer,
+          values: [:active, :archived],
+          prefix: :foo,
+          suffix: :bar,
+        )
+
+        assertion = lambda do
+          expect(record).
+            to define_enum_for(:attr).
+            with_values([:active, :archived]).
+            with_prefix(:whatever).
+            with_suffix(:bar)
+        end
+
+        message = format_message(<<-MESSAGE)
+          Expected Example to define :attr as an enum backed by an integer,
+          mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›, prefixing
+          accessor methods with "whatever_", and suffixing accessor methods
+          with "_bar". :attr does map to these values, but the enum is
+          configured with either a different prefix or suffix, or no prefix or
+          suffix at all (we can't tell which).
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+
+      context 'if the attribute was defined with a different suffix' do
         it 'rejects with an appropriate failure message' do
           record = build_record_with_array_values(
             model_name: 'Example',
@@ -706,91 +736,59 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
             expect(record).
               to define_enum_for(:attr).
               with_values([:active, :archived]).
-              with_prefix(:whatever).
-              with_suffix(:bar)
+              with_prefix(:foo).
+              with_suffix(:whatever)
           end
 
           message = format_message(<<-MESSAGE)
             Expected Example to define :attr as an enum backed by an integer,
             mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›, prefixing
-            accessor methods with "whatever_", and suffixing accessor methods
-            with "_bar". :attr does map to these values, but the enum is
-            configured with either a different prefix or suffix, or no prefix or
-            suffix at all (we can't tell which).
+            accessor methods with "foo_", and suffixing accessor methods with
+            "_whatever". :attr does map to these values, but the enum is
+            configured with either a different prefix or suffix, or no prefix
+            or suffix at all (we can't tell which).
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
         end
+      end
 
-        context 'if the attribute was defined with a different suffix' do
-          it 'rejects with an appropriate failure message' do
-            record = build_record_with_array_values(
-              model_name: 'Example',
-              attribute_name: :attr,
-              column_type: :integer,
-              values: [:active, :archived],
-              prefix: :foo,
-              suffix: :bar,
-            )
+      context 'if the attribute was defined with the same prefix and suffix' do
+        it 'matches' do
+          record = build_record_with_array_values(
+            model_name: 'Example',
+            attribute_name: :attr,
+            values: [:active, :archived],
+            prefix: :foo,
+            suffix: :bar,
+          )
 
-            assertion = lambda do
-              expect(record).
-                to define_enum_for(:attr).
-                with_values([:active, :archived]).
-                with_prefix(:foo).
-                with_suffix(:whatever)
-            end
-
-            message = format_message(<<-MESSAGE)
-              Expected Example to define :attr as an enum backed by an integer,
-              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›, prefixing
-              accessor methods with "foo_", and suffixing accessor methods with
-              "_whatever". :attr does map to these values, but the enum is
-              configured with either a different prefix or suffix, or no prefix
-              or suffix at all (we can't tell which).
-            MESSAGE
-
-            expect(&assertion).to fail_with_message(message)
-          end
-        end
-
-        context 'if the attribute was defined with the same prefix and suffix' do
-          it 'matches' do
-            record = build_record_with_array_values(
-              model_name: 'Example',
-              attribute_name: :attr,
-              values: [:active, :archived],
-              prefix: :foo,
-              suffix: :bar,
-            )
-
-            matcher = lambda do
-              define_enum_for(:attr).
-                with_values([:active, :archived]).
-                with_prefix(:foo).
-                with_suffix(:bar)
-            end
-
-            expect(&matcher).
-              to match_against(record).
-              or_fail_with(<<-MESSAGE, wrap: true)
-                Expected Example not to define :attr as an enum backed by an
-                integer, mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›,
-                prefixing accessor methods with "foo_", and suffixing accessor
-                methods with "_bar", but it did.
-              MESSAGE
-          end
-
-          it 'has the right description' do
-            matcher = define_enum_for(:attr).
+          matcher = lambda do
+            define_enum_for(:attr).
               with_values([:active, :archived]).
               with_prefix(:foo).
               with_suffix(:bar)
-
-            expect(matcher.description).to eq(<<~MESSAGE.strip)
-              define :attr as an enum backed by an integer with values ‹[:active, :archived]›, prefix: :foo, suffix: :bar
-            MESSAGE
           end
+
+          expect(&matcher).
+            to match_against(record).
+            or_fail_with(<<-MESSAGE, wrap: true)
+              Expected Example not to define :attr as an enum backed by an
+              integer, mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›,
+              prefixing accessor methods with "foo_", and suffixing accessor
+              methods with "_bar", but it did.
+            MESSAGE
+        end
+
+        it 'has the right description' do
+          matcher = define_enum_for(:attr).
+            with_values([:active, :archived]).
+            with_prefix(:foo).
+            with_suffix(:bar)
+
+          expect(matcher.description).to eq(<<~MESSAGE.strip)
+            define :attr as an enum backed by an integer with values ‹[:active, :archived]›, prefix: :foo, suffix: :bar
+          MESSAGE
         end
       end
     end
@@ -864,11 +862,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
       alias_attribute attribute_alias, attribute_name
     end
 
-    if active_record_enum_supports_prefix_and_suffix?
-      model.enum(enum_name => values, _prefix: prefix, _suffix: suffix)
-    else
-      model.enum(enum_name => values)
-    end
+    model.enum(enum_name => values, _prefix: prefix, _suffix: suffix)
 
     model.new
   end
