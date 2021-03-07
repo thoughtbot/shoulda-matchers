@@ -73,7 +73,7 @@ GEM
     crass (1.0.6)
     diff-lcs (1.4.4)
     erubi (1.10.0)
-    ffi (1.14.2)
+    ffi (1.15.0)
     fssm (0.2.10)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
@@ -82,9 +82,9 @@ GEM
     io-like (0.3.1)
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
-    listen (3.0.8)
-      rb-fsevent (~> 0.9, >= 0.9.4)
-      rb-inotify (~> 0.9, >= 0.9.7)
+    listen (3.3.4)
+      rb-fsevent (~> 0.10, >= 0.10.3)
+      rb-inotify (~> 0.9, >= 0.9.10)
     loofah (2.9.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -253,7 +253,7 @@ DEPENDENCIES
   chromedriver-helper
   fssm
   jbuilder (~> 2.5)
-  listen (~> 3.0.5)
+  listen (~> 3.3.0)
   pg (~> 0.18)
   pry
   pry-byebug
