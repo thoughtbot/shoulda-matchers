@@ -2234,11 +2234,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
   def define_association_with_conditions(model, macro, name, conditions, _other_options = {})
     args = []
     options = {}
-    if active_record_supports_relations?
-      args << proc { where(conditions) }
-    else
-      options[:conditions] = conditions
-    end
+    args << proc { where(conditions) }
     args << options
     model.__send__(macro, name, *args)
   end
@@ -2246,11 +2242,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
   def define_association_with_order(model, macro, name, order, _other_options = {})
     args = []
     options = {}
-    if active_record_supports_relations?
-      args << proc { order(order) }
-    else
-      options[:order] = order
-    end
+    args << proc { order(order) }
     args << options
     model.__send__(macro, name, *args)
   end
