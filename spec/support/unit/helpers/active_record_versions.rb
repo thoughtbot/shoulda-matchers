@@ -11,10 +11,6 @@ module UnitTests
       Tests::Version.new(::ActiveRecord::VERSION::STRING)
     end
 
-    def active_record_uniqueness_supports_array_columns?
-      active_record_version < 5
-    end
-
     def active_record_supports_optional_for_associations?
       active_record_version >= 5
     end

@@ -852,48 +852,6 @@ within the scope of :scope1, but this could not be proved.
       end
     end
 
-    if (
-      database_supports_array_columns? &&
-      active_record_uniqueness_supports_array_columns?
-    )
-      context 'when one of the scoped attributes is a array-of-string column' do
-        include_examples 'it supports scoped attributes of a certain type',
-          column_type: :string,
-          array: true
-      end
-
-      context 'when one of the scoped attributes is an array-of-integer column' do
-        include_examples 'it supports scoped attributes of a certain type',
-          column_type: :integer,
-          array: true
-      end
-
-      context 'when one of the scoped attributes is an array-of-date column' do
-        include_examples 'it supports scoped attributes of a certain type',
-          column_type: :date,
-          array: true
-      end
-
-      context 'when one of the scoped attributes is an array-of-datetime column (using DateTime)' do
-        include_examples 'it supports scoped attributes of a certain type',
-          column_type: :datetime,
-          array: true
-      end
-
-      context 'when one of the scoped attributes is an array-of-datetime column (using Time)' do
-        include_examples 'it supports scoped attributes of a certain type',
-          column_type: :datetime,
-          value_type: :time,
-          array: true
-      end
-
-      context 'when one of the scoped attributes is an array-of-text column' do
-        include_examples 'it supports scoped attributes of a certain type',
-          column_type: :text,
-          array: true
-      end
-    end
-
     context 'when an existing record that is not the first has a nil value for the scoped attribute' do
       # This fails intermittently
       # it 'still works' do
