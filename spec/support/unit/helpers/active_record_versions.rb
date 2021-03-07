@@ -11,10 +11,6 @@ module UnitTests
       Tests::Version.new(::ActiveRecord::VERSION::STRING)
     end
 
-    def active_record_supports_expression_indexes?
-      active_record_version >= 5
-    end
-
     def active_record_supports_active_storage?
       active_record_version >= 5.2
     end
