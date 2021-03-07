@@ -2248,10 +2248,6 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
   end
 
   def dependent_options
-    if active_record_supports_more_dependent_options?
-      [:destroy, :delete, :nullify, :restrict_with_exception, :restrict_with_error]
-    else
-      [:destroy, :delete, :nullify, :restrict]
-    end
+    [:destroy, :delete, :nullify, :restrict_with_exception, :restrict_with_error]
   end
 end
