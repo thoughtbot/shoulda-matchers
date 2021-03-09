@@ -1,11 +1,6 @@
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher, type: :model do
-  def self.can_test_expression_indexes?
-    active_record_supports_expression_indexes? &&
-      database_supports_expression_indexes?
-  end
-
   describe 'the matcher' do
     shared_examples 'for when the matcher is qualified' do |
       index:,
@@ -239,7 +234,7 @@ Expected the examples table to have an index on [:geocodable_id,
         end
       end
 
-      if can_test_expression_indexes?
+      if database_supports_expression_indexes?
         context 'when given an expression' do
           context 'qualified with nothing' do
             context 'when the table has the given index' do
@@ -439,7 +434,7 @@ does not.
       end
     end
 
-    if can_test_expression_indexes?
+    if database_supports_expression_indexes?
       context 'when given an expression' do
         context 'when not qualified with anything' do
           it 'returns the correct description' do

@@ -852,49 +852,6 @@ within the scope of :scope1, but this could not be proved.
       end
     end
 
-    if (
-      database_supports_array_columns? &&
-      active_record_supports_array_columns? &&
-      active_record_uniqueness_supports_array_columns?
-    )
-      context 'when one of the scoped attributes is a array-of-string column' do
-        include_examples 'it supports scoped attributes of a certain type',
-          column_type: :string,
-          array: true
-      end
-
-      context 'when one of the scoped attributes is an array-of-integer column' do
-        include_examples 'it supports scoped attributes of a certain type',
-          column_type: :integer,
-          array: true
-      end
-
-      context 'when one of the scoped attributes is an array-of-date column' do
-        include_examples 'it supports scoped attributes of a certain type',
-          column_type: :date,
-          array: true
-      end
-
-      context 'when one of the scoped attributes is an array-of-datetime column (using DateTime)' do
-        include_examples 'it supports scoped attributes of a certain type',
-          column_type: :datetime,
-          array: true
-      end
-
-      context 'when one of the scoped attributes is an array-of-datetime column (using Time)' do
-        include_examples 'it supports scoped attributes of a certain type',
-          column_type: :datetime,
-          value_type: :time,
-          array: true
-      end
-
-      context 'when one of the scoped attributes is an array-of-text column' do
-        include_examples 'it supports scoped attributes of a certain type',
-          column_type: :text,
-          array: true
-      end
-    end
-
     context 'when an existing record that is not the first has a nil value for the scoped attribute' do
       # This fails intermittently
       # it 'still works' do
@@ -1153,29 +1110,27 @@ long as it is not nil, but this could not be proved.
       end
     end
 
-    if active_record_supports_has_secure_password?
-      context 'when the model is declared with has_secure_password' do
-        context 'given a record whose attribute is nil' do
-          it 'accepts' do
-            model = define_model_validating_uniqueness(
-              validation_options: { allow_blank: true },
-              additional_attributes: [{ name: :password_digest, type: :string }], &:has_secure_password
-            )
-            record = build_record_from(model, attribute_name => nil)
-            expect(record).to validate_uniqueness.allow_blank
-          end
+    context 'when the model is declared with has_secure_password' do
+      context 'given a record whose attribute is nil' do
+        it 'accepts' do
+          model = define_model_validating_uniqueness(
+            validation_options: { allow_blank: true },
+            additional_attributes: [{ name: :password_digest, type: :string }], &:has_secure_password
+          )
+          record = build_record_from(model, attribute_name => nil)
+          expect(record).to validate_uniqueness.allow_blank
         end
+      end
 
-        context 'given a record whose attribute is empty' do
-          it 'accepts' do
-            model = define_model_validating_uniqueness(
-              attribute_type: :string,
-              validation_options: { allow_blank: true },
-              additional_attributes: [{ name: :password_digest, type: :string }], &:has_secure_password
-            )
-            record = build_record_from(model, attribute_name => '')
-            expect(record).to validate_uniqueness.allow_blank
-          end
+      context 'given a record whose attribute is empty' do
+        it 'accepts' do
+          model = define_model_validating_uniqueness(
+            attribute_type: :string,
+            validation_options: { allow_blank: true },
+            additional_attributes: [{ name: :password_digest, type: :string }], &:has_secure_password
+          )
+          record = build_record_from(model, attribute_name => '')
+          expect(record).to validate_uniqueness.allow_blank
         end
       end
     end
