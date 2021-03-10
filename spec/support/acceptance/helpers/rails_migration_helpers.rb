@@ -5,11 +5,7 @@ module AcceptanceTests
     include RailsVersionHelpers
 
     def migration_class_name
-      if rails_version >= 5
-        "ActiveRecord::Migration[#{rails_version_for_migration}]"
-      else
-        'ActiveRecord::Migration'
-      end
+      "ActiveRecord::Migration[#{rails_version_for_migration}]"
     end
 
     private
