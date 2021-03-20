@@ -54,20 +54,6 @@ describe Shoulda::Matchers::ActionController::CallbackMatcher, type: :controller
     end
   end
 
-  if action_pack_lt_5?
-    describe '#use_before_filter' do
-      it_behaves_like 'CallbackMatcher', :before, :filter
-    end
-
-    describe '#use_after_filter' do
-      it_behaves_like 'CallbackMatcher', :after, :filter
-    end
-
-    describe '#use_around_filter' do
-      it_behaves_like 'CallbackMatcher', :around, :filter
-    end
-  end
-
   describe '#use_before_action' do
     it_behaves_like 'CallbackMatcher', :before, :action
   end
