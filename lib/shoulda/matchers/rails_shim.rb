@@ -9,10 +9,6 @@ module Shoulda
           Gem::Version.new('0')
         end
 
-        def active_record_gte_5?
-          Gem::Requirement.new('>= 5').satisfied_by?(active_record_version)
-        end
-
         def active_record_gte_6?
           Gem::Requirement.new('>= 6').satisfied_by?(active_record_version)
         end
@@ -73,11 +69,7 @@ module Shoulda
         end
 
         def tables_and_views(connection)
-          if active_record_gte_5?
-            connection.data_sources
-          else
-            connection.tables
-          end
+          connection.data_sources
         end
 
         def verb_for_update
@@ -85,11 +77,7 @@ module Shoulda
         end
 
         def validation_message_key_for_association_required_option
-          if active_record_gte_5?
-            :required
-          else
-            :blank
-          end
+          :required
         end
 
         def parent_of(mod)
