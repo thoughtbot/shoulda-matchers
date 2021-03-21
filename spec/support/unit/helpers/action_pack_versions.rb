@@ -11,10 +11,6 @@ module UnitTests
       action_pack_version >= 5
     end
 
-    def action_pack_lt_5?
-      action_pack_version < 5
-    end
-
     def action_pack_version
       Tests::Version.new(ActionPack::VERSION::STRING)
     end

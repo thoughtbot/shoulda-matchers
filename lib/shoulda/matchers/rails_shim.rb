@@ -3,10 +3,6 @@ module Shoulda
     # @private
     module RailsShim # rubocop:disable Metrics/ModuleLength
       class << self
-        def action_pack_lt_5?
-          Gem::Requirement.new('< 5').satisfied_by?(action_pack_version)
-        end
-
         def action_pack_version
           Gem::Version.new(::ActionPack::VERSION::STRING)
         rescue NameError
