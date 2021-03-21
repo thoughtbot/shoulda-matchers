@@ -54,7 +54,7 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: vendor/bundle
-          key: v1-rubygems-local-${{ runner.os }}-${{ matrix.ruby }}-${{ hashFiles(format('gemfiles/{0}.gemfile.lock', matrix.rails_appraisal)) }}
+          key: v1-rubygems-local-${{ runner.os }}-${{ matrix.ruby }}-${{ hashFiles(format('gemfiles/{0}.gemfile.lock', matrix.appraisal)) }}
       - name: Install dependencies
         run: bundle install --jobs=3 --retry=3
       - name: Run Unit Tests
