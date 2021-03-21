@@ -70,9 +70,9 @@ GEM
       concurrent-ruby (~> 1.0)
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
-    listen (3.3.4)
-      rb-fsevent (~> 0.10, >= 0.10.3)
-      rb-inotify (~> 0.9, >= 0.9.10)
+    listen (3.0.8)
+      rb-fsevent (~> 0.9, >= 0.9.4)
+      rb-inotify (~> 0.9, >= 0.9.7)
     loofah (2.9.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -236,7 +236,7 @@ DEPENDENCIES
   capybara (~> 2.13)
   fssm
   jbuilder (~> 2.5)
-  listen (~> 3.3.0)
+  listen (~> 3.0.5)
   pg (~> 0.18)
   pry
   pry-byebug
