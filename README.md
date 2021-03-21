@@ -430,11 +430,11 @@ about any of them, make sure to [consult the documentation][rubydocs]!
   makes assertions on the `session` hash.
 * **[set_flash](lib/shoulda/matchers/action_controller/set_flash_matcher.rb)**
   makes assertions on the `flash` hash.
-* **[use_after_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L79)**
+* **[use_after_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L29)**
   tests that an `after_action` callback is defined in your controller.
-* **[use_around_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L129)**
+* **[use_around_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L75)**
   tests that an `around_action` callback is defined in your controller.
-* **[use_before_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L54)**
+* **[use_before_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L4)**
   tests that a `before_action` callback is defined in your controller.
 
 ### Routing matchers
