@@ -42,7 +42,7 @@ module Shoulda
           end
 
           def join_table_exists?
-            if RailsShim.tables_and_views(connection).
+            if connection.data_sources.
                 include?(join_table_name.to_s)
               true
             else

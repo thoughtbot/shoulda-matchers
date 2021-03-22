@@ -62,10 +62,6 @@ module Shoulda
           serialized_attributes_for(model)[attribute_name.to_s]
         end
 
-        def tables_and_views(connection)
-          connection.data_sources
-        end
-
         def verb_for_update
           :patch
         end
