@@ -45,12 +45,6 @@ module Shoulda
           )
         end
 
-        def make_controller_request(context, verb, action, request_params)
-          params = { params: request_params }
-
-          context.__send__(verb, action, **params)
-        end
-
         def serialized_attributes_for(model)
           attribute_types_for(model).
             inject({}) do |hash, (attribute_name, attribute_type)|
