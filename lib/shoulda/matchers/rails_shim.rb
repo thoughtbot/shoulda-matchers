@@ -66,10 +66,6 @@ module Shoulda
           :patch
         end
 
-        def validation_message_key_for_association_required_option
-          :required
-        end
-
         def parent_of(mod)
           if mod.respond_to?(:module_parent)
             mod.module_parent
