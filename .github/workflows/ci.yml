@@ -33,7 +33,6 @@ jobs:
           - rails_6_0
           - rails_5_2
           - rails_5_1
-          - rails_5_0
         adapter:
           - sqlite3
           - postgresql
