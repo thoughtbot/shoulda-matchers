@@ -82,9 +82,7 @@ module UnitTests
       write_activerecord_model_with_default_connection
       write_activerecord_model_with_different_connection
 
-      if rails_version >= 5
-        add_initializer_for_time_zone_aware_types
-      end
+      add_initializer_for_time_zone_aware_types
     end
 
     def rails_new

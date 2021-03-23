@@ -3,22 +3,10 @@ module Shoulda
     # @private
     module RailsShim # rubocop:disable Metrics/ModuleLength
       class << self
-        def action_pack_gte_5?
-          Gem::Requirement.new('>= 5').satisfied_by?(action_pack_version)
-        end
-
-        def action_pack_lt_5?
-          Gem::Requirement.new('< 5').satisfied_by?(action_pack_version)
-        end
-
         def action_pack_version
           Gem::Version.new(::ActionPack::VERSION::STRING)
         rescue NameError
           Gem::Version.new('0')
-        end
-
-        def active_record_gte_5?
-          Gem::Requirement.new('>= 5').satisfied_by?(active_record_version)
         end
 
         def active_record_gte_6?
@@ -57,17 +45,6 @@ module Shoulda
           )
         end
 
-        def make_controller_request(context, verb, action, request_params)
-          params =
-            if action_pack_gte_5?
-              { params: request_params }
-            else
-              request_params
-            end
-
-          context.__send__(verb, action, **params)
-        end
-
         def serialized_attributes_for(model)
           attribute_types_for(model).
             inject({}) do |hash, (attribute_name, attribute_type)|
@@ -85,24 +62,8 @@ module Shoulda
           serialized_attributes_for(model)[attribute_name.to_s]
         end
 
-        def tables_and_views(connection)
-          if active_record_gte_5?
-            connection.data_sources
-          else
-            connection.tables
-          end
-        end
-
         def verb_for_update
           :patch
-        end
-
-        def validation_message_key_for_association_required_option
-          if active_record_gte_5?
-            :required
-          else
-            :blank
-          end
         end
 
         def parent_of(mod)

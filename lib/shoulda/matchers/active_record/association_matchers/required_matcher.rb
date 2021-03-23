@@ -65,7 +65,7 @@ module Shoulda
           end
 
           def validation_message_key
-            RailsShim.validation_message_key_for_association_required_option
+            :required
           end
         end
       end
