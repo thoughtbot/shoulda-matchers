@@ -39,7 +39,6 @@ jobs:
           - sqlite3
           - postgresql
         exclude:
-          - { ruby: 3.0.0, appraisal: rails_5_0 }
           - { ruby: 3.0.0, appraisal: rails_5_1 }
           - { ruby: 3.0.0, appraisal: rails_5_2 }
     env:
