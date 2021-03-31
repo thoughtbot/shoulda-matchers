@@ -47,7 +47,7 @@ appraise 'rails_5_2' do
   instance_eval(&shared_dependencies)
   instance_eval(&controller_test_dependency)
 
-  gem 'rails', '5.2.4.5'
+  gem 'rails', '5.2.5'
   gem 'puma', '~> 3.11'
   gem 'bootsnap', '>= 1.1.0', require: false
   gem 'sass-rails', '~> 5.0'
@@ -69,7 +69,7 @@ appraise 'rails_6_0' do
   instance_eval(&shared_dependencies)
   instance_eval(&controller_test_dependency)
 
-  gem 'rails', '6.0.3.5'
+  gem 'rails', '6.0.3.6'
   gem 'puma', '~> 4.1'
   gem 'bootsnap', '>= 1.4.2', require: false
   gem 'sass-rails', '>= 6'
