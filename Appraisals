@@ -74,7 +74,7 @@ appraise 'rails_6_1' do
   instance_eval(&shared_dependencies)
   instance_eval(&controller_test_dependency)
 
-  gem 'rails', '6.1.2.1'
+  gem 'rails', '6.1.3.1'
   gem 'puma', '~> 4.1'
   gem 'bootsnap', '>= 1.4.2', require: false
   gem 'sass-rails', '>= 6'
@@ -88,7 +88,7 @@ appraise 'rails_6_1' do
   gem 'webdrivers'
 
   # Other dependencies
-  gem 'actiontext', '~> 6.1.2.1'
+  gem 'actiontext', '~> 6.1.3.1'
 
   # Database adapters
   gem 'pg', '>= 0.18', '< 2.0'
