@@ -24,7 +24,7 @@ module Shoulda
           end
 
           def to_s
-            constant&.to_s
+            constant.to_s
           end
 
           protected

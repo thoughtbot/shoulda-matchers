@@ -76,11 +76,11 @@ module Shoulda
           end
 
           def failure_message
-            last_failing_submatcher&.failure_message
+            last_failing_submatcher.failure_message
           end
 
           def failure_message_when_negated
-            last_failing_submatcher&.failure_message_when_negated
+            last_failing_submatcher.failure_message_when_negated
           end
 
           def comparison_description
