@@ -44,7 +44,7 @@ module UnitTests
 
         begin
           connection.execute("DROP TABLE IF EXISTS #{table_name}")
-          connection.create_table(table_name, options, &block)
+          connection.create_table(table_name, **options, &block)
           created_tables << table_name
           connection
         rescue StandardError => e

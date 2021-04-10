@@ -82,7 +82,7 @@ GEM
     crass (1.0.6)
     diff-lcs (1.4.4)
     erubi (1.10.0)
-    ffi (1.14.2)
+    ffi (1.15.0)
     fssm (0.2.10)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
@@ -90,7 +90,7 @@ GEM
       concurrent-ruby (~> 1.0)
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
-    listen (3.2.1)
+    listen (3.3.4)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     loofah (2.9.0)
@@ -268,7 +268,7 @@ DEPENDENCIES
   capybara (>= 2.15)
   fssm
   jbuilder (~> 2.7)
-  listen (~> 3.2.0)
+  listen (~> 3.3.0)
   pg (>= 0.18, < 2.0)
   pry
   pry-byebug

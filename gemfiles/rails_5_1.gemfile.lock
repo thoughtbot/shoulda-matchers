@@ -62,7 +62,7 @@ GEM
     crass (1.0.6)
     diff-lcs (1.4.4)
     erubi (1.10.0)
-    ffi (1.14.2)
+    ffi (1.15.0)
     fssm (0.2.10)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
