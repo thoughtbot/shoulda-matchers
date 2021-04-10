@@ -77,7 +77,6 @@ module AcceptanceTests
       end
 
       updating_bundle do |bundle|
-        bundle.add_gem 'rexml'
         bundle.remove_gem 'turn'
         bundle.remove_gem 'coffee-rails'
         bundle.remove_gem 'uglifier'
