@@ -28,8 +28,8 @@ jobs:
       matrix:
         ruby:
           - 3.0.1
-          - 2.7.2
-          - 2.6.6
+          - 2.7.3
+          - 2.6.7
         appraisal:
           - rails_6_0
           - rails_5_2
