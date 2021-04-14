@@ -34,7 +34,6 @@ module Shoulda
             expected_value === actual_value
           end
         end
-        
         delegate :empty?, to: :flash
 
         def use_now!
