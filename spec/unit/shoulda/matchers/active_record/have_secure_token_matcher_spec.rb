@@ -54,6 +54,18 @@ describe Shoulda::Matchers::ActiveRecord::HaveSecureTokenMatcher,
         to fail_with_message(expected_message)
     end
   end
+  
+  it 'matches when called with ignoring_check_for_db_column without db column' do
+    create_table(:users) do |t|
+    end
+
+    valid_model = define_model_class(:User) do
+      attr_accessor :token
+      has_secure_token
+    end
+    expect(valid_model.new).
+      to have_secure_token.ignoring_check_for_db_column
+  end
 
   it 'matches when called with ignoring_check_for_db_index without db index' do
     create_table(:users) do |t|
