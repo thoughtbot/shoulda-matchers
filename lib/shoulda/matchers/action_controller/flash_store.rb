@@ -1,3 +1,4 @@
+require 'active_support/core_ext/module/delegation'
 module Shoulda
   module Matchers
     module ActionController
