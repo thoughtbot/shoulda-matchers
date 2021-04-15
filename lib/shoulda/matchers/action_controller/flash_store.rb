@@ -1,3 +1,4 @@
+require 'active_support/core_ext/module/delegation'
 module Shoulda
   module Matchers
     module ActionController
@@ -34,10 +35,7 @@ module Shoulda
             expected_value === actual_value
           end
         end
-
-        def empty?
-          flash.empty?
-        end
+        delegate :empty?, to: :flash
 
         def use_now!
           @use_now = true
