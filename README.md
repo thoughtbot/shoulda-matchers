@@ -67,39 +67,6 @@ Now you need to configure the gem by telling it:
 * that you're using RSpec so that it can make those matchers available in
   your example groups
 
-#### Rails apps
-
-If you're working on a Rails app, simply place this at the bottom of
-`spec/rails_helper.rb` (or in a support file if you so choose):
-
-```ruby
-Shoulda::Matchers.configure do |config|
-  config.integrate do |with|
-    with.test_framework :rspec
-    with.library :rails
-  end
-end
-```
-
-#### Non-Rails apps
-
-If you're not working on a Rails app, but you still make use of ActiveRecord or
-ActiveModel in your project, you can still use this gem too! In that case,
-you'll want to place the following configuration at the bottom of
-`spec/spec_helper.rb`:
-
-```ruby
-Shoulda::Matchers.configure do |config|
-  config.integrate do |with|
-    with.test_framework :rspec
-
-    # Keep as many of these lines as are necessary:
-    with.library :active_record
-    with.library :active_model
-  end
-end
-```
-
 ### Minitest
 
 If you're using our umbrella gem [Shoulda], then make sure that you're using the
