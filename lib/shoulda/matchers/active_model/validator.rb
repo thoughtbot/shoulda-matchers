@@ -98,12 +98,7 @@ module Shoulda
 
           all_validation_errors = record.errors.dup
 
-          validation_error_messages =
-            if record.errors.respond_to?(:[])
-              record.errors[attribute]
-            else
-              record.errors.on(attribute)
-            end
+          validation_error_messages = record.errors[attribute]
 
           {
             all_validation_errors: all_validation_errors,
