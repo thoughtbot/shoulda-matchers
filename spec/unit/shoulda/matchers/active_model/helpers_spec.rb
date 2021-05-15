@@ -78,16 +78,6 @@ describe Shoulda::Matchers::ActiveModel::Helpers do
         end
       end
     end
-
-    context 'if ActiveModel::Errors#generate_message behavior has changed' do
-      it 'provides the right error message for validate_presence_of' do
-        stub_active_model_message_generation(
-          type: :blank,
-          message: 'Behavior has diverged.',
-        )
-        assert_presence_validation_has_correct_message
-      end
-    end
   end
 
   def assert_presence_validation_has_correct_message
@@ -149,17 +139,5 @@ describe Shoulda::Matchers::ActiveModel::Helpers do
     end
 
     I18n.backend.store_translations(:en, translations)
-  end
-
-  def stub_active_model_message_generation(options = {})
-    attribute = options.delete(:attribute) || :attr
-    message = options.delete(:message)
-    type = options.delete(:type)
-
-    expect_any_instance_of(ActiveModel::Errors).
-      to receive(:generate_message).
-      with(attribute, type, {}).
-      at_least(1).
-      and_return(message)
   end
 end
