@@ -885,8 +885,16 @@ Expected Parent to have a has_many association called children through conceptio
     end
 
     it 'accepts an association with a valid :source option' do
-      expect(having_many_children(source: :user)).
-        to have_many(:children).source(:user)
+      define_model(:author) do
+        has_many :books
+        has_many :paperbacks, through: :books, source: :format, source_type: 'Paperback'
+      end
+      define_model(:book, format_id: :integer) do
+        belongs_to :format, polymorphic: true
+      end
+      define_model(:paperback)
+
+      expect(Author.new).to have_many(:paperbacks).source(:format)
     end
 
     it 'rejects an association with a bad :source option' do
