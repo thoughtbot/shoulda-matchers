@@ -1447,7 +1447,9 @@ module Shoulda
         def actual_foreign_key
           return unless foreign_key_reflection
 
-          if foreign_key_reflection.respond_to?(:foreign_key)
+          if foreign_key_reflection.options[:foreign_key]
+            foreign_key_reflection.options[:foreign_key]
+          elsif foreign_key_reflection.respond_to?(:foreign_key)
             foreign_key_reflection.foreign_key
           else
             foreign_key_reflection.primary_key_name
