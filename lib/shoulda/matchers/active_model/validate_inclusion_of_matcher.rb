@@ -14,7 +14,7 @@ module Shoulda
       #       include ActiveModel::Model
       #       attr_accessor :state
       #
-      #       validates_inclusion_of :state,
+      #       validate_inclusion_of :state,
       #         in: ['open', 'resolved', 'unresolved']
       #     end
       #
