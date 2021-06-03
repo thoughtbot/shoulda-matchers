@@ -7,5 +7,9 @@ module AcceptanceTests
     def rails_version
       bundle_version_of('rails')
     end
+
+    def rails_gt_6_0?
+      rails_version > 6.0
+    end
   end
 end

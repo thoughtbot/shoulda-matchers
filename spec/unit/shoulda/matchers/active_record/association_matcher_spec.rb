@@ -885,8 +885,16 @@ Expected Parent to have a has_many association called children through conceptio
     end
 
     it 'accepts an association with a valid :source option' do
-      expect(having_many_children(source: :user)).
-        to have_many(:children).source(:user)
+      define_model(:author) do
+        has_many :books
+        has_many :paperbacks, through: :books, source: :format, source_type: 'Paperback'
+      end
+      define_model(:book, format_id: :integer) do
+        belongs_to :format, polymorphic: true
+      end
+      define_model(:paperback)
+
+      expect(Author.new).to have_many(:paperbacks).source(:format)
     end
 
     it 'rejects an association with a bad :source option' do
@@ -1350,7 +1358,7 @@ Expected Parent to have a has_many association called children through conceptio
       end
 
       expected_message = 'Expected Person to have a has_one association called detail ' \
-        '(PersonDetail does not have a ["company_id", "person_detail_id"] foreign key.)'
+        '(PersonDetail does not have a [:company_id, :person_detail_id] foreign key.)'
 
       expect do
         have_one(:detail).class_name('PersonDetail').
