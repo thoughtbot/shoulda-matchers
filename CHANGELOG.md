@@ -4,14 +4,14 @@
 
 ### Bug fixes
 
-* Replace in?, method from ActiveSupport, with include? to prevent exception "undefined method `in?`" on non-Rails app. ([#1405])
+* Replace `in?`, method from ActiveSupport, with `include?` to prevent exception "undefined method `in?`" on non-Rails app. ([#1405])
 
 [#1405]: https://github.com/thoughtbot/shoulda-matchers/pull/1405
 
 ### Features
 
 * Add support for Rails 6.1. No new Rails 6.1 features are supported, but only
-  existing features that broke with the upgrade.([#1418])
+  existing features that broke with the upgrade. ([#1418])
 
 * Add support for RVM (Ruby Version Manager) to setting up local environment. ([#1424])
 
@@ -28,7 +28,7 @@
 ### Backward-incompatible changes
 
 * Drop support for Rails 4.2, 5.0 and 5.1 as well as Ruby 2.4 and 2.5
-  they've been end-of-lifed. The gem now supports Ruby 2.6+ and Rails 5.2+.([#1412], [#1415], [#1422], [#1428],[#1429])
+  they've been end-of-lifed. The gem now supports Ruby 2.6+ and Rails 5.2+.([#1412], [#1415], [#1422], [#1428], [#1429])
 
 * Remove deprecated matchers:  `use_before_filter`, `use_after_filter`, `use_around_filter` and `allow_mass_assignment_of`. ([#1430], [#1431])
 
