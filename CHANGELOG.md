@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 5.0.0.rc1 - 2021-06-04
 
 ### Bug fixes
 
