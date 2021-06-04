@@ -1,5 +1,45 @@
 # Changelog
 
+## Unreleased
+
+### Bug fixes
+
+* Replace `in?`, method from ActiveSupport, with `include?` to prevent exception "undefined method `in?`" on non-Rails app. ([#1405])
+
+[#1405]: https://github.com/thoughtbot/shoulda-matchers/pull/1405
+
+### Features
+
+* Add support for Rails 6.1. No new Rails 6.1 features are supported, but only
+  existing features that broke with the upgrade. ([#1418])
+
+* Add support for RVM (Ruby Version Manager) to setting up local environment. ([#1424])
+
+* Add support for alias in matcher define_enum. ([#1419])
+
+* Add support for Ruby 3.0. ([#1406], [#1427])
+
+[#1406]: https://github.com/thoughtbot/shoulda-matchers/pull/1406
+[#1418]: https://github.com/thoughtbot/shoulda-matchers/pull/1418
+[#1419]: https://github.com/thoughtbot/shoulda-matchers/pull/1419
+[#1424]: https://github.com/thoughtbot/shoulda-matchers/pull/1424
+[#1427]: https://github.com/thoughtbot/shoulda-matchers/pull/1427
+
+### Backward-incompatible changes
+
+* Drop support for Rails 4.2, 5.0 and 5.1 as well as Ruby 2.4 and 2.5
+  they've been end-of-lifed. The gem now supports Ruby 2.6+ and Rails 5.2+.([#1412], [#1415], [#1422], [#1428], [#1429])
+
+* Remove deprecated matchers:  `use_before_filter`, `use_after_filter`, `use_around_filter` and `allow_mass_assignment_of`. ([#1430], [#1431])
+
+[#1412]: https://github.com/thoughtbot/shoulda-matchers/pull/1412
+[#1415]: https://github.com/thoughtbot/shoulda-matchers/pull/1415
+[#1422]: https://github.com/thoughtbot/shoulda-matchers/pull/1422
+[#1428]: https://github.com/thoughtbot/shoulda-matchers/pull/1428
+[#1429]: https://github.com/thoughtbot/shoulda-matchers/pull/1429
+[#1430]: https://github.com/thoughtbot/shoulda-matchers/pull/1430
+[#1431]: https://github.com/thoughtbot/shoulda-matchers/pull/1431
+
 ## 4.5.1 - 2021-01-15
 
 ### Bug fixes
