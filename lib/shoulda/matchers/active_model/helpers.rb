@@ -8,7 +8,7 @@ module Shoulda
         end
 
         def format_validation_errors(errors)
-          list_items = errors.keys.map do |attribute|
+          list_items = errors.attribute_names.map do |attribute|
             messages = errors[attribute]
             "* #{attribute}: #{messages}"
           end

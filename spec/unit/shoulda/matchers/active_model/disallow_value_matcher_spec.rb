@@ -73,7 +73,7 @@ describe Shoulda::Matchers::ActiveModel::DisallowValueMatcher, type: :model do
 
         def custom_validation # rubocop:disable Lint/NestedMethodDefinition
           if self[:attr] != 'good value'
-            errors[:attr2] << 'some message'
+            errors.add :attr2, 'some message'
           end
         end
       end.new
