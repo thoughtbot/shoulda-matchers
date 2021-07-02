@@ -29,7 +29,7 @@ module Shoulda
           end
 
           def symlink_to(parent)
-            namespace.set(name, parent.dup)
+            namespace.set(name, Class.new(parent))
           end
 
           def to_s
