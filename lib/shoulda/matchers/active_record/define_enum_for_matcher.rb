@@ -116,7 +116,7 @@ module Shoulda
       ## ##### with_prefix
       #
       # Use `with_prefix` to test that the enum is defined with a `_prefix`
-      # option (Rails 5 only). Can take either a boolean or a symbol:
+      # option (Rails 6+ only). Can take either a boolean or a symbol:
       #
       #     class Issue < ActiveRecord::Base
       #       enum status: [:open, :closed], _prefix: :old
@@ -163,6 +163,30 @@ module Shoulda
       #         with_suffix
       #     end
       #
+      # ##### without_scopes
+      #
+      # Use `without_scopes` to test that the enum is defined with
+      # '_scopes: false' option (Rails 5 only). Can take either a boolean or a
+      # symbol:
+      #
+      #     class Issue < ActiveRecord::Base
+      #       enum status: [:open, :closed], _scopes: false
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Issue, type: :model do
+      #       it do
+      #         should define_enum_for(:status).
+      #           without_scopes
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class ProcessTest < ActiveSupport::TestCase
+      #       should define_enum_for(:status).
+      #         without_scopes
+      #     end
+      #
       # @return [DefineEnumForMatcher]
       #
       def define_enum_for(attribute_name)
@@ -173,7 +197,7 @@ module Shoulda
       class DefineEnumForMatcher
         def initialize(attribute_name)
           @attribute_name = attribute_name
-          @options = { expected_enum_values: [] }
+          @options = { expected_enum_values: [], scopes: true }
         end
 
         def description
@@ -226,13 +250,19 @@ module Shoulda
           self
         end
 
+        def without_scopes
+          options[:scopes] = false
+          self
+        end
+
         def matches?(subject)
           @record = subject
 
           enum_defined? &&
             enum_values_match? &&
             column_type_matches? &&
-            enum_value_methods_exist?
+            enum_value_methods_exist? &&
+            scope_presence_matches?
         end
 
         def failure_message
@@ -292,6 +322,10 @@ module Shoulda
 
               expectation << 'suffixing accessor methods with '
               expectation << "_#{expected_suffix}".inspect
+            end
+
+            if exclude_scopes?
+              expectation << ' with no scopes'
             end
 
             expectation
@@ -387,28 +421,10 @@ module Shoulda
         end
 
         def enum_value_methods_exist?
-          passed = expected_singleton_methods.all? do |method|
-            model.singleton_methods.include?(method)
-          end
-
-          if passed
+          if instance_methods_exist?
             true
           else
-            message = "#{attribute_name.inspect} does map to these "
-            message << 'values, but the enum is '
-
-            if expected_prefix
-              if expected_suffix
-                message << 'configured with either a different prefix or '
-                message << 'suffix, or no prefix or suffix at all'
-              else
-                message << 'configured with either a different prefix or no '
-                message << 'prefix at all'
-              end
-            elsif expected_suffix
-              message << 'configured with either a different suffix or no '
-              message << 'suffix at all'
-            end
+            message = missing_methods_message
 
             message << " (we can't tell which)"
 
@@ -418,12 +434,86 @@ module Shoulda
           end
         end
 
+        def scope_presence_matches?
+          if exclude_scopes?
+            if singleton_methods_exist?
+              message = "#{attribute_name.inspect} does map to these values "
+              message << 'but class scope methods were present'
+
+              @failure_message_continuation = message
+
+              false
+            else
+              true
+            end
+          elsif singleton_methods_exist?
+            true
+          else
+            if enum_defined?
+              message = 'But the class scope methods are not present'
+            else
+              message = missing_methods_message
+
+              message << 'or the class scope methods are not present'
+              message << " (we can't tell which)"
+            end
+
+            @failure_message_continuation = message
+
+            false
+          end
+        end
+
+        def missing_methods_message
+          message = "#{attribute_name.inspect} does map to these "
+          message << 'values, but the enum is '
+
+          if expected_prefix
+            if expected_suffix
+              message << 'configured with either a different prefix or '
+              message << 'suffix, or no prefix or suffix at all'
+            else
+              message << 'configured with either a different prefix or no '
+              message << 'prefix at all'
+            end
+          elsif expected_suffix
+            message << 'configured with either a different suffix or no '
+            message << 'suffix at all'
+          else
+            ''
+          end
+        end
+
+        def singleton_methods_exist?
+          expected_singleton_methods.all? do |method|
+            model.singleton_methods.include?(method)
+          end
+        end
+
+        def instance_methods_exist?
+          expected_instance_methods.all? do |method|
+            record.methods.include?(method)
+          end
+        end
+
         def expected_singleton_methods
           expected_enum_value_names.map do |name|
             [expected_prefix, name, expected_suffix].
               select(&:present?).
               join('_').
               to_sym
+          end
+        end
+
+        def expected_instance_methods
+          methods = expected_enum_value_names.map do |name|
+            [expected_prefix, name, expected_suffix].
+              select(&:present?).
+              join('_')
+          end
+
+          methods.flat_map do |m|
+            ["#{m}?".to_sym, "#{m}!".to_sym]
           end
         end
 
@@ -445,6 +535,10 @@ module Shoulda
               options[:suffix]
             end
           end
+        end
+
+        def exclude_scopes?
+          !options[:scopes]
         end
 
         def to_hash(value)
