@@ -27,9 +27,9 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - 3.0.1
-          - 2.7.3
-          - 2.6.7
+          - 3.0.2
+          - 2.7.4
+          - 2.6.8
         appraisal:
           - rails_6_1
           - rails_6_0
@@ -38,7 +38,7 @@ jobs:
           - sqlite3
           - postgresql
         exclude:
-          - { ruby: 3.0.1, appraisal: rails_5_2 }
+          - { ruby: 3.0.2, appraisal: rails_5_2 }
     env:
       DATABASE_ADAPTER: ${{ matrix.adapter }}
       BUNDLE_GEMFILE: gemfiles/${{ matrix.appraisal }}.gemfile
