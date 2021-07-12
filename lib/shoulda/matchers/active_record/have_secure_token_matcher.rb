@@ -23,6 +23,25 @@ module Shoulda
       #
       # #### Qualifiers
       #
+      # ##### ignoring_check_for_db_column
+      #
+      # By default, this matcher tests that a token column is present.
+      # Use `ignoring_check_for_db_column` if this is not the case.
+      #
+      #     class User < ActiveRecord
+      #       has_secure_token :auth_token
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe User, type: :model do
+      #       it { should have_secure_token(:auth_token).ignoring_check_for_db_column }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class UserTest < ActiveSupport::TestCase
+      #       should have_secure_token(:auth_token).ignoring_check_for_db_column
+      #     end
+      #
       # ##### ignoring_check_for_db_index
       #
       # By default, this matcher tests that an index is defined on your token
@@ -81,6 +100,12 @@ module Shoulda
           @errors.empty?
         end
 
+        def ignoring_check_for_db_column
+          @options[:ignore_check_for_db_column] = true
+          ignoring_check_for_db_index
+          self
+        end
+
         def ignoring_check_for_db_index
           @options[:ignore_check_for_db_index] = true
           self
@@ -93,7 +118,7 @@ module Shoulda
           if !has_expected_instance_methods?
             @errors << 'missing expected class and instance methods'
           end
-          if !has_expected_db_column?
+          if !@options[:ignore_check_for_db_column] && !has_expected_db_column?
             @errors << "missing correct column #{token_attribute}:string"
           end
           if !@options[:ignore_check_for_db_index] && !has_expected_db_index?
