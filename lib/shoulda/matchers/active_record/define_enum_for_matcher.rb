@@ -324,7 +324,7 @@ module Shoulda
               expectation << "_#{expected_suffix}".inspect
             end
 
-            if without_scopes?
+            if exclude_scopes?
               expectation << ' with no scopes'
             end
 
@@ -424,21 +424,7 @@ module Shoulda
           if instance_methods_exist?
             true
           else
-            message = "#{attribute_name.inspect} does map to these values, "
-            message << 'but the enum is '
-
-            if expected_prefix
-              if expected_suffix
-                message << 'configured with either a different prefix or '
-                message << 'suffix, or no prefix or suffix at all'
-              else
-                message << 'configured with either a different prefix or no '
-                message << 'prefix at all'
-              end
-            elsif expected_suffix
-              message << 'configured with either a different suffix or no '
-              message << 'suffix at all'
-            end
+            message = missing_methods_message
 
             message << " (we can't tell which)"
 
@@ -449,7 +435,7 @@ module Shoulda
         end
 
         def scope_presence_matches?
-          if without_scopes?
+          if exclude_scopes?
             if singleton_methods_exist?
               message = "#{attribute_name.inspect} does map to these values "
               message << 'but class scope methods were present'
@@ -463,26 +449,39 @@ module Shoulda
           elsif singleton_methods_exist?
             true
           else
-            message = "#{attribute_name.inspect} does map to these "
-            message << 'values, but the enum is '
+            if enum_defined?
+              message = 'But the class scope methods are not present'
+            else
+              message = missing_methods_message
 
-            if expected_prefix
-              if expected_suffix
-                message << 'configured with either a different prefix or '
-                message << 'suffix, or no prefix or suffix at all, or the '
-                message << 'class scopes were not present'
-              else
-                message << 'configured with either a different prefix or no '
-                message << 'prefix at all, or the class scopes are not present'
-              end
-            elsif expected_suffix
-              message << 'configured with either a different suffix or no '
-              message << 'suffix at all, or the class scopes were not present'
+              # binding.pry
+              message << 'or the class scope methods are not present'
+              message << " (we can't tell which)"
             end
 
-            message << " (we can't tell which)"
-
             @failure_message_continuation = message
+
+            false
+          end
+        end
+
+        def missing_methods_message
+          message = "#{attribute_name.inspect} does map to these "
+          message << 'values, but the enum is '
+
+          if expected_prefix
+            if expected_suffix
+              message << 'configured with either a different prefix or '
+              message << 'suffix, or no prefix or suffix at all'
+            else
+              message << 'configured with either a different prefix or no '
+              message << 'prefix at all'
+            end
+          elsif expected_suffix
+            message << 'configured with either a different suffix or no '
+            message << 'suffix at all'
+          else
+            ''
           end
         end
 
@@ -539,7 +538,7 @@ module Shoulda
           end
         end
 
-        def without_scopes?
+        def exclude_scopes?
           !options[:scopes]
         end
 
