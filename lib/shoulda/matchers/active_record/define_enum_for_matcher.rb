@@ -454,7 +454,6 @@ module Shoulda
             else
               message = missing_methods_message
 
-              # binding.pry
               message << 'or the class scope methods are not present'
               message << " (we can't tell which)"
             end
