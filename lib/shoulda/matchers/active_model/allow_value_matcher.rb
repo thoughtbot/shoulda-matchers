@@ -248,9 +248,9 @@ module Shoulda
       #     # RSpec
       #     RSpec.describe UserProfile, type: :model do
       #       it do
-      #         should allow_value('Broncos', 'Titans').
+      #         should_not allow_value('Broncooos', 'Titaaans').
       #           for(:sports_team).
-      #           with_message('Must be either a Broncos or Titans fan',
+      #           with_message('Must be either a Broncos fan or a Titans fan',
       #             against: :chosen_sports_team
       #           )
       #       end
@@ -258,9 +258,9 @@ module Shoulda
       #
       #     # Minitest (Shoulda)
       #     class UserProfileTest < ActiveSupport::TestCase
-      #       should allow_value('Broncos', 'Titans').
+      #       should_not allow_value('Broncooos', 'Titaaans').
       #         for(:sports_team).
-      #         with_message('Must be either a Broncos or Titans fan',
+      #         with_message('Must be either a Broncos fan or a Titans fan',
       #           against: :chosen_sports_team
       #         )
       #     end
