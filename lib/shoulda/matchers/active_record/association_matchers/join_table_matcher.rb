@@ -75,7 +75,7 @@ module Shoulda
           end
 
           def expected_join_table_columns
-            [foreign_key, association_foreign_key]
+            [foreign_key, association_foreign_key].flatten
           end
 
           def actual_join_table_columns
