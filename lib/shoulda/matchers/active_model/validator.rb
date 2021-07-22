@@ -25,6 +25,10 @@ module Shoulda
           messages.any?
         end
 
+        def has_any_errors?
+          record.errors.any?
+        end
+
         def captured_validation_exception?
           @captured_validation_exception
         end
