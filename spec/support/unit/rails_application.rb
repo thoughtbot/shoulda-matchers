@@ -26,6 +26,7 @@ module UnitTests
     def load
       load_environment
 
+      add_active_storage_migration
       add_action_text_migration if rails_version >= 6.0
 
       run_migrations
@@ -147,6 +148,12 @@ end
     def add_action_text_migration
       fs.within_project do
         run_command! 'bundle exec rake action_text:install:migrations'
+      end
+    end
+
+    def add_active_storage_migration
+      fs.within_project do
+        run_command! 'bundle exec rake active_storage:install:migrations'
       end
     end
 
