@@ -62,16 +62,16 @@ describe 'shoulda-matchers integrates with an ActiveModel project' do
   end
 
   context 'when using active model library' do
-
     it 'and loads without errors' do
       result = run_command_within_bundle('ruby load_dependencies.rb')
+
       expect(result).to have_output('Loaded all dependencies without errors')
     end
 
     it 'allows use of inclusion matcher from active model library' do
       result = run_rspec_tests('spec/user_spec.rb')
-      expect(result).to have_output('2 examples, 1 failure')
 
+      expect(result).to have_output('2 examples, 1 failure')
       expect(result).to have_output(
         'gender: ["is not included in the list"]',
       )
