@@ -1,7 +1,6 @@
 require 'acceptance_spec_helper'
 
 describe 'shoulda-matchers integrates with an ActiveModel project' do
-
   before do
     create_active_model_project
 
@@ -77,5 +76,4 @@ describe 'shoulda-matchers integrates with an ActiveModel project' do
       )
     end
   end
-
 end
