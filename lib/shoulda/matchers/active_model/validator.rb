@@ -67,10 +67,16 @@ module Shoulda
 
         def matched_messages
           if @expected_message
-            messages.grep(@expected_message)
+            messages.grep(interpolate_expected_message)
           else
             messages
           end
+        end
+
+        def interpolate_expected_message
+          return @expected_message unless @expected_message.is_a?(String)
+
+          @expected_message.gsub(/%{value}/, record.send(attribute).to_s)
         end
 
         def captured_range_error?
