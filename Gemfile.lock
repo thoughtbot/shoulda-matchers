@@ -84,7 +84,7 @@ PLATFORMS
 
 DEPENDENCIES
   appraisal (= 2.2.0)
-  bundler (~> 1.1)
+  bundler (~> 2.0)
   fssm
   pry
   pry-byebug
@@ -100,4 +100,4 @@ DEPENDENCIES
   zeus
 
 BUNDLED WITH
-   1.17.3
+   2.2.22
