@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'appraisal', '2.2.0'
-gem 'bundler', '~> 1.1'
+gem 'bundler', '~> 2.0'
 gem 'pry'
 gem 'pry-byebug'
 gem 'rake', '13.0.1'

@@ -264,7 +264,7 @@ DEPENDENCIES
   appraisal (= 2.2.0)
   bcrypt (~> 3.1.7)
   bootsnap (>= 1.4.2)
-  bundler (~> 1.1)
+  bundler (~> 2.0)
   capybara (>= 2.15)
   fssm
   jbuilder (~> 2.7)
@@ -297,4 +297,4 @@ DEPENDENCIES
   zeus
 
 BUNDLED WITH
-   1.17.3
+   2.2.22

@@ -248,7 +248,7 @@ DEPENDENCIES
   appraisal (= 2.2.0)
   bcrypt (~> 3.1.7)
   bootsnap (>= 1.1.0)
-  bundler (~> 1.1)
+  bundler (~> 2.0)
   capybara (~> 3.1.1)
   chromedriver-helper
   fssm
@@ -281,4 +281,4 @@ DEPENDENCIES
   zeus
 
 BUNDLED WITH
-   1.17.3
+   2.2.22
