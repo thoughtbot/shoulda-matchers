@@ -91,6 +91,15 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
         end
       end
 
+      context 'when the column backing the attribute is an enum' do
+        it 'still works' do
+          model = define_model_validating_absence_of(:attr)
+          model.enum attr: %w[one two three]
+
+          expect(model.new).to validate_absence_of(:attr)
+        end
+      end
+
       context 'when used in the negative' do
         it 'fails' do
           assertion = lambda do
