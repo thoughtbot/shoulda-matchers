@@ -98,6 +98,20 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbColumnMatcher, type: :model do
     end
   end
 
+  if database_supports_array_columns?
+    context 'with array option' do
+      it 'accepts a column that is array' do
+        expect(with_table(:tags, :string, array: true)).
+          to have_db_column(:tags).with_options(array: true)
+      end
+
+      it 'rejects a column that is not array' do
+        expect(with_table(:whatever, :string, array: false)).
+          not_to have_db_column(:whatever).with_options(array: true)
+      end
+    end
+  end
+
   context 'with invalid argument option' do
     it 'raises an error with the unknown options' do
       expect {
