@@ -10,9 +10,5 @@ module UnitTests
     def rails_version
       Tests::Version.new(Rails::VERSION::STRING)
     end
-
-    def rails_gte_5_2?
-      rails_version >= 5.2
-    end
   end
 end

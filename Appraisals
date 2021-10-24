@@ -23,31 +23,11 @@ shared_dependencies = proc do
   instance_eval(&shared_test_dependencies)
 end
 
-appraise 'rails_5_1' do
-  instance_eval(&shared_dependencies)
-  instance_eval(&controller_test_dependency)
-
-  gem 'rails', '5.1.7'
-  gem 'puma', '~> 3.7'
-  gem 'sass-rails', '~> 5.0'
-  gem 'turbolinks', '~> 5'
-  gem 'jbuilder', '~> 2.5'
-  gem 'bcrypt', '~> 3.1.7'
-  gem 'capybara', '~> 2.13'
-  gem 'selenium-webdriver'
-  gem 'listen', '~> 3.0.5'
-  gem 'spring-watcher-listen', '~> 2.0.0'
-
-  # Database adapters
-  gem 'pg', '~> 0.18'
-  gem 'sqlite3', '~> 1.3.6'
-end
-
 appraise 'rails_5_2' do
   instance_eval(&shared_dependencies)
   instance_eval(&controller_test_dependency)
 
-  gem 'rails', '5.2.5'
+  gem 'rails', '5.2.6'
   gem 'puma', '~> 3.11'
   gem 'bootsnap', '>= 1.1.0', require: false
   gem 'sass-rails', '~> 5.0'
@@ -69,7 +49,7 @@ appraise 'rails_6_0' do
   instance_eval(&shared_dependencies)
   instance_eval(&controller_test_dependency)
 
-  gem 'rails', '6.0.3.6'
+  gem 'rails', '6.0.4'
   gem 'puma', '~> 4.1'
   gem 'bootsnap', '>= 1.4.2', require: false
   gem 'sass-rails', '>= 6'
@@ -83,7 +63,33 @@ appraise 'rails_6_0' do
   gem 'webdrivers'
 
   # Other dependencies
-  gem 'actiontext', '~> 6.0.3.5'
+  gem 'actiontext', '~> 6.0.4'
+
+  # Database adapters
+  gem 'pg', '>= 0.18', '< 2.0'
+  gem 'sqlite3', '~> 1.4'
+end
+
+appraise 'rails_6_1' do
+  instance_eval(&shared_dependencies)
+  instance_eval(&controller_test_dependency)
+
+  gem 'rails', '6.1.4'
+  gem 'puma', '~> 5.0'
+  gem 'bootsnap', '>= 1.4.2', require: false
+  gem 'sass-rails', '>= 6'
+  gem 'turbolinks', '~> 5'
+  gem 'jbuilder', '~> 2.7'
+  gem 'bcrypt', '~> 3.1.7'
+  gem 'capybara', '>= 2.15'
+  gem 'listen', '>= 3.0.5', '< 3.6'
+  gem 'rack-mini-profiler', '~> 2.0.0'
+  gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'selenium-webdriver'
+  gem 'webdrivers'
+
+  # Other dependencies
+  gem 'actiontext', '~> 6.1.4'
 
   # Database adapters
   gem 'pg', '>= 0.18', '< 2.0'
