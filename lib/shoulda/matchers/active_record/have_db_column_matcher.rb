@@ -52,7 +52,7 @@ module Shoulda
       #
       # Use `with_options` to assert that a column has been defined with
       # certain options (`:precision`, `:limit`, `:default`, `:null`, `:scale`,
-      # or `:primary`).
+      # `:primary` or `:array`).
       #
       #     class CreatePhones < ActiveRecord::Migration
       #       def change
@@ -84,7 +84,7 @@ module Shoulda
 
       # @private
       class HaveDbColumnMatcher
-        OPTIONS = %i(precision limit default null scale primary).freeze
+        OPTIONS = %i(precision limit default null scale primary array).freeze
 
         def initialize(column)
           @column = column
@@ -115,7 +115,8 @@ module Shoulda
             correct_default? &&
             correct_null? &&
             correct_scale? &&
-            correct_primary?
+            correct_primary? &&
+            correct_array?
         end
 
         def failure_message
@@ -253,6 +254,23 @@ module Shoulda
                 'that is not primary, but should be'
               else
                 'that is primary, but should not be'
+              end
+            false
+          end
+        end
+
+        def correct_array?
+          return true unless @options.key?(:array)
+
+          if matched_column.array? == @options[:array]
+            true
+          else
+            @missing = "#{model_class} has a db column named #{@column} "
+            @missing <<
+              if @options[:primary]
+                'that is not array, but should be'
+              else
+                'that is array, but should not be'
               end
             false
           end
