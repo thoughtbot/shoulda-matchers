@@ -109,6 +109,8 @@ module Shoulda
             end
           elsif array_column?
             ['an arbitary value']
+          elsif enum_column?
+            enum_values.first
           else
             case column_type
             when :integer, :float then 1
@@ -144,6 +146,15 @@ module Shoulda
           @subject.class.respond_to?(:columns_hash) &&
             @subject.class.columns_hash[@attribute.to_s].respond_to?(:array) &&
             @subject.class.columns_hash[@attribute.to_s].array
+        end
+
+        def enum_column?
+          @subject.class.respond_to?(:defined_enums) &&
+            @subject.class.defined_enums.key?(@attribute.to_s)
+        end
+
+        def enum_values
+          @subject.class.defined_enums[@attribute.to_s].values
         end
       end
     end
