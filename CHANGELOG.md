@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased
+
+### Bug fixes
+
+* Fix the undefined method error for non rails project due to use of many? - method from ActiveSupport. ([#1459])
+
+[#1459]: https://github.com/thoughtbot/shoulda-matchers/pull/1459
+
+### Features
+
+* Add array option support for have db column matcher. ([#1465])
+
+* Add enum attributes support for validate_absence_of matcher. ([#1464])
+
+[#1464]: https://github.com/thoughtbot/shoulda-matchers/pull/1464
+[#1465]: https://github.com/thoughtbot/shoulda-matchers/pull/1465
+
 ## 5.0.0 - 2021-07-09
 
 ### Bug fixes
