@@ -239,7 +239,7 @@ module Shoulda
       #
       # @return [ValidateLengthOfMatcher]
       #
-      # # ##### allow_blank
+      # ##### allow_blank
       #
       # Use `allow_blank` to assert that the attribute allows blank.
       #
