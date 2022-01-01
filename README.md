@@ -19,7 +19,7 @@ complex, and error-prone.
 
 ## Quick links
 
-📖 **[Read the documentation for the latest version][rubydocs].**  
+📖 **[Read the documentation for the latest version][rubydocs].**
 📢 **[See what's changed in recent versions][changelog].**
 
 [rubydocs]: https://matchers.shoulda.io/docs
@@ -492,7 +492,7 @@ Albuk][guialbuk].
 
 ## Copyright/License
 
-Shoulda Matchers is copyright © 2006-2021 Tammer Saleh and [thoughtbot,
+Shoulda Matchers is copyright © 2006-2022 Tammer Saleh and [thoughtbot,
 inc][thoughtbot-website]. It is free and opensource software and may be
 redistributed under the terms specified in the [LICENSE](LICENSE) file.
 
