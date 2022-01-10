@@ -58,9 +58,11 @@ appraise 'rails_6_0' do
   gem 'bcrypt', '~> 3.1.7'
   gem 'capybara', '>= 2.15'
   gem 'listen', '~> 3.3.0'
+  gem 'psych', '~> 3.0'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'selenium-webdriver'
   gem 'webdrivers'
+  gem 'net-smtp', require: false
 
   # Database adapters
   gem 'pg', '>= 0.18', '< 2.0'
@@ -80,6 +82,8 @@ appraise 'rails_6_1' do
   gem 'bcrypt', '~> 3.1.7'
   gem 'capybara', '>= 2.15'
   gem 'listen', '>= 3.0.5', '< 3.6'
+  gem 'net-smtp', require: false
+  gem 'psych', '~> 3.0'
   gem 'rack-mini-profiler', '~> 2.0.0'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'selenium-webdriver'

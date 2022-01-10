@@ -20,7 +20,7 @@ GEM
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
     method_source (1.0.0)
-    minitest (5.14.2)
+    minitest (5.15.0)
     parallel (1.19.2)
     parser (2.7.2.0)
       ast (~> 2.4.1)
@@ -100,4 +100,4 @@ DEPENDENCIES
   zeus
 
 BUNDLED WITH
-   2.2.22
+   2.2.32
