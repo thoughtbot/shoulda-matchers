@@ -20,8 +20,8 @@ you think would be useful? Here's what you need to do:
    API](#documentation).
 1. [Refrain from updating the changelog.](#a-word-on-the-changelog)
 1. Push to your fork and submit a pull request.
-1. [Ensure that the test suite passes on Travis and make any necessary changes
-   to your branch to bring it to green.](#continuous-integration)
+1. [Ensure that the test suite passes on Github Actions and make any necessary
+   changes to your branch to bring it to green.](#continuous-integration)
 
 Although we maintain Shoulda Matchers in our free time, we try to respond to
 contributions in a timely manner. Once we look at your pull request, we may give
@@ -199,16 +199,17 @@ your branch, but don't worry about this — we'll take care of it!
 While running `bundle exec rake` is a great way to check your work, this command
 will only run your tests against the latest supported Ruby and Rails version.
 Ultimately, though, you'll want to ensure that your changes work in all possible
-environments. We make use of [Travis][travis] to do this work for us. Travis
-will kick in after you push up a branch or open a PR. It takes 20-30 minutes to
-run a complete build, which you are free to
-[monitor as it progresses][shoulda-matchers-on-travis].
+environments. We make use of [Github Actions][gh-actions] to do this work for
+us. Github Actions will kick in after you push up a branch or open a PR.
+It takes 20-30 minutes to run a complete build, which you are free to
+[monitor as it progresses][shoulda-matchers-on-gh-actions]. First-time
+contributors may need to wait until a maintainer approves the build.
 
-[shoulda-matchers-on-travis]: https://travis-ci.org/thoughtbot/shoulda-matchers
+[shoulda-matchers-on-gh-actions]: https://github.com/thoughtbot/shoulda-matchers/actions
 
 What happens if the build fails in some way? Don't fear! Click on a failed job
 and scroll through its output to determine the cause of the failure. You'll want
 to make changes to your branch and push them up until the entire build is green.
 It may take a bit of time, but overall it is worth it and it helps us immensely!
 
-[travis]: https://travis-ci.org/
+[gh-actions]: https://github.com/features/actions
