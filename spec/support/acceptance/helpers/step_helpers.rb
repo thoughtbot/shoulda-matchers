@@ -93,9 +93,9 @@ module AcceptanceTests
 
     def rails_new_command
       if rails_version =~ '~> 6.0'
-        "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --skip-javascript --no-rc"
+        "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --skip-javascript --no-rc --skip-bootsnap"
       else
-        "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --no-rc"
+        "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --no-rc --skip-bootsnap"
       end
     end
 
