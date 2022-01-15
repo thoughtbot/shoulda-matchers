@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
 
   s.metadata = {
     'bug_tracker_uri' => 'https://github.com/thoughtbot/shoulda-matchers/issues',
-    'changelog_uri' => 'https://github.com/thoughtbot/shoulda-matchers/blob/master/CHANGELOG.md',
+    'changelog_uri' => 'https://github.com/thoughtbot/shoulda-matchers/blob/main/CHANGELOG.md',
     'documentation_uri' => 'https://matchers.shoulda.io/docs',
     'homepage_uri' => 'https://matchers.shoulda.io',
     'source_code_uri' => 'https://github.com/thoughtbot/shoulda-matchers',
