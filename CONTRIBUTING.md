@@ -28,7 +28,7 @@ contributions in a timely manner. Once we look at your pull request, we may give
 you feedback. For instance, we may suggest some changes to make to your code to
 fit within the project style or discuss alternate ways of addressing the issue
 in question. Assuming we're happy with everything, we'll then bring your changes
-into master. Now you're a contributor!
+into main. Now you're a contributor!
 
 ---
 
@@ -171,7 +171,7 @@ bundle exec rake
   guide] was a wonderful piece on this topic when it came out and we still find
   it to be helpful even today.
 * Squash "WIP" commits and remove merge commits by rebasing your branch against
-  `master`. We try to keep our commit history as clean as possible.
+  `main`. We try to keep our commit history as clean as possible.
 
 [Tim Pope's guide]: https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
 
