@@ -48,7 +48,7 @@ patrons happy. We do this by:
 
 ## Workflow
 
-We generally follow [GitHub Flow]. The `master` branch is the main line, and all
+We generally follow [GitHub Flow]. The `main` branch is the main line, and all
 branches are cut from and get merged back into this branch. Generally, the
 workflow is as follows:
 
@@ -154,7 +154,7 @@ That's it!
 
 ## Updating the changelog
 
-After every user-facing change makes it into master, we make a note of it in the
+After every user-facing change makes it into main, we make a note of it in the
 changelog, kept in `CHANGELOG.md`. The changelog is sorted in reverse order by
 release version, with the topmost version as the next release (tagged as
 "(Unreleased)").
