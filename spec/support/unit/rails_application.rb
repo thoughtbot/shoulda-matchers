@@ -90,24 +90,9 @@ module UnitTests
 
     def rails_new_command
       if rails_version > 5
-        [
-          'rails',
-          'new',
-          fs.project_directory.to_s,
-          "--database=#{database.adapter_name}",
-          '--skip-bundle',
-          '--no-rc',
-          '--skip-webpack-install',
-        ]
+        "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --skip-javascript --no-rc --skip-bootsnap"
       else
-        [
-          'rails',
-          'new',
-          fs.project_directory.to_s,
-          "--database=#{database.adapter_name}",
-          '--skip-bundle',
-          '--no-rc',
-        ]
+        "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --no-rc --skip-bootsnap"
       end
     end
 
