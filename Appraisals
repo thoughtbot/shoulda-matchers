@@ -42,7 +42,7 @@ appraise 'rails_5_2' do
 
   # Database adapters
   gem 'pg', '~> 0.18'
-  gem 'sqlite3', '~> 1.3.6'
+  gem 'sqlite3', '~> 1.4'
 end
 
 appraise 'rails_6_0' do
