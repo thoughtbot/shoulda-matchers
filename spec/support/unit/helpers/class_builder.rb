@@ -55,7 +55,7 @@ module UnitTests
         RUBY
 
         namespace.const_get(name_without_namespace).tap do |constant|
-          constant.unloadable
+          constant.unloadable if constant.respond_to?(:unloadable) # if Rails is in classic mode, mark it unloadable
           @_defined_modules = defined_modules | [constant]
 
           if block
