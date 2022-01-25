@@ -32,6 +32,7 @@ jobs:
           - 2.7.5
           - 2.6.9
         appraisal:
+          - rails_7_0
           - rails_6_1
           - rails_6_0
           - rails_5_2
