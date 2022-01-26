@@ -62,9 +62,6 @@ appraise 'rails_6_0' do
   gem 'selenium-webdriver'
   gem 'webdrivers'
 
-  # Other dependencies
-  gem 'actiontext', '~> 6.0.4'
-
   # Database adapters
   gem 'pg', '>= 0.18', '< 2.0'
   gem 'sqlite3', '~> 1.4'
