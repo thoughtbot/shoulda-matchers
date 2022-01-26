@@ -31,5 +31,6 @@ gem "jbuilder"
 gem "redis", "~> 4.0"
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem "bootsnap", require: false
+gem "bcrypt", "~> 3.1.7"
 gem "sqlite3", "~> 1.4"
 gem "pg", "~> 1.1"

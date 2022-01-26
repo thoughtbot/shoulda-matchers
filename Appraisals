@@ -109,6 +109,8 @@ appraise 'rails_7_0' do
   gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
   gem "bootsnap", require: false
 
+  gem "bcrypt", "~> 3.1.7"
+
   # Database adapters
   gem "sqlite3", "~> 1.4"
   gem "pg", "~> 1.1"
