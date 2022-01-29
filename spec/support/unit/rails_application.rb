@@ -26,7 +26,7 @@ module UnitTests
     def load
       load_environment
 
-      add_action_text_migration if bundle.includes?('actiontext')
+      add_action_text_migration if rails_version_gte_6_0
 
       run_migrations
     end
