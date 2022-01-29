@@ -144,7 +144,7 @@ module Shoulda
 
           possibly_ignore_interference_by_writer
 
-          if secure_password_being_validated?
+          if secure_password_being_validated? && Shoulda::Matchers::RailsShim.active_model_lt_7?
             ignore_interference_by_writer.default_to(when: :blank?)
 
             disallowed_values.all? do |value|
@@ -208,7 +208,7 @@ validation for you? Instead of using `validate_presence_of`, try
         end
 
         def possibly_ignore_interference_by_writer
-          if secure_password_being_validated?
+          if secure_password_being_validated? && RailsShim.active_model_lt_7?
             ignore_interference_by_writer.default_to(when: :blank?)
           end
         end
