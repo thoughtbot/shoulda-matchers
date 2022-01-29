@@ -26,7 +26,7 @@ module UnitTests
     def load
       load_environment
 
-      add_action_text_migration if rails_version_gte_6_0
+      add_action_text_migration if rails_version >= 6.0
 
       run_migrations
     end
