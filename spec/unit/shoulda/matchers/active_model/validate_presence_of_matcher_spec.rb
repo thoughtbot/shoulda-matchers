@@ -860,22 +860,38 @@ validation exception on failure, but this could not be proved.
   end
 
   context 'against a pre-set password in a model that has_secure_password' do
-    it 'raises a CouldNotSetPasswordError' do
-      user_class = define_model :user, password_digest: :string do
-        has_secure_password validations: false
-        validates_presence_of :password
+    if Shoulda::Matchers::RailsShim.active_model_lt_7?
+      it 'raises a CouldNotSetPasswordError' do
+        user_class = define_model :user, password_digest: :string do
+          has_secure_password :password, validations: false
+          validates_presence_of :password
+        end
+
+        user = user_class.new
+        user.password = 'something'
+
+        assertion = lambda do
+          expect(user).to validate_presence_of(:password)
+        end
+
+        expect(&assertion).to raise_error(
+          Shoulda::Matchers::ActiveModel::CouldNotSetPasswordError,
+        )
       end
+    else
+      it 'does not raises a CouldNotSetPasswordError' do
+        user_class = define_model :user, password_digest: :string do
+          has_secure_password :password, validations: false
+          validates_presence_of :password
+        end
 
-      user = user_class.new
-      user.password = 'something'
+        user = user_class.new
+        user.password = 'something'
 
-      assertion = lambda do
-        expect(user).to validate_presence_of(:password)
+        assertion = lambda do
+          expect(user).to validate_presence_of(:password)
+        end
       end
-
-      expect(&assertion).to raise_error(
-        Shoulda::Matchers::ActiveModel::CouldNotSetPasswordError,
-      )
     end
   end
 
