@@ -166,7 +166,8 @@ module Shoulda
 
           possibly_ignore_interference_by_writer
 
-          if secure_password_being_validated? && Shoulda::Matchers::RailsShim.active_model_lt_7?
+          if secure_password_being_validated? &&
+             Shoulda::Matchers::RailsShim.active_model_lt_7?
             ignore_interference_by_writer.default_to(when: :blank?)
 
             disallowed_values.all? do |value|
