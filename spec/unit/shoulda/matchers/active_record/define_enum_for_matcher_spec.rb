@@ -807,6 +807,78 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     end
   end
 
+  if rails_version =~ '~> 6.0'
+    context 'qualified with #without_scopes' do
+      context 'if scopes are set to false on the enum but without_scopes is not used' do
+        it 'has the right description' do
+          record = build_record_with_array_values(
+            attribute_name: :attr,
+            scopes: false,
+          )
+
+          matcher = lambda do
+            expect(record).
+              to define_enum_for(:attr).
+              with_values(['published', 'unpublished', 'draft'])
+          end
+
+          message = format_message(<<-MESSAGE)
+          Expected Example to define :attr as an enum backed by an
+          integer, mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›,
+          and ‹"draft"› to ‹2›. But the class scope methods are not present.
+          MESSAGE
+
+          expect(&matcher).to fail_with_message(message)
+        end
+      end
+
+      context 'if scopes are set to false on the enum' do
+        it 'matches' do
+          record = build_record_with_array_values(
+            attribute_name: :attr,
+            scopes: false,
+          )
+
+          matcher = lambda do
+            define_enum_for(:attr).
+              with_values(['published', 'unpublished', 'draft']).
+              without_scopes
+          end
+
+          expect(&matcher).
+            to match_against(record).
+            or_fail_with(<<-MESSAGE, wrap: true)
+            Expected Example not to define :attr as an enum backed by an
+            integer, mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›,
+            and ‹"draft"› to ‹2› with no scopes, but it did.
+          MESSAGE
+        end
+      end
+
+      context 'if scopes are not set to false on the enum' do
+        it 'has the right description' do
+          record = build_record_with_array_values(attribute_name: :attr)
+
+          matcher = lambda do
+            expect(record).
+              to define_enum_for(:attr).
+              with_values(['published', 'unpublished', 'draft']).
+              without_scopes
+          end
+
+          message = format_message(<<-MESSAGE)
+          Expected Example to define :attr as an enum backed by an
+          integer, mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›,
+          and ‹"draft"› to ‹2› with no scopes. :attr does map to these
+          values but class scope methods were present.
+          MESSAGE
+
+          expect(&matcher).to fail_with_message(message)
+        end
+      end
+    end
+  end
+
   def build_record_with_array_values(
     model_name: 'Example',
     attribute_name: :attr,
@@ -814,7 +886,8 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     values: ['published', 'unpublished', 'draft'],
     prefix: false,
     suffix: false,
-    attribute_alias: nil
+    attribute_alias: nil,
+    scopes: true
   )
     build_record_with_enum_attribute(
       model_name: model_name,
@@ -824,6 +897,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
       prefix: prefix,
       suffix: suffix,
       attribute_alias: attribute_alias,
+      scopes: scopes,
     )
   end
 
@@ -832,7 +906,8 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     attribute_name: :attr,
     values: { active: 0, archived: 1 },
     prefix: false,
-    suffix: false
+    suffix: false,
+    scopes: true
   )
     build_record_with_enum_attribute(
       model_name: model_name,
@@ -841,6 +916,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
       values: values,
       prefix: prefix,
       suffix: suffix,
+      scopes: scopes,
       attribute_alias: nil,
     )
   end
@@ -851,6 +927,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     column_type:,
     values:,
     attribute_alias:,
+    scopes: true,
     prefix: false,
     suffix: false
   )
@@ -862,7 +939,17 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
       alias_attribute attribute_alias, attribute_name
     end
 
-    model.enum(enum_name => values, _prefix: prefix, _suffix: suffix)
+    params = {
+      enum_name => values,
+      _prefix: prefix,
+      _suffix: suffix,
+    }
+
+    if rails_version =~ '~> 6.0'
+      params.merge!(_scopes: scopes)
+    end
+
+    model.enum(params)
 
     model.new
   end
