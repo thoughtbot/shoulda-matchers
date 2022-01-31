@@ -105,6 +105,7 @@ appraise 'rails_7_0' do
   gem 'stimulus-rails'
   gem 'jbuilder'
   gem 'redis', '~> 4.0'
+  gem 'bootsnap', require: false
   gem "capybara"
   gem "selenium-webdriver"
   gem "webdrivers"
