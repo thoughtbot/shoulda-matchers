@@ -105,8 +105,9 @@ appraise 'rails_7_0' do
   gem 'stimulus-rails'
   gem 'jbuilder'
   gem 'redis', '~> 4.0'
-  gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
-  gem 'bootsnap', require: false
+  gem "capybara"
+  gem "selenium-webdriver"
+  gem "webdrivers"
 
   # other dependencies
   gem 'bcrypt', '~> 3.1.7'
