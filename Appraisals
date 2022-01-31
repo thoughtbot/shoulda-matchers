@@ -49,7 +49,7 @@ appraise 'rails_6_0' do
   instance_eval(&shared_dependencies)
   instance_eval(&controller_test_dependency)
 
-  gem 'rails', '6.0.4'
+  gem 'rails', '6.0.4.4'
   gem 'puma', '~> 4.1'
   gem 'bootsnap', '>= 1.4.2', require: false
   gem 'sass-rails', '>= 6'
@@ -62,9 +62,6 @@ appraise 'rails_6_0' do
   gem 'selenium-webdriver'
   gem 'webdrivers'
 
-  # Other dependencies
-  gem 'actiontext', '~> 6.0.4'
-
   # Database adapters
   gem 'pg', '>= 0.18', '< 2.0'
   gem 'sqlite3', '~> 1.4'
@@ -74,7 +71,7 @@ appraise 'rails_6_1' do
   instance_eval(&shared_dependencies)
   instance_eval(&controller_test_dependency)
 
-  gem 'rails', '6.1.4'
+  gem 'rails', '6.1.4.4'
   gem 'puma', '~> 5.0'
   gem 'bootsnap', '>= 1.4.2', require: false
   gem 'sass-rails', '>= 6'
@@ -87,9 +84,6 @@ appraise 'rails_6_1' do
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'selenium-webdriver'
   gem 'webdrivers'
-
-  # Other dependencies
-  gem 'actiontext', '~> 6.1.4'
 
   # Database adapters
   gem 'pg', '>= 0.18', '< 2.0'
