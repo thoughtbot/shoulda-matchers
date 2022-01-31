@@ -870,9 +870,7 @@ validation exception on failure, but this could not be proved.
         user = user_class.new
         user.password = 'something'
 
-        assertion = lambda do
-          expect(user).to validate_presence_of(:password)
-        end
+        expect(user).to validate_presence_of(:password)
       end
     else
       it 'raises a CouldNotSetPasswordError' do
