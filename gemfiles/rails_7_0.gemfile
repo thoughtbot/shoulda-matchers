@@ -29,8 +29,9 @@ gem "turbo-rails"
 gem "stimulus-rails"
 gem "jbuilder"
 gem "redis", "~> 4.0"
-gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-gem "bootsnap", require: false
+gem "capybara"
+gem "selenium-webdriver"
+gem "webdrivers"
 gem "bcrypt", "~> 3.1.7"
 gem "rails-controller-testing"
 gem "sqlite3", "~> 1.4"
