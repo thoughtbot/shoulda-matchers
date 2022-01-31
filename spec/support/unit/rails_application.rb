@@ -77,7 +77,6 @@ module UnitTests
     def generate
       rails_new
       fix_available_locales_warning
-      remove_bootsnap
       write_database_configuration
       write_activerecord_model_with_default_connection
       write_activerecord_model_with_different_connection
@@ -90,25 +89,10 @@ module UnitTests
     end
 
     def rails_new_command
-      if rails_version > 5
-        [
-          'rails',
-          'new',
-          fs.project_directory.to_s,
-          "--database=#{database.adapter_name}",
-          '--skip-bundle',
-          '--no-rc',
-          '--skip-webpack-install',
-        ]
+      if rails_version >= 6.0
+        "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --skip-javascript --no-rc --skip-bootsnap"
       else
-        [
-          'rails',
-          'new',
-          fs.project_directory.to_s,
-          "--database=#{database.adapter_name}",
-          '--skip-bundle',
-          '--no-rc',
-        ]
+        "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --no-rc --skip-bootsnap"
       end
     end
 
@@ -122,16 +106,6 @@ if I18n.respond_to?(:enforce_available_locales=)
 end
         EOT
       end
-    end
-
-    def remove_bootsnap
-      # Rails 5.2 introduced bootsnap, which is helpful when you're developing
-      # or deploying an app, but we don't really need it (and it messes with
-      # Zeus anyhow)
-      fs.comment_lines_matching(
-        'config/boot.rb',
-        %r{\Arequire 'bootsnap/setup'},
-      )
     end
 
     def write_database_configuration
