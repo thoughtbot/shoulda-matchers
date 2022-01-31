@@ -35,5 +35,6 @@ gem "selenium-webdriver"
 gem "webdrivers"
 gem "bcrypt", "~> 3.1.7"
 gem "rails-controller-testing"
+gem "debug", platforms: [:mri, :mingw, :x64_mingw]
 gem "sqlite3", "~> 1.4"
 gem "pg", "~> 1.1"
