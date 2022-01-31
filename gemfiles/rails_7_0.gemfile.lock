@@ -74,6 +74,8 @@ GEM
       thor (>= 0.14.0)
     ast (2.4.2)
     bcrypt (3.1.16)
+    bootsnap (1.10.2)
+      msgpack (~> 1.2)
     builder (3.2.4)
     byebug (11.1.3)
     capybara (3.36.0)
@@ -115,6 +117,7 @@ GEM
     mini_mime (1.1.2)
     mini_portile2 (2.7.1)
     minitest (5.15.0)
+    msgpack (1.4.4)
     net-imap (0.2.3)
       digest
       net-protocol
@@ -278,6 +281,7 @@ PLATFORMS
 DEPENDENCIES
   appraisal (= 2.2.0)
   bcrypt (~> 3.1.7)
+  bootsnap
   bundler (~> 2.0)
   capybara
   fssm
