@@ -106,9 +106,9 @@ appraise 'rails_7_0' do
   gem 'jbuilder'
   gem 'redis', '~> 4.0'
   gem 'bootsnap', require: false
-  gem "capybara"
-  gem "selenium-webdriver"
-  gem "webdrivers"
+  gem 'capybara'
+  gem 'selenium-webdriver'
+  gem 'webdrivers'
 
   # other dependencies
   gem 'bcrypt', '~> 3.1.7'
