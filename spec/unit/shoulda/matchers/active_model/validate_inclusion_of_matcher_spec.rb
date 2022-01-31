@@ -145,7 +145,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     end
 
     context 'against a datetime attribute' do
-      now = DateTime.new(2022, 01, 01)
+      now = DateTime.new(2022, 1, 1)
 
       define_method(:now) { now }
 
@@ -448,7 +448,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     end
 
     it 'matches given the same array of valid values' do
-      new_now = DateTime.now
       builder = build_object_allowing(possible_values)
       expect_to_match_on_values(builder, possible_values)
     end
@@ -786,7 +785,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     include_context 'for a generic attribute'
 
     context 'against a timestamp column' do
-      now = DateTime.new(2022, 01, 01)
+      now = DateTime.new(2022, 1, 1)
       define_method(:now) { now }
 
       it_behaves_like 'it supports in_array',
