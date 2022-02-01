@@ -228,7 +228,18 @@ ensure-ruby-installed() {
       rbenv install --skip-existing "$REQUIRED_RUBY_VERSION"
     fi
   elif has-executable chruby-exec; then
-    PREFIX='' source /usr/local/share/chruby/chruby.sh
+    if [ -f /usr/local/share/chruby/chruby.sh ]; then
+      CHRUBY_SH=/usr/local/share/chruby/chruby.sh
+    elif [ -f /opt/homebrew/share/chruby/chruby.sh ]; then
+      CHRUBY_SH=/opt/homebrew/share/chruby/chruby.sh
+    fi
+
+    if [ -z "$CHRUBY_SH" ]; then
+      error "chruby-exec detected, but could not find chruby.sh for loading"
+      exit 1
+    fi
+
+    PREFIX='' source $CHRUBY_SH
     if ! (chruby '' | grep $REQUIRED_RUBY_VERSION'\>' &>/dev/null); then
       if has-executable install-ruby; then
         banner "Installing Ruby $REQUIRED_RUBY_VERSION with install-ruby"
