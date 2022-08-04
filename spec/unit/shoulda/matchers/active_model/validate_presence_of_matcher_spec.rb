@@ -1005,6 +1005,82 @@ this could not be proved.
     end
   end
 
+  context 'qualified with allow_blank' do
+    context 'when validating a model with a presence validator' do
+      context 'and it is specified with allow_blank: true' do
+        it 'matches in the positive' do
+          record = validating_presence(allow_blank: true)
+          expect(record).to matcher.allow_blank
+        end
+
+        it 'does not match in the negative' do
+          record = validating_presence(allow_blank: true)
+
+          assertion = -> { expect(record).not_to matcher.allow_blank }
+
+          expect(&assertion).to fail_with_message(<<-MESSAGE)
+Expected Example not to validate that :attr cannot be empty/falsy, but
+this could not be proved.
+  After setting :attr to ‹""›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+          MESSAGE
+        end
+      end
+
+      context 'and it is not specified with allow_blank: true' do
+        it 'does not match in the positive' do
+          record = validating_presence
+
+          assertion = lambda do
+            expect(record).to matcher.allow_blank
+          end
+
+          message = <<-MESSAGE
+Expected Example to validate that :attr cannot be empty/falsy, but this
+could not be proved.
+  After setting :attr to ‹""›, the matcher expected the Example to be
+  valid, but it was invalid instead, producing these validation errors:
+
+  * attr: ["can't be blank"]
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      it 'matches in the negative' do
+        record = validating_presence
+
+        expect(record).not_to matcher.allow_blank
+      end
+    end
+
+    context 'when validating a model without a presence validator' do
+      it 'matches in the positive' do
+        record = without_validating_presence
+
+        expect(record).to matcher.allow_blank
+      end
+
+      it 'does not match in the negative' do
+        record = without_validating_presence
+
+        assertion = lambda do
+          expect(record).not_to matcher.allow_blank
+        end
+
+        message = <<-MESSAGE
+Expected Example not to validate that :attr cannot be empty/falsy, but
+this could not be proved.
+  After setting :attr to ‹""›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+    end
+  end
+
   def matcher
     validate_presence_of(:attr)
   end
