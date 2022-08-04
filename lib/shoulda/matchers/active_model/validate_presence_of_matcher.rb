@@ -78,6 +78,27 @@ module Shoulda
       #     should validate_presence_of(:nickname).allow_nil
       #   end
       #
+      # #### allow_blank
+      #
+      # Use `allow_blank` to assert that the attribute allows blank.
+      #
+      #   class Robot
+      #     include ActiveModel::Model
+      #     attr_accessor :nickname
+      #
+      #     validates_presence_of :nickname, allow_blank: true
+      #   end
+      #
+      #   # RSpec
+      #   RSpec.describe Robot, type: :model do
+      #     it { should validate_presence_of(:nickname).allow_blank }
+      #   end
+      #
+      #   # Minitest (Shoulda)
+      #   class RobotTest < ActiveSupport::TestCase
+      #     should validate_presence_of(:nickname).allow_blank
+      #   end
+      #
       # ##### on
       #
       # Use `on` if your validation applies only under a certain context.
@@ -133,6 +154,7 @@ module Shoulda
       # @private
       class ValidatePresenceOfMatcher < ValidationMatcher
         include Qualifiers::AllowNil
+        include Qualifiers::AllowBlank
 
         def initialize(attribute)
           super
@@ -152,6 +174,7 @@ module Shoulda
             end
           else
             (!expects_to_allow_nil? || allows_value_of(nil)) &&
+              (!expects_to_allow_blank? || allows_value_of('')) &&
               disallowed_values.all? do |value|
                 disallows_original_or_typecast_value?(value)
               end
@@ -171,6 +194,7 @@ module Shoulda
             end
           else
             (expects_to_allow_nil? && disallows_value_of(nil)) ||
+              (expects_to_allow_blank? && disallows_value_of('')) ||
               disallowed_values.any? do |value|
                 allows_original_or_typecast_value?(value)
               end
@@ -241,11 +265,11 @@ validation for you? Instead of using `validate_presence_of`, try
           else
             values = []
 
-            if attribute_accepts_string_values?
+            if attribute_accepts_string_values? && !expects_to_allow_blank?
               values << ''
             end
 
-            if !expects_to_allow_nil?
+            if !expects_to_allow_nil? && !expects_to_allow_blank?
               values << nil
             end
 
