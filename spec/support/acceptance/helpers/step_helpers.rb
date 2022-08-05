@@ -82,6 +82,8 @@ module AcceptanceTests
         bundle.remove_gem 'web-console'
       end
 
+      add_gem 'net-smtp', require: false if rails_6_x? && ruby_gt_3_1?
+
       fs.open('config/database.yml', 'w') do |file|
         YAML.dump(database.config.load_file, file)
       end
