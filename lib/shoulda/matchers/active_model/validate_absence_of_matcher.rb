@@ -2,13 +2,13 @@ module Shoulda
   module Matchers
     module ActiveModel
       # The `validate_absence_of` matcher tests the usage of the
-      # `validates_absence_of` validation.
+      # `validate_absence_of` validation.
       #
       #     class PowerHungryCountry
       #       include ActiveModel::Model
       #       attr_accessor :nuclear_weapons
       #
-      #       validates_absence_of :nuclear_weapons
+      #       validate_absence_of :nuclear_weapons
       #     end
       #
       #     # RSpec
@@ -31,7 +31,7 @@ module Shoulda
       #       include ActiveModel::Model
       #       attr_accessor :nuclear_weapons
       #
-      #       validates_absence_of :nuclear_weapons, on: :create
+      #       validate_absence_of :nuclear_weapons, on: :create
       #     end
       #
       #     # RSpec
@@ -52,7 +52,7 @@ module Shoulda
       #       include ActiveModel::Model
       #       attr_accessor :nuclear_weapons
       #
-      #       validates_absence_of :nuclear_weapons,
+      #       validate_absence_of :nuclear_weapons,
       #         message: "there shall be peace on Earth"
       #     end
       #
