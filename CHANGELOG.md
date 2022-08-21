@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased
+
+
+### Features
+
+* Add without_scopes method to enum matcher. ([#1453])
+
+* Add support for Ruby 3.1. ([#1474])
+
+* Add allow_blank method to validate_presence_of matcher. ([#1499])
+
+* Add support for Rails 7.0. No new Rails 7.0 features are supported, but only
+  existing features that broke with the upgrade. ([#1506])
+
+[#1453]: https://github.com/thoughtbot/shoulda-matchers/pull/1453
+[#1474]: https://github.com/thoughtbot/shoulda-matchers/pull/1474
+[#1499]: https://github.com/thoughtbot/shoulda-matchers/pull/1499
+[#1506]: https://github.com/thoughtbot/shoulda-matchers/pull/1506
+
 ## 5.1.0 - 2021-12-22
 
 ### Bug fixes
