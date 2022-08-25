@@ -116,7 +116,7 @@ module AcceptanceTests
 
     def add_rspec_rails_to_project!
       add_gem 'rspec-rails', rspec_rails_version
-      run_command_within_bundle!('bundle install --binstubs') if rails_gt_6_0?
+      run_command_within_bundle!('bundle install --local --binstubs') if rails_gt_6_0?
       run_command_within_bundle!('rails g rspec:install')
       remove_from_file '.rspec', '--warnings'
     end
