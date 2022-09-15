@@ -19,6 +19,20 @@ module Shoulda
           Gem::Version.new('0')
         end
 
+        def active_model_version
+          Gem::Version.new(::ActiveModel::VERSION::STRING)
+        rescue NameError
+          Gem::Version.new('0')
+        end
+
+        def active_model_gte_7?
+          Gem::Requirement.new('>= 7').satisfied_by?(active_model_version)
+        end
+
+        def active_model_lt_7?
+          Gem::Requirement.new('< 7').satisfied_by?(active_model_version)
+        end
+
         def generate_validation_message(
           record,
           attribute,

@@ -17,6 +17,8 @@ module Tests
     end
 
     def load_file
+      YAML::load_file(File.join(__dir__, "database_adapters/config/#{adapter}.yml"), aliases: true)
+    rescue ArgumentError
       YAML::load_file(File.join(__dir__, "database_adapters/config/#{adapter}.yml"))
     end
   end

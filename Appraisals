@@ -93,3 +93,30 @@ appraise 'rails_6_1' do
   gem 'pg', '>= 0.18', '< 2.0'
   gem 'sqlite3', '~> 1.4'
 end
+
+appraise 'rails_7_0' do
+  instance_eval(&shared_spring_dependencies)
+  instance_eval(&shared_test_dependencies)
+
+  gem 'rails', '~> 7.0.1'
+  gem 'sprockets-rails'
+  gem 'puma', '~> 5.0'
+  gem 'importmap-rails'
+  gem 'turbo-rails'
+  gem 'stimulus-rails'
+  gem 'jbuilder'
+  gem 'redis', '~> 4.0'
+  gem 'bootsnap', require: false
+  gem 'capybara'
+  gem 'selenium-webdriver'
+  gem 'webdrivers'
+
+  # other dependencies
+  gem 'bcrypt', '~> 3.1.7'
+  gem 'rails-controller-testing'
+  gem 'debug', platforms: %i[mri mingw x64_mingw]
+
+  # Database adapters
+  gem 'sqlite3', '~> 1.4'
+  gem 'pg', '~> 1.1'
+end

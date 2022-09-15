@@ -945,11 +945,15 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
       _suffix: suffix,
     }
 
-    if rails_version =~ '~> 6.0'
-      params.merge!(_scopes: scopes)
-    end
+    if rails_version >= 7.0
+      model.enum(enum_name, values, prefix: prefix, suffix: suffix)
+    else
+      if rails_version =~ '~> 6.0'
+        params.merge!(_scopes: scopes)
+      end
 
-    model.enum(params)
+      model.enum(params)
+    end
 
     model.new
   end

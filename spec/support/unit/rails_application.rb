@@ -109,7 +109,9 @@ end
     end
 
     def write_database_configuration
-      YAML.dump(database.config.load_file, fs.open('config/database.yml', 'w'))
+      fs.open('config/database.yml', 'w') do |file|
+        YAML.dump(database.config.load_file, file)
+      end
     end
 
     def write_activerecord_model_with_different_connection
@@ -163,7 +165,11 @@ end
 
     def run_migrations
       fs.within_project do
-        run_command! 'bundle exec rake db:drop:all db:create:all db:migrate'
+        run_command! 'bundle exec rake db:drop:all db:create:all'
+      end
+
+      fs.within_project do
+        run_command! 'bundle exec rake db:migrate'
       end
     end
 
