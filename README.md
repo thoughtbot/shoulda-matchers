@@ -359,7 +359,7 @@ about any of them, make sure to [consult the documentation][rubydocs]!
 * **[have_secure_password](lib/shoulda/matchers/active_model/have_secure_password_matcher.rb)**
   tests usage of `has_secure_password`.
 * **[validate_absence_of](lib/shoulda/matchers/active_model/validate_absence_of_matcher.rb)**
-  tests usage of `validates_absence_of`.
+  tests usage of `validate_absence_of`.
 * **[validate_acceptance_of](lib/shoulda/matchers/active_model/validate_acceptance_of_matcher.rb)**
   tests usage of `validates_acceptance_of`.
 * **[validate_confirmation_of](lib/shoulda/matchers/active_model/validate_confirmation_of_matcher.rb)**
