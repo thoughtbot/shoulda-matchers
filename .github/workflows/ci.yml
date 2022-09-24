@@ -28,9 +28,9 @@ jobs:
       matrix:
         ruby:
           - 3.1.2
-          - 3.0.3
-          - 2.7.5
-          - 2.6.9
+          - 3.0.4
+          - 2.7.6
+          - 2.6.10
         appraisal:
           - rails_7_0
           - rails_6_1
@@ -41,10 +41,10 @@ jobs:
           - postgresql
         exclude:
           - { ruby: 3.1.2, appraisal: rails_5_2 }
-          - { ruby: 3.0.3, appraisal: rails_5_2 }
-          - { ruby: 3.0.3, appraisal: rails_7_0 }
-          - { ruby: 2.7.5, appraisal: rails_7_0 }
-          - { ruby: 2.6.9, appraisal: rails_7_0 }
+          - { ruby: 3.0.4, appraisal: rails_5_2 }
+          - { ruby: 3.0.4, appraisal: rails_7_0 }
+          - { ruby: 2.7.6, appraisal: rails_7_0 }
+          - { ruby: 2.6.10, appraisal: rails_7_0 }
     env:
       DATABASE_ADAPTER: ${{ matrix.adapter }}
       BUNDLE_GEMFILE: gemfiles/${{ matrix.appraisal }}.gemfile
