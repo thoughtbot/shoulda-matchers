@@ -30,7 +30,7 @@ Layout/LineLength:
     - '^[ ]*#.+$'
     - '^[ ]*''.+?'' => ''.+?'',?$'
     - '^[ ]*".+?" => ".+?",?$'
-  Max: 80
+  Max: 100
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 Layout/ParameterAlignment:

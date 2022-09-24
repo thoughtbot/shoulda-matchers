@@ -55,11 +55,9 @@ module Shoulda
           private
 
           def disallow_value_matcher
-            @_disallow_value_matcher ||= begin
-              DisallowValueMatcher.new(disallowed_value).tap do |matcher|
-                matcher.for(attribute)
-                wrap_disallow_value_matcher(matcher)
-              end
+            @_disallow_value_matcher ||= DisallowValueMatcher.new(disallowed_value).tap do |matcher|
+              matcher.for(attribute)
+              wrap_disallow_value_matcher(matcher)
             end
           end
         end
