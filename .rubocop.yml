@@ -30,7 +30,7 @@ Layout/LineLength:
     - '^[ ]*#.+$'
     - '^[ ]*''.+?'' => ''.+?'',?$'
     - '^[ ]*".+?" => ".+?",?$'
-  Max: 80
+  Max: 100
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 Layout/ParameterAlignment:
@@ -103,6 +103,8 @@ Naming/HeredocDelimiterNaming:
 Naming/MemoizedInstanceVariableName:
   EnforcedStyleForLeadingUnderscores: required
 Naming/PredicateName:
+  Enabled: false
+Naming/VariableNumber:
   Enabled: false
 Naming/RescuedExceptionsVariableName:
   Enabled: false

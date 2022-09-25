@@ -104,7 +104,7 @@ module UnitTests
         end
 
         def inspect
-          middle = '%s:0x%014x%s' % [ # rubocop:disable Style/FormatStringToken
+          middle = '%s:0x%014x%s' % [
             self.class,
             object_id * 2,
             " #{inspected_attributes.join(' ')}",
