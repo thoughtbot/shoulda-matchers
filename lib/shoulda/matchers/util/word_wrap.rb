@@ -92,7 +92,7 @@ module Shoulda
           if line.list_item?
             combined_lines << line
           else
-            combined_lines.last << (" #{line}").squeeze(' ')
+            combined_lines.last << " #{line}".squeeze(' ')
           end
 
           combined_lines
