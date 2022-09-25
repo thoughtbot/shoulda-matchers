@@ -845,8 +845,7 @@ Expected Parent to have a has_many association called children through conceptio
     it 'rejects an association that has the wrong :through option' do
       define_model :child
 
-      define_model :conception, child_id: :integer,
-                                parent_id: :integer do
+      define_model :conception, child_id: :integer, parent_id: :integer do
         belongs_to :child
       end
 
@@ -1183,7 +1182,7 @@ Expected Parent to have a has_many association called children through conceptio
 
     it 'accepts a valid association with an :as option' do
       define_model :detail, detailable_id: :integer,
-                            detailable_type: :string
+        detailable_type: :string
       define_model :person do
         has_one :detail, as: :detailable
       end
@@ -1226,7 +1225,7 @@ Expected Parent to have a has_many association called children through conceptio
 
     it 'rejects an association with a bad :as option' do
       define_model :detail, detailable_id: :integer,
-                            detailable_type: :string
+        detailable_type: :string
       define_model :person do
         has_one :detail, as: :describable
       end
@@ -1524,7 +1523,7 @@ Expected Parent to have a has_many association called children through conceptio
       define_model :relative
       define_model :person
       define_model :people_relative, id: false, person_id: :integer,
-                                     relative_id: :integer
+        relative_id: :integer
 
       expect(Person.new).not_to have_and_belong_to_many(:relatives)
     end
@@ -1980,7 +1979,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
         define_association_with_conditions(model, :has_and_belongs_to_many, :relatives, adopted: true)
       end
       define_model :people_relative, id: false, person_id: :integer,
-                                     relative_id: :integer
+        relative_id: :integer
 
       expect(Person.new).to have_and_belong_to_many(:relatives).conditions(adopted: true)
     end
@@ -1991,7 +1990,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
         has_and_belongs_to_many :relatives
       end
       define_model :people_relative, id: false, person_id: :integer,
-                                     relative_id: :integer
+        relative_id: :integer
 
       expect(Person.new).not_to have_and_belong_to_many(:relatives).conditions(adopted: true)
     end
@@ -2008,7 +2007,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
       end
 
       define_model :people_person_relative, person_id: :integer,
-                                            person_relative_id: :integer
+        person_relative_id: :integer
 
       expect(Person.new).to have_and_belong_to_many(:relatives).class_name('PersonRelative')
     end
@@ -2081,7 +2080,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
         has_and_belongs_to_many :relatives, autosave: true
       end
       define_model :people_relative, person_id: :integer,
-                                     relative_id: :integer
+        relative_id: :integer
       expect(Person.new).to have_and_belong_to_many(:relatives).autosave(true)
     end
 
@@ -2091,7 +2090,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
         has_and_belongs_to_many :relatives
       end
       define_model :people_relative, person_id: :integer,
-                                     relative_id: :integer
+        relative_id: :integer
 
       message = 'Expected Person to have a has_and_belongs_to_many association called relatives (relatives should have autosave set to true)'
       expect {
@@ -2124,7 +2123,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
     def having_and_belonging_to_many_relatives(_options = {})
       define_model :relative
       define_model :people_relative, id: false, person_id: :integer,
-                                     relative_id: :integer
+        relative_id: :integer
       define_model :person do
         has_and_belongs_to_many :relatives
       end.new
