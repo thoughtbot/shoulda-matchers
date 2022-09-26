@@ -27,7 +27,7 @@ appraise 'rails_5_2' do
   instance_eval(&shared_dependencies)
   instance_eval(&controller_test_dependency)
 
-  gem 'rails', '5.2.6'
+  gem 'rails', '5.2.8.1'
   gem 'puma', '~> 3.11'
   gem 'bootsnap', '>= 1.1.0', require: false
   gem 'sass-rails', '~> 5.0'
