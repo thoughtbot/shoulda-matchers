@@ -49,7 +49,7 @@ appraise 'rails_6_0' do
   instance_eval(&shared_dependencies)
   instance_eval(&controller_test_dependency)
 
-  gem 'rails', '6.0.4.4'
+  gem 'rails', '6.0.6'
   gem 'puma', '~> 4.1'
   gem 'bootsnap', '>= 1.4.2', require: false
   gem 'sass-rails', '>= 6'
