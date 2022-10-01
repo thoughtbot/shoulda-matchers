@@ -276,6 +276,33 @@ module Shoulda
       #       should validate_numericality_of(:birth_day).odd
       #     end
       #
+      # ##### is_in
+      #
+      # Use `is_in` to test usage of the `:in` option.
+      # This asserts that the attribute can take a number which is contained
+      # in the given range.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attr_accessor :legal_age
+      #
+      #       validates_numericality_of :birth_month, in: 1..12
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Person, type: :model do
+      #       it do
+      #         should validate_numericality_of(:birth_month).
+      #           is_in(1..12)
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_numericality_of(:birth_month).
+      #         is_in(1..12)
+      #     end
+      #
       # ##### with_message
       #
       # Use `with_message` if you are using a custom validation message.
@@ -426,6 +453,13 @@ module Shoulda
           self
         end
 
+        def is_in(range)
+          prepare_submatcher(
+            NumericalityMatchers::RangeMatcher.new(self, @attribute, range),
+          )
+          self
+        end
+
         def with_message(message)
           @expects_custom_validation_message = true
           @expected_message = message
@@ -456,6 +490,10 @@ module Shoulda
 
           description << "validate that :#{@attribute} looks like "
           description << Shoulda::Matchers::Util.a_or_an(full_allowed_type)
+
+          if range_description.present?
+            description << " #{range_description}"
+          end
 
           if comparison_descriptions.present?
             description << " #{comparison_descriptions}"
@@ -671,6 +709,14 @@ module Shoulda
             end
             arr
           end
+        end
+
+        def range_description
+          range_submatcher = @submatchers.detect do |submatcher|
+            submatcher.respond_to? :range_description
+          end
+
+          range_submatcher&.range_description
         end
 
         def model

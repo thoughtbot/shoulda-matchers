@@ -10,5 +10,9 @@ module UnitTests
     def rails_version
       Tests::Version.new(Rails::VERSION::STRING)
     end
+
+    def rails_oldest_version_supported
+      5.2
+    end
   end
 end
