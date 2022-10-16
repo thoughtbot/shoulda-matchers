@@ -108,7 +108,7 @@ module Shoulda
               obj
             end
           elsif array_column?
-            ['an arbitary value']
+            ['an arbitrary value']
           elsif enum_column?
             enum_values.first
           else
