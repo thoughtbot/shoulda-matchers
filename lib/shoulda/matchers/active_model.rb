@@ -26,6 +26,8 @@ require 'shoulda/matchers/active_model/numericality_matchers/comparison_matcher'
 require 'shoulda/matchers/active_model/numericality_matchers/odd_number_matcher'
 require 'shoulda/matchers/active_model/numericality_matchers/even_number_matcher'
 require 'shoulda/matchers/active_model/numericality_matchers/only_integer_matcher'
+require 'shoulda/matchers/active_model/numericality_matchers/range_matcher'
+require 'shoulda/matchers/active_model/numericality_matchers/submatchers'
 require 'shoulda/matchers/active_model/errors'
 require 'shoulda/matchers/active_model/have_secure_password_matcher'
 

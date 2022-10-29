@@ -1,3 +1,5 @@
+require 'active_support/core_ext/module/delegation'
+
 module Shoulda
   module Matchers
     module ActiveModel
@@ -30,6 +32,8 @@ module Shoulda
               assertions: [true, false, true],
             },
           }.freeze
+
+          delegate :failure_message, :failure_message_when_negated, to: :submatchers
 
           def initialize(numericality_matcher, value, operator)
             super(nil)
@@ -72,49 +76,24 @@ module Shoulda
 
           def matches?(subject)
             @subject = subject
-            all_bounds_correct?
-          end
-
-          def failure_message
-            last_failing_submatcher.failure_message
-          end
-
-          def failure_message_when_negated
-            last_failing_submatcher.failure_message_when_negated
+            submatchers.matches?(subject)
           end
 
           def comparison_description
             "#{comparison_expectation} #{@value}"
           end
 
+          def submatchers
+            @_submatchers ||= NumericalityMatchers::Submatchers.new(build_submatchers)
+          end
+
           private
 
-          def all_bounds_correct?
-            failing_submatchers.empty?
-          end
-
-          def failing_submatchers
-            submatchers_and_results.
-              select { |x| !x[:matched] }.
-              map { |x| x[:matcher] }
-          end
-
-          def last_failing_submatcher
-            failing_submatchers.last
-          end
-
-          def submatchers
-            @_submatchers ||=
-              comparison_combos.map do |diff, submatcher_method_name|
-                matcher = __send__(submatcher_method_name, diff, nil)
-                matcher.with_message(@message, values: { count: @value })
-                matcher
-              end
-          end
-
-          def submatchers_and_results
-            @_submatchers_and_results ||= submatchers.map do |matcher|
-              { matcher: matcher, matched: matcher.matches?(@subject) }
+          def build_submatchers
+            comparison_combos.map do |diff, submatcher_method_name|
+              matcher = __send__(submatcher_method_name, diff, nil)
+              matcher.with_message(@message, values: { count: @value })
+              matcher
             end
           end
 
