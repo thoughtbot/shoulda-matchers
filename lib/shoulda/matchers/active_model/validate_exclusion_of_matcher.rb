@@ -33,9 +33,9 @@ module Shoulda
       #
       #     class Game
       #       include ActiveModel::Model
-      #       attr_accessor :supported_os
+      #       attr_accessor :floors_with_enemies
       #
-      #       validates_exclusion_of :supported_os, in: 5..8
+      #       validates_exclusion_of :floors_with_enemies, in: 5..8
       #     end
       #
       #     # RSpec
