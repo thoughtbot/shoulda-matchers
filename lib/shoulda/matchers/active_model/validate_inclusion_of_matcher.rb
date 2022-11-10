@@ -43,12 +43,12 @@ module Shoulda
       #
       #     # RSpec
       #     RSpec.describe Issue, type: :model do
-      #       it { should validate_inclusion_of(:state).in_range(1..5) }
+      #       it { should validate_inclusion_of(:priority).in_range(1..5) }
       #     end
       #
       #     # Minitest (Shoulda)
       #     class IssueTest < ActiveSupport::TestCase
-      #       should validate_inclusion_of(:state).in_range(1..5)
+      #       should validate_inclusion_of(:priority).in_range(1..5)
       #     end
       #
       # #### Caveats
