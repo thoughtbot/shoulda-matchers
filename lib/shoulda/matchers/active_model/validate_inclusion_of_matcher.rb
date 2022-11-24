@@ -3,6 +3,8 @@ require 'date'
 
 module Shoulda
   module Matchers
+    class ExampleClass; end
+
     module ActiveModel
       # The `validate_inclusion_of` matcher tests usage of the
       # `validates_inclusion_of` validation, asserting that an attribute can
@@ -269,7 +271,7 @@ module Shoulda
       # @private
       class ValidateInclusionOfMatcher < ValidationMatcher
         BLANK_VALUES = ['', ' ', "\n", "\r", "\t", "\f"].freeze
-        ARBITRARY_OUTSIDE_STRING = 'shoulda-matchers test string'.freeze
+        ARBITRARY_OUTSIDE_STRING = Shoulda::Matchers::ExampleClass.name
         ARBITRARY_OUTSIDE_INTEGER = 123456789
         ARBITRARY_OUTSIDE_DECIMAL = BigDecimal('0.123456789')
         ARBITRARY_OUTSIDE_DATE = Date.jd(9999999)
