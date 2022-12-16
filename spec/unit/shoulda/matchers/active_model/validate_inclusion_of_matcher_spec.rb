@@ -886,6 +886,41 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     def validation_matcher_scenario_args
       super.deep_merge(model_creator: :active_record)
     end
+
+    context 'against a polymorphic association' do
+      it 'matches when the subject configures validate_inclusion_of' do
+        define_model(:issue, severity_id: :integer, severity_type: :string) do
+          belongs_to :severity, polymorphic: true
+          validates_inclusion_of :severity_type, in: %w(Low Medium High)
+        end
+        define_model(:high)
+        define_model(:medium)
+        define_model(:low)
+
+        expect { validate_inclusion_of(:severity_type).in_array(%w(Low Medium High)) }.to match_against(Issue.new)
+      end
+
+      it 'does not match when subject does not set validate_inclusion_of' do
+        define_model(:issue, severity_id: :integer, severity_type: :string) do
+          belongs_to :severity, polymorphic: true
+        end
+        define_model(:high)
+        define_model(:medium)
+        define_model(:low)
+
+        expected_message = <<-MESSAGE.strip
+Expected Issue to validate that :severity_type is either ‹"Low"›,
+‹"Medium"›, or ‹"High"›, but this could not be proved.
+  After setting :severity_type to ‹"Shoulda::Matchers::ExampleClass"›,
+  the matcher expected the Issue to be invalid, but it was valid
+  instead.
+        MESSAGE
+
+        expect { validate_inclusion_of(:severity_type).in_array(%w(Low Medium High)) }.
+          not_to match_against(Issue.new).
+          and_fail_with(expected_message)
+      end
+    end
   end
 
   context 'for a plain Ruby attribute' do
