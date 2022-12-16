@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased
+
+### Features
+
+* Add `in: range` matcher to validate_numericality_of. ([#1512])
+
+* Support :uuid column type for validate_absence_of matcher. ([#1518])
+
+[#1512]: https://github.com/thoughtbot/shoulda-matchers/pull/1512
+[#1518]: https://github.com/thoughtbot/shoulda-matchers/pull/1518
+
+### Bug fixes
+
+* Fix confusing error message from validate_inclusion_of matcher when used against a polymorphic association. ([#1523])
+
+[#1523]: https://github.com/thoughtbot/shoulda-matchers/pull/1523
+
 ## 5.2.0 - 2022-09-15
 
 ### Features
