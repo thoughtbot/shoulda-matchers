@@ -2,7 +2,7 @@ PROJECT_ROOT = File.expand_path('..', __dir__)
 $LOAD_PATH << File.join(PROJECT_ROOT, 'lib')
 
 require 'pry'
-require 'pry-byebug'
+require 'pry-byebug' if RUBY_VERSION < '3.2'
 
 require 'rspec'
 

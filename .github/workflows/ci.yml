@@ -27,9 +27,10 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - 3.1.2
-          - 3.0.4
-          - 2.7.6
+          - 3.2.0
+          - 3.1.3
+          - 3.0.5
+          - 2.7.7
           - 2.6.10
         appraisal:
           - rails_7_0
@@ -40,22 +41,25 @@ jobs:
           - sqlite3
           - postgresql
         exclude:
-          - { ruby: 3.1.2, appraisal: rails_5_2 }
-          - { ruby: 3.0.4, appraisal: rails_5_2 }
-          - { ruby: 3.0.4, appraisal: rails_7_0 }
-          - { ruby: 2.7.6, appraisal: rails_7_0 }
+          - { ruby: 3.2.0, appraisal: rails_5_2 }
+          - { ruby: 3.2.0, appraisal: rails_6_0 }
+          - { ruby: 3.2.0, appraisal: rails_6_1 }
+          - { ruby: 3.1.3, appraisal: rails_5_2 }
+          - { ruby: 3.0.5, appraisal: rails_5_2 }
+          - { ruby: 3.0.5, appraisal: rails_7_0 }
+          - { ruby: 2.7.7, appraisal: rails_7_0 }
           - { ruby: 2.6.10, appraisal: rails_7_0 }
     env:
       DATABASE_ADAPTER: ${{ matrix.adapter }}
       BUNDLE_GEMFILE: gemfiles/${{ matrix.appraisal }}.gemfile
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Ruby
         id: set-up-ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: vendor/bundle
           key: v1-rubygems-local-${{ runner.os }}-${{ matrix.ruby }}-${{ hashFiles(format('gemfiles/{0}.gemfile.lock', matrix.appraisal)) }}
