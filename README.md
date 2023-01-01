@@ -492,7 +492,7 @@ Albuk][guialbuk].
 
 ## Copyright/License
 
-Shoulda Matchers is copyright © 2006-2022 Tammer Saleh and [thoughtbot,
+Shoulda Matchers is copyright © 2006-2023 Tammer Saleh and [thoughtbot,
 inc][thoughtbot-website]. It is free and opensource software and may be
 redistributed under the terms specified in the [LICENSE](LICENSE) file.
 
