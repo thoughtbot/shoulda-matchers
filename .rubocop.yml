@@ -24,7 +24,7 @@ Layout/HeredocIndentation:
 Layout/LineLength:
   Exclude:
     - spec/**/*
-  IgnoredPatterns:
+  AllowedPatterns:
     - !ruby/regexp /\A +(it|describe|context|shared_examples|include_examples|it_behaves_like) ["']/
     - !ruby/regexp /\A(require|require_relative) ["']/
     - '^[ ]*#.+$'
