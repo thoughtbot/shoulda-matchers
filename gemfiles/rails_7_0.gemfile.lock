@@ -92,8 +92,6 @@ GEM
     crass (1.0.6)
     date (3.3.3)
     debug (1.7.1)
-      irb (>= 1.5.0)
-      reline (>= 0.3.1)
     diff-lcs (1.5.0)
     erubi (1.12.0)
     fssm (0.2.10)
@@ -104,9 +102,6 @@ GEM
     importmap-rails (1.1.5)
       actionpack (>= 6.0.0)
       railties (>= 6.0.0)
-    io-console (0.6.0)
-    irb (1.6.2)
-      reline (>= 0.3.0)
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
@@ -114,7 +109,7 @@ GEM
     loofah (2.19.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
-    mail (2.8.0)
+    mail (2.8.0.1)
       mini_mime (>= 0.1.1)
       net-imap
       net-pop
@@ -123,7 +118,6 @@ GEM
     matrix (0.4.2)
     method_source (1.0.0)
     mini_mime (1.1.2)
-    mini_portile2 (2.8.1)
     minitest (5.17.0)
     msgpack (1.6.0)
     net-imap (0.3.4)
@@ -136,8 +130,7 @@ GEM
     net-smtp (0.3.3)
       net-protocol
     nio4r (2.5.8)
-    nokogiri (1.13.10)
-      mini_portile2 (~> 2.8.0)
+    nokogiri (1.14.0-x86_64-linux)
       racc (~> 1.4)
     parallel (1.22.1)
     parser (3.2.0.0)
@@ -187,12 +180,10 @@ GEM
       thor (~> 1.0)
       zeitwerk (~> 2.5)
     rainbow (3.1.1)
-    rake (13.0.6)
+    rake (13.0.1)
     redcarpet (3.5.1)
     redis (4.8.0)
     regexp_parser (2.6.1)
-    reline (0.3.2)
-      io-console (~> 0.5)
     rexml (3.2.5)
     rouge (4.0.1)
     rspec (3.12.0)
@@ -251,8 +242,7 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
-    sqlite3 (1.5.4)
-      mini_portile2 (~> 2.8.0)
+    sqlite3 (1.6.0-x86_64-linux)
     stimulus-rails (1.2.1)
       railties (>= 6.0.0)
     thor (1.2.1)
@@ -283,7 +273,7 @@ GEM
       method_source (>= 0.6.7)
 
 PLATFORMS
-  ruby
+  x86_64-linux
 
 DEPENDENCIES
   appraisal (= 2.2.0)
@@ -301,7 +291,7 @@ DEPENDENCIES
   puma (~> 5.0)
   rails (~> 7.0.1)
   rails-controller-testing
-  rake (~> 13.0)
+  rake (= 13.0.1)
   redcarpet
   redis (~> 4.0)
   rouge

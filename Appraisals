@@ -14,7 +14,7 @@ shared_spring_dependencies = proc do
 end
 
 shared_test_dependencies = proc do
-  gem 'rspec-rails', '~> 4.0'
+  gem 'rspec-rails', '~> 5.0'
   gem 'shoulda-context', '~> 1.2.0'
 end
 
@@ -70,7 +70,7 @@ appraise 'rails_6_0' do
 end
 
 appraise 'rails_6_1' do
-  instance_eval(&shared_dependencies)
+  instance_eval(&shared_spring_dependencies)
   instance_eval(&controller_test_dependency)
 
   gem 'rails', '6.1.7'
@@ -89,6 +89,10 @@ appraise 'rails_6_1' do
   gem 'selenium-webdriver'
   gem 'webdrivers'
 
+  # test dependencies
+  gem 'rspec-rails', '~> 6.0'
+  gem 'shoulda-context', '~> 1.2.0'
+
   # Database adapters
   gem 'pg', '>= 0.18', '< 2.0'
   gem 'sqlite3', '~> 1.4'
@@ -96,7 +100,7 @@ end
 
 appraise 'rails_7_0' do
   instance_eval(&shared_spring_dependencies)
-  instance_eval(&shared_test_dependencies)
+  instance_eval(&controller_test_dependency)
 
   gem 'rails', '~> 7.0.1'
   gem 'sprockets-rails'
@@ -110,6 +114,10 @@ appraise 'rails_7_0' do
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'webdrivers'
+
+  # test dependencies
+  gem 'rspec-rails', '~> 6.0'
+  gem 'shoulda-context', '~> 1.2.0'
 
   # other dependencies
   gem 'bcrypt', '~> 3.1.7'
