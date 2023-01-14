@@ -581,7 +581,7 @@ module Shoulda
         end
 
         def comparison_matcher_for(value, operator)
-          NumericalityMatchers::ComparisonMatcher.
+          ComparisonMatcher.
             new(self, value, operator).
             for(@attribute)
         end
@@ -634,10 +634,12 @@ module Shoulda
         end
 
         def has_been_qualified?
-          @submatchers.any? do |submatcher|
-            Shoulda::Matchers::RailsShim.parent_of(submatcher.class) ==
-              NumericalityMatchers
-          end
+          @submatchers.any? { |submatcher| submatcher_qualified?(submatcher) }
+        end
+
+        def submatcher_qualified?(submatcher)
+          Shoulda::Matchers::RailsShim.parent_of(submatcher.class) ==
+            NumericalityMatchers || submatcher.instance_of?(ComparisonMatcher)
         end
 
         def first_submatcher_that_fails_to_match
