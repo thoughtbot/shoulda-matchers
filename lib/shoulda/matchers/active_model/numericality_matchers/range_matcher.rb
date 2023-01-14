@@ -59,7 +59,7 @@ module Shoulda
           end
 
           def build_comparison_submatcher(value, operator)
-            NumericalityMatchers::ComparisonMatcher.new(@numericality_matcher, value, operator).
+            ComparisonMatcher.new(@numericality_matcher, value, operator).
               for(@attribute).
               with_message(@message).
               on(@context)

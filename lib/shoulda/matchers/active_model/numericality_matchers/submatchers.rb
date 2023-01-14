@@ -13,20 +13,21 @@ module Shoulda
             failing_submatchers.empty?
           end
 
+          def does_not_match?(subject)
+            @subject = subject
+            not_failing_submatchers.empty?
+          end
+
           def failure_message
-            last_failing_submatcher.failure_message
+            failing_submatcher.failure_message
           end
 
           def failure_message_when_negated
-            last_failing_submatcher.failure_message_when_negated
+            not_failing_submatcher.failure_message_when_negated
           end
 
           def add(submatcher)
             @submatchers << submatcher
-          end
-
-          def last_failing_submatcher
-            failing_submatchers.last
           end
 
           private
@@ -35,6 +36,20 @@ module Shoulda
             @_failing_submatchers ||= @submatchers.reject do |submatcher|
               submatcher.matches?(@subject)
             end
+          end
+
+          def not_failing_submatchers
+            @_not_failing_submatchers ||= @submatchers.reject do |submatcher|
+              submatcher.does_not_match?(@subject)
+            end
+          end
+
+          def failing_submatcher
+            failing_submatchers.last
+          end
+
+          def not_failing_submatcher
+            not_failing_submatchers.last
           end
         end
       end

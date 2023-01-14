@@ -377,6 +377,8 @@ module Shoulda
           @allowed_type_name = 'number'
           @context = nil
           @expected_message = nil
+
+          add_disallow_non_numeric_value_matcher
         end
 
         def strict
@@ -532,7 +534,6 @@ module Shoulda
           @subject = subject
           @number_of_submatchers = @submatchers.size
 
-          add_disallow_value_matcher
           qualify_submatchers
         end
 
@@ -566,7 +567,7 @@ module Shoulda
           end
         end
 
-        def add_disallow_value_matcher
+        def add_disallow_non_numeric_value_matcher
           disallow_value_matcher = DisallowValueMatcher.
             new(non_numeric_value).
             for(@attribute).

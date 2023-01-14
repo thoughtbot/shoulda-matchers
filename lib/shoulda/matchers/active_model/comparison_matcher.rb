@@ -79,6 +79,11 @@ module Shoulda
           submatchers.matches?(subject)
         end
 
+        def does_not_match?(subject)
+          @subject = subject
+          submatchers.does_not_match?(subject)
+        end
+
         def comparison_description
           "#{comparison_expectation} #{@value}"
         end

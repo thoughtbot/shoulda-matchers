@@ -331,10 +331,11 @@ it is not nil, but this could not be proved.
         expect(&assertion).to fail_with_message(<<~MESSAGE)
 Expected Example not to validate that :attr looks like an integer, but
 this could not be proved.
-  After setting :attr to ‹"0.1"›, the matcher expected the Example to be
-  valid, but it was invalid instead, producing these validation errors:
+  After setting :attr to ‹"abcd"›, the matcher expected the Example to
+  be valid, but it was invalid instead, producing these validation
+  errors:
 
-  * attr: ["must be an integer"]
+  * attr: ["is not a number"]
         MESSAGE
       end
 
@@ -351,7 +352,7 @@ this could not be proved.
             expected_message: <<-MESSAGE.strip,
 Expected Example to validate that :attr looks like an integer, but this
 could not be proved.
-  After setting :attr to ‹"0.1"› -- which was read back as ‹"1"› -- the
+  After setting :attr to ‹"abcd"› -- which was read back as ‹"1"› -- the
   matcher expected the Example to be invalid, but it was valid instead.
 
   As indicated in the message above, :attr seems to be changing certain
@@ -410,10 +411,11 @@ could not be proved.
         expect(&assertion).to fail_with_message(<<~MESSAGE)
 Expected Example not to validate that :attr looks like an odd number,
 but this could not be proved.
-  After setting :attr to ‹"2"›, the matcher expected the Example to be
-  valid, but it was invalid instead, producing these validation errors:
+  After setting :attr to ‹"abcd"›, the matcher expected the Example to
+  be valid, but it was invalid instead, producing these validation
+  errors:
 
-  * attr: ["must be odd"]
+  * attr: ["is not a number"]
         MESSAGE
       end
 
@@ -531,10 +533,11 @@ this could not be proved.
         expect(&assertion).to fail_with_message(<<~MESSAGE)
 Expected Example not to validate that :attr looks like an even number,
 but this could not be proved.
-  After setting :attr to ‹"1"›, the matcher expected the Example to be
-  valid, but it was invalid instead, producing these validation errors:
+  After setting :attr to ‹"abcd"›, the matcher expected the Example to
+  be valid, but it was invalid instead, producing these validation
+  errors:
 
-  * attr: ["must be even"]
+  * attr: ["is not a number"]
         MESSAGE
       end
 
