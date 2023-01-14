@@ -36,7 +36,7 @@ appraise 'rails_5_2' do
   gem 'bcrypt', '~> 3.1.7'
   gem 'capybara', '~> 3.1.1'
   gem 'selenium-webdriver'
-  gem 'chromedriver-helper'
+  gem 'webdrivers'
   gem 'listen', '~> 3.0.5'
   gem 'spring-watcher-listen', '~> 2.0.0'
 

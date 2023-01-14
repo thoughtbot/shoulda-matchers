@@ -78,7 +78,7 @@ module AcceptanceTests
         bundle.remove_gem 'uglifier'
         bundle.remove_gem 'debugger'
         bundle.remove_gem 'byebug'
-        bundle.remove_gem 'webdrivers'
+        bundle.remove_gem 'chromedriver-helper'
         bundle.remove_gem 'web-console'
       end
 
