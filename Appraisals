@@ -10,7 +10,7 @@ end
 
 shared_spring_dependencies = proc do
   gem 'spring'
-  gem 'spring-commands-rspec'
+  gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
 shared_test_dependencies = proc do
@@ -28,17 +28,18 @@ appraise 'rails_5_2' do
   instance_eval(&controller_test_dependency)
 
   gem 'rails', '5.2.8.1'
+
   gem 'puma', '~> 3.11'
-  gem 'bootsnap', '>= 1.1.0', require: false
   gem 'sass-rails', '~> 5.0'
+  gem 'uglifier', '>= 1.3.0'
+  gem 'coffee-rails', '~> 4.2'
   gem 'turbolinks', '~> 5'
   gem 'jbuilder', '~> 2.5'
   gem 'bcrypt', '~> 3.1.7'
-  gem 'capybara', '~> 3.1.1'
+  gem 'bootsnap', '>= 1.1.0', require: false
+  gem 'capybara', '>= 2.15'
   gem 'selenium-webdriver'
   gem 'webdrivers'
-  gem 'listen', '~> 3.0.5'
-  gem 'spring-watcher-listen', '~> 2.0.0'
 
   # Database adapters
   gem 'pg', '~> 0.18'
