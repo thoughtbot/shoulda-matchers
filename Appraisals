@@ -15,7 +15,7 @@ end
 
 shared_test_dependencies = proc do
   gem 'rspec-rails', '~> 5.0'
-  gem 'shoulda-context', '~> 1.2.0'
+  gem 'shoulda-context', '~> 2.0.0'
 end
 
 shared_dependencies = proc do
@@ -91,7 +91,7 @@ appraise 'rails_6_1' do
 
   # test dependencies
   gem 'rspec-rails', '~> 6.0'
-  gem 'shoulda-context', '~> 1.2.0'
+  gem 'shoulda-context', '~> 2.0.0'
 
   # Database adapters
   gem 'pg', '>= 0.18', '< 2.0'
@@ -117,7 +117,7 @@ appraise 'rails_7_0' do
 
   # test dependencies
   gem 'rspec-rails', '~> 6.0'
-  gem 'shoulda-context', '~> 1.2.0'
+  gem 'shoulda-context', '~> 2.0.0'
 
   # other dependencies
   gem 'bcrypt', '~> 3.1.7'

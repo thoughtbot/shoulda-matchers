@@ -217,7 +217,7 @@ GEM
       childprocess (>= 0.5, < 5.0)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2)
-    shoulda-context (1.2.2)
+    shoulda-context (2.0.0)
     spring (2.1.1)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
@@ -287,7 +287,7 @@ DEPENDENCIES
   rubocop-rails
   sass-rails (~> 5.0)
   selenium-webdriver
-  shoulda-context (~> 1.2.0)
+  shoulda-context (~> 2.0.0)
   spring
   spring-commands-rspec
   spring-watcher-listen (~> 2.0.0)

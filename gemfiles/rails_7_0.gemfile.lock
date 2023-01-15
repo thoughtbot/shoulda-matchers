@@ -238,7 +238,7 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
-    shoulda-context (1.2.2)
+    shoulda-context (2.0.0)
     spring (4.1.1)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
@@ -308,7 +308,7 @@ DEPENDENCIES
   rubocop-packaging
   rubocop-rails
   selenium-webdriver
-  shoulda-context (~> 1.2.0)
+  shoulda-context (~> 2.0.0)
   spring
   spring-commands-rspec
   sprockets-rails
