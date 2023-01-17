@@ -63,7 +63,7 @@ describe 'shoulda-matchers integrates with Rails' do
     end
 
     updating_bundle do
-      add_spring_to_project
+      add_gem 'spring'
       add_gems_for_rspec
       add_shoulda_matchers_to_project(
         test_frameworks: [:rspec],

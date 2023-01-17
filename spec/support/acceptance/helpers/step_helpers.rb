@@ -128,9 +128,5 @@ module AcceptanceTests
     def run_rspec_suite
       run_rake_tasks('spec', env: { SPEC_OPTS: '-fd' })
     end
-
-    def add_spring_to_project
-      add_gem 'spring-watcher-listen'
-    end
   end
 end
