@@ -130,7 +130,7 @@ module AcceptanceTests
     end
 
     def add_spring_to_project
-      add_gem 'spring-commands-rspec'
+      add_gem 'spring-watcher-listen'
     end
   end
 end
