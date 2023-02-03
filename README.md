@@ -484,11 +484,12 @@ Shoulda Matchers follows Semantic Versioning 2.0 as defined at
 
 ## Team
 
-Shoulda Matchers is maintained by [Elliot Winkler][mcmire] and [Gui
-Albuk][guialbuk].
+Shoulda Matchers is maintained by [Elliot Winkler][mcmire], [Gui
+Albuk][guialbuk] and [Pedro Paiva][VSPPedro].
 
 [mcmire]: https://github.com/mcmire
 [guialbuk]: https://github.com/guialbuk
+[VSPPedro]: https://github.com/VSPPedro
 
 ## Copyright/License
 
