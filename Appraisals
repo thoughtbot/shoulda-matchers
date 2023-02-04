@@ -74,7 +74,7 @@ appraise 'rails_6_1' do
   instance_eval(&shared_spring_dependencies)
   instance_eval(&controller_test_dependency)
 
-  gem 'rails', '6.1.7.1'
+  gem 'rails', '6.1.7.2'
   gem 'puma', '~> 5.0'
   gem 'bootsnap', '>= 1.4.2', require: false
   gem 'sass-rails', '>= 6'
@@ -103,7 +103,7 @@ appraise 'rails_7_0' do
   instance_eval(&shared_spring_dependencies)
   instance_eval(&controller_test_dependency)
 
-  gem 'rails', '7.0.4.1'
+  gem 'rails', '7.0.4.2'
   gem 'sprockets-rails'
   gem 'puma', '~> 5.0'
   gem 'importmap-rails'
