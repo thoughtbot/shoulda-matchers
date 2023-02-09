@@ -75,19 +75,18 @@ appraise 'rails_6_1' do
 
   gem 'rails', '6.1.7.2'
   gem 'puma', '~> 5.0'
-  gem 'bootsnap', '>= 1.4.2', require: false
   gem 'sass-rails', '>= 6'
   gem 'turbolinks', '~> 5'
   gem 'jbuilder', '~> 2.7'
   gem 'bcrypt', '~> 3.1.7'
-  gem 'capybara', '>= 2.15'
-  gem 'listen', '>= 3.0.5', '< 3.6'
+  gem 'bootsnap', '>= 1.4.4', require: false
+  gem 'rack-mini-profiler', '~> 2.0.0'
+  gem 'listen', '~> 3.3'
+  gem 'capybara', '>= 3.26'
+  gem 'selenium-webdriver', '>= 4.0.0.rc1'
+  gem 'webdrivers'
   gem 'net-smtp', require: false
   gem 'psych', '~> 3.0'
-  gem 'rack-mini-profiler', '~> 2.0.0'
-  gem 'spring-watcher-listen', '~> 2.0.0'
-  gem 'selenium-webdriver'
-  gem 'webdrivers'
 
   # test dependencies
   gem 'rspec-rails', '~> 6.0'

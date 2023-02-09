@@ -126,7 +126,8 @@ GEM
     net-smtp (0.3.3)
       net-protocol
     nio4r (2.5.8)
-    nokogiri (1.13.10-x86_64-linux)
+    nokogiri (1.13.10)
+      mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     parallel (1.22.1)
     parser (3.2.0.0)
@@ -254,8 +255,7 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
-    sqlite3 (1.6.0)
-      mini_portile2 (~> 2.8.0)
+    sqlite3 (1.6.0-x86_64-linux)
     thor (1.2.1)
     tilt (2.0.11)
     timeout (0.3.1)
@@ -288,12 +288,12 @@ PLATFORMS
 DEPENDENCIES
   appraisal (= 2.2.0)
   bcrypt (~> 3.1.7)
-  bootsnap (>= 1.4.2)
+  bootsnap (>= 1.4.4)
   bundler (~> 2.0)
-  capybara (>= 2.15)
+  capybara (>= 3.26)
   fssm
   jbuilder (~> 2.7)
-  listen (>= 3.0.5, < 3.6)
+  listen (~> 3.3)
   net-smtp
   pg (>= 0.18, < 2.0)
   pry
@@ -312,7 +312,7 @@ DEPENDENCIES
   rubocop-packaging
   rubocop-rails
   sass-rails (>= 6)
-  selenium-webdriver
+  selenium-webdriver (>= 4.0.0.rc1)
   shoulda-context (~> 2.0.0)
   spring
   spring-watcher-listen (~> 2.0.0)
