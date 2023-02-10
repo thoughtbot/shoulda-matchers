@@ -108,7 +108,6 @@ appraise 'rails_7_0' do
   gem 'turbo-rails'
   gem 'stimulus-rails'
   gem 'jbuilder'
-  gem 'redis', '~> 4.0'
   gem 'bootsnap', require: false
   gem 'capybara'
   gem 'selenium-webdriver'
@@ -120,8 +119,6 @@ appraise 'rails_7_0' do
 
   # other dependencies
   gem 'bcrypt', '~> 3.1.7'
-  gem 'rails-controller-testing'
-  gem 'debug', platforms: %i[mri mingw x64_mingw]
 
   # Database adapters
   gem 'sqlite3', '~> 1.4'
