@@ -10,12 +10,12 @@ end
 
 shared_spring_dependencies = proc do
   gem 'spring'
-  gem 'spring-commands-rspec'
+  gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
 shared_test_dependencies = proc do
-  gem 'rspec-rails', '~> 4.0'
-  gem 'shoulda-context', '~> 1.2.0'
+  gem 'rspec-rails', '~> 5.0'
+  gem 'shoulda-context', '~> 2.0.0'
 end
 
 shared_dependencies = proc do
@@ -28,17 +28,18 @@ appraise 'rails_5_2' do
   instance_eval(&controller_test_dependency)
 
   gem 'rails', '5.2.8.1'
+
   gem 'puma', '~> 3.11'
-  gem 'bootsnap', '>= 1.1.0', require: false
   gem 'sass-rails', '~> 5.0'
+  gem 'uglifier', '>= 1.3.0'
+  gem 'coffee-rails', '~> 4.2'
   gem 'turbolinks', '~> 5'
   gem 'jbuilder', '~> 2.5'
   gem 'bcrypt', '~> 3.1.7'
-  gem 'capybara', '~> 3.1.1'
+  gem 'bootsnap', '>= 1.1.0', require: false
+  gem 'capybara', '>= 2.15'
   gem 'selenium-webdriver'
-  gem 'chromedriver-helper'
-  gem 'listen', '~> 3.0.5'
-  gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'webdrivers'
 
   # Database adapters
   gem 'pg', '~> 0.18'
@@ -49,19 +50,18 @@ appraise 'rails_6_0' do
   instance_eval(&shared_dependencies)
   instance_eval(&controller_test_dependency)
 
-  gem 'rails', '6.0.6'
+  gem 'rails', '6.0.6.1'
   gem 'puma', '~> 4.1'
-  gem 'bootsnap', '>= 1.4.2', require: false
   gem 'sass-rails', '>= 6'
   gem 'turbolinks', '~> 5'
   gem 'jbuilder', '~> 2.7'
   gem 'bcrypt', '~> 3.1.7'
+  gem 'bootsnap', '>= 1.4.2', require: false
   gem 'capybara', '>= 2.15'
   gem 'listen', '~> 3.3.0'
-  gem 'psych', '~> 3.0'
-  gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'selenium-webdriver'
   gem 'webdrivers'
+  gem 'psych', '~> 3.0'
   gem 'net-smtp', require: false
 
   # Database adapters
@@ -70,24 +70,27 @@ appraise 'rails_6_0' do
 end
 
 appraise 'rails_6_1' do
-  instance_eval(&shared_dependencies)
+  instance_eval(&shared_spring_dependencies)
   instance_eval(&controller_test_dependency)
 
-  gem 'rails', '6.1.7'
+  gem 'rails', '6.1.7.2'
   gem 'puma', '~> 5.0'
-  gem 'bootsnap', '>= 1.4.2', require: false
   gem 'sass-rails', '>= 6'
   gem 'turbolinks', '~> 5'
   gem 'jbuilder', '~> 2.7'
   gem 'bcrypt', '~> 3.1.7'
-  gem 'capybara', '>= 2.15'
-  gem 'listen', '>= 3.0.5', '< 3.6'
+  gem 'bootsnap', '>= 1.4.4', require: false
+  gem 'rack-mini-profiler', '~> 2.0.0'
+  gem 'listen', '~> 3.3'
+  gem 'capybara', '>= 3.26'
+  gem 'selenium-webdriver', '>= 4.0.0.rc1'
+  gem 'webdrivers'
   gem 'net-smtp', require: false
   gem 'psych', '~> 3.0'
-  gem 'rack-mini-profiler', '~> 2.0.0'
-  gem 'spring-watcher-listen', '~> 2.0.0'
-  gem 'selenium-webdriver'
-  gem 'webdrivers'
+
+  # test dependencies
+  gem 'rspec-rails', '~> 6.0'
+  gem 'shoulda-context', '~> 2.0.0'
 
   # Database adapters
   gem 'pg', '>= 0.18', '< 2.0'
@@ -96,25 +99,26 @@ end
 
 appraise 'rails_7_0' do
   instance_eval(&shared_spring_dependencies)
-  instance_eval(&shared_test_dependencies)
+  instance_eval(&controller_test_dependency)
 
-  gem 'rails', '~> 7.0.1'
+  gem 'rails', '7.0.4.2'
   gem 'sprockets-rails'
   gem 'puma', '~> 5.0'
   gem 'importmap-rails'
   gem 'turbo-rails'
   gem 'stimulus-rails'
   gem 'jbuilder'
-  gem 'redis', '~> 4.0'
   gem 'bootsnap', require: false
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'webdrivers'
 
+  # test dependencies
+  gem 'rspec-rails', '~> 6.0'
+  gem 'shoulda-context', '~> 2.0.0'
+
   # other dependencies
   gem 'bcrypt', '~> 3.1.7'
-  gem 'rails-controller-testing'
-  gem 'debug', platforms: %i[mri mingw x64_mingw]
 
   # Database adapters
   gem 'sqlite3', '~> 1.4'
