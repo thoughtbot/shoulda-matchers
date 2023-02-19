@@ -2,7 +2,7 @@
 
 [version-badge]: https://img.shields.io/gem/v/shoulda-matchers.svg
 [rubygems]: https://rubygems.org/gems/shoulda-matchers
-[github-actions-badge]: https://img.shields.io/github/workflow/status/thoughtbot/shoulda-matchers/Test
+[github-actions-badge]: https://img.shields.io/github/actions/workflow/status/thoughtbot/shoulda-matchers/ci.yml?branch=main
 [github-actions]: https://github.com/thoughtbot/shoulda-matchers/actions
 [downloads-total]: https://img.shields.io/gem/dt/shoulda-matchers.svg
 [downloads-badge]: https://img.shields.io/gem/dtv/shoulda-matchers.svg
