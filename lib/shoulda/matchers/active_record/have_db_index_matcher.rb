@@ -197,14 +197,26 @@ module Shoulda
         def matched_index
           @_matched_index ||=
             if expected_columns.one?
-              actual_indexes.detect do |index|
+              sorted_indexes.detect do |index|
                 Array.wrap(index.columns) == expected_columns
               end
             else
-              actual_indexes.detect do |index|
+              sorted_indexes.detect do |index|
                 index.columns == expected_columns
               end
             end
+        end
+
+        def sorted_indexes
+          indexes = actual_indexes
+
+          if qualifiers.include?(:unique)
+            indexes.sort_by! do |index|
+              index.unique == qualifiers[:unique] ? 0 : 1
+            end
+          end
+
+          indexes
         end
 
         def actual_indexes
