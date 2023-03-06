@@ -166,7 +166,7 @@ Expected the examples table to have an index on :name, but it does not.
                   table.index(:ssn, name: 'aaa', unique: false)
                   table.index(:ssn, name: 'bbb', unique: true)
                   table.index(:ssn, name: 'ccc', unique: false)
-                }
+                },
               )
             end
 
