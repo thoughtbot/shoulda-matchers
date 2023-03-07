@@ -208,18 +208,17 @@ module Shoulda
         end
 
         def sorted_indexes
-          indexes = actual_indexes
-
           if qualifiers.include?(:unique)
-            indexes.sort_by! do |index|
+            # return indexes with unique matching the qualifier first
+            unsorted_indexes.sort_by do |index|
               index.unique == qualifiers[:unique] ? 0 : 1
             end
+          else
+            unsorted_indexes
           end
-
-          indexes
         end
 
-        def actual_indexes
+        def unsorted_indexes
           model.connection.indexes(table_name)
         end
 
