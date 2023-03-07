@@ -155,6 +155,36 @@ Expected the examples table to have an index on :name, but it does not.
             unique: true,
             qualifier_args: [],
           )
+
+          context 'when there are multiple possible matching columns' do
+            let(:model) do
+              define_model(
+                'Employee',
+                { ssn: :string },
+                parent_class: DevelopmentRecord,
+                customize_table: -> (table) {
+                  table.index(:ssn, name: 'aaa', unique: false)
+                  table.index(:ssn, name: 'bbb', unique: true)
+                  table.index(:ssn, name: 'ccc', unique: false)
+                },
+              )
+            end
+
+            it 'matches in the positive' do
+              expect(model.new).to have_db_index(:ssn).unique
+            end
+
+            it 'does not match in the negative' do
+              assertion = lambda do
+                expect(model.new).not_to have_db_index(:ssn).unique
+              end
+
+              expect(&assertion).to fail_with_message(<<-MESSAGE)
+Expected the employees table not to have a unique index on :ssn, but it
+does.
+              MESSAGE
+            end
+          end
         end
 
         context 'when qualified with unique: true' do

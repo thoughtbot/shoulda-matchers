@@ -197,17 +197,28 @@ module Shoulda
         def matched_index
           @_matched_index ||=
             if expected_columns.one?
-              actual_indexes.detect do |index|
+              sorted_indexes.detect do |index|
                 Array.wrap(index.columns) == expected_columns
               end
             else
-              actual_indexes.detect do |index|
+              sorted_indexes.detect do |index|
                 index.columns == expected_columns
               end
             end
         end
 
-        def actual_indexes
+        def sorted_indexes
+          if qualifiers.include?(:unique)
+            # return indexes with unique matching the qualifier first
+            unsorted_indexes.sort_by do |index|
+              index.unique == qualifiers[:unique] ? 0 : 1
+            end
+          else
+            unsorted_indexes
+          end
+        end
+
+        def unsorted_indexes
           model.connection.indexes(table_name)
         end
 
