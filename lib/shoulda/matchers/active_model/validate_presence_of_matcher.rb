@@ -245,7 +245,8 @@ validation for you? Instead of using `validate_presence_of`, try
         end
 
         def allows_original_or_typecast_value?(value)
-          allows_value_of(value, @expected_message)
+          @expected_message == :blank ? allows_value_of(value, nil) : allows_value_of(value, @expected_message)
+          # allows_value_of(value, @expected_message)
         end
 
         def disallows_and_double_checks_value_of!(value)
