@@ -612,7 +612,7 @@ pass, or do something else entirely.
 
         def default_expected_message
           if expects_strict?
-            "#{human_attribute_name} #{default_attribute_message}"
+            I18n.t(:"errors.format", attribute: human_attribute_name, message: default_attribute_message)
           else
             default_attribute_message
           end
