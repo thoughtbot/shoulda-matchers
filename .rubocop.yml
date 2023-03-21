@@ -3,7 +3,7 @@ require:
   - rubocop-rails
 AllCops:
   NewCops: disable
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 3.0
   Exclude:
     - 'gemfiles/*'
 Bundler/OrderedGems:
