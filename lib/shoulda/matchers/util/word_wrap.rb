@@ -41,7 +41,7 @@ module Shoulda
 
     # @private
     class Text < ::String
-      LIST_ITEM_REGEXP = /\A((?:[a-z0-9]+(?:\)|\.)|\*) )/.freeze
+      LIST_ITEM_REGEXP = /\A((?:[a-z0-9]+(?:\)|\.)|\*) )/
 
       def indented?
         self =~ /\A +/
