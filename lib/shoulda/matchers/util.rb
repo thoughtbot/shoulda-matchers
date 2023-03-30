@@ -94,7 +94,7 @@ module Shoulda
             0
           when :date
             Date.new(2100, 1, 1)
-          when :datetime, :timestamp
+          when :datetime, :timestamp, :timestamptz
             DateTime.new(2100, 1, 1)
           when :time
             Time.new(2000, 1, 1)
