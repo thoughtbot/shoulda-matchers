@@ -49,7 +49,7 @@ module Shoulda
           end
 
           def not_failing_submatcher
-            not_failing_submatchers.last
+            not_failing_submatchers.detect { |submatcher| submatcher.instance_of?(DisallowValueMatcher) } || not_failing_submatchers.first
           end
         end
       end
