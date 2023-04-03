@@ -33,7 +33,6 @@ jobs:
         appraisal:
           - rails_7_0
           - rails_6_1
-          - rails_6_0
         adapter:
           - sqlite3
           - postgresql
