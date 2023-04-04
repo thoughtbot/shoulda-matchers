@@ -13,39 +13,6 @@ shared_spring_dependencies = proc do
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
-shared_test_dependencies = proc do
-  gem 'rspec-rails', '~> 5.0'
-  gem 'shoulda-context', '~> 2.0.0'
-end
-
-shared_dependencies = proc do
-  instance_eval(&shared_spring_dependencies)
-  instance_eval(&shared_test_dependencies)
-end
-
-appraise 'rails_6_0' do
-  instance_eval(&shared_dependencies)
-  instance_eval(&controller_test_dependency)
-
-  gem 'rails', '6.0.6.1'
-  gem 'puma', '~> 4.1'
-  gem 'sass-rails', '>= 6'
-  gem 'turbolinks', '~> 5'
-  gem 'jbuilder', '~> 2.7'
-  gem 'bcrypt', '~> 3.1.7'
-  gem 'bootsnap', '>= 1.4.2', require: false
-  gem 'capybara', '>= 2.15'
-  gem 'listen', '~> 3.3.0'
-  gem 'selenium-webdriver'
-  gem 'webdrivers'
-  gem 'psych', '~> 3.0'
-  gem 'net-smtp', require: false
-
-  # Database adapters
-  gem 'pg', '>= 0.18', '< 2.0'
-  gem 'sqlite3', '~> 1.4'
-end
-
 appraise 'rails_6_1' do
   instance_eval(&shared_spring_dependencies)
   instance_eval(&controller_test_dependency)
