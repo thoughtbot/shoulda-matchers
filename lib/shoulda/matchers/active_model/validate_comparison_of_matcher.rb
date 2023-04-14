@@ -22,8 +22,6 @@ module Shoulda
           @expects_custom_validation_message = false
           @expects_to_allow_nil = false
           @expects_strict = false
-          @allowed_type_adjective = nil
-          @allowed_type_name = 'number'
           @context = nil
           @expected_message = nil
         end
@@ -116,7 +114,7 @@ module Shoulda
           description = ''
 
           description << "validate that :#{@attribute} looks like "
-          description << Shoulda::Matchers::Util.a_or_an(full_allowed_type)
+          description << Shoulda::Matchers::Util.a_or_an(allowed_type_name)
 
           if comparison_descriptions.present?
             description << " #{comparison_descriptions}"
@@ -281,10 +279,6 @@ module Shoulda
           Shoulda::Matchers.word_wrap(submatcher_message, indent: 2)
         end
 
-        def full_allowed_type
-          "#{@allowed_type_adjective} #{@allowed_type_name}".strip
-        end
-
         def comparison_descriptions
           description_array = submatcher_comparison_descriptions
           if description_array.empty?
@@ -300,6 +294,10 @@ module Shoulda
               arr << submatcher.comparison_description
             end
           end
+        end
+
+        def allowed_type_name
+          'value'
         end
 
         def model

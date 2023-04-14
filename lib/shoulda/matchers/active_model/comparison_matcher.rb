@@ -1,4 +1,3 @@
-
 require 'active_support/core_ext/module/delegation'
 
 module Shoulda
@@ -35,13 +34,13 @@ module Shoulda
 
         delegate :failure_message, :failure_message_when_negated, to: :submatchers
 
-        def initialize(numericality_matcher, value, operator)
+        def initialize(matcher, value, operator)
           super(nil)
-          unless numericality_matcher.respond_to? :diff_to_compare
-            raise ArgumentError, 'numericality_matcher is invalid'
+          unless matcher.respond_to? :diff_to_compare
+            raise ArgumentError, 'matcher is invalid'
           end
 
-          @numericality_matcher = numericality_matcher
+          @matcher = matcher
           @value = value
           @operator = operator
           @message = ERROR_MESSAGES[operator][:label]
@@ -76,11 +75,13 @@ module Shoulda
 
         def matches?(subject)
           @subject = subject
+          build_option_value
           submatchers.matches?(subject)
         end
 
         def does_not_match?(subject)
           @subject = subject
+          build_option_value
           submatchers.does_not_match?(subject)
         end
 
@@ -120,14 +121,33 @@ module Shoulda
           ERROR_MESSAGES[@operator][:assertions]
         end
 
-        def diffs_to_compare
-          diff_to_compare = @numericality_matcher.diff_to_compare
-          values = [-1, 0, 1].map { |sign| @value + (diff_to_compare * sign) }
+        def build_option_value
+          @value = case @value
+                   when Proc then @value.call(@subject)
+                   when Symbol then @subject.send(@value)
+                   else @value
+                   end
+        end
 
-          if @numericality_matcher.given_numeric_column?
+        def diffs_to_compare
+          diff_to_compare = @matcher.diff_to_compare
+          values = case @value
+                   when String then diffs_when_string(diff_to_compare)
+                   else [-1, 0, 1].map { |sign| @value + (diff_to_compare * sign) }
+                   end
+
+          if @matcher.given_numeric_column?
             values
           else
             values.map(&:to_s)
+          end
+        end
+
+        def diffs_when_string(diff_to_compare)
+          internal_value = @value.dup
+          last_character = internal_value.slice!(-1)
+          [-1, 0, 1].map do |sign|
+            internal_value + (last_character.ord + (diff_to_compare * sign)).chr
           end
         end
 
