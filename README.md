@@ -374,6 +374,8 @@ about any of them, make sure to [consult the documentation][rubydocs]!
   tests usage of `validates_numericality_of`.
 * **[validate_presence_of](lib/shoulda/matchers/active_model/validate_presence_of_matcher.rb)**
   tests usage of `validates_presence_of`.
+* **[validate_comparison_of](lib/shoulda/matchers/active_model/validate_comparison_of_matcher.rb)**
+  tests usage of `validates_comparison_of`.
 
 ### ActiveRecord matchers
 

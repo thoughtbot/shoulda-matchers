@@ -113,7 +113,7 @@ module UnitTests
     end
 
     def date_column
-      [:date, :datetime].include?(column_type)
+      [:date, :datetime, :time, :timestamp].include?(column_type)
     end
   end
 end

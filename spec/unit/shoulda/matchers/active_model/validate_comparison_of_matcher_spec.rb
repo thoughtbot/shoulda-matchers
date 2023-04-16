@@ -158,7 +158,7 @@ Expected Example to validate that :attr looks like a value greater than
     end
 
     context 'when comparing with an integer' do
-      context 'qualified with other_than' do
+      context 'qualified with is_other_than' do
         context 'and validating with other_than' do
           it 'accepts' do
             record = build_record_validating_comparison(column_type: :integer, other_than: 10)
@@ -325,7 +325,7 @@ Expected Example to validate that :attr looks like a value other than
         end
       end
 
-      context 'qualified with equal_to' do
+      context 'qualified with is_equal_to' do
         context 'and validating with equal_to' do
           it 'accepts' do
             record = build_record_validating_comparison(column_type: :integer, equal_to: 10)
@@ -497,8 +497,8 @@ but this could not be proved.
         end
       end
 
-      context 'qualified with is_less_than_or_equal_to' do
-        context 'and validating with less_than_or_equal_to' do
+      context 'qualified with less_than_or_equal_to' do
+        context 'and validating with is_less_than_or_equal_to' do
           it 'accepts' do
             record = build_record_validating_comparison(column_type: :integer, less_than_or_equal_to: 10)
 
@@ -1197,7 +1197,7 @@ or equal to 10, but this could not be proved.
     end
 
     context 'when comparing with an string' do
-      context 'qualified with other_than' do
+      context 'qualified with is_other_than' do
         context 'and validating with other_than' do
           it 'accepts' do
             record = build_record_validating_comparison(column_type: :string, other_than: 'cat')
@@ -1332,7 +1332,7 @@ cat, but this could not be proved.
         end
       end
 
-      context 'qualified with equal_to' do
+      context 'qualified with is_equal_to' do
         context 'and validating with equal_to' do
           it 'accepts' do
             record = build_record_validating_comparison(column_type: :string, equal_to: 'cat')
@@ -1472,8 +1472,8 @@ but this could not be proved.
         end
       end
 
-      context 'qualified with is_less_than_or_equal_to_to' do
-        context 'and validating with is_less_than_or_equal_to' do
+      context 'qualified with is_less_than_or_equal_to' do
+        context 'and validating with less_than_or_equal_to' do
           it 'accepts' do
             record = build_record_validating_comparison(column_type: :string, less_than_or_equal_to: 'cat')
 
@@ -1932,7 +1932,7 @@ or equal to cat, but this could not be proved.
     end
 
     context 'when comparing with an date' do
-      context 'qualified with other_than' do
+      context 'qualified with is_other_than' do
         context 'and validating with other_than' do
           it 'accepts' do
             date = Date.new(2023, 1, 1)
@@ -2060,7 +2060,7 @@ Expected Example to validate that :attr looks like a value other than
         end
       end
 
-      context 'qualified with equal_to' do
+      context 'qualified with is_equal_to' do
         context 'and validating with is_equal_to' do
           it 'accepts' do
             date = Date.new(2023, 1, 1)
@@ -2188,7 +2188,7 @@ Expected Example to validate that :attr looks like a value equal to
         end
       end
 
-      context 'qualified with less_than_or_equal_to_to' do
+      context 'qualified with less_than_or_equal_to' do
         context 'and validating with is_less_than_or_equal_to' do
           it 'accepts' do
             date = Date.new(2023, 1, 1)
@@ -2708,24 +2708,25 @@ or equal to 2023-01-01, but this could not be proved.
           expect(record).to validate_comparison.is_greater_than(10).allow_nil
         end
 
-      context 'and not validating with allow_nil' do
-        it 'rejects since it tries to treat nil as a number' do
-          record = build_record_validating_comparison(column_type: :integer, greater_than: 10)
+        context 'and not validating with allow_nil' do
+          it 'rejects since it tries to treat nil as a number' do
+            record = build_record_validating_comparison(column_type: :integer, greater_than: 10)
 
-          assertion = lambda do
-            expect(record).to validate_comparison.is_greater_than(10).allow_nil
-          end
+            assertion = lambda do
+              expect(record).to validate_comparison.is_greater_than(10).allow_nil
+            end
 
-          message = <<-MESSAGE
+            message = <<-MESSAGE
 Expected Example to validate that :attr looks like a value greater than
 10 and as long as it is not nil, but this could not be proved.
   After setting :attr to ‹nil›, the matcher expected the Example to be
   valid, but it was invalid instead, producing these validation errors:
 
   * attr: ["can't be blank"]
-          MESSAGE
+            MESSAGE
 
-          expect(&assertion).to fail_with_message(message)
+            expect(&assertion).to fail_with_message(message)
+          end
         end
       end
     end
@@ -2748,8 +2749,9 @@ Expected Example to validate that :attr looks like a value greater than
           end
 
           message = <<-MESSAGE
-Expected Example to validate that :attr looks like a value, greater than
-10, raising a validation exception on failure, but this could not be proved.
+Expected Example to validate that :attr looks like a value greater than
+10, raising a validation exception on failure, but this could not be
+proved.
   After setting :attr to ‹10›, the matcher expected the Example to be
   invalid and to raise a validation exception, but the record produced
   validation errors instead.
@@ -2862,7 +2864,7 @@ be proved.
           expect(record).to validate_comparison
         end
 
-        expect(&assertion).to raise_error(ArgumentError, "matcher isn't qualified with anything")
+        expect(&assertion).to raise_error(ArgumentError, "matcher isn't qualified with any comparison matcher")
       end
     end
 

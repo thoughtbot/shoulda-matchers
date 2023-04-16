@@ -1,6 +1,279 @@
 module Shoulda
   module Matchers
     module ActiveModel
+      # The `validate_comparison_of` matcher tests usage of the
+      # `validates_comparison_of` validation.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attr_accessor :gpa
+      #
+      #       validates_comparison_of :gpa, greater_than: 10
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Person, type: :model do
+      #       it { should validate_comparison_of(:gpa).greater_than(10) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_comparison_of(:gpa).greater_than(10)
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### on
+      #
+      # Use `on` if your validation applies only under a certain context.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attribute :number_of_dependents, :integer
+      #       attr_accessor :number_of_dependents
+      #
+      #       validates_comparison_of :number_of_dependents, on: :create, greater_than: 0
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Person, type: :model do
+      #       it do
+      #         should validate_comparison_of(:number_of_dependents).
+      #           greater_than(0).
+      #           on(:create)
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_comparison_of(:number_of_dependents).greater_than(0).on(:create)
+      #     end
+      #
+      # ##### is_less_than
+      #
+      # Use `is_less_than` to test usage of the the `:less_than` option. This
+      # asserts that the attribute can take a value which is less than the
+      # given value and cannot take a value which is greater than or equal to
+      # it. It can also accept methods or procs that returns a given value.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attribute :number_of_cars, :integer
+      #       attr_accessor :number_of_cars
+      #
+      #       validates_comparison_of :number_of_cars, less_than: :current_number_of_cars
+      #
+      #       def current_number_of_cars
+      #         10
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Person, type: :model do
+      #       it do
+      #         should validate_comparison_of(:number_of_cars).
+      #           is_less_than(:current_number_of_cars)
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_comparison_of(:number_of_cars).
+      #         is_less_than(:current_number_of_cars)
+      #     end
+      #
+      # ##### is_less_than_or_equal_to
+      #
+      # Use `is_less_than_or_equal_to` to test usage of the
+      # `:less_than_or_equal_to` option. This asserts that the attribute can
+      # take a value which is less than or equal to the given value and cannot
+      # take a value which is greater than it. It can also accept methods or
+      # procs that returns a given value.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attr_accessor :birth_date
+      #
+      #       validates_comparison_of :birth_date, less_than_or_equal_to: Date.new(1987, 12, 31)
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Person, type: :model do
+      #       it do
+      #         should validate_comparison_of(:birth_date).
+      #           is_less_than_or_equal_to(Date.new(1987, 12, 31))
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_comparison_of(:birth_date).
+      #         is_less_than_or_equal_to(Date.new(1987, 12, 31))
+      #     end
+      #
+      # ##### is_greater_than_or_equal_to
+      #
+      # Use `is_greater_than_or_equal_to` to test usage of the
+      # `:greater_than_or_equal_to` option. This asserts that the attribute can
+      # take a value which is greater than or equal to the given value and
+      # cannot take a value which is less than it.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attribute :birth_date, :date
+      #       attr_accessor :birth_date
+      #
+      #       validates_comparison_of :birth_date,
+      #                                greater_than_or_equal_to: -> { 18.years.ago.to_date }
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Person, type: :model do
+      #       it do
+      #         should validate_comparison_of(:birth_date).
+      #           is_greater_than_or_equal_to(-> { 18.years.ago.to_date })
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_comparison_of(:birth_date).
+      #         is_greater_than_or_equal_to(-> { 18.years.ago.to_date })
+      #     end
+      #
+      # ##### is_greater_than
+      #
+      # Use `is_greater_than` to test usage of the `:greater_than` option.
+      # This asserts that the attribute can take a value which is greater than
+      # the given value and cannot take a value less than or equal to it.
+      # It can also accept methods or procs that returns a given value.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attribute :legal_age, :integer
+      #       attr_accessor :legal_age
+      #
+      #       validates_comparison_of :legal_age, greater_than: 21
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Person, type: :model do
+      #       it do
+      #         should validate_comparison_of(:legal_age).
+      #           is_greater_than(21)
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_comparison_of(:legal_age).
+      #         is_greater_than(21)
+      #     end
+      #
+      # ##### is_equal_to
+      #
+      # Use `is_equal_to` to test usage of the `:equal_to` option. This asserts
+      # that the attribute can take a value which is equal to the given value
+      # and cannot take a value which is not equal. It can also accept methods or
+      # procs that returns a given value.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attribute :favorite_color, :string
+      #       attr_accessor :favorite_color
+      #
+      #       validates_comparison_of :favorite_color, equal_to: "blue"
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Person, type: :model do
+      #       it { should validate_comparison_of(:favorite_color).is_equal_to("blue") }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_comparison_of(:favorite_color).is_equal_to("blue")
+      #     end
+      #
+      #
+      # ##### is_other_than
+      #
+      # Use `is_other_than` to test usage of the `:other_than` option.
+      # This asserts that the attribute can take a number which is not equal to
+      # the given value.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attr_accessor :legal_age
+      #
+      #       validates_comparison_of :legal_age, other_than: 21
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Person, type: :model do
+      #       it do
+      #         should validate_comparison_of(:legal_age).
+      #           is_other_than(21)
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_comparison_of(:legal_age).
+      #         is_other_than(21)
+      #     end
+      #
+      # ##### with_message
+      #
+      # Use `with_message` if you are using a custom validation message.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attr_accessor :number_of_dependents
+      #
+      #       validates_comparison_of :number_of_dependents, greater_than: 0
+      #         message: 'Number of dependents must be a number'
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Person, type: :model do
+      #       it do
+      #         should validate_comparison_of(:number_of_dependents).
+      #           is_greater_than(0).
+      #           with_message('Number of dependents must be a number')
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_comparison_of(:number_of_dependents).
+      #         is_greater_than(0).
+      #         with_message('Number of dependents must be a number')
+      #     end
+      #
+      # ##### allow_nil
+      #
+      # Use `allow_nil` to assert that the attribute allows nil.
+      #
+      #     class Post
+      #       include ActiveModel::Model
+      #       attr_accessor :age
+      #
+      #       validates_comparison_of :age, greater_than: 0, allow_nil: true
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Post, type: :model do
+      #       it { should validate_comparison_of(:age).is_greater_than(0).allow_nil }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PostTest < ActiveSupport::TestCase
+      #       should validate_comparison_of(:age).is_greater_than(0).allow_nil
+      #     end
+      #
+      # @return [ValidateComparisonOfMatcher]
+      #
       def validate_comparison_of(attr)
         ValidateComparisonOfMatcher.new(attr)
       end
@@ -291,9 +564,9 @@ module Shoulda
 
         def submatcher_comparison_descriptions
           @submatchers.inject([]) do |arr, submatcher|
-            if submatcher.respond_to? :comparison_description
-              arr << submatcher.comparison_description
-            end
+            arr << if submatcher.respond_to? :comparison_description
+                     submatcher.comparison_description
+                   end
           end
         end
 
