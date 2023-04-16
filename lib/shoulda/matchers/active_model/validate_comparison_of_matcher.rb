@@ -22,6 +22,7 @@ module Shoulda
           @expects_custom_validation_message = false
           @expects_to_allow_nil = false
           @expects_strict = false
+          @comparison_submatcher = false
           @context = nil
           @expected_message = nil
         end
@@ -37,11 +38,7 @@ module Shoulda
 
         def allow_nil
           @expects_to_allow_nil = true
-          prepare_submatcher(
-            AllowValueMatcher.new(nil).
-              for(@attribute).
-              with_message(:not_a_number),
-          )
+          prepare_submatcher(AllowValueMatcher.new(nil).for(@attribute))
           self
         end
 
@@ -97,6 +94,9 @@ module Shoulda
         def matches?(subject)
           @subject = subject
           @number_of_submatchers = @submatchers.size
+          unless @comparison_matcher
+            raise(ArgumentError, "matcher isn't qualified with any comparison matcher")
+          end
 
           qualify_submatchers
           first_submatcher_that_fails_to_match.nil?
@@ -185,6 +185,7 @@ module Shoulda
         end
 
         def comparison_matcher_for(value, operator)
+          @comparison_matcher = true
           ComparisonMatcher.
             new(self, value, operator).
             for(@attribute)
@@ -197,7 +198,7 @@ module Shoulda
         def qualify_submatchers
           @submatchers.each do |submatcher|
             if @expects_strict
-              submatcher.strict(@expects_strict)
+              submatcher.strict
             end
 
             if @expected_message.present?

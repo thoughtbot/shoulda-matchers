@@ -2701,6 +2701,171 @@ or equal to 2023-01-01, but this could not be proved.
       end
     end
 
+    context 'qualified with allow_nil' do
+      context 'and validating with allow_nil' do
+        it 'accepts' do
+          record = build_record_validating_comparison(column_type: :integer, greater_than: 10, allow_nil: true)
+          expect(record).to validate_comparison.is_greater_than(10).allow_nil
+        end
+
+      context 'and not validating with allow_nil' do
+        it 'rejects since it tries to treat nil as a number' do
+          record = build_record_validating_comparison(column_type: :integer, greater_than: 10)
+
+          assertion = lambda do
+            expect(record).to validate_comparison.is_greater_than(10).allow_nil
+          end
+
+          message = <<-MESSAGE
+Expected Example to validate that :attr looks like a value greater than
+10 and as long as it is not nil, but this could not be proved.
+  After setting :attr to ‹nil›, the matcher expected the Example to be
+  valid, but it was invalid instead, producing these validation errors:
+
+  * attr: ["can't be blank"]
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+    end
+
+    context 'qualified with strict' do
+      context 'and validating strictly' do
+        it 'accepts' do
+          record = build_record_validating_comparison(column_type: :integer, greater_than: 10, strict: true)
+
+          expect(record).to validate_comparison.is_greater_than(10).strict
+        end
+      end
+
+      context 'and not validating strictly' do
+        it 'rejects since ActiveModel::StrictValidationFailed is never raised' do
+          record = build_record_validating_comparison(column_type: :integer, greater_than: 10)
+
+          assertion = lambda do
+            expect(record).to validate_comparison.is_greater_than(10).strict
+          end
+
+          message = <<-MESSAGE
+Expected Example to validate that :attr looks like a value, greater than
+10, raising a validation exception on failure, but this could not be proved.
+  After setting :attr to ‹10›, the matcher expected the Example to be
+  invalid and to raise a validation exception, but the record produced
+  validation errors instead.
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+    end
+
+    context 'qualified with on' do
+      context 'qualified with on and validating with on' do
+        it 'accepts' do
+          record = build_record_validating_comparison(column_type: :integer, greater_than: 10, on: :customizable)
+          expect(record).to validate_comparison.is_greater_than(10).on(:customizable)
+        end
+      end
+
+      context 'qualified with on but not validating with on' do
+        it 'accepts since the validation never considers a context' do
+          record = build_record_validating_comparison(column_type: :integer, greater_than: 10)
+          expect(record).to validate_comparison.is_greater_than(10).on(:customizable)
+        end
+      end
+
+      context 'not qualified with on but validating with on' do
+        it 'rejects since the validation never runs' do
+          record = build_record_validating_comparison(column_type: :integer, greater_than: 10, on: :customizable)
+
+          assertion = lambda do
+            expect(record).to validate_comparison.is_greater_than(10)
+          end
+
+          message = <<-MESSAGE
+Expected Example to validate that :attr looks like a value greater than
+10, but this could not be proved.
+  After setting :attr to ‹10›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'qualified with on but without another qualifier' do
+        it 'rejects since the validation never runs' do
+          record = build_record_validating_comparison(column_type: :integer, greater_than: 10, on: :customizable)
+
+          assertion = lambda do
+            expect(record).to validate_comparison.is_greater_than(10)
+          end
+
+          message = <<-MESSAGE
+Expected Example to validate that :attr looks like a value greater than
+10, but this could not be proved.
+  After setting :attr to ‹10›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+    end
+
+    context 'qualified with with_message' do
+      context 'and validating with the same message' do
+        it 'accepts' do
+          record = build_record_validating_comparison(column_type: :integer, greater_than: 10, message: 'custom')
+          expect(record).to validate_comparison.is_greater_than(10).with_message(/custom/)
+        end
+      end
+
+      context 'and validating with a different message' do
+        it 'rejects with the correct failure message' do
+          record = build_record_validating_comparison(column_type: :integer, greater_than: 10, message: 'custom')
+
+          assertion = lambda do
+            expect(record).to validate_comparison.is_greater_than(10).with_message(/wrong/)
+          end
+
+          message = <<-MESSAGE
+Expected Example to validate that :attr looks like a value greater than
+10, producing a custom validation error on failure, but this could not
+be proved.
+  After setting :attr to ‹10›, the matcher expected the Example to be
+  invalid and to produce a validation error matching ‹/wrong/› on :attr.
+  The record was indeed invalid, but it produced these validation errors
+  instead:
+
+  * attr: ["custom"]
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'and no message is provided' do
+        it 'ignores the qualifier' do
+          record = build_record_validating_comparison(column_type: :integer, greater_than: 10)
+          expect(record).to validate_comparison.is_greater_than(10).with_message(nil)
+        end
+      end
+    end
+
+    context 'when no comparison qualified is provided' do
+      it 'raises error' do
+        record = define_model_validating_nothing
+
+        assertion = lambda do
+          expect(record).to validate_comparison
+        end
+
+        expect(&assertion).to raise_error(ArgumentError, "matcher isn't qualified with anything")
+      end
+    end
+
     def build_record_validating_comparison(options = {})
       define_model_validating_comparison_of_attribute(options).new
     end
@@ -2726,6 +2891,10 @@ or equal to 2023-01-01, but this could not be proved.
       define_model 'Example', attribute_name => { type: column_type } do |model|
         model.validates_comparison_of(attribute_name, options)
       end
+    end
+
+    def define_model_validating_nothing
+      define_model('Example', attribute_name => :string)
     end
 
     def validate_comparison
