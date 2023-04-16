@@ -1473,7 +1473,7 @@ but this could not be proved.
       end
 
       context 'qualified with is_less_than_or_equal_to_to' do
-        context 'and validating with equal_to' do
+        context 'and validating with is_less_than_or_equal_to' do
           it 'accepts' do
             record = build_record_validating_comparison(column_type: :string, less_than_or_equal_to: 'cat')
 
@@ -1917,6 +1917,776 @@ or equal to cat, but this could not be proved.
   validation error "must be greater than or equal to cat" on :attr. The
   record was indeed invalid, but it produced these validation errors
   instead:
+
+  * attr: ["can't be blank"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          end
+        end
+      end
+    end
+
+    context 'when comparing with an date' do
+      context 'qualified with other_than' do
+        context 'and validating with other_than' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, other_than: date)
+
+            expect(record).to validate_comparison_of(:attr).is_other_than(date)
+          end
+
+          it 'rejects when used in the negative' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, other_than: date)
+
+            assertion = lambda do
+              expect(record).not_to validate_comparison_of(:attr).is_other_than(date)
+            end
+
+            expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected Example not to validate that :attr looks like a value other
+than 2023-01-01, but this could not be proved.
+  After setting :attr to ‹"2023-01-01"› -- which was read back as ‹Sun,
+  01 Jan 2023› -- the matcher expected the Example to be valid, but it
+  was invalid instead, producing these validation errors:
+
+  * attr: ["must be other than 2023-01-01"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          end
+
+          it_supports(
+            'ignoring_interference_by_writer',
+            column_type: :date,
+            tests: {
+              reject_if_qualified_but_changing_value_interferes: {
+                model_name: 'Example',
+                attribute_name: :attr,
+                changing_values_with: :previous_value,
+                expected_message: <<-MESSAGE.strip,
+Expected Example to validate that :attr looks like a value other than
+2023-01-01, but this could not be proved.
+  After setting :attr to ‹"2023-01-02"› -- which was read back as ‹Sun,
+  01 Jan 2023› -- the matcher expected the Example to be valid, but it
+  was invalid instead, producing these validation errors:
+
+  * attr: ["must be other than 2023-01-01"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+                MESSAGE
+              },
+            },
+          ) do
+            def validation_matcher_scenario_args
+              super.deep_merge(validation_options: { other_than: Date.new(2023, 1, 1) })
+            end
+
+            def configure_validation_matcher(matcher)
+              matcher.is_other_than(Date.new(2023, 1, 1))
+            end
+          end
+        end
+
+        context 'when the attribute is a virtual attribute in an ActiveRecord model' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison_of_virtual_attribute(column_type: :date, other_than: date)
+
+            expect(record).to validate_comparison_of(:attr).is_other_than(date)
+          end
+        end
+
+        context 'when comparison value is a proc returning an Date' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, other_than: -> (_record) { date })
+
+            expect(record).to validate_comparison_of(:attr).is_other_than(-> (_record) { date })
+          end
+        end
+
+        context 'when comparison value is a method returning an Date' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, other_than: :comparison_value)
+            allow(record).to receive(:comparison_value).and_return(date)
+
+            expect(record).to validate_comparison_of(:attr).is_other_than(:comparison_value)
+          end
+        end
+
+        context 'when the column is an integer column' do
+          it 'rejects and raise an error' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :integer, other_than: date)
+
+            assertion = lambda do
+              expect(record).to validate_comparison_of(:attr).is_other_than(date)
+            end
+
+            expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected Example to validate that :attr looks like a value other than
+2023-01-01, but this could not be proved.
+  After setting :attr to ‹Sun, 01 Jan 2023› -- which was read back as
+  ‹nil› -- the matcher expected the Example to be invalid and to produce
+  the validation error "must be other than 2023-01-01" on :attr. The
+  record was indeed invalid, but it produced these validation errors
+  instead:
+
+  * attr: ["can't be blank"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          end
+        end
+      end
+
+      context 'qualified with equal_to' do
+        context 'and validating with is_equal_to' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, equal_to: date)
+
+            expect(record).to validate_comparison_of(:attr).is_equal_to(date)
+          end
+
+          it 'rejects when used in the negative' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, equal_to: date)
+
+            assertion = lambda do
+              expect(record).not_to validate_comparison_of(:attr).is_equal_to(date)
+            end
+
+            expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected Example not to validate that :attr looks like a value equal to
+2023-01-01, but this could not be proved.
+  After setting :attr to ‹"2022-12-31"› -- which was read back as ‹Sat,
+  31 Dec 2022› -- the matcher expected the Example to be valid, but it
+  was invalid instead, producing these validation errors:
+
+  * attr: ["must be equal to 2023-01-01"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          end
+
+          it_supports(
+            'ignoring_interference_by_writer',
+            column_type: :date,
+            tests: {
+              reject_if_qualified_but_changing_value_interferes: {
+                model_name: 'Example',
+                attribute_name: :attr,
+                changing_values_with: :next_value_or_numeric_value,
+                expected_message: <<-MESSAGE.strip,
+Expected Example to validate that :attr looks like a value equal to
+2023-01-01, but this could not be proved.
+  After setting :attr to ‹"2023-01-01"› -- which was read back as ‹Mon,
+  02 Jan 2023› -- the matcher expected the Example to be valid, but it
+  was invalid instead, producing these validation errors:
+
+  * attr: ["must be equal to 2023-01-01"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+                MESSAGE
+              },
+            },
+          ) do
+            def validation_matcher_scenario_args
+              super.deep_merge(validation_options: { equal_to: Date.new(2023, 1, 1) })
+            end
+
+            def configure_validation_matcher(matcher)
+              matcher.is_equal_to(Date.new(2023, 1, 1))
+            end
+          end
+        end
+
+        context 'when the attribute is a virtual attribute in an ActiveRecord model' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison_of_virtual_attribute(column_type: :date, equal_to: date)
+
+            expect(record).to validate_comparison_of(:attr).is_equal_to(date)
+          end
+        end
+
+        context 'when comparison value is a proc returning an Date' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, equal_to: -> (_record) { date })
+
+            expect(record).to validate_comparison_of(:attr).is_equal_to(-> (_record) { date })
+          end
+        end
+
+        context 'when comparison value is a method returning an Date' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, equal_to: :comparison_value)
+            allow(record).to receive(:comparison_value).and_return(date)
+
+            expect(record).to validate_comparison_of(:attr).is_equal_to(:comparison_value)
+          end
+        end
+
+        context 'when the column is an integer column' do
+          it 'rejects and raise an error' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :integer, equal_to: date)
+
+            assertion = lambda do
+              expect(record).to validate_comparison_of(:attr).is_equal_to(date)
+            end
+
+            expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected Example to validate that :attr looks like a value equal to
+2023-01-01, but this could not be proved.
+  After setting :attr to ‹Mon, 02 Jan 2023› -- which was read back as
+  ‹nil› -- the matcher expected the Example to be invalid and to produce
+  the validation error "must be equal to 2023-01-01" on :attr. The
+  record was indeed invalid, but it produced these validation errors
+  instead:
+
+  * attr: ["can't be blank"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          end
+        end
+      end
+
+      context 'qualified with less_than_or_equal_to_to' do
+        context 'and validating with is_less_than_or_equal_to' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, less_than_or_equal_to: date)
+
+            expect(record).to validate_comparison_of(:attr).is_less_than_or_equal_to(date)
+          end
+
+          it 'rejects when used in the negative' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, less_than_or_equal_to: date)
+
+            assertion = lambda do
+              expect(record).not_to validate_comparison_of(:attr).is_less_than_or_equal_to(date)
+            end
+
+            expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected Example not to validate that :attr looks like a value less than
+or equal to 2023-01-01, but this could not be proved.
+  After setting :attr to ‹"2023-01-02"› -- which was read back as ‹Mon,
+  02 Jan 2023› -- the matcher expected the Example to be valid, but it
+  was invalid instead, producing these validation errors:
+
+  * attr: ["must be less than or equal to 2023-01-01"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          end
+
+          it_supports(
+            'ignoring_interference_by_writer',
+            column_type: :date,
+            tests: {
+              reject_if_qualified_but_changing_value_interferes: {
+                model_name: 'Example',
+                attribute_name: :attr,
+                changing_values_with: :next_value_or_numeric_value,
+                expected_message: <<-MESSAGE.strip,
+Expected Example to validate that :attr looks like a value less than or
+equal to 2023-01-01, but this could not be proved.
+  After setting :attr to ‹"2023-01-01"› -- which was read back as ‹Mon,
+  02 Jan 2023› -- the matcher expected the Example to be valid, but it
+  was invalid instead, producing these validation errors:
+
+  * attr: ["must be less than or equal to 2023-01-01"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+                MESSAGE
+              },
+            },
+          ) do
+            def validation_matcher_scenario_args
+              super.deep_merge(validation_options: { less_than_or_equal_to: Date.new(2023, 1, 1) })
+            end
+
+            def configure_validation_matcher(matcher)
+              matcher.is_less_than_or_equal_to(Date.new(2023, 1, 1))
+            end
+          end
+        end
+
+        context 'when the attribute is a virtual attribute in an ActiveRecord model' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison_of_virtual_attribute(column_type: :date, less_than_or_equal_to: date)
+
+            expect(record).to validate_comparison_of(:attr).is_less_than_or_equal_to(date)
+          end
+        end
+
+        context 'when comparison value is a proc returning an Date' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, less_than_or_equal_to: -> (_record) { date })
+
+            expect(record).to validate_comparison_of(:attr).is_less_than_or_equal_to(-> (_record) { date })
+          end
+        end
+
+        context 'when comparison value is a method returning an Date' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, less_than_or_equal_to: :comparison_value)
+            allow(record).to receive(:comparison_value).and_return(date)
+
+            expect(record).to validate_comparison_of(:attr).is_less_than_or_equal_to(:comparison_value)
+          end
+        end
+
+        context 'when the column is an integer column' do
+          it 'rejects and raise an error' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :integer, less_than_or_equal_to: date)
+
+            assertion = lambda do
+              expect(record).to validate_comparison_of(:attr).is_less_than_or_equal_to(date)
+            end
+
+            expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected Example to validate that :attr looks like a value less than or
+equal to 2023-01-01, but this could not be proved.
+  After setting :attr to ‹Mon, 02 Jan 2023› -- which was read back as
+  ‹nil› -- the matcher expected the Example to be invalid and to produce
+  the validation error "must be less than or equal to 2023-01-01" on
+  :attr. The record was indeed invalid, but it produced these validation
+  errors instead:
+
+  * attr: ["can't be blank"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          end
+        end
+      end
+
+      context 'qualified with less_than' do
+        context 'and validating with is_less' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, less_than: date)
+
+            expect(record).to validate_comparison_of(:attr).is_less_than(date)
+          end
+
+          it 'rejects when used in the negative' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, less_than: date)
+
+            assertion = lambda do
+              expect(record).not_to validate_comparison_of(:attr).is_less_than(date)
+            end
+
+            expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected Example not to validate that :attr looks like a value less than
+2023-01-01, but this could not be proved.
+  After setting :attr to ‹"2023-01-01"› -- which was read back as ‹Sun,
+  01 Jan 2023› -- the matcher expected the Example to be valid, but it
+  was invalid instead, producing these validation errors:
+
+  * attr: ["must be less than 2023-01-01"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          end
+
+          it_supports(
+            'ignoring_interference_by_writer',
+            column_type: :date,
+            tests: {
+              reject_if_qualified_but_changing_value_interferes: {
+                model_name: 'Example',
+                attribute_name: :attr,
+                changing_values_with: :next_value,
+                expected_message: <<-MESSAGE.strip,
+Expected Example to validate that :attr looks like a value less than
+2023-01-01, but this could not be proved.
+  After setting :attr to ‹"2022-12-31"› -- which was read back as ‹Sun,
+  01 Jan 2023› -- the matcher expected the Example to be valid, but it
+  was invalid instead, producing these validation errors:
+
+  * attr: ["must be less than 2023-01-01"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+                MESSAGE
+              },
+            },
+          ) do
+            def validation_matcher_scenario_args
+              super.deep_merge(validation_options: { less_than: Date.new(2023, 1, 1) })
+            end
+
+            def configure_validation_matcher(matcher)
+              matcher.is_less_than(Date.new(2023, 1, 1))
+            end
+          end
+        end
+
+        context 'when the attribute is a virtual attribute in an ActiveRecord model' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison_of_virtual_attribute(column_type: :date, less_than: date)
+
+            expect(record).to validate_comparison_of(:attr).is_less_than(date)
+          end
+        end
+
+        context 'when comparison value is a proc returning an Date' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, less_than: -> (_record) { date })
+
+            expect(record).to validate_comparison_of(:attr).is_less_than(-> (_record) { date })
+          end
+        end
+
+        context 'when comparison value is a method returning an Date' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, less_than: :comparison_value)
+            allow(record).to receive(:comparison_value).and_return(date)
+
+            expect(record).to validate_comparison_of(:attr).is_less_than(:comparison_value)
+          end
+        end
+
+        context 'when the column is an integer column' do
+          it 'rejects and raise an error' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :integer, less_than: date)
+
+            assertion = lambda do
+              expect(record).to validate_comparison_of(:attr).is_less_than(date)
+            end
+
+            expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected Example to validate that :attr looks like a value less than
+2023-01-01, but this could not be proved.
+  After setting :attr to ‹Mon, 02 Jan 2023› -- which was read back as
+  ‹nil› -- the matcher expected the Example to be invalid and to produce
+  the validation error "must be less than 2023-01-01" on :attr. The
+  record was indeed invalid, but it produced these validation errors
+  instead:
+
+  * attr: ["can't be blank"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          end
+        end
+      end
+
+      context 'qualified with greater_than' do
+        context 'and validating with is_greater_than' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, greater_than: date)
+
+            expect(record).to validate_comparison_of(:attr).is_greater_than(date)
+          end
+
+          it 'rejects when used in the negative' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, greater_than: date)
+
+            assertion = lambda do
+              expect(record).not_to validate_comparison_of(:attr).is_greater_than(date)
+            end
+
+            expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected Example not to validate that :attr looks like a value greater
+than 2023-01-01, but this could not be proved.
+  After setting :attr to ‹"2022-12-31"› -- which was read back as ‹Sat,
+  31 Dec 2022› -- the matcher expected the Example to be valid, but it
+  was invalid instead, producing these validation errors:
+
+  * attr: ["must be greater than 2023-01-01"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          end
+
+          it_supports(
+            'ignoring_interference_by_writer',
+            column_type: :date,
+            tests: {
+              reject_if_qualified_but_changing_value_interferes: {
+                model_name: 'Example',
+                attribute_name: :attr,
+                changing_values_with: :previous_value,
+                expected_message: <<-MESSAGE.strip,
+Expected Example to validate that :attr looks like a value greater than
+2023-01-01, but this could not be proved.
+  After setting :attr to ‹"2023-01-02"› -- which was read back as ‹Sun,
+  01 Jan 2023› -- the matcher expected the Example to be valid, but it
+  was invalid instead, producing these validation errors:
+
+  * attr: ["must be greater than 2023-01-01"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+                MESSAGE
+              },
+            },
+          ) do
+            def validation_matcher_scenario_args
+              super.deep_merge(validation_options: { greater_than: Date.new(2023, 1, 1) })
+            end
+
+            def configure_validation_matcher(matcher)
+              matcher.is_greater_than(Date.new(2023, 1, 1))
+            end
+          end
+        end
+
+        context 'when the attribute is a virtual attribute in an ActiveRecord model' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison_of_virtual_attribute(column_type: :date, greater_than: date)
+
+            expect(record).to validate_comparison_of(:attr).is_greater_than(date)
+          end
+        end
+
+        context 'when comparison value is a proc returning an Date' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, greater_than: -> (_record) { date })
+
+            expect(record).to validate_comparison_of(:attr).is_greater_than(-> (_record) { date })
+          end
+        end
+
+        context 'when comparison value is a method returning an Date' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, greater_than: :comparison_value)
+            allow(record).to receive(:comparison_value).and_return(date)
+
+            expect(record).to validate_comparison_of(:attr).is_greater_than(:comparison_value)
+          end
+        end
+
+        context 'when the column is an integer column' do
+          it 'rejects and raise an error' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :integer, greater_than: date)
+
+            assertion = lambda do
+              expect(record).to validate_comparison_of(:attr).is_greater_than(date)
+            end
+
+            expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected Example to validate that :attr looks like a value greater than
+2023-01-01, but this could not be proved.
+  After setting :attr to ‹Sun, 01 Jan 2023› -- which was read back as
+  ‹nil› -- the matcher expected the Example to be invalid and to produce
+  the validation error "must be greater than 2023-01-01" on :attr. The
+  record was indeed invalid, but it produced these validation errors
+  instead:
+
+  * attr: ["can't be blank"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          end
+        end
+      end
+
+      context 'qualified with greater_than_or_equal_to' do
+        context 'and validating with is_greater_than_or_equal_to' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, greater_than_or_equal_to: date)
+
+            expect(record).to validate_comparison_of(:attr).is_greater_than_or_equal_to(date)
+          end
+
+          it 'rejects when used in the negative' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, greater_than_or_equal_to: date)
+
+            assertion = lambda do
+              expect(record).not_to validate_comparison_of(:attr).is_greater_than_or_equal_to(date)
+            end
+
+            expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected Example not to validate that :attr looks like a value greater
+than or equal to 2023-01-01, but this could not be proved.
+  After setting :attr to ‹"2022-12-31"› -- which was read back as ‹Sat,
+  31 Dec 2022› -- the matcher expected the Example to be valid, but it
+  was invalid instead, producing these validation errors:
+
+  * attr: ["must be greater than or equal to 2023-01-01"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+            MESSAGE
+          end
+
+          it_supports(
+            'ignoring_interference_by_writer',
+            column_type: :date,
+            tests: {
+              reject_if_qualified_but_changing_value_interferes: {
+                model_name: 'Example',
+                attribute_name: :attr,
+                changing_values_with: :previous_value,
+                expected_message: <<-MESSAGE.strip,
+Expected Example to validate that :attr looks like a value greater than
+or equal to 2023-01-01, but this could not be proved.
+  After setting :attr to ‹"2023-01-01"› -- which was read back as ‹Sat,
+  31 Dec 2022› -- the matcher expected the Example to be valid, but it
+  was invalid instead, producing these validation errors:
+
+  * attr: ["must be greater than or equal to 2023-01-01"]
+
+  As indicated in the message above, :attr seems to be changing certain
+  values as they are set, and this could have something to do with why
+  this test is failing. If you've overridden the writer method for this
+  attribute, then you may need to change it to make this test pass, or
+  do something else entirely.
+                MESSAGE
+              },
+            },
+          ) do
+            def validation_matcher_scenario_args
+              super.deep_merge(validation_options: { greater_than_or_equal_to: Date.new(2023, 1, 1) })
+            end
+
+            def configure_validation_matcher(matcher)
+              matcher.is_greater_than_or_equal_to(Date.new(2023, 1, 1))
+            end
+          end
+        end
+
+        context 'when the attribute is a virtual attribute in an ActiveRecord model' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison_of_virtual_attribute(column_type: :date, greater_than_or_equal_to: date)
+
+            expect(record).to validate_comparison_of(:attr).is_greater_than_or_equal_to(date)
+          end
+        end
+
+        context 'when comparison value is a proc returning an Date' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, greater_than_or_equal_to: -> (_record) { date })
+
+            expect(record).to validate_comparison_of(:attr).is_greater_than_or_equal_to(-> (_record) { date })
+          end
+        end
+
+        context 'when comparison value is a method returning an Date' do
+          it 'accepts' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :date, greater_than_or_equal_to: :comparison_value)
+            allow(record).to receive(:comparison_value).and_return(date)
+
+            expect(record).to validate_comparison_of(:attr).is_greater_than_or_equal_to(:comparison_value)
+          end
+        end
+
+        context 'when the column is an integer column' do
+          it 'rejects and raise an error' do
+            date = Date.new(2023, 1, 1)
+            record = build_record_validating_comparison(column_type: :integer, greater_than_or_equal_to: date)
+
+            assertion = lambda do
+              expect(record).to validate_comparison_of(:attr).is_greater_than_or_equal_to(date)
+            end
+
+            expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected Example to validate that :attr looks like a value greater than
+or equal to 2023-01-01, but this could not be proved.
+  After setting :attr to ‹Sat, 31 Dec 2022› -- which was read back as
+  ‹nil› -- the matcher expected the Example to be invalid and to produce
+  the validation error "must be greater than or equal to 2023-01-01" on
+  :attr. The record was indeed invalid, but it produced these validation
+  errors instead:
 
   * attr: ["can't be blank"]
 

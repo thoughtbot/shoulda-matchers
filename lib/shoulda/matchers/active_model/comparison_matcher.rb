@@ -144,10 +144,8 @@ module Shoulda
         end
 
         def diffs_when_string(diff_to_compare)
-          internal_value = @value.dup
-          last_character = internal_value.slice!(-1)
           [-1, 0, 1].map do |sign|
-            internal_value + (last_character.ord + (diff_to_compare * sign)).chr
+            @value[0..-2] + (@value[-1].ord + diff_to_compare * sign).chr
           end
         end
 
