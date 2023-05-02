@@ -48,6 +48,30 @@ module Shoulda
       #       should have_db_column(:camera_aperture).of_type(:decimal)
       #     end
       #
+      # ##### of_sql_type
+      #
+      # Use `of_sql_type` to assert that a column is defined as a certain sql_type.
+      #
+      #     class CreatePhones < ActiveRecord::Migration
+      #       def change
+      #         create_table :phones do |t|
+      #           t.string :camera_aperture, limit: 36
+      #         end
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Phone, type: :model do
+      #       it do
+      #         should have_db_column(:camera_aperture).of_sql_type('varchar(36)')
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PhoneTest < ActiveSupport::TestCase
+      #       should have_db_column(:camera_aperture).of_sql_type('varchar(36)')
+      #     end
+      #
       # ##### with_options
       #
       # Use `with_options` to assert that a column has been defined with
@@ -96,6 +120,11 @@ module Shoulda
           self
         end
 
+        def of_sql_type(sql_column_type)
+          @options[:sql_column_type] = sql_column_type
+          self
+        end
+
         def with_options(opts = {})
           validate_options(opts)
           OPTIONS.each do |attribute|
@@ -110,6 +139,7 @@ module Shoulda
           @subject = subject
           column_exists? &&
             correct_column_type? &&
+            correct_sql_column_type? &&
             correct_precision? &&
             correct_limit? &&
             correct_default? &&
@@ -129,12 +159,9 @@ module Shoulda
 
         def description
           desc = "have db column named #{@column}"
-          if @options.key?(:column_type)
-            desc << " of type #{@options[:column_type]}"
-          end
-          if @options.key?(:precision)
-            desc << " of precision #{@options[:precision]}"
-          end
+          desc << " of type #{@options[:column_type]}" if @options.key?(:column_type)
+          desc << " of sql_type #{@options[:sql_column_type]}" if @options.key?(:sql_column_type)
+          desc << " of precision #{@options[:precision]}" if @options.key?(:precision)
           desc << " of limit #{@options[:limit]}" if @options.key?(:limit)
           desc << " of default #{@options[:default]}" if @options.key?(:default)
           desc << " of null #{@options[:null]}" if @options.key?(:null)
@@ -174,6 +201,19 @@ module Shoulda
             @missing =
               "#{model_class} has a db column named #{@column} " <<
               "of type #{matched_column.type}, not #{@options[:column_type]}."
+            false
+          end
+        end
+
+        def correct_sql_column_type?
+          return true unless @options.key?(:sql_column_type)
+
+          if matched_column.sql_type.to_s == @options[:sql_column_type].to_s
+            true
+          else
+            @missing =
+              "#{model_class} has a db column named #{@column} " <<
+              "of sql type #{matched_column.sql_type}, not #{@options[:sql_column_type]}."
             false
           end
         end

@@ -26,6 +26,42 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbColumnMatcher, type: :model do
     end
   end
 
+  context '#of_sql_type' do
+    it 'accepts a column of correct type' do
+      sql_column_type = postgresql? ? 'character varying(36)' : 'varchar(36)'
+      expect(with_table(:nickname, :string, limit: 36)).
+        to have_db_column(:nickname).of_sql_type(sql_column_type)
+    end
+
+    it 'rejects a nonexistent database column' do
+      sql_column_type = postgresql? ? 'character varying(36)' : 'varchar(36)'
+      assertion = lambda do
+        expect(with_table(:nickname, :string, limit: 36)).
+          to have_db_column(:superhero).of_sql_type(sql_column_type)
+      end
+
+      message = <<-MESSAGE
+Expected Employee to have db column named superhero of sql_type #{sql_column_type} (Employee does not have a db column named superhero.)
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
+    end
+
+    it 'rejects a column of wrong sql type' do
+      sql_column_type = postgresql? ? 'character varying(36)' : 'varchar(36)'
+      assertion = lambda do
+        expect(with_table(:nickname, :string, limit: 36)).
+          to have_db_column(:nickname).of_sql_type('varchar')
+      end
+
+      message = <<-MESSAGE
+Expected Employee to have db column named nickname of sql_type varchar (Employee has a db column named nickname of sql type #{sql_column_type}, not varchar.)
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
+    end
+  end
+
   context 'with precision option' do
     it 'accepts a column of correct precision' do
       expect(with_table(:salary, :decimal, precision: 5)).
