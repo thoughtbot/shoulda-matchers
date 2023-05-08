@@ -40,19 +40,19 @@ describe Shoulda::Matchers::ActiveModel::ValidateExclusionOfMatcher, type: :mode
           attribute_name: :attr,
           changing_values_with: :next_value,
           expected_message: <<-MESSAGE.strip,
-Expected Example to validate that :attr lies outside the range ‹2› to
-‹5›, but this could not be proved.
-  After setting :attr to ‹1› -- which was read back as ‹2› -- the
-  matcher expected the Example to be valid, but it was invalid instead,
-  producing these validation errors:
+            Expected Example to validate that :attr lies outside the range ‹2› to
+            ‹5›, but this could not be proved.
+              After setting :attr to ‹1› -- which was read back as ‹2› -- the
+              matcher expected the Example to be valid, but it was invalid instead,
+              producing these validation errors:
 
-  * attr: ["is reserved"]
+              * attr: ["is reserved"]
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+              As indicated in the message above, :attr seems to be changing certain
+              values as they are set, and this could have something to do with why
+              this test is failing. If you've overridden the writer method for this
+              attribute, then you may need to change it to make this test pass, or
+              do something else entirely.
           MESSAGE
         },
       },
@@ -74,10 +74,10 @@ Expected Example to validate that :attr lies outside the range ‹2› to
       end
 
       message = <<-MESSAGE
-Expected Example not to validate that :attr lies outside the range ‹2›
-to ‹5›, but this could not be proved.
-  After setting :attr to ‹6›, the matcher expected the Example to be
-  invalid, but it was valid instead.
+        Expected Example not to validate that :attr lies outside the range ‹2›
+        to ‹5›, but this could not be proved.
+          After setting :attr to ‹6›, the matcher expected the Example to be
+          invalid, but it was valid instead.
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)
@@ -192,17 +192,17 @@ to ‹5›, but this could not be proved.
           attribute_name: :attr,
           changing_values_with: :next_value,
           expected_message: <<-MESSAGE.strip,
-Expected Example to validate that :attr is neither ‹"one"› nor ‹"two"›,
-but this could not be proved.
-  After setting :attr to ‹"one"› -- which was read back as ‹"onf"› --
-  the matcher expected the Example to be invalid, but it was valid
-  instead.
+            Expected Example to validate that :attr is neither ‹"one"› nor ‹"two"›,
+            but this could not be proved.
+              After setting :attr to ‹"one"› -- which was read back as ‹"onf"› --
+              the matcher expected the Example to be invalid, but it was valid
+              instead.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+              As indicated in the message above, :attr seems to be changing certain
+              values as they are set, and this could have something to do with why
+              this test is failing. If you've overridden the writer method for this
+              attribute, then you may need to change it to make this test pass, or
+              do something else entirely.
           MESSAGE
         },
       },
@@ -224,12 +224,12 @@ but this could not be proved.
       end
 
       message = <<-MESSAGE
-Expected Example not to validate that :attr is neither ‹"one"› nor
-‹"two"›, but this could not be proved.
-  After setting :attr to ‹"two"›, the matcher expected the Example to be
-  valid, but it was invalid instead, producing these validation errors:
+        Expected Example not to validate that :attr is neither ‹"one"› nor
+        ‹"two"›, but this could not be proved.
+          After setting :attr to ‹"two"›, the matcher expected the Example to be
+          valid, but it was invalid instead, producing these validation errors:
 
-  * attr: ["is reserved"]
+          * attr: ["is reserved"]
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)

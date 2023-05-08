@@ -212,13 +212,13 @@ module Shoulda
           if should_add_footnote_about_belongs_to?
             message << "\n\n"
             message << Shoulda::Matchers.word_wrap(<<-MESSAGE.strip, indent: 2)
-You're getting this error because #{reason_for_existing_presence_validation}.
-*This* presence validation doesn't use "can't be blank", the usual validation
-message, but "must exist" instead.
+              You're getting this error because #{reason_for_existing_presence_validation}.
+              *This* presence validation doesn't use "can't be blank", the usual validation
+              message, but "must exist" instead.
 
-With that said, did you know that the `belong_to` matcher can test this
-validation for you? Instead of using `validate_presence_of`, try
-#{suggestions_for_belongs_to}
+              With that said, did you know that the `belong_to` matcher can test this
+              validation for you? Instead of using `validate_presence_of`, try
+              #{suggestions_for_belongs_to}
             MESSAGE
           end
 

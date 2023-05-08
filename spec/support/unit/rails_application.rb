@@ -102,9 +102,9 @@ module UnitTests
       # https://stackoverflow.com/questions/20361428/rails-i18n-validation-deprecation-warning
       fs.transform('config/application.rb') do |lines|
         lines.insert(-3, <<-EOT)
-if I18n.respond_to?(:enforce_available_locales=)
-  I18n.enforce_available_locales = false
-end
+          if I18n.respond_to?(:enforce_available_locales=)
+            I18n.enforce_available_locales = false
+          end
         EOT
       end
     end
@@ -123,10 +123,10 @@ end
       # connection will be routed to this database.
       path = 'app/models/production_record.rb'
       fs.write(path, <<-TEXT)
-class ProductionRecord < ActiveRecord::Base
-  self.abstract_class = true
-  establish_connection :production
-end
+        class ProductionRecord < ActiveRecord::Base
+          self.abstract_class = true
+          establish_connection :production
+        end
       TEXT
     end
 
@@ -139,9 +139,9 @@ end
       #   expect(with_index_on(:age2, parent_class: ProductionRecord)).to have_db_index(:age2)
       path = 'app/models/development_record.rb'
       fs.write(path, <<-TEXT)
-class DevelopmentRecord < ActiveRecord::Base
-  self.abstract_class = true
-end
+        class DevelopmentRecord < ActiveRecord::Base
+          self.abstract_class = true
+        end
       TEXT
     end
 
@@ -160,9 +160,9 @@ end
     def add_initializer_for_time_zone_aware_types
       path = 'config/initializers/configure_time_zone_aware_types.rb'
       fs.write(path, <<-TEXT)
-Rails.application.configure do
-  config.active_record.time_zone_aware_types = [:datetime, :time]
-end
+        Rails.application.configure do
+          config.active_record.time_zone_aware_types = [:datetime, :time]
+        end
       TEXT
     end
 

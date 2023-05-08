@@ -556,11 +556,11 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
           person = Person.new
 
           message = <<-MESSAGE
-Expected Person to delegate #hello to the #country object, allowing
-#country to return nil.
+            Expected Person to delegate #hello to the #country object, allowing
+            #country to return nil.
 
-Person#hello did delegate to #country when it was non-nil, but it failed
-to account for when #country *was* nil.
+            Person#hello did delegate to #country when it was non-nil, but it failed
+            to account for when #country *was* nil.
           MESSAGE
 
           expectation = lambda do
@@ -587,11 +587,11 @@ to account for when #country *was* nil.
           person = Person.new
 
           message = <<-MESSAGE
-Expected Person to delegate #hello to the #country object, allowing
-#country to return nil.
+            Expected Person to delegate #hello to the #country object, allowing
+            #country to return nil.
 
-Person#hello did delegate to #country when it was non-nil, but it failed
-to account for when #country *was* nil.
+            Person#hello did delegate to #country when it was non-nil, but it failed
+            to account for when #country *was* nil.
           MESSAGE
 
           expectation = lambda do
@@ -639,11 +639,11 @@ to account for when #country *was* nil.
           person = Person.new
 
           message = <<-MESSAGE
-Expected Person to delegate #hello to the #country object, allowing
-#country to return nil.
+            Expected Person to delegate #hello to the #country object, allowing
+            #country to return nil.
 
-Person#hello did delegate to #country when it was non-nil, but it failed
-to account for when #country *was* nil.
+            Person#hello did delegate to #country when it was non-nil, but it failed
+            to account for when #country *was* nil.
           MESSAGE
 
           expectation = lambda do

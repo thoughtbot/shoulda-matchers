@@ -44,8 +44,8 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher, type: :model do
             end
 
             expect(&assertion).to fail_with_message(<<-MESSAGE, wrap: true)
-Expected the examples table not to have a #{index_type} index on
-#{index.inspect}, but it does.
+              Expected the examples table not to have a #{index_type} index on
+              #{index.inspect}, but it does.
             MESSAGE
           end
         end
@@ -74,8 +74,8 @@ Expected the examples table not to have a #{index_type} index on
             end
 
             expect(&assertion).to fail_with_message(<<-MESSAGE, wrap: true)
-Expected the examples table to have an index on #{index.inspect} and for it to
-be #{index_type}. The index does exist, but it is #{inverse_description}.
+              Expected the examples table to have an index on #{index.inspect} and for it to
+              be #{index_type}. The index does exist, but it is #{inverse_description}.
             MESSAGE
           end
         end
@@ -95,8 +95,8 @@ be #{index_type}. The index does exist, but it is #{inverse_description}.
           end
 
           expect(&assertion).to fail_with_message(<<-MESSAGE, wrap: true)
-Expected the examples table to have a #{index_type} index on :#{other_index},
-but it does not.
+            Expected the examples table to have a #{index_type} index on :#{other_index},
+            but it does not.
           MESSAGE
         end
 
@@ -124,7 +124,7 @@ but it does not.
               end
 
               expect(&assertion).to fail_with_message(<<-MESSAGE)
-Expected the examples table not to have an index on :age, but it does.
+                Expected the examples table not to have an index on :age, but it does.
               MESSAGE
             end
           end
@@ -137,7 +137,7 @@ Expected the examples table not to have an index on :age, but it does.
               end
 
               expect(&assertion).to fail_with_message(<<-MESSAGE)
-Expected the examples table to have an index on :name, but it does not.
+                Expected the examples table to have an index on :name, but it does not.
               MESSAGE
             end
 
@@ -180,8 +180,8 @@ Expected the examples table to have an index on :name, but it does not.
               end
 
               expect(&assertion).to fail_with_message(<<-MESSAGE)
-Expected the employees table not to have a unique index on :ssn, but it
-does.
+                Expected the employees table not to have a unique index on :ssn, but it
+                does.
               MESSAGE
             end
           end
@@ -232,8 +232,8 @@ does.
             end
 
             expect(&assertion).to fail_with_message(<<-MESSAGE)
-Expected the examples table not to have an index on [:geocodable_id,
-:geocodable_type], but it does.
+              Expected the examples table not to have an index on [:geocodable_id,
+              :geocodable_type], but it does.
             MESSAGE
           end
         end
@@ -249,8 +249,8 @@ Expected the examples table not to have an index on [:geocodable_id,
             end
 
             expect(&assertion).to fail_with_message(<<-MESSAGE)
-Expected the examples table to have an index on [:geocodable_id,
-:geocodable_type], but it does not.
+              Expected the examples table to have an index on [:geocodable_id,
+              :geocodable_type], but it does not.
             MESSAGE
           end
 
@@ -288,8 +288,8 @@ Expected the examples table to have an index on [:geocodable_id,
                 end
 
                 expect(&assertion).to fail_with_message(<<-MESSAGE, wrap: true)
-Expected the examples table not to have an index on "lower((code)::text)", but
-it does.
+                  Expected the examples table not to have an index on "lower((code)::text)", but
+                  it does.
                 MESSAGE
               end
             end
@@ -315,8 +315,8 @@ it does.
                 end
 
                 expect(&assertion).to fail_with_message(<<-MESSAGE, wrap: true)
-Expected the examples table to have an index on "lower((code)::text)", but it
-does not.
+                  Expected the examples table to have an index on "lower((code)::text)", but it
+                  does not.
                 MESSAGE
               end
             end

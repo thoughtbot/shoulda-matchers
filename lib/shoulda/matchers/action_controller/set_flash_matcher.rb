@@ -207,18 +207,18 @@ module Shoulda
         class QualifierOrderError < StandardError
           def message
             <<-MESSAGE.strip
-Using `set_flash` with the `now` qualifier and specifying `now` after other
-qualifiers is no longer allowed.
+              Using `set_flash` with the `now` qualifier and specifying `now` after other
+              qualifiers is no longer allowed.
 
-You'll want to use `now` immediately after `set_flash`. For instance:
+              You'll want to use `now` immediately after `set_flash`. For instance:
 
-    # Valid
-    should set_flash.now[:foo]
-    should set_flash.now[:foo].to('bar')
+                  # Valid
+                  should set_flash.now[:foo]
+                  should set_flash.now[:foo].to('bar')
 
-    # Invalid
-    should set_flash[:foo].now
-    should set_flash[:foo].to('bar').now
+                  # Invalid
+                  should set_flash[:foo].now
+                  should set_flash[:foo].to('bar').now
             MESSAGE
           end
         end

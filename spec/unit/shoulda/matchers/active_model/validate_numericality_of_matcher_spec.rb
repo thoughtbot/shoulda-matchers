@@ -153,16 +153,16 @@ describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :m
             attribute_name: :attr,
             changing_values_with: :numeric_value,
             expected_message: <<-MESSAGE.strip,
-Expected Example to validate that :attr looks like a number, but this
-could not be proved.
-  After setting :attr to ‹"abcd"› -- which was read back as ‹"1"› -- the
-  matcher expected the Example to be invalid, but it was valid instead.
+              Expected Example to validate that :attr looks like a number, but this
+              could not be proved.
+                After setting :attr to ‹"abcd"› -- which was read back as ‹"1"› -- the
+                matcher expected the Example to be invalid, but it was valid instead.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+                As indicated in the message above, :attr seems to be changing certain
+                values as they are set, and this could have something to do with why
+                this test is failing. If you've overridden the writer method for this
+                attribute, then you may need to change it to make this test pass, or
+                do something else entirely.
             MESSAGE
           },
         },
@@ -213,13 +213,13 @@ could not be proved.
           end
 
           message = <<-MESSAGE
-Expected Example not to validate that :attr looks like a number, but
-this could not be proved.
-  After setting :attr to ‹"abcd"›, the matcher expected the Example to
-  be valid, but it was invalid instead, producing these validation
-  errors:
+            Expected Example not to validate that :attr looks like a number, but
+            this could not be proved.
+              After setting :attr to ‹"abcd"›, the matcher expected the Example to
+              be valid, but it was invalid instead, producing these validation
+              errors:
 
-  * attr: ["is not a number"]
+              * attr: ["is not a number"]
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -234,10 +234,10 @@ this could not be proved.
         assertion = -> { expect(record).to validate_numericality }
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like a number, but this
-could not be proved.
-  After setting :attr to ‹"abcd"›, the matcher expected the Example to
-  be invalid, but it was valid instead.
+          Expected Example to validate that :attr looks like a number, but this
+          could not be proved.
+            After setting :attr to ‹"abcd"›, the matcher expected the Example to
+            be invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -263,20 +263,20 @@ could not be proved.
             attribute_name: :attr,
             changing_values_with: :next_value_or_non_numeric_value,
             expected_message: <<-MESSAGE.strip,
-Expected Example to validate that :attr looks like a number as long as
-it is not nil, but this could not be proved.
-  In checking that Example allows :attr to be ‹nil›, after setting :attr
-  to ‹nil› -- which was read back as ‹"a"› -- the matcher expected the
-  Example to be valid, but it was invalid instead, producing these
-  validation errors:
+              Expected Example to validate that :attr looks like a number as long as
+              it is not nil, but this could not be proved.
+                In checking that Example allows :attr to be ‹nil›, after setting :attr
+                to ‹nil› -- which was read back as ‹"a"› -- the matcher expected the
+                Example to be valid, but it was invalid instead, producing these
+                validation errors:
 
-  * attr: ["is not a number"]
+                * attr: ["is not a number"]
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+                As indicated in the message above, :attr seems to be changing certain
+                values as they are set, and this could have something to do with why
+                this test is failing. If you've overridden the writer method for this
+                attribute, then you may need to change it to make this test pass, or
+                do something else entirely.
             MESSAGE
           },
         },
@@ -300,13 +300,13 @@ it is not nil, but this could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like a number as long as
-it is not nil, but this could not be proved.
-  In checking that Example allows :attr to be ‹nil›, after setting :attr
-  to ‹nil›, the matcher expected the Example to be valid, but it was
-  invalid instead, producing these validation errors:
+          Expected Example to validate that :attr looks like a number as long as
+          it is not nil, but this could not be proved.
+            In checking that Example allows :attr to be ‹nil›, after setting :attr
+            to ‹nil›, the matcher expected the Example to be valid, but it was
+            invalid instead, producing these validation errors:
 
-  * attr: ["is not a number"]
+            * attr: ["is not a number"]
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -349,16 +349,16 @@ this could not be proved.
             attribute_name: :attr,
             changing_values_with: :numeric_value,
             expected_message: <<-MESSAGE.strip,
-Expected Example to validate that :attr looks like an integer, but this
-could not be proved.
-  After setting :attr to ‹"0.1"› -- which was read back as ‹"1"› -- the
-  matcher expected the Example to be invalid, but it was valid instead.
+              Expected Example to validate that :attr looks like an integer, but this
+              could not be proved.
+                After setting :attr to ‹"0.1"› -- which was read back as ‹"1"› -- the
+                matcher expected the Example to be invalid, but it was valid instead.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+                As indicated in the message above, :attr seems to be changing certain
+                values as they are set, and this could have something to do with why
+                this test is failing. If you've overridden the writer method for this
+                attribute, then you may need to change it to make this test pass, or
+                do something else entirely.
             MESSAGE
           },
         },
@@ -382,10 +382,10 @@ could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like an integer, but this
-could not be proved.
-  After setting :attr to ‹"0.1"›, the matcher expected the Example to be
-  invalid, but it was valid instead.
+          Expected Example to validate that :attr looks like an integer, but this
+          could not be proved.
+            After setting :attr to ‹"0.1"›, the matcher expected the Example to be
+            invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -428,16 +428,16 @@ but this could not be proved.
             attribute_name: :attr,
             changing_values_with: :next_value,
             expected_message: <<-MESSAGE.strip,
-Expected Example to validate that :attr looks like an odd number, but
-this could not be proved.
-  After setting :attr to ‹"2"› -- which was read back as ‹"3"› -- the
-  matcher expected the Example to be invalid, but it was valid instead.
+              Expected Example to validate that :attr looks like an odd number, but
+              this could not be proved.
+                After setting :attr to ‹"2"› -- which was read back as ‹"3"› -- the
+                matcher expected the Example to be invalid, but it was valid instead.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+                As indicated in the message above, :attr seems to be changing certain
+                values as they are set, and this could have something to do with why
+                this test is failing. If you've overridden the writer method for this
+                attribute, then you may need to change it to make this test pass, or
+                do something else entirely.
             MESSAGE
           },
         },
@@ -503,10 +503,10 @@ this could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like an odd number, but
-this could not be proved.
-  After setting :attr to ‹"2"›, the matcher expected the Example to be
-  invalid, but it was valid instead.
+          Expected Example to validate that :attr looks like an odd number, but
+          this could not be proved.
+            After setting :attr to ‹"2"›, the matcher expected the Example to be
+            invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -549,16 +549,16 @@ but this could not be proved.
             attribute_name: :attr,
             changing_values_with: :next_value,
             expected_message: <<-MESSAGE.strip,
-Expected Example to validate that :attr looks like an even number, but
-this could not be proved.
-  After setting :attr to ‹"1"› -- which was read back as ‹"2"› -- the
-  matcher expected the Example to be invalid, but it was valid instead.
+              Expected Example to validate that :attr looks like an even number, but
+              this could not be proved.
+                After setting :attr to ‹"1"› -- which was read back as ‹"2"› -- the
+                matcher expected the Example to be invalid, but it was valid instead.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+                As indicated in the message above, :attr seems to be changing certain
+                values as they are set, and this could have something to do with why
+                this test is failing. If you've overridden the writer method for this
+                attribute, then you may need to change it to make this test pass, or
+                do something else entirely.
             MESSAGE
           },
         },
@@ -624,10 +624,10 @@ this could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like an even number, but
-this could not be proved.
-  After setting :attr to ‹"1"›, the matcher expected the Example to be
-  invalid, but it was valid instead.
+          Expected Example to validate that :attr looks like an even number, but
+          this could not be proved.
+            After setting :attr to ‹"1"›, the matcher expected the Example to be
+            invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -669,19 +669,19 @@ than or equal to 18, but this could not be proved.
             attribute_name: :attr,
             changing_values_with: :next_value,
             expected_message: <<-MESSAGE.strip,
-Expected Example to validate that :attr looks like a number less than or
-equal to 18, but this could not be proved.
-  After setting :attr to ‹"18"› -- which was read back as ‹"19"› -- the
-  matcher expected the Example to be valid, but it was invalid instead,
-  producing these validation errors:
+              Expected Example to validate that :attr looks like a number less than or
+              equal to 18, but this could not be proved.
+                After setting :attr to ‹"18"› -- which was read back as ‹"19"› -- the
+                matcher expected the Example to be valid, but it was invalid instead,
+                producing these validation errors:
 
-  * attr: ["must be less than or equal to 18"]
+                * attr: ["must be less than or equal to 18"]
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+                As indicated in the message above, :attr seems to be changing certain
+                values as they are set, and this could have something to do with why
+                this test is failing. If you've overridden the writer method for this
+                attribute, then you may need to change it to make this test pass, or
+                do something else entirely.
             MESSAGE
           },
         },
@@ -749,10 +749,10 @@ equal to 18, but this could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like a number less than or
-equal to 18, but this could not be proved.
-  After setting :attr to ‹"19"›, the matcher expected the Example to be
-  invalid, but it was valid instead.
+          Expected Example to validate that :attr looks like a number less than or
+          equal to 18, but this could not be proved.
+            After setting :attr to ‹"19"›, the matcher expected the Example to be
+            invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -777,13 +777,13 @@ equal to 18, but this could not be proved.
         end
 
         expect(&assertion).to fail_with_message(<<~MESSAGE)
-Expected Example not to validate that :attr looks like a number less
-than 18, but this could not be proved.
-  After setting :attr to ‹"abcd"›, the matcher expected the Example to
-  be valid, but it was invalid instead, producing these validation
-  errors:
+          Expected Example not to validate that :attr looks like a number less
+          than 18, but this could not be proved.
+            After setting :attr to ‹"abcd"›, the matcher expected the Example to
+            be valid, but it was invalid instead, producing these validation
+            errors:
 
-  * attr: ["is not a number"]
+            * attr: ["is not a number"]
         MESSAGE
       end
 
@@ -795,19 +795,19 @@ than 18, but this could not be proved.
             attribute_name: :attr,
             changing_values_with: :next_value,
             expected_message: <<-MESSAGE.strip,
-Expected Example to validate that :attr looks like a number less than
-18, but this could not be proved.
-  After setting :attr to ‹"17"› -- which was read back as ‹"18"› -- the
-  matcher expected the Example to be valid, but it was invalid instead,
-  producing these validation errors:
+              Expected Example to validate that :attr looks like a number less than
+              18, but this could not be proved.
+                After setting :attr to ‹"17"› -- which was read back as ‹"18"› -- the
+                matcher expected the Example to be valid, but it was invalid instead,
+                producing these validation errors:
 
-  * attr: ["must be less than 18"]
+                * attr: ["must be less than 18"]
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+                As indicated in the message above, :attr seems to be changing certain
+                values as they are set, and this could have something to do with why
+                this test is failing. If you've overridden the writer method for this
+                attribute, then you may need to change it to make this test pass, or
+                do something else entirely.
             MESSAGE
           },
         },
@@ -873,10 +873,10 @@ Expected Example to validate that :attr looks like a number less than
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like a number less than
-18, but this could not be proved.
-  After setting :attr to ‹"19"›, the matcher expected the Example to be
-  invalid, but it was valid instead.
+          Expected Example to validate that :attr looks like a number less than
+          18, but this could not be proved.
+            After setting :attr to ‹"19"›, the matcher expected the Example to be
+            invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -899,13 +899,13 @@ Expected Example to validate that :attr looks like a number less than
         end
 
         expect(&assertion).to fail_with_message(<<~MESSAGE)
-Expected Example not to validate that :attr looks like a number equal to
-18, but this could not be proved.
-  After setting :attr to ‹"abcd"›, the matcher expected the Example to
-  be valid, but it was invalid instead, producing these validation
-  errors:
+          Expected Example not to validate that :attr looks like a number equal to
+          18, but this could not be proved.
+            After setting :attr to ‹"abcd"›, the matcher expected the Example to
+            be valid, but it was invalid instead, producing these validation
+            errors:
 
-  * attr: ["is not a number"]
+            * attr: ["is not a number"]
         MESSAGE
       end
 
@@ -917,19 +917,19 @@ Expected Example not to validate that :attr looks like a number equal to
             attribute_name: :attr,
             changing_values_with: :next_value,
             expected_message: <<-MESSAGE.strip,
-Expected Example to validate that :attr looks like a number equal to 18,
-but this could not be proved.
-  After setting :attr to ‹"18"› -- which was read back as ‹"19"› -- the
-  matcher expected the Example to be valid, but it was invalid instead,
-  producing these validation errors:
+              Expected Example to validate that :attr looks like a number equal to 18,
+              but this could not be proved.
+                After setting :attr to ‹"18"› -- which was read back as ‹"19"› -- the
+                matcher expected the Example to be valid, but it was invalid instead,
+                producing these validation errors:
 
-  * attr: ["must be equal to 18"]
+                * attr: ["must be equal to 18"]
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+                As indicated in the message above, :attr seems to be changing certain
+                values as they are set, and this could have something to do with why
+                this test is failing. If you've overridden the writer method for this
+                attribute, then you may need to change it to make this test pass, or
+                do something else entirely.
             MESSAGE
           },
         },
@@ -995,10 +995,10 @@ but this could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like a number equal to 18,
-but this could not be proved.
-  After setting :attr to ‹"19"›, the matcher expected the Example to be
-  invalid, but it was valid instead.
+          Expected Example to validate that :attr looks like a number equal to 18,
+          but this could not be proved.
+            After setting :attr to ‹"19"›, the matcher expected the Example to be
+            invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1021,13 +1021,13 @@ but this could not be proved.
         end
 
         expect(&assertion).to fail_with_message(<<~MESSAGE)
-Expected Example not to validate that :attr looks like a number other
-than 18, but this could not be proved.
-  After setting :attr to ‹"abcd"›, the matcher expected the Example to
-  be valid, but it was invalid instead, producing these validation
-  errors:
+          Expected Example not to validate that :attr looks like a number other
+          than 18, but this could not be proved.
+            After setting :attr to ‹"abcd"›, the matcher expected the Example to
+            be valid, but it was invalid instead, producing these validation
+            errors:
 
-  * attr: ["is not a number"]
+            * attr: ["is not a number"]
         MESSAGE
       end
 
@@ -1039,16 +1039,16 @@ than 18, but this could not be proved.
             attribute_name: :attr,
             changing_values_with: :next_value,
             expected_message: <<-MESSAGE.strip,
-Expected Example to validate that :attr looks like a number other than
-18, but this could not be proved.
-  After setting :attr to ‹"18"› -- which was read back as ‹"19"› -- the
-  matcher expected the Example to be invalid, but it was valid instead.
+              Expected Example to validate that :attr looks like a number other than
+              18, but this could not be proved.
+                After setting :attr to ‹"18"› -- which was read back as ‹"19"› -- the
+                matcher expected the Example to be invalid, but it was valid instead.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+                As indicated in the message above, :attr seems to be changing certain
+                values as they are set, and this could have something to do with why
+                this test is failing. If you've overridden the writer method for this
+                attribute, then you may need to change it to make this test pass, or
+                do something else entirely.
             MESSAGE
           },
         },
@@ -1114,10 +1114,10 @@ Expected Example to validate that :attr looks like a number other than
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like a number other than
-18, but this could not be proved.
-  After setting :attr to ‹"18"›, the matcher expected the Example to be
-  invalid, but it was valid instead.
+          Expected Example to validate that :attr looks like a number other than
+          18, but this could not be proved.
+            After setting :attr to ‹"18"›, the matcher expected the Example to be
+            invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1147,13 +1147,13 @@ Expected Example to validate that :attr looks like a number other than
         end
 
         expect(&assertion).to fail_with_message(<<~MESSAGE)
-Expected Example not to validate that :attr looks like a number greater
-than or equal to 18, but this could not be proved.
-  After setting :attr to ‹"abcd"›, the matcher expected the Example to
-  be valid, but it was invalid instead, producing these validation
-  errors:
+          Expected Example not to validate that :attr looks like a number greater
+          than or equal to 18, but this could not be proved.
+            After setting :attr to ‹"abcd"›, the matcher expected the Example to
+            be valid, but it was invalid instead, producing these validation
+            errors:
 
-  * attr: ["is not a number"]
+            * attr: ["is not a number"]
         MESSAGE
       end
 
@@ -1165,16 +1165,16 @@ than or equal to 18, but this could not be proved.
             attribute_name: :attr,
             changing_values_with: :next_value,
             expected_message: <<-MESSAGE.strip,
-Expected Example to validate that :attr looks like a number greater than
-or equal to 18, but this could not be proved.
-  After setting :attr to ‹"17"› -- which was read back as ‹"18"› -- the
-  matcher expected the Example to be invalid, but it was valid instead.
+              Expected Example to validate that :attr looks like a number greater than
+              or equal to 18, but this could not be proved.
+                After setting :attr to ‹"17"› -- which was read back as ‹"18"› -- the
+                matcher expected the Example to be invalid, but it was valid instead.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+                As indicated in the message above, :attr seems to be changing certain
+                values as they are set, and this could have something to do with why
+                this test is failing. If you've overridden the writer method for this
+                attribute, then you may need to change it to make this test pass, or
+                do something else entirely.
             MESSAGE
           },
         },
@@ -1250,10 +1250,10 @@ or equal to 18, but this could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like a number greater than
-or equal to 18, but this could not be proved.
-  After setting :attr to ‹"17"›, the matcher expected the Example to be
-  invalid, but it was valid instead.
+          Expected Example to validate that :attr looks like a number greater than
+          or equal to 18, but this could not be proved.
+            After setting :attr to ‹"17"›, the matcher expected the Example to be
+            invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1279,13 +1279,13 @@ or equal to 18, but this could not be proved.
         end
 
         expect(&assertion).to fail_with_message(<<~MESSAGE)
-Expected Example not to validate that :attr looks like a number greater
-than 18, but this could not be proved.
-  After setting :attr to ‹"abcd"›, the matcher expected the Example to
-  be valid, but it was invalid instead, producing these validation
-  errors:
+          Expected Example not to validate that :attr looks like a number greater
+          than 18, but this could not be proved.
+            After setting :attr to ‹"abcd"›, the matcher expected the Example to
+            be valid, but it was invalid instead, producing these validation
+            errors:
 
-  * attr: ["is not a number"]
+            * attr: ["is not a number"]
         MESSAGE
       end
 
@@ -1297,16 +1297,16 @@ than 18, but this could not be proved.
             attribute_name: :attr,
             changing_values_with: :next_value,
             expected_message: <<-MESSAGE.strip,
-Expected Example to validate that :attr looks like a number greater than
-18, but this could not be proved.
-  After setting :attr to ‹"18"› -- which was read back as ‹"19"› -- the
-  matcher expected the Example to be invalid, but it was valid instead.
+              Expected Example to validate that :attr looks like a number greater than
+              18, but this could not be proved.
+                After setting :attr to ‹"18"› -- which was read back as ‹"19"› -- the
+                matcher expected the Example to be invalid, but it was valid instead.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+                As indicated in the message above, :attr seems to be changing certain
+                values as they are set, and this could have something to do with why
+                this test is failing. If you've overridden the writer method for this
+                attribute, then you may need to change it to make this test pass, or
+                do something else entirely.
             MESSAGE
           },
         },
@@ -1378,10 +1378,10 @@ Expected Example to validate that :attr looks like a number greater than
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like a number greater than
-18, but this could not be proved.
-  After setting :attr to ‹"18"›, the matcher expected the Example to be
-  invalid, but it was valid instead.
+          Expected Example to validate that :attr looks like a number greater than
+          18, but this could not be proved.
+            After setting :attr to ‹"18"›, the matcher expected the Example to be
+            invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1406,14 +1406,14 @@ Expected Example to validate that :attr looks like a number greater than
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like a number, producing a
-custom validation error on failure, but this could not be proved.
-  After setting :attr to ‹"abcd"›, the matcher expected the Example to
-  be invalid and to produce a validation error matching ‹/wrong/› on
-  :attr. The record was indeed invalid, but it produced these validation
-  errors instead:
+          Expected Example to validate that :attr looks like a number, producing a
+          custom validation error on failure, but this could not be proved.
+            After setting :attr to ‹"abcd"›, the matcher expected the Example to
+            be invalid and to produce a validation error matching ‹/wrong/› on
+            :attr. The record was indeed invalid, but it produced these validation
+            errors instead:
 
-  * attr: ["custom"]
+            * attr: ["custom"]
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1436,10 +1436,10 @@ custom validation error on failure, but this could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like a number, producing a
-custom validation error on failure, but this could not be proved.
-  After setting :attr to ‹"abcd"›, the matcher expected the Example to
-  be invalid, but it was valid instead.
+          Expected Example to validate that :attr looks like a number, producing a
+          custom validation error on failure, but this could not be proved.
+            After setting :attr to ‹"abcd"›, the matcher expected the Example to
+            be invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1464,11 +1464,11 @@ custom validation error on failure, but this could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like a number, raising a
-validation exception on failure, but this could not be proved.
-  After setting :attr to ‹"abcd"›, the matcher expected the Example to
-  be invalid and to raise a validation exception, but the record
-  produced validation errors instead.
+          Expected Example to validate that :attr looks like a number, raising a
+          validation exception on failure, but this could not be proved.
+            After setting :attr to ‹"abcd"›, the matcher expected the Example to
+            be invalid and to raise a validation exception, but the record
+            produced validation errors instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1499,10 +1499,10 @@ validation exception on failure, but this could not be proved.
       end
 
       message = <<-MESSAGE
-Expected Example to validate that :attr looks like a number, but this
-could not be proved.
-  After setting :attr to ‹"abcd"›, the matcher expected the Example to
-  be invalid, but it was valid instead.
+        Expected Example to validate that :attr looks like a number, but this
+        could not be proved.
+          After setting :attr to ‹"abcd"›, the matcher expected the Example to
+          be invalid, but it was valid instead.
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)
@@ -1537,15 +1537,15 @@ could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like an integer greater
-than 18, but this could not be proved.
-  In checking that Example disallows :attr from being a decimal number,
-  after setting :attr to ‹"0.1"›, the matcher expected the Example to be
-  invalid and to produce the validation error "must be an integer" on
-  :attr. The record was indeed invalid, but it produced these validation
-  errors instead:
+          Expected Example to validate that :attr looks like an integer greater
+          than 18, but this could not be proved.
+            In checking that Example disallows :attr from being a decimal number,
+            after setting :attr to ‹"0.1"›, the matcher expected the Example to be
+            invalid and to produce the validation error "must be an integer" on
+            :attr. The record was indeed invalid, but it produced these validation
+            errors instead:
 
-  * attr: ["must be greater than 18"]
+            * attr: ["must be greater than 18"]
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1562,15 +1562,15 @@ than 18, but this could not be proved.
         end
 
         message = <<-MESSAGE.strip_heredoc
-Expected Example to validate that :attr looks like an integer greater
-than 18, but this could not be proved.
-  In checking that Example disallows :attr from being a decimal number,
-  after setting :attr to ‹"0.1"›, the matcher expected the Example to be
-  invalid and to produce the validation error "must be an integer" on
-  :attr. The record was indeed invalid, but it produced these validation
-  errors instead:
+          Expected Example to validate that :attr looks like an integer greater
+          than 18, but this could not be proved.
+            In checking that Example disallows :attr from being a decimal number,
+            after setting :attr to ‹"0.1"›, the matcher expected the Example to be
+            invalid and to produce the validation error "must be an integer" on
+            :attr. The record was indeed invalid, but it produced these validation
+            errors instead:
 
-  * attr: ["must be greater than 18"]
+            * attr: ["must be greater than 18"]
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1590,11 +1590,11 @@ than 18, but this could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like an even number
-greater than 18, but this could not be proved.
-  In checking that Example disallows :attr from being a number that is
-  not greater than 18, after setting :attr to ‹"18"›, the matcher
-  expected the Example to be invalid, but it was valid instead.
+          Expected Example to validate that :attr looks like an even number
+          greater than 18, but this could not be proved.
+            In checking that Example disallows :attr from being a number that is
+            not greater than 18, after setting :attr to ‹"18"›, the matcher
+            expected the Example to be invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1614,15 +1614,15 @@ greater than 18, but this could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like an even number
-greater than 18, but this could not be proved.
-  In checking that Example disallows :attr from being an odd number,
-  after setting :attr to ‹"1"›, the matcher expected the Example to be
-  invalid and to produce the validation error "must be even" on :attr.
-  The record was indeed invalid, but it produced these validation errors
-  instead:
+          Expected Example to validate that :attr looks like an even number
+          greater than 18, but this could not be proved.
+            In checking that Example disallows :attr from being an odd number,
+            after setting :attr to ‹"1"›, the matcher expected the Example to be
+            invalid and to produce the validation error "must be even" on :attr.
+            The record was indeed invalid, but it produced these validation errors
+            instead:
 
-  * attr: ["must be greater than 18"]
+            * attr: ["must be greater than 18"]
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1642,11 +1642,11 @@ greater than 18, but this could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like an odd number less
-than or equal to 99, but this could not be proved.
-  In checking that Example disallows :attr from being a number that is
-  not less than or equal to 99, after setting :attr to ‹"101"›, the
-  matcher expected the Example to be invalid, but it was valid instead.
+          Expected Example to validate that :attr looks like an odd number less
+          than or equal to 99, but this could not be proved.
+            In checking that Example disallows :attr from being a number that is
+            not less than or equal to 99, after setting :attr to ‹"101"›, the
+            matcher expected the Example to be invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1668,11 +1668,11 @@ than or equal to 99, but this could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like an integer greater
-than 18 and less than 99, but this could not be proved.
-  In checking that Example disallows :attr from being a number that is
-  not greater than 18, after setting :attr to ‹"18"›, the matcher
-  expected the Example to be invalid, but it was valid instead.
+          Expected Example to validate that :attr looks like an integer greater
+          than 18 and less than 99, but this could not be proved.
+            In checking that Example disallows :attr from being a number that is
+            not greater than 18, after setting :attr to ‹"18"›, the matcher
+            expected the Example to be invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1694,15 +1694,15 @@ than 18 and less than 99, but this could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like an integer greater
-than 18, but this could not be proved.
-  In checking that Example disallows :attr from being a number that is
-  not greater than 18, after setting :attr to ‹"18"›, the matcher
-  expected the Example to be invalid and to produce the validation error
-  "must be greater than 18" on :attr. The record was indeed invalid, but
-  it produced these validation errors instead:
+          Expected Example to validate that :attr looks like an integer greater
+          than 18, but this could not be proved.
+            In checking that Example disallows :attr from being a number that is
+            not greater than 18, after setting :attr to ‹"18"›, the matcher
+            expected the Example to be invalid and to produce the validation error
+            "must be greater than 18" on :attr. The record was indeed invalid, but
+            it produced these validation errors instead:
 
-  * attr: ["must be greater than 19"]
+            * attr: ["must be greater than 19"]
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1722,11 +1722,11 @@ than 18, but this could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like an integer greater
-than 18, but this could not be proved.
-  In checking that Example disallows :attr from being a number that is
-  not greater than 18, after setting :attr to ‹"18"›, the matcher
-  expected the Example to be invalid, but it was valid instead.
+          Expected Example to validate that :attr looks like an integer greater
+          than 18, but this could not be proved.
+            In checking that Example disallows :attr from being a number that is
+            not greater than 18, after setting :attr to ‹"18"›, the matcher
+            expected the Example to be invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1746,15 +1746,15 @@ than 18, but this could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like an even number
-greater than 18, but this could not be proved.
-  In checking that Example disallows :attr from being a number that is
-  not greater than 18, after setting :attr to ‹"18"›, the matcher
-  expected the Example to be invalid and to produce the validation error
-  "must be greater than 18" on :attr. The record was indeed invalid, but
-  it produced these validation errors instead:
+          Expected Example to validate that :attr looks like an even number
+          greater than 18, but this could not be proved.
+            In checking that Example disallows :attr from being a number that is
+            not greater than 18, after setting :attr to ‹"18"›, the matcher
+            expected the Example to be invalid and to produce the validation error
+            "must be greater than 18" on :attr. The record was indeed invalid, but
+            it produced these validation errors instead:
 
-  * attr: ["must be greater than 20"]
+            * attr: ["must be greater than 20"]
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1774,11 +1774,11 @@ greater than 18, but this could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like an even number
-greater than 18, but this could not be proved.
-  In checking that Example disallows :attr from being a number that is
-  not greater than 18, after setting :attr to ‹"18"›, the matcher
-  expected the Example to be invalid, but it was valid instead.
+          Expected Example to validate that :attr looks like an even number
+          greater than 18, but this could not be proved.
+            In checking that Example disallows :attr from being a number that is
+            not greater than 18, after setting :attr to ‹"18"›, the matcher
+            expected the Example to be invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1798,11 +1798,11 @@ greater than 18, but this could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like an odd number less
-than or equal to 99, but this could not be proved.
-  In checking that Example disallows :attr from being a number that is
-  not less than or equal to 99, after setting :attr to ‹"101"›, the
-  matcher expected the Example to be invalid, but it was valid instead.
+          Expected Example to validate that :attr looks like an odd number less
+          than or equal to 99, but this could not be proved.
+            In checking that Example disallows :attr from being a number that is
+            not less than or equal to 99, after setting :attr to ‹"101"›, the
+            matcher expected the Example to be invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1822,16 +1822,16 @@ than or equal to 99, but this could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like an odd number less
-than or equal to 99, but this could not be proved.
-  In checking that Example disallows :attr from being a number that is
-  not less than or equal to 99, after setting :attr to ‹"101"›, the
-  matcher expected the Example to be invalid and to produce the
-  validation error "must be less than or equal to 99" on :attr. The
-  record was indeed invalid, but it produced these validation errors
-  instead:
+          Expected Example to validate that :attr looks like an odd number less
+          than or equal to 99, but this could not be proved.
+            In checking that Example disallows :attr from being a number that is
+            not less than or equal to 99, after setting :attr to ‹"101"›, the
+            matcher expected the Example to be invalid and to produce the
+            validation error "must be less than or equal to 99" on :attr. The
+            record was indeed invalid, but it produced these validation errors
+            instead:
 
-  * attr: ["must be less than or equal to 97"]
+            * attr: ["must be less than or equal to 97"]
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1853,15 +1853,15 @@ than or equal to 99, but this could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like an integer greater
-than 18 and less than 99, but this could not be proved.
-  In checking that Example disallows :attr from being a number that is
-  not greater than 18, after setting :attr to ‹"18"›, the matcher
-  expected the Example to be invalid and to produce the validation error
-  "must be greater than 18" on :attr. The record was indeed invalid, but
-  it produced these validation errors instead:
+          Expected Example to validate that :attr looks like an integer greater
+          than 18 and less than 99, but this could not be proved.
+            In checking that Example disallows :attr from being a number that is
+            not greater than 18, after setting :attr to ‹"18"›, the matcher
+            expected the Example to be invalid and to produce the validation error
+            "must be greater than 18" on :attr. The record was indeed invalid, but
+            it produced these validation errors instead:
 
-  * attr: ["must be greater than 19"]
+            * attr: ["must be greater than 19"]
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1883,15 +1883,15 @@ than 18 and less than 99, but this could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that :attr looks like an integer greater
-than 18 and less than 99, but this could not be proved.
-  In checking that Example disallows :attr from being a number that is
-  not less than 99, after setting :attr to ‹"100"›, the matcher expected
-  the Example to be invalid and to produce the validation error "must be
-  less than 99" on :attr. The record was indeed invalid, but it produced
-  these validation errors instead:
+          Expected Example to validate that :attr looks like an integer greater
+          than 18 and less than 99, but this could not be proved.
+            In checking that Example disallows :attr from being a number that is
+            not less than 99, after setting :attr to ‹"100"›, the matcher expected
+            the Example to be invalid and to produce the validation error "must be
+            less than 99" on :attr. The record was indeed invalid, but it produced
+            these validation errors instead:
 
-  * attr: ["must be less than 100"]
+            * attr: ["must be less than 100"]
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -1964,16 +1964,16 @@ than 18 and less than 99, but this could not be proved.
           attribute_name: :attr,
           changing_values_with: :numeric_value,
           expected_message: <<-MESSAGE.strip,
-Expected Example to validate that :attr looks like a number, but this
-could not be proved.
-  After setting :attr to ‹"abcd"› -- which was read back as ‹"1"› -- the
-  matcher expected the Example to be invalid, but it was valid instead.
+            Expected Example to validate that :attr looks like a number, but this
+            could not be proved.
+              After setting :attr to ‹"abcd"› -- which was read back as ‹"1"› -- the
+              matcher expected the Example to be invalid, but it was valid instead.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+              As indicated in the message above, :attr seems to be changing certain
+              values as they are set, and this could have something to do with why
+              this test is failing. If you've overridden the writer method for this
+              attribute, then you may need to change it to make this test pass, or
+              do something else entirely.
           MESSAGE
         },
       },
@@ -2093,13 +2093,13 @@ could not be proved.
           end
 
           expect(&assertion).to fail_with_message(<<~MESSAGE)
-  Expected Example not to validate that :attr looks like a number from ‹1›
-  to ‹10›, but this could not be proved.
-    After setting :attr to ‹"abcd"›, the matcher expected the Example to
-    be valid, but it was invalid instead, producing these validation
-    errors:
+            Expected Example not to validate that :attr looks like a number from ‹1›
+            to ‹10›, but this could not be proved.
+              After setting :attr to ‹"abcd"›, the matcher expected the Example to
+              be valid, but it was invalid instead, producing these validation
+              errors:
 
-    * attr: ["is not a number"]
+              * attr: ["is not a number"]
           MESSAGE
         end
 
@@ -2111,19 +2111,19 @@ could not be proved.
               attribute_name: :attr,
               changing_values_with: :next_value,
               expected_message: <<-MESSAGE.strip,
-Expected Example to validate that :attr looks like a number from ‹1› to
-‹10›, but this could not be proved.
-  After setting :attr to ‹"10"› -- which was read back as ‹"11"› -- the
-  matcher expected the Example to be valid, but it was invalid instead,
-  producing these validation errors:
+                Expected Example to validate that :attr looks like a number from ‹1› to
+                ‹10›, but this could not be proved.
+                  After setting :attr to ‹"10"› -- which was read back as ‹"11"› -- the
+                  matcher expected the Example to be valid, but it was invalid instead,
+                  producing these validation errors:
 
-  * attr: ["must be in 1..10"]
+                  * attr: ["must be in 1..10"]
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+                  As indicated in the message above, :attr seems to be changing certain
+                  values as they are set, and this could have something to do with why
+                  this test is failing. If you've overridden the writer method for this
+                  attribute, then you may need to change it to make this test pass, or
+                  do something else entirely.
               MESSAGE
             },
           },
@@ -2199,10 +2199,10 @@ Expected Example to validate that :attr looks like a number from ‹1› to
           end
 
           message = <<-MESSAGE
-Expected Example to validate that :attr looks like a number from ‹1› to
-‹10›, but this could not be proved.
-  After setting :attr to ‹"11"›, the matcher expected the Example to be
-  invalid, but it was valid instead.
+            Expected Example to validate that :attr looks like a number from ‹1› to
+            ‹10›, but this could not be proved.
+              After setting :attr to ‹"11"›, the matcher expected the Example to be
+              invalid, but it was valid instead.
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)

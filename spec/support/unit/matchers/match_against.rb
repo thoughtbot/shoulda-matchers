@@ -57,11 +57,11 @@ module UnitTests
           matcher_fails_in_negative?
         else
           @failure_message = <<-MESSAGE
-Expected the matcher to match in the positive, but it failed with this message:
+            Expected the matcher to match in the positive, but it failed with this message:
 
-#{DIVIDER}
-#{positive_matcher.failure_message}
-#{DIVIDER}
+            #{DIVIDER}
+            #{positive_matcher.failure_message}
+            #{DIVIDER}
           MESSAGE
           false
         end
@@ -84,11 +84,11 @@ Expected the matcher to match in the positive, but it failed with this message:
             !negative_matcher.does_not_match?(object)
           )
             @failure_message_when_negated = <<-MESSAGE
-Expected the matcher to match in the negative, but it failed with this message:
+              Expected the matcher to match in the negative, but it failed with this message:
 
-#{DIVIDER}
-#{negative_matcher.failure_message_when_negated}
-#{DIVIDER}
+              #{DIVIDER}
+              #{negative_matcher.failure_message_when_negated}
+              #{DIVIDER}
             MESSAGE
             false
           else
@@ -127,22 +127,22 @@ Expected the matcher to match in the negative, but it failed with this message:
               negative_matcher.failure_message_when_negated.strip,
             )
             @failure_message = <<-MESSAGE
-Expected the negative version of the matcher not to match and for the failure
-message to be:
+              Expected the negative version of the matcher not to match and for the failure
+              message to be:
 
-#{DIVIDER}
-#{expected_message.chomp}
-#{DIVIDER}
+              #{DIVIDER}
+              #{expected_message.chomp}
+              #{DIVIDER}
 
-However, it was:
+              However, it was:
 
-#{DIVIDER}
-#{negative_matcher.failure_message_when_negated}
-#{DIVIDER}
+              #{DIVIDER}
+              #{negative_matcher.failure_message_when_negated}
+              #{DIVIDER}
 
-Diff:
+              Diff:
 
-#{Shoulda::Matchers::Util.indent(diff_result, 2)}
+              #{Shoulda::Matchers::Util.indent(diff_result, 2)}
             MESSAGE
             false
           end
@@ -177,22 +177,22 @@ Diff:
               positive_matcher.failure_message.strip,
             )
             @failure_message_when_negated = <<-MESSAGE
-Expected the positive version of the matcher not to match and for the failure
-message to be:
+              Expected the positive version of the matcher not to match and for the failure
+              message to be:
 
-#{DIVIDER}
-#{expected_message.chomp}
-#{DIVIDER}
+              #{DIVIDER}
+              #{expected_message.chomp}
+              #{DIVIDER}
 
-However, it was:
+              However, it was:
 
-#{DIVIDER}
-#{positive_matcher.failure_message}
-#{DIVIDER}
+              #{DIVIDER}
+              #{positive_matcher.failure_message}
+              #{DIVIDER}
 
-Diff:
+              Diff:
 
-#{Shoulda::Matchers::Util.indent(diff_result, 2)}
+              #{Shoulda::Matchers::Util.indent(diff_result, 2)}
             MESSAGE
             false
           end

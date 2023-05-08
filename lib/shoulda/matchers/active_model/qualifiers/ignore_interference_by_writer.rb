@@ -75,15 +75,15 @@ module Shoulda
 
           def invalid_argument_error(invalid_argument)
             ArgumentError.new(<<-ERROR)
-Unknown argument: #{invalid_argument.inspect}.
+              Unknown argument: #{invalid_argument.inspect}.
 
-ignoring_interference_by_writer takes one of three arguments:
+              ignoring_interference_by_writer takes one of three arguments:
 
-* A symbol, either :never or :always.
-* A boolean, either true (which means always) or false (which means
-  never).
-* A hash with a single key, :when, and a single value, which is either
-  the name of a method or a Proc.
+              * A symbol, either :never or :always.
+              * A boolean, either true (which means always) or false (which means
+                never).
+              * A hash with a single key, :when, and a single value, which is either
+                the name of a method or a Proc.
             ERROR
           end
 

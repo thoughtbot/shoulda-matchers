@@ -66,14 +66,14 @@ module Shoulda
 
         def failure_message
           <<-MESSAGE
-Expected #{expectation}, but this could not be proved.
-  #{@failure}
+            Expected #{expectation}, but this could not be proved.
+            #{@failure}
           MESSAGE
         end
 
         def failure_message_when_negated
           <<-MESSAGE
-Did not expect #{expectation}, but it does.
+            Did not expect #{expectation}, but it does.
           MESSAGE
         end
 

@@ -979,16 +979,16 @@ module Shoulda
 
         def attribute_changed_value_message
           <<-MESSAGE.strip
-As indicated in the message above,
-:#{last_attribute_setter_used_on_new_record.attribute_name} seems to be
-changing certain values as they are set, and this could have something
-to do with why this test is failing. If you or something else has
-overridden the writer method for this attribute to normalize values by
-changing their case in any way (for instance, ensuring that the
-attribute is always downcased), then try adding
-`ignoring_case_sensitivity` onto the end of the uniqueness matcher.
-Otherwise, you may need to write the test yourself, or do something
-different altogether.
+            As indicated in the message above,
+            :#{last_attribute_setter_used_on_new_record.attribute_name} seems to be
+            changing certain values as they are set, and this could have something
+            to do with why this test is failing. If you or something else has
+            overridden the writer method for this attribute to normalize values by
+            changing their case in any way (for instance, ensuring that the
+            attribute is always downcased), then try adding
+            `ignoring_case_sensitivity` onto the end of the uniqueness matcher.
+            Otherwise, you may need to write the test yourself, or do something
+            different altogether.
           MESSAGE
         end
 
@@ -1129,16 +1129,16 @@ https://matchers.shoulda.io/docs/v#{Shoulda::Matchers::VERSION}/file.NonCaseSwap
 
           def message
             <<-MESSAGE.strip
-validate_uniqueness_of works by matching a new record against an
-existing record. If there is no existing record, it will create one
-using the record you provide.
+              validate_uniqueness_of works by matching a new record against an
+              existing record. If there is no existing record, it will create one
+              using the record you provide.
 
-While doing this, the following error was raised:
+              While doing this, the following error was raised:
 
-#{Shoulda::Matchers::Util.indent(underlying_exception.message, 2)}
+              #{Shoulda::Matchers::Util.indent(underlying_exception.message, 2)}
 
-The best way to fix this is to provide the matcher with a record where
-any required attributes are filled in with valid values beforehand.
+              The best way to fix this is to provide the matcher with a record where
+              any required attributes are filled in with valid values beforehand.
             MESSAGE
           end
         end

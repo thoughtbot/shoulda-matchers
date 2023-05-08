@@ -80,8 +80,8 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
           end
 
           message = <<-MESSAGE
-After setting :attr to ‹"abcde"›, the matcher expected the Example to be
-invalid, but it was valid instead.
+            After setting :attr to ‹"abcde"›, the matcher expected the Example to be
+            invalid, but it was valid instead.
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -105,8 +105,8 @@ invalid, but it was valid instead.
           end
 
           message = <<-MESSAGE
-After setting :attr to ‹"abcde"›, the matcher expected the Example to be
-invalid, but it was valid instead.
+            After setting :attr to ‹"abcde"›, the matcher expected the Example to be
+            invalid, but it was valid instead.
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -123,10 +123,10 @@ invalid, but it was valid instead.
           end
 
           message = <<-MESSAGE
-After setting :attr to ‹"xyz"›, the matcher expected the Example to be
-valid, but it was invalid instead, producing these validation errors:
+            After setting :attr to ‹"xyz"›, the matcher expected the Example to be
+            valid, but it was invalid instead, producing these validation errors:
 
-* attr: ["is invalid"]
+            * attr: ["is invalid"]
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -152,10 +152,10 @@ valid, but it was invalid instead, producing these validation errors:
           end
 
           message = <<-MESSAGE
-After setting :attr to ‹"xyz"›, the matcher expected the Example to be
-valid, but it was invalid instead, producing these validation errors:
+            After setting :attr to ‹"xyz"›, the matcher expected the Example to be
+            valid, but it was invalid instead, producing these validation errors:
 
-* attr: ["is invalid"]
+            * attr: ["is invalid"]
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -183,10 +183,10 @@ valid, but it was invalid instead, producing these validation errors:
           end
 
           message = <<-MESSAGE
-After setting :attr to ‹"xyz"›, the matcher expected the Example to be
-valid, but it was invalid instead, producing these validation errors:
+            After setting :attr to ‹"xyz"›, the matcher expected the Example to be
+            valid, but it was invalid instead, producing these validation errors:
 
-* attr: ["is invalid"]
+            * attr: ["is invalid"]
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -203,8 +203,8 @@ valid, but it was invalid instead, producing these validation errors:
           end
 
           message = <<-MESSAGE
-After setting :attr to ‹"abc"›, the matcher expected the Example to be
-invalid, but it was valid instead.
+            After setting :attr to ‹"abc"›, the matcher expected the Example to be
+            invalid, but it was valid instead.
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -223,10 +223,10 @@ invalid, but it was valid instead.
           end
 
           message = <<-MESSAGE
-After setting :attr to ‹"xyz"›, the matcher expected the Example to be
-valid, but it was invalid instead, producing these validation errors:
+            After setting :attr to ‹"xyz"›, the matcher expected the Example to be
+            valid, but it was invalid instead, producing these validation errors:
 
-* attr: ["is invalid"]
+            * attr: ["is invalid"]
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -243,8 +243,8 @@ valid, but it was invalid instead, producing these validation errors:
           end
 
           message = <<-MESSAGE
-After setting :attr to ‹"abc"›, the matcher expected the Example to be
-invalid, but it was valid instead.
+            After setting :attr to ‹"abc"›, the matcher expected the Example to be
+            invalid, but it was valid instead.
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -261,10 +261,10 @@ invalid, but it was valid instead.
 
     it 'rejects a bad value with an appropriate failure message' do
       message = <<-MESSAGE
-After setting :attr to ‹"xyz"›, the matcher expected the Example to be
-valid, but it was invalid instead, producing these validation errors:
+        After setting :attr to ‹"xyz"›, the matcher expected the Example to be
+        valid, but it was invalid instead, producing these validation errors:
 
-* attr: ["bad value"]
+        * attr: ["bad value"]
       MESSAGE
 
       assertion = lambda do
@@ -278,12 +278,12 @@ valid, but it was invalid instead, producing these validation errors:
     context 'when the custom messages do not match' do
       it 'rejects with an appropriate failure message' do
         message = <<-MESSAGE
-After setting :attr to ‹"xyz"›, the matcher expected the Example to be
-invalid and to produce a validation error matching ‹/different/› on
-:attr. The record was indeed invalid, but it produced these validation
-errors instead:
+          After setting :attr to ‹"xyz"›, the matcher expected the Example to be
+          invalid and to produce a validation error matching ‹/different/› on
+          :attr. The record was indeed invalid, but it produced these validation
+          errors instead:
 
-* attr: ["bad value"]
+          * attr: ["bad value"]
         MESSAGE
 
         assertion = lambda do
@@ -337,12 +337,12 @@ errors instead:
           end
 
           message = <<-MESSAGE
-After setting :attr to ‹"xyz"›, the matcher expected the Example to be
-invalid and to produce the validation error "must be greater than 2" on
-:attr. The record was indeed invalid, but it produced these validation
-errors instead:
+            After setting :attr to ‹"xyz"›, the matcher expected the Example to be
+            invalid and to produce the validation error "must be greater than 2" on
+            :attr. The record was indeed invalid, but it produced these validation
+            errors instead:
 
-* attr: ["some other error"]
+            * attr: ["some other error"]
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -400,12 +400,12 @@ errors instead:
             end
 
             message = <<-MESSAGE
-After setting :#{builder.attribute_to_validate} to ‹"#{invalid_value}"›, the
-matcher expected the #{builder.model.name} to be invalid and to produce the validation
-error "some error" on :#{builder.attribute_that_receives_error}. The record was
-indeed invalid, but it produced these validation errors instead:
+              After setting :#{builder.attribute_to_validate} to ‹"#{invalid_value}"›, the
+              matcher expected the #{builder.model.name} to be invalid and to produce the validation
+              error "some error" on :#{builder.attribute_that_receives_error}. The record was
+              indeed invalid, but it produced these validation errors instead:
 
-* #{builder.attribute_that_receives_error}: ["a different error"]
+              * #{builder.attribute_that_receives_error}: ["a different error"]
             MESSAGE
 
             expect(&assertion).to fail_with_message(message)
@@ -495,8 +495,8 @@ indeed invalid, but it produced these validation errors instead:
 
     it 'does not match given good values along with bad values' do
       message = <<-MESSAGE.strip_heredoc
-After setting :attr to ‹"12345"›, the matcher expected the Example to be
-invalid, but it was valid instead.
+        After setting :attr to ‹"12345"›, the matcher expected the Example to be
+        invalid, but it was valid instead.
       MESSAGE
 
       assertion = lambda do
@@ -508,8 +508,8 @@ invalid, but it was valid instead.
 
     it 'does not match given bad values along with good values' do
       message = <<-MESSAGE.strip_heredoc
-After setting :attr to ‹"12345"›, the matcher expected the Example to be
-invalid, but it was valid instead.
+        After setting :attr to ‹"12345"›, the matcher expected the Example to be
+        invalid, but it was valid instead.
       MESSAGE
 
       assertion = lambda do
@@ -542,9 +542,9 @@ invalid, but it was valid instead.
       context 'when qualified with strict' do
         it 'rejects a bad value, providing the correct failure message' do
           message = <<-MESSAGE.strip_heredoc
-After setting :attr to ‹"xyz"›, the matcher expected the Example to be
-valid, but it was invalid instead, raising a validation exception with
-the message "Attr is invalid".
+            After setting :attr to ‹"xyz"›, the matcher expected the Example to be
+            valid, but it was invalid instead, raising a validation exception with
+            the message "Attr is invalid".
           MESSAGE
 
           assertion = lambda do
@@ -558,10 +558,10 @@ the message "Attr is invalid".
         context 'qualified with a custom message' do
           it 'rejects a bad value when the failure messages do not match' do
             message = <<-MESSAGE.strip_heredoc
-After setting :attr to ‹"xyz"›, the matcher expected the Example to be
-invalid and to raise a validation exception with message matching
-‹/abc/›. The record was indeed invalid, but the exception message was
-"Attr is invalid" instead.
+              After setting :attr to ‹"xyz"›, the matcher expected the Example to be
+              invalid and to raise a validation exception with message matching
+              ‹/abc/›. The record was indeed invalid, but the exception message was
+              "Attr is invalid" instead.
             MESSAGE
 
             assertion = lambda do
@@ -605,17 +605,17 @@ invalid and to raise a validation exception with message matching
           end
 
           message = <<-MESSAGE.strip
-After setting :name to ‹"anything"› -- which was read back as ‹nil› --
-the matcher expected the Example to be valid, but it was invalid
-instead, producing these validation errors:
+            After setting :name to ‹"anything"› -- which was read back as ‹nil› --
+            the matcher expected the Example to be valid, but it was invalid
+            instead, producing these validation errors:
 
-* name: ["can't be blank"]
+            * name: ["can't be blank"]
 
-As indicated in the message above, :name seems to be changing certain
-values as they are set, and this could have something to do with why
-this test is failing. If you've overridden the writer method for this
-attribute, then you may need to change it to make this test pass, or do
-something else entirely.
+            As indicated in the message above, :name seems to be changing certain
+            values as they are set, and this could have something to do with why
+            this test is failing. If you've overridden the writer method for this
+            attribute, then you may need to change it to make this test pass, or do
+            something else entirely.
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -659,17 +659,17 @@ something else entirely.
           end
 
           message = <<-MESSAGE.strip
-After setting :name to ‹nil› -- which was read back as ‹"some name"› --
-the matcher expected the Example to be valid, but it was invalid
-instead, producing these validation errors:
+            After setting :name to ‹nil› -- which was read back as ‹"some name"› --
+            the matcher expected the Example to be valid, but it was invalid
+            instead, producing these validation errors:
 
-* name: ["must be blank"]
+            * name: ["must be blank"]
 
-As indicated in the message above, :name seems to be changing certain
-values as they are set, and this could have something to do with why
-this test is failing. If you've overridden the writer method for this
-attribute, then you may need to change it to make this test pass, or do
-something else entirely.
+            As indicated in the message above, :name seems to be changing certain
+            values as they are set, and this could have something to do with why
+            this test is failing. If you've overridden the writer method for this
+            attribute, then you may need to change it to make this test pass, or do
+            something else entirely.
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -709,17 +709,17 @@ something else entirely.
           end
 
           message = <<-MESSAGE.strip
-After setting :name to ‹"another name"› -- which was read back as
-‹"constant name"› -- the matcher expected the Example to be valid, but
-it was invalid instead, producing these validation errors:
+            After setting :name to ‹"another name"› -- which was read back as
+            ‹"constant name"› -- the matcher expected the Example to be valid, but
+            it was invalid instead, producing these validation errors:
 
-* name: ["is invalid"]
+            * name: ["is invalid"]
 
-As indicated in the message above, :name seems to be changing certain
-values as they are set, and this could have something to do with why
-this test is failing. If you've overridden the writer method for this
-attribute, then you may need to change it to make this test pass, or do
-something else entirely.
+            As indicated in the message above, :name seems to be changing certain
+            values as they are set, and this could have something to do with why
+            this test is failing. If you've overridden the writer method for this
+            attribute, then you may need to change it to make this test pass, or do
+            something else entirely.
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -738,8 +738,8 @@ something else entirely.
         end
 
         message = <<-MESSAGE.rstrip
-The matcher attempted to set :nonexistent on the Example to "foo", but
-that attribute does not exist.
+          The matcher attempted to set :nonexistent on the Example to "foo", but
+          that attribute does not exist.
         MESSAGE
 
         expect(&assertion).to raise_error(
@@ -758,8 +758,8 @@ that attribute does not exist.
         end
 
         message = <<-MESSAGE.rstrip
-The matcher attempted to set :nonexistent on the Example to "foo", but
-that attribute does not exist.
+          The matcher attempted to set :nonexistent on the Example to "foo", but
+          that attribute does not exist.
         MESSAGE
 
         expect(&assertion).to raise_error(
@@ -785,8 +785,8 @@ that attribute does not exist.
           end
 
           message = <<-MESSAGE.rstrip
-The matcher attempted to set :nonexistent on the Example to "some
-value", but that attribute does not exist.
+            The matcher attempted to set :nonexistent on the Example to "some
+            value", but that attribute does not exist.
           MESSAGE
 
           expect(&assertion).to raise_error(
@@ -811,8 +811,8 @@ value", but that attribute does not exist.
           end
 
           message = <<-MESSAGE.rstrip
-The matcher attempted to set :nonexistent on the Example to "some
-value", but that attribute does not exist.
+            The matcher attempted to set :nonexistent on the Example to "some
+            value", but that attribute does not exist.
           MESSAGE
 
           expect(&assertion).to raise_error(

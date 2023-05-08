@@ -573,11 +573,11 @@ module Shoulda
 
         def default_attribute_changed_value_message
           <<-MESSAGE.strip
-As indicated in the message above, :#{result.attribute_setter.attribute_name}
-seems to be changing certain values as they are set, and this could have
-something to do with why this test is failing. If you've overridden the writer
-method for this attribute, then you may need to change it to make this test
-pass, or do something else entirely.
+            As indicated in the message above, :#{result.attribute_setter.attribute_name}
+            seems to be changing certain values as they are set, and this could have
+            something to do with why this test is failing. If you've overridden the writer
+            method for this attribute, then you may need to change it to make this test
+            pass, or do something else entirely.
           MESSAGE
         end
 

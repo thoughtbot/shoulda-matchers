@@ -33,17 +33,17 @@ describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher, type: :model d
           attribute_name: :attr,
           changing_values_with: :add_character,
           expected_message: <<-MESSAGE.strip,
-Expected Example to validate that the length of :attr is at least 4, but
-this could not be proved.
-  After setting :attr to ‹"xxx"› -- which was read back as ‹"xxxa"› --
-  the matcher expected the Example to be invalid, but it was valid
-  instead.
+            Expected Example to validate that the length of :attr is at least 4, but
+            this could not be proved.
+              After setting :attr to ‹"xxx"› -- which was read back as ‹"xxxa"› --
+              the matcher expected the Example to be invalid, but it was valid
+              instead.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+              As indicated in the message above, :attr seems to be changing certain
+              values as they are set, and this could have something to do with why
+              this test is failing. If you've overridden the writer method for this
+              attribute, then you may need to change it to make this test pass, or
+              do something else entirely.
           MESSAGE
         },
       },
@@ -64,10 +64,10 @@ this could not be proved.
       end
 
       message = <<-MESSAGE
-Expected Example not to validate that the length of :attr is at least 4,
-but this could not be proved.
-  After setting :attr to ‹"xxxx"›, the matcher expected the Example to
-  be invalid, but it was valid instead.
+        Expected Example not to validate that the length of :attr is at least 4,
+        but this could not be proved.
+          After setting :attr to ‹"xxxx"›, the matcher expected the Example to
+          be invalid, but it was valid instead.
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)
@@ -113,17 +113,17 @@ but this could not be proved.
           attribute_name: :attr,
           changing_values_with: :remove_character,
           expected_message: <<-MESSAGE.strip,
-Expected Example to validate that the length of :attr is at most 4, but
-this could not be proved.
-  After setting :attr to ‹"xxxxx"› -- which was read back as ‹"xxxx"› --
-  the matcher expected the Example to be invalid, but it was valid
-  instead.
+            Expected Example to validate that the length of :attr is at most 4, but
+            this could not be proved.
+              After setting :attr to ‹"xxxxx"› -- which was read back as ‹"xxxx"› --
+              the matcher expected the Example to be invalid, but it was valid
+              instead.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+              As indicated in the message above, :attr seems to be changing certain
+              values as they are set, and this could have something to do with why
+              this test is failing. If you've overridden the writer method for this
+              attribute, then you may need to change it to make this test pass, or
+              do something else entirely.
           MESSAGE
         },
       },
@@ -170,17 +170,17 @@ this could not be proved.
           attribute_name: :attr,
           changing_values_with: :add_character,
           expected_message: <<-MESSAGE.strip,
-Expected Example to validate that the length of :attr is 4, but this
-could not be proved.
-  After setting :attr to ‹"xxx"› -- which was read back as ‹"xxxa"› --
-  the matcher expected the Example to be invalid, but it was valid
-  instead.
+            Expected Example to validate that the length of :attr is 4, but this
+            could not be proved.
+              After setting :attr to ‹"xxx"› -- which was read back as ‹"xxxa"› --
+              the matcher expected the Example to be invalid, but it was valid
+              instead.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+              As indicated in the message above, :attr seems to be changing certain
+              values as they are set, and this could have something to do with why
+              this test is failing. If you've overridden the writer method for this
+              attribute, then you may need to change it to make this test pass, or
+              do something else entirely.
           MESSAGE
         },
       },
@@ -301,12 +301,12 @@ could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that the length of :attr is at least 1, but
-this could not be proved.
-  After setting :attr to ‹nil›, the matcher expected the Example to be
-  valid, but it was invalid instead, producing these validation errors:
+          Expected Example to validate that the length of :attr is at least 1, but
+          this could not be proved.
+            After setting :attr to ‹nil›, the matcher expected the Example to be
+            valid, but it was invalid instead, producing these validation errors:
 
-  * attr: ["is too short (minimum is 1 character)"]
+            * attr: ["is too short (minimum is 1 character)"]
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)
@@ -357,12 +357,12 @@ this could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example to validate that the length of :attr is at least 1, but
-this could not be proved.
-  After setting :attr to ‹""›, the matcher expected the Example to be
-  valid, but it was invalid instead, producing these validation errors:
+          Expected Example to validate that the length of :attr is at least 1, but
+          this could not be proved.
+            After setting :attr to ‹""›, the matcher expected the Example to be
+            valid, but it was invalid instead, producing these validation errors:
 
-  * attr: ["is too short (minimum is 1 character)"]
+            * attr: ["is too short (minimum is 1 character)"]
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)

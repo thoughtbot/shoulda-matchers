@@ -420,11 +420,11 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
           attribute_name: :attr,
           changing_values_with: :next_value,
           expected_message_includes: <<-MESSAGE.strip,
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+            As indicated in the message above, :attr seems to be changing certain
+            values as they are set, and this could have something to do with why
+            this test is failing. If you've overridden the writer method for this
+            attribute, then you may need to change it to make this test pass, or
+            do something else entirely.
           MESSAGE
         },
       },
@@ -597,11 +597,11 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
           attribute_name: :attr,
           changing_values_with: :next_value,
           expected_message_includes: <<-MESSAGE.strip,
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+            As indicated in the message above, :attr seems to be changing certain
+            values as they are set, and this could have something to do with why
+            this test is failing. If you've overridden the writer method for this
+            attribute, then you may need to change it to make this test pass, or
+            do something else entirely.
           MESSAGE
         },
       },
@@ -909,11 +909,11 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
         define_model(:low)
 
         expected_message = <<-MESSAGE.strip
-Expected Issue to validate that :severity_type is either ‹"Low"›,
-‹"Medium"›, or ‹"High"›, but this could not be proved.
-  After setting :severity_type to ‹"Shoulda::Matchers::ExampleClass"›,
-  the matcher expected the Issue to be invalid, but it was valid
-  instead.
+          Expected Issue to validate that :severity_type is either ‹"Low"›,
+          ‹"Medium"›, or ‹"High"›, but this could not be proved.
+            After setting :severity_type to ‹"Shoulda::Matchers::ExampleClass"›,
+            the matcher expected the Issue to be invalid, but it was valid
+            instead.
         MESSAGE
 
         expect { validate_inclusion_of(:severity_type).in_array(%w(Low Medium High)) }.

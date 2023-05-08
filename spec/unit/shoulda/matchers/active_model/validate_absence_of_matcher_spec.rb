@@ -109,13 +109,13 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
           end
 
           message = <<-MESSAGE
-Expected Example not to validate that :attr is empty/falsy, but this
-could not be proved.
-  After setting :attr to ‹"an arbitrary value"›, the matcher expected
-  the Example to be valid, but it was invalid instead, producing these
-  validation errors:
+            Expected Example not to validate that :attr is empty/falsy, but this
+            could not be proved.
+              After setting :attr to ‹"an arbitrary value"›, the matcher expected
+              the Example to be valid, but it was invalid instead, producing these
+              validation errors:
 
-  * attr: ["must be blank"]
+              * attr: ["must be blank"]
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -132,10 +132,10 @@ could not be proved.
         record = define_model(:example, attr: :string).new
 
         message = <<-MESSAGE
-Expected Example to validate that :attr is empty/falsy, but this could
-not be proved.
-  After setting :attr to ‹"an arbitrary value"›, the matcher expected
-  the Example to be invalid, but it was valid instead.
+          Expected Example to validate that :attr is empty/falsy, but this could
+          not be proved.
+            After setting :attr to ‹"an arbitrary value"›, the matcher expected
+            the Example to be invalid, but it was valid instead.
         MESSAGE
 
         assertion = lambda do
@@ -172,10 +172,10 @@ not be proved.
     context 'an ActiveModel class without an absence validation' do
       it 'rejects with the correct failure message' do
         message = <<-MESSAGE
-Expected Example to validate that :attr is empty/falsy, but this could
-not be proved.
-  After setting :attr to ‹"an arbitrary value"›, the matcher expected
-  the Example to be invalid, but it was valid instead.
+          Expected Example to validate that :attr is empty/falsy, but this could
+          not be proved.
+            After setting :attr to ‹"an arbitrary value"›, the matcher expected
+            the Example to be invalid, but it was valid instead.
         MESSAGE
 
         assertion = lambda do
@@ -237,10 +237,10 @@ not be proved.
         model = having_and_belonging_to_many(:children, absence: false)
 
         message = <<-MESSAGE
-Expected Parent to validate that :children is empty/falsy, but this
-could not be proved.
-  After setting :children to ‹[#<Child id: nil>]›, the matcher expected
-  the Parent to be invalid, but it was valid instead.
+          Expected Parent to validate that :children is empty/falsy, but this
+          could not be proved.
+            After setting :children to ‹[#<Child id: nil>]›, the matcher expected
+            the Parent to be invalid, but it was valid instead.
         MESSAGE
 
         assertion = lambda do

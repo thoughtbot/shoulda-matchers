@@ -21,16 +21,16 @@ describe Shoulda::Matchers::ActiveModel::ValidateAcceptanceOfMatcher, type: :mod
           attribute_name: :attr,
           changing_values_with: :always_nil,
           expected_message: <<-MESSAGE.strip,
-Expected Example to validate that :attr has been set to "1", but this
-could not be proved.
-  After setting :attr to ‹false› -- which was read back as ‹nil› -- the
-  matcher expected the Example to be invalid, but it was valid instead.
+            Expected Example to validate that :attr has been set to "1", but this
+            could not be proved.
+              After setting :attr to ‹false› -- which was read back as ‹nil› -- the
+              matcher expected the Example to be invalid, but it was valid instead.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+              As indicated in the message above, :attr seems to be changing certain
+              values as they are set, and this could have something to do with why
+              this test is failing. If you've overridden the writer method for this
+              attribute, then you may need to change it to make this test pass, or
+              do something else entirely.
           MESSAGE
         },
       },
@@ -43,12 +43,12 @@ could not be proved.
       end
 
       message = <<-MESSAGE
-Expected Example not to validate that :attr has been set to "1", but
-this could not be proved.
-  After setting :attr to ‹false›, the matcher expected the Example to be
-  valid, but it was invalid instead, producing these validation errors:
+        Expected Example not to validate that :attr has been set to "1", but
+        this could not be proved.
+          After setting :attr to ‹false›, the matcher expected the Example to be
+          valid, but it was invalid instead, producing these validation errors:
 
-  * attr: ["must be accepted"]
+          * attr: ["must be accepted"]
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)

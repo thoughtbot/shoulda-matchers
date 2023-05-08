@@ -8,8 +8,8 @@ module Shoulda
 
           def message
             Shoulda::Matchers.word_wrap <<-MESSAGE
-The matcher attempted to set :#{attribute_name} on the #{model.name} to
-#{value.inspect}, but that attribute does not exist.
+              The matcher attempted to set :#{attribute_name} on the #{model.name} to
+              #{value.inspect}, but that attribute does not exist.
             MESSAGE
           end
 

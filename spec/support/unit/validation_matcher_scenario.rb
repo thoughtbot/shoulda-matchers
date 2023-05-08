@@ -10,8 +10,8 @@ module UnitTests
 
       @specified_model_creator = @arguments.delete(:model_creator) do
         raise KeyError.new(<<-MESSAGE)
-:model_creator is missing. You can either provide it as an option or as
-a method.
+          :model_creator is missing. You can either provide it as an option or as
+          a method.
         MESSAGE
       end
 

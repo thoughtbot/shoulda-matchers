@@ -41,7 +41,7 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbColumnMatcher, type: :model do
       end
 
       message = <<-MESSAGE
-Expected Employee to have db column named superhero of sql_type #{sql_column_type} (Employee does not have a db column named superhero.)
+        Expected Employee to have db column named superhero of sql_type #{sql_column_type} (Employee does not have a db column named superhero.)
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)
@@ -55,7 +55,7 @@ Expected Employee to have db column named superhero of sql_type #{sql_column_typ
       end
 
       message = <<-MESSAGE
-Expected Employee to have db column named nickname of sql_type varchar (Employee has a db column named nickname of sql type #{sql_column_type}, not varchar.)
+        Expected Employee to have db column named nickname of sql_type varchar (Employee has a db column named nickname of sql type #{sql_column_type}, not varchar.)
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)

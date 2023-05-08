@@ -34,9 +34,9 @@ module UnitTests
     def matcher_name
       validation_matcher_scenario_args.fetch(:matcher_name) do
         raise KeyNotFoundError.new(<<-MESSAGE)
-Please implement #validation_matcher_scenario_args in your example
-group, in such a way that it returns a hash that contains a
-:matcher_name key.
+          Please implement #validation_matcher_scenario_args in your example
+          group, in such a way that it returns a hash that contains a
+          :matcher_name key.
         MESSAGE
       end
     end

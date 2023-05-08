@@ -23,17 +23,17 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
           attribute_name: :attr,
           changing_values_with: :never_falsy,
           expected_message: <<-MESSAGE,
-Expected Example to validate that :attr cannot be empty/falsy, but this
-could not be proved.
-  After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
-  -- the matcher expected the Example to be invalid, but it was valid
-  instead.
+            Expected Example to validate that :attr cannot be empty/falsy, but this
+            could not be proved.
+              After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
+              -- the matcher expected the Example to be invalid, but it was valid
+              instead.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+              As indicated in the message above, :attr seems to be changing certain
+              values as they are set, and this could have something to do with why
+              this test is failing. If you've overridden the writer method for this
+              attribute, then you may need to change it to make this test pass, or
+              do something else entirely.
           MESSAGE
         },
       },
@@ -45,12 +45,12 @@ could not be proved.
       end
 
       message = <<-MESSAGE
-Expected Example not to validate that :attr cannot be empty/falsy, but
-this could not be proved.
-  After setting :attr to ‹nil›, the matcher expected the Example to be
-  valid, but it was invalid instead, producing these validation errors:
+        Expected Example not to validate that :attr cannot be empty/falsy, but
+        this could not be proved.
+          After setting :attr to ‹nil›, the matcher expected the Example to be
+          valid, but it was invalid instead, producing these validation errors:
 
-  * attr: ["can't be blank"]
+          * attr: ["can't be blank"]
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)
@@ -179,10 +179,10 @@ this could not be proved.
         end
 
       message = <<-MESSAGE
-Expected Example to validate that :attr cannot be empty/falsy, but this
-could not be proved.
-  After setting :attr to ‹#{blank_value.inspect}›, the matcher expected the Example to be
-  invalid, but it was valid instead.
+        Expected Example to validate that :attr cannot be empty/falsy, but this
+        could not be proved.
+          After setting :attr to ‹#{blank_value.inspect}›, the matcher expected the Example to be
+          invalid, but it was valid instead.
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)
@@ -209,17 +209,17 @@ could not be proved.
           attribute_name: :attr,
           changing_values_with: :never_falsy,
           expected_message: <<-MESSAGE,
-Expected Example to validate that :attr cannot be empty/falsy, but this
-could not be proved.
-  After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
-  -- the matcher expected the Example to be invalid, but it was valid
-  instead.
+            Expected Example to validate that :attr cannot be empty/falsy, but this
+            could not be proved.
+              After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
+              -- the matcher expected the Example to be invalid, but it was valid
+              instead.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+              As indicated in the message above, :attr seems to be changing certain
+              values as they are set, and this could have something to do with why
+              this test is failing. If you've overridden the writer method for this
+              attribute, then you may need to change it to make this test pass, or
+              do something else entirely.
           MESSAGE
         },
       },
@@ -285,10 +285,10 @@ could not be proved.
       end
 
       message = <<-MESSAGE
-Expected Example to validate that :attr cannot be empty/falsy, but this
-could not be proved.
-  After setting :attr to ‹nil›, the matcher expected the Example to be
-  invalid, but it was valid instead.
+        Expected Example to validate that :attr cannot be empty/falsy, but this
+        could not be proved.
+          After setting :attr to ‹nil›, the matcher expected the Example to be
+          invalid, but it was valid instead.
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)
@@ -312,17 +312,17 @@ could not be proved.
             attribute_name: :attr,
             changing_values_with: :never_falsy,
             expected_message: <<-MESSAGE,
-Expected Example to validate that :attr cannot be empty/falsy, but this
-could not be proved.
-  After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
-  -- the matcher expected the Example to be invalid, but it was valid
-  instead.
+              Expected Example to validate that :attr cannot be empty/falsy, but this
+              could not be proved.
+                After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
+                -- the matcher expected the Example to be invalid, but it was valid
+                instead.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+                As indicated in the message above, :attr seems to be changing certain
+                values as they are set, and this could have something to do with why
+                this test is failing. If you've overridden the writer method for this
+                attribute, then you may need to change it to make this test pass, or
+                do something else entirely.
             MESSAGE
           },
         },
@@ -352,17 +352,17 @@ could not be proved.
             attribute_name: :attr,
             changing_values_with: :never_falsy,
             expected_message: <<-MESSAGE,
-Expected Example to validate that :attr cannot be empty/falsy, but this
-could not be proved.
-  After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
-  -- the matcher expected the Example to be invalid, but it was valid
-  instead.
+              Expected Example to validate that :attr cannot be empty/falsy, but this
+              could not be proved.
+                After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
+                -- the matcher expected the Example to be invalid, but it was valid
+                instead.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+                As indicated in the message above, :attr seems to be changing certain
+                values as they are set, and this could have something to do with why
+                this test is failing. If you've overridden the writer method for this
+                attribute, then you may need to change it to make this test pass, or
+                do something else entirely.
             MESSAGE
           },
         },
@@ -393,17 +393,17 @@ could not be proved.
           attribute_name: :attr,
           changing_values_with: :never_falsy,
           expected_message: <<-MESSAGE,
-Expected Example to validate that :attr cannot be empty/falsy, but this
-could not be proved.
-  After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
-  -- the matcher expected the Example to be invalid, but it was valid
-  instead.
+            Expected Example to validate that :attr cannot be empty/falsy, but this
+            could not be proved.
+              After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
+              -- the matcher expected the Example to be invalid, but it was valid
+              instead.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+              As indicated in the message above, :attr seems to be changing certain
+              values as they are set, and this could have something to do with why
+              this test is failing. If you've overridden the writer method for this
+              attribute, then you may need to change it to make this test pass, or
+              do something else entirely.
           MESSAGE
         },
       },
@@ -452,17 +452,17 @@ could not be proved.
           attribute_name: :attr,
           changing_values_with: :never_falsy,
           expected_message: <<-MESSAGE,
-Expected Example to validate that :attr cannot be empty/falsy, but this
-could not be proved.
-  After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
-  -- the matcher expected the Example to be invalid, but it was valid
-  instead.
+            Expected Example to validate that :attr cannot be empty/falsy, but this
+            could not be proved.
+              After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
+              -- the matcher expected the Example to be invalid, but it was valid
+              instead.
 
-  As indicated in the message above, :attr seems to be changing certain
-  values as they are set, and this could have something to do with why
-  this test is failing. If you've overridden the writer method for this
-  attribute, then you may need to change it to make this test pass, or
-  do something else entirely.
+              As indicated in the message above, :attr seems to be changing certain
+              values as they are set, and this could have something to do with why
+              this test is failing. If you've overridden the writer method for this
+              attribute, then you may need to change it to make this test pass, or
+              do something else entirely.
           MESSAGE
         },
       },
@@ -491,10 +491,10 @@ could not be proved.
       end
 
       message = <<-MESSAGE
-Expected Parent to validate that :children cannot be empty/falsy, but
-this could not be proved.
-  After setting :children to ‹[]›, the matcher expected the Parent to be
-  invalid, but it was valid instead.
+        Expected Parent to validate that :children cannot be empty/falsy, but
+        this could not be proved.
+          After setting :children to ‹[]›, the matcher expected the Parent to be
+          invalid, but it was valid instead.
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)
@@ -528,10 +528,10 @@ this could not be proved.
           expect { validate_presence_of(:parent) }.
             not_to match_against(record).
             and_fail_with(<<-MESSAGE)
-Expected Child to validate that :parent cannot be empty/falsy, but this
-could not be proved.
-  After setting :parent to ‹nil›, the matcher expected the Child to be
-  invalid, but it was valid instead.
+              Expected Child to validate that :parent cannot be empty/falsy, but this
+              could not be proved.
+                After setting :parent to ‹nil›, the matcher expected the Child to be
+                invalid, but it was valid instead.
             MESSAGE
         end
       end
@@ -563,26 +563,26 @@ could not be proved.
           expect { validate_presence_of(:parent) }.
             not_to match_against(record).
             and_fail_with(<<-MESSAGE)
-Expected Child to validate that :parent cannot be empty/falsy, but this
-could not be proved.
-  After setting :parent to ‹nil›, the matcher expected the Child to be
-  invalid and to produce the validation error "can't be blank" on
-  :parent. The record was indeed invalid, but it produced these
-  validation errors instead:
+              Expected Child to validate that :parent cannot be empty/falsy, but this
+              could not be proved.
+                After setting :parent to ‹nil›, the matcher expected the Child to be
+                invalid and to produce the validation error "can't be blank" on
+                :parent. The record was indeed invalid, but it produced these
+                validation errors instead:
 
-  * parent: ["must exist"]
+                * parent: ["must exist"]
 
-  You're getting this error because you've instructed your `belongs_to`
-  association to add a presence validation to the attribute. *This*
-  presence validation doesn't use "can't be blank", the usual validation
-  message, but "must exist" instead.
+                You're getting this error because you've instructed your `belongs_to`
+                association to add a presence validation to the attribute. *This*
+                presence validation doesn't use "can't be blank", the usual validation
+                message, but "must exist" instead.
 
-  With that said, did you know that the `belong_to` matcher can test
-  this validation for you? Instead of using `validate_presence_of`, try
-  one of the following instead, depending on your use case:
+                With that said, did you know that the `belong_to` matcher can test
+                this validation for you? Instead of using `validate_presence_of`, try
+                one of the following instead, depending on your use case:
 
-      it { should belong_to(:parent).optional(false) }
-      it { should belong_to(:parent).required(true) }
+                    it { should belong_to(:parent).optional(false) }
+                    it { should belong_to(:parent).required(true) }
             MESSAGE
         end
       end
@@ -614,26 +614,26 @@ could not be proved.
           expect { validate_presence_of(:parent) }.
             not_to match_against(record).
             and_fail_with(<<-MESSAGE)
-Expected Child to validate that :parent cannot be empty/falsy, but this
-could not be proved.
-  After setting :parent to ‹nil›, the matcher expected the Child to be
-  invalid and to produce the validation error "can't be blank" on
-  :parent. The record was indeed invalid, but it produced these
-  validation errors instead:
+              Expected Child to validate that :parent cannot be empty/falsy, but this
+              could not be proved.
+                After setting :parent to ‹nil›, the matcher expected the Child to be
+                invalid and to produce the validation error "can't be blank" on
+                :parent. The record was indeed invalid, but it produced these
+                validation errors instead:
 
-  * parent: ["must exist"]
+                * parent: ["must exist"]
 
-  You're getting this error because you've instructed your `belongs_to`
-  association to add a presence validation to the attribute. *This*
-  presence validation doesn't use "can't be blank", the usual validation
-  message, but "must exist" instead.
+                You're getting this error because you've instructed your `belongs_to`
+                association to add a presence validation to the attribute. *This*
+                presence validation doesn't use "can't be blank", the usual validation
+                message, but "must exist" instead.
 
-  With that said, did you know that the `belong_to` matcher can test
-  this validation for you? Instead of using `validate_presence_of`, try
-  one of the following instead, depending on your use case:
+                With that said, did you know that the `belong_to` matcher can test
+                this validation for you? Instead of using `validate_presence_of`, try
+                one of the following instead, depending on your use case:
 
-      it { should belong_to(:parent).optional(false) }
-      it { should belong_to(:parent).required(true) }
+                    it { should belong_to(:parent).optional(false) }
+                    it { should belong_to(:parent).required(true) }
             MESSAGE
         end
       end
@@ -665,10 +665,10 @@ could not be proved.
           expect { validate_presence_of(:parent) }.
             not_to match_against(record).
             and_fail_with(<<-MESSAGE)
-Expected Child to validate that :parent cannot be empty/falsy, but this
-could not be proved.
-  After setting :parent to ‹nil›, the matcher expected the Child to be
-  invalid, but it was valid instead.
+              Expected Child to validate that :parent cannot be empty/falsy, but this
+              could not be proved.
+                After setting :parent to ‹nil›, the matcher expected the Child to be
+                invalid, but it was valid instead.
             MESSAGE
         end
       end
@@ -703,25 +703,25 @@ could not be proved.
               expect { validate_presence_of(:parent) }.
                 not_to match_against(record).
                 and_fail_with(<<-MESSAGE)
-Expected Child to validate that :parent cannot be empty/falsy, but this
-could not be proved.
-  After setting :parent to ‹nil›, the matcher expected the Child to be
-  invalid and to produce the validation error "can't be blank" on
-  :parent. The record was indeed invalid, but it produced these
-  validation errors instead:
+                  Expected Child to validate that :parent cannot be empty/falsy, but this
+                  could not be proved.
+                    After setting :parent to ‹nil›, the matcher expected the Child to be
+                    invalid and to produce the validation error "can't be blank" on
+                    :parent. The record was indeed invalid, but it produced these
+                    validation errors instead:
 
-  * parent: ["must exist"]
+                    * parent: ["must exist"]
 
-  You're getting this error because ActiveRecord is configured to add a
-  presence validation to all `belongs_to` associations, and this
-  includes yours. *This* presence validation doesn't use "can't be
-  blank", the usual validation message, but "must exist" instead.
+                    You're getting this error because ActiveRecord is configured to add a
+                    presence validation to all `belongs_to` associations, and this
+                    includes yours. *This* presence validation doesn't use "can't be
+                    blank", the usual validation message, but "must exist" instead.
 
-  With that said, did you know that the `belong_to` matcher can test
-  this validation for you? Instead of using `validate_presence_of`, try
-  the following instead:
+                    With that said, did you know that the `belong_to` matcher can test
+                    this validation for you? Instead of using `validate_presence_of`, try
+                    the following instead:
 
-      it { should belong_to(:parent) }
+                        it { should belong_to(:parent) }
                 MESSAGE
             end
           end
@@ -756,10 +756,10 @@ could not be proved.
               expect { validate_presence_of(:parent) }.
                 not_to match_against(record).
                 and_fail_with(<<-MESSAGE)
-Expected Child to validate that :parent cannot be empty/falsy, but this
-could not be proved.
-  After setting :parent to ‹nil›, the matcher expected the Child to be
-  invalid, but it was valid instead.
+                  Expected Child to validate that :parent cannot be empty/falsy, but this
+                  could not be proved.
+                    After setting :parent to ‹nil›, the matcher expected the Child to be
+                    invalid, but it was valid instead.
                 MESSAGE
             end
           end
@@ -829,11 +829,11 @@ could not be proved.
         end
 
       message = <<-MESSAGE
-Expected Example to validate that :attr cannot be empty/falsy, raising a
-validation exception on failure, but this could not be proved.
-  After setting :attr to ‹#{blank_value.inspect}›, the matcher expected the Example to be
-  invalid and to raise a validation exception, but the record produced
-  validation errors instead.
+        Expected Example to validate that :attr cannot be empty/falsy, raising a
+        validation exception on failure, but this could not be proved.
+          After setting :attr to ‹#{blank_value.inspect}›, the matcher expected the Example to be
+          invalid and to raise a validation exception, but the record produced
+          validation errors instead.
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)
@@ -910,19 +910,19 @@ validation exception on failure, but this could not be proved.
 
           if active_model_supports_full_attributes_api?
             expect(&assertion).to fail_with_message(<<-MESSAGE)
-Expected Example not to validate that :attr cannot be empty/falsy, but
-this could not be proved.
-  After setting :attr to ‹""›, the matcher expected the Example to be
-  valid, but it was invalid instead, producing these validation errors:
+              Expected Example not to validate that :attr cannot be empty/falsy, but
+              this could not be proved.
+                After setting :attr to ‹""›, the matcher expected the Example to be
+                valid, but it was invalid instead, producing these validation errors:
 
-  * attr: ["can't be blank"]
+                * attr: ["can't be blank"]
             MESSAGE
           else
             expect(&assertion).to fail_with_message(<<-MESSAGE)
-Expected Example not to validate that :attr cannot be empty/falsy, but
-this could not be proved.
-  After setting :attr to ‹nil›, the matcher expected the Example to be
-  invalid, but it was valid instead.
+              Expected Example not to validate that :attr cannot be empty/falsy, but
+              this could not be proved.
+                After setting :attr to ‹nil›, the matcher expected the Example to be
+                invalid, but it was valid instead.
             MESSAGE
           end
         end
@@ -937,12 +937,12 @@ this could not be proved.
           end
 
           message = <<-MESSAGE
-Expected Example to validate that :attr cannot be empty/falsy, but this
-could not be proved.
-  After setting :attr to ‹nil›, the matcher expected the Example to be
-  valid, but it was invalid instead, producing these validation errors:
+            Expected Example to validate that :attr cannot be empty/falsy, but this
+            could not be proved.
+              After setting :attr to ‹nil›, the matcher expected the Example to be
+              valid, but it was invalid instead, producing these validation errors:
 
-  * attr: ["can't be blank"]
+              * attr: ["can't be blank"]
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -966,10 +966,10 @@ could not be proved.
           end
 
           message = <<-MESSAGE
-Expected Example to validate that :attr cannot be empty/falsy, but this
-could not be proved.
-  After setting :attr to ‹""›, the matcher expected the Example to be
-  invalid, but it was valid instead.
+            Expected Example to validate that :attr cannot be empty/falsy, but this
+            could not be proved.
+              After setting :attr to ‹""›, the matcher expected the Example to be
+              invalid, but it was valid instead.
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -995,10 +995,10 @@ could not be proved.
           end
 
           message = <<-MESSAGE
-Expected Example not to validate that :attr cannot be empty/falsy, but
-this could not be proved.
-  After setting :attr to ‹nil›, the matcher expected the Example to be
-  invalid, but it was valid instead.
+            Expected Example not to validate that :attr cannot be empty/falsy, but
+            this could not be proved.
+              After setting :attr to ‹nil›, the matcher expected the Example to be
+              invalid, but it was valid instead.
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -1021,10 +1021,10 @@ this could not be proved.
           assertion = -> { expect(record).not_to matcher.allow_blank }
 
           expect(&assertion).to fail_with_message(<<-MESSAGE)
-Expected Example not to validate that :attr cannot be empty/falsy, but
-this could not be proved.
-  After setting :attr to ‹""›, the matcher expected the Example to be
-  invalid, but it was valid instead.
+            Expected Example not to validate that :attr cannot be empty/falsy, but
+            this could not be proved.
+              After setting :attr to ‹""›, the matcher expected the Example to be
+              invalid, but it was valid instead.
           MESSAGE
         end
       end
@@ -1038,12 +1038,12 @@ this could not be proved.
           end
 
           message = <<-MESSAGE
-Expected Example to validate that :attr cannot be empty/falsy, but this
-could not be proved.
-  After setting :attr to ‹""›, the matcher expected the Example to be
-  valid, but it was invalid instead, producing these validation errors:
+            Expected Example to validate that :attr cannot be empty/falsy, but this
+            could not be proved.
+              After setting :attr to ‹""›, the matcher expected the Example to be
+              valid, but it was invalid instead, producing these validation errors:
 
-  * attr: ["can't be blank"]
+              * attr: ["can't be blank"]
           MESSAGE
 
           expect(&assertion).to fail_with_message(message)
@@ -1072,10 +1072,10 @@ could not be proved.
         end
 
         message = <<-MESSAGE
-Expected Example not to validate that :attr cannot be empty/falsy, but
-this could not be proved.
-  After setting :attr to ‹""›, the matcher expected the Example to be
-  invalid, but it was valid instead.
+          Expected Example not to validate that :attr cannot be empty/falsy, but
+          this could not be proved.
+            After setting :attr to ‹""›, the matcher expected the Example to be
+            invalid, but it was valid instead.
         MESSAGE
 
         expect(&assertion).to fail_with_message(message)

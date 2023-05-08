@@ -36,20 +36,20 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :m
           attribute_name: :password,
           changing_values_with: :next_value,
           expected_message: <<-MESSAGE.strip,
-Expected Example to validate that :password_confirmation matches
-:password, but this could not be proved.
-  After setting :password_confirmation to ‹"same value"›, then setting
-  :password to ‹"same value"› -- which was read back as ‹"same valuf"›
-  -- the matcher expected the Example to be valid, but it was invalid
-  instead, producing these validation errors:
+            Expected Example to validate that :password_confirmation matches
+            :password, but this could not be proved.
+              After setting :password_confirmation to ‹"same value"›, then setting
+              :password to ‹"same value"› -- which was read back as ‹"same valuf"›
+              -- the matcher expected the Example to be valid, but it was invalid
+              instead, producing these validation errors:
 
-  * password_confirmation: ["doesn't match Password"]
+              * password_confirmation: ["doesn't match Password"]
 
-  As indicated in the message above, :password seems to be changing
-  certain values as they are set, and this could have something to do
-  with why this test is failing. If you've overridden the writer method
-  for this attribute, then you may need to change it to make this test
-  pass, or do something else entirely.
+              As indicated in the message above, :password seems to be changing
+              certain values as they are set, and this could have something to do
+              with why this test is failing. If you've overridden the writer method
+              for this attribute, then you may need to change it to make this test
+              pass, or do something else entirely.
           MESSAGE
         },
       },
@@ -69,11 +69,11 @@ Expected Example to validate that :password_confirmation matches
       end
 
       message = <<-MESSAGE
-Expected Example not to validate that :password_confirmation matches
-:password, but this could not be proved.
-  After setting :password_confirmation to ‹nil›, then setting :password
-  to ‹"any value"›, the matcher expected the Example to be invalid, but
-  it was valid instead.
+        Expected Example not to validate that :password_confirmation matches
+        :password, but this could not be proved.
+          After setting :password_confirmation to ‹nil›, then setting :password
+          to ‹"any value"›, the matcher expected the Example to be invalid, but
+          it was valid instead.
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)
@@ -89,8 +89,8 @@ Expected Example not to validate that :password_confirmation matches
       end
 
       message = <<-MESSAGE.rstrip
-The matcher attempted to set :attribute_to_confirm_confirmation on the
-Example to "some value", but that attribute does not exist.
+        The matcher attempted to set :attribute_to_confirm_confirmation on the
+        Example to "some value", but that attribute does not exist.
       MESSAGE
 
       expect(&assertion).to raise_error(
@@ -109,8 +109,8 @@ Example to "some value", but that attribute does not exist.
       end
 
       message = <<-MESSAGE.rstrip
-The matcher attempted to set :attribute_to_confirm on the Example to
-"different value", but that attribute does not exist.
+        The matcher attempted to set :attribute_to_confirm on the Example to
+        "different value", but that attribute does not exist.
       MESSAGE
 
       expect(&assertion).to raise_error(
@@ -131,11 +131,11 @@ The matcher attempted to set :attribute_to_confirm on the Example to
       end
 
       message = <<-MESSAGE
-Expected Example to validate that :attribute_to_confirm_confirmation
-matches :attribute_to_confirm, but this could not be proved.
-  After setting :attribute_to_confirm_confirmation to ‹"some value"›,
-  then setting :attribute_to_confirm to ‹"different value"›, the matcher
-  expected the Example to be invalid, but it was valid instead.
+        Expected Example to validate that :attribute_to_confirm_confirmation
+        matches :attribute_to_confirm, but this could not be proved.
+          After setting :attribute_to_confirm_confirmation to ‹"some value"›,
+          then setting :attribute_to_confirm to ‹"different value"›, the matcher
+          expected the Example to be invalid, but it was valid instead.
       MESSAGE
 
       expect(&assertion).to fail_with_message(message)

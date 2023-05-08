@@ -783,7 +783,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       end
 
       expect { have_many(:children) }.not_to match_against(parent_class.new).and_fail_with(<<-MESSAGE)
-Expected Parent to have a has_many association called children through conceptions (Could not find the source association(s) "child" or :children in model Conception. Try 'has_many :children, :through => :conceptions, :source => <name>'. Is it one of ?)
+        Expected Parent to have a has_many association called children through conceptions (Could not find the source association(s) "child" or :children in model Conception. Try 'has_many :children, :through => :conceptions, :source => <name>'. Is it one of ?)
       MESSAGE
     end
 
@@ -1583,8 +1583,8 @@ Expected Parent to have a has_many association called children through conceptio
                   expect(&build_matcher).
                     to match_against(Person.new).
                     or_fail_with(<<-MESSAGE)
-Did not expect Person to have a has_and_belongs_to_many association called relatives
-                  MESSAGE
+                      Did not expect Person to have a has_and_belongs_to_many association called relatives
+                    MESSAGE
                 end
               end
 
@@ -1634,8 +1634,8 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
                 expect(&build_matcher).
                   not_to match_against(Person.new).
                   and_fail_with(<<-MESSAGE)
-Expected Person to have a has_and_belongs_to_many association called relatives (relatives should use :family_tree for :join_table option)
-                MESSAGE
+                    Expected Person to have a has_and_belongs_to_many association called relatives (relatives should use :family_tree for :join_table option)
+                  MESSAGE
               end
             end
           end
@@ -1663,7 +1663,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
               expect(&build_matcher).
                 not_to match_against(Person.new).
                 and_fail_with(<<-MESSAGE)
-Expected Person to have a has_and_belongs_to_many association called relatives (relatives should use :family_tree for :join_table option)
+                  Expected Person to have a has_and_belongs_to_many association called relatives (relatives should use :family_tree for :join_table option)
                 MESSAGE
             end
           end
@@ -1689,7 +1689,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
             expect(&build_matcher).
               not_to match_against(Person.new).
               and_fail_with(<<-MESSAGE)
-Expected Person to have a has_and_belongs_to_many association called relatives (relatives should use :family_tree for :join_table option)
+                Expected Person to have a has_and_belongs_to_many association called relatives (relatives should use :family_tree for :join_table option)
               MESSAGE
           end
         end
@@ -1723,8 +1723,8 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
                   expect(&build_matcher).
                     to match_against(Person.new).
                     or_fail_with(<<-MESSAGE)
-Did not expect Person to have a has_and_belongs_to_many association called relatives
-                  MESSAGE
+                      Did not expect Person to have a has_and_belongs_to_many association called relatives
+                    MESSAGE
                 end
               end
 
@@ -1749,8 +1749,8 @@ Did not expect Person to have a has_and_belongs_to_many association called relat
                   expect(&build_matcher).
                     not_to match_against(Person.new).
                     and_fail_with(<<-MESSAGE)
-Expected Person to have a has_and_belongs_to_many association called relatives (join table people_and_their_families missing columns: person_id, relative_id)
-                  MESSAGE
+                      Expected Person to have a has_and_belongs_to_many association called relatives (join table people_and_their_families missing columns: person_id, relative_id)
+                    MESSAGE
                 end
               end
             end
@@ -1774,8 +1774,8 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
                 expect(&build_matcher).
                   not_to match_against(Person.new).
                   and_fail_with(<<-MESSAGE)
-Expected Person to have a has_and_belongs_to_many association called relatives (relatives should use "family_tree" for :join_table option)
-                MESSAGE
+                    Expected Person to have a has_and_belongs_to_many association called relatives (relatives should use "family_tree" for :join_table option)
+                  MESSAGE
               end
             end
           end
@@ -1803,7 +1803,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
               expect(&build_matcher).
                 not_to match_against(Person.new).
                 and_fail_with(<<-MESSAGE)
-Expected Person to have a has_and_belongs_to_many association called relatives (relatives should use "family_tree" for :join_table option)
+                  Expected Person to have a has_and_belongs_to_many association called relatives (relatives should use "family_tree" for :join_table option)
                 MESSAGE
             end
           end
@@ -1829,7 +1829,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
             expect(&build_matcher).
               not_to match_against(Person.new).
               and_fail_with(<<-MESSAGE)
-Expected Person to have a has_and_belongs_to_many association called relatives (relatives should use "family_tree" for :join_table option)
+                Expected Person to have a has_and_belongs_to_many association called relatives (relatives should use "family_tree" for :join_table option)
               MESSAGE
           end
         end
@@ -1859,8 +1859,8 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
             expect(&build_matcher).
               to match_against(Person.new).
               or_fail_with(<<-MESSAGE)
-Did not expect Person to have a has_and_belongs_to_many association called relatives
-            MESSAGE
+                Did not expect Person to have a has_and_belongs_to_many association called relatives
+              MESSAGE
           end
         end
 
@@ -1882,8 +1882,8 @@ Did not expect Person to have a has_and_belongs_to_many association called relat
             expect(&build_matcher).
               not_to match_against(Person.new).
               and_fail_with(<<-MESSAGE)
-Expected Person to have a has_and_belongs_to_many association called relatives (join table people_and_their_families missing columns: person_id, relative_id)
-            MESSAGE
+                Expected Person to have a has_and_belongs_to_many association called relatives (join table people_and_their_families missing columns: person_id, relative_id)
+              MESSAGE
           end
         end
       end
@@ -1904,8 +1904,8 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
           expect(&build_matcher).
             not_to match_against(Person.new).
             and_fail_with(<<-MESSAGE)
-Expected Person to have a has_and_belongs_to_many association called relatives (join table people_and_their_families doesn't exist)
-          MESSAGE
+              Expected Person to have a has_and_belongs_to_many association called relatives (join table people_and_their_families doesn't exist)
+            MESSAGE
         end
       end
     end

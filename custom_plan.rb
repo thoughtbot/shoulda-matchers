@@ -5,18 +5,18 @@ require_relative 'spec/support/tests/current_bundle'
 class CouldNotBootZeusError < StandardError
   def self.create(underlying_error:)
     new(<<-MESSAGE)
-Couldn't boot Zeus.
+      Couldn't boot Zeus.
 
-Bundler tried to load a gem that has already been loaded (but the
-versions are different).
+      Bundler tried to load a gem that has already been loaded (but the
+      versions are different).
 
-Note that Appraisal requires Rake, and so you'll want to make sure that
-the Gemfile is pointing to the same version of Rake that you have
-installed locally.
+      Note that Appraisal requires Rake, and so you'll want to make sure that
+      the Gemfile is pointing to the same version of Rake that you have
+      installed locally.
 
-The original message is as follows:
+      The original message is as follows:
 
-#{underlying_error.message}
+      #{underlying_error.message}
     MESSAGE
   end
 end
