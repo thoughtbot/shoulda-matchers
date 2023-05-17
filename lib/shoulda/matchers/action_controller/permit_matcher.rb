@@ -11,7 +11,7 @@ module Shoulda
   module Matchers
     module ActionController
       # The `permit` matcher tests that an action in your controller receives a
-      # whitelist of parameters using Rails' Strong Parameters feature
+      # allowlist of parameters using Rails' Strong Parameters feature
       # (specifically that `permit` was called with the correct arguments).
       #
       # Here's an example:

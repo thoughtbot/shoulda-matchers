@@ -8,9 +8,9 @@ module Shoulda
     module ActiveModel
       # The `validate_inclusion_of` matcher tests usage of the
       # `validates_inclusion_of` validation, asserting that an attribute can
-      # take a whitelist of values and cannot take values outside of this list.
+      # take a allowlist of values and cannot take values outside of this list.
       #
-      # If your whitelist is an array of values, use `in_array`:
+      # If your allowlist is an array of values, use `in_array`:
       #
       #     class Issue
       #       include ActiveModel::Model
@@ -34,7 +34,7 @@ module Shoulda
       #         in_array(['open', 'resolved', 'unresolved'])
       #     end
       #
-      # If your whitelist is a range of values, use `in_range`:
+      # If your allowlist is a range of values, use `in_range`:
       #
       #     class Issue
       #       include ActiveModel::Model

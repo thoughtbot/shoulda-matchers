@@ -3,10 +3,10 @@ module Shoulda
     module ActiveModel
       # The `validate_exclusion_of` matcher tests usage of the
       # `validates_exclusion_of` validation, asserting that an attribute cannot
-      # take a blacklist of values, and inversely, can take values outside of
+      # take a blocklist of values, and inversely, can take values outside of
       # this list.
       #
-      # If your blacklist is an array of values, use `in_array`:
+      # If your blocklist an array of values, use `in_array`:
       #
       #     class Game
       #       include ActiveModel::Model
@@ -29,7 +29,7 @@ module Shoulda
       #         in_array(['Mac', 'Linux'])
       #     end
       #
-      # If your blacklist is a range of values, use `in_range`:
+      # If your blocklist is a range of values, use `in_range`:
       #
       #     class Game
       #       include ActiveModel::Model
