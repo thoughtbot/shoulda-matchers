@@ -50,7 +50,7 @@ module UnitTests
           run_block(model, block)
         end
 
-        if whitelist_attributes? && model.respond_to?(:attr_accessible)
+        if allowlist_attributes? && model.respond_to?(:attr_accessible)
           model.attr_accessible(*columns.keys)
         end
 
@@ -85,8 +85,8 @@ module UnitTests
         options.fetch(:customize_table) { proc {} }
       end
 
-      def whitelist_attributes?
-        options.fetch(:whitelist_attributes, true)
+      def allowlist_attributes?
+        options.fetch(:allowlist_attributes, true)
       end
     end
   end
