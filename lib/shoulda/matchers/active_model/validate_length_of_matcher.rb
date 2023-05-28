@@ -275,6 +275,11 @@ module Shoulda
           @long_message = nil
         end
 
+        def as_array
+          @options[:array] = true
+          self
+        end
+
         def is_at_least(length)
           @options[:minimum] = length
           @short_message ||= :too_short
@@ -451,15 +456,15 @@ module Shoulda
         end
 
         def allows_length_of?(length, message)
-          allows_value_of(string_of_length(length), message)
+          allows_value_of(element_of_length(length), message)
         end
 
         def disallows_length_of?(length, message)
-          disallows_value_of(string_of_length(length), message)
+          disallows_value_of(element_of_length(length), message)
         end
 
-        def string_of_length(length)
-          'x' * length
+        def element_of_length(length)
+          (@options[:array] ? ['x'] : 'x') * length
         end
 
         def translated_short_message
