@@ -370,13 +370,111 @@ this could not be proved.
     end
   end
 
+  if database_supports_array_columns?
+    context 'when the column backing the attribute is an array' do
+      context 'an attribute with a non-zero minimum length validation' do
+        it 'accepts ensuring the correct minimum length' do
+          expect(validating_array_length(minimum: 4)).
+            to validate_length_of(:attr).as_array.is_at_least(4)
+        end
+
+        it 'rejects ensuring a lower minimum length with any message' do
+          expect(validating_array_length(minimum: 4)).
+            not_to validate_length_of(:attr).as_array.is_at_least(3).with_short_message(/.*/)
+        end
+
+        it 'rejects ensuring a higher minimum length with any message' do
+          expect(validating_array_length(minimum: 4)).
+            not_to validate_length_of(:attr).as_array.is_at_least(5).with_short_message(/.*/)
+        end
+
+        it 'does not override the default message with a blank' do
+          expect(validating_array_length(minimum: 4)).
+            to validate_length_of(:attr).as_array.is_at_least(4).with_short_message(nil)
+        end
+
+        it 'fails when used in the negative' do
+          assertion = lambda do
+            expect(validating_array_length(minimum: 4)).
+              not_to validate_length_of(:attr).as_array.is_at_least(4)
+          end
+
+          message = <<-MESSAGE
+Expected Example not to validate that the length of :attr is at least 4,
+but this could not be proved.
+  After setting :attr to ‹["x", "x", "x", "x"]›, the matcher expected
+  the Example to be invalid, but it was valid instead.
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'an attribute with a minimum length validation of 0' do
+        it 'accepts ensuring the correct minimum length' do
+          expect(validating_array_length(minimum: 0)).
+            to validate_length_of(:attr).as_array.is_at_least(0)
+        end
+      end
+
+      context 'an attribute with a maximum length' do
+        it 'accepts ensuring the correct maximum length' do
+          expect(validating_array_length(maximum: 4)).
+            to validate_length_of(:attr).as_array.is_at_most(4)
+        end
+
+        it 'rejects ensuring a lower maximum length with any message' do
+          expect(validating_array_length(maximum: 4)).
+            not_to validate_length_of(:attr).as_array.is_at_most(3).with_long_message(/.*/)
+        end
+
+        it 'rejects ensuring a higher maximum length with any message' do
+          expect(validating_array_length(maximum: 4)).
+            not_to validate_length_of(:attr).as_array.is_at_most(5).with_long_message(/.*/)
+        end
+
+        it 'does not override the default message with a blank' do
+          expect(validating_array_length(maximum: 4)).
+            to validate_length_of(:attr).as_array.is_at_most(4).with_long_message(nil)
+        end
+      end
+
+      context 'an attribute with a required exact length' do
+        it 'accepts ensuring the correct length' do
+          expect(validating_array_length(is: 4)).
+            to validate_length_of(:attr).as_array.is_equal_to(4)
+        end
+
+        it 'rejects ensuring a lower maximum length with any message' do
+          expect(validating_array_length(is: 4)).
+            not_to validate_length_of(:attr).as_array.is_equal_to(3).with_message(/.*/)
+        end
+
+        it 'rejects ensuring a higher maximum length with any message' do
+          expect(validating_array_length(is: 4)).
+            not_to validate_length_of(:attr).as_array.is_equal_to(5).with_message(/.*/)
+        end
+
+        it 'does not override the default message with a blank' do
+          expect(validating_array_length(is: 4)).
+            to validate_length_of(:attr).as_array.is_equal_to(4).with_message(nil)
+        end
+      end
+    end
+  end
+
   def define_model_validating_length(options = {})
     options = options.dup
     attribute_name = options.delete(:attribute_name) { :attr }
+    array = options.delete(:array)
 
-    define_model(:example, attribute_name => :string) do |model|
+    define_model(:example, attribute_name => { type: :varchar, options: { array: array } }) do |model|
       model.validates_length_of(attribute_name, options)
     end
+  end
+
+  def validating_array_length(options = {})
+    define_model_validating_length(options.merge(array: true)).new
   end
 
   def validating_length(options = {})
