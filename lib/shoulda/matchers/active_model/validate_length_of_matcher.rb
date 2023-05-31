@@ -468,10 +468,7 @@ module Shoulda
         end
 
         def array_column?
-          @options[:array] || (
-            @subject.class.respond_to?(:columns_hash) &&
-            @subject.class.columns_hash[@attribute.to_s].array?
-          )
+          @options[:array] || super
         end
 
         def translated_short_message
