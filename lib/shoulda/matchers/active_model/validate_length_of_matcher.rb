@@ -464,7 +464,14 @@ module Shoulda
         end
 
         def element_of_length(length)
-          (@options[:array] ? ['x'] : 'x') * length
+          (array_column? ? ['x'] : 'x') * length
+        end
+
+        def array_column?
+          @options[:array] || (
+            @subject.class.respond_to?(:columns_hash) &&
+            @subject.class.columns_hash[@attribute.to_s].array?
+          )
         end
 
         def translated_short_message
