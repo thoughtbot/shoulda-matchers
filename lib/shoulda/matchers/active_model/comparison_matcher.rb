@@ -75,13 +75,11 @@ module Shoulda
 
         def matches?(subject)
           @subject = subject
-          build_option_value
           submatchers.matches?(subject)
         end
 
         def does_not_match?(subject)
           @subject = subject
-          build_option_value
           submatchers.does_not_match?(subject)
         end
 
@@ -98,7 +96,7 @@ module Shoulda
         def build_submatchers
           comparison_combos.map do |diff, submatcher_method_name|
             matcher = __send__(submatcher_method_name, diff, nil)
-            matcher.with_message(@message, values: { count: @value })
+            matcher.with_message(@message, values: { count: option_value })
             matcher
           end
         end
@@ -121,19 +119,24 @@ module Shoulda
           ERROR_MESSAGES[@operator][:assertions]
         end
 
-        def build_option_value
-          @value = case @value
-                   when Proc then @value.call(@subject)
-                   when Symbol then @subject.send(@value)
-                   else @value
-                   end
+        def option_value
+          if defined?(@_option_value)
+            @_option_value
+          else
+            @_option_value =
+              case @value
+              when Proc then @value.call(@subject)
+              when Symbol then @subject.send(@value)
+              else @value
+              end
+          end
         end
 
         def diffs_to_compare
           diff_to_compare = @matcher.diff_to_compare
-          values = case @value
+          values = case option_value
                    when String then diffs_when_string(diff_to_compare)
-                   else [-1, 0, 1].map { |sign| @value + (diff_to_compare * sign) }
+                   else [-1, 0, 1].map { |sign| option_value + (diff_to_compare * sign) }
                    end
 
           if @matcher.given_numeric_column?
@@ -145,7 +148,7 @@ module Shoulda
 
         def diffs_when_string(diff_to_compare)
           [-1, 0, 1].map do |sign|
-            @value[0..-2] + (@value[-1].ord + diff_to_compare * sign).chr
+            option_value[0..-2] + (option_value[-1].ord + diff_to_compare * sign).chr
           end
         end
 
