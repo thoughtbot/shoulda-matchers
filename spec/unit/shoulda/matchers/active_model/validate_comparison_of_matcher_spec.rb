@@ -176,10 +176,8 @@ Expected Example to validate that :attr looks like a value greater than
             expect(&assertion).to fail_with_message(<<~MESSAGE)
 Expected Example not to validate that :attr looks like a value other
 than 10, but this could not be proved.
-  After setting :attr to ‹10›, the matcher expected the Example to be
-  valid, but it was invalid instead, producing these validation errors:
-
-  * attr: ["must be other than 10"]
+  After setting :attr to ‹11›, the matcher expected the Example to be
+  invalid, but it was valid instead.
             MESSAGE
           end
 
@@ -343,7 +341,7 @@ Expected Example to validate that :attr looks like a value other than
             expect(&assertion).to fail_with_message(<<~MESSAGE)
 Expected Example not to validate that :attr looks like a value equal to
 10, but this could not be proved.
-  After setting :attr to ‹9›, the matcher expected the Example to be
+  After setting :attr to ‹11›, the matcher expected the Example to be
   valid, but it was invalid instead, producing these validation errors:
 
   * attr: ["must be equal to 10"]
@@ -690,7 +688,7 @@ equal to 10, but this could not be proved.
             expect(&assertion).to fail_with_message(<<~MESSAGE)
 Expected Example not to validate that :attr looks like a value less than
 10, but this could not be proved.
-  After setting :attr to ‹10›, the matcher expected the Example to be
+  After setting :attr to ‹11›, the matcher expected the Example to be
   valid, but it was invalid instead, producing these validation errors:
 
   * attr: ["must be less than 10"]
@@ -864,10 +862,8 @@ but this could not be proved.
             expect(&assertion).to fail_with_message(<<~MESSAGE)
 Expected Example not to validate that :attr looks like a value greater
 than 10, but this could not be proved.
-  After setting :attr to ‹9›, the matcher expected the Example to be
-  valid, but it was invalid instead, producing these validation errors:
-
-  * attr: ["must be greater than 10"]
+  After setting :attr to ‹11›, the matcher expected the Example to be
+  invalid, but it was valid instead.
             MESSAGE
           end
 
@@ -1038,10 +1034,8 @@ Expected Example to validate that :attr looks like a value greater than
             expect(&assertion).to fail_with_message(<<~MESSAGE)
 Expected Example not to validate that :attr looks like a value greater
 than or equal to 10, but this could not be proved.
-  After setting :attr to ‹9›, the matcher expected the Example to be
-  valid, but it was invalid instead, producing these validation errors:
-
-  * attr: ["must be greater than or equal to 10"]
+  After setting :attr to ‹11›, the matcher expected the Example to be
+  invalid, but it was valid instead.
             MESSAGE
           end
 
@@ -1215,10 +1209,8 @@ or equal to 10, but this could not be proved.
             expect(&assertion).to fail_with_message(<<~MESSAGE)
 Expected Example not to validate that :attr looks like a value other
 than cat, but this could not be proved.
-  After setting :attr to ‹"cat"›, the matcher expected the Example to be
-  valid, but it was invalid instead, producing these validation errors:
-
-  * attr: ["must be other than cat"]
+  After setting :attr to ‹"cau"›, the matcher expected the Example to be
+  invalid, but it was valid instead.
             MESSAGE
           end
 
@@ -1350,7 +1342,7 @@ cat, but this could not be proved.
             expect(&assertion).to fail_with_message(<<~MESSAGE)
 Expected Example not to validate that :attr looks like a value equal to
 cat, but this could not be proved.
-  After setting :attr to ‹"cas"›, the matcher expected the Example to be
+  After setting :attr to ‹"cau"›, the matcher expected the Example to be
   valid, but it was invalid instead, producing these validation errors:
 
   * attr: ["must be equal to cat"]
@@ -1605,7 +1597,7 @@ equal to cat, but this could not be proved.
             expect(&assertion).to fail_with_message(<<~MESSAGE)
 Expected Example not to validate that :attr looks like a value less than
 cat, but this could not be proved.
-  After setting :attr to ‹"cat"›, the matcher expected the Example to be
+  After setting :attr to ‹"cau"›, the matcher expected the Example to be
   valid, but it was invalid instead, producing these validation errors:
 
   * attr: ["must be less than cat"]
@@ -1719,10 +1711,8 @@ cat, but this could not be proved.
             expect(&assertion).to fail_with_message(<<~MESSAGE)
 Expected Example not to validate that :attr looks like a value greater
 than cat, but this could not be proved.
-  After setting :attr to ‹"cas"›, the matcher expected the Example to be
-  valid, but it was invalid instead, producing these validation errors:
-
-  * attr: ["must be greater than cat"]
+  After setting :attr to ‹"cau"›, the matcher expected the Example to be
+  invalid, but it was valid instead.
             MESSAGE
           end
 
@@ -1833,10 +1823,8 @@ cat, but this could not be proved.
             expect(&assertion).to fail_with_message(<<~MESSAGE)
 Expected Example not to validate that :attr looks like a value greater
 than or equal to cat, but this could not be proved.
-  After setting :attr to ‹"cas"›, the matcher expected the Example to be
-  valid, but it was invalid instead, producing these validation errors:
-
-  * attr: ["must be greater than or equal to cat"]
+  After setting :attr to ‹"cau"›, the matcher expected the Example to be
+  invalid, but it was valid instead.
             MESSAGE
           end
 
@@ -1952,11 +1940,9 @@ or equal to cat, but this could not be proved.
             expect(&assertion).to fail_with_message(<<~MESSAGE)
 Expected Example not to validate that :attr looks like a value other
 than 2023-01-01, but this could not be proved.
-  After setting :attr to ‹"2023-01-01"› -- which was read back as ‹Sun,
-  01 Jan 2023› -- the matcher expected the Example to be valid, but it
-  was invalid instead, producing these validation errors:
-
-  * attr: ["must be other than 2023-01-01"]
+  After setting :attr to ‹"2023-01-02"› -- which was read back as ‹Mon,
+  02 Jan 2023› -- the matcher expected the Example to be invalid, but it
+  was valid instead.
 
   As indicated in the message above, :attr seems to be changing certain
   values as they are set, and this could have something to do with why
@@ -2080,8 +2066,8 @@ Expected Example to validate that :attr looks like a value other than
             expect(&assertion).to fail_with_message(<<~MESSAGE)
 Expected Example not to validate that :attr looks like a value equal to
 2023-01-01, but this could not be proved.
-  After setting :attr to ‹"2022-12-31"› -- which was read back as ‹Sat,
-  31 Dec 2022› -- the matcher expected the Example to be valid, but it
+  After setting :attr to ‹"2023-01-02"› -- which was read back as ‹Mon,
+  02 Jan 2023› -- the matcher expected the Example to be valid, but it
   was invalid instead, producing these validation errors:
 
   * attr: ["must be equal to 2023-01-01"]
@@ -2336,8 +2322,8 @@ equal to 2023-01-01, but this could not be proved.
             expect(&assertion).to fail_with_message(<<~MESSAGE)
 Expected Example not to validate that :attr looks like a value less than
 2023-01-01, but this could not be proved.
-  After setting :attr to ‹"2023-01-01"› -- which was read back as ‹Sun,
-  01 Jan 2023› -- the matcher expected the Example to be valid, but it
+  After setting :attr to ‹"2023-01-02"› -- which was read back as ‹Mon,
+  02 Jan 2023› -- the matcher expected the Example to be valid, but it
   was invalid instead, producing these validation errors:
 
   * attr: ["must be less than 2023-01-01"]
@@ -2464,11 +2450,9 @@ Expected Example to validate that :attr looks like a value less than
             expect(&assertion).to fail_with_message(<<~MESSAGE)
 Expected Example not to validate that :attr looks like a value greater
 than 2023-01-01, but this could not be proved.
-  After setting :attr to ‹"2022-12-31"› -- which was read back as ‹Sat,
-  31 Dec 2022› -- the matcher expected the Example to be valid, but it
-  was invalid instead, producing these validation errors:
-
-  * attr: ["must be greater than 2023-01-01"]
+  After setting :attr to ‹"2023-01-02"› -- which was read back as ‹Mon,
+  02 Jan 2023› -- the matcher expected the Example to be invalid, but it
+  was valid instead.
 
   As indicated in the message above, :attr seems to be changing certain
   values as they are set, and this could have something to do with why
@@ -2592,11 +2576,9 @@ Expected Example to validate that :attr looks like a value greater than
             expect(&assertion).to fail_with_message(<<~MESSAGE)
 Expected Example not to validate that :attr looks like a value greater
 than or equal to 2023-01-01, but this could not be proved.
-  After setting :attr to ‹"2022-12-31"› -- which was read back as ‹Sat,
-  31 Dec 2022› -- the matcher expected the Example to be valid, but it
-  was invalid instead, producing these validation errors:
-
-  * attr: ["must be greater than or equal to 2023-01-01"]
+  After setting :attr to ‹"2023-01-02"› -- which was read back as ‹Mon,
+  02 Jan 2023› -- the matcher expected the Example to be invalid, but it
+  was valid instead.
 
   As indicated in the message above, :attr seems to be changing certain
   values as they are set, and this could have something to do with why
