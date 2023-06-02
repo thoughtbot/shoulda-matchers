@@ -32,7 +32,7 @@ module Shoulda
           },
         }.freeze
 
-        delegate :failure_message, :failure_message_when_negated, to: :submatchers
+        delegate :failure_message, :failure_message_when_negated, to: :comparison_submatchers
 
         def initialize(matcher, value, operator)
           super(nil)
@@ -75,25 +75,26 @@ module Shoulda
 
         def matches?(subject)
           @subject = subject
-          submatchers.matches?(subject)
+          comparison_submatchers.matches?(subject)
         end
 
         def does_not_match?(subject)
           @subject = subject
-          submatchers.does_not_match?(subject)
+          comparison_submatchers.does_not_match?(subject)
         end
 
         def comparison_description
           "#{comparison_expectation} #{@value}"
         end
 
-        def submatchers
-          @_submatchers ||= NumericalityMatchers::Submatchers.new(build_submatchers)
+        def comparison_submatchers
+          @_comparison_submatchers ||=
+            NumericalityMatchers::Submatchers.new(build_comparison_submatchers)
         end
 
         private
 
-        def build_submatchers
+        def build_comparison_submatchers
           comparison_combos.map do |diff, submatcher_method_name|
             matcher = __send__(submatcher_method_name, diff, nil)
             matcher.with_message(@message, values: { count: option_value })

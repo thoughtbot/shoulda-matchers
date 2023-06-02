@@ -27,7 +27,7 @@ module UnitTests
     private
 
     def previous_value
-      return value.to_date - 1.day if date_column
+      return value.to_date - 1.day if date_column?
 
       if value.is_a?(String)
         value[0..-2] + (value[-1].ord - 1).chr
@@ -40,7 +40,7 @@ module UnitTests
       if value.is_a?(Array)
         value + [value.first.class.new]
       elsif value.respond_to?(:next)
-        return value.to_date + 1.day if date_column
+        return value.to_date + 1.day if date_column?
 
         value.next
       else
@@ -112,7 +112,7 @@ module UnitTests
       Shoulda::Matchers::Util.dummy_value_for(column_type)
     end
 
-    def date_column
+    def date_column?
       [:date, :datetime, :time, :timestamp].include?(column_type)
     end
   end
