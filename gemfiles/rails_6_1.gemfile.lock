@@ -62,7 +62,7 @@ GEM
       zeitwerk (~> 2.3)
     addressable (2.8.1)
       public_suffix (>= 2.0.2, < 6.0)
-    appraisal (2.2.0)
+    appraisal (2.4.0)
       bundler
       rake
       thor (>= 0.14.0)
@@ -133,12 +133,12 @@ GEM
     parser (3.2.0.0)
       ast (~> 2.4.1)
     pg (1.4.5)
-    pry (0.13.1)
+    pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    pry-byebug (3.9.0)
+    pry-byebug (3.10.1)
       byebug (~> 11.0)
-      pry (~> 0.13.0)
+      pry (>= 0.13, < 0.15)
     psych (3.3.4)
     public_suffix (5.0.1)
     puma (5.6.5)
@@ -286,7 +286,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  appraisal (= 2.2.0)
+  appraisal (= 2.4.0)
   bcrypt (~> 3.1.7)
   bootsnap (>= 1.4.4)
   bundler (~> 2.0)

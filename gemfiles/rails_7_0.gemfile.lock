@@ -68,7 +68,7 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.1)
       public_suffix (>= 2.0.2, < 6.0)
-    appraisal (2.2.0)
+    appraisal (2.4.0)
       bundler
       rake
       thor (>= 0.14.0)
@@ -142,9 +142,9 @@ GEM
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    pry-byebug (3.10.1)
+    pry-byebug (3.8.0)
       byebug (~> 11.0)
-      pry (>= 0.13, < 0.15)
+      pry (~> 0.10)
     public_suffix (5.0.1)
     puma (5.6.5)
       nio4r (~> 2.0)
@@ -282,7 +282,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  appraisal (= 2.2.0)
+  appraisal (= 2.4.0)
   bcrypt (~> 3.1.7)
   bootsnap
   bundler (~> 2.0)
@@ -318,4 +318,4 @@ DEPENDENCIES
   zeus
 
 BUNDLED WITH
-   2.3.22
+   2.4.13

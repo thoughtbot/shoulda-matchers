@@ -1,7 +1,7 @@
 module Shoulda
   module Matchers
     # @private
-    module RailsShim # rubocop:disable Metrics/ModuleLength
+    module RailsShim
       class << self
         def action_pack_version
           Gem::Version.new(::ActionPack::VERSION::STRING)
