@@ -68,7 +68,7 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.1)
       public_suffix (>= 2.0.2, < 6.0)
-    appraisal (2.2.0)
+    appraisal (2.4.0)
       bundler
       rake
       thor (>= 0.14.0)
@@ -282,7 +282,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  appraisal (= 2.2.0)
+  appraisal (= 2.4.0)
   bcrypt (~> 3.1.7)
   bootsnap
   bundler (~> 2.0)
