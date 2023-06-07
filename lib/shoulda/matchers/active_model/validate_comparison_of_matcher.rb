@@ -1,24 +1,24 @@
 module Shoulda
   module Matchers
     module ActiveModel
-      # The `validate_numericality_of` matcher tests usage of the
-      # `validates_numericality_of` validation.
+      # The `validate_comparison_of` matcher tests usage of the
+      # `validates_comparison_of` validation.
       #
       #     class Person
       #       include ActiveModel::Model
       #       attr_accessor :gpa
       #
-      #       validates_numericality_of :gpa
+      #       validates_comparison_of :gpa, greater_than: 10
       #     end
       #
       #     # RSpec
       #     RSpec.describe Person, type: :model do
-      #       it { should validate_numericality_of(:gpa) }
+      #       it { should validate_comparison_of(:gpa).greater_than(10) }
       #     end
       #
       #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
-      #       should validate_numericality_of(:gpa)
+      #       should validate_comparison_of(:gpa).greater_than(10)
       #     end
       #
       # #### Qualifiers
@@ -29,180 +29,172 @@ module Shoulda
       #
       #     class Person
       #       include ActiveModel::Model
+      #       attribute :number_of_dependents, :integer
       #       attr_accessor :number_of_dependents
       #
-      #       validates_numericality_of :number_of_dependents, on: :create
+      #       validates_comparison_of :number_of_dependents, on: :create, greater_than: 0
       #     end
       #
       #     # RSpec
       #     RSpec.describe Person, type: :model do
       #       it do
-      #         should validate_numericality_of(:number_of_dependents).
+      #         should validate_comparison_of(:number_of_dependents).
+      #           greater_than(0).
       #           on(:create)
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
-      #       should validate_numericality_of(:number_of_dependents).on(:create)
-      #     end
-      #
-      # ##### only_integer
-      #
-      # Use `only_integer` to test usage of the `:only_integer` option. This
-      # asserts that your attribute only allows integer numbers and disallows
-      # non-integer ones.
-      #
-      #     class Person
-      #       include ActiveModel::Model
-      #       attr_accessor :age
-      #
-      #       validates_numericality_of :age, only_integer: true
-      #     end
-      #
-      #     # RSpec
-      #     RSpec.describe Person, type: :model do
-      #       it { should validate_numericality_of(:age).only_integer }
-      #     end
-      #
-      #     # Minitest (Shoulda)
-      #     class PersonTest < ActiveSupport::TestCase
-      #       should validate_numericality_of(:age).only_integer
+      #       should validate_comparison_of(:number_of_dependents).greater_than(0).on(:create)
       #     end
       #
       # ##### is_less_than
       #
       # Use `is_less_than` to test usage of the the `:less_than` option. This
-      # asserts that the attribute can take a number which is less than the
-      # given value and cannot take a number which is greater than or equal to
-      # it.
+      # asserts that the attribute can take a value which is less than the
+      # given value and cannot take a value which is greater than or equal to
+      # it. It can also accept methods or procs that returns a given value.
       #
       #     class Person
       #       include ActiveModel::Model
+      #       attribute :number_of_cars, :integer
       #       attr_accessor :number_of_cars
       #
-      #       validates_numericality_of :number_of_cars, less_than: 2
+      #       validates_comparison_of :number_of_cars, less_than: :current_number_of_cars
+      #
+      #       def current_number_of_cars
+      #         10
+      #       end
       #     end
       #
       #     # RSpec
       #     RSpec.describe Person, type: :model do
       #       it do
-      #         should validate_numericality_of(:number_of_cars).
-      #           is_less_than(2)
+      #         should validate_comparison_of(:number_of_cars).
+      #           is_less_than(:current_number_of_cars)
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
-      #       should validate_numericality_of(:number_of_cars).
-      #         is_less_than(2)
+      #       should validate_comparison_of(:number_of_cars).
+      #         is_less_than(:current_number_of_cars)
       #     end
       #
       # ##### is_less_than_or_equal_to
       #
       # Use `is_less_than_or_equal_to` to test usage of the
       # `:less_than_or_equal_to` option. This asserts that the attribute can
-      # take a number which is less than or equal to the given value and cannot
-      # take a number which is greater than it.
+      # take a value which is less than or equal to the given value and cannot
+      # take a value which is greater than it. It can also accept methods or
+      # procs that returns a given value.
       #
       #     class Person
       #       include ActiveModel::Model
-      #       attr_accessor :birth_year
+      #       attr_accessor :birth_date
       #
-      #       validates_numericality_of :birth_year, less_than_or_equal_to: 1987
+      #       validates_comparison_of :birth_date, less_than_or_equal_to: Date.new(1987, 12, 31)
       #     end
       #
       #     # RSpec
       #     RSpec.describe Person, type: :model do
       #       it do
-      #         should validate_numericality_of(:birth_year).
-      #           is_less_than_or_equal_to(1987)
+      #         should validate_comparison_of(:birth_date).
+      #           is_less_than_or_equal_to(Date.new(1987, 12, 31))
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
-      #       should validate_numericality_of(:birth_year).
-      #         is_less_than_or_equal_to(1987)
-      #     end
-      #
-      # ##### is_equal_to
-      #
-      # Use `is_equal_to` to test usage of the `:equal_to` option. This asserts
-      # that the attribute can take a number which is equal to the given value
-      # and cannot take a number which is not equal.
-      #
-      #     class Person
-      #       include ActiveModel::Model
-      #       attr_accessor :weight
-      #
-      #       validates_numericality_of :weight, equal_to: 150
-      #     end
-      #
-      #     # RSpec
-      #     RSpec.describe Person, type: :model do
-      #       it { should validate_numericality_of(:weight).is_equal_to(150) }
-      #     end
-      #
-      #     # Minitest (Shoulda)
-      #     class PersonTest < ActiveSupport::TestCase
-      #       should validate_numericality_of(:weight).is_equal_to(150)
+      #       should validate_comparison_of(:birth_date).
+      #         is_less_than_or_equal_to(Date.new(1987, 12, 31))
       #     end
       #
       # ##### is_greater_than_or_equal_to
       #
       # Use `is_greater_than_or_equal_to` to test usage of the
       # `:greater_than_or_equal_to` option. This asserts that the attribute can
-      # take a number which is greater than or equal to the given value and
-      # cannot take a number which is less than it.
+      # take a value which is greater than or equal to the given value and
+      # cannot take a value which is less than it.
       #
       #     class Person
       #       include ActiveModel::Model
-      #       attr_accessor :height
+      #       attribute :birth_date, :date
+      #       attr_accessor :birth_date
       #
-      #       validates_numericality_of :height, greater_than_or_equal_to: 55
+      #       validates_comparison_of :birth_date,
+      #                                greater_than_or_equal_to: -> { 18.years.ago.to_date }
       #     end
       #
       #     # RSpec
       #     RSpec.describe Person, type: :model do
       #       it do
-      #         should validate_numericality_of(:height).
-      #           is_greater_than_or_equal_to(55)
+      #         should validate_comparison_of(:birth_date).
+      #           is_greater_than_or_equal_to(-> { 18.years.ago.to_date })
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
-      #       should validate_numericality_of(:height).
-      #         is_greater_than_or_equal_to(55)
+      #       should validate_comparison_of(:birth_date).
+      #         is_greater_than_or_equal_to(-> { 18.years.ago.to_date })
       #     end
       #
       # ##### is_greater_than
       #
       # Use `is_greater_than` to test usage of the `:greater_than` option.
-      # This asserts that the attribute can take a number which is greater than
-      # the given value and cannot take a number less than or equal to it.
+      # This asserts that the attribute can take a value which is greater than
+      # the given value and cannot take a value less than or equal to it.
+      # It can also accept methods or procs that returns a given value.
       #
       #     class Person
       #       include ActiveModel::Model
+      #       attribute :legal_age, :integer
       #       attr_accessor :legal_age
       #
-      #       validates_numericality_of :legal_age, greater_than: 21
+      #       validates_comparison_of :legal_age, greater_than: 21
       #     end
       #
       #     # RSpec
       #     RSpec.describe Person, type: :model do
       #       it do
-      #         should validate_numericality_of(:legal_age).
+      #         should validate_comparison_of(:legal_age).
       #           is_greater_than(21)
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
-      #       should validate_numericality_of(:legal_age).
+      #       should validate_comparison_of(:legal_age).
       #         is_greater_than(21)
       #     end
+      #
+      # ##### is_equal_to
+      #
+      # Use `is_equal_to` to test usage of the `:equal_to` option. This asserts
+      # that the attribute can take a value which is equal to the given value
+      # and cannot take a value which is not equal. It can also accept methods or
+      # procs that returns a given value.
+      #
+      #     class Person
+      #       include ActiveModel::Model
+      #       attribute :favorite_color, :string
+      #       attr_accessor :favorite_color
+      #
+      #       validates_comparison_of :favorite_color, equal_to: "blue"
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Person, type: :model do
+      #       it { should validate_comparison_of(:favorite_color).is_equal_to("blue") }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PersonTest < ActiveSupport::TestCase
+      #       should validate_comparison_of(:favorite_color).is_equal_to("blue")
+      #     end
+      #
       #
       # ##### is_other_than
       #
@@ -214,93 +206,21 @@ module Shoulda
       #       include ActiveModel::Model
       #       attr_accessor :legal_age
       #
-      #       validates_numericality_of :legal_age, other_than: 21
+      #       validates_comparison_of :legal_age, other_than: 21
       #     end
       #
       #     # RSpec
       #     RSpec.describe Person, type: :model do
       #       it do
-      #         should validate_numericality_of(:legal_age).
+      #         should validate_comparison_of(:legal_age).
       #           is_other_than(21)
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
-      #       should validate_numericality_of(:legal_age).
+      #       should validate_comparison_of(:legal_age).
       #         is_other_than(21)
-      #     end
-      #
-      # ##### even
-      #
-      # Use `even` to test usage of the `:even` option. This asserts that the
-      # attribute can take odd numbers and cannot take even ones.
-      #
-      #     class Person
-      #       include ActiveModel::Model
-      #       attr_accessor :birth_month
-      #
-      #       validates_numericality_of :birth_month, even: true
-      #     end
-      #
-      #     # RSpec
-      #     RSpec.describe Person, type: :model do
-      #       it { should validate_numericality_of(:birth_month).even }
-      #     end
-      #
-      #     # Minitest (Shoulda)
-      #     class PersonTest < ActiveSupport::TestCase
-      #       should validate_numericality_of(:birth_month).even
-      #     end
-      #
-      # ##### odd
-      #
-      # Use `odd` to test usage of the `:odd` option. This asserts that the
-      # attribute can take a number which is odd and cannot take a number which
-      # is even.
-      #
-      #     class Person
-      #       include ActiveModel::Model
-      #       attr_accessor :birth_day
-      #
-      #       validates_numericality_of :birth_day, odd: true
-      #     end
-      #
-      #     # RSpec
-      #     RSpec.describe Person, type: :model do
-      #       it { should validate_numericality_of(:birth_day).odd }
-      #     end
-      #
-      #     # Minitest (Shoulda)
-      #     class PersonTest < ActiveSupport::TestCase
-      #       should validate_numericality_of(:birth_day).odd
-      #     end
-      #
-      # ##### is_in
-      #
-      # Use `is_in` to test usage of the `:in` option.
-      # This asserts that the attribute can take a number which is contained
-      # in the given range.
-      #
-      #     class Person
-      #       include ActiveModel::Model
-      #       attr_accessor :legal_age
-      #
-      #       validates_numericality_of :birth_month, in: 1..12
-      #     end
-      #
-      #     # RSpec
-      #     RSpec.describe Person, type: :model do
-      #       it do
-      #         should validate_numericality_of(:birth_month).
-      #           is_in(1..12)
-      #       end
-      #     end
-      #
-      #     # Minitest (Shoulda)
-      #     class PersonTest < ActiveSupport::TestCase
-      #       should validate_numericality_of(:birth_month).
-      #         is_in(1..12)
       #     end
       #
       # ##### with_message
@@ -311,21 +231,23 @@ module Shoulda
       #       include ActiveModel::Model
       #       attr_accessor :number_of_dependents
       #
-      #       validates_numericality_of :number_of_dependents,
+      #       validates_comparison_of :number_of_dependents, greater_than: 0
       #         message: 'Number of dependents must be a number'
       #     end
       #
       #     # RSpec
       #     RSpec.describe Person, type: :model do
       #       it do
-      #         should validate_numericality_of(:number_of_dependents).
+      #         should validate_comparison_of(:number_of_dependents).
+      #           is_greater_than(0).
       #           with_message('Number of dependents must be a number')
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
-      #       should validate_numericality_of(:number_of_dependents).
+      #       should validate_comparison_of(:number_of_dependents).
+      #         is_greater_than(0).
       #         with_message('Number of dependents must be a number')
       #     end
       #
@@ -337,33 +259,33 @@ module Shoulda
       #       include ActiveModel::Model
       #       attr_accessor :age
       #
-      #       validates_numericality_of :age, allow_nil: true
+      #       validates_comparison_of :age, greater_than: 0, allow_nil: true
       #     end
       #
       #     # RSpec
       #     RSpec.describe Post, type: :model do
-      #       it { should validate_numericality_of(:age).allow_nil }
+      #       it { should validate_comparison_of(:age).is_greater_than(0).allow_nil }
       #     end
       #
       #     # Minitest (Shoulda)
       #     class PostTest < ActiveSupport::TestCase
-      #       should validate_numericality_of(:age).allow_nil
+      #       should validate_comparison_of(:age).is_greater_than(0).allow_nil
       #     end
       #
-      # @return [ValidateNumericalityOfMatcher]
+      # @return [ValidateComparisonOfMatcher]
       #
-      def validate_numericality_of(attr)
-        ValidateNumericalityOfMatcher.new(attr)
+      def validate_comparison_of(attr)
+        ValidateComparisonOfMatcher.new(attr)
       end
 
       # @private
-      class ValidateNumericalityOfMatcher
+      class ValidateComparisonOfMatcher
         NUMERIC_NAME = 'number'.freeze
         DEFAULT_DIFF_TO_COMPARE = 1
 
         include Qualifiers::IgnoringInterferenceByWriter
 
-        attr_reader :diff_to_compare
+        attr_reader :diff_to_compare, :number_of_submatchers
 
         def initialize(attribute)
           super
@@ -373,12 +295,9 @@ module Shoulda
           @expects_custom_validation_message = false
           @expects_to_allow_nil = false
           @expects_strict = false
-          @allowed_type_adjective = nil
-          @allowed_type_name = 'number'
+          @comparison_submatcher = false
           @context = nil
           @expected_message = nil
-
-          add_disallow_non_numeric_value_matcher
         end
 
         def strict
@@ -390,39 +309,14 @@ module Shoulda
           @expects_strict
         end
 
-        def only_integer
-          prepare_submatcher(
-            NumericalityMatchers::OnlyIntegerMatcher.new(self, @attribute),
-          )
-          self
-        end
-
         def allow_nil
           @expects_to_allow_nil = true
-          prepare_submatcher(
-            AllowValueMatcher.new(nil).
-              for(@attribute).
-              with_message(:not_a_number),
-          )
+          prepare_submatcher(AllowValueMatcher.new(nil).for(@attribute))
           self
         end
 
         def expects_to_allow_nil?
           @expects_to_allow_nil
-        end
-
-        def odd
-          prepare_submatcher(
-            NumericalityMatchers::OddNumberMatcher.new(self, @attribute),
-          )
-          self
-        end
-
-        def even
-          prepare_submatcher(
-            NumericalityMatchers::EvenNumberMatcher.new(self, @attribute),
-          )
-          self
         end
 
         def is_greater_than(value)
@@ -455,13 +349,6 @@ module Shoulda
           self
         end
 
-        def is_in(range)
-          prepare_submatcher(
-            NumericalityMatchers::RangeMatcher.new(self, @attribute, range),
-          )
-          self
-        end
-
         def with_message(message)
           @expects_custom_validation_message = true
           @expected_message = message
@@ -478,12 +365,21 @@ module Shoulda
         end
 
         def matches?(subject)
-          matches_or_does_not_match?(subject)
+          @subject = subject
+          @number_of_submatchers = @submatchers.size
+          unless @comparison_matcher
+            raise(ArgumentError, "matcher isn't qualified with any comparison matcher")
+          end
+
+          qualify_submatchers
           first_submatcher_that_fails_to_match.nil?
         end
 
         def does_not_match?(subject)
-          matches_or_does_not_match?(subject)
+          @subject = subject
+          @number_of_submatchers = @submatchers.size
+
+          qualify_submatchers
           first_submatcher_that_fails_to_not_match.nil?
         end
 
@@ -491,11 +387,7 @@ module Shoulda
           description = ''
 
           description << "validate that :#{@attribute} looks like "
-          description << Shoulda::Matchers::Util.a_or_an(full_allowed_type)
-
-          if range_description.present?
-            description << " #{range_description}"
-          end
+          description << Shoulda::Matchers::Util.a_or_an(allowed_type_name)
 
           if comparison_descriptions.present?
             description << " #{comparison_descriptions}"
@@ -530,13 +422,6 @@ module Shoulda
 
         private
 
-        def matches_or_does_not_match?(subject)
-          @subject = subject
-          @number_of_submatchers = @submatchers.size
-
-          qualify_submatchers
-        end
-
         def overall_failure_message
           Shoulda::Matchers.word_wrap(
             "Expected #{model.name} to #{description}, but this could not "\
@@ -567,49 +452,26 @@ module Shoulda
           end
         end
 
-        def add_disallow_non_numeric_value_matcher
-          disallow_value_matcher = DisallowValueMatcher.
-            new(non_numeric_value).
-            for(@attribute).
-            with_message(:not_a_number)
-
-          add_submatcher(disallow_value_matcher)
-        end
-
         def prepare_submatcher(submatcher)
           add_submatcher(submatcher)
           submatcher
         end
 
         def comparison_matcher_for(value, operator)
+          @comparison_matcher = true
           ComparisonMatcher.
             new(self, value, operator).
             for(@attribute)
         end
 
         def add_submatcher(submatcher)
-          if submatcher.respond_to?(:allowed_type_name)
-            @allowed_type_name = submatcher.allowed_type_name
-          end
-
-          if submatcher.respond_to?(:allowed_type_adjective)
-            @allowed_type_adjective = submatcher.allowed_type_adjective
-          end
-
-          if submatcher.respond_to?(:diff_to_compare)
-            @diff_to_compare = [
-              @diff_to_compare,
-              submatcher.diff_to_compare,
-            ].max
-          end
-
           @submatchers << submatcher
         end
 
         def qualify_submatchers
           @submatchers.each do |submatcher|
             if @expects_strict
-              submatcher.strict(@expects_strict)
+              submatcher.strict
             end
 
             if @expected_message.present?
@@ -628,9 +490,9 @@ module Shoulda
 
         def number_of_submatchers_for_failure_message
           if has_been_qualified?
-            @submatchers.size - 1
+            number_of_submatchers - 1
           else
-            @submatchers.size
+            number_of_submatchers
           end
         end
 
@@ -639,8 +501,7 @@ module Shoulda
         end
 
         def submatcher_qualified?(submatcher)
-          Shoulda::Matchers::RailsShim.parent_of(submatcher.class) ==
-            NumericalityMatchers || submatcher.instance_of?(ComparisonMatcher)
+          submatcher.instance_of?(ComparisonMatcher)
         end
 
         def first_submatcher_that_fails_to_match
@@ -692,10 +553,6 @@ module Shoulda
           Shoulda::Matchers.word_wrap(submatcher_message, indent: 2)
         end
 
-        def full_allowed_type
-          "#{@allowed_type_adjective} #{@allowed_type_name}".strip
-        end
-
         def comparison_descriptions
           description_array = submatcher_comparison_descriptions
           if description_array.empty?
@@ -707,19 +564,14 @@ module Shoulda
 
         def submatcher_comparison_descriptions
           @submatchers.inject([]) do |arr, submatcher|
-            if submatcher.respond_to? :comparison_description
-              arr << submatcher.comparison_description
-            end
-            arr
+            arr << if submatcher.respond_to? :comparison_description
+                     submatcher.comparison_description
+                   end
           end
         end
 
-        def range_description
-          range_submatcher = @submatchers.detect do |submatcher|
-            submatcher.respond_to? :range_description
-          end
-
-          range_submatcher&.range_description
+        def allowed_type_name
+          'value'
         end
 
         def model
