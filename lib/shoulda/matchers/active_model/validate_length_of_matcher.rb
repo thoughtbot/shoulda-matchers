@@ -456,14 +456,14 @@ module Shoulda
         end
 
         def allows_length_of?(length, message)
-          allows_value_of(element_of_length(length), message)
+          allows_value_of(value_of_length(length), message)
         end
 
         def disallows_length_of?(length, message)
-          disallows_value_of(element_of_length(length), message)
+          disallows_value_of(value_of_length(length), message)
         end
 
-        def element_of_length(length)
+        def value_of_length(length)
           (array_column? ? ['x'] : 'x') * length
         end
 
