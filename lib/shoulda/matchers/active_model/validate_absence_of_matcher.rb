@@ -143,6 +143,12 @@ module Shoulda
             @subject.class.reflect_on_association(@attribute)
         end
 
+        def array_column?
+          @subject.class.respond_to?(:columns_hash) &&
+            @subject.class.columns_hash[@attribute.to_s].respond_to?(:array) &&
+            @subject.class.columns_hash[@attribute.to_s].array
+        end
+
         def enum_column?
           @subject.class.respond_to?(:defined_enums) &&
             @subject.class.defined_enums.key?(@attribute.to_s)
