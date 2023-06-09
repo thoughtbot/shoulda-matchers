@@ -260,6 +260,27 @@ module Shoulda
       #       should validate_length_of(:bio).is_at_least(15).allow_blank
       #     end
       #
+      # ##### as_array
+      #
+      # Use `as_array` to force the attribute being validate with array values
+      #
+      #     class User
+      #       include ActiveModel::Model
+      #       attr_accessor :arr, array: true
+      #
+      #       validates_length_of :arr, minimum: 15
+      #     end
+      #
+      #     # RSpec
+      #     describe User do
+      #       it { should validate_length_of(:arr).as_array.is_at_least(15) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class UserTest < ActiveSupport::TestCase
+      #       should validate_length_of(:arr).as_array.is_at_least(15)
+      #     end
+      #
       def validate_length_of(attr)
         ValidateLengthOfMatcher.new(attr)
       end
