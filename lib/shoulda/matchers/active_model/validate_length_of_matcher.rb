@@ -262,11 +262,13 @@ module Shoulda
       #
       # ##### as_array
       #
-      # Use `as_array` to force the attribute being validate with array values
+      # Use `as_array` if you have an ActiveModel model and the attribute being validated
+      # is designed to store an array. (This is not necessary if you have an ActiveRecord
+      # model with an array column, as the matcher will detect this automatically.)
       #
       #     class User
       #       include ActiveModel::Model
-      #       attr_accessor :arr, array: true
+      #       attribute :arr, array: true
       #
       #       validates_length_of :arr, minimum: 15
       #     end
