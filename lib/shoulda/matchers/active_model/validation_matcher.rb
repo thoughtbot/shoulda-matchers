@@ -186,6 +186,12 @@ module Shoulda
         def blank_values
           ['', ' ', "\n", "\r", "\t", "\f"]
         end
+
+        def array_column?
+          @subject.class.respond_to?(:columns_hash) &&
+            @subject.class.columns_hash[@attribute.to_s].respond_to?(:array) &&
+            @subject.class.columns_hash[@attribute.to_s].array
+        end
       end
     end
   end

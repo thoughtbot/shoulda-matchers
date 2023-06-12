@@ -260,6 +260,29 @@ module Shoulda
       #       should validate_length_of(:bio).is_at_least(15).allow_blank
       #     end
       #
+      # ##### as_array
+      #
+      # Use `as_array` if you have an ActiveModel model and the attribute being validated
+      # is designed to store an array. (This is not necessary if you have an ActiveRecord
+      # model with an array column, as the matcher will detect this automatically.)
+      #
+      #     class User
+      #       include ActiveModel::Model
+      #       attribute :arr, array: true
+      #
+      #       validates_length_of :arr, minimum: 15
+      #     end
+      #
+      #     # RSpec
+      #     describe User do
+      #       it { should validate_length_of(:arr).as_array.is_at_least(15) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class UserTest < ActiveSupport::TestCase
+      #       should validate_length_of(:arr).as_array.is_at_least(15)
+      #     end
+      #
       def validate_length_of(attr)
         ValidateLengthOfMatcher.new(attr)
       end
@@ -273,6 +296,11 @@ module Shoulda
           @options = {}
           @short_message = nil
           @long_message = nil
+        end
+
+        def as_array
+          @options[:array] = true
+          self
         end
 
         def is_at_least(length)
@@ -451,15 +479,19 @@ module Shoulda
         end
 
         def allows_length_of?(length, message)
-          allows_value_of(string_of_length(length), message)
+          allows_value_of(value_of_length(length), message)
         end
 
         def disallows_length_of?(length, message)
-          disallows_value_of(string_of_length(length), message)
+          disallows_value_of(value_of_length(length), message)
         end
 
-        def string_of_length(length)
-          'x' * length
+        def value_of_length(length)
+          (array_column? ? ['x'] : 'x') * length
+        end
+
+        def array_column?
+          @options[:array] || super
         end
 
         def translated_short_message
