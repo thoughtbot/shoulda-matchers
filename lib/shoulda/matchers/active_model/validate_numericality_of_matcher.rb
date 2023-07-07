@@ -357,53 +357,33 @@ module Shoulda
       end
 
       # @private
-      class ValidateNumericalityOfMatcher
+      class ValidateNumericalityOfMatcher < ValidationMatcher
         NUMERIC_NAME = 'number'.freeze
         DEFAULT_DIFF_TO_COMPARE = 1
-
-        include Qualifiers::IgnoringInterferenceByWriter
 
         attr_reader :diff_to_compare
 
         def initialize(attribute)
           super
-          @attribute = attribute
           @submatchers = []
           @diff_to_compare = DEFAULT_DIFF_TO_COMPARE
-          @expects_custom_validation_message = false
           @expects_to_allow_nil = false
-          @expects_strict = false
           @allowed_type_adjective = nil
           @allowed_type_name = 'number'
-          @context = nil
-          @expected_message = nil
 
           add_disallow_non_numeric_value_matcher
         end
 
-        def strict
-          @expects_strict = true
-          self
-        end
-
-        def expects_strict?
-          @expects_strict
-        end
-
         def only_integer
           prepare_submatcher(
-            NumericalityMatchers::OnlyIntegerMatcher.new(self, @attribute),
+            NumericalityMatchers::OnlyIntegerMatcher.new(self, attribute),
           )
           self
         end
 
         def allow_nil
           @expects_to_allow_nil = true
-          prepare_submatcher(
-            AllowValueMatcher.new(nil).
-              for(@attribute).
-              with_message(:not_a_number),
-          )
+          prepare_submatcher(allow_value_matcher(nil, :not_a_number))
           self
         end
 
@@ -413,67 +393,52 @@ module Shoulda
 
         def odd
           prepare_submatcher(
-            NumericalityMatchers::OddNumberMatcher.new(self, @attribute),
+            NumericalityMatchers::OddNumberMatcher.new(self, attribute),
           )
           self
         end
 
         def even
           prepare_submatcher(
-            NumericalityMatchers::EvenNumberMatcher.new(self, @attribute),
+            NumericalityMatchers::EvenNumberMatcher.new(self, attribute),
           )
           self
         end
 
         def is_greater_than(value)
-          prepare_submatcher(comparison_matcher_for(value, :>).for(@attribute))
+          prepare_submatcher(comparison_matcher_for(value, :>).for(attribute))
           self
         end
 
         def is_greater_than_or_equal_to(value)
-          prepare_submatcher(comparison_matcher_for(value, :>=).for(@attribute))
+          prepare_submatcher(comparison_matcher_for(value, :>=).for(attribute))
           self
         end
 
         def is_equal_to(value)
-          prepare_submatcher(comparison_matcher_for(value, :==).for(@attribute))
+          prepare_submatcher(comparison_matcher_for(value, :==).for(attribute))
           self
         end
 
         def is_less_than(value)
-          prepare_submatcher(comparison_matcher_for(value, :<).for(@attribute))
+          prepare_submatcher(comparison_matcher_for(value, :<).for(attribute))
           self
         end
 
         def is_less_than_or_equal_to(value)
-          prepare_submatcher(comparison_matcher_for(value, :<=).for(@attribute))
+          prepare_submatcher(comparison_matcher_for(value, :<=).for(attribute))
           self
         end
 
         def is_other_than(value)
-          prepare_submatcher(comparison_matcher_for(value, :!=).for(@attribute))
+          prepare_submatcher(comparison_matcher_for(value, :!=).for(attribute))
           self
         end
 
         def is_in(range)
           prepare_submatcher(
-            NumericalityMatchers::RangeMatcher.new(self, @attribute, range),
+            NumericalityMatchers::RangeMatcher.new(self, attribute, range),
           )
-          self
-        end
-
-        def with_message(message)
-          @expects_custom_validation_message = true
-          @expected_message = message
-          self
-        end
-
-        def expects_custom_validation_message?
-          @expects_custom_validation_message
-        end
-
-        def on(context)
-          @context = context
           self
         end
 
@@ -490,7 +455,7 @@ module Shoulda
         def simple_description
           description = ''
 
-          description << "validate that :#{@attribute} looks like "
+          description << "validate that :#{attribute} looks like "
           description << Shoulda::Matchers::Util.a_or_an(full_allowed_type)
 
           if range_description.present?
@@ -502,10 +467,6 @@ module Shoulda
           end
 
           description
-        end
-
-        def description
-          ValidationMatcher::BuildDescription.call(self, simple_description)
         end
 
         def failure_message
@@ -552,16 +513,16 @@ module Shoulda
         end
 
         def attribute_is_active_record_column?
-          columns_hash.key?(@attribute.to_s)
+          columns_hash.key?(attribute.to_s)
         end
 
         def column_type
-          columns_hash[@attribute.to_s].type
+          columns_hash[attribute.to_s].type
         end
 
         def columns_hash
-          if @subject.class.respond_to?(:columns_hash)
-            @subject.class.columns_hash
+          if subject.class.respond_to?(:columns_hash)
+            subject.class.columns_hash
           else
             {}
           end
@@ -570,7 +531,7 @@ module Shoulda
         def add_disallow_non_numeric_value_matcher
           disallow_value_matcher = DisallowValueMatcher.
             new(non_numeric_value).
-            for(@attribute).
+            for(attribute).
             with_message(:not_a_number)
 
           add_submatcher(disallow_value_matcher)
@@ -584,7 +545,7 @@ module Shoulda
         def comparison_matcher_for(value, operator)
           ComparisonMatcher.
             new(self, value, operator).
-            for(@attribute)
+            for(attribute)
         end
 
         def add_submatcher(submatcher)
@@ -616,8 +577,8 @@ module Shoulda
               submatcher.with_message(@expected_message)
             end
 
-            if @context
-              submatcher.on(@context)
+            if context
+              submatcher.on(context)
             end
 
             submatcher.ignoring_interference_by_writer(
@@ -646,14 +607,14 @@ module Shoulda
         def first_submatcher_that_fails_to_match
           @_first_submatcher_that_fails_to_match ||=
             @submatchers.detect do |submatcher|
-              !submatcher.matches?(@subject)
+              !submatcher.matches?(subject)
             end
         end
 
         def first_submatcher_that_fails_to_not_match
           @_first_submatcher_that_fails_to_not_match ||=
             @submatchers.detect do |submatcher|
-              !submatcher.does_not_match?(@subject)
+              !submatcher.does_not_match?(subject)
             end
         end
 
@@ -720,10 +681,6 @@ module Shoulda
           end
 
           range_submatcher&.range_description
-        end
-
-        def model
-          @subject.class
         end
 
         def non_numeric_value
