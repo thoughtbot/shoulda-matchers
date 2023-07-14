@@ -498,20 +498,6 @@ module Shoulda
           qualify_submatchers
         end
 
-        def overall_failure_message
-          Shoulda::Matchers.word_wrap(
-            "Expected #{model.name} to #{description}, but this could not "\
-            'be proved.',
-          )
-        end
-
-        def overall_failure_message_when_negated
-          Shoulda::Matchers.word_wrap(
-            "Expected #{model.name} not to #{description}, but this could not "\
-            'be proved.',
-          )
-        end
-
         def attribute_is_active_record_column?
           columns_hash.key?(attribute.to_s)
         end
