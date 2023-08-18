@@ -52,7 +52,7 @@ module UnitTests
         valid_value: valid_value,
         attribute_to_validate: attribute_to_validate,
         attribute_that_receives_error: attribute_that_receives_error,
-        message: message
+        message: message,
       }
     end
 
@@ -63,7 +63,7 @@ module UnitTests
         validate _context[:validation_method_name]
 
         define_method(_context[:validation_method_name]) do
-          self.errors.add(_context[:attribute_that_receives_error], _context[:message])
+          errors.add(_context[:attribute_that_receives_error], _context[:message])
         end
       end
     end
@@ -75,7 +75,7 @@ module UnitTests
     def model_columns
       {
         attribute_to_validate => :string,
-        attribute_that_receives_error => :string
+        attribute_that_receives_error => :string,
       }
     end
 
@@ -83,7 +83,7 @@ module UnitTests
       {
         attribute_that_receives_error: :attribute_that_receives_error,
         attribute_to_validate: :attribute_to_validate,
-        message: 'some message'
+        message: 'some message',
       }
     end
   end

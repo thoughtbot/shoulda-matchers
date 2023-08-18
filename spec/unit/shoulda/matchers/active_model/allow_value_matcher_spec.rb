@@ -365,11 +365,12 @@ errors instead:
 
           message = <<-MESSAGE
 After setting :attribute_to_validate to ‹"some value"›, the matcher
-expected the Example to be invalid, but it had errors involving other
-attributes:
+expected the Example to be invalid, placing a validation error on
+:attribute_to_validate. The Example was invalid, but it had errors
+involving other attributes:
 
 * attribute_that_receives_error: ["some message"]
-MESSAGE
+          MESSAGE
           expect(&assertion).to fail_with_message(message)
         end
       end
