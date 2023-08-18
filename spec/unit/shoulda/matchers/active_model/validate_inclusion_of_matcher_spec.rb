@@ -890,7 +890,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     context 'against a polymorphic association' do
       it 'matches when the subject configures validate_inclusion_of' do
         define_model(:issue, severity_id: :integer, severity_type: :string) do
-          belongs_to :severity, polymorphic: true
+          belongs_to :severity, polymorphic: true, optional: true
           validates_inclusion_of :severity_type, in: %w(Low Medium High)
         end
         define_model(:high)
@@ -902,7 +902,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
       it 'does not match when subject does not set validate_inclusion_of' do
         define_model(:issue, severity_id: :integer, severity_type: :string) do
-          belongs_to :severity, polymorphic: true
+          belongs_to :severity, polymorphic: true, optional: true
         end
         define_model(:high)
         define_model(:medium)
