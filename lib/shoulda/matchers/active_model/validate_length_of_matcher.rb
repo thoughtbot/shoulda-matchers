@@ -3,7 +3,7 @@ module Shoulda
     module ActiveModel
       # The `validate_length_of` matcher tests usage of the
       # `validates_length_of` matcher. Note that this matcher is intended to be
-      # used against string columns and not integer columns.
+      # used against string columns and associations and not integer columns.
       #
       # #### Qualifiers
       #
@@ -36,7 +36,8 @@ module Shoulda
       #
       # Use `is_at_least` to test usage of the `:minimum` option. This asserts
       # that the attribute can take a string which is equal to or longer than
-      # the given length and cannot take a string which is shorter.
+      # the given length and cannot take a string which is shorter. This qualifier
+      # also works for associations.
       #
       #     class User
       #       include ActiveModel::Model
@@ -61,7 +62,8 @@ module Shoulda
       #
       # Use `is_at_most` to test usage of the `:maximum` option. This asserts
       # that the attribute can take a string which is equal to or shorter than
-      # the given length and cannot take a string which is longer.
+      # the given length and cannot take a string which is longer. This qualifier
+      # also works for associations.
       #
       #     class User
       #       include ActiveModel::Model
@@ -84,7 +86,8 @@ module Shoulda
       #
       # Use `is_equal_to` to test usage of the `:is` option. This asserts that
       # the attribute can take a string which is exactly equal to the given
-      # length and cannot take a string which is shorter or longer.
+      # length and cannot take a string which is shorter or longer. This qualifier
+      # also works for associations.
       #
       #     class User
       #       include ActiveModel::Model
@@ -106,7 +109,7 @@ module Shoulda
       # ##### is_at_least + is_at_most
       #
       # Use `is_at_least` and `is_at_most` together to test usage of the `:in`
-      # option.
+      # option. This qualifies also works for associations.
       #
       #     class User
       #       include ActiveModel::Model
@@ -487,11 +490,31 @@ module Shoulda
         end
 
         def value_of_length(length)
-          (array_column? ? ['x'] : 'x') * length
+          if array_column?
+            ['x'] * length
+          elsif collection_association?
+            Array.new(length) { association_reflection.klass.new }
+          else
+            'x' * length
+          end
         end
 
         def array_column?
           @options[:array] || super
+        end
+
+        def collection_association?
+          association? && [:has_many, :has_and_belongs_to_many].include?(
+            association_reflection.macro,
+          )
+        end
+
+        def association?
+          association_reflection.present?
+        end
+
+        def association_reflection
+          model.try(:reflect_on_association, @attribute)
         end
 
         def translated_short_message

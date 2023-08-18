@@ -370,6 +370,190 @@ this could not be proved.
     end
   end
 
+  context 'when validating has many associations' do
+    context 'an association with a non-zero minimum length validation' do
+      it 'accepts ensuring the correct minimum length' do
+        expect(validating_association_length(minimum: 4)).
+          to validate_length_of(:children).is_at_least(4)
+      end
+
+      it 'rejects ensuring a lower minimum length with any message' do
+        expect(validating_association_length(minimum: 4)).
+          not_to validate_length_of(:children).is_at_least(3).with_short_message(/.*/)
+      end
+
+      it 'rejects ensuring a higher minimum length with any message' do
+        expect(validating_association_length(minimum: 4)).
+          not_to validate_length_of(:children).is_at_least(5).with_short_message(/.*/)
+      end
+
+      it 'does not override the default message with a blank' do
+        expect(validating_association_length(minimum: 4)).
+          to validate_length_of(:children).is_at_least(4).with_short_message(nil)
+      end
+
+      it 'fails when used in the negative' do
+        assertion = lambda do
+          expect(validating_association_length(minimum: 4)).
+            not_to validate_length_of(:children).is_at_least(4)
+        end
+
+        message = <<-MESSAGE
+Expected Parent not to validate that the length of :children is at least
+4, but this could not be proved.
+  After setting :children to ‹[#<Child id: nil>, #<Child id: nil>,
+  #<Child id: nil>, #<Child id: nil>]›, the matcher expected the Parent
+  to be invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+    end
+
+    context 'an attribute with a minimum length validation of 0' do
+      it 'accepts ensuring the correct minimum length' do
+        expect(validating_association_length(minimum: 0)).
+          to validate_length_of(:children).is_at_least(0)
+      end
+    end
+
+    context 'an attribute with a maximum length' do
+      it 'accepts ensuring the correct maximum length' do
+        expect(validating_association_length(maximum: 4)).
+          to validate_length_of(:children).is_at_most(4)
+      end
+
+      it 'rejects ensuring a lower maximum length with any message' do
+        expect(validating_association_length(maximum: 4)).
+          not_to validate_length_of(:children).is_at_most(3).with_long_message(/.*/)
+      end
+
+      it 'rejects ensuring a higher maximum length with any message' do
+        expect(validating_association_length(maximum: 4)).
+          not_to validate_length_of(:children).is_at_most(5).with_long_message(/.*/)
+      end
+
+      it 'does not override the default message with a blank' do
+        expect(validating_association_length(maximum: 4)).
+          to validate_length_of(:children).is_at_most(4).with_long_message(nil)
+      end
+    end
+
+    context 'an attribute with a required exact length' do
+      it 'accepts ensuring the correct length' do
+        expect(validating_association_length(is: 4)).
+          to validate_length_of(:children).is_equal_to(4)
+      end
+
+      it 'rejects ensuring a lower maximum length with any message' do
+        expect(validating_association_length(is: 4)).
+          not_to validate_length_of(:children).is_equal_to(3).with_message(/.*/)
+      end
+
+      it 'rejects ensuring a higher maximum length with any message' do
+        expect(validating_association_length(is: 4)).
+          not_to validate_length_of(:children).is_equal_to(5).with_message(/.*/)
+      end
+
+      it 'does not override the default message with a blank' do
+        expect(validating_association_length(is: 4)).
+          to validate_length_of(:children).is_equal_to(4).with_message(nil)
+      end
+    end
+  end
+
+  context 'when validating has many through associations' do
+    context 'an association with a non-zero minimum length validation' do
+      it 'accepts ensuring the correct minimum length' do
+        expect(validating_through_association_length(minimum: 4)).
+          to validate_length_of(:children).is_at_least(4)
+      end
+
+      it 'rejects ensuring a lower minimum length with any message' do
+        expect(validating_through_association_length(minimum: 4)).
+          not_to validate_length_of(:children).is_at_least(3).with_short_message(/.*/)
+      end
+
+      it 'rejects ensuring a higher minimum length with any message' do
+        expect(validating_through_association_length(minimum: 4)).
+          not_to validate_length_of(:children).is_at_least(5).with_short_message(/.*/)
+      end
+
+      it 'does not override the default message with a blank' do
+        expect(validating_through_association_length(minimum: 4)).
+          to validate_length_of(:children).is_at_least(4).with_short_message(nil)
+      end
+
+      it 'fails when used in the negative' do
+        assertion = lambda do
+          expect(validating_through_association_length(minimum: 4)).
+            not_to validate_length_of(:children).is_at_least(4)
+        end
+
+        message = <<-MESSAGE
+Expected Parent not to validate that the length of :children is at least
+4, but this could not be proved.
+  After setting :children to ‹[#<Child id: nil>, #<Child id: nil>,
+  #<Child id: nil>, #<Child id: nil>]›, the matcher expected the Parent
+  to be invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+    end
+
+    context 'an attribute with a minimum length validation of 0' do
+      it 'accepts ensuring the correct minimum length' do
+        expect(validating_through_association_length(minimum: 0)).
+          to validate_length_of(:children).is_at_least(0)
+      end
+    end
+
+    context 'an attribute with a maximum length' do
+      it 'accepts ensuring the correct maximum length' do
+        expect(validating_through_association_length(maximum: 4)).
+          to validate_length_of(:children).is_at_most(4)
+      end
+
+      it 'rejects ensuring a lower maximum length with any message' do
+        expect(validating_through_association_length(maximum: 4)).
+          not_to validate_length_of(:children).is_at_most(3).with_long_message(/.*/)
+      end
+
+      it 'rejects ensuring a higher maximum length with any message' do
+        expect(validating_through_association_length(maximum: 4)).
+          not_to validate_length_of(:children).is_at_most(5).with_long_message(/.*/)
+      end
+
+      it 'does not override the default message with a blank' do
+        expect(validating_through_association_length(maximum: 4)).
+          to validate_length_of(:children).is_at_most(4).with_long_message(nil)
+      end
+    end
+
+    context 'an attribute with a required exact length' do
+      it 'accepts ensuring the correct length' do
+        expect(validating_through_association_length(is: 4)).
+          to validate_length_of(:children).is_equal_to(4)
+      end
+
+      it 'rejects ensuring a lower maximum length with any message' do
+        expect(validating_through_association_length(is: 4)).
+          not_to validate_length_of(:children).is_equal_to(3).with_message(/.*/)
+      end
+
+      it 'rejects ensuring a higher maximum length with any message' do
+        expect(validating_through_association_length(is: 4)).
+          not_to validate_length_of(:children).is_equal_to(5).with_message(/.*/)
+      end
+
+      it 'does not override the default message with a blank' do
+        expect(validating_through_association_length(is: 4)).
+          to validate_length_of(:children).is_equal_to(4).with_message(nil)
+      end
+    end
+  end
+
   if database_supports_array_columns?
     context 'when the column backing the attribute is an array' do
       context 'an attribute with a non-zero minimum length validation' do
@@ -662,6 +846,27 @@ but this could not be proved.
     define_active_model_class('Example', accessors: []) do
       attribute attribute_name, array: true
       validates_length_of(attribute_name, options)
+    end.new
+  end
+
+  def validating_association_length(options)
+    define_model :child
+    define_model :parent do
+      has_many :children
+      validates_length_of :children, options
+    end.new
+  end
+
+  def validating_through_association_length(options)
+    define_model :child
+    define_model :conception, child_id: :integer, parent_id: :integer do
+      belongs_to :child
+    end
+    define_model :parent do
+      has_many :conceptions
+      has_many :children, through: :conceptions
+
+      validates_length_of :children, options
     end.new
   end
 
