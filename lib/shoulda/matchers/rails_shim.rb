@@ -147,7 +147,7 @@ module Shoulda
         end
 
         def validates_column_options?
-          active_record_version >= '7.1.0'
+          Gem::Requirement.new('>= 7.1.0').satisfied_by?(active_record_version)
         end
 
         private
