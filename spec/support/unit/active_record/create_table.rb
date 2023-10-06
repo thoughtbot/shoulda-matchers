@@ -92,6 +92,7 @@ module UnitTests
         column_specification = column_specification.dup
         column_type = column_specification.delete(:type)
         column_options = column_specification.delete(:options) { {} }
+        column_options.merge!({ _skip_validate_options: true }) if Shoulda::Matchers::RailsShim.validates_column_options?
 
         if column_options[:array] && !database_supports_array_columns?
           raise ArgumentError.new(

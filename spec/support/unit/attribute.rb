@@ -3,7 +3,7 @@ module UnitTests
     DEFAULT_COLUMN_TYPE = :string
     DEFAULT_COLUMN_OPTIONS = {
       null: false,
-      array: false,
+      array: false
     }.freeze
 
     def initialize(args)
