@@ -6,7 +6,7 @@ GEM
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
-    appraisal (2.4.0)
+    appraisal (2.5.0)
       bundler
       rake
       thor (>= 0.14.0)
@@ -82,7 +82,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  appraisal (= 2.4.0)
+  appraisal (= 2.5.0)
   bundler (~> 2.0)
   fssm
   pry
