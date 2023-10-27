@@ -67,7 +67,11 @@ describe Shoulda::Matchers::ActiveRecord::HaveSecureTokenMatcher,
 
   it 'does not match when missing a token column' do
     create_table(:users)
-    invalid_model = define_model_class(:User) { has_secure_token }
+    invalid_model = if rails_version >= 7.1
+                      define_model_class(:User) { has_secure_token(on: :create) }
+                    else
+                      define_model_class(:User) { has_secure_token }
+                    end
 
     expected_message =
       'Expected User to have :token as a secure token but the following ' \
@@ -125,9 +129,11 @@ describe Shoulda::Matchers::ActiveRecord::HaveSecureTokenMatcher,
 
   it 'does not match when missing a column for a custom attribute' do
     create_table(:users)
-    invalid_model = define_model_class(:User) do
-      has_secure_token(:auth_token)
-    end
+    invalid_model = if rails_version >= 7.1
+                      define_model_class(:User) { has_secure_token(:auth_token, on: :create) }
+                    else
+                      define_model_class(:User) { has_secure_token(:auth_token) }
+                    end
 
     expected_message =
       'Expected User to have :auth_token as a secure token but the ' \
