@@ -489,7 +489,7 @@ Shoulda Matchers follows Semantic Versioning 2.0 as defined at
 Shoulda Matchers is currently maintained by [Pedro Paiva][VSPPedro] and [Matheus
 Sales][matsales28]. Previous maintainers include [Elliot Winkler][mcmire],
 [Gui Albuk][guialbuk], [Jason Draper][drapergeek], [Melissa Xie][mxie],
-[Ryan McGeary][rmm5t], [Gabe Berke-Williams][gabebw], [Joe Ferris][jferris], and
+[Gabe Berke-Williams][gabebw], [Ryan McGeary][rmm5t], [Joe Ferris][jferris], and
 [Tammer Saleh][tammersaleh].
 
 [VSPPedro]: https://github.com/VSPPedro
@@ -498,8 +498,8 @@ Sales][matsales28]. Previous maintainers include [Elliot Winkler][mcmire],
 [guialbuk]: https://github.com/guialbuk
 [drapergeek]: https://github.com/drapergeek
 [mxie]: https://github.com/mxie
-[rmm5t]: https://github.com/rmm5t
 [gabebw]: https://github.com/gabebw
+[rmm5t]: https://github.com/rmm5t
 [jferris]: https://github.com/jferris
 [tammersaleh]: https://github.com/tammersaleh
 
