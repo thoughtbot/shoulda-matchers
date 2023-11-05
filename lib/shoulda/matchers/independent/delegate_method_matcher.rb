@@ -400,7 +400,7 @@ module Shoulda
                 false
               rescue NoMethodError => e
                 if e.message =~
-                   /undefined method `#{delegate_method}' for nil:NilClass/
+                   /undefined method `#{delegate_method}' for nil/
                   false
                 else
                   raise e
