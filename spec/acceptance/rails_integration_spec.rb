@@ -4,7 +4,21 @@ describe 'shoulda-matchers integrates with Rails' do
   before do
     create_rails_application
 
-    write_file 'db/migrate/1_create_users.rb', <<-FILE
+    write_file 'db/migrate/1_create_defaults.rb', <<-FILE
+      class CreateDefaults < #{migration_class_name}
+        def self.up
+          create_table :action_text_rich_texts
+          create_table :active_storage_variant_records
+          create_table :active_storage_blobs
+          create_table :active_storage_attachments
+          create_table :action_mailbox_inbound_emails do |t|
+            t.integer :status
+          end
+        end
+      end
+    FILE
+
+    write_file 'db/migrate/2_create_users.rb', <<-FILE
       class CreateUsers < #{migration_class_name}
         def self.up
           create_table :users do |t|
