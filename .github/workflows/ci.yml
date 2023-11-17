@@ -31,6 +31,7 @@ jobs:
           - 3.1.4
           - 3.0.6
         appraisal:
+          - rails_7_1
           - rails_7_0
           - rails_6_1
         adapter:
@@ -38,9 +39,8 @@ jobs:
           - postgresql
         exclude:
           - { ruby: 3.2.2, appraisal: rails_6_1 }
-          - { ruby: 3.1.4, appraisal: rails_5_2 }
-          - { ruby: 3.0.6, appraisal: rails_5_2 }
           - { ruby: 3.0.6, appraisal: rails_7_0 }
+          - { ruby: 3.0.6, appraisal: rails_7_1 }
     env:
       DATABASE_ADAPTER: ${{ matrix.adapter }}
       BUNDLE_GEMFILE: gemfiles/${{ matrix.appraisal }}.gemfile

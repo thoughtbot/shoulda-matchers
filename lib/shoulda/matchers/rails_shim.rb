@@ -146,6 +146,10 @@ module Shoulda
             model.respond_to?(:attribute_types)
         end
 
+        def validates_column_options?
+          Gem::Requirement.new('>= 7.1.0').satisfied_by?(active_record_version)
+        end
+
         private
 
         def simply_generate_validation_message(

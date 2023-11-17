@@ -124,12 +124,12 @@ Expected Employee to have db column named nickname of sql_type varchar (Employee
 
   context 'with primary option' do
     it 'accepts a column that is primary' do
-      expect(with_table(:custom_id, :integer, primary: true)).
-        to have_db_column(:id).with_options(primary: true)
+      expect(with_table_custom_primary_key(:custom_id)).
+        to have_db_column(:custom_id).with_options(primary: true)
     end
 
     it 'rejects a column that is not primary' do
-      expect(with_table(:whatever, :integer, primary: false)).
+      expect(with_table(:whatever, :integer, {})).
         not_to have_db_column(:whatever).with_options(primary: true)
     end
   end
@@ -161,8 +161,15 @@ Expected Employee to have db column named nickname of sql_type varchar (Employee
   end
 
   def with_table(column_name, column_type, options)
-    create_table 'employees' do |table|
+    create_table 'employees', id: false do |table|
       table.__send__(column_type, column_name, **options)
+    end
+    define_model_class('Employee').new
+  end
+
+  def with_table_custom_primary_key(column_name, options = {})
+    create_table 'employees', id: false do |table|
+      table.__send__(:primary_key, column_name, **options)
     end
     define_model_class('Employee').new
   end

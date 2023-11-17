@@ -230,7 +230,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
 
         matcher.matches?(controller)
 
-        expect(actual_user_params).to eq('some' => 'params')
+        expect(actual_user_params).to eq ActionController::Parameters.new('some' => 'params')
         expect(actual_foo_param).to eq 'bar'
       end
 
@@ -252,7 +252,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
 
         matcher.matches?(controller)
 
-        expect(actual_user_params).to eq expected_user_params
+        expect(actual_user_params).to eq ActionController::Parameters.new(expected_user_params)
       end
 
       it 'does not permanently stub the params hash' do

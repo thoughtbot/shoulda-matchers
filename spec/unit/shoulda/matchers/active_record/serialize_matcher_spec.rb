@@ -41,38 +41,40 @@ describe Shoulda::Matchers::ActiveRecord::SerializeMatcher, type: :model do
 
   context 'an attribute that will end up being serialized as YAML' do
     it 'accepts when the types match' do
-      expect(with_serialized_attr(Hash)).to serialize(:attr).as(Hash)
+      expect(with_serialized_attr(type: Hash, coder: JSON)).to serialize(:attr).as(Hash)
     end
 
     it 'rejects when the types do not match' do
-      expect(with_serialized_attr(Hash)).not_to serialize(:attr).as(String)
+      expect(with_serialized_attr(type: Hash)).not_to serialize(:attr).as(String)
     end
 
     it 'rejects when using as_instance_of' do
-      expect(with_serialized_attr(Hash)).not_to serialize(:attr).as_instance_of(Hash)
+      expect(with_serialized_attr(type: Hash)).not_to serialize(:attr).as_instance_of(Hash)
     end
   end
 
   context 'a serializer that is an instance of a class' do
     it 'accepts when using #as_instance_of' do
       define_serializer(:ExampleSerializer)
-      expect(with_serialized_attr(ExampleSerializer.new)).
+      expect(with_serialized_attr(coder: ExampleSerializer.new)).
         to serialize(:attr).as_instance_of(ExampleSerializer)
     end
 
     it 'rejects when using #as' do
       define_serializer(:ExampleSerializer)
-      expect(with_serialized_attr(ExampleSerializer.new)).
+      expect(with_serialized_attr(coder: ExampleSerializer.new)).
         not_to serialize(:attr).as(ExampleSerializer)
     end
   end
 
-  def with_serialized_attr(type = nil)
+  def with_serialized_attr(type: nil, coder: YAML)
+    type_or_coder = rails_version >= 7.1 ? nil : type || coder
+
     define_model(:example, attr: :string) do
       if type
-        serialize :attr, type
+        serialize :attr, type_or_coder, type: type, coder: coder
       else
-        serialize :attr
+        serialize :attr, type_or_coder, coder: coder
       end
     end.new
   end
