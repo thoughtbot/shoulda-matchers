@@ -60,9 +60,10 @@ module Shoulda
         end
 
         def serialized_attributes_for(model)
+          type_serialized_defined = Object.const_defined?('ActiveRecord::Type::Serialized')
           attribute_types_for(model).
             inject({}) do |hash, (attribute_name, attribute_type)|
-              if attribute_type.is_a?(::ActiveRecord::Type::Serialized)
+              if type_serialized_defined && attribute_type.is_a?(::ActiveRecord::Type::Serialized)
                 hash.merge(attribute_name => attribute_type.coder)
               else
                 hash
