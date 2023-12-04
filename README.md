@@ -411,6 +411,8 @@ about any of them, make sure to [consult the documentation][rubydocs]!
   tests usage of `validates_uniqueness_of`.
 * **[normalize](lib/shoulda/matchers/active_record/normalize_matcher.rb)** tests
   usage of the `normalize` macro
+* **[encrypt](lib/shoulda/matchers/active_record/encrypt_matcher.rb)**
+  tests usage of the `encrypts` macro.
 
 ### ActionController matchers
 
