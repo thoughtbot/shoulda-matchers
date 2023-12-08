@@ -353,6 +353,28 @@ errors instead:
 
   context 'when the attribute being validated is different than the attribute that receives the validation error' do
     include UnitTests::AllowValueMatcherHelpers
+    context 'when no validation message was provided directly' do
+      context 'when asserting the negative' do
+        it 'rejects with an appropriate failure message' do
+          builder = builder_for_record_with_unrelated_error
+          assertion = lambda do
+            expect(builder.record).
+              not_to allow_value(builder.valid_value).
+              for(builder.attribute_to_validate)
+          end
+
+          message = <<-MESSAGE
+After setting :attribute_to_validate to ‹"some value"›, the matcher
+expected the Example to be invalid, placing a validation error on
+:attribute_to_validate. The Example was invalid, but it had errors
+involving other attributes:
+
+* attribute_that_receives_error: ["some message"]
+          MESSAGE
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+    end
 
     context 'when the validation error message was provided directly' do
       context 'given a valid value' do

@@ -402,6 +402,10 @@ module Shoulda
           @result.nil?
         end
 
+        def has_any_errors?
+          validator.record.errors.any?
+        end
+
         def failure_message
           attribute_setter = result.attribute_setter
 
@@ -480,6 +484,11 @@ module Shoulda
                   message << " it produced these validation errors instead:\n\n"
                   message << validator.all_formatted_validation_error_messages
                 end
+              elsif validator.has_any_errors?
+                message << ", placing a validation error on :#{attribute_setter.attribute_name}"
+                message << '. The Example was invalid,'
+                message << " but it had errors involving other attributes:\n\n"
+                message << validator.all_formatted_validation_error_messages
               else
                 message << ', but it was valid instead.'
               end
