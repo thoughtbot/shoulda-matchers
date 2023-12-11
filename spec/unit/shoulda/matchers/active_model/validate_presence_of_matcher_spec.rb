@@ -222,17 +222,10 @@ this could not be proved.
         expect(record).to matcher
       end
 
-      blank_value =
-        if active_model_supports_full_attributes_api?
-          ''
-        else
-          nil
-        end
-
       message = <<-MESSAGE
 Expected Example to validate that :attr cannot be empty/falsy, but this
 could not be proved.
-  After setting :attr to ‹#{blank_value.inspect}›, the matcher expected the Example to be
+  After setting :attr to ‹""›, the matcher expected the Example to be
   invalid, but it was valid instead.
       MESSAGE
 
@@ -276,48 +269,46 @@ could not be proved.
       },
     )
 
-    if active_model_supports_full_attributes_api?
-      context 'when the attribute has been configured with a type' do
-        context 'and it is a string' do
-          it 'works' do
-            record = active_model_object_validating_presence_of(:age) do
-              attribute :age, :string
-            end
-
-            expect(record).to validate_presence_of(:age)
+    context 'when the attribute has been configured with a type' do
+      context 'and it is a string' do
+        it 'works' do
+          record = active_model_object_validating_presence_of(:age) do
+            attribute :age, :string
           end
-        end
 
-        context 'and it is not a string' do
-          it 'still works' do
-            record = active_model_object_validating_presence_of(:age) do
-              attribute :age, :time
-            end
-
-            expect(record).to validate_presence_of(:age)
-          end
+          expect(record).to validate_presence_of(:age)
         end
       end
 
-      context 'when the attribute has not been configured with a type' do
-        context 'and it is assumed to be something other than a string' do
-          it 'still works' do
-            record = active_model_object_validating_presence_of(:user) do
-              attribute :user
+      context 'and it is not a string' do
+        it 'still works' do
+          record = active_model_object_validating_presence_of(:age) do
+            attribute :age, :time
+          end
 
-              validate :validate_user_has_email, if: :user
+          expect(record).to validate_presence_of(:age)
+        end
+      end
+    end
 
-              private
+    context 'when the attribute has not been configured with a type' do
+      context 'and it is assumed to be something other than a string' do
+        it 'still works' do
+          record = active_model_object_validating_presence_of(:user) do
+            attribute :user
 
-              def validate_user_has_email
-                if !user.email
-                  errors.add(:base, 'user does not have an email')
-                end
+            validate :validate_user_has_email, if: :user
+
+            private
+
+            def validate_user_has_email
+              if !user.email
+                errors.add(:base, 'user does not have an email')
               end
             end
-
-            expect(record).to validate_presence_of(:user)
           end
+
+          expect(record).to validate_presence_of(:user)
         end
       end
     end
@@ -346,23 +337,22 @@ could not be proved.
     end
   end
 
-  if active_record_supports_validate_presence_on_active_storage?
-    context 'a has_one_attached association with a presence validation' do
-      it 'requires the attribute to be set' do
-        expect(has_one_attached_child(presence: true)).to validate_presence_of(:child)
-      end
+  context 'a has_one_attached association with a presence validation' do
+    it 'requires the attribute to be set' do
+      expect(has_one_attached_child(presence: true)).to validate_presence_of(:child)
+    end
 
-      it_supports(
-        'ignoring_interference_by_writer',
-        tests: {
-          accept_if_qualified_but_changing_value_does_not_interfere: {
-            changing_values_with: :nil_to_blank,
-          },
-          reject_if_qualified_but_changing_value_interferes: {
-            model_name: 'Example',
-            attribute_name: :attr,
-            changing_values_with: :never_falsy,
-            expected_message: <<-MESSAGE,
+    it_supports(
+      'ignoring_interference_by_writer',
+      tests: {
+        accept_if_qualified_but_changing_value_does_not_interfere: {
+          changing_values_with: :nil_to_blank,
+        },
+        reject_if_qualified_but_changing_value_interferes: {
+          model_name: 'Example',
+          attribute_name: :attr,
+          changing_values_with: :never_falsy,
+          expected_message: <<-MESSAGE,
 Expected Example to validate that :attr cannot be empty/falsy, but this
 could not be proved.
   After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
@@ -374,35 +364,35 @@ could not be proved.
   this test is failing. If you've overridden the writer method for this
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
-            MESSAGE
-          },
+          MESSAGE
         },
-      )
+      },
+    )
+  end
+
+  context 'a has_one_attached association without a presence validation' do
+    it 'requires the attribute to be set' do
+      expect(has_one_attached_child(presence: false)).
+        not_to validate_presence_of(:child)
+    end
+  end
+
+  context 'a has_many_attached association with a presence validation' do
+    it 'requires the attribute to be set' do
+      expect(has_many_attached_children(presence: true)).to validate_presence_of(:children)
     end
 
-    context 'a has_one_attached association without a presence validation' do
-      it 'requires the attribute to be set' do
-        expect(has_one_attached_child(presence: false)).
-          not_to validate_presence_of(:child)
-      end
-    end
-
-    context 'a has_many_attached association with a presence validation' do
-      it 'requires the attribute to be set' do
-        expect(has_many_attached_children(presence: true)).to validate_presence_of(:children)
-      end
-
-      it_supports(
-        'ignoring_interference_by_writer',
-        tests: {
-          accept_if_qualified_but_changing_value_does_not_interfere: {
-            changing_values_with: :nil_to_blank,
-          },
-          reject_if_qualified_but_changing_value_interferes: {
-            model_name: 'Example',
-            attribute_name: :attr,
-            changing_values_with: :never_falsy,
-            expected_message: <<-MESSAGE,
+    it_supports(
+      'ignoring_interference_by_writer',
+      tests: {
+        accept_if_qualified_but_changing_value_does_not_interfere: {
+          changing_values_with: :nil_to_blank,
+        },
+        reject_if_qualified_but_changing_value_interferes: {
+          model_name: 'Example',
+          attribute_name: :attr,
+          changing_values_with: :never_falsy,
+          expected_message: <<-MESSAGE,
 Expected Example to validate that :attr cannot be empty/falsy, but this
 could not be proved.
   After setting :attr to ‹nil› -- which was read back as ‹"dummy value"›
@@ -414,17 +404,16 @@ could not be proved.
   this test is failing. If you've overridden the writer method for this
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
-            MESSAGE
-          },
+          MESSAGE
         },
-      )
-    end
+      },
+    )
+  end
 
-    context 'a has_many_attached association without a presence validation' do
-      it 'does not require the attribute to be set' do
-        expect(has_many_attached_children(presence: false)).
-          not_to validate_presence_of(:children)
-      end
+  context 'a has_many_attached association without a presence validation' do
+    it 'does not require the attribute to be set' do
+      expect(has_many_attached_children(presence: false)).
+        not_to validate_presence_of(:children)
     end
   end
 
@@ -872,17 +861,10 @@ could not be proved.
         expect(validating_presence(strict: false)).to matcher.strict
       end
 
-      blank_value =
-        if active_model_supports_full_attributes_api?
-          ''
-        else
-          nil
-        end
-
       message = <<-MESSAGE
 Expected Example to validate that :attr cannot be empty/falsy, raising a
 validation exception on failure, but this could not be proved.
-  After setting :attr to ‹#{blank_value.inspect}›, the matcher expected the Example to be
+  After setting :attr to ‹""›, the matcher expected the Example to be
   invalid and to raise a validation exception, but the record produced
   validation errors instead.
       MESSAGE
@@ -959,23 +941,14 @@ validation exception on failure, but this could not be proved.
 
           assertion = -> { expect(record).not_to matcher.allow_nil }
 
-          if active_model_supports_full_attributes_api?
-            expect(&assertion).to fail_with_message(<<-MESSAGE)
+          expect(&assertion).to fail_with_message(<<-MESSAGE)
 Expected Example not to validate that :attr cannot be empty/falsy, but
 this could not be proved.
   After setting :attr to ‹""›, the matcher expected the Example to be
   valid, but it was invalid instead, producing these validation errors:
 
   * attr: ["can't be blank"]
-            MESSAGE
-          else
-            expect(&assertion).to fail_with_message(<<-MESSAGE)
-Expected Example not to validate that :attr cannot be empty/falsy, but
-this could not be proved.
-  After setting :attr to ‹nil›, the matcher expected the Example to be
-  invalid, but it was valid instead.
-            MESSAGE
-          end
+          MESSAGE
         end
       end
 
@@ -1008,52 +981,27 @@ could not be proved.
     end
 
     context 'when validating a model without a presence validator' do
-      if active_model_supports_full_attributes_api?
-        it 'does not match in the positive' do
-          record = without_validating_presence
+      it 'does not match in the positive' do
+        record = without_validating_presence
 
-          assertion = lambda do
-            expect(record).to matcher.allow_nil
-          end
+        assertion = lambda do
+          expect(record).to matcher.allow_nil
+        end
 
-          message = <<-MESSAGE
+        message = <<-MESSAGE
 Expected Example to validate that :attr cannot be empty/falsy, but this
 could not be proved.
   After setting :attr to ‹""›, the matcher expected the Example to be
   invalid, but it was valid instead.
-          MESSAGE
+        MESSAGE
 
-          expect(&assertion).to fail_with_message(message)
-        end
+        expect(&assertion).to fail_with_message(message)
+      end
 
-        it 'matches in the negative' do
-          record = without_validating_presence
+      it 'matches in the negative' do
+        record = without_validating_presence
 
-          expect(record).not_to matcher.allow_nil
-        end
-      else
-        it 'matches in the positive' do
-          record = without_validating_presence
-
-          expect(record).to matcher.allow_nil
-        end
-
-        it 'does not match in the negative' do
-          record = without_validating_presence
-
-          assertion = lambda do
-            expect(record).not_to matcher.allow_nil
-          end
-
-          message = <<-MESSAGE
-Expected Example not to validate that :attr cannot be empty/falsy, but
-this could not be proved.
-  After setting :attr to ‹nil›, the matcher expected the Example to be
-  invalid, but it was valid instead.
-          MESSAGE
-
-          expect(&assertion).to fail_with_message(message)
-        end
+        expect(record).not_to matcher.allow_nil
       end
     end
   end

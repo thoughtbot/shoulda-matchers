@@ -27,7 +27,7 @@ module UnitTests
       load_environment
 
       add_active_storage_migration
-      add_action_text_migration if rails_version >= 6.0
+      add_action_text_migration
 
       run_migrations
     end
@@ -90,11 +90,7 @@ module UnitTests
     end
 
     def rails_new_command
-      if rails_version >= 6.0
-        "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --skip-javascript --no-rc --skip-bootsnap"
-      else
-        "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --no-rc --skip-bootsnap"
-      end
+      "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --skip-javascript --no-rc --skip-bootsnap"
     end
 
     def fix_available_locales_warning

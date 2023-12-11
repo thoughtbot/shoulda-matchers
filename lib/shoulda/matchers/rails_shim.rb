@@ -9,10 +9,6 @@ module Shoulda
           Gem::Version.new('0')
         end
 
-        def active_record_gte_6?
-          Gem::Requirement.new('>= 6').satisfied_by?(active_record_version)
-        end
-
         def active_record_version
           Gem::Version.new(::ActiveRecord::VERSION::STRING)
         rescue NameError

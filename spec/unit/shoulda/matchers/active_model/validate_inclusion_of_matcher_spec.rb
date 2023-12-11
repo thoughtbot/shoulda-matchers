@@ -519,51 +519,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
 
     it_behaves_like 'it supports with_message', valid_values: possible_values
 
-    if active_model_3_2?
-      context '+ strict' do
-        context 'when the validation specifies strict' do
-          it 'matches when the given values match the valid values' do
-            builder = build_object_allowing(
-              possible_values,
-              validation_options: { strict: true },
-            )
-
-            # rubocop:disable Style/SymbolProc
-            expect_to_match_on_values(builder, possible_values) do |matcher|
-              matcher.strict
-            end
-            # rubocop:enable Style/SymbolProc
-          end
-
-          it 'does not match when the given values do not match the valid values' do
-            builder = build_object_allowing(
-              possible_values,
-              validation_options: { strict: true },
-            )
-
-            values = add_outside_value_to(possible_values)
-            # rubocop:disable Style/SymbolProc
-            expect_not_to_match_on_values(builder, values) do |matcher|
-              matcher.strict
-            end
-            # rubocop:enable Style/SymbolProc
-          end
-        end
-
-        context 'when the validation does not specify strict' do
-          it 'does not match' do
-            builder = build_object_allowing(possible_values)
-
-            # rubocop:disable Style/SymbolProc
-            expect_not_to_match_on_values(builder, possible_values) do |matcher|
-              matcher.strict
-            end
-            # rubocop:enable Style/SymbolProc
-          end
-        end
-      end
-    end
-
     def expect_to_match_on_values(builder, values, &block)
       expect_to_match_in_array(builder, values, &block)
     end
@@ -674,51 +629,6 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     end
 
     it_behaves_like 'it supports with_message', valid_values: possible_values
-
-    if active_model_3_2?
-      context '+ strict' do
-        context 'when the validation specifies strict' do
-          it 'matches when the given range matches the range in the validation' do
-            builder = build_object_allowing(
-              possible_values,
-              validation_options: { strict: true },
-            )
-
-            # rubocop:disable Style/SymbolProc
-            expect_to_match_on_values(builder, possible_values) do |matcher|
-              matcher.strict
-            end
-            # rubocop:enable Style/SymbolProc
-          end
-
-          it 'matches when the given range does not match the range in the validation' do
-            builder = build_object_allowing(
-              possible_values,
-              validation_options: { strict: true },
-            )
-
-            range = Range.new(possible_values.first, possible_values.last + 1)
-            # rubocop:disable Style/SymbolProc
-            expect_not_to_match_on_values(builder, range) do |matcher|
-              matcher.strict
-            end
-            # rubocop:enable Style/SymbolProc
-          end
-        end
-
-        context 'when the validation does not specify strict' do
-          it 'does not match' do
-            builder = build_object_allowing(possible_values)
-
-            # rubocop:disable Style/SymbolProc
-            expect_not_to_match_on_values(builder, possible_values) do |matcher|
-              matcher.strict
-            end
-            # rubocop:enable Style/SymbolProc
-          end
-        end
-      end
-    end
 
     def expect_to_match_on_values(builder, range, &block)
       expect_to_match_in_range(builder, range, &block)

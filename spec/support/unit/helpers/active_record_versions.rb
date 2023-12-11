@@ -10,13 +10,5 @@ module UnitTests
     def active_record_version
       Tests::Version.new(::ActiveRecord::VERSION::STRING)
     end
-
-    def active_record_supports_validate_presence_on_active_storage?
-      active_record_version >= '6.0.0.beta1'
-    end
-
-    def active_record_supports_implicit_order_column?
-      active_record_version >= '6.0.0.beta1'
-    end
   end
 end

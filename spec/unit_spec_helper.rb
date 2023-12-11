@@ -15,7 +15,6 @@ end
 RSpec.configure do |config|
   config.include RSpec::Matchers::FailMatchers
 
-  UnitTests::ActionPackVersions.configure_example_group(config)
   UnitTests::ActiveModelHelpers.configure_example_group(config)
   UnitTests::ActiveModelVersions.configure_example_group(config)
   UnitTests::ClassBuilder.configure_example_group(config)

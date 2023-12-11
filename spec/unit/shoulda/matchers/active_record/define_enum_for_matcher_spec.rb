@@ -948,10 +948,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     if rails_version >= 7.0
       model.enum(enum_name, values, prefix: prefix, suffix: suffix)
     else
-      if rails_version =~ '~> 6.0'
-        params.merge!(_scopes: scopes)
-      end
-
+      params.merge!(_scopes: scopes)
       model.enum(params)
     end
 

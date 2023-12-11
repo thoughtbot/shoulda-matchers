@@ -83,15 +83,8 @@ module UnitTests
       private
 
       def clear_column_caches
-        # Rails 4.x
-        if ::ActiveRecord::Base.connection.respond_to?(:schema_cache)
-          DevelopmentRecord.connection.schema_cache.clear!
-          ProductionRecord.connection.schema_cache.clear!
-        # Rails 3.1 - 4.0
-        elsif ::ActiveRecord::Base.connection_pool.respond_to?(:clear_cache!)
-          DevelopmentRecord.connection_pool.clear_cache!
-          ProductionRecord.connection_pool.clear_cache!
-        end
+        DevelopmentRecord.connection.schema_cache.clear!
+        ProductionRecord.connection.schema_cache.clear!
       end
 
       def drop_created_tables
