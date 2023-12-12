@@ -177,6 +177,7 @@ module Shoulda
           I18n.translate(primary_translation_key, translate_options)
         end
 
+        # @private
         class FakeAttributeType
           def initialize(model, attribute_name)
             @model = model
