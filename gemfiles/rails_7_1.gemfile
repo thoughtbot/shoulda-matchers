@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "appraisal", "2.4.0"
+gem "appraisal", "2.5.0"
 gem "bundler", "~> 2.0"
 gem "pry"
 gem "pry-byebug"
@@ -20,7 +20,7 @@ gem "yard"
 gem "spring"
 gem "spring-watcher-listen", "~> 2.0.0"
 gem "rails-controller-testing", ">= 1.0.1"
-gem "rails", "7.1.0"
+gem "rails", "7.1.2"
 gem "sprockets-rails"
 gem "puma", "~> 6.0"
 gem "importmap-rails"
@@ -40,3 +40,4 @@ gem "pg", "~> 1.1"
 if RUBY_VERSION >= "3.1" && RUBY_VERSION < "3.2"
   gem "error_highlight", ">= 0.4.0", platforms: [:ruby]
 end
+
