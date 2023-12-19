@@ -14,8 +14,8 @@ require 'shoulda/matchers/active_model'
 require 'shoulda/matchers/active_record'
 require 'shoulda/matchers/routing'
 
-module Shoulda
-  module Matchers
+module Shoulda # :nodoc:
+  module Matchers # :nodoc:
     class << self
       # @private
       attr_accessor :assertion_exception_class

@@ -3,6 +3,7 @@ require 'date'
 
 module Shoulda
   module Matchers
+    # @private
     class ExampleClass; end
 
     module ActiveModel
