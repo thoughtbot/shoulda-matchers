@@ -603,10 +603,6 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
   end
 
   def expect_to_have_made_controller_request(context:, verb:, action:, params:)
-    if action_pack_gte_5?
-      expect(context).to have_received(verb).with(action, params: params)
-    else
-      expect(context).to have_received(verb).with(action, params)
-    end
+    expect(context).to have_received(verb).with(action, params: params)
   end
 end

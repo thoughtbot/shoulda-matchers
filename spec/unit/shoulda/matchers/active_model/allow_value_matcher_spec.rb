@@ -32,16 +32,6 @@ describe Shoulda::Matchers::ActiveModel::AllowValueMatcher, type: :model do
       expect(matcher.description).to eq 'allow :baz to be ‹"foo"›'
     end
 
-    if active_model_3_2?
-      it 'describes itself with a strict validation' do
-        strict_matcher = allow_value('xyz').for(:attr).strict
-
-        expect(strict_matcher.description).to eq(
-          'allow :attr to be ‹"xyz"›, raising a validation exception on failure',
-        )
-      end
-    end
-
     it 'truncates the description when long' do
       matcher = allow_value('A' * 10000).for(:baz)
 
@@ -556,45 +546,6 @@ invalid, but it was valid instead.
     it 'raises an error' do
       expect { allow_value.for(:baz) }.
         to raise_error(ArgumentError, /at least one argument/)
-    end
-  end
-
-  if active_model_3_2?
-    context 'an attribute with a strict format validation' do
-      context 'when qualified with strict' do
-        it 'rejects a bad value, providing the correct failure message' do
-          message = <<-MESSAGE.strip_heredoc
-After setting :attr to ‹"xyz"›, the matcher expected the Example to be
-valid, but it was invalid instead, raising a validation exception with
-the message "Attr is invalid".
-          MESSAGE
-
-          assertion = lambda do
-            expect(validating_format(with: /abc/, strict: true)).
-              to allow_value('xyz').for(:attr).strict
-          end
-
-          expect(&assertion).to fail_with_message(message)
-        end
-
-        context 'qualified with a custom message' do
-          it 'rejects a bad value when the failure messages do not match' do
-            message = <<-MESSAGE.strip_heredoc
-After setting :attr to ‹"xyz"›, the matcher expected the Example to be
-invalid and to raise a validation exception with message matching
-‹/abc/›. The record was indeed invalid, but the exception message was
-"Attr is invalid" instead.
-            MESSAGE
-
-            assertion = lambda do
-              expect(validating_format(with: /abc/, strict: true)).
-                not_to allow_value('xyz').for(:attr).with_message(/abc/).strict
-            end
-
-            expect(&assertion).to fail_with_message(message)
-          end
-        end
-      end
     end
   end
 

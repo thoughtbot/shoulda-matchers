@@ -90,11 +90,7 @@ module AcceptanceTests
     end
 
     def rails_new_command
-      if rails_version >= 6.0
-        "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --skip-javascript --no-rc --skip-bootsnap"
-      else
-        "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --no-rc --skip-bootsnap"
-      end
+      "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --skip-javascript --no-rc --skip-bootsnap"
     end
 
     def configure_routes
@@ -116,7 +112,7 @@ module AcceptanceTests
 
     def add_rspec_rails_to_project!
       add_gem 'rspec-rails', rspec_rails_version
-      run_command_within_bundle!('bundle install --local --binstubs') if rails_gt_6_0?
+      run_command_within_bundle!('bundle install --local --binstubs')
       run_command_within_bundle!('rails g rspec:install')
       remove_from_file '.rspec', '--warnings'
     end

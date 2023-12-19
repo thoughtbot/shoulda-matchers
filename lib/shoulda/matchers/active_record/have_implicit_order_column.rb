@@ -2,7 +2,7 @@ module Shoulda
   module Matchers
     module ActiveRecord
       # The `have_implicit_order_column` matcher tests that the model has `implicit_order_column`
-      # assigned to one of the table columns. (Rails 6+ only)
+      # assigned to one of the table columns.
       #
       #     class Product < ApplicationRecord
       #       self.implicit_order_column = :created_at
@@ -20,10 +20,8 @@ module Shoulda
       #
       # @return [HaveImplicitOrderColumnMatcher]
       #
-      if RailsShim.active_record_gte_6?
-        def have_implicit_order_column(column_name)
-          HaveImplicitOrderColumnMatcher.new(column_name)
-        end
+      def have_implicit_order_column(column_name)
+        HaveImplicitOrderColumnMatcher.new(column_name)
       end
 
       # @private
