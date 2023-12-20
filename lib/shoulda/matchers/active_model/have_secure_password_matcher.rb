@@ -47,6 +47,8 @@ module Shoulda
           did_not_authenticate_correct_password: 'expected %{subject} to'\
             ' authenticate the correct %{attribute}',
           method_not_found: 'expected %{subject} to respond to %{methods}',
+          should_not_have_secure_password: 'expected %{subject} to'\
+            ' not %{description}!',
         }.freeze
 
         def initialize(attribute)
@@ -67,6 +69,11 @@ module Shoulda
           end
 
           failure.nil?
+        end
+
+        def failure_message_when_negated
+          MESSAGES[:should_not_have_secure_password] %
+            { subject: @subject.class, description: description }
         end
 
         protected
