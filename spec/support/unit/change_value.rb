@@ -41,6 +41,7 @@ module UnitTests
         value + [value.first.class.new]
       elsif value.respond_to?(:next)
         return value.to_date + 1.day if date_column?
+        return SecureRandom.uuid if uuid_column?
 
         value.next
       else
@@ -114,6 +115,10 @@ module UnitTests
 
     def date_column?
       [:date, :datetime, :time, :timestamp].include?(column_type)
+    end
+
+    def uuid_column?
+      column_type == :uuid
     end
   end
 end
