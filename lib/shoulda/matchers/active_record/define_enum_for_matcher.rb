@@ -227,14 +227,6 @@ module Shoulda
           self
         end
 
-        def with(expected_enum_values)
-          Shoulda::Matchers.warn_about_deprecated_method(
-            'The `with` qualifier on `define_enum_for`',
-            '`with_values`',
-          )
-          with_values(expected_enum_values)
-        end
-
         def with_prefix(expected_prefix = true)
           options[:prefix] = expected_prefix
           self

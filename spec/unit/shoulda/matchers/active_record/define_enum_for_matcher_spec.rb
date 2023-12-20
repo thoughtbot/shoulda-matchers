@@ -297,24 +297,6 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     end
   end
 
-  context 'with values specified using #with' do
-    it 'produces a warning' do
-      record = build_record_with_array_values(
-        attribute_name: :attr,
-        values: [:foo, :bar],
-      )
-
-      assertion = lambda do
-        expect(record).to define_enum_for(:attr).with([:foo, :bar])
-      end
-
-      expect(&assertion).to deprecate(
-        'The `with` qualifier on `define_enum_for`',
-        '`with_values`',
-      )
-    end
-  end
-
   describe 'with the backing column specified to be of some type' do
     context 'if the column storing the attribute is of a different type' do
       it 'rejects with an appropriate failure message' do
