@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  File: NonCaseSwappableValueError
+  
+    &mdash; Documentation by YARD 0.9.25
+  
+</title>
+
+  <link rel="stylesheet" href="css/solarized.css" type="text/css" />
+
+  <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+
+  <link rel="stylesheet" href="css/global.css" type="text/css" />
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" />
+
+<script type="text/javascript">
+  pathId = "NonCaseSwappableValueError";
+  relpath = '';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.stickyheaders.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/underscore.min.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div class="header-row">
+        <div id="menu">
+  
+    <span class="title">
+      <a href="index.html" title="Home">Home</a>
+    </span> &raquo;
+  
+  
+    <span class="title">NonCaseSwappableValueError</span>
+  
+</div>
+
+        <div id="search" class="js-search">
+  <ul>
+    
+      <li>
+        <a href="class_list.html">
+          Class List
+        </a>
+      </li>
+    
+      <li>
+        <a href="method_list.html">
+          Method List
+        </a>
+      </li>
+    
+      <li>
+        <a href="file_list.html">
+          File List
+        </a>
+      </li>
+    
+  </ul>
+
+  <iframe id="search_frame" class="js-search-frame"></iframe>
+</div>
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="content"><div id='filecontents'><h1 id="noncaseswappablevalueerror">NonCaseSwappableValueError</h1>
+
+<p>This error is raised when using <code>validate_uniqueness_of</code>. This matcher, of
+course, tests that an attribute disallows a non-unique value -- and what
+constitutes as &quot;unique&quot; depends on whether the case-sensitivity of that value
+matters. If it does matter -- meaning that the uniqueness validation in your
+model isn&#39;t using <code>case_sensitive: false</code> and you haven&#39;t qualified the matcher
+with <code>case_insensitive</code> -- then the matcher will run the following test:</p>
+
+<blockquote>
+<p>Creating first a record with a value of &quot;A&quot;:</p>
+
+<ul>
+<li>A new record with a value of &quot;A&quot; should not be valid (failing the uniqueness
+validation)</li>
+<li>A new record with a value of &quot;a&quot; should be valid</li>
+</ul>
+</blockquote>
+
+<p>The test value we&#39;re using is in this case &quot;A&quot;, and this is what the matcher
+will use if an existing record is not already present in the database. But if
+a record already exists, then the matcher will use it as comparison -- it will
+read the attribute under test off of the record and use its value. So a better
+example might be:</p>
+
+<blockquote>
+<p>Given an existing record with a value:</p>
+
+<ul>
+<li>A new record with the same value should not be valid (failing the uniqueness
+validation)</li>
+<li>A new record with the same value, but where the case is swapped (using
+String#swapcase), should be valid</li>
+</ul>
+</blockquote>
+
+<p>Now, what happens if an existing record is there, but the value being used is
+not one whose case can be swapped, such as <code>&quot;123&quot;</code> or <code>&quot;{-#%}&quot;</code>? Then the second
+assertion cannot be made effectively.</p>
+
+<p>So this is why you&#39;re getting this exception. What can you do about it? As the
+error message explains, you have two options:</p>
+
+<ol>
+<li><p>If you want the uniqueness validation in the model to operate
+case-sensitively and you didn&#39;t mean to use a non-case-swappable value,
+then you need to provide an existing record with a different value, one that
+contains alpha characters. Here&#39;s an example:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="c1"># Model</span>
+<span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">validates_uniqueness_of</span> <span class="ss">:username</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">User</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">context</span> <span class="s2">"validations"</span> <span class="k">do</span>
+    <span class="n">subject</span> <span class="k">do</span>
+      <span class="c1"># Note that "123" == "123".swapcase. This is a problem!</span>
+      <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">username: </span><span class="s2">"123"</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="n">it</span> <span class="k">do</span>
+      <span class="c1"># So you can either override it like this, or just fix the subject.</span>
+      <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span><span class="ss">username: </span><span class="s2">"john123"</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">user</span><span class="p">).</span><span class="nf">to</span> <span class="n">validate_uniqueness_of</span><span class="p">(</span><span class="ss">:username</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">context</span> <span class="s2">"validations"</span> <span class="k">do</span>
+    <span class="n">subject</span> <span class="k">do</span>
+      <span class="c1"># Note that "123" == "123".swapcase. This is a problem!</span>
+      <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">username: </span><span class="s2">"123"</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="n">should</span> <span class="s2">"validate uniqueness of :username"</span> <span class="k">do</span>
+      <span class="c1"># So you can either override it like this, or just fix the subject.</span>
+      <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span><span class="ss">username: </span><span class="s2">"john123"</span><span class="p">)</span>
+      <span class="n">assert_accepts</span> <span class="n">validate_uniqueness_of</span><span class="p">(</span><span class="ss">:username</span><span class="p">),</span> <span class="n">record</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></li>
+<li><p>If you don&#39;t want the uniqueness validation to operate case-sensitively,
+then you need to add <code>case_sensitive: false</code> to the validation and add
+<code>case_insensitive</code> to the matcher:</p>
+
+<pre class="code ruby"><code class="ruby"><span class="c1"># Model</span>
+<span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">validates_uniqueness_of</span> <span class="ss">:username</span><span class="p">,</span> <span class="ss">case_sensitive: </span><span class="kp">false</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">User</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">context</span> <span class="s2">"validations"</span> <span class="k">do</span>
+    <span class="n">subject</span> <span class="k">do</span>
+      <span class="c1"># Note that "123" == "123".swapcase, but it's okay</span>
+      <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">username: </span><span class="s2">"123"</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">validate_uniqueness_of</span><span class="p">(</span><span class="ss">:username</span><span class="p">).</span><span class="nf">case_insensitive</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">context</span> <span class="s2">"validations"</span> <span class="k">do</span>
+    <span class="n">subject</span> <span class="k">do</span>
+      <span class="c1"># Note that "123" == "123".swapcase, but it's okay</span>
+      <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">username: </span><span class="s2">"123"</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="n">should</span> <span class="n">validate_uniqueness_of</span><span class="p">(</span><span class="ss">:username</span><span class="p">).</span><span class="nf">case_insensitive</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></li>
+</ol>
+</div></div>
+
+      <div id="footer">
+  Generated on
+  December 22, 2023
+  by
+  <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">YARD</a>.
+</div>
+
+    </div>
+
+  </body>
+</html>
