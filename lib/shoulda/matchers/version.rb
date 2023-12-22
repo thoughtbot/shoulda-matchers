@@ -1,6 +1,6 @@
 module Shoulda
   module Matchers
     # @private
-    VERSION = '5.3.0'.freeze
+    VERSION = '6.0.0'.freeze
   end
 end
