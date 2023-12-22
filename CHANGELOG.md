@@ -1,5 +1,52 @@
 # Changelog
 
+## Unreleased
+
+### Backward-incompatible changes
+
+* Drop support for Rails 5.2 and 6.0 as well as Ruby 2.6 and 2.7 they've been end-of-lifed by @dougmrqs and @HeitorMC.
+The gem now supports Ruby 3.0+ and Rails 6.1+. ([#1521], [#1522], [#1547], [#1548])
+
+[#1521]: https://github.com/thoughtbot/shoulda-matchers/pull/1521
+[#1522]: https://github.com/thoughtbot/shoulda-matchers/pull/1522
+[#1547]: https://github.com/thoughtbot/shoulda-matchers/pull/1547
+[#1548]: https://github.com/thoughtbot/shoulda-matchers/pull/1548
+
+### Bug fixes
+
+* Fix validate_uniqueness_of matcher not supporting column of the type timestampz by @callahat. ([#1544])
+* Ensure that validation specs work for ActiveModel without ActiveRecord by @stonefield. ([#1580])
+
+[#1544]: https://github.com/thoughtbot/shoulda-matchers/pull/1544
+[#1580]: https://github.com/thoughtbot/shoulda-matchers/pull/1580
+
+### Features
+* Add normalize matcher by @stephannv. ([#1558])
+* Add support for Ruby 3.2 by @petergoldstein. ([#1536])
+* Add support for Ruby 3.3.0-rc1 by @mtasaka and @VSPPedro. ([#1579], [#1588])
+* Add support for Rails 7.1 by @matsales28. ([#1573])
+* Add support for array attributes on validate_length_of matcher by @jarenas9539. [#1560]
+* Allow length validation on associations by @matsales28. ([#1569])
+* Improve have_db_index to better handle columns with multiple indexes by @abrom. ([#1542])
+* Implement of_sql_type qualifier on have_db_column matcher by @matsales28. ([#1555])
+
+[#1536]: https://github.com/thoughtbot/shoulda-matchers/pull/1536
+[#1542]: https://github.com/thoughtbot/shoulda-matchers/pull/1542
+[#1555]: https://github.com/thoughtbot/shoulda-matchers/pull/1555
+[#1558]: https://github.com/thoughtbot/shoulda-matchers/pull/1558
+[#1560]: https://github.com/thoughtbot/shoulda-matchers/pull/1560
+[#1569]: https://github.com/thoughtbot/shoulda-matchers/pull/1569
+[#1573]: https://github.com/thoughtbot/shoulda-matchers/pull/1573
+[#1578]: https://github.com/thoughtbot/shoulda-matchers/pull/1578
+[#1588]: https://github.com/thoughtbot/shoulda-matchers/pull/1588
+
+
+### Improvements
+
+* When an unrelated error is seen with negated allow_value, give a hint by @matsales28. ([#1570])
+
+[#1570]: https://github.com/thoughtbot/shoulda-matchers/pull/1570
+
 ## 5.3.0 - 2022-12-16
 
 ### Features
