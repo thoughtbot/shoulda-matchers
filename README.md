@@ -409,6 +409,8 @@ about any of them, make sure to [consult the documentation][rubydocs]!
   usage of the `serialize` macro.
 * **[validate_uniqueness_of](lib/shoulda/matchers/active_record/validate_uniqueness_of_matcher.rb)**
   tests usage of `validates_uniqueness_of`.
+* **[normalize](lib/shoulda/matchers/active_record/normalize_matcher.rb)** tests
+  usage of the `normalize` macro
 
 ### ActionController matchers
 
