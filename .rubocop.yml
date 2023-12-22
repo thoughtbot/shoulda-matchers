@@ -6,6 +6,7 @@ AllCops:
   TargetRubyVersion: 3.0
   Exclude:
     - 'gemfiles/*'
+    - 'REPRODUCTION_SCRIPT.rb'
 Bundler/OrderedGems:
   Include:
     - '**/Gemfile'
