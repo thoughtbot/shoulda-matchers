@@ -33,5 +33,18 @@ describe Shoulda::Matchers::ActiveModel::HaveSecurePasswordMatcher, type: :model
       no_digest_column = define_model(:example) { has_secure_password :reset_password }
       expect(no_digest_column.new).not_to have_secure_password :reset_password
     end
+
+    it 'rejects with an appropriate failure message' do
+      working_model = define_model(:example, reset_password_digest: :string) { has_secure_password :reset_password }
+      assertion = lambda do
+        expect(working_model.new).not_to have_secure_password :reset_password
+      end
+
+      message = <<-MESSAGE
+expected Example to not have a secure password, defined on reset_password attribute!
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
+    end
   end
 end
