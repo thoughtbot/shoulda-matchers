@@ -1,6 +1,6 @@
 # Changelog
 
-## 6.0.0 - 2022-12-22
+## 6.0.0 - 2023-12-22
 
 ### Backward-incompatible changes
 
@@ -22,6 +22,7 @@ The gem now supports Ruby 3.0+ and Rails 6.1+. ([#1521], [#1522], [#1547], [#154
 
 ### Features
 * Add normalize matcher by @stephannv. ([#1558])
+* Add validates_comparison_of matcher by @matsales28. ([#1552])
 * Add support for Ruby 3.2 by @petergoldstein. ([#1536])
 * Add support for Ruby 3.3.0-rc1 by @mtasaka and @VSPPedro. ([#1579], [#1588])
 * Add support for Rails 7.1 by @matsales28. ([#1573])
@@ -32,6 +33,7 @@ The gem now supports Ruby 3.0+ and Rails 6.1+. ([#1521], [#1522], [#1547], [#154
 
 [#1536]: https://github.com/thoughtbot/shoulda-matchers/pull/1536
 [#1542]: https://github.com/thoughtbot/shoulda-matchers/pull/1542
+[#1552]: https://github.com/thoughtbot/shoulda-matchers/pull/1552
 [#1555]: https://github.com/thoughtbot/shoulda-matchers/pull/1555
 [#1558]: https://github.com/thoughtbot/shoulda-matchers/pull/1558
 [#1560]: https://github.com/thoughtbot/shoulda-matchers/pull/1560
