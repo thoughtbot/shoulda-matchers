@@ -50,7 +50,7 @@ module Shoulda
           description = ''
 
           if expects_strict?
-            description << ' strictly'
+            description = ' strictly'
           end
 
           description +

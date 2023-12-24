@@ -83,25 +83,23 @@ module Shoulda
         end
 
         def expectation_description
-          string = 'set'
-
-          string <<
-            if key_set?
-              " #{store.name}[#{key.inspect}]"
-            else
-              " any key in #{store.name}"
-            end
-
-          if expected_value_set?
+          String.new('set').tap do |string|
             string <<
-              if expected_value.is_a?(Regexp)
-                " to a value matching #{expected_value.inspect}"
+              if key_set?
+                " #{store.name}[#{key.inspect}]"
               else
-                " to #{expected_value.inspect}"
+                " any key in #{store.name}"
               end
-          end
 
-          string
+            if expected_value_set?
+              string <<
+                if expected_value.is_a?(Regexp)
+                  " to a value matching #{expected_value.inspect}"
+                else
+                  " to #{expected_value.inspect}"
+                end
+            end
+          end
         end
       end
     end

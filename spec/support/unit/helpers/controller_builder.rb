@@ -10,9 +10,13 @@ module UnitTests
     end
 
     def define_controller(class_name, &block)
-      class_name = class_name.to_s
-      class_name << 'Controller' unless class_name =~ /Controller$/
-      define_class(class_name, ActionController::Base, &block)
+      new_class_name = if class_name.to_s =~ /Controller$/
+                         class_name.to_s
+                       else
+                         "#{class_name}Controller"
+                       end
+
+      define_class(new_class_name, ActionController::Base, &block)
     end
 
     def define_routes(&block)

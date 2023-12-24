@@ -42,13 +42,12 @@ module Shoulda
             description_clauses = []
 
             if matcher.try(:expects_strict?)
-              description_clauses << 'raising a validation exception'
-
-              if matcher.try(:expects_custom_validation_message?)
-                description_clauses.last << ' with a custom message'
-              end
-
-              description_clauses.last << ' on failure'
+              description_clauses <<
+                if matcher.try(:expects_custom_validation_message?)
+                  'raising a validation exception with a custom message on failure'
+                else
+                  'raising a validation exception on failure'
+                end
             elsif matcher.try(:expects_custom_validation_message?)
               description_clauses <<
                 'producing a custom validation error on failure'

@@ -440,22 +440,20 @@ module Shoulda
         end
 
         def formatted_calls_on_delegate_object
-          string = ''
-
-          if calls_on_delegate_object.any?
-            string << "\n\n"
-            calls_on_delegate_object.each_with_index do |call, i|
-              name = call.method_name
-              args = call.args.map(&:inspect).join(', ')
-              string << "#{i + 1}) #{name}(#{args})\n"
+          String.new.tap do |string|
+            if calls_on_delegate_object.any?
+              string << "\n\n"
+              calls_on_delegate_object.each_with_index do |call, i|
+                name = call.method_name
+                args = call.args.map(&:inspect).join(', ')
+                string << "#{i + 1}) #{name}(#{args})\n"
+              end
+            else
+              string << ' (none)'
             end
-          else
-            string << ' (none)'
+
+            string.rstrip!
           end
-
-          string.rstrip!
-
-          string
         end
       end
     end

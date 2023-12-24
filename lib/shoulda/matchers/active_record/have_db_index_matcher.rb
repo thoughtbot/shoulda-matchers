@@ -152,18 +152,18 @@ module Shoulda
         end
 
         def description
-          description = 'have '
+          String.new('have ').tap do |description|
+            description <<
+              if qualifiers.include?(:unique)
+                "#{Shoulda::Matchers::Util.a_or_an(index_type)} "
+              else
+                'an '
+              end
 
-          description <<
-            if qualifiers.include?(:unique)
-              "#{Shoulda::Matchers::Util.a_or_an(index_type)} "
-            else
-              'an '
-            end
+            description << 'index on '
 
-          description << 'index on '
-
-          description << inspected_expected_columns
+            description << inspected_expected_columns
+          end
         end
 
         private

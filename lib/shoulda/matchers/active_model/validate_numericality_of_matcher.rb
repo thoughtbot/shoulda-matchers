@@ -453,20 +453,18 @@ module Shoulda
         end
 
         def simple_description
-          description = ''
+          String.new.tap do |description|
+            description << "validate that :#{attribute} looks like "
+            description << Shoulda::Matchers::Util.a_or_an(full_allowed_type)
 
-          description << "validate that :#{attribute} looks like "
-          description << Shoulda::Matchers::Util.a_or_an(full_allowed_type)
+            if range_description.present?
+              description << " #{range_description}"
+            end
 
-          if range_description.present?
-            description << " #{range_description}"
+            if comparison_descriptions.present?
+              description << " #{comparison_descriptions}"
+            end
           end
-
-          if comparison_descriptions.present?
-            description << " #{comparison_descriptions}"
-          end
-
-          description
         end
 
         def failure_message
