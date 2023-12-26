@@ -67,10 +67,10 @@ module UnitTests
 
             name = name.to_sym
 
-            if (
+            if
               attribute_names.include?(name) &&
               attributes_module.instance_methods.include?(name)
-            )
+
               attributes_module.module_eval do
                 remove_method(name)
                 remove_method("#{name}=")

@@ -86,6 +86,7 @@ Metrics/MethodLength:
 Metrics/ModuleLength:
   Enabled: true
   Exclude:
+    - lib/shoulda/matchers/rails_shim.rb
     - spec/**/*
 Metrics/ParameterLists:
   CountKeywordArgs: false
