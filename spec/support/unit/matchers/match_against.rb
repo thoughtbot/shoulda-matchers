@@ -79,10 +79,10 @@ Expected the matcher to match in the positive, but it failed with this message:
         end
 
         if matcher_fails_in_positive?
-          if (
+          if
             negative_matcher.respond_to?(:does_not_match?) &&
             !negative_matcher.does_not_match?(object)
-          )
+
             @failure_message_when_negated = <<-MESSAGE
 Expected the matcher to match in the negative, but it failed with this message:
 
@@ -116,10 +116,10 @@ Expected the matcher to match in the negative, but it failed with this message:
 
       def matcher_fails_in_negative?
         if does_not_match_in_negative?
-          if (
+          if
             !expected_message ||
             expected_message == negative_matcher.failure_message_when_negated.strip
-          )
+
             true
           else
             diff_result = diff(
@@ -166,10 +166,10 @@ Diff:
 
       def matcher_fails_in_positive?
         if !positive_matcher.matches?(object)
-          if (
+          if
             !expected_message ||
             expected_message == positive_matcher.failure_message.strip
-          )
+
             true
           else
             diff_result = diff(

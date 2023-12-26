@@ -59,7 +59,7 @@ module Shoulda
         private
 
         def readonly_attributes
-          @_readonly_attributes ||= (@subject.class.readonly_attributes || [])
+          @_readonly_attributes ||= @subject.class.readonly_attributes || []
         end
 
         def class_name

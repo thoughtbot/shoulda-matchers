@@ -18,15 +18,11 @@ module Shoulda
         end
 
         def activate
-          doubles_by_method_name.each do |_method_name, double|
-            double.activate
-          end
+          doubles_by_method_name.each_value(&:activate)
         end
 
         def deactivate
-          doubles_by_method_name.each do |_method_name, double|
-            double.deactivate
-          end
+          doubles_by_method_name.each_value(&:deactivate)
         end
 
         def calls_by_method_name

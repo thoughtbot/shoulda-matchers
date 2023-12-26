@@ -1299,10 +1299,7 @@ module Shoulda
         end
 
         def join_table_correct?
-          if (
-            macro != :has_and_belongs_to_many ||
-            join_table_matcher.matches?(@subject)
-          )
+          if macro != :has_and_belongs_to_many || join_table_matcher.matches?(@subject)
             true
           else
             @missing = join_table_matcher.failure_message
@@ -1457,11 +1454,10 @@ module Shoulda
         end
 
         def foreign_key_reflection
-          if (
-            [:has_one, :has_many].include?(macro) &&
-            reflection.options.include?(:inverse_of) &&
-            reflection.options[:inverse_of] != false
-          )
+          if [:has_one, :has_many].include?(macro) &&
+             reflection.options.include?(:inverse_of) &&
+             reflection.options[:inverse_of] != false
+
             associated_class.reflect_on_association(
               reflection.options[:inverse_of],
             )
