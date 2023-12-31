@@ -22,7 +22,7 @@ problem are especially helpful. -->
 
 <!-- You can create a reproduction script by copying this sample reproduction
 script and adding whatever code is necessary to get a failing test case:
-https://github.com/thoughtbot/shoulda-matchers/blob/main/.github/REPRODUCTION_SCRIPT.rb -->
+https://github.com/thoughtbot/shoulda-matchers/blob/main/REPRODUCTION_SCRIPT.rb -->
 
 ### Expected behavior
 
@@ -33,6 +33,6 @@ https://github.com/thoughtbot/shoulda-matchers/blob/main/.github/REPRODUCTION_SC
 <!-- What happened instead. -->
 
 ### System configuration
-**shoulda_matchers version**:  
-**rails version**:  
+**shoulda_matchers version**:
+**rails version**:
 **ruby version**:
