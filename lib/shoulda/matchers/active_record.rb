@@ -25,6 +25,7 @@ require 'shoulda/matchers/active_record/uniqueness'
 require 'shoulda/matchers/active_record/validate_uniqueness_of_matcher'
 require 'shoulda/matchers/active_record/have_attached_matcher'
 require 'shoulda/matchers/active_record/normalize_matcher'
+require 'shoulda/matchers/active_record/encrypt_matcher'
 
 module Shoulda
   module Matchers
