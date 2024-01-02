@@ -1987,6 +1987,56 @@ could not be proved.
     end
   end
 
+  describe 'using in the negative form without numericality validations' do
+    context 'when qualified with is_greater_than' do
+      it 'accepts' do
+        record = (define_model :example, attr: :integer).new
+
+        expect(record).not_to validate_numericality.is_greater_than(18)
+      end
+    end
+
+    context 'when qualified with is_greater_than_or_equal_to' do
+      it 'accepts' do
+        record = (define_model :example, attr: :integer).new
+
+        expect(record).not_to validate_numericality.is_greater_than_or_equal_to(18)
+      end
+    end
+
+    context 'when qualified with is_less_than_or_equal_to' do
+      it 'accepts' do
+        record = (define_model :example, attr: :integer).new
+
+        expect(record).not_to validate_numericality.is_less_than_or_equal_to(18)
+      end
+    end
+
+    context 'when qualified with is_less_than' do
+      it 'accepts' do
+        record = (define_model :example, attr: :integer).new
+
+        expect(record).not_to validate_numericality.is_less_than(18)
+      end
+    end
+
+    context 'when qualified with is_equal_to' do
+      it 'accepts' do
+        record = (define_model :example, attr: :integer).new
+
+        expect(record).not_to validate_numericality.is_equal_to(18)
+      end
+    end
+
+    context 'when qualified with is_other_than' do
+      it 'accepts' do
+        record = (define_model :example, attr: :integer).new
+
+        expect(record).not_to validate_numericality.is_other_than(18)
+      end
+    end
+  end
+
   describe '#description' do
     context 'qualified with nothing' do
       it 'describes that it allows numbers' do

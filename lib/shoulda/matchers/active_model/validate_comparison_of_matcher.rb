@@ -465,7 +465,7 @@ module Shoulda
         def first_submatcher_that_fails_to_not_match
           @_first_submatcher_that_fails_to_not_match ||=
             @submatchers.detect do |submatcher|
-              !submatcher.does_not_match?(subject)
+              submatcher.matches?(subject)
             end
         end
 
