@@ -13,11 +13,6 @@ module Shoulda
             failing_submatchers.empty?
           end
 
-          def does_not_match?(subject)
-            @subject = subject
-            non_failing_submatchers.empty?
-          end
-
           def failure_message
             failing_submatcher.failure_message
           end
