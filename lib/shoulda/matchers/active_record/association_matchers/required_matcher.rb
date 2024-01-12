@@ -23,30 +23,7 @@ module Shoulda
             if submatcher_passes?(subject)
               true
             else
-              @missing_option = 'and for the record '
-
-              missing_option <<
-                if required
-                  'to '
-                else
-                  'not to '
-                end
-
-              missing_option << (
-                'fail validation if '\
-                ":#{attribute_name} is unset; i.e., either the association "\
-                'should have been defined with `required: '\
-                "#{required.inspect}`, or there "
-              )
-
-              missing_option <<
-                if required
-                  'should '
-                else
-                  'should not '
-                end
-
-              missing_option << "be a presence validation on :#{attribute_name}"
+              @missing_option = build_missing_option
 
               false
             end
@@ -66,6 +43,33 @@ module Shoulda
 
           def validation_message_key
             :required
+          end
+
+          def build_missing_option
+            String.new('and for the record ').tap do |missing_option_string|
+              missing_option_string <<
+                if required
+                  'to '
+                else
+                  'not to '
+                end
+
+              missing_option_string << (
+                'fail validation if '\
+                ":#{attribute_name} is unset; i.e., either the association "\
+                'should have been defined with `required: '\
+                "#{required.inspect}`, or there "
+              )
+
+              missing_option_string <<
+                if required
+                  'should '
+                else
+                  'should not '
+                end
+
+              missing_option_string << "be a presence validation on :#{attribute_name}"
+            end
           end
         end
       end

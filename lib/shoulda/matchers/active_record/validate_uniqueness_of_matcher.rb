@@ -411,9 +411,29 @@ module Shoulda
           if scopes_match?
             true
           else
-            @failure_reason = 'Expected the validation '
+            @failure_reason = String.new('Expected the validation ').tap do |failure_reason_string|
+              failure_reason_string <<
+                if expected_scopes.empty?
+                  'not to be scoped to anything, '
+                else
+                  "to be scoped to #{inspected_expected_scopes}, "
+                end
 
-            @failure_reason <<
+              if actual_sets_of_scopes.any?
+                failure_reason_string << 'but it was scoped to '
+                failure_reason_string << "#{inspected_actual_scopes} instead."
+              else
+                failure_reason_string << 'but it was not scoped to anything.'
+              end
+            end
+
+            false
+          end
+        end
+
+        def build_failure_reason
+          String.new('Expected the validation ').tap do |failure_reason_string|
+            failure_reason_string <<
               if expected_scopes.empty?
                 'not to be scoped to anything, '
               else
@@ -421,27 +441,25 @@ module Shoulda
               end
 
             if actual_sets_of_scopes.any?
-              @failure_reason << 'but it was scoped to '
-              @failure_reason << "#{inspected_actual_scopes} instead."
+              failure_reason_string << 'but it was scoped to '
+              failure_reason_string << "#{inspected_actual_scopes} instead."
             else
-              @failure_reason << 'but it was not scoped to anything.'
+              failure_reason_string << 'but it was not scoped to anything.'
             end
-
-            false
           end
         end
 
         def does_not_match_scopes_configuration?
           if scopes_match?
-            @failure_reason = 'Expected the validation '
-
-            if expected_scopes.empty?
-              @failure_reason << 'to be scoped to nothing, '
-              @failure_reason << 'but it was scoped to '
-              @failure_reason << "#{inspected_actual_scopes} instead."
-            else
-              @failure_reason << 'not to be scoped to '
-              @failure_reason << inspected_expected_scopes
+            @failure_reason = String.new('Expected the validation ').tap do |failure_reason|
+              if expected_scopes.empty?
+                failure_reason << 'to be scoped to nothing, '
+                failure_reason << 'but it was scoped to '
+                failure_reason << "#{inspected_actual_scopes} instead."
+              else
+                failure_reason << 'not to be scoped to '
+                failure_reason << inspected_expected_scopes
+              end
             end
 
             false
@@ -618,20 +636,18 @@ module Shoulda
           else
             inspected_scopes = scopes_missing_on_model.map(&:inspect)
 
-            reason = ''
+            @failure_reason = String.new.tap do |reason|
+              reason << inspected_scopes.to_sentence
 
-            reason << inspected_scopes.to_sentence
+              reason <<
+                if inspected_scopes.many?
+                  ' do not seem to be attributes'
+                else
+                  ' does not seem to be an attribute'
+                end
 
-            reason <<
-              if inspected_scopes.many?
-                ' do not seem to be attributes'
-              else
-                ' does not seem to be an attribute'
-              end
-
-            reason << " on #{model.name}."
-
-            @failure_reason = reason
+              reason << " on #{model.name}."
+            end
 
             false
           end
@@ -643,20 +659,18 @@ module Shoulda
           else
             inspected_scopes = scopes_present_on_model.map(&:inspect)
 
-            reason = ''
+            @failure_reason = String.new.tap do |reason|
+              reason << inspected_scopes.to_sentence
 
-            reason << inspected_scopes.to_sentence
+              reason <<
+                if inspected_scopes.many?
+                  ' seem to be attributes'
+                else
+                  ' seems to be an attribute'
+                end
 
-            reason <<
-              if inspected_scopes.many?
-                ' seem to be attributes'
-              else
-                ' seems to be an attribute'
-              end
-
-            reason << " on #{model.name}."
-
-            @failure_reason = reason
+              reason << " on #{model.name}."
+            end
 
             false
           end
@@ -936,45 +950,43 @@ module Shoulda
         end
 
         def failure_message_preface # rubocop:disable Metrics/MethodLength
-          prefix = ''
+          String.new.tap do |prefix|
+            if @existing_record_created
+              prefix << "After taking the given #{model.name}"
 
-          if @existing_record_created
-            prefix << "After taking the given #{model.name}"
+              if attribute_setter_for_existing_record
+                prefix << ', setting '
+                prefix << description_for_attribute_setter(
+                  attribute_setter_for_existing_record,
+                )
+              else
+                prefix << ", whose :#{attribute} is "
+                prefix << "‹#{existing_value_read.inspect}›"
+              end
 
-            if attribute_setter_for_existing_record
-              prefix << ', setting '
+              prefix << ', and saving it as the existing record, then'
+            elsif attribute_setter_for_existing_record
+              prefix << "Given an existing #{model.name},"
+              prefix << ' after setting '
               prefix << description_for_attribute_setter(
                 attribute_setter_for_existing_record,
               )
+              prefix << ', then'
             else
-              prefix << ", whose :#{attribute} is "
-              prefix << "‹#{existing_value_read.inspect}›"
+              prefix << "Given an existing #{model.name} whose :#{attribute}"
+              prefix << ' is '
+              prefix << Shoulda::Matchers::Util.inspect_value(
+                existing_value_read,
+              )
+              prefix << ', after'
             end
 
-            prefix << ', and saving it as the existing record, then'
-          elsif attribute_setter_for_existing_record
-            prefix << "Given an existing #{model.name},"
-            prefix << ' after setting '
-            prefix << description_for_attribute_setter(
-              attribute_setter_for_existing_record,
-            )
-            prefix << ', then'
-          else
-            prefix << "Given an existing #{model.name} whose :#{attribute}"
-            prefix << ' is '
-            prefix << Shoulda::Matchers::Util.inspect_value(
-              existing_value_read,
-            )
-            prefix << ', after'
+            prefix << " making a new #{model.name} and setting "
+
+            prefix << descriptions_for_attribute_setters_for_new_record
+
+            prefix << ", the matcher expected the new #{model.name} to be"
           end
-
-          prefix << " making a new #{model.name} and setting "
-
-          prefix << descriptions_for_attribute_setters_for_new_record
-
-          prefix << ", the matcher expected the new #{model.name} to be"
-
-          prefix
         end
 
         def attribute_changed_value_message

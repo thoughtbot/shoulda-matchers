@@ -550,7 +550,7 @@ module Shoulda
         end
 
         def default_failure_message_preface
-          ''.tap do |preface|
+          String.new.tap do |preface|
             if descriptions_for_preset_values.any?
               preface << 'After setting '
               preface << descriptions_for_preset_values.to_sentence

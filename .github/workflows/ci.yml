@@ -61,6 +61,6 @@ jobs:
       - name: Install dependencies
         run: bundle install --jobs=3 --retry=3
       - name: Run Unit Tests
-        run: bundle exec rake spec:unit --trace
+        run: RUBYOPT='--enable=frozen-string-literal' bundle exec rake spec:unit --trace
       - name: Run Acceptance Tests
-        run: bundle exec rake spec:acceptance --trace
+        run: RUBYOPT='--enable=frozen-string-literal' bundle exec rake spec:acceptance --trace

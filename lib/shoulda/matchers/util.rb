@@ -70,17 +70,17 @@ module Shoulda
       end
 
       def self.inspect_hash(hash)
-        output = '‹{'
+        String.new('‹{').tap do |output|
+          output << hash.map { |key, value|
+            if key.is_a?(Symbol)
+              "#{key}: #{value.inspect}"
+            else
+              "#{key.inspect} => #{value.inspect}"
+            end
+          }.join(', ')
 
-        output << hash.map { |key, value|
-          if key.is_a?(Symbol)
-            "#{key}: #{value.inspect}"
-          else
-            "#{key.inspect} => #{value.inspect}"
-          end
-        }.join(', ')
-
-        output << '}›'
+          output << '}›'
+        end
       end
 
       def self.dummy_value_for(column_type, array: false)

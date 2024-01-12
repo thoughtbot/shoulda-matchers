@@ -276,16 +276,14 @@ module Shoulda
           :context, :subparameter_name, :parameters_double_registry
 
         def expectation
-          message = 'restrict parameters '
+          String.new('restrict parameters ').tap do |message|
+            if subparameter_name
+              message << "on #{subparameter_name.inspect} "
+            end
 
-          if subparameter_name
-            message << "on #{subparameter_name.inspect} "
+            message << 'to '\
+              "#{format_parameter_names(expected_permitted_parameter_names)}"
           end
-
-          message << 'to '\
-            "#{format_parameter_names(expected_permitted_parameter_names)}"
-
-          message
         end
 
         def reality
