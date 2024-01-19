@@ -1,5 +1,40 @@
 # Changelog
 
+## 6.1.0 - 2024-01-19
+
+### Bug fixes
+
+* Fix negative form of `validate_numericality` matcher by @matsales28 ([#1603])
+
+[#1603]: https://github.com/thoughtbot/shoulda-matchers/pull/1603
+
+### Features
+
+* Add support for negated matcher on have_secure_password matcher by @amalrik ([#1593])
+* Add `encrypt` matcher to test usage of the `encrypts` macro by @theforestvn88 ([#1581])
+* Add `query_constraints` qualifier on the association matchers by @matsales28 ([#1604])
+
+[#1581]: https://github.com/thoughtbot/shoulda-matchers/pull/1581
+[#1593]: https://github.com/thoughtbot/shoulda-matchers/pull/1593
+[#1604]: https://github.com/thoughtbot/shoulda-matchers/pull/1604
+
+
+### Improvements
+
+* Remove `array_column?` helper from `ValidateAbsenceOfMatcher` by @jarenas9539 ([#1562])
+* Bump rubocop version to 1.59.0 by @VSPPedro ([#1600])
+* Update Ruby version to 3.3.0 by @VSSPedro([#1599])
+* Fix `REPRODUCTION_SCRIPT.md` link returning 404 by @VSPPedro ([#1602])
+* Add support for globally enabled frozen-string-literals by @amalrik ([#1598])
+* Adjust typos in the documentation by @matsales28 ([#1597])
+
+[#1562]: https://github.com/thoughtbot/shoulda-matchers/pull/1562
+[#1597]: https://github.com/thoughtbot/shoulda-matchers/pull/1597
+[#1598]: https://github.com/thoughtbot/shoulda-matchers/pull/1598
+[#1599]: https://github.com/thoughtbot/shoulda-matchers/pull/1599
+[#1600]: https://github.com/thoughtbot/shoulda-matchers/pull/1600
+[#1602]: https://github.com/thoughtbot/shoulda-matchers/pull/1602
+
 ## 6.0.0 - 2023-12-22
 
 ### Backward-incompatible changes
