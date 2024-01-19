@@ -47,6 +47,25 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       expect(matcher.failure_message).to match(/Child does not have a custom_primary_key primary key/)
     end
 
+    if rails_version >= 7.1
+      it 'accepts an association using an valid :query_constraints option' do
+        define_model :parent, name: :string
+        define_model :child, parent_id: :integer, parent_name: :string do
+          belongs_to :parent, query_constraints: [:parent_id, :parent_name]
+        end
+
+        expect(Child.new).to belong_to(:parent).with_query_constraints([:parent_id, :parent_name])
+      end
+
+      it 'rejects an association with a bad :query_constraints option' do
+        matcher = belong_to(:parent).with_query_constraints([:parent_id, :parent_name])
+
+        expect(belonging_to_parent).not_to matcher
+
+        expect(matcher.failure_message).to match(/Child should have :query_constraints options set to \[:parent_id, :parent_name\]/)
+      end
+    end
+
     it 'accepts a polymorphic association' do
       define_model :child, parent_type: :string, parent_id: :integer do
         belongs_to :parent, polymorphic: true
@@ -821,6 +840,30 @@ Expected Parent to have a has_many association called children through conceptio
       expect(matcher.failure_message).to match(/Parent does not have a custom_primary_key primary key/)
     end
 
+    if rails_version >= 7.1
+      it 'accepts an association using an valid :query_constraints option' do
+        define_model :parent, first_name: :string, last_name: :string do
+          self.primary_key = [:first_name, :last_name]
+
+          has_many :children, query_constraints: [:parent_first_name, :parent_last_name]
+        end
+
+        define_model :child, parent_first_name: :integer, parent_last_name: :string do
+          belongs_to :parent, query_constraints: [:parent_first_name, :parent_last_name]
+        end
+
+        expect(Parent.new).to have_many(:children).with_query_constraints([:parent_first_name, :parent_last_name])
+      end
+
+      it 'rejects an association with a bad :query_constraints option' do
+        matcher = have_many(:children).with_query_constraints([:parent_first_name, :parent_last_name])
+
+        expect(having_many_children).not_to matcher
+
+        expect(matcher.failure_message).to match(/Parent should have :query_constraints options set to \[:parent_first_name, :parent_last_name\]/)
+      end
+    end
+
     it 'rejects an association with a bad :as option' do
       define_model(
         :child,
@@ -1221,6 +1264,25 @@ Expected Parent to have a has_many association called children through conceptio
       expect(having_one_detail).not_to matcher
 
       expect(matcher.failure_message).to match(/Person does not have a custom_primary_key primary key/)
+    end
+
+    if rails_version >= 7.1
+      it 'accepts an association using an valid :query_constraints option' do
+        define_model :detail, person_first_name: :string, person_last_name: :string
+        define_model :person do
+          has_one :detail, query_constraints: [:person_first_name, :person_last_name]
+        end
+
+        expect(Person.new).to have_one(:detail).with_query_constraints([:person_first_name, :person_last_name])
+      end
+
+      it 'rejects an association with a bad :query_constraints option' do
+        matcher = have_one(:detail).with_query_constraints([:person_first_name, :person_last_name])
+
+        expect(having_one_detail).not_to matcher
+
+        expect(matcher.failure_message).to match(/Person should have :query_constraints options set to \[:person_first_name, :person_last_name\]/)
+      end
     end
 
     it 'rejects an association with a bad :as option' do

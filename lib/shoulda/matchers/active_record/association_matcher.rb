@@ -1093,6 +1093,11 @@ module Shoulda
           self
         end
 
+        def with_query_constraints(query_constraints)
+          @options[:query_constraints] = query_constraints
+          self
+        end
+
         def required(required = true)
           remove_submatcher(AssociationMatchers::OptionalMatcher)
           add_submatcher(
@@ -1157,6 +1162,7 @@ module Shoulda
             (polymorphic? || class_exists?) &&
             foreign_key_exists? &&
             primary_key_exists? &&
+            query_constraints_exists? &&
             class_name_correct? &&
             join_table_correct? &&
             autosave_correct? &&
@@ -1258,7 +1264,7 @@ module Shoulda
           false
         end
 
-        def macro_supports_primary_key?
+        def macro_is_not_through?
           macro == :belongs_to ||
             ([:has_many, :has_one].include?(macro) && !through?)
         end
@@ -1268,7 +1274,25 @@ module Shoulda
         end
 
         def primary_key_exists?
-          !macro_supports_primary_key? || primary_key_correct?(model_class)
+          !macro_is_not_through? || primary_key_correct?(model_class)
+        end
+
+        def query_constraints_exists?
+          !macro_is_not_through? || query_constraints_correct?
+        end
+
+        def query_constraints_correct?
+          if options.key?(:query_constraints)
+            if option_verifier.correct_for_string?(:query_constraints, options[:query_constraints])
+              true
+            else
+              @missing = "#{model_class} should have \:query_constraints"\
+              " options set to #{options[:query_constraints]}"
+              false
+            end
+          else
+            true
+          end
         end
 
         def belongs_foreign_key_missing?
