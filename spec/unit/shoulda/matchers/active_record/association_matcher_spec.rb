@@ -2156,6 +2156,649 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
     end
   end
 
+  context 'delegated_types' do
+    it 'accepts a good association with the default foreign key' do
+      expect(delegating_type_to_drivable).to have_delegated_type(:drivable)
+    end
+
+    it 'rejects a nonexistent association' do
+      expect(define_model(:vehicle).new).not_to have_delegated_type(:drivable)
+    end
+
+    it 'accepts an association specifying the types' do
+      expect(delegating_type_to_drivable).to have_delegated_type(:drivable).types(['Car'])
+    end
+
+    it 'rejects an association one wrong type' do
+      expect(delegating_type_to_drivable).not_to have_delegated_type(:drivable).types(['Car', 'Truck'])
+    end
+
+    it 'rejects an association with all wrong types' do
+      expect(delegating_type_to_drivable).not_to have_delegated_type(:drivable).types(['Truck'])
+    end
+
+    it 'rejects an association that has a nonexistent foreign key' do
+      define_model :car
+      expect((define_model(:vehicle) { delegated_type :drivable, types: ['Car'] }).new).not_to have_delegated_type(:drivable)
+    end
+
+    it 'accepts an association with an existing custom foreign key' do
+      expect(delegating_type_to_drivable(foreign_key: 'drivable_uuid')).to have_delegated_type(:drivable)
+    end
+
+    it 'accepts an association using an existing custom primary key' do
+      define_model :car, custom_primary_key: :integer
+      define_model :vehicle, drivable_id: :integer, drivable_type: :string do
+        delegated_type :drivable, types: ['Car'], primary_key: 'custom_primary_key'
+      end
+
+      expect(Vehicle.new).to have_delegated_type(:drivable)
+    end
+
+    it 'rejects an association with a bad :primary_key option' do
+      matcher = have_delegated_type(:drivable).with_primary_key(:custom_primary_key)
+
+      expect(delegating_type_to_drivable).not_to matcher
+
+      expect(matcher.failure_message).to match(/Vehicle does not have a custom_primary_key primary key/)
+    end
+
+    it 'accepts an association with a valid :dependent option' do
+      expect(delegating_type_to_drivable(dependent: :destroy)).
+        to have_delegated_type(:drivable).dependent(:destroy)
+    end
+
+    it 'rejects an association with a bad :dependent option' do
+      expect(delegating_type_to_drivable).not_to have_delegated_type(:drivable).dependent(:destroy)
+    end
+
+    it 'accepts an association with a valid :counter_cache option' do
+      expect(delegating_type_to_drivable(counter_cache: :attribute_count)).
+        to have_delegated_type(:drivable).counter_cache(:attribute_count)
+    end
+
+    it 'defaults :counter_cache to true' do
+      expect(delegating_type_to_drivable(counter_cache: true)).
+        to have_delegated_type(:drivable).counter_cache
+    end
+
+    it 'rejects an association with a bad :counter_cache option' do
+      expect(delegating_type_to_drivable(counter_cache: :attribute_count)).
+        not_to have_delegated_type(:drivable).counter_cache(true)
+    end
+
+    it 'rejects an association that has no :counter_cache option' do
+      expect(delegating_type_to_drivable).not_to have_delegated_type(:drivable).counter_cache
+    end
+
+    it 'accepts an association with a valid :inverse_of option' do
+      define_model :vehicle, drivable_id: :integer, drivable_type: :string do
+        delegated_type :drivable, types: ['Car'], inverse_of: :vehicle
+      end
+
+      define_model :car do
+        has_one :vehicle, as: :drivable, inverse_of: :drivable
+      end
+
+      expect(Vehicle.new).to have_delegated_type(:drivable).inverse_of(:vehicle)
+    end
+
+    it 'rejects an association with a bad :inverse_of option' do
+      define_model :vehicle, drivable_id: :integer, drivable_type: :string do
+        delegated_type :drivable, types: ['Car'], inverse_of: :vehicle
+      end
+
+      define_model :car do
+        has_one :vehicle, as: :drivable, inverse_of: :drivable
+      end
+
+      expect(Vehicle.new).not_to have_delegated_type(:drivable).inverse_of(:other_vehicle)
+    end
+
+    it 'rejects an association that has no :inverse_of option' do
+      expect(delegating_type_to_drivable).not_to have_delegated_type(:drivable).inverse_of(:vehicle)
+    end
+
+    it 'accepts an association with a valid :conditions option' do
+      define_model :vehicle, drivable_id: :integer, drivable_type: :string do
+        delegated_type :drivable, types: ['Car'], scope: -> { where(color: 'red') }
+      end
+
+      expect(Vehicle.new).to have_delegated_type(:drivable).conditions(color: 'red')
+    end
+
+    it 'rejects an association with a bad :conditions option' do
+      define_model :vehicle, drivable_id: :integer, drivable_type: :string do
+        delegated_type :drivable, types: ['Car'], scope: -> { where(color: 'red') }
+      end
+
+      expect(Vehicle.new).not_to have_delegated_type(:drivable).conditions(color: 'blue')
+    end
+
+    it 'accepts an association with a matching :autosave option' do
+      expect(delegating_type_to_drivable(autosave: true)).to have_delegated_type(:drivable).autosave(true)
+    end
+
+    it 'rejects an association with a non-matching :autosave option with the correct message' do
+      message = 'Expected Vehicle to have a belongs_to association called drivable (drivable should have autosave set to true)'
+
+      expect {
+        expect(delegating_type_to_drivable(autosave: false)).to have_delegated_type(:drivable).autosave(true)
+      }.to fail_with_message(message)
+    end
+
+    context 'an association with a :validate option' do
+      [false, true].each do |validate_value|
+        context "when the model has validate: #{validate_value}" do
+          it 'accepts a matching validate option' do
+            expect(delegating_type_to_drivable(validate: validate_value)).
+              to have_delegated_type(:drivable).validate(validate_value)
+          end
+
+          it 'rejects a non-matching validate option' do
+            expect(delegating_type_to_drivable(validate: validate_value)).
+              not_to have_delegated_type(:drivable).validate(!validate_value)
+          end
+
+          it 'defaults to validate(true)' do
+            if validate_value
+              expect(delegating_type_to_drivable(validate: validate_value)).
+                to have_delegated_type(:drivable).validate
+            else
+              expect(delegating_type_to_drivable(validate: validate_value)).
+                not_to have_delegated_type(:drivable).validate
+            end
+          end
+
+          it 'will not break matcher when validate option is unspecified' do
+            expect(delegating_type_to_drivable(validate: validate_value)).to have_delegated_type(:drivable)
+          end
+        end
+      end
+    end
+
+    context 'an association without a :validate option' do
+      it 'accepts validate(false)' do
+        expect(delegating_type_to_drivable).to have_delegated_type(:drivable).validate(false)
+      end
+
+      it 'rejects validate(true)' do
+        expect(delegating_type_to_drivable).not_to have_delegated_type(:drivable).validate(true)
+      end
+
+      it 'rejects validate()' do
+        expect(delegating_type_to_drivable).not_to have_delegated_type(:drivable).validate
+      end
+    end
+
+    context 'an association with a :touch option' do
+      [false, true].each do |touch_value|
+        context "when the model has touch: #{touch_value}" do
+          it 'accepts a matching touch option' do
+            expect(delegating_type_to_drivable(touch: touch_value)).
+              to have_delegated_type(:drivable).touch(touch_value)
+          end
+
+          it 'rejects a non-matching touch option' do
+            expect(delegating_type_to_drivable(touch: touch_value)).
+              not_to have_delegated_type(:drivable).touch(!touch_value)
+          end
+
+          it 'defaults to touch(true)' do
+            if touch_value
+              expect(delegating_type_to_drivable(touch: touch_value)).
+                to have_delegated_type(:drivable).touch
+            else
+              expect(delegating_type_to_drivable(touch: touch_value)).
+                not_to have_delegated_type(:drivable).touch
+            end
+          end
+
+          it 'will not break matcher when touch option is unspecified' do
+            expect(delegating_type_to_drivable(touch: touch_value)).to have_delegated_type(:drivable)
+          end
+        end
+      end
+    end
+
+    context 'an association without a :touch option' do
+      it 'accepts touch(false)' do
+        expect(delegating_type_to_drivable).to have_delegated_type(:drivable).touch(false)
+      end
+
+      it 'rejects touch(true)' do
+        expect(delegating_type_to_drivable).not_to have_delegated_type(:drivable).touch(true)
+      end
+
+      it 'rejects touch()' do
+        expect(delegating_type_to_drivable).not_to have_delegated_type(:drivable).touch
+      end
+    end
+
+    context 'given the association is neither configured to be required nor optional' do
+      context 'when qualified with required(true)' do
+        context 'when belongs_to is configured to be required by default' do
+          it 'passes' do
+            with_belongs_to_as_required_by_default do
+              expect(delegating_type_to_drivable).to have_delegated_type(:drivable).required(true)
+            end
+          end
+        end
+
+        context 'when belongs_to is not configured to be required by default' do
+          it 'fails with an appropriate message' do
+            with_belongs_to_as_optional_by_default do
+              assertion = lambda do
+                expect(delegating_type_to_drivable).to have_delegated_type(:drivable).required(true)
+              end
+
+              message = format_message(<<-MESSAGE, one_line: true)
+                Expected Vehicle to have a belongs_to association called drivable
+                (and for the record to fail validation if :drivable is unset;
+                i.e., either the association should have been defined with
+                `required: true`, or there should be a presence validation on
+                :drivable)
+              MESSAGE
+
+              expect(&assertion).to fail_with_message(message)
+            end
+          end
+        end
+      end
+
+      context 'when qualified with required(false)' do
+        context 'when belongs_to is configured to be required by default' do
+          it 'fails with an appropriate message' do
+            with_belongs_to_as_required_by_default do
+              assertion = lambda do
+                expect(delegating_type_to_drivable).to have_delegated_type(:drivable).required(false)
+              end
+
+              message = format_message(<<-MESSAGE, one_line: true)
+                Expected Vehicle to have a belongs_to association called drivable
+                (and for the record not to fail validation if :drivable is
+                unset; i.e., either the association should have been defined
+                with `required: false`, or there should not be a presence
+                validation on :drivable)
+              MESSAGE
+
+              expect(&assertion).to fail_with_message(message)
+            end
+          end
+        end
+
+        context 'when belongs_to is not configured to be required by default' do
+          it 'passes' do
+            with_belongs_to_as_optional_by_default do
+              expect(delegating_type_to_drivable).to have_delegated_type(:drivable).required(false)
+            end
+          end
+        end
+      end
+
+      context 'when qualified with optional(true)' do
+        context 'when belongs_to is configured to be required by default' do
+          it 'fails with an appropriate message' do
+            with_belongs_to_as_required_by_default do
+              assertion = lambda do
+                expect(delegating_type_to_drivable).to have_delegated_type(:drivable).optional(true)
+              end
+
+              message = format_message(<<-MESSAGE, one_line: true)
+                Expected Vehicle to have a belongs_to association called drivable
+                (and for the record not to fail validation if :drivable is
+                unset; i.e., either the association should have been defined
+                with `optional: true`, or there should not be a presence
+                validation on :drivable)
+              MESSAGE
+
+              expect(&assertion).to fail_with_message(message)
+            end
+          end
+        end
+
+        context 'when belongs_to is not configured to be required by default' do
+          it 'passes' do
+            with_belongs_to_as_optional_by_default do
+              expect(delegating_type_to_drivable).to have_delegated_type(:drivable).optional(true)
+            end
+          end
+        end
+      end
+
+      context 'when qualified with optional(false)' do
+        context 'when belongs_to is configured to be required by default' do
+          it 'passes' do
+            with_belongs_to_as_required_by_default do
+              expect(delegating_type_to_drivable).to have_delegated_type(:drivable).optional(false)
+            end
+          end
+        end
+
+        context 'when belongs_to is not configured to be required by default' do
+          it 'fails with an appropriate message' do
+            with_belongs_to_as_optional_by_default do
+              assertion = lambda do
+                expect(delegating_type_to_drivable).to have_delegated_type(:drivable).optional(false)
+              end
+
+              message = format_message(<<-MESSAGE, one_line: true)
+                Expected Vehicle to have a belongs_to association called drivable
+                (and for the record to fail validation if :drivable is
+                unset; i.e., either the association should have been defined
+                with `optional: false`, or there should be a presence
+                validation on :drivable)
+              MESSAGE
+
+              expect(&assertion).to fail_with_message(message)
+            end
+          end
+        end
+      end
+
+      context 'when qualified with nothing' do
+        context 'when belongs_to is configured to be required by default' do
+          it 'passes' do
+            with_belongs_to_as_required_by_default do
+              expect(delegating_type_to_drivable).to have_delegated_type(:drivable)
+            end
+          end
+        end
+
+        context 'when belongs_to is not configured to be required by default' do
+          it 'passes' do
+            with_belongs_to_as_optional_by_default do
+              expect(delegating_type_to_drivable).to have_delegated_type(:drivable)
+            end
+          end
+
+          context 'and a presence validation is on the attribute instead of using required: true' do
+            it 'passes' do
+              with_belongs_to_as_optional_by_default do
+                record = delegating_type_to_drivable do
+                  validates_presence_of :drivable
+                end
+
+                expect(record).to have_delegated_type(:drivable)
+              end
+            end
+          end
+
+          context 'and a presence validation is on the attribute with a condition' do
+            context 'and the condition is true' do
+              it 'passes' do
+                with_belongs_to_as_optional_by_default do
+                  record = delegating_type_to_drivable do
+                    attr_accessor :condition
+
+                    validates_presence_of :drivable, if: :condition
+                  end
+
+                  record.condition = true
+
+                  expect(record).to have_delegated_type(:drivable)
+                end
+              end
+            end
+
+            context 'and the condition is false' do
+              it 'passes' do
+                with_belongs_to_as_optional_by_default do
+                  record = delegating_type_to_drivable do
+                    attr_accessor :condition
+
+                    validates_presence_of :drivable, if: :condition
+                  end
+
+                  record.condition = false
+
+                  expect(record).to have_delegated_type(:drivable)
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+
+    context 'given the association is configured with required: true' do
+      context 'when qualified with required(true)' do
+        it 'passes' do
+          expect(delegating_type_to_drivable(required: true)).
+            to have_delegated_type(:drivable).required(true)
+        end
+      end
+
+      context 'when qualified with required(false)' do
+        it 'passes' do
+          assertion = lambda do
+            expect(delegating_type_to_drivable(required: true)).
+              to have_delegated_type(:drivable).required(false)
+          end
+
+          message = format_message(<<-MESSAGE, one_line: true)
+            Expected Vehicle to have a belongs_to association called drivable (and
+            for the record not to fail validation if :drivable is unset; i.e.,
+            either the association should have been defined with `required:
+            false`, or there should not be a presence validation on :drivable)
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'when qualified with optional(true)' do
+        it 'fails with an appropriate message' do
+          assertion = lambda do
+            expect(delegating_type_to_drivable(required: true)).
+              to have_delegated_type(:drivable).optional(true)
+          end
+
+          message = format_message(<<-MESSAGE, one_line: true)
+            Expected Vehicle to have a belongs_to association called drivable
+            (and for the record not to fail validation if :drivable is unset;
+            i.e., either the association should have been defined with
+            `optional: true`, or there should not be a presence validation on
+            :drivable)
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'when qualified with optional(false)' do
+        it 'passes' do
+          expect(delegating_type_to_drivable(required: true)).
+            to have_delegated_type(:drivable).optional(false)
+        end
+      end
+
+      context 'when qualified with nothing' do
+        it 'passes' do
+          expect(delegating_type_to_drivable(required: true)).to have_delegated_type(:drivable)
+        end
+      end
+    end
+
+    context 'given the association is configured as optional: true' do
+      context 'when qualified with required(true)' do
+        it 'fails with an appropriate message' do
+          assertion = lambda do
+            expect(delegating_type_to_drivable(optional: true)).
+              to have_delegated_type(:drivable).required(true)
+          end
+
+          message = format_message(<<-MESSAGE, one_line: true)
+            Expected Vehicle to have a belongs_to association called drivable
+            (and for the record to fail validation if :drivable is unset; i.e.,
+            either the association should have been defined with `required:
+            true`, or there should be a presence validation on :drivable)
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'when qualified with required(false)' do
+        it 'passes' do
+          expect(delegating_type_to_drivable(optional: true)).
+            to have_delegated_type(:drivable).required(false)
+        end
+      end
+
+      context 'when qualified with optional(true)' do
+        it 'passes' do
+          expect(delegating_type_to_drivable(optional: true)).
+            to have_delegated_type(:drivable).optional(true)
+        end
+      end
+
+      context 'when qualified with optional(false)' do
+        it 'fails with an appropriate message' do
+          assertion = lambda do
+            expect(delegating_type_to_drivable(optional: true)).
+              to have_delegated_type(:drivable).optional(false)
+          end
+
+          message = format_message(<<-MESSAGE, one_line: true)
+            Expected Vehicle to have a belongs_to association called drivable
+            (and for the record to fail validation if :drivable is unset; i.e.,
+            either the association should have been defined with `optional:
+            false`, or there should be a presence validation on :drivable)
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'when qualified with nothing' do
+        it 'fails with an appropriate message' do
+          assertion = lambda do
+            expect(delegating_type_to_drivable(optional: true)).
+              to have_delegated_type(:drivable)
+          end
+
+          message = format_message(<<-MESSAGE, one_line: true)
+            Expected Vehicle to have a belongs_to association called drivable
+            (and for the record to fail validation if :drivable is unset; i.e.,
+            either the association should have been defined with `required:
+            true`, or there should be a presence validation on :drivable)
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+    end
+
+    context 'when the model ensures the association is set' do
+      context 'and the matcher is not qualified with anything' do
+        context 'and the matcher is not qualified with without_validating_presence' do
+          it 'fails with an appropriate message' do
+            record = delegating_type_to_drivable do
+              before_validation :ensure_drivable_is_set
+
+              def ensure_drivable_is_set
+                self.drivable = Car.create
+              end
+            end
+
+            assertion = lambda do
+              with_belongs_to_as_required_by_default do
+                expect(record).to have_delegated_type(:drivable)
+              end
+            end
+
+            message = format_message(<<-MESSAGE, one_line: true)
+              Expected Vehicle to have a belongs_to association called drivable (and
+              for the record to fail validation if :drivable is unset; i.e.,
+              either the association should have been defined with `required:
+              true`, or there should be a presence validation on :drivable)
+            MESSAGE
+
+            expect(&assertion).to fail_with_message(message)
+          end
+        end
+
+        context 'and the matcher is qualified with without_validating_presence' do
+          it 'passes' do
+            record = delegating_type_to_drivable do
+              before_validation :ensure_drivable_is_set
+
+              def ensure_drivable_is_set
+                self.drivable = Car.create
+              end
+            end
+
+            with_belongs_to_as_required_by_default do
+              expect(record).
+                to have_delegated_type(:drivable).
+                without_validating_presence
+            end
+          end
+        end
+      end
+
+      context 'and the matcher is qualified with required' do
+        context 'and the matcher is not qualified with without_validating_presence' do
+          it 'fails with an appropriate message' do
+            record = delegating_type_to_drivable do
+              before_validation :ensure_drivable_is_set
+
+              def ensure_drivable_is_set
+                self.drivable = Car.create
+              end
+            end
+
+            assertion = lambda do
+              with_belongs_to_as_required_by_default do
+                expect(record).to have_delegated_type(:drivable).required
+              end
+            end
+
+            message = format_message(<<-MESSAGE, one_line: true)
+              Expected Vehicle to have a belongs_to association called drivable
+              (and for the record to fail validation if :drivable is unset; i.e.,
+              either the association should have been defined with `required:
+              true`, or there should be a presence validation on :drivable)
+            MESSAGE
+
+            expect(&assertion).to fail_with_message(message)
+          end
+        end
+
+        context 'and the matcher is also qualified with without_validating_presence' do
+          it 'passes' do
+            record = delegating_type_to_drivable do
+              before_validation :ensure_drivable_is_set
+
+              def ensure_drivable_is_set
+                self.drivable = Car.create
+              end
+            end
+
+            with_belongs_to_as_required_by_default do
+              expect(record).
+                to have_delegated_type(:drivable).
+                required.
+                without_validating_presence
+            end
+          end
+        end
+      end
+    end
+  end
+
+  def delegating_type_to_drivable(options = {}, &block)
+    foreign_key = options[:foreign_key] || 'drivable_id'
+    define_model :car
+    define_model :vehicle, { "#{foreign_key}": :integer, drivable_type: :string } do
+      delegated_type :drivable, types: ['Car'], **options
+      if block
+        class_eval(&block)
+      end
+    end.new
+  end
+
   def define_association_with_conditions(model, macro, name, conditions, _other_options = {})
     model.__send__(macro, name, proc { where(conditions) }, **{})
   end
