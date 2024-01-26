@@ -1199,6 +1199,23 @@ Expected Parent to have a has_many association called children through conceptio
       expect(Parent.new).to have_many(:children)
     end
 
+    it 'accepts an association with a matching :strict_loading option' do
+      expect(having_many_children(strict_loading: true)).
+        to have_many(:children).strict_loading(true)
+    end
+
+    it 'rejects an association with a non-matching :strict_loading option with the correct message' do
+      message = [
+        'Expected Parent to have a has_many association called children ',
+        '(children should have strict_loading set to true)',
+      ].join
+
+      expect {
+        expect(having_many_children).
+          to have_many(:children).strict_loading(true)
+      }.to fail_with_message(message)
+    end
+
     def having_many_children(options = {})
       define_model :child, parent_id: :integer
       define_model(:parent).tap do |model|
