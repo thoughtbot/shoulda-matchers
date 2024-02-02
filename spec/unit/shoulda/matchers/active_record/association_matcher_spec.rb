@@ -1189,9 +1189,7 @@ Expected Parent to have a has_many association called children through conceptio
 
     it 'accepts an association with a nonstandard reverse foreign type, using :inverse_of' do
       define_model :visitor, location_id: :integer, facility_type: :string do
-        belongs_to :location, foreign_type: :facility_type,
-                              inverse_of: :visitors,
-                              polymorphic: true
+        belongs_to :location, foreign_type: :facility_type, inverse_of: :visitors, polymorphic: true
       end
 
       define_model :hotel do
@@ -1223,13 +1221,13 @@ Expected Parent to have a has_many association called children through conceptio
     end
 
     it 'accepts an association with a nonstandard type, with reverse association turned off' do
-      define_model :visitor, location_id: :integer, facitility_type: :string
+      define_model :visitor, location_id: :integer, facility_type: :string
 
       define_model :hotel do
-        has_many :visitors, foreign_type: :facitility_type, inverse_of: false, as: :location
+        has_many :visitors, foreign_type: :facility_type, inverse_of: false, as: :location
       end
 
-      expect(Hotel.new).to have_many(:visitors).with_foreign_type(:facitility_type)
+      expect(Hotel.new).to have_many(:visitors).with_foreign_type(:facility_type)
     end
 
     def having_many_children(options = {})

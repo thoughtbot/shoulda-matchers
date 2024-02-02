@@ -1329,8 +1329,11 @@ module Shoulda
         end
 
         def macro_is_not_through?
-          macro == :belongs_to ||
-            ([:has_many, :has_one].include?(macro) && !through?)
+          macro == :belongs_to || has_association_not_through?
+        end
+
+        def has_association_not_through?
+          [:has_many, :has_one].include?(macro) && !through?
         end
 
         def foreign_key_exists?
@@ -1338,9 +1341,10 @@ module Shoulda
         end
 
         def foreign_type_matches?
-          return true unless options.key?(:foreign_type)
-
-          !(belongs_foreign_type_missing? || has_foreign_type_missing?)
+          !options.key?(:foreign_type) || (
+            !belongs_foreign_type_missing? &&
+            !has_foreign_type_missing?
+          )
         end
 
         def primary_key_exists?
@@ -1374,14 +1378,12 @@ module Shoulda
         end
 
         def has_foreign_key_missing?
-          [:has_many, :has_one].include?(macro) &&
-            !through? &&
+          has_association_not_through? &&
             !class_has_foreign_key?(associated_class)
         end
 
         def has_foreign_type_missing?
-          [:has_many, :has_one].include?(macro) &&
-            !through? &&
+          has_association_not_through? &&
             !class_has_foreign_type?(associated_class)
         end
 
@@ -1598,13 +1600,11 @@ module Shoulda
         end
 
         def foreign_type
-          type = if [:has_one, :has_many].include?(macro)
-                   reflection.type
-                 else
-                   reflection.foreign_type
-                 end
-
-          type.to_s
+          if [:has_one, :has_many].include?(macro)
+            reflection.type
+          else
+            reflection.foreign_type
+          end
         end
 
         def submatchers_match?
