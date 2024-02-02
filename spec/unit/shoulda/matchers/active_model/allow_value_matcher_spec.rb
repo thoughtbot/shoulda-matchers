@@ -366,6 +366,18 @@ involving other attributes:
       end
     end
 
+    context 'when the attribute that receives the validation error is provided' do
+      context 'given a valid value' do
+        it 'accepts' do
+          builder = builder_for_record_with_different_error_attribute
+          expect(builder.record).
+            to allow_value(builder.valid_value).
+            for(builder.attribute_to_validate).
+            against(builder.attribute_that_receives_error)
+        end
+      end
+    end
+
     context 'when the validation error message was provided directly' do
       context 'given a valid value' do
         it 'accepts' do
