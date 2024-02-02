@@ -235,6 +235,18 @@ module Shoulda
       #       should have_many(:people).strict_loading(true)
       #     end
       #
+      # Default value is true when no argument is specified
+      #
+      #     # RSpec
+      #     RSpec.describe Organization, type: :model do
+      #       it { should have_many(:people).strict_loading }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class OrganizationTest < ActiveSupport::TestCase
+      #       should have_many(:people).strict_loading
+      #     end
+      #
       # ##### autosave
       #
       # Use `autosave` to assert that the `:autosave` option was specified.
