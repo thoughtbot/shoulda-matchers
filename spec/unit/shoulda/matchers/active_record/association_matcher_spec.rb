@@ -1199,21 +1199,179 @@ Expected Parent to have a has_many association called children through conceptio
       expect(Parent.new).to have_many(:children)
     end
 
-    it 'accepts an association with a matching :strict_loading option' do
-      expect(having_many_children(strict_loading: true)).
-        to have_many(:children).strict_loading(true)
+    context 'when the application is configured with strict_loading disabled by default' do
+      context 'when the association is configured with a strict_loading constraint' do
+        context 'when qualified with strict_loading(true)' do
+          it 'accepts an association with a matching :strict_loading option' do
+            with_strict_loading_by_default_disabled do
+              expect(having_many_children(strict_loading: true)).
+                to have_many(:children).strict_loading(true)
+            end
+          end
+
+          it 'accepts an association with a matching :strict_loading option without explicit value' do
+            with_strict_loading_by_default_disabled do
+              expect(having_many_children(strict_loading: true)).
+                to have_many(:children).strict_loading
+            end
+          end
+
+          it 'rejects an association with a non-matching :strict_loading option with the correct message' do
+            with_strict_loading_by_default_disabled do
+              message = [
+                'Expected Parent to have a has_many association called children ',
+                '(children should have strict_loading set to false)',
+              ].join
+
+              expect {
+                expect(having_many_children(strict_loading: true)).
+                  to have_many(:children).strict_loading(false)
+              }.to fail_with_message(message)
+            end
+          end
+        end
+
+        context 'when qualified with strict_loading(false)' do
+          it 'accepts an association with a matching :strict_loading option' do
+            with_strict_loading_by_default_disabled do
+              expect(having_many_children(strict_loading: false)).
+                to have_many(:children).strict_loading(false)
+            end
+          end
+
+          it 'rejects an association with a matching :strict_loading option without explicit value with the correct message' do
+            with_strict_loading_by_default_disabled do
+              message = [
+                'Expected Parent to have a has_many association called children ',
+                '(children should have strict_loading set to true)',
+              ].join
+
+              expect {
+                expect(having_many_children(strict_loading: false)).
+                  to have_many(:children).strict_loading
+              }.to fail_with_message(message)
+            end
+          end
+
+          it 'rejects an association with a non-matching :strict_loading option with the correct message' do
+            with_strict_loading_by_default_disabled do
+              message = [
+                'Expected Parent to have a has_many association called children ',
+                '(children should have strict_loading set to true)',
+              ].join
+
+              expect {
+                expect(having_many_children(strict_loading: false)).
+                  to have_many(:children).strict_loading(true)
+              }.to fail_with_message(message)
+            end
+          end
+        end
+      end
+
+      context 'when strict_loading is defined on the model level' do
+        context 'when it is set to true' do
+          it 'accepts an association with a matching :strict_loading option' do
+            with_strict_loading_by_default_disabled do
+              define_model :child, parent_id: :integer
+              parent = define_model(:parent) do |model|
+                model.strict_loading_by_default = true
+                model.has_many :children
+              end.new
+
+              expect(parent).to have_many(:children).strict_loading(true)
+            end
+          end
+
+          it 'accepts an association with a matching :strict_loading option without explicit value' do
+            with_strict_loading_by_default_disabled do
+              define_model :child, parent_id: :integer
+              parent = define_model(:parent) do |model|
+                model.strict_loading_by_default = true
+                model.has_many :children
+              end.new
+
+              expect(parent).to have_many(:children).strict_loading
+            end
+          end
+
+          it 'rejects an association with a non-matching :strict_loading option with the correct message' do
+            with_strict_loading_by_default_disabled do
+              message = [
+                'Expected Parent to have a has_many association called children ',
+                '(children should have strict_loading set to true)',
+              ].join
+
+              define_model :child, parent_id: :integer
+              parent = define_model(:parent) do |model|
+                model.strict_loading_by_default = true
+                model.has_many :children
+              end.new
+
+              expect {
+                expect(parent).to have_many(:children).strict_loading(false)
+              }.to fail_with_message(message)
+            end
+          end
+        end
+
+        context 'when it is set to false' do
+          it 'accepts an association with a matching :strict_loading option' do
+            with_strict_loading_by_default_disabled do
+              define_model :child, parent_id: :integer
+              parent = define_model(:parent) do |model|
+                model.strict_loading_by_default = false
+                model.has_many :children
+              end.new
+
+              expect(parent).to have_many(:children).strict_loading(false)
+            end
+          end
+
+          it 'rejects an association with a non-matching :strict_loading option without explicit value with the correct message' do
+            with_strict_loading_by_default_disabled do
+              message = [
+                'Expected Parent to have a has_many association called children ',
+                '(children should have strict_loading set to false)',
+              ].join
+
+              define_model :child, parent_id: :integer
+              parent = define_model(:parent) do |model|
+                model.strict_loading_by_default = false
+                model.has_many :children
+              end.new
+
+              expect {
+                expect(parent).to have_many(:children).strict_loading
+              }.to fail_with_message(message)
+            end
+          end
+
+          it 'rejects an association with a non-matching :strict_loading option with the correct message' do
+            with_strict_loading_by_default_disabled do
+              message = [
+                'Expected Parent to have a has_many association called children ',
+                '(children should have strict_loading set to false)',
+              ].join
+
+              define_model :child, parent_id: :integer
+              parent = define_model(:parent) do |model|
+                model.strict_loading_by_default = false
+                model.has_many :children
+              end.new
+
+              expect {
+                expect(parent).to have_many(:children).strict_loading(true)
+              }.to fail_with_message(message)
+            end
+          end
+        end
+      end
+
+      # TODO: tests with self.strict_loading_by_default = true on model
     end
 
-    it 'rejects an association with a non-matching :strict_loading option with the correct message' do
-      message = [
-        'Expected Parent to have a has_many association called children ',
-        '(children should have strict_loading set to true)',
-      ].join
-
-      expect {
-        expect(having_many_children).
-          to have_many(:children).strict_loading(true)
-      }.to fail_with_message(message)
+    context 'when the application is configured with strict_loading enabled by default' do
     end
 
     def having_many_children(options = {})
