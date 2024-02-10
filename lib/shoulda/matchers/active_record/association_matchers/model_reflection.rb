@@ -13,7 +13,15 @@ module Shoulda
           end
 
           def associated_class
-            reflection.klass
+            associated_class = reflection.klass
+
+            if subject.strict_loading_by_default
+              unless reflection.options[:strict_loading] == false
+                reflection.options[:strict_loading] = true
+              end
+            end
+
+            associated_class
           end
 
           def polymorphic?
