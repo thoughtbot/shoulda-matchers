@@ -40,7 +40,7 @@ module Shoulda
       #
       #     # Minitest (Shoulda)
       #     class User < ActiveSupport::TestCase
-      #       should normalize(:email, handle).from(" Example\n").to("example")
+      #       should normalize(:email, :handle).from(" Example\n").to("example")
       #     end
       #
       # If the normalization accepts nil values with the `apply_to_nil` option,
