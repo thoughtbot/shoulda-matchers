@@ -15,10 +15,8 @@ module Shoulda
           def associated_class
             associated_class = reflection.klass
 
-            if subject.strict_loading_by_default
-              unless reflection.options[:strict_loading] == false
-                reflection.options[:strict_loading] = true
-              end
+            if subject.strict_loading_by_default && !(reflection.options[:strict_loading] == false)
+              reflection.options[:strict_loading] = true
             end
 
             associated_class
