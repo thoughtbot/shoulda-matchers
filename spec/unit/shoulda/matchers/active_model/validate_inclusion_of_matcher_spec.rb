@@ -572,6 +572,22 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       expect_to_match_on_values(builder, possible_values)
     end
 
+    it 'matches given a beginless range that covers the possible values' do
+      builder = build_object_allowing(possible_values)
+      expect_to_match_on_values(
+        builder,
+        Range.new(nil, possible_values.last),
+      )
+    end
+
+    it 'matches given a endless range that covers the possible values' do
+      builder = build_object_allowing(possible_values)
+      expect_to_match_on_values(
+        builder,
+        Range.new(possible_values.first, nil),
+      )
+    end
+
     it 'does not match given a range whose start value falls outside valid range' do
       builder = build_object_allowing(possible_values)
       expect_not_to_match_on_values(
