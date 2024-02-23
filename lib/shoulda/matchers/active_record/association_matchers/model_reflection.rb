@@ -13,13 +13,7 @@ module Shoulda
           end
 
           def associated_class
-            associated_class = reflection.klass
-
-            if subject.strict_loading_by_default && !(reflection.options[:strict_loading] == false)
-              reflection.options[:strict_loading] = true
-            end
-
-            associated_class
+            reflection.klass
           end
 
           def polymorphic?
@@ -74,6 +68,10 @@ module Shoulda
 
           def has_and_belongs_to_many_name
             reflection.options[:through]
+          end
+
+          def strict_loading?
+            reflection.options.fetch(:strict_loading, subject.strict_loading_by_default)
           end
 
           protected
