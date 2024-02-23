@@ -309,8 +309,8 @@ EOT
 
         def in_range(range)
           @range = range
-          @minimum = range.first
-          @maximum = range.max
+          @minimum = minimum_range_value
+          @maximum = maximum_range_value
           self
         end
 
@@ -400,6 +400,18 @@ EOT
 
         private
 
+        def minimum_range_value
+          @range.begin
+        end
+
+        def maximum_range_value
+          if @range.exclude_end?
+            @range.end ? (@range.end - 1) : nil
+          else
+            @range.end
+          end
+        end
+
         def matches_for_range?
           disallows_lower_value &&
             allows_minimum_value &&
@@ -441,27 +453,27 @@ EOT
         end
 
         def allows_minimum_value
-          allows_value_of(@minimum, @low_message)
+          @minimum.nil? || allows_value_of(@minimum, @low_message)
         end
 
         def disallows_minimum_value
-          disallows_value_of(@minimum, @low_message)
+          @minimum.nil? || disallows_value_of(@minimum, @low_message)
         end
 
         def allows_maximum_value
-          allows_value_of(@maximum, @high_message)
+          @maximum.nil? || allows_value_of(@maximum, @high_message)
         end
 
         def disallows_maximum_value
-          disallows_value_of(@maximum, @high_message)
+          @maximum.nil? || disallows_value_of(@maximum, @high_message)
         end
 
         def allows_higher_value
-          allows_value_of(@maximum + 1, @high_message)
+          @maximum.nil? || allows_value_of(@maximum + 1, @high_message)
         end
 
         def disallows_higher_value
-          disallows_value_of(@maximum + 1, @high_message)
+          @maximum.nil? || disallows_value_of(@maximum + 1, @high_message)
         end
 
         def allows_all_values_in_array?
