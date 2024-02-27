@@ -70,6 +70,10 @@ module Shoulda
             reflection.options[:through]
           end
 
+          def strict_loading?
+            reflection.options.fetch(:strict_loading, subject.strict_loading_by_default)
+          end
+
           protected
 
           attr_reader :reflection, :subject
