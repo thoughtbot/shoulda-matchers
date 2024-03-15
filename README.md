@@ -385,8 +385,10 @@ about any of them, make sure to [consult the documentation][rubydocs]!
   tests your `belongs_to` associations.
 * **[define_enum_for](lib/shoulda/matchers/active_record/define_enum_for_matcher.rb)**
   tests usage of the `enum` macro.
-* **[have_and_belong_to_many](lib/shoulda/matchers/active_record/association_matcher.rb#L827)**
+* **[have_and_belong_to_many](lib/shoulda/matchers/active_record/association_matcher.rb)**
   tests your `has_and_belongs_to_many` associations.
+* **[have_delegated_type](lib/shoulda/matchers/active_record/association_matcher.rb#L687)**
+  tests usage of the `delegated_type` macro.
 * **[have_db_column](lib/shoulda/matchers/active_record/have_db_column_matcher.rb)**
   tests that the table that backs your model has a specific column.
 * **[have_db_index](lib/shoulda/matchers/active_record/have_db_index_matcher.rb)**

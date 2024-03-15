@@ -392,7 +392,7 @@ module Shoulda
       #
       #     # Minitest (Shoulda)
       #     class VehicleTest < ActiveSupport::TestCase
-        #     should have_delegated_type(:drivable)
+      #       should have_delegated_type(:drivable)
       #     end
       #
       # #### Qualifiers

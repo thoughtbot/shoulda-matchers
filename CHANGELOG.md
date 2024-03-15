@@ -1,5 +1,39 @@
 # Changelog
 
+## 6.2.0 - 2024-03-15
+
+### Bug fixes
+
+* Allow beginless and endless ranges in validates_inclusion_of by @pjpires ([#1615])
+* Ensure uniqueness validation matcher works with STI by @matsales28 ([#1610])
+
+### Features
+
+* Add `against` method in allow_value matcher by @EduardoSCosta ([#1543])
+* Add support for `strict_loading` option in association matchers by @rhannequin and @laicuRoot ([#1607])
+* Add `have_delegated_type` matcher by @matsales28 ([#1606])
+* Add support for `foreign_type` qualifier on `AssociationMatcher` by @matsales28 ([#1609])
+
+### Improvements
+
+* Lazy load `ActionController` and `Routing` matchers for `ActionController::TestCase` by @ilianah ([#1613])
+* Call dynamic-readme reusable workflow by @stefannibrasil ([#1617])
+* Update dependencies by @matsales28 ([#1611])
+* Fix inline documentation for `is_greater_than` in `validate_comparison_of` matcher by @jeduardo824 ([#1616])
+* Fix forgotten colon in documentation by @hotoolong ([#1612])
+
+[#1543]: https://github.com/thoughtbot/shoulda-matchers/pull/1543
+[#1606]: https://github.com/thoughtbot/shoulda-matchers/pull/1606
+[#1607]: https://github.com/thoughtbot/shoulda-matchers/pull/1607
+[#1609]: https://github.com/thoughtbot/shoulda-matchers/pull/1609
+[#1610]: https://github.com/thoughtbot/shoulda-matchers/pull/1610
+[#1611]: https://github.com/thoughtbot/shoulda-matchers/pull/1611
+[#1612]: https://github.com/thoughtbot/shoulda-matchers/pull/1612
+[#1613]: https://github.com/thoughtbot/shoulda-matchers/pull/1613
+[#1615]: https://github.com/thoughtbot/shoulda-matchers/pull/1615
+[#1616]: https://github.com/thoughtbot/shoulda-matchers/pull/1616
+[#1617]: https://github.com/thoughtbot/shoulda-matchers/pull/1617
+
 ## 6.1.0 - 2024-01-19
 
 ### Bug fixes
