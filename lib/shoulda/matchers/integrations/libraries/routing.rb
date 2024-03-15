@@ -12,10 +12,12 @@ module Shoulda
           def integrate_with(test_framework)
             test_framework.include(matchers_module, type: :routing)
 
-            include_into(::ActionController::TestCase, matchers_module)
+            tap do |instance|
+              ActiveSupport.on_load(:action_controller_test_case, run_once: true) do
+                instance.include_into(::ActionController::TestCase, instance.matchers_module)
+              end
+            end
           end
-
-          private
 
           def matchers_module
             Shoulda::Matchers::Routing

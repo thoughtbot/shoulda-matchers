@@ -169,6 +169,36 @@ module Shoulda
       #         on(:create)
       #     end
       #
+      # ##### against
+      #
+      # Use `against` if the validation is on an attribute
+      # other than the attribute being validated:
+      #
+      #     class UserProfile
+      #       include ActiveModel::Model
+      #       attr_accessor :website_url
+      #
+      #       alias_attribute :url, :website_url
+      #
+      #       validates_format_of :url, with: URI.regexp
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe UserProfile, type: :model do
+      #       it do
+      #         should allow_value('https://foo.com').
+      #           for(:website_url).
+      #           against(:url)
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class UserProfileTest < ActiveSupport::TestCase
+      #       should allow_value('https://foo.com').
+      #         for(:website_url).
+      #         against(:url)
+      #     end
+      #
       # ##### with_message
       #
       # Use `with_message` if you are using a custom validation message.
@@ -345,6 +375,12 @@ module Shoulda
           if context.present?
             @context = context
           end
+
+          self
+        end
+
+        def against(attribute)
+          @attribute_to_check_message_against = attribute if attribute.present?
 
           self
         end

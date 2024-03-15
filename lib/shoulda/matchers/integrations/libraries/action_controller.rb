@@ -12,14 +12,16 @@ module Shoulda
           def integrate_with(test_framework)
             test_framework.include(matchers_module, type: :controller)
 
-            include_into(::ActionController::TestCase, matchers_module) do
-              def subject # rubocop:disable Lint/NestedMethodDefinition
-                @controller
+            tap do |instance|
+              ActiveSupport.on_load(:action_controller_test_case, run_once: true) do
+                instance.include_into(::ActionController::TestCase, instance.matchers_module) do
+                  def subject # rubocop:disable Lint/NestedMethodDefinition
+                    @controller
+                  end
+                end
               end
             end
           end
-
-          private
 
           def matchers_module
             Shoulda::Matchers::ActionController

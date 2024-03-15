@@ -13,12 +13,12 @@ module Shoulda
       #
       #     # RSpec
       #     RSpec.describe Person, type: :model do
-      #       it { should validate_comparison_of(:gpa).greater_than(10) }
+      #       it { should validate_comparison_of(:gpa).is_greater_than(10) }
       #     end
       #
       #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
-      #       should validate_comparison_of(:gpa).greater_than(10)
+      #       should validate_comparison_of(:gpa).is_greater_than(10)
       #     end
       #
       # #### Qualifiers
@@ -39,14 +39,14 @@ module Shoulda
       #     RSpec.describe Person, type: :model do
       #       it do
       #         should validate_comparison_of(:number_of_dependents).
-      #           greater_than(0).
+      #           is_greater_than(0).
       #           on(:create)
       #       end
       #     end
       #
       #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
-      #       should validate_comparison_of(:number_of_dependents).greater_than(0).on(:create)
+      #       should validate_comparison_of(:number_of_dependents).is_greater_than(0).on(:create)
       #     end
       #
       # ##### is_less_than

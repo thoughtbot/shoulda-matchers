@@ -239,6 +239,36 @@ module Shoulda
       #       should belong_to(:organization).touch(true)
       #     end
       #
+      # ##### strict_loading
+      #
+      # Use `strict_loading` to assert that the `:strict_loading` option was specified.
+      #
+      #     class Organization < ActiveRecord::Base
+      #       has_many :people, strict_loading: true
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Organization, type: :model do
+      #       it { should have_many(:people).strict_loading(true) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class OrganizationTest < ActiveSupport::TestCase
+      #       should have_many(:people).strict_loading(true)
+      #     end
+      #
+      # Default value is true when no argument is specified
+      #
+      #     # RSpec
+      #     RSpec.describe Organization, type: :model do
+      #       it { should have_many(:people).strict_loading }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class OrganizationTest < ActiveSupport::TestCase
+      #       should have_many(:people).strict_loading
+      #     end
+      #
       # ##### autosave
       #
       # Use `autosave` to assert that the `:autosave` option was specified.
@@ -1191,6 +1221,11 @@ module Shoulda
           self
         end
 
+        def strict_loading(strict_loading = true)
+          @options[:strict_loading] = strict_loading
+          self
+        end
+
         def join_table(join_table_name)
           @options[:join_table_name] = join_table_name
           self
@@ -1234,6 +1269,7 @@ module Shoulda
             conditions_correct? &&
             validate_correct? &&
             touch_correct? &&
+            strict_loading_correct? &&
             submatchers_match?
         end
 
@@ -1494,6 +1530,21 @@ module Shoulda
             @missing = "#{name} should have touch: #{options[:touch]}"
             false
           end
+        end
+
+        def strict_loading_correct?
+          return true unless options.key?(:strict_loading)
+
+          if option_verifier.correct_for_boolean?(:strict_loading, options[:strict_loading])
+            return true
+          end
+
+          @missing = [
+            "#{name} should have strict_loading set to ",
+            options[:strict_loading].to_s,
+          ].join
+
+          false
         end
 
         def class_has_foreign_key?(klass)

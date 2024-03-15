@@ -1302,6 +1302,34 @@ long as it is not blank, but this could not be proved.
           scoped_to(:favoriteable_type)
       end
     end
+
+    context 'if the model *_type column refers to an STI class' do
+      it 'still works' do
+        animal_columns = {
+          type: { type: :string, options: { null: false } },
+        }
+        animal_model = define_model 'Animal', animal_columns do
+          has_many :classifications, as: :classifiable
+        end
+        bird_model = define_model 'Bird', animal_columns, parent_class: animal_model, table_name: 'animals'
+
+        classification_columns = {
+          classifiable_id: { type: :integer },
+          classifiable_type: { type: :string },
+        }
+        classification_model = define_model 'Classification', classification_columns do
+          belongs_to :classifiable, polymorphic: true
+          validates :classifiable_id, uniqueness: { scope: :classifiable_type }
+        end
+
+        bird = bird_model.create!
+        classification = classification_model.new(classifiable: bird)
+
+        expect(classification).
+          to validate_uniqueness_of(:classifiable_id).
+          scoped_to(:classifiable_type)
+      end
+    end
   end
 
   context 'when the model does not have the attribute being tested' do

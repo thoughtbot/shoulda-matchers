@@ -122,6 +122,10 @@ module Shoulda
             reflector.associated_class
           end
 
+          def actual_value_for_strict_loading
+            reflection.strict_loading?
+          end
+
           def actual_value_for_option(name)
             option_value = reflection.options[name]
 

@@ -66,7 +66,7 @@ module Shoulda
       end
 
       def self.inspect_range(range)
-        "#{inspect_value(range.first)} to #{inspect_value(range.last)}"
+        "#{inspect_value(range.begin)} to #{inspect_value(range.end)}"
       end
 
       def self.inspect_hash(hash)
