@@ -31,6 +31,17 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       expect(Child.new).to belong_to(:parent)
     end
 
+    it 'accepts an association with an existing custom foreign key and type' do
+      define_model :parent
+      define_model :child, ancestor_id: :integer, ancestor_type: :string do
+        belongs_to :parent, polymorphic: true, foreign_key: 'ancestor_id', foreign_type: 'ancestor_type'
+      end
+
+      expect(Child.new).to belong_to(:parent).
+        with_foreign_key(:ancestor_id).
+        with_foreign_type(:ancestor_type)
+    end
+
     it 'accepts an association using an existing custom primary key' do
       define_model :parent
       define_model :child, parent_id: :integer, custom_primary_key: :integer do
@@ -1176,6 +1187,18 @@ Expected Parent to have a has_many association called children through conceptio
       expect(Parent.new).to have_many(:children)
     end
 
+    it 'accepts an association with a nonstandard reverse foreign type, using :inverse_of' do
+      define_model :visitor, location_id: :integer, facility_type: :string do
+        belongs_to :location, foreign_type: :facility_type, inverse_of: :visitors, polymorphic: true
+      end
+
+      define_model :hotel do
+        has_many :visitors, inverse_of: :location, foreign_type: :facility_type, as: :location
+      end
+
+      expect(Hotel.new).to have_many(:visitors).with_foreign_type(:facility_type)
+    end
+
     it 'rejects an association with a nonstandard reverse foreign key, if :inverse_of is not correct' do
       define_model :child, mother_id: :integer do
         belongs_to :mother, inverse_of: :children, class_name: :Parent
@@ -1189,14 +1212,22 @@ Expected Parent to have a has_many association called children through conceptio
     end
 
     it 'accepts an association with a nonstandard foreign key, with reverse association turned off' do
-      define_model :child, ancestor_id: :integer do
-      end
-
+      define_model :child, ancestor_id: :integer
       define_model :parent do
         has_many :children, foreign_key: :ancestor_id, inverse_of: false
       end
 
       expect(Parent.new).to have_many(:children)
+    end
+
+    it 'accepts an association with a nonstandard type, with reverse association turned off' do
+      define_model :visitor, location_id: :integer, facility_type: :string
+
+      define_model :hotel do
+        has_many :visitors, foreign_type: :facility_type, inverse_of: false, as: :location
+      end
+
+      expect(Hotel.new).to have_many(:visitors).with_foreign_type(:facility_type)
     end
 
     describe 'strict_loading' do
@@ -1653,6 +1684,21 @@ Expected Parent to have a has_many association called children through conceptio
         has_one :detail, foreign_key: :detailed_person_id
       end
       expect(Person.new).to have_one(:detail).with_foreign_key(:detailed_person_id)
+    end
+
+    it 'accepts an association with an existing custom foreign type' do
+      define_model :profile, user_id: :integer, related_user_type: :string
+
+      define_model :admin do
+        has_one :profile, foreign_type: :related_user_type, as: :user
+      end
+
+      define_model :moderator do
+        has_one :profile, foreign_type: :related_user_type, as: :user
+      end
+
+      expect(Admin.new).to have_one(:profile).with_foreign_type(:related_user_type)
+      expect(Moderator.new).to have_one(:profile).with_foreign_type(:related_user_type)
     end
 
     it 'accepts an association using an existing custom primary key' do

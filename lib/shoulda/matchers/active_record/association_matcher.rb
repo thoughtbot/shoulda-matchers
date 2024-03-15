@@ -144,6 +144,28 @@ module Shoulda
       #         with_foreign_key('country_id')
       #     end
       #
+      # ##### with_foreign_type
+      #
+      # Use `with_foreign_type` to test usage of the `:foreign_type` option.
+      #
+      #     class Visitor < ActiveRecord::Base
+      #       belongs_to :location, foreign_type: 'facility_type', polymorphic: true
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Visitor, type: :model do
+      #       it do
+      #         should belong_to(:location).
+      #           with_foreign_type('facility_type')
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class VisitorTest < ActiveSupport::TestCase
+      #       should belong_to(:location).
+      #         with_foreign_type('facility_type')
+      #     end
+      #
       # ##### dependent
       #
       # Use `dependent` to assert that the `:dependent` option was specified.
@@ -795,6 +817,24 @@ module Shoulda
       #       should have_many(:worries).with_foreign_key('worrier_id')
       #     end
       #
+      # ##### with_foreign_type
+      #
+      # Use `with_foreign_type` to test usage of the `:foreign_type` option.
+      #
+      #     class Hotel < ActiveRecord::Base
+      #       has_many :visitors, foreign_key: 'facility_type', as: :location
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Hotel, type: :model do
+      #       it { should have_many(:visitors).with_foreign_type('facility_type') }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class HotelTest < ActiveSupport::TestCase
+      #       should have_many(:visitors).with_foreign_type('facility_type')
+      #     end
+      #
       # ##### dependent
       #
       # Use `dependent` to assert that the `:dependent` option was specified.
@@ -1064,6 +1104,24 @@ module Shoulda
       #     # Minitest (Shoulda)
       #     class PersonTest < ActiveSupport::TestCase
       #       should have_one(:job).with_foreign_key('worker_id')
+      #     end
+      #
+      # ##### with_foreign_type
+      #
+      # Use `with_foreign_type` to test usage of the `:foreign_type` option.
+      #
+      #     class Hotel < ActiveRecord::Base
+      #       has_one :special_guest, foreign_type: 'facility_type', as: :location
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Hotel, type: :model do
+      #       it { should have_one(:special_guest).with_foreign_type('facility_type') }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class HotelTest < ActiveSupport::TestCase
+      #       should have_one(:special_guest).with_foreign_type('facility_type')
       #     end
       #
       # ##### through
@@ -1433,6 +1491,11 @@ module Shoulda
           self
         end
 
+        def with_foreign_type(foreign_type)
+          @options[:foreign_type] = foreign_type
+          self
+        end
+
         def with_primary_key(primary_key)
           @options[:primary_key] = primary_key
           self
@@ -1510,6 +1573,7 @@ module Shoulda
             macro_correct? &&
             validate_inverse_of_through_association &&
             (polymorphic? || class_exists?) &&
+            foreign_type_matches? &&
             foreign_key_exists? &&
             primary_key_exists? &&
             query_constraints_exists? &&
@@ -1617,12 +1681,22 @@ module Shoulda
         end
 
         def macro_is_not_through?
-          macro == :belongs_to ||
-            ([:has_many, :has_one].include?(macro) && !through?)
+          macro == :belongs_to || has_association_not_through?
+        end
+
+        def has_association_not_through?
+          [:has_many, :has_one].include?(macro) && !through?
         end
 
         def foreign_key_exists?
           !(belongs_foreign_key_missing? || has_foreign_key_missing?)
+        end
+
+        def foreign_type_matches?
+          !options.key?(:foreign_type) || (
+            !belongs_foreign_type_missing? &&
+            !has_foreign_type_missing?
+          )
         end
 
         def primary_key_exists?
@@ -1651,10 +1725,18 @@ module Shoulda
           macro == :belongs_to && !class_has_foreign_key?(model_class)
         end
 
+        def belongs_foreign_type_missing?
+          macro == :belongs_to && !class_has_foreign_type?(model_class)
+        end
+
         def has_foreign_key_missing?
-          [:has_many, :has_one].include?(macro) &&
-            !through? &&
+          has_association_not_through? &&
             !class_has_foreign_key?(associated_class)
+        end
+
+        def has_foreign_type_missing?
+          has_association_not_through? &&
+            !class_has_foreign_type?(associated_class)
         end
 
         def class_name_correct?
@@ -1819,6 +1901,22 @@ module Shoulda
           end
         end
 
+        def class_has_foreign_type?(klass)
+          if options.key?(:foreign_type) && !foreign_type_correct?
+            @missing = foreign_type_failure_message(
+              klass,
+              options[:foreign_type],
+            )
+
+            false
+          elsif !has_column?(klass, foreign_type)
+            @missing = foreign_type_failure_message(klass, foreign_type)
+            false
+          else
+            true
+          end
+        end
+
         def has_column?(klass, column)
           case column
           when Array
@@ -1835,8 +1933,19 @@ module Shoulda
           )
         end
 
+        def foreign_type_correct?
+          option_verifier.correct_for_string?(
+            :foreign_type,
+            options[:foreign_type],
+          )
+        end
+
         def foreign_key_failure_message(klass, foreign_key)
           "#{klass} does not have a #{foreign_key} foreign key."
+        end
+
+        def foreign_type_failure_message(klass, foreign_type)
+          "#{klass} does not have a #{foreign_type} foreign type."
         end
 
         def primary_key_correct?(klass)
@@ -1878,6 +1987,14 @@ module Shoulda
             )
           else
             reflection
+          end
+        end
+
+        def foreign_type
+          if [:has_one, :has_many].include?(macro)
+            reflection.type
+          else
+            reflection.foreign_type
           end
         end
 
