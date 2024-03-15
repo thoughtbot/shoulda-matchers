@@ -73,7 +73,7 @@ appraise 'rails_7_1' do
   instance_eval(&shared_spring_dependencies)
   instance_eval(&controller_test_dependency)
 
-  gem 'rails', '7.1.2'
+  gem 'rails', '7.1.3.2'
   gem 'sprockets-rails'
   gem 'puma', '~> 6.0'
   gem 'importmap-rails'
