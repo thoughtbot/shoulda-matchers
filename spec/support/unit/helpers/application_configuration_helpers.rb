@@ -18,6 +18,24 @@ module UnitTests
       )
     end
 
+    def with_strict_loading_by_default_enabled(&block)
+      configuring_application(
+        ::ActiveRecord::Base,
+        :strict_loading_by_default,
+        true,
+        &block
+      )
+    end
+
+    def with_strict_loading_by_default_disabled(&block)
+      configuring_application(
+        ::ActiveRecord::Base,
+        :strict_loading_by_default,
+        false,
+        &block
+      )
+    end
+
     private
 
     def configuring_application(config, name, value)

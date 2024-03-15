@@ -74,7 +74,7 @@ module UnitTests
       end
 
       def table_name
-        class_name.tableize.gsub('/', '_')
+        options.fetch(:table_name, class_name.tableize.gsub('/', '_'))
       end
 
       def parent_class

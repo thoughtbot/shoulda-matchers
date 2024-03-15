@@ -168,7 +168,10 @@ end
 
     def run_migrations
       fs.within_project do
-        run_command! 'bundle exec rake db:drop:all db:create:all'
+        run_command! 'bundle exec rake db:drop:all'
+        run_command! 'bundle exec rake db:create RAILS_ENV=test'
+        run_command! 'bundle exec rake db:create RAILS_ENV=development'
+        run_command! 'bundle exec rake db:create RAILS_ENV=production'
       end
 
       fs.within_project do
