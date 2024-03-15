@@ -13,7 +13,11 @@ module Shoulda
           end
 
           def associated_class
-            reflection.klass
+            if polymorphic?
+              subject
+            else
+              reflection.klass
+            end
           end
 
           def polymorphic?

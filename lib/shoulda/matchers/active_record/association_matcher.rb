@@ -356,6 +356,316 @@ module Shoulda
         AssociationMatcher.new(:belongs_to, name)
       end
 
+      # The `have_delegated_type` matcher is used to ensure that a `belong_to` association
+      # exists on your model using the delegated_type macro.
+      #
+      #     class Vehicle < ActiveRecord::Base
+      #       delegated_type :drivable, types: %w(Car Truck)
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Vehicle, type: :model do
+      #       it { should have_delegated_type(:drivable) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class VehicleTest < ActiveSupport::TestCase
+        #     should have_delegated_type(:drivable)
+      #     end
+      #
+      # #### Qualifiers
+      #
+      # ##### types
+      #
+      # Use `types` to test the types that are allowed for the association.
+      #
+      #     class Vehicle < ActiveRecord::Base
+      #       delegated_type :drivable, types: %w(Car Truck)
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Vehicle, type: :model do
+      #       it do
+      #         should have_delegated_type(:drivable).
+      #           types(%w(Car Truck))
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class VehicleTest < ActiveSupport::TestCase
+      #       should have_delegated_type(:drivable).
+      #         types(%w(Car Truck))
+      #     end
+      #
+      # ##### conditions
+      #
+      # Use `conditions` if your association is defined with a scope that sets
+      # the `where` clause.
+      #
+      #     class Vehicle < ActiveRecord::Base
+      #       delegated_type :drivable, types: %w(Car Truck), scope: -> { where(with_wheels: true) }
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Vehicle, type: :model do
+      #       it do
+      #         should have_delegated_type(:drivable).
+      #           conditions(with_wheels: true)
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class VehicleTest < ActiveSupport::TestCase
+      #       should have_delegated_type(:drivable).
+      #         conditions(everyone_is_perfect: false)
+      #     end
+      #
+      # ##### order
+      #
+      # Use `order` if your association is defined with a scope that sets the
+      # `order` clause.
+      #
+      #     class Person < ActiveRecord::Base
+      #       delegated_type :drivable, types: %w(Car Truck), scope: -> { order('wheels desc') }
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Vehicle, type: :model do
+      #       it { should have_delegated_type(:drivable).order('wheels desc') }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class VehicleTest < ActiveSupport::TestCase
+      #       should have_delegated_type(:drivable).order('wheels desc')
+      #     end
+      #
+      # ##### with_primary_key
+      #
+      # Use `with_primary_key` to test usage of the `:primary_key` option.
+      #
+      #     class Vehicle < ActiveRecord::Base
+      #       delegated_type :drivable, types: %w(Car Truck), primary_key: 'vehicle_id'
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Vehicle, type: :model do
+      #       it do
+      #         should have_delegated_type(:drivable).
+      #           with_primary_key('vehicle_id')
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class VehicleTest < ActiveSupport::TestCase
+      #       should have_delegated_type(:drivable).
+      #         with_primary_key('vehicle_id')
+      #     end
+      #
+      # ##### with_foreign_key
+      #
+      # Use `with_foreign_key` to test usage of the `:foreign_key` option.
+      #
+      #     class Vehicle < ActiveRecord::Base
+      #       delegated_type :drivable, types: %w(Car Truck), foreign_key: 'drivable_uuid'
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Vehicle, type: :model do
+      #       it do
+      #         should have_delegated_type(:drivable).
+      #           with_foreign_key('drivable_uuid')
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class VehicleTest < ActiveSupport::TestCase
+      #       should have_delegated_type(:drivable).
+      #         with_foreign_key('drivable_uuid')
+      #     end
+      #
+      # ##### dependent
+      #
+      # Use `dependent` to assert that the `:dependent` option was specified.
+      #
+      #     class Vehicle < ActiveRecord::Base
+      #       delegated_type :drivable, types: %w(Car Truck), dependent: :destroy
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Vehicle, type: :model do
+      #       it { should have_delegated_type(:drivable).dependent(:destroy) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class VehicleTest < ActiveSupport::TestCase
+      #       should have_delegated_type(:drivable).dependent(:destroy)
+      #     end
+      #
+      # To assert that *any* `:dependent` option was specified, use `true`:
+      #
+      #     # RSpec
+      #     RSpec.describe Vehicle, type: :model do
+      #       it { should have_delegated_type(:drivable).dependent(true) }
+      #     end
+      #
+      # To assert that *no* `:dependent` option was specified, use `false`:
+      #
+      #     class Vehicle < ActiveRecord::Base
+      #       delegated_type :drivable, types: %w(Car Truck)
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Vehicle, type: :model do
+      #       it { should have_delegated_type(:drivable).dependent(false) }
+      #     end
+      #
+      # ##### counter_cache
+      #
+      # Use `counter_cache` to assert that the `:counter_cache` option was
+      # specified.
+      #
+      #     class Vehicle < ActiveRecord::Base
+      #       delegated_type :drivable, types: %w(Car Truck), counter_cache: true
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Vehicle, type: :model do
+      #       it { should have_delegated_type(:drivable).counter_cache(true) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class VehicleTest < ActiveSupport::TestCase
+      #       should have_delegated_type(:drivable).counter_cache(true)
+      #     end
+      #
+      # ##### touch
+      #
+      # Use `touch` to assert that the `:touch` option was specified.
+      #
+      #     class Vehicle < ActiveRecord::Base
+      #       delegated_type :drivable, types: %w(Car Truck), touch: true
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Vehicle, type: :model do
+      #       it { should have_delegated_type(:drivable).touch(true) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class VehicleTest < ActiveSupport::TestCase
+      #       should have_delegated_type(:drivable).touch(true)
+      #     end
+      #
+      # ##### autosave
+      #
+      # Use `autosave` to assert that the `:autosave` option was specified.
+      #
+      #     class Vehicle < ActiveRecord::Base
+      #       delegated_type :drivable, types: %w(Car Truck), autosave: true
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Vehicle, type: :model do
+      #       it { should have_delegated_type(:drivable).autosave(true) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class VehicleTest < ActiveSupport::TestCase
+      #       should have_delegated_type(:drivable).autosave(true)
+      #     end
+      #
+      # ##### inverse_of
+      #
+      # Use `inverse_of` to assert that the `:inverse_of` option was specified.
+      #
+      #     class Vehicle < ActiveRecord::Base
+      #       delegated_type :drivable, types: %w(Car Truck), inverse_of: :vehicle
+      #     end
+      #
+      #     # RSpec
+      #     describe Vehicle
+      #       it { should have_delegated_type(:drivable).inverse_of(:vehicle) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class VehicleTest < ActiveSupport::TestCase
+      #       should have_delegated_type(:drivable).inverse_of(:vehicle)
+      #     end
+      #
+      # ##### required
+      #
+      # Use `required` to assert that the association is not allowed to be nil.
+      # (Enabled by default in Rails 5+.)
+      #
+      #     class Vehicle < ActiveRecord::Base
+      #       delegated_type :drivable, types: %w(Car Truck), required: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Vehicle
+      #       it { should have_delegated_type(:drivable).required }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class VehicleTest < ActiveSupport::TestCase
+      #       should have_delegated_type(:drivable).required
+      #     end
+      #
+      # ##### without_validating_presence
+      #
+      # Use `without_validating_presence` with `belong_to` to prevent the
+      # matcher from checking whether the association disallows nil (Rails 5+
+      # only). This can be helpful if you have a custom hook that always sets
+      # the association to a meaningful value:
+      #
+      #     class Vehicle < ActiveRecord::Base
+      #       delegated_type :drivable, types: %w(Car Truck)
+      #
+      #       before_validation :autoassign_drivable
+      #
+      #       private
+      #
+      #       def autoassign_drivable
+      #         self.drivable = Car.create!
+      #       end
+      #     end
+      #
+      #     # RSpec
+      #     describe Vehicle
+      #       it { should have_delegated_type(:drivable).without_validating_presence }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class VehicleTest < ActiveSupport::TestCase
+      #       should have_delegated_type(:drivable).without_validating_presence
+      #     end
+      #
+      # ##### optional
+      #
+      # Use `optional` to assert that the association is allowed to be nil.
+      # (Rails 5+ only.)
+      #
+      #     class Vehicle < ActiveRecord::Base
+      #       delegated_type :drivable, types: %w(Car Truck), optional: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Vehicle
+      #       it { should have_delegated_type(:drivable).optional }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class VehicleTest < ActiveSupport::TestCase
+      #       should have_delegated_type(:drivable).optional
+      #     end
+      #
+      # @return [AssociationMatcher]
+      #
+
+      def have_delegated_type(name)
+        AssociationMatcher.new(:belongs_to, name)
+      end
+
       # The `have_many` matcher is used to test that a `has_many` or `has_many
       # :through` association exists on your model.
       #
@@ -1098,6 +1408,11 @@ module Shoulda
           self
         end
 
+        def types(types)
+          @options[:types] = types
+          self
+        end
+
         def autosave(autosave)
           @options[:autosave] = autosave
           self
@@ -1205,6 +1520,7 @@ module Shoulda
             conditions_correct? &&
             validate_correct? &&
             touch_correct? &&
+            types_correct? &&
             strict_loading_correct? &&
             submatchers_match?
         end
@@ -1447,6 +1763,30 @@ module Shoulda
           else
             @missing = "#{name} should have touch: #{options[:touch]}"
             false
+          end
+        end
+
+        def types_correct?
+          if options.key?(:types)
+            types = options[:types]
+
+            correct = types.all? do |type|
+              scope_name = type.tableize.tr('/', '_')
+              singular   = scope_name.singularize
+              query      = "#{singular}?"
+
+              Object.const_defined?(type) && @subject.respond_to?(query) &&
+                @subject.respond_to?(singular)
+            end
+
+            if correct
+              true
+            else
+              @missing = "#{name} should have types: #{options[:types]}"
+              false
+            end
+          else
+            true
           end
         end
 
