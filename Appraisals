@@ -17,7 +17,7 @@ appraise 'rails_6_1' do
   instance_eval(&shared_spring_dependencies)
   instance_eval(&controller_test_dependency)
 
-  gem 'rails', '6.1.7.6'
+  gem 'rails', '6.1.7.7'
   gem 'puma', '~> 5.0'
   gem 'sass-rails', '>= 6'
   gem 'turbolinks', '~> 5'
