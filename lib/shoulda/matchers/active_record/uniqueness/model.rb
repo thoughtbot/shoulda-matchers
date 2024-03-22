@@ -29,7 +29,19 @@ module Shoulda
           end
 
           def symlink_to(parent)
-            namespace.set(name, Class.new(parent))
+            table_name = parent.table_name
+
+            new_class = Class.new(parent) do
+              define_singleton_method :table_name do
+                table_name
+              end
+
+              define_singleton_method :base_class do
+                self
+              end
+            end
+
+            namespace.set(name, new_class)
           end
 
           def to_s
