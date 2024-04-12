@@ -789,6 +789,122 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     end
   end
 
+  describe 'qualified with #with_default' do
+    context 'if default are defined on the enum' do
+      context 'but with_default is not used' do
+        it 'matches' do
+          record = build_record_with_array_values(attribute_name: :attr, default: 'published')
+
+          expect(record).to define_enum_for(:attr).with_values(['published', 'unpublished', 'draft'])
+        end
+      end
+
+      context 'with_default is used and default is the same' do
+        it 'matches' do
+          record = build_record_with_array_values(attribute_name: :attr, default: 'published')
+
+          matcher = lambda do
+            define_enum_for(:attr).
+              with_values(['published', 'unpublished', 'draft']).
+              with_default('published')
+          end
+
+          expect(&matcher).
+            to match_against(record).
+            or_fail_with(<<-MESSAGE, wrap: true)
+              Expected Example not to define :attr as an enum backed by an
+              integer, mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›,
+              and ‹"draft"› to ‹2›, with a default value of ‹"published"›, but it did.
+          MESSAGE
+        end
+      end
+
+      context 'with_default is used but default is different' do
+        it 'rejects with an appropriate failure message' do
+          record = build_record_with_array_values(attribute_name: :attr, default: 'published')
+
+          assertion = lambda do
+            expect(record).
+              to define_enum_for(:attr).
+              with_values(['published', 'unpublished', 'draft']).
+              with_default('unpublished')
+          end
+
+          message = format_message(<<-MESSAGE)
+            Expected Example to define :attr as an enum backed by an integer,
+            mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"›
+            to ‹2›, with a default value of ‹"unpublished"›. However, the default value
+            is ‹"published"›.
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'when a Proc is used as the default value' do
+        it 'rejects with an appropriate failure message' do
+          record = build_record_with_array_values(attribute_name: :attr, default: 'draft')
+
+          assertion = lambda do
+            expect(record).
+              to define_enum_for(:attr).
+              with_values(['published', 'unpublished', 'draft']).
+              with_default(-> { 'published' })
+          end
+
+          message = format_message(<<-MESSAGE)
+            Expected Example to define :attr as an enum backed by an integer,
+            mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"›
+            to ‹2›, with a default value of ‹"published"›. However, the default
+            value is ‹"draft"›.
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+
+        it 'matches when the default value is the same' do
+          record = build_record_with_array_values(attribute_name: :attr, default: 'draft')
+
+          matcher = lambda do
+            define_enum_for(:attr).
+              with_values(['published', 'unpublished', 'draft']).
+              with_default(-> { 'draft' })
+          end
+
+          expect(&matcher).
+            to match_against(record).
+            or_fail_with(<<-MESSAGE, wrap: true)
+              Expected Example not to define :attr as an enum backed by an
+              integer, mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›,
+              and ‹"draft"› to ‹2›, with a default value of ‹"draft"›, but it did.
+          MESSAGE
+        end
+      end
+    end
+
+    context 'if default is not defined on the enum' do
+      it 'rejects with an appropriate failure message' do
+        record = build_record_with_array_values(attribute_name: :attr)
+
+        assertion = lambda do
+          expect(record).
+            to define_enum_for(:attr).
+            with_values(['published', 'unpublished', 'draft']).
+            with_default('published')
+        end
+
+        message = format_message(<<-MESSAGE)
+          Expected Example to define :attr as an enum backed by an integer,
+          mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"›
+          to ‹2›, with a default value of ‹"published"›. However, no default
+          value was set.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+    end
+  end
+
   if rails_version =~ '~> 6.0'
     context 'qualified with #without_scopes' do
       context 'if scopes are set to false on the enum but without_scopes is not used' do
@@ -869,7 +985,8 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     prefix: false,
     suffix: false,
     attribute_alias: nil,
-    scopes: true
+    scopes: true,
+    default: nil
   )
     build_record_with_enum_attribute(
       model_name: model_name,
@@ -880,6 +997,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
       suffix: suffix,
       attribute_alias: attribute_alias,
       scopes: scopes,
+      default: default,
     )
   end
 
@@ -911,7 +1029,8 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     attribute_alias:,
     scopes: true,
     prefix: false,
-    suffix: false
+    suffix: false,
+    default: nil
   )
     enum_name = attribute_alias || attribute_name
     model = define_model(
@@ -925,10 +1044,11 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
       enum_name => values,
       _prefix: prefix,
       _suffix: suffix,
+      _default: default,
     }
 
     if rails_version >= 7.0
-      model.enum(enum_name, values, prefix: prefix, suffix: suffix)
+      model.enum(enum_name, values, prefix: prefix, suffix: suffix, default: default)
     else
       params.merge!(_scopes: scopes)
       model.enum(params)
