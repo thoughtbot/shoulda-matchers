@@ -187,6 +187,31 @@ module Shoulda
       #         without_scopes
       #     end
       #
+      # ##### with_default
+      #
+      # Use `with_default` to test that the enum is defined with a
+      # default value. A proc can also be passed, and will be called once each
+      # time a new value is needed. (If using Time or Date, it's recommended to
+      # freeze time or date to avoid flaky tests):
+      #
+      #     class Issue < ActiveRecord::Base
+      #       enum status: [:open, :closed], default: :closed
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Issue, type: :model do
+      #       it do
+      #         should define_enum_for(:status).
+      #           with_default(:closed)
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class ProcessTest < ActiveSupport::TestCase
+      #       should define_enum_for(:status).
+      #         with_default(:closed)
+      #     end
+      #
       # @return [DefineEnumForMatcher]
       #
       def define_enum_for(attribute_name)
@@ -247,6 +272,11 @@ module Shoulda
           self
         end
 
+        def with_default(default_value)
+          options[:default] = default_value
+          self
+        end
+
         def matches?(subject)
           @record = subject
 
@@ -254,7 +284,8 @@ module Shoulda
             enum_values_match? &&
             column_type_matches? &&
             enum_value_methods_exist? &&
-            scope_presence_matches?
+            scope_presence_matches? &&
+            default_value_matches?
         end
 
         def failure_message
@@ -290,6 +321,11 @@ module Shoulda
               expectation << presented_enum_mapping(
                 normalized_expected_enum_values,
               )
+            end
+
+            if options[:default].present?
+              expectation << ', with a default value of '
+              expectation << Shoulda::Matchers::Util.inspect_value(expected_default_value)
             end
 
             if expected_prefix
@@ -474,6 +510,43 @@ module Shoulda
           else
             ''
           end
+        end
+
+        def default_value_matches?
+          return true if options[:default].blank?
+
+          if actual_default_value.nil?
+            @failure_message_continuation = 'However, no default value was set'
+            return false
+          end
+
+          if actual_default_value == expected_default_value
+            true
+          else
+            String.new.tap do |message|
+              message << 'However, the default value is '
+              message << Shoulda::Matchers::Util.inspect_value(actual_default_value)
+              @failure_message_continuation = message
+            end
+            false
+          end
+        end
+
+        def expected_default_value
+          options[:default].respond_to?(:call) ? options[:default].call : options[:default]
+        end
+
+        def actual_default_value
+          attribute_schema = model.attributes_to_define_after_schema_loads[attribute_name.to_s]
+
+          value = case attribute_schema
+                  in [_, { default: default_value } ]
+                    default_value
+                  in [_, default_value]
+                    default_value
+                  end
+
+          value.respond_to?(:call) ? value.call : value
         end
 
         def singleton_methods_exist?
