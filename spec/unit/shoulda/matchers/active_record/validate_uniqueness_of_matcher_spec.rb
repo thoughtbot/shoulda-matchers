@@ -1274,6 +1274,36 @@ long as it is not blank, but this could not be proved.
         scoped_to(:favoriteable_type)
     end
 
+    context 'when polymorphic model is used on a STI model' do
+      it 'still works' do
+        columns = {
+          attachable_id: { type: :integer, options: { null: false } },
+          attachable_type: { type: :string, options: { null: false } },
+          title: { type: :string, options: { null: false } },
+        }
+
+        asset_model = define_model 'Asset', columns do
+          belongs_to :attachable, polymorphic: true
+
+          validates_uniqueness_of :title, scope: [:attachable_id, :attachable_type]
+
+          def attachable_type=(class_name)
+            super(class_name.constantize.base_class.to_s)
+          end
+        end
+
+        post_model = define_model 'Post', {} do
+          has_many :assets, as: :attachable, dependent: :destroy
+        end
+
+        guest_post_model = define_model 'GuestPost', {}, parent_class: post_model, table_name: 'posts'
+
+        asset = asset_model.create!(attachable: guest_post_model.create!, title: 'foo')
+
+        expect(asset).to validate_uniqueness_of(:title).scoped_to(:attachable_id, :attachable_type)
+      end
+    end
+
     context 'if the model the *_type column refers to is namespaced, and shares the last part of its name with an existing model' do
       it 'still works' do
         define_class 'User'
