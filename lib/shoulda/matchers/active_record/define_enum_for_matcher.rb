@@ -212,6 +212,47 @@ module Shoulda
       #         with_default(:closed)
       #     end
       #
+      # ##### validating
+      #
+      # Use `validating` to test that the enum is being validated.
+      # Can take a boolean value and an allowing_nil keyword argument:
+      #
+      #     class Issue < ActiveRecord::Base
+      #       enum status: [:open, :closed], validate: true
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Issue, type: :model do
+      #       it do
+      #         should define_enum_for(:status).
+      #           validating
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class ProcessTest < ActiveSupport::TestCase
+      #       should define_enum_for(:status).
+      #         validating
+      #     end
+      #
+      #     class Issue < ActiveRecord::Base
+      #       enum status: [:open, :closed], validate: { allow_nil: true }
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Issue, type: :model do
+      #       it do
+      #         should define_enum_for(:status).
+      #           validating(allowing_nil: true)
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class ProcessTest < ActiveSupport::TestCase
+      #       should define_enum_for(:status).
+      #         validating(allowing_nil: true)
+      #     end
+      #
       # @return [DefineEnumForMatcher]
       #
       def define_enum_for(attribute_name)
@@ -245,6 +286,12 @@ module Shoulda
           end
 
           description
+        end
+
+        def validating(value = true, allowing_nil: false)
+          options[:validating] = value
+          options[:allowing_nil] = allowing_nil
+          self
         end
 
         def with_values(expected_enum_values)
@@ -285,7 +332,8 @@ module Shoulda
             column_type_matches? &&
             enum_value_methods_exist? &&
             scope_presence_matches? &&
-            default_value_matches?
+            default_value_matches? &&
+            validating_matches?
         end
 
         def failure_message
@@ -308,6 +356,30 @@ module Shoulda
 
         private
 
+        def validating_matches?
+          return true if options[:validating].nil?
+
+          validator = find_enum_validator
+
+          if expected_validating? == !!validator
+            if validator&.options&.dig(:allow_nil).present? == expected_allowing_nil?
+              true
+            else
+              @failure_message_continuation =
+                "However, #{attribute_name.inspect} is allowing nil values"
+              false
+            end
+          else
+            @failure_message_continuation =
+              if expected_validating?
+                "However, #{attribute_name.inspect} is not being validated"
+              else
+                "However, #{attribute_name.inspect} is being validated"
+              end
+            false
+          end
+        end
+
         attr_reader :attribute_name, :options, :record,
           :failure_message_continuation
 
@@ -326,6 +398,16 @@ module Shoulda
             if options[:default].present?
               expectation << ', with a default value of '
               expectation << Shoulda::Matchers::Util.inspect_value(expected_default_value)
+            end
+
+            if expected_validating?
+              expectation << ', and being validated '
+              expectation <<
+                if expected_allowing_nil?
+                  'allowing nil values'
+                else
+                  'not allowing nil values'
+                end
             end
 
             if expected_prefix
@@ -599,6 +681,22 @@ module Shoulda
             else
               options[:suffix]
             end
+          end
+        end
+
+        def expected_validating?
+          options[:validating].present?
+        end
+
+        def expected_allowing_nil?
+          options[:allowing_nil].present?
+        end
+
+        def find_enum_validator
+          record.class.validators.detect do |validator|
+            validator.kind == :inclusion &&
+              validator.attributes.include?(attribute_name.to_s) &&
+              validator.options[:in] == expected_enum_values
           end
         end
 
