@@ -185,7 +185,13 @@ def record_having_one_attached(
     end
 
     if remove_attachments
-      reflections.delete("#{attached_name}_attachment")
+      if respond_to?(:normalized_reflections)
+        clear_reflections_cache
+        _reflections.delete("#{attached_name}_attachment".to_sym)
+        normalized_reflections
+      else
+        reflections.delete("#{attached_name}_attachment")
+      end
     end
 
     if invalidate_blobs
@@ -223,7 +229,13 @@ def record_having_many_attached(
     end
 
     if remove_attachments
-      reflections.delete("#{attached_name}_attachments")
+      if respond_to?(:normalized_reflections)
+        clear_reflections_cache
+        _reflections.delete("#{attached_name}_attachments".to_sym)
+        normalized_reflections
+      else
+        reflections.delete("#{attached_name}_attachments")
+      end
     end
 
     if invalidate_blobs
