@@ -90,7 +90,7 @@ module UnitTests
     end
 
     def rails_new_command
-      "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --skip-javascript --no-rc --skip-bootsnap"
+      "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --asset-pipeline=sprockets --skip-bundle --skip-javascript --no-rc --skip-bootsnap"
     end
 
     def fix_available_locales_warning
