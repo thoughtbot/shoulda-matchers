@@ -133,7 +133,7 @@ module Shoulda
           when :missing  then 404
           when :error    then 500..599
           when Symbol
-            ::Rack::Utils::SYMBOL_TO_STATUS_CODE[potential_symbol]
+            ::Rack::Utils.status_code(potential_symbol)
           else
             potential_symbol
           end
