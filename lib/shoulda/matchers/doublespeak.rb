@@ -1,5 +1,4 @@
 require 'forwardable'
-require 'logger'
 
 module Shoulda
   module Matchers
