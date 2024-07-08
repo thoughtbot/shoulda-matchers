@@ -623,7 +623,7 @@ module Shoulda
           elsif expected_suffix
             message << 'configured with either a different suffix or no '
             message << 'suffix at all'
-          elsif expected_intance_methods
+          elsif expected_instance_methods?
             message << 'configured with no instance methods'
           else
             ''
@@ -700,7 +700,7 @@ module Shoulda
           end
         end
 
-        def expected_intance_methods
+        def expected_instance_methods?
           options[:instance_methods]
         end
 
