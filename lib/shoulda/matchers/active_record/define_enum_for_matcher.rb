@@ -253,8 +253,29 @@ module Shoulda
       #         validating(allowing_nil: true)
       #     end
       #
-      # @return [DefineEnumForMatcher]
+      # ##### without_instance_methods
       #
+      # Use `without_instance_methods` to exclude the check for instance methods.
+      #
+      #     class Issue < ActiveRecord::Base
+      #       enum status: [:open, :closed], instance_methods: false
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Issue, type: :model do
+      #       it do
+      #         should define_enum_for(:status).
+      #           without_instance_methods
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class ProcessTest < ActiveSupport::TestCase
+      #       should define_enum_for(:status).
+      #         without_instance_methods
+      #     end
+      #
+      # @return [DefineEnumForMatcher]
       def define_enum_for(attribute_name)
         DefineEnumForMatcher.new(attribute_name)
       end
@@ -263,7 +284,7 @@ module Shoulda
       class DefineEnumForMatcher
         def initialize(attribute_name)
           @attribute_name = attribute_name
-          @options = { expected_enum_values: [], scopes: true }
+          @options = { expected_enum_values: [], scopes: true, instance_methods: true }
         end
 
         def description
@@ -316,6 +337,11 @@ module Shoulda
 
         def without_scopes
           options[:scopes] = false
+          self
+        end
+
+        def without_instance_methods
+          options[:instance_methods] = false
           self
         end
 
@@ -531,16 +557,24 @@ module Shoulda
         end
 
         def enum_value_methods_exist?
-          if instance_methods_exist?
-            true
-          else
-            message = missing_methods_message
+          if options[:instance_methods]
+            return true if instance_methods_exist?
 
-            message << " (we can't tell which)"
+            message = missing_methods_message
+            message << " (we can't tell which)" if [expected_prefix, expected_suffix].any?
 
             @failure_message_continuation = message
 
             false
+          elsif instance_methods_exist?
+            message = "#{attribute_name.inspect} does map to these values"
+            message << ' with instance methods, but expected no instance methods'
+
+            @failure_message_continuation = message
+
+            false
+          else
+            true
           end
         end
 
@@ -589,6 +623,8 @@ module Shoulda
           elsif expected_suffix
             message << 'configured with either a different suffix or no '
             message << 'suffix at all'
+          elsif expected_instance_methods?
+            message << 'configured with no instance methods'
           else
             ''
           end
@@ -662,6 +698,10 @@ module Shoulda
           methods.flat_map do |m|
             ["#{m}?".to_sym, "#{m}!".to_sym]
           end
+        end
+
+        def expected_instance_methods?
+          options[:instance_methods]
         end
 
         def expected_prefix

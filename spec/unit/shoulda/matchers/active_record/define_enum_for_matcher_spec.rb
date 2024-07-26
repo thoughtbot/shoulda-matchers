@@ -1114,6 +1114,77 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
         end
       end
     end
+
+    describe 'qualified with #without_instance_methods' do
+      context 'if instance methods are set to false on the enum but without_instance_methods is not used' do
+        it 'rejects with failure message' do
+          record = build_record_with_array_values(
+            attribute_name: :attr,
+            instance_methods: false,
+          )
+
+          matcher = lambda do
+            expect(record).
+              to define_enum_for(:attr).
+              with_values(['published', 'unpublished', 'draft'])
+          end
+
+          message = format_message(<<-MESSAGE)
+          Expected Example to define :attr as an enum backed by an integer,
+          mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"› to
+          ‹2›. :attr does map to these values, but the enum is configured with no
+          instance methods.
+          MESSAGE
+
+          expect(&matcher).to fail_with_message(message)
+        end
+      end
+
+      context 'if instance methods are set to false on the enum' do
+        it 'matches' do
+          record = build_record_with_array_values(
+            attribute_name: :attr,
+            instance_methods: false,
+          )
+
+          matcher = lambda do
+            define_enum_for(:attr).
+              with_values(['published', 'unpublished', 'draft']).
+              without_instance_methods
+          end
+
+          expect(&matcher).
+            to match_against(record).
+            or_fail_with(<<-MESSAGE)
+            Expected Example not to define :attr as an enum backed by an integer,
+            mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"› to
+            ‹2›, but it did.
+          MESSAGE
+        end
+      end
+
+      context 'if instance methods are not set to false on the enum' do
+        it 'rejects with failure message' do
+          record = build_record_with_array_values(attribute_name: :attr)
+
+          matcher = lambda do
+            expect(record).
+              to define_enum_for(:attr).
+              with_values(['published', 'unpublished', 'draft']).
+              without_instance_methods
+          end
+
+          message = format_message(<<-MESSAGE)
+          Expected Example to define :attr as an enum backed by an integer,
+          mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"› to
+          ‹2›. :attr does map to these values with instance methods, but expected
+          no instance methods.
+          MESSAGE
+
+          expect(&matcher).to fail_with_message(message)
+        end
+      end
+    end
   end
 
   if rails_version =~ '~> 6.0'
@@ -1198,7 +1269,8 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     attribute_alias: nil,
     scopes: true,
     default: nil,
-    validate: false
+    validate: false,
+    instance_methods: true
   )
     build_record_with_enum_attribute(
       model_name: model_name,
@@ -1211,6 +1283,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
       scopes: scopes,
       default: default,
       validate: validate,
+      instance_methods: instance_methods,
     )
   end
 
@@ -1244,7 +1317,8 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     prefix: false,
     suffix: false,
     default: nil,
-    validate: false
+    validate: false,
+    instance_methods: true
   )
     enum_name = attribute_alias || attribute_name
     model = define_model(
@@ -1262,7 +1336,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     }
 
     if rails_version >= 7.0
-      model.enum(enum_name, values, prefix: prefix, suffix: suffix, validate: validate, default: default)
+      model.enum(enum_name, values, prefix: prefix, suffix: suffix, validate: validate, default: default, instance_methods: instance_methods)
     else
       params.merge!(_scopes: scopes)
       model.enum(params)
