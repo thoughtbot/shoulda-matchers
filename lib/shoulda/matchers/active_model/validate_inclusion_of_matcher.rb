@@ -344,6 +344,7 @@ EOT
 
         def with_high_message(message)
           if message
+            @expects_custom_validation_message = true
             @high_message = message
           end
 
