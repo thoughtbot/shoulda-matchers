@@ -1,5 +1,38 @@
 # Changelog
 
+## 6.3.0 - 2024-08-09
+
+## What's Changed
+
+### Bug fixes
+
+* Fix uniqueness check for a polymorphic association with STI by @matsales28 ([#1624])
+
+### Features
+
+* Add `default` qualifier to `define_enum_for` matcher by @matsales28 ([#1627])
+* Add validating qualifier to enum matcher by @matsales28 ([#1630])
+* Add without_instance_methods qualifier to enum matcher by @vaot ([#1636])
+
+### Improvements
+
+* Update dependencies of rails-6.1 gemfile by @matsales28 ([#1621])
+* Update dependencies of rails-7_1 gemfile by @matsales28 ([#1619])
+* Update dependencies of rails-7.0 gemfile by @matsales28 ([#1620])
+* Support deprecated status code symbols by @ioquatix ([#1637])
+* Remove useless `logger` require by @Earlopain ([#1634])
+
+
+[#1619]: https://github.com/thoughtbot/shoulda-matchers/pull/1619
+[#1620]: https://github.com/thoughtbot/shoulda-matchers/pull/1620
+[#1621]: https://github.com/thoughtbot/shoulda-matchers/pull/1621
+[#1624]: https://github.com/thoughtbot/shoulda-matchers/pull/1624
+[#1627]: https://github.com/thoughtbot/shoulda-matchers/pull/1627
+[#1630]: https://github.com/thoughtbot/shoulda-matchers/pull/1630
+[#1634]: https://github.com/thoughtbot/shoulda-matchers/pull/1634
+[#1636]: https://github.com/thoughtbot/shoulda-matchers/pull/1636
+[#1637]: https://github.com/thoughtbot/shoulda-matchers/pull/1637
+
 ## 6.2.0 - 2024-03-15
 
 ### Bug fixes
