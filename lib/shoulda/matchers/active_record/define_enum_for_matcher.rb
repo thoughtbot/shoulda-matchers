@@ -736,7 +736,7 @@ module Shoulda
           record.class.validators.detect do |validator|
             validator.kind == :inclusion &&
               validator.attributes.include?(attribute_name.to_s) &&
-              validator.options[:in] == expected_enum_values
+              validator.options[:in] == expected_enum_value_names
           end
         end
 
