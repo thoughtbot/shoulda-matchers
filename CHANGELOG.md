@@ -1,5 +1,15 @@
 # Changelog
 
+## 6.3.1 - 2024-08-13
+
+## What's Changed
+
+### Bug fixes
+
+* Ensure DefineEnumForMatcher#validating handles Hash enum values correctly by @mi-wada ([#1646])
+
+[#1646]: https://github.com/thoughtbot/shoulda-matchers/pull/1646
+
 ## 6.3.0 - 2024-08-09
 
 ## What's Changed
