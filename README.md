@@ -167,9 +167,9 @@ end
 Most of the matchers provided by this gem are useful in a Rails context, and as
 such, can be used for different parts of a Rails app:
 
-* [database models backed by ActiveRecord](#activemodel-matchers)
+* [database models backed by ActiveRecord](#activerecord-matchers)
 * [non-database models, form objects, etc. backed by
-  ActiveModel](#activerecord-matchers)
+  ActiveModel](#activemodel-matchers)
 * [controllers](#actioncontroller-matchers)
 * [routes](#routing-matchers) (RSpec only)
 * [Rails-specific features like `delegate`](#independent-matchers)
