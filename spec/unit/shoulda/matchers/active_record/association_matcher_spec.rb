@@ -113,6 +113,28 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       expect(belonging_to_parent).not_to belong_to(:parent).counter_cache
     end
 
+    if rails_version >= 7.2
+      it 'accepts :counter_cache with a hash' do
+        expect(belonging_to_parent(counter_cache: { active: true })).
+          to belong_to(:parent).counter_cache
+      end
+
+      it 'accepts :counter_cache with active false when passed' do
+        expect(belonging_to_parent(counter_cache: { active: false })).
+          to belong_to(:parent).counter_cache(active: false)
+      end
+
+      it 'rejects :counter_cache with active false when mismatch' do
+        expect(belonging_to_parent(counter_cache: { active: true })).
+          not_to belong_to(:parent).counter_cache(active: false)
+      end
+
+      it 'rejects :counter_cache with when column mismatch' do
+        expect(belonging_to_parent(counter_cache: { column: :attribute_count })).
+          not_to belong_to(:parent).counter_cache(true)
+      end
+    end
+
     it 'accepts an association with a valid :inverse_of option' do
       expect(belonging_to_with_inverse(:parent, :children)).
         to belong_to(:parent).inverse_of(:children)

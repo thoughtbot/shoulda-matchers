@@ -32,7 +32,11 @@ RSpec.configure do |config|
   end
 end
 
-ActiveSupport::Deprecation.behavior = :stderr
+if Rails::VERSION::STRING >= '7.2'
+  Rails.application.deprecators.behavior = :stderr
+else
+  ActiveSupport::Deprecation.behavior = :stderr
+end
 
 Shoulda::Matchers.configure do |config|
   config.integrate do |with|

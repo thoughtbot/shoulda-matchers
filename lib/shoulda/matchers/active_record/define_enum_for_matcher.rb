@@ -655,10 +655,21 @@ module Shoulda
         end
 
         def actual_default_value
-          attribute_schema = model.attributes_to_define_after_schema_loads[attribute_name.to_s]
+          attribute_schema = if model.respond_to?(:_default_attributes)
+                               model._default_attributes[attribute_name.to_s]
+                             else
+                               model.attributes_to_define_after_schema_loads[attribute_name.to_s]
+                             end
+
+          if Kernel.const_defined?('ActiveModel::Attribute::UserProvidedDefault') &&
+             attribute_schema.is_a?(::ActiveModel::Attribute::UserProvidedDefault)
+            attribute_schema = attribute_schema.marshal_dump
+          end
 
           value = case attribute_schema
                   in [_, { default: default_value } ]
+                    default_value
+                  in [_, default_value, *]
                     default_value
                   in [_, default_value]
                     default_value
