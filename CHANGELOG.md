@@ -1,5 +1,15 @@
 # Changelog
 
+## 6.4.0 - 2024-08-16
+
+## What's Changed
+
+### Features
+
+* Add Rails 7.2 compatibility by @theodorton ([#1632]) 
+
+[#1632]: https://github.com/thoughtbot/shoulda-matchers/pull/1632
+
 ## 6.3.1 - 2024-08-13
 
 ## What's Changed
