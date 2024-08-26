@@ -346,6 +346,24 @@ RSpec.describe Person, type: :model do
 end
 ```
 
+### A Note on Testing Style
+
+If you inspect the source code, you'll notice quickly that `shoulda-matchers`
+is largely implemented using reflections and other introspection methods that
+Rails provides. On first sight, this might seem to go against the common
+practice of testing behavior rather than implementation. However, as the
+available matchers indicate, we recommend that you treat `shoulda-matchers` as
+a tool to help you ensure correct configuration and adherence to best practices
+and idiomatic Rails in your models and controllers - especially for aspects
+that in your experience are often insufficiently tested, such as ActiveRecord
+validations or controller callbacks (a.k.a. the "framework-y" parts).
+
+For your specific business logic, on the hand, you should very much favor
+testing behavior/outcome over testing implementation: Not only will this
+facilitate refactoring, but the reality is that no generic testing tool will
+ever map adequately to your specific domain. (But you could certainly write
+your own custom matchers and use `shoulda-matchers` as an inspiration.)
+
 ## Matchers
 
 Here is the full list of matchers that ship with this gem. If you need details
