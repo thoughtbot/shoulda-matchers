@@ -358,11 +358,12 @@ and idiomatic Rails in your models and controllers - especially for aspects
 that in your experience are often insufficiently tested, such as ActiveRecord
 validations or controller callbacks (a.k.a. the "framework-y" parts).
 
-For your specific business logic, on the hand, you should very much favor
-testing behavior/outcome over testing implementation: Not only will this
-facilitate refactoring, but the reality is that no generic testing tool will
-ever map adequately to your specific domain. (But you could certainly write
-your own custom matchers and use `shoulda-matchers` as an inspiration.)
+For testing your application's unique business logic, however, we recommend focusing on
+behavior and outcomes over implementation details. This approach will better support
+refactoring and ensure that your tests remain resilient to changes in how your code
+is structured. While no generalized testing tool can fully capture the nuances of your
+specific domain, you can draw inspiration from shoulda-matchers to write custom
+matchers that align more closely with your application's needs.
 
 ## Matchers
 
