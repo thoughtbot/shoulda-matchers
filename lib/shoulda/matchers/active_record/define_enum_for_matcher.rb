@@ -758,7 +758,7 @@ module Shoulda
         def to_hash(value)
           if value.is_a?(Array)
             value.each_with_index.inject({}) do |hash, (item, index)|
-              hash.merge(item.to_s => index)
+              hash.merge!(item.to_s => index)
             end
           else
             value.stringify_keys

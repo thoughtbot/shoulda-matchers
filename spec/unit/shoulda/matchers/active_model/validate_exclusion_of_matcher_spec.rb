@@ -238,7 +238,7 @@ Expected Example not to validate that :attr is neither ‹"one"› nor
     def define_model_validating_exclusion(options)
       options = options.dup
       column_type = options.delete(:column_type) { :string }
-      super options.merge(column_type: column_type)
+      super options.merge!(column_type: column_type)
     end
   end
 

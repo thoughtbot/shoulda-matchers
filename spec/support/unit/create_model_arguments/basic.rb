@@ -37,6 +37,10 @@ module UnitTests
         self.class.new(args.deep_merge(given_args))
       end
 
+      def merge!(given_args)
+        self.class.new(args.deep_merge!(given_args))
+      end
+
       def model_name
         args.fetch(:model_name, DEFAULT_MODEL_NAME)
       end

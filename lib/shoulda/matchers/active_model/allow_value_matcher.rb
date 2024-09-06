@@ -677,7 +677,7 @@ pass, or do something else entirely.
             attribute: attribute_to_check_message_against,
           }
 
-          defaults.merge(options[:expected_message_values])
+          defaults.merge!(options[:expected_message_values])
         end
 
         def model_name

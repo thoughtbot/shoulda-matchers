@@ -556,7 +556,7 @@ describe Shoulda::Matchers::ActionController::SetSessionOrFlashMatcher do
       :has_value? => nil,
       :empty? => nil,
     }
-    methods = defaults.merge(overrides)
+    methods = defaults.merge!(overrides)
     double('store', methods)
   end
 end
