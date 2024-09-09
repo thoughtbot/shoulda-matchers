@@ -21,7 +21,7 @@ module UnitTests
 
       def initialize(args)
         @arguments = CreateModelArguments::Basic.wrap(
-          args.merge(
+          args.merge!(
             model_creation_strategy: UnitTests::ModelCreationStrategies::ActiveRecord,
           ),
         )

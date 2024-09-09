@@ -75,7 +75,7 @@ module UnitTests
           end
         else
           columns.inject({}) do |hash, column_name|
-            hash.merge(column_name => { type: :string })
+            hash.merge!(column_name => { type: :string })
           end
         end
       end

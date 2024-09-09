@@ -92,7 +92,7 @@ module Shoulda
           end
 
           def column_label
-            if missing_columns.count > 1
+            if missing_columns.length > 1
               'columns'
             else
               'column'

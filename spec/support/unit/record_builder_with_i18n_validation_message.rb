@@ -4,7 +4,7 @@ module UnitTests
   class RecordBuilderWithI18nValidationMessage < SimpleDelegator
     def initialize(builder, options = {})
       super(builder)
-      @options = default_options.merge(options)
+      @options = default_options.merge!(options)
       builder.message = validation_message_key
     end
 

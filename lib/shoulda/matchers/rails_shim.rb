@@ -60,7 +60,7 @@ module Shoulda
           attribute_types_for(model).
             inject({}) do |hash, (attribute_name, attribute_type)|
               if type_serialized_defined && attribute_type.is_a?(::ActiveRecord::Type::Serialized)
-                hash.merge(attribute_name => attribute_type.coder)
+                hash.merge!(attribute_name => attribute_type.coder)
               else
                 hash
               end
@@ -121,7 +121,7 @@ module Shoulda
             model.columns.inject({}) do |hash, column|
               key = column.name.to_s
               value = model.type_for_attribute(column.name)
-              hash.merge(key => value)
+              hash.merge!(key => value)
             end
           else
             raise NotImplementedError
@@ -169,7 +169,7 @@ module Shoulda
           ]
           primary_translation_key = default_translation_keys.shift
           translate_options =
-            { default: default_translation_keys }.merge(options)
+            { default: default_translation_keys }.merge!(options)
           I18n.translate(primary_translation_key, translate_options)
         end
 

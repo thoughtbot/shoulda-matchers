@@ -511,7 +511,7 @@ does not.
     **index_options
   )
     columns ||= Array.wrap(column_name_or_names).inject({}) do |hash, name|
-      hash.merge(name => :string)
+      hash.merge!(name => :string)
     end
 
     model = define_model(

@@ -106,7 +106,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
         selected_param: :user
       )
         params = all_params.inject({}) do |hash, param|
-          hash.merge(param => { any: 'value' })
+          hash.merge!(param => { any: 'value' })
         end
 
         permit.add_params(params).on(selected_param)
