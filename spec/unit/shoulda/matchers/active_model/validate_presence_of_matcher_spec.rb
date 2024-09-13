@@ -4,6 +4,69 @@ describe Shoulda::Matchers::ActiveModel::ValidatePresenceOfMatcher, type: :model
   include UnitTests::ApplicationConfigurationHelpers
 
   context 'a model with a presence validation' do
+    context 'passing multiple attributes' do
+      it 'accepts' do
+        model = define_model 'Example', attr1: :string, attr2: :string do
+          validates_presence_of(:attr1)
+          validates_presence_of(:attr2)
+        end
+
+        expect(model.new).to validate_presence_of(:attr1, :attr2)
+      end
+
+      it 'fails when used in the negative' do
+        model = define_model 'Example', attr1: :string, attr2: :string do
+          validates_presence_of(:attr1)
+        end
+
+        assertion = lambda do
+          expect(model.new).not_to validate_presence_of(:attr1, :attr2)
+        end
+
+        message = <<-MESSAGE
+Expected Example not to validate that :attr1 cannot be empty/falsy, but
+this could not be proved.
+  After setting :attr1 to ‹nil›, the matcher expected the Example to be
+  valid, but it was invalid instead, producing these validation errors:
+
+  * attr1: ["can't be blank"]
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+
+      it 'accepts when using qualifiers' do
+        model = define_model 'Example', attr1: :string, attr2: :string do
+          validates_presence_of(:attr1, allow_nil: true)
+          validates_presence_of(:attr2, allow_nil: true)
+        end
+
+        expect(model.new).to validate_presence_of(:attr1, :attr2).allow_nil
+      end
+
+      it 'rejects when one attribute does not match the qualifier' do
+        model = define_model 'Example', attr1: :string, attr2: :string do
+          validates_presence_of(:attr1, allow_nil: true)
+          validates_presence_of(:attr2)
+        end
+
+        assertion = lambda do
+          expect(model.new).to validate_presence_of(:attr1, :attr2).allow_nil
+        end
+
+        message = <<-MESSAGE
+Expected Example to validate that :attr2 cannot be empty/falsy, but this
+could not be proved.
+  After setting :attr2 to ‹nil›, the matcher expected the Example to be
+  valid, but it was invalid instead, producing these validation errors:
+
+  * attr2: ["can't be blank"]
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+    end
+
     it 'accepts' do
       expect(validating_presence).to matcher
     end

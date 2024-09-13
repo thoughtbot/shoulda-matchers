@@ -458,7 +458,7 @@ module Shoulda
               message << '.'
             else
               message << " producing these validation errors:\n\n"
-              message << validator.all_formatted_validation_error_messages
+              message << validator.formatted_validation_error_messages
             end
           end
 
