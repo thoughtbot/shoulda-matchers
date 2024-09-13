@@ -70,10 +70,33 @@ module Shoulda
       #         with_message('Please re-enter your password')
       #     end
       #
+      # #### Multiple attributes
+      #
+      # You can pass multiple attributes to assert that each one has the
+      # validation. Any qualifier chained on the matcher is applied to
+      # every attribute uniformly.
+      #
+      #     class User
+      #       include ActiveModel::Model
+      #       attr_accessor :password, :password_confirmation, :email, :email_confirmation
+      #
+      #       validates_confirmation_of :password, :email
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe User, type: :model do
+      #       it { should validate_confirmation_of(:password, :email) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class UserTest < ActiveSupport::TestCase
+      #       should validate_confirmation_of(:password, :email)
+      #     end
+      #
       # @return [ValidateConfirmationOfMatcher]
       #
-      def validate_confirmation_of(attr)
-        ValidateConfirmationOfMatcher.new(attr)
+      def validate_confirmation_of(*attrs)
+        MatcherCollection.build(attrs) { |attr| ValidateConfirmationOfMatcher.new(attr) }
       end
 
       # @private

@@ -2,6 +2,58 @@ require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateExclusionOfMatcher, type: :model do
   context 'an attribute which must be excluded from a range' do
+    context 'passing multiple attributes' do
+      it 'accepts when every attribute has the validation' do
+        model = define_model 'Example', attr1: :integer, attr2: :integer do
+          validates_exclusion_of :attr1, :attr2, in: 2..5
+        end
+
+        expect(model.new).
+          to validate_exclusion_of(:attr1, :attr2).in_range(2..5)
+      end
+
+      it 'rejects when one attribute has the validation and one does not' do
+        model = define_model 'Example', attr1: :integer, attr2: :integer do
+          validates_exclusion_of :attr1, in: 2..5
+        end
+
+        assertion = lambda do
+          expect(model.new).
+            to validate_exclusion_of(:attr1, :attr2).in_range(2..5)
+        end
+
+        message = <<-MESSAGE
+Expected Example to validate that :attr2 lies outside the range ‹2› to
+‹5›, but this could not be proved.
+  After setting :attr2 to ‹2›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+
+      it 'rejects when no attribute has the validation' do
+        model = define_model 'Example', attr1: :integer, attr2: :integer
+
+        assertion = lambda do
+          expect(model.new).
+            to validate_exclusion_of(:attr1, :attr2).in_range(2..5)
+        end
+
+        message = <<-MESSAGE
+Expected Example to validate that :attr1 lies outside the range ‹2› to
+‹5› and validate that :attr2 lies outside the range ‹2› to ‹5›, but this
+could not be proved.
+  After setting :attr1 to ‹2›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+  After setting :attr2 to ‹2›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+    end
+
     it 'accepts ensuring the correct range' do
       expect(validating_exclusion(in: 2..5)).
         to validate_exclusion_of(:attr).in_range(2..5)

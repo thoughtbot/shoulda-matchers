@@ -112,10 +112,33 @@ module Shoulda
       #         with_message('You chose a puny weapon')
       #     end
       #
+      # #### Multiple attributes
+      #
+      # You can pass multiple attributes to assert that each one has the
+      # validation. Any qualifier chained on the matcher is applied to
+      # every attribute uniformly.
+      #
+      #     class Article
+      #       include ActiveModel::Model
+      #       attr_accessor :slug, :handle
+      #
+      #       validates_exclusion_of :slug, :handle, in: %w[admin root]
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Article, type: :model do
+      #       it { should validate_exclusion_of(:slug, :handle).in_array(%w[admin root]) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class ArticleTest < ActiveSupport::TestCase
+      #       should validate_exclusion_of(:slug, :handle).in_array(%w[admin root])
+      #     end
+      #
       # @return [ValidateExclusionOfMatcher]
       #
-      def validate_exclusion_of(attr)
-        ValidateExclusionOfMatcher.new(attr)
+      def validate_exclusion_of(*attrs)
+        MatcherCollection.build(attrs) { |attr| ValidateExclusionOfMatcher.new(attr) }
       end
 
       # @private

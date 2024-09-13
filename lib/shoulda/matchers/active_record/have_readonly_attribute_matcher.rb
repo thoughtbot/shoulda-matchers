@@ -18,10 +18,30 @@ module Shoulda
       #       should have_readonly_attribute(:password)
       #     end
       #
+      # #### Multiple attributes
+      #
+      # You can pass multiple attributes to assert that each one has the
+      # validation. Any qualifier chained on the matcher is applied to
+      # every attribute uniformly.
+      #
+      #     class User < ActiveRecord::Base
+      #       attr_readonly :name, :email
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe User, type: :model do
+      #       it { should have_readonly_attribute(:name, :email) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class UserTest < ActiveSupport::TestCase
+      #       should have_readonly_attribute(:name, :email)
+      #     end
+      #
       # @return [HaveReadonlyAttributeMatcher]
       #
-      def have_readonly_attribute(value)
-        HaveReadonlyAttributeMatcher.new(value)
+      def have_readonly_attribute(*values)
+        MatcherCollection.build(values) { |value| HaveReadonlyAttributeMatcher.new(value) }
       end
 
       # @private
@@ -31,6 +51,10 @@ module Shoulda
         end
 
         attr_reader :failure_message, :failure_message_when_negated
+
+        def failure_reason
+          @failure_message
+        end
 
         def matches?(subject)
           @subject = subject

@@ -1,6 +1,54 @@
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateNumericalityOfMatcher, type: :model do
+  context 'passing multiple attributes' do
+    it 'accepts when every attribute has the validation' do
+      model = define_model 'Example', attr1: :string, attr2: :string do
+        validates_numericality_of :attr1, :attr2
+      end
+
+      expect(model.new).to validate_numericality_of(:attr1, :attr2)
+    end
+
+    it 'rejects when one attribute has the validation and one does not' do
+      model = define_model 'Example', attr1: :string, attr2: :string do
+        validates_numericality_of :attr1, allow_nil: true
+      end
+
+      assertion = lambda do
+        expect(model.new).to validate_numericality_of(:attr1, :attr2)
+      end
+
+      message = <<-MESSAGE
+Expected Example to validate that :attr2 looks like a number, but this
+could not be proved.
+  After setting :attr2 to ‹"abcd"›, the matcher expected the Example to
+  be invalid, but it was valid instead.
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
+    end
+
+    it 'rejects when no attribute has the validation' do
+      model = define_model 'Example', attr1: :string, attr2: :string
+
+      assertion = lambda do
+        expect(model.new).to validate_numericality_of(:attr1, :attr2)
+      end
+
+      message = <<-MESSAGE
+Expected Example to validate that :attr1 looks like a number and
+validate that :attr2 looks like a number, but this could not be proved.
+  After setting :attr1 to ‹"abcd"›, the matcher expected the Example to
+  be invalid, but it was valid instead.
+  After setting :attr2 to ‹"abcd"›, the matcher expected the Example to
+  be invalid, but it was valid instead.
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
+    end
+  end
+
   class << self
     def all_qualifiers # rubocop:disable Metrics/MethodLength
       [

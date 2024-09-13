@@ -7,8 +7,10 @@ module Shoulda
           format_validation_errors(object.errors)
         end
 
-        def format_validation_errors(errors)
+        def format_validation_errors(errors, attr = nil)
           list_items = errors.to_hash.keys.map do |attribute|
+            next if attr && attr.to_sym != attribute.to_sym
+
             messages = errors[attribute]
             "* #{attribute}: #{messages}"
           end

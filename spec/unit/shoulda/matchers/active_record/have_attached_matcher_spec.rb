@@ -2,6 +2,52 @@ require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveRecord::HaveAttachedMatcher, type: :model do
   describe 'have_one_attached' do
+    context 'passing multiple attributes' do
+      it 'accepts when every attached exists on the model' do
+        record = define_model('User') do
+          has_one_attached :avatar
+          has_one_attached :cover
+        end.new
+
+        expect(record).to have_one_attached(:avatar, :cover)
+      end
+
+      it 'rejects when one attached exists and one does not' do
+        record = define_model('User') do
+          has_one_attached :avatar
+        end.new
+
+        assertion = lambda do
+          expect(record).to have_one_attached(:avatar, :cover)
+        end
+
+        message = <<-MESSAGE
+Expected User to have a has_one_attached called cover, but this could
+not be proved.
+  User does not have a :cover method.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+
+      it 'rejects when no attached exists on the model' do
+        record = define_model('User').new
+
+        assertion = lambda do
+          expect(record).to have_one_attached(:avatar, :cover)
+        end
+
+        message = <<-MESSAGE
+Expected User to have a has_one_attached called avatar and have a
+has_one_attached called cover, but this could not be proved.
+  User does not have a :avatar method.
+  User does not have a :cover method.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+    end
+
     describe '#description' do
       it 'returns the message with the name of the association' do
         matcher = have_one_attached(:avatar)

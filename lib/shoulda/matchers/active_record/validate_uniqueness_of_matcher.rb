@@ -304,7 +304,6 @@ module Shoulda
           }
           @existing_record_created = false
           @failure_reason = nil
-          @failure_reason_when_negated = nil
           @attribute_setters = {
             existing_record: AttributeSetters.new,
             new_record: AttributeSetters.new,
@@ -405,10 +404,6 @@ module Shoulda
 
         def failure_reason
           @failure_reason || super
-        end
-
-        def failure_reason_when_negated
-          @failure_reason_when_negated || super
         end
 
         def build_allow_or_disallow_value_matcher(args)

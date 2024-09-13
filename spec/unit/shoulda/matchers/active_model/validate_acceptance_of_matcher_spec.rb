@@ -2,6 +2,63 @@ require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateAcceptanceOfMatcher, type: :model do
   context 'a model with an acceptance validation' do
+    context 'passing multiple attributes' do
+      it 'accepts when every attribute has the validation' do
+        model = define_active_model_class(
+          'Example',
+          accessors: [:attr1, :attr2],
+        ) do
+          validates_acceptance_of :attr1, :attr2
+        end
+
+        expect(model.new).to validate_acceptance_of(:attr1, :attr2)
+      end
+
+      it 'rejects when one attribute has the validation and one does not' do
+        model = define_active_model_class(
+          'Example',
+          accessors: [:attr1, :attr2],
+        ) do
+          validates_acceptance_of :attr1
+        end
+
+        assertion = lambda do
+          expect(model.new).to validate_acceptance_of(:attr1, :attr2)
+        end
+
+        message = <<-MESSAGE
+Expected Example to validate that :attr2 has been set to "1", but this
+could not be proved.
+  After setting :attr2 to ‹false›, the matcher expected the Example to
+  be invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+
+      it 'rejects when no attribute has the validation' do
+        model = define_active_model_class(
+          'Example',
+          accessors: [:attr1, :attr2],
+        )
+
+        assertion = lambda do
+          expect(model.new).to validate_acceptance_of(:attr1, :attr2)
+        end
+
+        message = <<-MESSAGE
+Expected Example to validate that :attr1 has been set to "1" and
+validate that :attr2 has been set to "1", but this could not be proved.
+  After setting :attr1 to ‹false›, the matcher expected the Example to
+  be invalid, but it was valid instead.
+  After setting :attr2 to ‹false›, the matcher expected the Example to
+  be invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+    end
+
     it 'accepts when the attributes match' do
       expect(record_validating_acceptance).to matcher
     end

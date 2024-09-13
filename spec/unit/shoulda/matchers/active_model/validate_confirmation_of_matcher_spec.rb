@@ -13,6 +13,70 @@ describe Shoulda::Matchers::ActiveModel::ValidateConfirmationOfMatcher, type: :m
   end
 
   context 'when the model has a confirmation validation' do
+    context 'passing multiple attributes' do
+      it 'accepts when every attribute has the validation' do
+        model = define_model 'Example',
+          password: :string,
+          password_confirmation: :string,
+          email: :string,
+          email_confirmation: :string do
+          validates_confirmation_of :password, :email
+        end
+
+        expect(model.new).to validate_confirmation_of(:password, :email)
+      end
+
+      it 'rejects when one attribute has the validation and one does not' do
+        model = define_model 'Example',
+          password: :string,
+          password_confirmation: :string,
+          email: :string,
+          email_confirmation: :string do
+          validates_confirmation_of :password
+        end
+
+        assertion = lambda do
+          expect(model.new).to validate_confirmation_of(:password, :email)
+        end
+
+        message = <<-MESSAGE
+Expected Example to validate that :email_confirmation matches :email,
+but this could not be proved.
+  After setting :email_confirmation to ‹"some value"›, then setting
+  :email to ‹"different value"›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+
+      it 'rejects when no attribute has the validation' do
+        model = define_model 'Example',
+          password: :string,
+          password_confirmation: :string,
+          email: :string,
+          email_confirmation: :string
+
+        assertion = lambda do
+          expect(model.new).to validate_confirmation_of(:password, :email)
+        end
+
+        message = <<-MESSAGE
+Expected Example to validate that :password_confirmation matches
+:password and validate that :email_confirmation matches :email, but this
+could not be proved.
+  After setting :password_confirmation to ‹"some value"›, then setting
+  :password to ‹"different value"›, the matcher expected the Example to
+  be invalid, but it was valid instead.
+  After setting :email_confirmation to ‹"some value"›, then setting
+  :email to ‹"different value"›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+    end
+
     it 'passes' do
       builder = builder_for_record_validating_confirmation
       expect(builder.record).

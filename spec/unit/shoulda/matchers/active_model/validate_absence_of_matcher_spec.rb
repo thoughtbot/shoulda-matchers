@@ -18,6 +18,54 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
   end
 
   context 'a model with an absence validation' do
+    context 'passing multiple attributes' do
+      it 'accepts when every attribute has the validation' do
+        model = define_model 'Example', attr1: :string, attr2: :string do
+          validates_absence_of :attr1, :attr2
+        end
+
+        expect(model.new).to validate_absence_of(:attr1, :attr2)
+      end
+
+      it 'rejects when one attribute has the validation and one does not' do
+        model = define_model 'Example', attr1: :string, attr2: :string do
+          validates_absence_of :attr1
+        end
+
+        assertion = lambda do
+          expect(model.new).to validate_absence_of(:attr1, :attr2)
+        end
+
+        message = <<-MESSAGE
+Expected Example to validate that :attr2 is empty/falsy, but this could
+not be proved.
+  After setting :attr2 to ‹"an arbitrary value"›, the matcher expected
+  the Example to be invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+
+      it 'rejects when no attribute has the validation' do
+        model = define_model 'Example', attr1: :string, attr2: :string
+
+        assertion = lambda do
+          expect(model.new).to validate_absence_of(:attr1, :attr2)
+        end
+
+        message = <<-MESSAGE
+Expected Example to validate that :attr1 is empty/falsy and validate
+that :attr2 is empty/falsy, but this could not be proved.
+  After setting :attr1 to ‹"an arbitrary value"›, the matcher expected
+  the Example to be invalid, but it was valid instead.
+  After setting :attr2 to ‹"an arbitrary value"›, the matcher expected
+  the Example to be invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+    end
+
     it 'accepts' do
       expect(validating_absence_of(:attr)).to validate_absence_of(:attr)
     end
