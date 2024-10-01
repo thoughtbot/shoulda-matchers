@@ -168,8 +168,27 @@ module Shoulda
       #       should delegate_method(:plan).to(:subscription).allow_nil
       #     end
       #
-      # @return [DelegateMethodMatcher]
+      # ##### with_private
       #
+      # Use `with_private` if the delegation accounts for the fact that your
+      # delegation is private. (This is mostly intended as an analogue to
+      # the `private` option that Rails' `delegate` helper takes.)
+      #
+      #     class Account
+      #       delegate :plan, to: :subscription, private: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Account do
+      #       it { should delegate_method(:plan).to(:subscription).with_private }
+      #     end
+      #
+      #     # Minitest
+      #     class PageTest < Minitest::Test
+      #       should delegate_method(:plan).to(:subscription).with_private
+      #     end
+      #
+      # @return [DelegateMethodMatcher]
       def delegate_method(delegating_method)
         DelegateMethodMatcher.new(delegating_method).in_context(self)
       end
@@ -187,6 +206,7 @@ module Shoulda
           @delegate_object_reader_method = nil
           @delegated_arguments = []
           @expects_to_allow_nil_delegate_object = false
+          @expects_private_delegation = false
         end
 
         def in_context(context)
@@ -202,13 +222,18 @@ module Shoulda
           subject_has_delegating_method? &&
             subject_has_delegate_object_reader_method? &&
             subject_delegates_to_delegate_object_correctly? &&
-            subject_handles_nil_delegate_object?
+            subject_handles_nil_delegate_object? &&
+            subject_handles_private_delegation?
         end
 
         def description
           string =
             "delegate #{formatted_delegating_method_name} to the " +
             "#{formatted_delegate_object_reader_method_name} object"
+
+          if expects_private_delegation?
+            string << ' privately'
+          end
 
           if delegated_arguments.any?
             string << " passing arguments #{delegated_arguments.inspect}"
@@ -254,6 +279,11 @@ module Shoulda
           self
         end
 
+        def with_private
+          @expects_private_delegation = true
+          self
+        end
+
         def build_delegating_method_prefix(prefix)
           case prefix
           when true, nil then delegate_object_reader_method
@@ -264,14 +294,19 @@ module Shoulda
         def failure_message
           message = "Expected #{class_under_test} to #{description}.\n\n"
 
-          if failed_to_allow_nil_delegate_object?
+          if failed_to_allow_nil_delegate_object? || failed_to_handle_private_delegation?
             message << formatted_delegating_method_name(include_module: true)
             message << ' did delegate to '
             message << formatted_delegate_object_reader_method_name
+          end
+
+          if failed_to_allow_nil_delegate_object?
             message << ' when it was non-nil, but it failed to account '
             message << 'for when '
             message << formatted_delegate_object_reader_method_name
             message << ' *was* nil.'
+          elsif failed_to_handle_private_delegation?
+            message << ", but 'private: true' is missing."
           else
             message << 'Method calls sent to '
             message << formatted_delegate_object_reader_method_name(
@@ -322,6 +357,10 @@ module Shoulda
           @expects_to_allow_nil_delegate_object
         end
 
+        def expects_private_delegation?
+          @expects_private_delegation
+        end
+
         def formatted_delegate_method(options = {})
           formatted_method_name_for(delegate_method, options)
         end
@@ -367,7 +406,11 @@ module Shoulda
         end
 
         def subject_has_delegating_method?
-          subject.respond_to?(delegating_method)
+          if expects_private_delegation?
+            !subject.respond_to?(delegating_method) && subject.respond_to?(delegating_method, true)
+          else
+            subject.respond_to?(delegating_method)
+          end
         end
 
         def subject_has_delegate_object_reader_method?
@@ -381,7 +424,11 @@ module Shoulda
         end
 
         def subject_delegates_to_delegate_object_correctly?
-          call_delegating_method_with_delegate_method_returning(delegate_object)
+          if expects_private_delegation?
+            privately_call_delegating_method_with_delegate_method_returning(delegate_object)
+          else
+            call_delegating_method_with_delegate_method_returning(delegate_object)
+          end
 
           if delegated_arguments.any?
             delegate_object_received_call_with_delegated_arguments?
@@ -411,9 +458,35 @@ module Shoulda
             end
         end
 
+        def subject_handles_private_delegation?
+          @subject_handled_private_delegation =
+            if expects_private_delegation?
+              begin
+                call_delegating_method_with_delegate_method_returning(delegate_object)
+                true
+              rescue Module::DelegationError
+                false
+              rescue NoMethodError => e
+                if e.message =~
+                   /private method `#{delegating_method}' called for/
+                  true
+                else
+                  raise e
+                end
+              end
+            else
+              true
+            end
+        end
+
         def failed_to_allow_nil_delegate_object?
           expects_to_allow_nil_delegate_object? &&
             !@subject_handled_nil_delegate_object
+        end
+
+        def failed_to_handle_private_delegation?
+          expects_private_delegation? &&
+            !@subject_handled_private_delegation
         end
 
         def call_delegating_method_with_delegate_method_returning(value)
@@ -421,6 +494,14 @@ module Shoulda
 
           Doublespeak.with_doubles_activated do
             subject.public_send(delegating_method, *delegated_arguments)
+          end
+        end
+
+        def privately_call_delegating_method_with_delegate_method_returning(value)
+          register_subject_double_collection_to(value)
+
+          Doublespeak.with_doubles_activated do
+            subject.__send__(delegating_method, *delegated_arguments)
           end
         end
 
