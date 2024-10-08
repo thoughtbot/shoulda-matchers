@@ -102,6 +102,15 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
           end
         end
       end
+
+      context 'qualified with #with_private' do
+        it 'states that it should delegate method to the right object with right argument and makes is private' do
+          matcher = delegate_method(:method_name).to(:delegate).with_private
+          message = 'delegate #method_name to the #delegate object privately'
+
+          expect(matcher.description).to eq message
+        end
+      end
     end
 
     context 'when the subject is a class' do
@@ -651,6 +660,118 @@ to account for when #country *was* nil.
           end
 
           expect(&expectation).to fail_with_message(message)
+        end
+      end
+    end
+  end
+
+  context 'qualified with #with_private' do
+    context 'when using delegate from Rails' do
+      context 'when delegations were defined with :private' do
+        it 'accepts' do
+          define_class('Person') do
+            delegate :hello, to: :country, private: true
+            def country
+            end
+          end
+
+          person = Person.new
+
+          expect(person).to delegate_method(:hello).to(:country).with_private
+        end
+      end
+
+      context 'when delegations were not defined with :private' do
+        it 'rejects with the correct failure message' do
+          define_class('Person') do
+            delegate :hello, to: :country
+            def country
+            end
+          end
+
+          person = Person.new
+
+          message = <<-MESSAGE
+Expected Person to delegate #hello to the #country object privately.
+
+Person#hello did delegate to #country, but 'private: true' is missing.
+          MESSAGE
+
+          expectation = lambda do
+            expect(person).to delegate_method(:hello).to(:country).with_private
+          end
+
+          expect(&expectation).to fail_with_message(message)
+        end
+
+        context 'with :prefix' do
+          it 'accepts' do
+            define_class('Person') do
+              delegate :hello, to: :country, private: true, prefix: :user
+              def country
+              end
+            end
+
+            person = Person.new
+
+            expect(person).to delegate_method(:hello).to(:country).with_prefix(:user).with_private
+          end
+        end
+
+        context 'with :as' do
+          it 'accepts' do
+            define_class('Company') do
+              def name
+                'Acme Company'
+              end
+            end
+
+            define_class('Person') do
+              private
+
+              def company_name
+                company.name
+              end
+
+              def company
+                Company.new
+              end
+            end
+
+            person = Person.new
+            matcher = delegate_method(:company_name).to(:company).as(:name).with_private
+            matcher.matches?(person)
+
+            expect(person.send(:company).name).to eq 'Acme Company'
+          end
+
+          context 'and :prefix' do
+            it 'accepts' do
+              define_class('Company') do
+                def name
+                  'Acme Company'
+                end
+              end
+
+              define_class('Person') do
+                private
+
+                def company_name
+                  company.name
+                end
+
+                def company
+                  Company.new
+                end
+              end
+
+              person = Person.new
+              matcher = delegate_method(:company_name).to(:company).with_prefix(:user).as(:name).with_private
+              matcher.matches?(person)
+
+              expect(person.send(:company).name).to eq 'Acme Company'
+            end
+          end
         end
       end
     end
