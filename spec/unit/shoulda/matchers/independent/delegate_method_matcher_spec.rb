@@ -27,7 +27,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
         it 'states that it should delegate method to the right object with right argument' do
           matcher = delegate_method(:method_name).to(:delegate).
             with_arguments(:foo, bar: [1, 2])
-          message = 'delegate #method_name to the #delegate object passing arguments [:foo, {:bar=>[1, 2]}]'
+          message = "delegate #method_name to the #delegate object passing arguments [:foo, #{{:bar=>[1, 2]}.to_s}]"
 
           expect(matcher.description).to eq message
         end
@@ -138,7 +138,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
         it 'states that it should delegate method to the right object with right argument' do
           matcher = delegate_method(:method_name).to(:delegate).
             with_arguments(:foo, bar: [1, 2])
-          message = 'delegate .method_name to the .delegate object passing arguments [:foo, {:bar=>[1, 2]}]'
+          message = "delegate .method_name to the .delegate object passing arguments [:foo, #{{:bar=>[1, 2]}.to_s}]"
 
           expect(matcher.description).to eq message
         end
@@ -294,7 +294,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
         context 'negating the matcher' do
           it 'rejects with the correct failure message' do
             post_office = PostOffice.new
-            message = 'Expected PostOffice not to delegate #deliver_mail to the #mailman object passing arguments ["221B Baker St.", {:hastily=>true}], but it did.'
+            message = "Expected PostOffice not to delegate #deliver_mail to the #mailman object passing arguments [\"221B Baker St.\", #{{:hastily=>true}.to_s}], but it did."
 
             expect {
               expect(post_office).
@@ -315,7 +315,7 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
             '',
             'Method calls sent to PostOffice#mailman:',
             '',
-            '1) deliver_mail("221B Baker St.", {:hastily=>true})',
+            "1) deliver_mail(\"221B Baker St.\", #{{:hastily=>true}.to_s})"
           ].join("\n")
 
           expect {
