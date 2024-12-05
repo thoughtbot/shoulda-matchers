@@ -27,6 +27,7 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
+          - head
           - 3.3.0
           - 3.2.2
           - 3.1.4
@@ -40,6 +41,9 @@ jobs:
           - sqlite3
           - postgresql
         exclude:
+          - { ruby: head, appraisal: rails_6_1 }
+          - { ruby: head, appraisal: rails_7_0 }
+          - { ruby: head, appraisal: rails_7_1 }
           - { ruby: 3.3.0, appraisal: rails_6_1 }
           - { ruby: 3.3.0, appraisal: rails_7_0 }
           - { ruby: 3.2.2, appraisal: rails_6_1 }
