@@ -13,7 +13,7 @@
 [logo]: https://matchers.shoulda.io/images/shoulda-matchers-logo.png
 [website]: https://matchers.shoulda.io/
 
-Shoulda Matchers provides RSpec- and Minitest-compatible one-liners to test
+Shoulda Matchers provides RSpec and Minitest-compatible one-liners to test
 common Rails functionality that, if written by hand, would be much longer, more
 complex, and error-prone.
 
@@ -27,36 +27,33 @@ complex, and error-prone.
 
 ## Table of contents
 
-- [Shoulda Matchers ](#shoulda-matchers----)
-  - [Quick links](#quick-links)
-  - [Table of contents](#table-of-contents)
-  - [Getting started](#getting-started)
-    - [RSpec](#rspec)
-      - [Rails apps](#rails-apps)
-      - [Non-Rails apps](#non-rails-apps)
-    - [Minitest](#minitest)
-      - [Rails apps](#rails-apps-1)
-      - [Non-Rails apps](#non-rails-apps-1)
-  - [Usage](#usage)
-    - [On the subject of `subject`](#on-the-subject-of-subject)
-    - [Availability of RSpec matchers in example groups](#availability-of-rspec-matchers-in-example-groups)
-      - [Rails projects](#rails-projects)
-      - [Non-Rails projects](#non-rails-projects)
-    - [`should` vs `is_expected.to`](#should-vs-is_expectedto)
-    - [A Note on Testing Style](#a-note-on-testing-style)
-  - [Matchers](#matchers)
-    - [ActiveModel matchers](#activemodel-matchers)
-    - [ActiveRecord matchers](#activerecord-matchers)
-    - [ActionController matchers](#actioncontroller-matchers)
-    - [Routing matchers](#routing-matchers)
-    - [Independent matchers](#independent-matchers)
-  - [Extensions](#extensions)
-  - [Contributing](#contributing)
-  - [Compatibility](#compatibility)
-  - [Versioning](#versioning)
-  - [Team](#team)
-  - [Copyright/License](#copyrightlicense)
-  - [About thoughtbot](#about-thoughtbot)
+- [Getting started](#getting-started)
+   - [RSpec](#rspec)
+    - [Rails apps](#rails-apps)
+    - [Non-Rails apps](#non-rails-apps)
+  - [Minitest](#minitest)
+    - [Rails apps](#rails-apps-1)
+    - [Non-Rails apps](#non-rails-apps-1)
+- [Usage](#usage)
+  - [On the subject of `subject`](#on-the-subject-of-subject)
+  - [Availability of RSpec matchers in example groups](#availability-of-rspec-matchers-in-example-groups)
+    - [Rails projects](#rails-projects)
+    - [Non-Rails projects](#non-rails-projects)
+  - [`should` vs `is_expected.to`](#should-vs-is_expectedto)
+  - [A Note on Testing Style](#a-note-on-testing-style)
+- [Matchers](#matchers)
+  - [ActiveModel matchers](#activemodel-matchers)
+  - [ActiveRecord matchers](#activerecord-matchers)
+  - [ActionController matchers](#actioncontroller-matchers)
+  - [Routing matchers](#routing-matchers)
+  - [Independent matchers](#independent-matchers)
+- [Extensions](#extensions)
+- [Contributing](#contributing)
+- [Compatibility](#compatibility)
+- [Versioning](#versioning)
+- [Team](#team)
+- [Copyright/License](#copyrightlicense)
+- [About thoughtbot](#about-thoughtbot)
 
 ## Getting started
 
@@ -286,12 +283,12 @@ end
 #### Rails projects
 
 If you're using RSpec, then you're probably familiar with the concept of example
-groups. Example groups can be assigned tags order to assign different behavior
+groups. Example groups can be assigned tags to assign different behaviors
 to different kinds of example groups. This comes into play especially when using
 `rspec-rails`, where, for instance, controller example groups, tagged with
 `type: :controller`, are written differently than request example groups, tagged
 with `type: :request`. This difference in writing style arises because
-`rspec-rails` mixes different behavior and methods into controller example
+`rspec-rails` mixes different behaviors and methods into controller example
 groups vs. request example groups.
 
 Relying on this behavior, Shoulda Matchers automatically makes certain matchers
@@ -347,7 +344,7 @@ end
 ### `should` vs `is_expected.to`
 
 In this README and throughout the documentation, you'll notice that we use the
-`should` form of RSpec's one-liner syntax over `is_expected.to`. Beside being
+`should` form of RSpec's one-liner syntax over `is_expected.to`. Besides being
 the namesake of the gem itself, this is our preferred syntax as it's short and
 sweet. But if you prefer to use `is_expected.to`, you can do that too:
 
@@ -361,7 +358,7 @@ end
 
 If you inspect the source code, you'll notice quickly that `shoulda-matchers`
 is largely implemented using reflections and other introspection methods that
-Rails provides. On first sight, this might seem to go against the common
+Rails provides. At first sight, this might seem to go against the common
 practice of testing behavior rather than implementation. However, as the
 available matchers indicate, we recommend that you treat `shoulda-matchers` as
 a tool to help you ensure correct configuration and adherence to best practices
@@ -451,7 +448,7 @@ about any of them, make sure to [consult the documentation][rubydocs]!
 - **[filter_param](lib/shoulda/matchers/action_controller/filter_param_matcher.rb)**
   tests parameter filtering configuration.
 - **[permit](lib/shoulda/matchers/action_controller/permit_matcher.rb)** tests
-  that an action places a restriction on the `params` hash.
+  that an action restricts the `params` hash.
 - **[redirect_to](lib/shoulda/matchers/action_controller/redirect_to_matcher.rb)**
   tests that an action redirects to a certain location.
 - **[render_template](lib/shoulda/matchers/action_controller/render_template_matcher.rb)**
@@ -542,7 +539,7 @@ Sales][matsales28]. Previous maintainers include [Elliot Winkler][mcmire],
 ## Copyright/License
 
 Shoulda Matchers is copyright © Tammer Saleh and [thoughtbot,
-inc][thoughtbot-website]. It is free and opensource software and may be
+inc][thoughtbot-website]. It is free and open-source software and may be
 redistributed under the terms specified in the [LICENSE](LICENSE) file.
 
 [thoughtbot-website]: https://thoughtbot.com
@@ -556,7 +553,7 @@ redistributed under the terms specified in the [LICENSE](LICENSE) file.
 This repo is maintained and funded by thoughtbot, inc.
 The names and logos for thoughtbot are trademarks of thoughtbot, inc.
 
-We love open source software!
+We love open-source software!
 See [our other projects][community].
 We are [available for hire][hire].
 
