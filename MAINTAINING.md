@@ -8,32 +8,30 @@ be too low-level for contributors.
 
 ## Table of Contents
 
-- [Maintaining Shoulda Matchers](#maintaining-shoulda-matchers)
-  - [Table of Contents](#table-of-contents)
-  - [Communication](#communication)
-  - [Managing the community](#managing-the-community)
-  - [Workflow](#workflow)
-  - [Architecture](#architecture)
-  - [Running tests](#running-tests)
-  - [Issuing a new release](#issuing-a-new-release)
-  - [Updating the changelog](#updating-the-changelog)
-  - [Documentation](#documentation)
-    - [Generating and viewing documentation locally](#generating-and-viewing-documentation-locally)
-    - [Publishing documentation](#publishing-documentation)
-  - [Naming a new version](#naming-a-new-version)
-  - [Granting RubyGems access](#granting-rubygems-access)
-  - [Updating the landing page](#updating-the-landing-page)
-  - [Labels in GitHub](#labels-in-github)
-    - [Labels for issues](#labels-for-issues)
-    - [Labels for PRs](#labels-for-prs)
-    - [Generic labels](#generic-labels)
+- [Communication](#communication)
+- [Managing the community](#managing-the-community)
+- [Workflow](#workflow)
+- [Architecture](#architecture)
+- [Running tests](#running-tests)
+- [Issuing a new release](#issuing-a-new-release)
+- [Updating the changelog](#updating-the-changelog)
+- [Documentation](#documentation)
+  - [Generating and viewing documentation locally](#generating-and-viewing-documentation-locally)
+  - [Publishing documentation](#publishing-documentation)
+- [Naming a new version](#naming-a-new-version)
+- [Granting RubyGems access](#granting-rubygems-access)
+- [Updating the landing page](#updating-the-landing-page)
+- [Labels in GitHub](#labels-in-github)
+  - [Labels for issues](#labels-for-issues)
+  - [Labels for PRs](#labels-for-prs)
+  - [Generic labels](#generic-labels)
 
 ## Communication
 
 We have several ways that we can communicate with each other:
 
 - In planning major releases, it can be helpful to create a **new issue**
-  outlining the changes as well as steps needed to launch the release. This
+  outlining the changes as well as the steps needed to launch the release. This
   serves both as an announcement to the community as well as an area to keep a
   checklist.
 - To track progress for the next release, **GitHub milestones** are useful.
@@ -149,7 +147,7 @@ follow to accomplish this:
    rake release
    ```
 
-   This will not only push the gem to RubyGems, but also publish the docs to
+   This will not only push the gem to RubyGems but also publish the docs to
    GitHub Pages.
 
 8. Finally, you'll want to make sure that GitHub's Releases section reflects the
@@ -163,7 +161,7 @@ That's it!
 
 ## Updating the changelog
 
-After every user-facing change makes it into main, we make a note of it in the
+After every user-facing change makes it into the main, we make a note of it in the
 changelog, kept in `CHANGELOG.md`. The changelog is sorted in reverse order by
 release version, with the topmost version as the next release (tagged as
 "(Unreleased)").
@@ -218,12 +216,12 @@ The Ruby documentation is hosted on GitHub Pages on a custom domain:
 
 <https://matchers.shoulda.io/docs>
 
-This URL actually links to a HTML page which merely serves to automatically
+This URL links to an HTML page which merely serves to automatically
 redirect the visitor to the docs for the latest published version of the gem.
 This version is hardcoded in the HTML page.
 
-Generally you will update the published docs as a part of a release, but there
-may be situations where you'll need to do it manually.
+Generally, you will update the published docs as a part of a release, but there
+maybe situations where you'll need to do it manually.
 
 You can re-publish the docs for the latest version (as governed by
 `lib/shoulda/matchers/version.rb`) by running:
@@ -279,16 +277,16 @@ to name versions. Generally speaking:
   removing parts of the API, or dropping support for a version of Ruby).
 - We bump the "minor" part if we're adding a new feature (e.g. adding a new
   matcher or adding a new qualifier to a matcher).
-- We bump the "patch" part if we're merely including bugfixes.
+- We bump the "patch" part if we're merely including bug fixes.
 
 In addition to major, minor, and patch levels, you can also append a
 suffix to the version for pre-release versions. We usually use this to issue
-release candidates prior to an actual release. A version number in this case
+release candidates before an actual release. A version number in this case
 might look like `4.0.0.rc1`.
 
 ## Granting RubyGems access
 
-In order to publish a new version of the gem to RubyGems, you will need to have
+To publish a new version of the gem to RubyGems, you will need to have
 been added as an owner. If you want to give someone else these permissions, then
 run:
 
@@ -310,7 +308,7 @@ instructions there for maintaining and publishing it.
 ## Labels in GitHub
 
 Considering that we work on the gem in our spare time, we've found [labels] to
-be useful for cataloguing and marking progress. Over time we've added quite a
+be useful for cataloging and marking progress. Over time we've added quite a
 collection of labels. Here's a quick list:
 
 [labels]: https://github.com/thoughtbot/shoulda-matchers/labels
