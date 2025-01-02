@@ -27,25 +27,36 @@ complex, and error-prone.
 
 ## Table of contents
 
-* [Getting started](#getting-started)
-   * [RSpec](#rspec)
-   * [Minitest](#minitest)
-* [Usage](#usage)
-  * [On the subject of `subject`](#on-the-subject-of-subject)
-  * [Availability of RSpec matchers in example groups](#availability-of-rspec-matchers-in-example-groups)
-  * [`should` vs `is_expected.to`](#should-vs-is_expectedto)
-* [Matchers](#matchers)
-   * [ActiveModel matchers](#activemodel-matchers)
-   * [ActiveRecord matchers](#activerecord-matchers)
-   * [ActionController matchers](#actioncontroller-matchers)
-   * [Independent matchers](#independent-matchers)
-* [Extensions](#extensions)
-* [Contributing](#contributing)
-* [Compatibility](#compatibility)
-* [Versioning](#versioning)
-* [Team](#team)
-* [Copyright/License](#copyright-license)
-* [About thoughtbot](#about-thoughtbot)
+- [Shoulda Matchers ](#shoulda-matchers----)
+  - [Quick links](#quick-links)
+  - [Table of contents](#table-of-contents)
+  - [Getting started](#getting-started)
+    - [RSpec](#rspec)
+      - [Rails apps](#rails-apps)
+      - [Non-Rails apps](#non-rails-apps)
+    - [Minitest](#minitest)
+      - [Rails apps](#rails-apps-1)
+      - [Non-Rails apps](#non-rails-apps-1)
+  - [Usage](#usage)
+    - [On the subject of `subject`](#on-the-subject-of-subject)
+    - [Availability of RSpec matchers in example groups](#availability-of-rspec-matchers-in-example-groups)
+      - [Rails projects](#rails-projects)
+      - [Non-Rails projects](#non-rails-projects)
+    - [`should` vs `is_expected.to`](#should-vs-is_expectedto)
+    - [A Note on Testing Style](#a-note-on-testing-style)
+  - [Matchers](#matchers)
+    - [ActiveModel matchers](#activemodel-matchers)
+    - [ActiveRecord matchers](#activerecord-matchers)
+    - [ActionController matchers](#actioncontroller-matchers)
+    - [Routing matchers](#routing-matchers)
+    - [Independent matchers](#independent-matchers)
+  - [Extensions](#extensions)
+  - [Contributing](#contributing)
+  - [Compatibility](#compatibility)
+  - [Versioning](#versioning)
+  - [Team](#team)
+  - [Copyright/License](#copyrightlicense)
+  - [About thoughtbot](#about-thoughtbot)
 
 ## Getting started
 
@@ -63,8 +74,8 @@ Then run `bundle install`.
 
 Now you need to configure the gem by telling it:
 
-* which matchers you want to use in your tests
-* that you're using RSpec so that it can make those matchers available in
+- which matchers you want to use in your tests
+- that you're using RSpec so that it can make those matchers available in
   your example groups
 
 #### Rails apps
@@ -125,8 +136,8 @@ Then run `bundle install`.
 
 Now you need to configure the gem by telling it:
 
-* which matchers you want to use in your tests
-* that you're using Minitest so that it can make those matchers available in
+- which matchers you want to use in your tests
+- that you're using Minitest so that it can make those matchers available in
   your test case classes
 
 #### Rails apps
@@ -167,18 +178,18 @@ end
 Most of the matchers provided by this gem are useful in a Rails context, and as
 such, can be used for different parts of a Rails app:
 
-* [database models backed by ActiveRecord](#activerecord-matchers)
-* [non-database models, form objects, etc. backed by
+- [database models backed by ActiveRecord](#activerecord-matchers)
+- [non-database models, form objects, etc. backed by
   ActiveModel](#activemodel-matchers)
-* [controllers](#actioncontroller-matchers)
-* [routes](#routing-matchers) (RSpec only)
-* [Rails-specific features like `delegate`](#independent-matchers)
+- [controllers](#actioncontroller-matchers)
+- [routes](#routing-matchers) (RSpec only)
+- [Rails-specific features like `delegate`](#independent-matchers)
 
 As the name of the gem indicates, most matchers are designed to be used in
 "one-liner" form using the `should` macro, a special directive available in both
 RSpec and [Shoulda]. For instance, a model test case may look something like:
 
-``` ruby
+```ruby
 # RSpec
 RSpec.describe MenuItem, type: :model do
   describe 'associations' do
@@ -216,7 +227,7 @@ in certain cases it can be advantageous to override it. For instance, when
 testing validations in a model, it is customary to provide a valid model instead
 of a fresh one:
 
-``` ruby
+```ruby
 # RSpec
 RSpec.describe Post, type: :model do
   describe 'validations' do
@@ -242,7 +253,7 @@ correct object. **When in doubt, provide an instance of the class under test.**
 This is particularly necessary for controller tests, where it is easy to
 accidentally write something like:
 
-``` ruby
+```ruby
 RSpec.describe PostsController, type: :controller do
   describe 'GET #index' do
     subject { get :index }
@@ -257,7 +268,7 @@ end
 
 In this case, you would want to use `before` rather than `subject`:
 
-``` ruby
+```ruby
 RSpec.describe PostsController, type: :controller do
   describe 'GET #index' do
     before { get :index }
@@ -286,15 +297,15 @@ groups vs. request example groups.
 Relying on this behavior, Shoulda Matchers automatically makes certain matchers
 available in certain kinds of example groups:
 
-* ActiveRecord and ActiveModel matchers are available only in model example
+- ActiveRecord and ActiveModel matchers are available only in model example
   groups, i.e., those tagged with `type: :model` or in files located under
   `spec/models`.
-* ActionController matchers are available only in controller example groups,
+- ActionController matchers are available only in controller example groups,
   i.e., those tagged with `type: :controller` or in files located under
   `spec/controllers`.
-* The `route` matcher is available in routing example groups, i.e., those
+- The `route` matcher is available in routing example groups, i.e., those
   tagged with `type: :routing` or in files located under `spec/routing`.
-* Independent matchers are available in all example groups.
+- Independent matchers are available in all example groups.
 
 As long as you're using Rails, you don't need to worry about these details —
 everything should "just work".
@@ -306,7 +317,7 @@ and you want to use model matchers in a certain example group?** Then you'll
 need to manually include the module that holds those matchers into that example
 group. For instance, you might have to say:
 
-``` ruby
+```ruby
 RSpec.describe MySpecialModel do
   include Shoulda::Matchers::ActiveModel
   include Shoulda::Matchers::ActiveRecord
@@ -372,106 +383,106 @@ about any of them, make sure to [consult the documentation][rubydocs]!
 
 ### ActiveModel matchers
 
-* **[allow_value](lib/shoulda/matchers/active_model/allow_value_matcher.rb)**
+- **[allow_value](lib/shoulda/matchers/active_model/allow_value_matcher.rb)**
   tests that an attribute is valid or invalid if set to one or more values.
-  *(Aliased as #allow_values.)*
-* **[have_secure_password](lib/shoulda/matchers/active_model/have_secure_password_matcher.rb)**
+  _(Aliased as #allow_values.)_
+- **[have_secure_password](lib/shoulda/matchers/active_model/have_secure_password_matcher.rb)**
   tests usage of `has_secure_password`.
-* **[validate_absence_of](lib/shoulda/matchers/active_model/validate_absence_of_matcher.rb)**
+- **[validate_absence_of](lib/shoulda/matchers/active_model/validate_absence_of_matcher.rb)**
   tests usage of `validates_absence_of`.
-* **[validate_acceptance_of](lib/shoulda/matchers/active_model/validate_acceptance_of_matcher.rb)**
+- **[validate_acceptance_of](lib/shoulda/matchers/active_model/validate_acceptance_of_matcher.rb)**
   tests usage of `validates_acceptance_of`.
-* **[validate_confirmation_of](lib/shoulda/matchers/active_model/validate_confirmation_of_matcher.rb)**
+- **[validate_confirmation_of](lib/shoulda/matchers/active_model/validate_confirmation_of_matcher.rb)**
   tests usage of `validates_confirmation_of`.
-* **[validate_exclusion_of](lib/shoulda/matchers/active_model/validate_exclusion_of_matcher.rb)**
+- **[validate_exclusion_of](lib/shoulda/matchers/active_model/validate_exclusion_of_matcher.rb)**
   tests usage of `validates_exclusion_of`.
-* **[validate_inclusion_of](lib/shoulda/matchers/active_model/validate_inclusion_of_matcher.rb)**
+- **[validate_inclusion_of](lib/shoulda/matchers/active_model/validate_inclusion_of_matcher.rb)**
   tests usage of `validates_inclusion_of`.
-* **[validate_length_of](lib/shoulda/matchers/active_model/validate_length_of_matcher.rb)**
+- **[validate_length_of](lib/shoulda/matchers/active_model/validate_length_of_matcher.rb)**
   tests usage of `validates_length_of`.
-* **[validate_numericality_of](lib/shoulda/matchers/active_model/validate_numericality_of_matcher.rb)**
+- **[validate_numericality_of](lib/shoulda/matchers/active_model/validate_numericality_of_matcher.rb)**
   tests usage of `validates_numericality_of`.
-* **[validate_presence_of](lib/shoulda/matchers/active_model/validate_presence_of_matcher.rb)**
+- **[validate_presence_of](lib/shoulda/matchers/active_model/validate_presence_of_matcher.rb)**
   tests usage of `validates_presence_of`.
-* **[validate_comparison_of](lib/shoulda/matchers/active_model/validate_comparison_of_matcher.rb)**
+- **[validate_comparison_of](lib/shoulda/matchers/active_model/validate_comparison_of_matcher.rb)**
   tests usage of `validates_comparison_of`.
 
 ### ActiveRecord matchers
 
-* **[accept_nested_attributes_for](lib/shoulda/matchers/active_record/accept_nested_attributes_for_matcher.rb)**
+- **[accept_nested_attributes_for](lib/shoulda/matchers/active_record/accept_nested_attributes_for_matcher.rb)**
   tests usage of the `accepts_nested_attributes_for` macro.
-* **[belong_to](lib/shoulda/matchers/active_record/association_matcher.rb)**
+- **[belong_to](lib/shoulda/matchers/active_record/association_matcher.rb)**
   tests your `belongs_to` associations.
-* **[define_enum_for](lib/shoulda/matchers/active_record/define_enum_for_matcher.rb)**
+- **[define_enum_for](lib/shoulda/matchers/active_record/define_enum_for_matcher.rb)**
   tests usage of the `enum` macro.
-* **[have_and_belong_to_many](lib/shoulda/matchers/active_record/association_matcher.rb)**
+- **[have_and_belong_to_many](lib/shoulda/matchers/active_record/association_matcher.rb)**
   tests your `has_and_belongs_to_many` associations.
-* **[have_delegated_type](lib/shoulda/matchers/active_record/association_matcher.rb#L687)**
+- **[have_delegated_type](lib/shoulda/matchers/active_record/association_matcher.rb#L687)**
   tests usage of the `delegated_type` macro.
-* **[have_db_column](lib/shoulda/matchers/active_record/have_db_column_matcher.rb)**
+- **[have_db_column](lib/shoulda/matchers/active_record/have_db_column_matcher.rb)**
   tests that the table that backs your model has a specific column.
-* **[have_db_index](lib/shoulda/matchers/active_record/have_db_index_matcher.rb)**
+- **[have_db_index](lib/shoulda/matchers/active_record/have_db_index_matcher.rb)**
   tests that the table that backs your model has an index on a specific column.
-* **[have_implicit_order_column](lib/shoulda/matchers/active_record/have_implicit_order_column.rb)**
+- **[have_implicit_order_column](lib/shoulda/matchers/active_record/have_implicit_order_column.rb)**
   tests usage of `implicit_order_column`.
-* **[have_many](lib/shoulda/matchers/active_record/association_matcher.rb#L328)**
+- **[have_many](lib/shoulda/matchers/active_record/association_matcher.rb#L328)**
   tests your `has_many` associations.
-* **[have_many_attached](lib/shoulda/matchers/active_record/have_attached_matcher.rb)**
+- **[have_many_attached](lib/shoulda/matchers/active_record/have_attached_matcher.rb)**
   tests your `has_many_attached` associations.
-* **[have_one](lib/shoulda/matchers/active_record/association_matcher.rb#L598)**
+- **[have_one](lib/shoulda/matchers/active_record/association_matcher.rb#L598)**
   tests your `has_one` associations.
-* **[have_one_attached](lib/shoulda/matchers/active_record/have_attached_matcher.rb)**
+- **[have_one_attached](lib/shoulda/matchers/active_record/have_attached_matcher.rb)**
   tests your `has_one_attached` associations.
-* **[have_readonly_attribute](lib/shoulda/matchers/active_record/have_readonly_attribute_matcher.rb)**
+- **[have_readonly_attribute](lib/shoulda/matchers/active_record/have_readonly_attribute_matcher.rb)**
   tests usage of the `attr_readonly` macro.
-* **[have_rich_text](lib/shoulda/matchers/active_record/have_rich_text_matcher.rb)**
+- **[have_rich_text](lib/shoulda/matchers/active_record/have_rich_text_matcher.rb)**
   tests your `has_rich_text` associations.
-* **[serialize](lib/shoulda/matchers/active_record/serialize_matcher.rb)** tests
+- **[serialize](lib/shoulda/matchers/active_record/serialize_matcher.rb)** tests
   usage of the `serialize` macro.
-* **[validate_uniqueness_of](lib/shoulda/matchers/active_record/validate_uniqueness_of_matcher.rb)**
+- **[validate_uniqueness_of](lib/shoulda/matchers/active_record/validate_uniqueness_of_matcher.rb)**
   tests usage of `validates_uniqueness_of`.
-* **[normalize](lib/shoulda/matchers/active_record/normalize_matcher.rb)** tests
+- **[normalize](lib/shoulda/matchers/active_record/normalize_matcher.rb)** tests
   usage of the `normalize` macro
-* **[encrypt](lib/shoulda/matchers/active_record/encrypt_matcher.rb)**
+- **[encrypt](lib/shoulda/matchers/active_record/encrypt_matcher.rb)**
   tests usage of the `encrypts` macro.
 
 ### ActionController matchers
 
-* **[filter_param](lib/shoulda/matchers/action_controller/filter_param_matcher.rb)**
+- **[filter_param](lib/shoulda/matchers/action_controller/filter_param_matcher.rb)**
   tests parameter filtering configuration.
-* **[permit](lib/shoulda/matchers/action_controller/permit_matcher.rb)** tests
+- **[permit](lib/shoulda/matchers/action_controller/permit_matcher.rb)** tests
   that an action places a restriction on the `params` hash.
-* **[redirect_to](lib/shoulda/matchers/action_controller/redirect_to_matcher.rb)**
+- **[redirect_to](lib/shoulda/matchers/action_controller/redirect_to_matcher.rb)**
   tests that an action redirects to a certain location.
-* **[render_template](lib/shoulda/matchers/action_controller/render_template_matcher.rb)**
+- **[render_template](lib/shoulda/matchers/action_controller/render_template_matcher.rb)**
   tests that an action renders a template.
-* **[render_with_layout](lib/shoulda/matchers/action_controller/render_with_layout_matcher.rb)**
+- **[render_with_layout](lib/shoulda/matchers/action_controller/render_with_layout_matcher.rb)**
   tests that an action is rendered with a certain layout.
-* **[rescue_from](lib/shoulda/matchers/action_controller/rescue_from_matcher.rb)**
+- **[rescue_from](lib/shoulda/matchers/action_controller/rescue_from_matcher.rb)**
   tests usage of the `rescue_from` macro.
-* **[respond_with](lib/shoulda/matchers/action_controller/respond_with_matcher.rb)**
+- **[respond_with](lib/shoulda/matchers/action_controller/respond_with_matcher.rb)**
   tests that an action responds with a certain status code.
-* **[route](lib/shoulda/matchers/action_controller/route_matcher.rb)** tests
+- **[route](lib/shoulda/matchers/action_controller/route_matcher.rb)** tests
   your routes.
-* **[set_session](lib/shoulda/matchers/action_controller/set_session_matcher.rb)**
+- **[set_session](lib/shoulda/matchers/action_controller/set_session_matcher.rb)**
   makes assertions on the `session` hash.
-* **[set_flash](lib/shoulda/matchers/action_controller/set_flash_matcher.rb)**
+- **[set_flash](lib/shoulda/matchers/action_controller/set_flash_matcher.rb)**
   makes assertions on the `flash` hash.
-* **[use_after_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L29)**
+- **[use_after_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L29)**
   tests that an `after_action` callback is defined in your controller.
-* **[use_around_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L75)**
+- **[use_around_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L75)**
   tests that an `around_action` callback is defined in your controller.
-* **[use_before_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L4)**
+- **[use_before_action](lib/shoulda/matchers/action_controller/callback_matcher.rb#L4)**
   tests that a `before_action` callback is defined in your controller.
 
 ### Routing matchers
 
-* **[route](lib/shoulda/matchers/action_controller/route_matcher.rb)** tests
+- **[route](lib/shoulda/matchers/action_controller/route_matcher.rb)** tests
   your routes.
 
 ### Independent matchers
 
-* **[delegate_method](lib/shoulda/matchers/independent/delegate_method_matcher.rb)**
+- **[delegate_method](lib/shoulda/matchers/independent/delegate_method_matcher.rb)**
   tests that an object forwards messages to other, internal objects by way of
   delegation.
 
@@ -480,7 +491,7 @@ about any of them, make sure to [consult the documentation][rubydocs]!
 Over time our community has created extensions to Shoulda Matchers. If you've
 created something that you want to share, please [let us know][new-issue]!
 
-* **[shoulda-matchers-cucumber]** – Adds support for using Shoulda Matchers in
+- **[shoulda-matchers-cucumber]** – Adds support for using Shoulda Matchers in
   Cucumber tests.
 
 [new-issue]: https://github.com/thoughtbot/shoulda-matchers/issues/new
@@ -537,6 +548,7 @@ redistributed under the terms specified in the [LICENSE](LICENSE) file.
 [thoughtbot-website]: https://thoughtbot.com
 
 <!-- START /templates/footer.md -->
+
 ## About thoughtbot
 
 ![thoughtbot](https://thoughtbot.com/thoughtbot-logo-for-readmes.svg)
@@ -550,6 +562,5 @@ We are [available for hire][hire].
 
 [community]: https://thoughtbot.com/community?utm_source=github
 [hire]: https://thoughtbot.com/hire-us?utm_source=github
-
 
 <!-- END /templates/footer.md -->
