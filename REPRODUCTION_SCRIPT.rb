@@ -16,7 +16,7 @@ ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:'
 ActiveRecord::Base.logger = Logger.new(STDOUT)
 
 # TODO: Update the schema to include the specific tables or columns necessary
-# to reproduct the bug
+# to reproduce the bug
 ActiveRecord::Schema.define do
   create_table :posts, force: true do |t|
     t.string :body
