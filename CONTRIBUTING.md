@@ -24,11 +24,11 @@ you think would be useful? Here's what you need to do:
     changes to your branch to bring it to green.](#continuous-integration)
 
 Although we maintain Shoulda Matchers in our free time, we try to respond to
-contributions in a timely manner. Once we look at your pull request, we may give
+contributions promptly. Once we look at your pull request, we may give
 you feedback. For instance, we may suggest some changes to make to your code to
 fit within the project style or discuss alternate ways of addressing the issue
 in question. Assuming we're happy with everything, we'll then bring your changes
-into main. Now you're a contributor!
+into the main. Now you're a contributor!
 
 ---
 
@@ -36,7 +36,7 @@ into main. Now you're a contributor!
 
 If this is your first time contributing, please read the [Code of Conduct]. We
 want to create a space in which everyone is allowed to contribute, and we
-enforce the policies outline in this document.
+enforce the policies outlined in this document.
 
 [Code of Conduct]: https://thoughtbot.com/open-source-code-of-conduct
 
@@ -62,8 +62,7 @@ All of the matchers are broken up by the type of example group they apply to:
   matchers
 - `{lib,spec/unit}/shoulda/matchers/active_model*` for ActiveModel matchers
 - `{lib,spec/unit}/shoulda/matchers/active_record*` for ActiveRecord matchers
-- `{lib,spec/unit}/shoulda/matchers/independent*` for matchers that can be used
-  in any example group
+- `{lib,spec/unit}/shoulda/matchers/independent*` for matchers that can be used in example group
 
 There are other files in the project, of course, but these are likely the ones
 you'll be most interested in.
@@ -93,8 +92,7 @@ some key differences:
 - Use single quotes for strings.
 - When breaking up methods across multiple lines, place the `.` at the end of
   the line instead of the beginning.
-- Don't use conditional modifiers (i.e. `x if y`); place the beginning and
-  ending of conditionals on their own lines.
+- Avoid using conditional modifiers (e.g. `x if y`). Instead, place the beginning and ending of conditionals on their own lines.
 - Use an 80-character line-length except for `describe`, `context`, `it`, and
   `specify` lines in tests.
 - For arrays, hashes, and method arguments that span multiple lines, place a
@@ -159,7 +157,7 @@ bundle exec appraisal rails_5_2 rspec spec/acceptance/rails_integration_spec.rb
 
 ### All tests
 
-In order to run all of the tests, simply run:
+To run all of the tests:
 
 ```bash
 bundle exec rake
