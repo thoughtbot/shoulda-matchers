@@ -7,28 +7,28 @@ Have a fix for a problem you've been running into or an idea for a new feature
 you think would be useful? Here's what you need to do:
 
 1. [Read and understand the Code of Conduct](#code-of-conduct).
-1. Fork this repo and clone your fork to somewhere on your machine.
-1. [Ensure that you have a working environment](#setting-up-your-environment).
-1. Read up on the [architecture of the gem](#architecture), [how to run
+2. Fork this repo and clone your fork to somewhere on your machine.
+3. [Ensure that you have a working environment](#setting-up-your-environment).
+4. Read up on the [architecture of the gem](#architecture), [how to run
    tests](#running-tests), and [the code style we use in this
    project](#code-style).
-1. Cut a new branch and write a failing test for the feature or bugfix you plan
+5. Cut a new branch and write a failing test for the feature or bugfix you plan
    on implementing.
-1. [Make sure your branch is well managed as you go
+6. [Make sure your branch is well managed as you go
    along](#managing-your-branch).
-1. [Update the inline documentation if you're making a change to the
+7. [Update the inline documentation if you're making a change to the
    API](#documentation).
-1. [Refrain from updating the changelog.](#a-word-on-the-changelog)
-1. Push to your fork and submit a pull request.
-1. [Ensure that the test suite passes on GitHub Actions and make any necessary
-   changes to your branch to bring it to green.](#continuous-integration)
+8. [Refrain from updating the changelog.](#a-word-on-the-changelog)
+9. Push to your fork and submit a pull request.
+10. [Ensure that the test suite passes on GitHub Actions and make any necessary
+    changes to your branch to bring it to green.](#continuous-integration)
 
 Although we maintain Shoulda Matchers in our free time, we try to respond to
-contributions in a timely manner. Once we look at your pull request, we may give
+contributions promptly. Once we look at your pull request, we may give
 you feedback. For instance, we may suggest some changes to make to your code to
 fit within the project style or discuss alternate ways of addressing the issue
 in question. Assuming we're happy with everything, we'll then bring your changes
-into main. Now you're a contributor!
+into the main. Now you're a contributor!
 
 ---
 
@@ -36,7 +36,7 @@ into main. Now you're a contributor!
 
 If this is your first time contributing, please read the [Code of Conduct]. We
 want to create a space in which everyone is allowed to contribute, and we
-enforce the policies outline in this document.
+enforce the policies outlined in this document.
 
 [Code of Conduct]: https://thoughtbot.com/open-source-code-of-conduct
 
@@ -58,12 +58,11 @@ and tests are in `spec`.
 
 All of the matchers are broken up by the type of example group they apply to:
 
-* `{lib,spec/unit}/shoulda/matchers/action_controller*` for ActionController
+- `{lib,spec/unit}/shoulda/matchers/action_controller*` for ActionController
   matchers
-* `{lib,spec/unit}/shoulda/matchers/active_model*` for ActiveModel matchers
-* `{lib,spec/unit}/shoulda/matchers/active_record*` for ActiveRecord matchers
-* `{lib,spec/unit}/shoulda/matchers/independent*` for matchers that can be used
-  in any example group
+- `{lib,spec/unit}/shoulda/matchers/active_model*` for ActiveModel matchers
+- `{lib,spec/unit}/shoulda/matchers/active_record*` for ActiveRecord matchers
+- `{lib,spec/unit}/shoulda/matchers/independent*` for matchers that can be used in example group
 
 There are other files in the project, of course, but these are likely the ones
 you'll be most interested in.
@@ -72,9 +71,9 @@ you'll be most interested in.
 
 In addition, tests are broken up into two categories:
 
-* `spec/unit` — low-level tests for individual matchers (you're probably
+- `spec/unit` — low-level tests for individual matchers (you're probably
   interested in these)
-* `spec/acceptance` — high-level tests to ensure that the gem works in Rails
+- `spec/acceptance` — high-level tests to ensure that the gem works in Rails
   projects, plain Ruby projects, etc. (these do not need to get updated often)
 
 A word about the tests, by the way: they're admittedly the most complicated part
@@ -90,16 +89,15 @@ We follow a derivative of the [unofficial Ruby style guide] created by the
 Rubocop developers. You can view our Rubocop configuration [here], but here are
 some key differences:
 
-* Use single quotes for strings.
-* When breaking up methods across multiple lines, place the `.` at the end of
+- Use single quotes for strings.
+- When breaking up methods across multiple lines, place the `.` at the end of
   the line instead of the beginning.
-* Don't use conditional modifiers (i.e. `x if y`); place the beginning and
-  ending of conditionals on their own lines.
-* Use an 80-character line-length except for `describe`, `context`, `it`, and
+- Avoid using conditional modifiers (e.g. `x if y`). Instead, place the beginning and ending of conditionals on their own lines.
+- Use an 80-character line-length except for `describe`, `context`, `it`, and
   `specify` lines in tests.
-* For arrays, hashes, and method arguments that span multiple lines, place a
+- For arrays, hashes, and method arguments that span multiple lines, place a
   trailing comma at the end of the last item.
-* Collection methods are spelled `detect`, `inject`, `map`, and `select`.
+- Collection methods are spelled `detect`, `inject`, `map`, and `select`.
 
 [unofficial Ruby style guide]: https://github.com/rubocop-hq/ruby-style-guide
 [here]: .rubocop.yml
@@ -159,7 +157,7 @@ bundle exec appraisal rails_5_2 rspec spec/acceptance/rails_integration_spec.rb
 
 ### All tests
 
-In order to run all of the tests, simply run:
+To run all of the tests:
 
 ```bash
 bundle exec rake
@@ -167,10 +165,10 @@ bundle exec rake
 
 ## Managing your branch
 
-* Use well-crafted commit messages, providing context if possible. [Tim Pope's
+- Use well-crafted commit messages, providing context if possible. [Tim Pope's
   guide] was a wonderful piece on this topic when it came out and we still find
   it to be helpful even today.
-* Squash "WIP" commits and remove merge commits by rebasing your branch against
+- Squash "WIP" commits and remove merge commits by rebasing your branch against
   `main`. We try to keep our commit history as clean as possible.
 
 [Tim Pope's guide]: https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
