@@ -23,7 +23,7 @@ module AcceptanceTests
       add_gem 'activerecord', active_record_version
       add_gem 'rake'
 
-      add_gem 'sqlite3', '~>1.4'
+      add_gem 'sqlite3', '>=1.4'
     end
 
     def create_generic_bundler_project
