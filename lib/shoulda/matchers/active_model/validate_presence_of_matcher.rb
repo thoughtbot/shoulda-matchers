@@ -147,8 +147,10 @@ module Shoulda
       #
       # @return [ValidatePresenceOfMatcher]
       #
-      def validate_presence_of(attr)
-        ValidatePresenceOfMatcher.new(attr)
+
+      def validate_presence_of(*attrs)
+        matchers = attrs.map { |attr| ValidatePresenceOfMatcher.new(attr) }
+        MatcherCollection.new(matchers)
       end
 
       # @private
