@@ -27,7 +27,7 @@ module Shoulda
 
         def extract_params_from_string
           controller, action = args[0].split('#')
-          params = (args[1] || {}).merge(controller: controller, action: action)
+          params = (args[1] || {}).merge!(controller: controller, action: action)
           normalize_values(params)
         end
 

@@ -278,8 +278,7 @@ could not be proved.
   end
 
   def define_model_validating_absence_of(attr, validation_options = {}, given_column_options = {})
-    default_column_options = { type: :string, options: {} }
-    column_options = default_column_options.merge(given_column_options)
+    column_options = { type: :string, options: {} }.merge!(given_column_options)
 
     define_model :example, attr => column_options do |model|
       model.validates_absence_of(attr, validation_options)

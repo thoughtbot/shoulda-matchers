@@ -59,7 +59,7 @@ module Shoulda
               when String, Symbol
                 { active: true, column: counter_cache.to_s }
               when Hash
-                { active: true, column: nil }.merge(counter_cache)
+                { active: true, column: nil }.merge!(counter_cache)
               else
                 raise ArgumentError, 'Invalid counter_cache option'
               end

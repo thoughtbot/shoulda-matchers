@@ -358,7 +358,7 @@ EOT
             description = "validate that :#{@attribute}"
 
             description <<
-              if @array.count > 1
+              if @array.length > 1
                 " is either #{inspected_array}"
               else
                 " is #{inspected_array}"

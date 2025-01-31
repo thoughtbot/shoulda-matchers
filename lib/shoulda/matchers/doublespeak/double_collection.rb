@@ -27,7 +27,7 @@ module Shoulda
 
         def calls_by_method_name
           doubles_by_method_name.inject({}) do |hash, (method_name, double)|
-            hash.merge method_name => double.calls.map(&:args)
+            hash.merge! method_name => double.calls.map(&:args)
           end
         end
 

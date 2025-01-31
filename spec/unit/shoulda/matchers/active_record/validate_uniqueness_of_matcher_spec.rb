@@ -1575,7 +1575,7 @@ this could not be proved.
 
   def build_record_from(model, extra_attributes = {})
     attributes = attributes_with_values_for(model)
-    model.new(attributes.merge(extra_attributes))
+    model.new(attributes.merge!(extra_attributes))
   end
 
   def create_record_from(model, extra_attributes = {})
@@ -1608,7 +1608,7 @@ this could not be proved.
 
     model = define_model(:example, column_options) do |m|
       m.validates_uniqueness_of attribute_name,
-        validation_options.merge(scope: scope_attribute_names)
+        validation_options.merge!(scope: scope_attribute_names)
 
       if m.respond_to?(:attr_accessible)
         attributes.each { |attr| m.attr_accessible(attr[:name]) }

@@ -17,7 +17,7 @@ module UnitTests
 
       def columns
         attributes.inject({}) do |options, attribute|
-          options.merge(
+          options.merge!(
             attribute.name => {
               type: attribute.column_type,
               options: attribute.column_options,
@@ -27,12 +27,12 @@ module UnitTests
       end
 
       def validation_options
-        super.merge(scope: scope_attribute_names)
+        super.merge!(scope: scope_attribute_names)
       end
 
       def attribute_default_values_by_name
         attributes.inject({}) do |values, attribute|
-          values.merge(attribute.name => attribute.default_value)
+          values.merge!(attribute.name => attribute.default_value)
         end
       end
 
