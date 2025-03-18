@@ -447,7 +447,7 @@ module Shoulda
                 false
               rescue NoMethodError => e
                 if e.message =~
-                   /undefined method `#{delegate_method}' for nil/
+                   /undefined method [`']#{delegate_method}' for nil/
                   false
                 else
                   raise e
@@ -468,7 +468,7 @@ module Shoulda
                 false
               rescue NoMethodError => e
                 if e.message =~
-                   /private method `#{delegating_method}' called for/
+                   /private method [`']#{delegating_method}' called for/
                   true
                 else
                   raise e
