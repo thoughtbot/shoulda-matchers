@@ -1499,6 +1499,46 @@ this could not be proved.
     end
   end
 
+  context 'when the validation is used with alternatives' do
+    it 'accepts a single alternative value' do
+      model = define_model_validating_uniqueness(attribute_type: :string)
+      create_record_from(model, attr: 'existing value')
+
+      expect(model.new).to validate_uniqueness_of(:attr).alternatives('alternative value')
+    end
+
+    it 'accepts an array of alternative values' do
+      model = define_model_validating_uniqueness(attribute_type: :string)
+      create_record_from(model, attr: 'existing value')
+
+      expect(model.new).to validate_uniqueness_of(:attr).alternatives(['alternative1', 'alternative2'])
+    end
+
+    it 'uses the alternative value instead of calling next on the existing value' do
+      model = define_model_validating_uniqueness(attribute_type: :string)
+      create_record_from(model, attr: 'existing value')
+
+      # Create a model that would fail if .next is called on the attribute value
+      # because the next value already exists in the database
+      create_record_from(model, attr: 'existing valuef') # This is what 'existing value'.next would be
+
+      # This should pass because the alternative value is used instead of calling .next
+      expect(model.new).to validate_uniqueness_of(:attr).alternatives('alternative value')
+    end
+  end
+
+  describe '#alternatives' do
+    it 'sets the alternatives option' do
+      matcher = validate_uniqueness_of(:attr).alternatives('alternative value')
+      expect(matcher.instance_variable_get(:@options)[:alternatives]).to eq('alternative value')
+    end
+
+    it 'returns self to allow chaining' do
+      matcher = validate_uniqueness_of(:attr)
+      expect(matcher.alternatives('alternative value')).to eq(matcher)
+    end
+  end
+
   let(:model_attributes) { {} }
 
   def default_attribute
