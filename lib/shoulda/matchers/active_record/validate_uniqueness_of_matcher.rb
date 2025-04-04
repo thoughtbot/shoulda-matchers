@@ -258,6 +258,36 @@ module Shoulda
       #
       # @return [ValidateUniquenessOfMatcher]
       #
+      # ##### alternatives
+      #
+      # Use `alternatives` to specify alternative valid values to use
+      #   for testing uniqueness.
+      #
+      #     class Post < ActiveRecord::Base
+      #       validates :title, uniqueness: true
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Post, type: :model do
+      #       it do
+      #         should validate_uniqueness_of(:title).alternatives('Alternative Title')
+      #       end
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PostTest < ActiveSupport::TestCase
+      #       should validate_uniqueness_of(:title).alternatives(['Alternative Title', 'Another Title'])
+      #     end
+      #
+      # @param values [String, Array<String>]
+      #   Alternative value(s) to use for testing uniqueness instead of using
+      #   the `succ` operator on the existing value.
+      #
+      # @return [ValidateUniquenessOfMatcher]
+      #
+      # @example
+      #   it { should validate_uniqueness_of(:title).alternatives('Alternative Title') }
+      #   it { should validate_uniqueness_of(:title).alternatives(['Title 1', 'Title 2']) }
       def validate_uniqueness_of(attr)
         ValidateUniquenessOfMatcher.new(attr)
       end
@@ -283,6 +313,20 @@ module Shoulda
 
         def scoped_to(*scopes)
           @options[:scopes] = [*scopes].flatten.map(&:to_sym)
+          self
+        end
+
+        # @param values [String, Array<String>]
+        #   Alternative value(s) to use for testing uniqueness instead of using
+        #   the `succ` operator on the existing value.
+        #
+        # @return [ValidateUniquenessOfMatcher]
+        #
+        # @example
+        #   it { should validate_uniqueness_of(:title).alternatives('Alternative Title') }
+        #   it { should validate_uniqueness_of(:title).alternatives(['Title 1', 'Title 2']) }
+        def alternatives(values)
+          @options[:alternatives] = values
           self
         end
 
@@ -836,6 +880,9 @@ module Shoulda
             available_values.keys.last
           elsif polymorphic_type_attribute?(scope, previous_value)
             Uniqueness::TestModels.create(previous_value).to_s
+          elsif @options[:alternatives] && scope == @attribute
+            alternatives = Array.wrap(@options[:alternatives])
+            alternatives.first
           elsif previous_value.respond_to?(:next)
             previous_value.next
           elsif previous_value.respond_to?(:to_datetime)
