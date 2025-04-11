@@ -94,14 +94,14 @@ module Shoulda
         end
 
         def description
-          description = 'render with '
-          description <<
-            if @expected_layout.nil?
-              'a layout'
-            else
-              "the #{@expected_layout.inspect} layout"
-            end
-          description
+          String.new('render with ').tap do |string|
+            string <<
+              if @expected_layout.nil?
+                'a layout'
+              else
+                "the #{@expected_layout.inspect} layout"
+              end
+          end
         end
 
         private

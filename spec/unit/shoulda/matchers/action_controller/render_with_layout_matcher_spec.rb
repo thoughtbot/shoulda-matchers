@@ -16,6 +16,20 @@ describe Shoulda::Matchers::ActionController::RenderWithLayoutMatcher, type: :co
       expect(controller_with_wide_layout).not_to render_with_layout(:other)
     end
 
+    it 'produces the correct message for rendering with another layout' do
+      expected_message = 'Expected to render with the "other" layout, but rendered with "wide", "wide"'
+
+      expect { expect(controller_with_wide_layout).to render_with_layout(:other) }.
+        to fail_with_message(expected_message)
+    end
+
+    it 'produces the correct message for the negation' do
+      expected_message = 'Did not expect to render with a layout, but rendered with "wide", "wide"'
+
+      expect { expect(controller_with_wide_layout).not_to render_with_layout }.
+        to fail_with_message(expected_message)
+    end
+
     def controller_with_wide_layout
       create_view('layouts/wide.html.erb', 'some content, <%= yield %>')
       build_fake_response { render layout: 'wide' }
@@ -27,6 +41,14 @@ describe Shoulda::Matchers::ActionController::RenderWithLayoutMatcher, type: :co
       controller_without_layout = build_fake_response { render layout: false }
 
       expect(controller_without_layout).not_to render_with_layout
+    end
+
+    it 'produces the correct message' do
+      controller_without_layout = build_fake_response { render layout: false }
+      expected_message = 'Expected to render with a layout, but rendered without a layout'
+
+      expect { expect(controller_without_layout).to render_with_layout }.
+        to fail_with_message(expected_message)
     end
   end
 
