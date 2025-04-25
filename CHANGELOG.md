@@ -1,5 +1,30 @@
 # Changelog
 
+## 6.5.0 - 2025-04-25
+
+## What's Changed
+
+### Features
+
+- Add `private: true` qualifier to delegate_method matchers by @pr0d1r2 ([#1653])
+- Add support for specifying alternatives for uniqueness matcher by @lake-effect ([#1664])
+
+### Improvements
+
+- Add section on testing style that we promote in the README by @clemens ([#1645])
+- Documentation readbility enhancements by @JuzerShakir ([#1658])
+- Enable sqlite3 2.x+ by @voxik ([#1661])
+- Use `merge!` instead of `merge` when merging hashes by @matsales28 ([#1650])
+- Fix literal string modifications by @asilano ([#1665]) 
+
+[#1645]: https://github.com/thoughtbot/shoulda-matchers/pull/1645
+[#1650]: https://github.com/thoughtbot/shoulda-matchers/pull/1650
+[#1653]: https://github.com/thoughtbot/shoulda-matchers/pull/1653
+[#1658]: https://github.com/thoughtbot/shoulda-matchers/pull/1658
+[#1661]: https://github.com/thoughtbot/shoulda-matchers/pull/1661
+[#1664]: https://github.com/thoughtbot/shoulda-matchers/pull/1664
+[#1665]: https://github.com/thoughtbot/shoulda-matchers/pull/1665
+
 ## 6.4.0 - 2024-08-16
 
 ## What's Changed
