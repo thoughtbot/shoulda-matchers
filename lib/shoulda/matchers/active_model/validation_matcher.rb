@@ -8,6 +8,7 @@ module Shoulda
         def initialize(attribute)
           super
           @attribute = attribute
+          @options = {}
           @expects_strict = false
           @subject = nil
           @last_submatcher_run = nil
