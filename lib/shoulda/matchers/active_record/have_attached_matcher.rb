@@ -53,11 +53,12 @@ module Shoulda
 
       # @private
       class HaveAttachedMatcher
-        attr_reader :name
+        attr_reader :name, :options
 
         def initialize(macro, name)
           @macro = macro
           @name = name
+          @options = {}
         end
 
         def description
@@ -78,7 +79,13 @@ Did not expect #{expectation}, but it does.
         end
 
         def expectation
-          "#{model_class.name} to #{description}"
+          expectation = "#{model_class.name} to #{description}"
+
+          if options[:service].present?
+            expectation << " with service :#{options[:service]}"
+          end
+
+          expectation
         end
 
         def matches?(subject)
@@ -87,7 +94,13 @@ Did not expect #{expectation}, but it does.
             writer_attribute_exists? &&
             attachments_association_exists? &&
             blobs_association_exists? &&
-            eager_loading_scope_exists?
+            eager_loading_scope_exists? &&
+            service_correct?
+        end
+
+        def service(service_name)
+          @options[:service] = service_name
+          self
         end
 
         private
@@ -178,6 +191,25 @@ Did not expect #{expectation}, but it does.
 
         def model_class
           subject.class
+        end
+
+        def service_correct?
+          service = @options[:service]
+          return true if service.nil? || service_name == service
+
+          @failure = 'The service for the association called ' \
+                      "#{attachments_association_name} is incorrect " \
+                      "(expected: :#{service}, " \
+                      "actual: :#{service_name})"
+          false
+        end
+
+        def attachment_reflection
+          model_class.attachment_reflections[name.to_s]
+        end
+
+        def service_name
+          attachment_reflection.options[:service_name]
         end
       end
     end

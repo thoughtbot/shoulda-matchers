@@ -80,6 +80,36 @@ Expected User to have a has_one_attached called avatar, but this could not be pr
         end
       end
     end
+
+    context 'when specifying a service' do
+      it 'matches when the service is correct' do
+        record = record_having_one_attached(:avatar, options: { service: :local })
+        expect { have_one_attached(:avatar).service(:local) }.
+          to match_against(record).
+          or_fail_with(<<-MESSAGE)
+Did not expect User to have a has_one_attached called avatar with service :local, but it does.
+          MESSAGE
+      end
+
+      it 'does not match when the service is incorrect' do
+        record = record_having_one_attached(:avatar, options: { service: :local })
+        expect { have_one_attached(:avatar).service(:foo) }.
+          not_to match_against(record).
+          and_fail_with(<<-MESSAGE)
+Expected User to have a has_one_attached called avatar with service :foo, but this could not be proved.
+  The service for the association called avatar_attachment is incorrect (expected: :foo, actual: :local)
+          MESSAGE
+      end
+
+      it 'matches when no service is specified' do
+        record = record_having_one_attached(:avatar, options: { service: :local })
+        expect { have_one_attached(:avatar) }.
+          to match_against(record).
+          or_fail_with(<<-MESSAGE)
+Did not expect User to have a has_one_attached called avatar, but it does.
+          MESSAGE
+      end
+    end
   end
 
   describe 'have_many_attached' do
@@ -171,10 +201,11 @@ def record_having_one_attached(
   remove_writer: false,
   remove_attachments: false,
   invalidate_blobs: false,
-  remove_eager_loading_scope: false
+  remove_eager_loading_scope: false,
+  options: {}
 )
   model = define_model(model_name) do
-    has_one_attached attached_name
+    has_one_attached attached_name, **options
 
     if remove_reader
       undef_method attached_name
@@ -215,10 +246,11 @@ def record_having_many_attached(
   remove_writer: false,
   remove_attachments: false,
   invalidate_blobs: false,
-  remove_eager_loading_scope: false
+  remove_eager_loading_scope: false,
+  options: {}
 )
   model = define_model(model_name) do
-    has_many_attached attached_name
+    has_many_attached attached_name, **options
 
     if remove_reader
       undef_method attached_name
