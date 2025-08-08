@@ -71,7 +71,7 @@ module Shoulda
         def has_expected_action_text?
           defined?(ActionText::RichText) &&
             @subject.send(rich_text_attribute).
-              instance_of?(ActionText::RichText)
+              is_a?(ActionText::RichText)
         end
 
         def error_description
