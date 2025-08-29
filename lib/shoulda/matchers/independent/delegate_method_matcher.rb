@@ -446,8 +446,7 @@ module Shoulda
               rescue Module::DelegationError
                 false
               rescue NoMethodError => e
-                if e.message =~
-                   /undefined method `#{delegate_method}' for nil/
+                if e.message =~ /undefined method [`']#{delegate_method}[`'] for nil/
                   false
                 else
                   raise e
@@ -467,8 +466,7 @@ module Shoulda
               rescue Module::DelegationError
                 false
               rescue NoMethodError => e
-                if e.message =~
-                   /private method `#{delegating_method}' called for/
+                if e.message =~ /private method [`']#{delegating_method}[`'] called for/
                   true
                 else
                   raise e

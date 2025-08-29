@@ -27,7 +27,12 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
         it 'states that it should delegate method to the right object with right argument' do
           matcher = delegate_method(:method_name).to(:delegate).
             with_arguments(:foo, bar: [1, 2])
-          message = 'delegate #method_name to the #delegate object passing arguments [:foo, {:bar=>[1, 2]}]'
+
+          message = if ruby_gt_3_4?
+                      'delegate #method_name to the #delegate object passing arguments [:foo, {bar: [1, 2]}]'
+                    else
+                      'delegate #method_name to the #delegate object passing arguments [:foo, {:bar=>[1, 2]}]'
+                    end
 
           expect(matcher.description).to eq message
         end
@@ -138,7 +143,11 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
         it 'states that it should delegate method to the right object with right argument' do
           matcher = delegate_method(:method_name).to(:delegate).
             with_arguments(:foo, bar: [1, 2])
-          message = 'delegate .method_name to the .delegate object passing arguments [:foo, {:bar=>[1, 2]}]'
+          message = if ruby_gt_3_4?
+                      'delegate .method_name to the .delegate object passing arguments [:foo, {bar: [1, 2]}]'
+                    else
+                      'delegate .method_name to the .delegate object passing arguments [:foo, {:bar=>[1, 2]}]'
+                    end
 
           expect(matcher.description).to eq message
         end
@@ -294,7 +303,8 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
         context 'negating the matcher' do
           it 'rejects with the correct failure message' do
             post_office = PostOffice.new
-            message = 'Expected PostOffice not to delegate #deliver_mail to the #mailman object passing arguments ["221B Baker St.", {:hastily=>true}], but it did.'
+            hash_message = ruby_gt_3_4? ? '{hastily: true}' : '{:hastily=>true}'
+            message = "Expected PostOffice not to delegate #deliver_mail to the #mailman object passing arguments [\"221B Baker St.\", #{hash_message}], but it did."
 
             expect {
               expect(post_office).
@@ -309,13 +319,14 @@ describe Shoulda::Matchers::Independent::DelegateMethodMatcher do
       context 'when not given the correct arguments' do
         it 'rejects with the correct failure message' do
           post_office = PostOffice.new
+          hash_message = ruby_gt_3_4? ? 'deliver_mail("221B Baker St.", {hastily: true})' : 'deliver_mail("221B Baker St.", {:hastily=>true})'
           message = [
             'Expected PostOffice to delegate #deliver_mail to the #mailman object',
             'passing arguments ["123 Nowhere Ln."].',
             '',
             'Method calls sent to PostOffice#mailman:',
             '',
-            '1) deliver_mail("221B Baker St.", {:hastily=>true})',
+            "1) #{hash_message}",
           ].join("\n")
 
           expect {

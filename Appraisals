@@ -119,6 +119,7 @@ appraise 'rails_7_2' do
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'webdrivers'
+  gem 'mutex_m', require: false
 
   # test dependencies
   gem 'rspec-rails', '~> 6.0'

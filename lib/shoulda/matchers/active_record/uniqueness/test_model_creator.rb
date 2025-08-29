@@ -1,3 +1,5 @@
+require 'mutex_m'
+
 module Shoulda
   module Matchers
     module ActiveRecord
