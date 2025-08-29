@@ -104,18 +104,18 @@ install() {
 
   for arg in "$@"; do
     case $arg in
-      apt=*)
-        apt_package="${arg#apt=}"
-        ;;
-      rpm=*)
-        rpm_package="${arg#rpm=}"
-        ;;
-      brew=*)
-        brew_package="${arg#brew=}"
-        ;;
-      *)
-        default_package="$arg"
-        ;;
+    apt=*)
+      apt_package="${arg#apt=}"
+      ;;
+    rpm=*)
+      rpm_package="${arg#rpm=}"
+      ;;
+    brew=*)
+      brew_package="${arg#brew=}"
+      ;;
+    *)
+      default_package="$arg"
+      ;;
     esac
   done
 
@@ -217,52 +217,78 @@ ensure-ruby-development-libraries-installed() {
 }
 
 ensure-ruby-installed() {
-  if has-executable asdf; then
-    if ! (asdf current ruby | grep $REQUIRED_RUBY_VERSION'\>' &>/dev/null); then
-      banner "Installing Ruby $REQUIRED_RUBY_VERSION with asdf"
-      asdf install ruby $REQUIRED_RUBY_VERSION
-    fi
-  elif has-executable rbenv; then
-    if ! (rbenv versions | grep $REQUIRED_RUBY_VERSION'\>' &>/dev/null); then
-      banner "Installing Ruby $REQUIRED_RUBY_VERSION with rbenv"
-      rbenv install --skip-existing "$REQUIRED_RUBY_VERSION"
-    fi
-  elif has-executable chruby-exec; then
-    if [ -f /usr/local/share/chruby/chruby.sh ]; then
-      CHRUBY_SH=/usr/local/share/chruby/chruby.sh
-    elif [ -f /opt/homebrew/share/chruby/chruby.sh ]; then
-      CHRUBY_SH=/opt/homebrew/share/chruby/chruby.sh
-    fi
+  local managers=("asdf" "mise" "rbenv" "chruby-exec" "rvm")
 
-    if [ -z "$CHRUBY_SH" ]; then
-      error "chruby-exec detected, but could not find chruby.sh for loading"
-      exit 1
-    fi
+  for mgr in "${managers[@]}"; do
+    if has-executable "$mgr"; then
+      case "$mgr" in
+      mise)
+        if ! (mise current ruby | grep $REQUIRED_RUBY_VERSION'\>' &>/dev/null); then
+          banner "Installing Ruby $REQUIRED_RUBY_VERSION with mise"
+          mise install ruby "$REQUIRED_RUBY_VERSION"
+        fi
+        return
+        ;;
 
-    PREFIX='' source $CHRUBY_SH
-    if ! (chruby '' | grep $REQUIRED_RUBY_VERSION'\>' &>/dev/null); then
-      if has-executable install-ruby; then
-        banner "Installing Ruby $REQUIRED_RUBY_VERSION with install-ruby"
-        install-ruby "$REQUIRED_RUBY_VERSION"
-      else
-        error "Please use chruby to install Ruby $REQUIRED_RUBY_VERSION!"
-      fi
+      asdf)
+        if ! (asdf current ruby | grep $REQUIRED_RUBY_VERSION'\>' &>/dev/null); then
+          banner "Installing Ruby $REQUIRED_RUBY_VERSION with asdf"
+          asdf install ruby "$REQUIRED_RUBY_VERSION"
+        fi
+        return
+        ;;
+
+      rbenv)
+        if ! (rbenv versions | grep $REQUIRED_RUBY_VERSION'\>' &>/dev/null); then
+          banner "Installing Ruby $REQUIRED_RUBY_VERSION with rbenv"
+          rbenv install --skip-existing "$REQUIRED_RUBY_VERSION"
+        fi
+        return
+        ;;
+
+      chruby-exec)
+        if [ -f /usr/local/share/chruby/chruby.sh ]; then
+          CHRUBY_SH=/usr/local/share/chruby/chruby.sh
+        elif [ -f /opt/homebrew/share/chruby/chruby.sh ]; then
+          CHRUBY_SH=/opt/homebrew/share/chruby/chruby.sh
+        fi
+
+        if [ -z "$CHRUBY_SH" ]; then
+          error "chruby-exec detected, but could not find chruby.sh for loading"
+          exit 1
+        fi
+
+        PREFIX='' source "$CHRUBY_SH"
+        if ! (chruby '' | grep $REQUIRED_RUBY_VERSION'\>' &>/dev/null); then
+          if has-executable install-ruby; then
+            banner "Installing Ruby $REQUIRED_RUBY_VERSION with install-ruby"
+            install-ruby "$REQUIRED_RUBY_VERSION"
+          else
+            error "Please use chruby to install Ruby $REQUIRED_RUBY_VERSION!"
+          fi
+        fi
+        return
+        ;;
+
+      rvm)
+        if ! (rvm list | grep $REQUIRED_RUBY_VERSION'\>' &>/dev/null); then
+          banner "Installing Ruby $REQUIRED_RUBY_VERSION with rvm"
+          rvm install "$REQUIRED_RUBY_VERSION"
+        fi
+        return
+        ;;
+      esac
     fi
-  elif has-executable rvm; then
-    if ! (rvm list | grep $REQUIRED_RUBY_VERSION'\>' &>/dev/null); then
-      banner "Installing Ruby $REQUIRED_RUBY_VERSION with rvm"
-      rvm install $REQUIRED_RUBY_VERSION
-    fi
-  else
-    error "You don't seem to have a Ruby manager installed."
-    print-wrapped "\
+  done
+
+  error "You don't seem to have a Ruby manager installed."
+  print-wrapped "\
 We recommend using asdf. You can find instructions to install it here:
 
     https://asdf-vm.com
 
 When you're done, close and re-open this terminal tab and re-run this script."
-    exit 1
-  fi
+  exit 1
 }
 
 has-bundler() {
