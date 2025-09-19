@@ -812,8 +812,13 @@ value", but that attribute does not exist.
   context 'given an ActiveRecord model' do
     context 'where the attribute under test is an enum and the given value is a value in that enum' do
       it 'accepts' do
+        enum_definition = if rails_gt_8_0?
+                            'enum :status, { pending: 1, shipped: 2, delivered: 3 }'
+                          else
+                            'enum status: { pending: 1, shipped: 2, delivered: 3 }'
+                          end
         model = define_model('Shipment', status: :integer) do
-          enum status: { pending: 1, shipped: 2, delivered: 3 }
+          class_eval(enum_definition)
         end
 
         expect(model.new).to allow_value(1).for(:status)
