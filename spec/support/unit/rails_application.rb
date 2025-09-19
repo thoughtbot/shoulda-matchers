@@ -3,6 +3,7 @@ require_relative '../tests/command_runner'
 require_relative '../tests/database'
 require_relative '../tests/filesystem'
 require_relative 'helpers/rails_versions'
+require_relative 'helpers/ruby_versions'
 
 require 'yaml'
 

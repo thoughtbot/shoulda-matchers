@@ -215,7 +215,7 @@ Output:
       total_length = 72
       start_length = 3
 
-      string = ''
+      string = String.new
       string << ('-' * start_length)
       string << title
       string << '-' * (total_length - start_length - title.length)

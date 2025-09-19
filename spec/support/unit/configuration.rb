@@ -13,6 +13,7 @@ module UnitTests
       MessageHelpers
       ModelBuilder
       RailsVersions
+      RubyVersions
       ValidationMatcherScenarioHelpers
     ].freeze
 

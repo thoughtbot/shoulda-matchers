@@ -101,7 +101,7 @@ appraise 'rails_7_2' do
   instance_eval(&shared_spring_dependencies)
   instance_eval(&controller_test_dependency)
 
-  gem 'rails', '~> 7.2.0'
+  gem 'rails', '~> 7.2'
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem 'brakeman', require: false
@@ -119,6 +119,7 @@ appraise 'rails_7_2' do
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'webdrivers'
+  gem 'mutex_m', require: false
 
   # test dependencies
   gem 'rspec-rails', '~> 6.0'
