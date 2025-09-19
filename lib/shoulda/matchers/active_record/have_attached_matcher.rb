@@ -20,6 +20,74 @@ module Shoulda
       #       should have_one_attached(:avatar)
       #     end
       #
+      # #### Qualifiers
+      #
+      # ##### service
+      #
+      # Use `service` to assert that the `:service` option was specified.
+      #
+      #     class User < ApplicationRecord
+      #       has_one_attached :avatar, service: :s3
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe User, type: :model do
+      #       it { should have_one_attached(:avatar).service(:s3) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class UserTest < ActiveSupport::TestCase
+      #       should have_one_attached(:avatar).service(:s3)
+      #     end
+      #
+      # ##### dependent
+      #
+      # Use `dependent` to assert that the `:dependent` option was specified.
+      #
+      #     class User < ApplicationRecord
+      #       has_one_attached :avatar, dependent: :destroy
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe User, type: :model do
+      #       it { should have_one_attached(:avatar).dependent(:destroy) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class UserTest < ActiveSupport::TestCase
+      #       should have_one_attached(:avatar).dependent(:destroy)
+      #     end
+      #
+      # ##### strict_loading
+      #
+      # Use `strict_loading` to assert that the `:strict_loading` option was specified.
+      #
+      #     class User < ApplicationRecord
+      #       has_one_attached :avatar, strict_loading: true
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe User, type: :model do
+      #       it { should have_one_attached(:avatar).strict_loading(true) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class UserTest < ActiveSupport::TestCase
+      #       should have_one_attached(:avatar).strict_loading(true)
+      #     end
+      #
+      # Default value is true when no argument is specified:
+      #
+      #     # RSpec
+      #     RSpec.describe User, type: :model do
+      #       it { should have_one_attached(:avatar).strict_loading }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class UserTest < ActiveSupport::TestCase
+      #       should have_one_attached(:avatar).strict_loading
+      #     end
+      #
       # @return [HaveAttachedMatcher]
       #
       def have_one_attached(name)
@@ -53,11 +121,12 @@ module Shoulda
 
       # @private
       class HaveAttachedMatcher
-        attr_reader :name
+        attr_reader :name, :options
 
         def initialize(macro, name)
           @macro = macro
           @name = name
+          @options = {}
         end
 
         def description
@@ -78,7 +147,7 @@ Did not expect #{expectation}, but it does.
         end
 
         def expectation
-          "#{model_class.name} to #{description}"
+          "#{model_class.name} to #{description}" + build_expectation_suffix
         end
 
         def matches?(subject)
@@ -87,12 +156,41 @@ Did not expect #{expectation}, but it does.
             writer_attribute_exists? &&
             attachments_association_exists? &&
             blobs_association_exists? &&
-            eager_loading_scope_exists?
+            eager_loading_scope_exists? &&
+            service_correct? &&
+            dependent_option_correct?
+        end
+
+        OPTION_METHODS = {
+          service: -> (value) { value },
+          strict_loading: -> (value = true) { value },
+          dependent: -> (value) { value },
+        }.freeze
+
+        OPTION_METHODS.each do |option_name, value_processor|
+          define_method(option_name) do |*args|
+            @options[option_name] = value_processor.call(*args)
+            self
+          end
         end
 
         private
 
         attr_reader :subject, :macro
+
+        def build_expectation_suffix
+          String.new.tap do |suffix|
+            suffix << " with service :#{options[:service]}" if options.key?(:service)
+
+            if options.key?(:strict_loading)
+              suffix << " with strict_loading option set to #{options[:strict_loading]}"
+            end
+
+            if options.key?(:dependent)
+              suffix << " with dependent option set to :#{options[:dependent]}"
+            end
+          end
+        end
 
         def reader_attribute_exists?
           if subject.respond_to?(name)
@@ -156,6 +254,7 @@ Did not expect #{expectation}, but it does.
             ).
               through(attachments_association_name).
               class_name('ActiveStorage::Blob').
+              strict_loading(options[:strict_loading]).
               source(:blob)
         end
 
@@ -178,6 +277,40 @@ Did not expect #{expectation}, but it does.
 
         def model_class
           subject.class
+        end
+
+        def dependent_option_correct?
+          dependent = @options[:dependent]
+          return true if dependent.nil? || dependent_option == dependent
+
+          @failure = 'The dependent option for the association called ' \
+                      "#{attachments_association_name} is incorrect " \
+                      "(expected: :#{dependent}, " \
+                      "actual: :#{dependent_option})"
+          false
+        end
+
+        def service_correct?
+          service = @options[:service]
+          return true if service.nil? || service_name == service
+
+          @failure = 'The service for the association called ' \
+                      "#{attachments_association_name} is incorrect " \
+                      "(expected: :#{service}, " \
+                      "actual: :#{service_name})"
+          false
+        end
+
+        def attachment_reflection
+          model_class.attachment_reflections[name.to_s]
+        end
+
+        def service_name
+          attachment_reflection.options[:service_name]
+        end
+
+        def dependent_option
+          attachment_reflection.options[:dependent]
         end
       end
     end
