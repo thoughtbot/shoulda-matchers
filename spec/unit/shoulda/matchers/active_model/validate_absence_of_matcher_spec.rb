@@ -94,7 +94,11 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
     context 'when the column backing the attribute is an enum' do
       it 'still works' do
         model = define_model_validating_absence_of(:attr)
-        model.enum attr: %w[one two three]
+        if rails_gt_8_0?
+          model.enum :attr, %w[one two three]
+        else
+          model.enum attr: %w[one two three]
+        end
 
         expect(model.new).to validate_absence_of(:attr)
       end
