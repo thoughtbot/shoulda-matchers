@@ -12,7 +12,7 @@ module UnitTests
     end
 
     def rails_oldest_version_supported
-      6.1
+      7.0
     end
   end
 end
