@@ -21,10 +21,6 @@ module Shoulda
           Gem::Version.new('0')
         end
 
-        def active_model_st_6_1?
-          Gem::Requirement.new('< 6.1').satisfied_by?(active_model_version)
-        end
-
         def active_model_lt_7?
           Gem::Requirement.new('< 7').satisfied_by?(active_model_version)
         end
