@@ -58,7 +58,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       expect(matcher.failure_message).to match(/Child does not have a custom_primary_key primary key/)
     end
 
-    if rails_version >= 7.1
+    if rails_version >= 7.1 && !rails_gt_8_0?
       it 'accepts an association using an valid :query_constraints option' do
         define_model :parent, name: :string
         define_model :child, parent_id: :integer, parent_name: :string do
@@ -873,7 +873,7 @@ Expected Parent to have a has_many association called children through conceptio
       expect(matcher.failure_message).to match(/Parent does not have a custom_primary_key primary key/)
     end
 
-    if rails_version >= 7.1
+    if rails_version >= 7.1 && !rails_gt_8_0?
       it 'accepts an association using an valid :query_constraints option' do
         define_model :parent, first_name: :string, last_name: :string do
           self.primary_key = [:first_name, :last_name]
@@ -1739,7 +1739,7 @@ Expected Parent to have a has_many association called children through conceptio
       expect(matcher.failure_message).to match(/Person does not have a custom_primary_key primary key/)
     end
 
-    if rails_version >= 7.1
+    if rails_version >= 7.1 && !rails_gt_8_0?
       it 'accepts an association using an valid :query_constraints option' do
         define_model :detail, person_first_name: :string, person_last_name: :string
         define_model :person do

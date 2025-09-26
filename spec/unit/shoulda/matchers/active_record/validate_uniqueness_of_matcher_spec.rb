@@ -1685,7 +1685,11 @@ this could not be proved.
     dummy_enum_values = [:foo, :bar]
 
     model = define_model_validating_uniqueness(options)
-    model.enum(enum_scope_attribute[:name] => dummy_enum_values)
+    if rails_gt_8_0?
+      model.enum enum_scope_attribute[:name], dummy_enum_values
+    else
+      model.enum(enum_scope_attribute[:name] => dummy_enum_values)
+    end
 
     build_record_from(model)
   end

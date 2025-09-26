@@ -132,3 +132,44 @@ appraise 'rails_7_2' do
   gem 'sqlite3', '~> 1.4'
   gem 'pg', '~> 1.1'
 end
+
+appraise 'rails_8_0' do
+  instance_eval(&shared_spring_dependencies)
+  instance_eval(&controller_test_dependency)
+
+  gem 'rails', '~> 8.0'
+
+  # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
+  gem 'brakeman', require: false
+
+  # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
+  gem 'rubocop-rails-omakase', require: false
+
+  gem 'puma', '~> 6.0'
+  gem 'importmap-rails'
+  gem 'turbo-rails'
+  gem 'stimulus-rails'
+  gem 'jbuilder'
+  gem 'bootsnap', require: false
+  gem 'capybara'
+  gem 'selenium-webdriver'
+  gem 'webdrivers'
+  gem 'propshaft'
+  gem 'mutex_m', require: false
+  gem 'solid_cache'
+  gem 'solid_queue'
+  gem 'solid_cable'
+  gem 'kamal'
+  gem 'thruster'
+
+  # test dependencies
+  gem 'rspec-rails', '~> 6.0'
+  gem 'shoulda-context', '~> 2.0.0'
+
+  # other dependencies
+  gem 'bcrypt', '~> 3.1.7'
+
+  # Database adapters
+  gem 'sqlite3', '>= 2.1'
+  gem 'pg', '~> 1.1'
+end
