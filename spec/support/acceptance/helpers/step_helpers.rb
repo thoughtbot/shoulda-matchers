@@ -83,7 +83,6 @@ module AcceptanceTests
         bundle.remove_gem 'web-console'
       end
 
-      add_gem 'net-smtp', require: false if rails_6_x? && ruby_gt_3_1?
       add_gem 'mutex_m', require: false if rails_gte_7_2?
 
       fs.open('config/database.yml', 'w') do |file|
