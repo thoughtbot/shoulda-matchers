@@ -448,7 +448,7 @@ DEPENDENCIES
   importmap-rails
   jbuilder
   kamal
-  mutex_m
+  mutex_m (~> 0.3.0)
   pg (~> 1.1)
   propshaft
   pry

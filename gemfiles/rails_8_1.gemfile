@@ -33,7 +33,7 @@ gem "capybara"
 gem "selenium-webdriver"
 gem "webdrivers"
 gem "propshaft"
-gem "mutex_m", require: false
+gem "mutex_m", "~> 0.3.0"
 gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"

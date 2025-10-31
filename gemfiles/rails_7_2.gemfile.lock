@@ -343,6 +343,7 @@ GEM
 PLATFORMS
   arm64-darwin-23
   arm64-darwin-24
+  arm64-darwin-25
 
 DEPENDENCIES
   appraisal (= 2.5.0)
@@ -354,7 +355,7 @@ DEPENDENCIES
   fssm
   importmap-rails
   jbuilder
-  mutex_m
+  mutex_m (~> 0.3.0)
   pg (~> 1.1)
   pry
   pry-byebug
