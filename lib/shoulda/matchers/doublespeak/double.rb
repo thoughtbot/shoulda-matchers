@@ -77,12 +77,12 @@ module Shoulda
 
           klass.__send__(:define_method, method_name) do |*args, &block|
             call = MethodCall.new(
-              double: double,
+              double:,
               object: self,
               method_name: _method_name,
-              args: args,
-              block: block,
-              caller: caller,
+              args:,
+              block:,
+              caller:,
             )
             implementation.call(call)
           end

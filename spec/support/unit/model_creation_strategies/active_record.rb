@@ -33,8 +33,8 @@ module UnitTests
 
       def create_table_for_model
         UnitTests::ActiveRecord::CreateTable.call(
-          table_name: table_name,
-          columns: columns,
+          table_name:,
+          columns:,
           connection: parent_class.connection,
           &customize_table
         )
@@ -43,7 +43,7 @@ module UnitTests
       def define_class_for_model
         model = UnitTests::ModelBuilder.define_model_class(
           class_name,
-          parent_class: parent_class,
+          parent_class:,
         )
 
         model_customizers.each do |block|

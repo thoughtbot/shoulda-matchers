@@ -3,7 +3,7 @@ module Shoulda
     # @private
     module Routing
       def route(method, path, port: nil)
-        ActionController::RouteMatcher.new(self, method, path, port: port)
+        ActionController::RouteMatcher.new(self, method, path, port:)
       end
     end
   end

@@ -16,7 +16,7 @@ module Shoulda::Matchers::Doublespeak
       it 'calls #call_original_method on the double' do
         stub_implementation = build_stub_implementation
         double = build_double
-        call = build_call(double: double)
+        call = build_call(double:)
         allow(double).to receive(:call_original_method)
         implementation = described_class.new(stub_implementation)
 
@@ -31,7 +31,7 @@ module Shoulda::Matchers::Doublespeak
         stub_implementation = build_stub_implementation
         double = build_double
         call2 = build_call
-        call = build_call(double: double, with_return_value: call2)
+        call = build_call(double:, with_return_value: call2)
         allow(double).to receive(:call_original_method)
         implementation = described_class.new(stub_implementation)
 
@@ -46,7 +46,7 @@ module Shoulda::Matchers::Doublespeak
         return_value = :some_return_value
         stub_implementation = build_stub_implementation
         double = build_double(call_original_method: return_value)
-        call = build_call(double: double)
+        call = build_call(double:)
         implementation = described_class.new(stub_implementation)
 
         return_value = implementation.call(call)

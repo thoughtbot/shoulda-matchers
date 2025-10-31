@@ -758,9 +758,9 @@ module Shoulda
             if case_sensitivity_strategy == :sensitive
               if value == swapcased_value
                 raise NonCaseSwappableValueError.create(
-                  model: model,
+                  model:,
                   attribute: @attribute,
-                  value: value,
+                  value:,
                 )
               end
 
@@ -785,9 +785,9 @@ module Shoulda
             else
               if value == swapcased_value
                 raise NonCaseSwappableValueError.create(
-                  model: model,
+                  model:,
                   attribute: @attribute,
-                  value: value,
+                  value:,
                 )
               end
 
@@ -966,9 +966,9 @@ module Shoulda
             new(
               matcher_name: :validate_uniqueness_of,
               object: record,
-              attribute_name: attribute_name,
-              value: value,
-              ignore_interference_by_writer: ignore_interference_by_writer,
+              attribute_name:,
+              value:,
+              ignore_interference_by_writer:,
             )
         end
 
@@ -1092,7 +1092,7 @@ different altogether.
             )
             description_for_attribute_setter(
               attribute_setter,
-              same_as_existing: same_as_existing,
+              same_as_existing:,
             )
           end
         end

@@ -31,9 +31,9 @@ module Shoulda
             @_attribute_setter ||= AttributeSetter.new(
               matcher_name: :allow_value,
               object: instance,
-              attribute_name: attribute_name,
-              value: value,
-              ignore_interference_by_writer: ignore_interference_by_writer,
+              attribute_name:,
+              value:,
+              ignore_interference_by_writer:,
               after_set_callback: after_setting_value_callback,
             )
           end
@@ -46,9 +46,9 @@ module Shoulda
             @_validator ||= Validator.new(
               instance,
               attribute_to_check_message_against,
-              context: context,
+              context:,
               expects_strict: expects_strict?,
-              expected_message: expected_message,
+              expected_message:,
             )
           end
 

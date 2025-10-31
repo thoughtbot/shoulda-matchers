@@ -29,7 +29,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateAbsenceOfMatcher, type: :model 
     available_column_types.each do |type|
       context "when column is of type #{type}" do
         it 'accepts' do
-          expect(validating_absence_of(:attr, {}, type: type)).
+          expect(validating_absence_of(:attr, {}, type:)).
             to validate_absence_of(:attr)
         end
 

@@ -26,7 +26,7 @@ module UnitTests
       args.
         deep_merge(validation_matcher_scenario_args).
         deep_merge(
-          matcher_name: matcher_name,
+          matcher_name:,
           matcher_proc: method(matcher_name),
         )
     end

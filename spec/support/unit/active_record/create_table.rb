@@ -11,9 +11,9 @@ module UnitTests
         &block
       )
         new(
-          table_name: table_name,
-          columns: columns,
-          connection: connection,
+          table_name:,
+          columns:,
+          connection:,
           &block
         ).call
       end
@@ -35,7 +35,7 @@ module UnitTests
           columns.delete(:id)
           UnitTests::ModelBuilder.create_table(
             table_name,
-            connection: connection,
+            connection:,
             id: false,
           ) do |table|
             add_columns_to_table(table)
@@ -43,7 +43,7 @@ module UnitTests
         else
           UnitTests::ModelBuilder.create_table(
             table_name,
-            connection: connection,
+            connection:,
           ) do |table|
             add_columns_to_table(table)
           end

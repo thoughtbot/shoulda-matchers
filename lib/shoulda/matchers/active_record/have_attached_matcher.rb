@@ -225,7 +225,7 @@ Did not expect #{expectation}, but it does.
               :"has_#{macro}",
               attachments_association_name,
             ).
-              conditions(name: name).
+              conditions(name:).
               class_name('ActiveStorage::Attachment').
               inverse_of(:record)
         end

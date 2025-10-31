@@ -22,8 +22,8 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher, type: :model do
           it 'matches when used in the positive' do
             record = record_with_index_on(
               index,
-              unique: unique,
-              columns: columns,
+              unique:,
+              columns:,
             )
 
             expect(record).to have_db_index(index).unique(*qualifier_args)
@@ -32,9 +32,9 @@ describe Shoulda::Matchers::ActiveRecord::HaveDbIndexMatcher, type: :model do
           it 'does not match when used in the negative' do
             record = record_with_index_on(
               index,
-              unique: unique,
+              unique:,
               model_name: 'Example',
-              columns: columns,
+              columns:,
             )
 
             assertion = lambda do
@@ -55,7 +55,7 @@ Expected the examples table not to have a #{index_type} index on
             record = record_with_index_on(
               index,
               unique: !unique,
-              columns: columns,
+              columns:,
             )
 
             expect(record).not_to have_db_index(index).unique(*qualifier_args)
@@ -66,7 +66,7 @@ Expected the examples table not to have a #{index_type} index on
               index,
               unique: !unique,
               model_name: 'Example',
-              columns: columns,
+              columns:,
             )
 
             assertion = lambda do
@@ -85,9 +85,9 @@ be #{index_type}. The index does exist, but it is #{inverse_description}.
         it 'does not match in the positive' do
           record = record_with_index_on(
             index,
-            unique: unique,
+            unique:,
             model_name: 'Example',
-            columns: columns,
+            columns:,
           )
 
           assertion = lambda do
@@ -101,7 +101,7 @@ but it does not.
         end
 
         it 'matches in the negative' do
-          expect(record_with_index_on(index, unique: unique, columns: columns)).
+          expect(record_with_index_on(index, unique:, columns:)).
             not_to have_db_index(other_index).
             unique(*qualifier_args)
         end
@@ -517,7 +517,7 @@ does not.
     model = define_model(
       model_name,
       columns,
-      parent_class: parent_class,
+      parent_class:,
       customize_table: -> (table) {
         table.index(column_name_or_names, **index_options)
       },

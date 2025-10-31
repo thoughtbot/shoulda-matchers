@@ -6,7 +6,7 @@ module Shoulda::Matchers::Doublespeak
       it 'calls #record_call on the double' do
         implementation = described_class.new
         double = build_double
-        call = build_call(double: double)
+        call = build_call(double:)
 
         allow(double).to receive(:record_call).with(call)
 
@@ -17,7 +17,7 @@ module Shoulda::Matchers::Doublespeak
         it 'returns nil' do
           implementation = described_class.new
           double = build_double
-          call = build_call(double: double)
+          call = build_call(double:)
 
           return_value = implementation.call(call)
 
@@ -30,7 +30,7 @@ module Shoulda::Matchers::Doublespeak
           implementation = described_class.new
           implementation.returns(42)
           double = build_double
-          call = build_call(double: double)
+          call = build_call(double:)
 
           return_value = implementation.call(call)
 
@@ -45,7 +45,7 @@ module Shoulda::Matchers::Doublespeak
           expected_args = :args
           expected_block = :block
           call = build_call(
-            double: double,
+            double:,
             object: expected_object,
             args: expected_args,
             block: expected_block,
@@ -69,7 +69,7 @@ module Shoulda::Matchers::Doublespeak
           implementation = described_class.new
           implementation.returns { 42 }
           double = build_double
-          call = build_call(double: double)
+          call = build_call(double:)
 
           return_value = implementation.call(call)
 
@@ -82,7 +82,7 @@ module Shoulda::Matchers::Doublespeak
           implementation = described_class.new
           implementation.returns(:something_else) { 42 }
           double = build_double
-          call = build_call(double: double)
+          call = build_call(double:)
 
           return_value = implementation.call(call)
 

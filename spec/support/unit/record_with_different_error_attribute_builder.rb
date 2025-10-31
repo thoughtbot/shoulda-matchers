@@ -48,11 +48,11 @@ module UnitTests
 
     def context
       {
-        validation_method_name: validation_method_name,
-        valid_value: valid_value,
-        attribute_to_validate: attribute_to_validate,
-        attribute_that_receives_error: attribute_that_receives_error,
-        message: message,
+        validation_method_name:,
+        valid_value:,
+        attribute_to_validate:,
+        attribute_that_receives_error:,
+        message:,
       }
     end
 

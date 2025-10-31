@@ -73,7 +73,7 @@ module Shoulda
 
         def failure_message_when_negated
           MESSAGES[:should_not_have_secure_password] %
-            { subject: @subject.class, description: description }
+            { subject: @subject.class, description: }
         end
 
         protected

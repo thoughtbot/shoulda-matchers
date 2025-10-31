@@ -3,7 +3,7 @@ require:
   - rubocop-rails
 AllCops:
   NewCops: disable
-  TargetRubyVersion: 3.0
+  TargetRubyVersion: 3.2.9
   Exclude:
     - 'gemfiles/*'
     - 'REPRODUCTION_SCRIPT.rb'

@@ -89,7 +89,7 @@ this could not be proved.
   def model_validating_acceptance(options = {})
     attribute_name = options.fetch(:attribute_name, :attr)
 
-    model_validating_nothing(attribute_name: attribute_name) do
+    model_validating_nothing(attribute_name:) do
       validates_acceptance_of attribute_name, options
     end
   end

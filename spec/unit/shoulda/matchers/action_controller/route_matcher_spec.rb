@@ -307,7 +307,7 @@ describe 'Shoulda::Matchers::ActionController::RouteMatcher', type: :controller 
       public_send(
         method,
         path,
-        args.merge(controller: controller, action: action),
+        args.merge(controller:, action:),
       )
     end
   end

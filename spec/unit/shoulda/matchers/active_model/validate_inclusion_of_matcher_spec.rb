@@ -178,7 +178,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       define_method(:default_time) { default_time }
 
       it_behaves_like 'it supports in_array',
-        possible_values: (1..3).map { |hour| default_time.change(hour: hour) }
+        possible_values: (1..3).map { |hour| default_time.change(hour:) }
 
       it_behaves_like 'it supports in_range', possible_values: (
         default_time.change(hour: 1)..default_time.change(hour: 3)
@@ -942,9 +942,9 @@ Expected Issue to validate that :severity_type is either ‹"Low"›,
     **other_options
   )
     model = define_model_validating_inclusion(
-      model_name: model_name,
-      attribute_name: attribute_name,
-      validation_options: validation_options,
+      model_name:,
+      attribute_name:,
+      validation_options:,
       **other_options,
     )
 
@@ -965,9 +965,9 @@ Expected Issue to validate that :severity_type is either ‹"Low"›,
   )
     column_options = { type: column_type, options: column_options }
     model_options = {
-      model_name: model_name,
-      attribute_name: attribute_name,
-      column_options: column_options,
+      model_name:,
+      attribute_name:,
+      column_options:,
     }.compact
 
     define_simple_model(**model_options) do |model|

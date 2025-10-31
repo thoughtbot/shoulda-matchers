@@ -835,7 +835,7 @@ but this could not be proved.
     type = options.delete(:type) || :varchar
     array = options.delete(:array)
 
-    define_model(:example, attribute_name => { type: type, options: { array: array } }) do |model|
+    define_model(:example, attribute_name => { type:, options: { array: } }) do |model|
       model.validates_length_of(attribute_name, options)
     end
   end

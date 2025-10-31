@@ -1411,16 +1411,16 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     instance_methods: true
   )
     build_record_with_enum_attribute(
-      model_name: model_name,
-      attribute_name: attribute_name,
-      column_type: column_type,
-      values: values,
-      prefix: prefix,
-      suffix: suffix,
-      attribute_alias: attribute_alias,
-      default: default,
-      validate: validate,
-      instance_methods: instance_methods,
+      model_name:,
+      attribute_name:,
+      column_type:,
+      values:,
+      prefix:,
+      suffix:,
+      attribute_alias:,
+      default:,
+      validate:,
+      instance_methods:,
     )
   end
 
@@ -1434,15 +1434,15 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     validate: false
   )
     build_record_with_enum_attribute(
-      model_name: model_name,
-      attribute_name: attribute_name,
+      model_name:,
+      attribute_name:,
       column_type: :integer,
-      values: values,
-      prefix: prefix,
-      suffix: suffix,
+      values:,
+      prefix:,
+      suffix:,
       attribute_alias: nil,
-      default: default,
-      validate: validate,
+      default:,
+      validate:,
     )
   end
 
@@ -1466,7 +1466,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
       alias_attribute attribute_alias, attribute_name
     end
 
-    model.enum(enum_name, values, prefix: prefix, suffix: suffix, validate: validate, default: default, instance_methods: instance_methods)
+    model.enum(enum_name, values, prefix:, suffix:, validate:, default:, instance_methods:)
 
     model.new
   end
