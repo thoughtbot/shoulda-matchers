@@ -4,6 +4,7 @@ source "https://rubygems.org"
 
 gem "appraisal", "2.5.0"
 gem "bundler", "~> 2.0"
+gem "mutex_m"
 gem "pry"
 gem "pry-byebug"
 gem "rake", "13.0.1"
@@ -33,7 +34,6 @@ gem "bootsnap", require: false
 gem "capybara"
 gem "selenium-webdriver"
 gem "webdrivers"
-gem "mutex_m", require: false
 gem "rspec-rails", "~> 6.0"
 gem "shoulda-context", "~> 2.0.0"
 gem "bcrypt", "~> 3.1.7"
