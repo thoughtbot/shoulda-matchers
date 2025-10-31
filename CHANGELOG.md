@@ -1,5 +1,13 @@
 # Changelog
 
+## 7.0.1 - 2025-10-31
+
+### Bug fixes
+
+- Hotfix: Add mutex_m gem dependency by @matsales and @garrettgregor ([#1687])
+
+[#1687]: https://github.com/thoughtbot/shoulda-matchers/pull/1687
+
 ## 7.0.0 - 2025-10-31
 
 ### Backward-incompatible changes
