@@ -1406,7 +1406,6 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     prefix: false,
     suffix: false,
     attribute_alias: nil,
-    scopes: true,
     default: nil,
     validate: false,
     instance_methods: true
@@ -1419,7 +1418,6 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
       prefix: prefix,
       suffix: suffix,
       attribute_alias: attribute_alias,
-      scopes: scopes,
       default: default,
       validate: validate,
       instance_methods: instance_methods,
@@ -1432,7 +1430,6 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     values: { active: 0, archived: 1 },
     prefix: false,
     suffix: false,
-    scopes: true,
     default: nil,
     validate: false
   )
@@ -1443,7 +1440,6 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
       values: values,
       prefix: prefix,
       suffix: suffix,
-      scopes: scopes,
       attribute_alias: nil,
       default: default,
       validate: validate,
@@ -1456,7 +1452,6 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     column_type:,
     values:,
     attribute_alias:,
-    scopes: true,
     prefix: false,
     suffix: false,
     default: nil,
@@ -1471,19 +1466,7 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
       alias_attribute attribute_alias, attribute_name
     end
 
-    params = {
-      enum_name => values,
-      _prefix: prefix,
-      _suffix: suffix,
-      _default: default,
-    }
-
-    if rails_version >= 7.0
-      model.enum(enum_name, values, prefix: prefix, suffix: suffix, validate: validate, default: default, instance_methods: instance_methods)
-    else
-      params.merge!(_scopes: scopes)
-      model.enum(params)
-    end
+    model.enum(enum_name, values, prefix: prefix, suffix: suffix, validate: validate, default: default, instance_methods: instance_methods)
 
     model.new
   end

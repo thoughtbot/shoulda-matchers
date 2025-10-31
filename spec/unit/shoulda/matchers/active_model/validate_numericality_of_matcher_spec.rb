@@ -2126,44 +2126,43 @@ could not be proved.
     end
   end
 
-  if rails_version >= 7.0
-    context 'qualified with in' do
-      context 'validating with in' do
-        it 'accepts' do
-          record = build_record_validating_numericality(
-            in: 1..10,
-          )
-          expect(record).to validate_numericality.is_in(1..10)
+  context 'qualified with in' do
+    context 'validating with in' do
+      it 'accepts' do
+        record = build_record_validating_numericality(
+          in: 1..10,
+        )
+        expect(record).to validate_numericality.is_in(1..10)
+      end
+
+      it 'rejects when used in the negative' do
+        record = build_record_validating_numericality(
+          in: 1..10,
+        )
+
+        assertion = lambda do
+          expect(record).not_to validate_numericality.is_in(1..10)
         end
 
-        it 'rejects when used in the negative' do
-          record = build_record_validating_numericality(
-            in: 1..10,
-          )
+        expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected Example not to validate that :attr looks like a number from ‹1›
+to ‹10›, but this could not be proved.
+  After setting :attr to ‹"abcd"›, the matcher expected the Example to
+  be valid, but it was invalid instead, producing these validation
+  errors:
 
-          assertion = lambda do
-            expect(record).not_to validate_numericality.is_in(1..10)
-          end
+  * attr: ["is not a number"]
+        MESSAGE
+      end
 
-          expect(&assertion).to fail_with_message(<<~MESSAGE)
-  Expected Example not to validate that :attr looks like a number from ‹1›
-  to ‹10›, but this could not be proved.
-    After setting :attr to ‹"abcd"›, the matcher expected the Example to
-    be valid, but it was invalid instead, producing these validation
-    errors:
-
-    * attr: ["is not a number"]
-          MESSAGE
-        end
-
-        it_supports(
-          'ignoring_interference_by_writer',
-          tests: {
-            reject_if_qualified_but_changing_value_interferes: {
-              model_name: 'Example',
-              attribute_name: :attr,
-              changing_values_with: :next_value,
-              expected_message: <<-MESSAGE.strip,
+      it_supports(
+        'ignoring_interference_by_writer',
+        tests: {
+          reject_if_qualified_but_changing_value_interferes: {
+            model_name: 'Example',
+            attribute_name: :attr,
+            changing_values_with: :next_value,
+            expected_message: <<-MESSAGE.strip,
 Expected Example to validate that :attr looks like a number from ‹1› to
 ‹10›, but this could not be proved.
   After setting :attr to ‹"10"› -- which was read back as ‹"11"› -- the
@@ -2177,89 +2176,88 @@ Expected Example to validate that :attr looks like a number from ‹1› to
   this test is failing. If you've overridden the writer method for this
   attribute, then you may need to change it to make this test pass, or
   do something else entirely.
-              MESSAGE
-            },
+            MESSAGE
           },
-        ) do
-          def validation_matcher_scenario_args
-            super.deep_merge(
-              validation_options: { in: 1..10 },
-            )
-          end
-
-          def configure_validation_matcher(matcher)
-            matcher.is_in(1..10)
-          end
+        },
+      ) do
+        def validation_matcher_scenario_args
+          super.deep_merge(
+            validation_options: { in: 1..10 },
+          )
         end
 
-        context 'when the attribute is a virtual attribute in an ActiveRecord model' do
-          it 'accepts' do
-            record = build_record_validating_numericality_of_virtual_attribute(
-              in: 1..10,
-            )
-            expect(record).to validate_numericality.
-              is_in(1..10)
-          end
-        end
-
-        context 'when the column is an integer column' do
-          it 'accepts (and does not raise an error)' do
-            record = build_record_validating_numericality(
-              column_type: :integer,
-              in: 1..10,
-            )
-
-            expect(record).
-              to validate_numericality.
-              is_in(1..10)
-          end
-        end
-
-        context 'when the column is a float column' do
-          it 'accepts (and does not raise an error)' do
-            record = build_record_validating_numericality(
-              column_type: :float,
-              in: 1..10,
-            )
-
-            expect(record).
-              to validate_numericality.
-              is_in(1..10)
-          end
-        end
-
-        context 'when the column is a decimal column' do
-          it 'accepts (and does not raise an error)' do
-            record = build_record_validating_numericality(
-              column_type: :decimal,
-              in: 1..10,
-            )
-
-            expect(record).
-              to validate_numericality.
-              is_in(1..10)
-          end
+        def configure_validation_matcher(matcher)
+          matcher.is_in(1..10)
         end
       end
 
-      context 'not validating with in' do
-        it 'rejects since it does not disallow numbers that are not in the range specified' do
-          record = build_record_validating_numericality
+      context 'when the attribute is a virtual attribute in an ActiveRecord model' do
+        it 'accepts' do
+          record = build_record_validating_numericality_of_virtual_attribute(
+            in: 1..10,
+          )
+          expect(record).to validate_numericality.
+            is_in(1..10)
+        end
+      end
 
-          assertion = lambda do
-            expect(record).to validate_numericality.
-              is_in(1..10)
-          end
+      context 'when the column is an integer column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :integer,
+            in: 1..10,
+          )
 
-          message = <<-MESSAGE
+          expect(record).
+            to validate_numericality.
+            is_in(1..10)
+        end
+      end
+
+      context 'when the column is a float column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :float,
+            in: 1..10,
+          )
+
+          expect(record).
+            to validate_numericality.
+            is_in(1..10)
+        end
+      end
+
+      context 'when the column is a decimal column' do
+        it 'accepts (and does not raise an error)' do
+          record = build_record_validating_numericality(
+            column_type: :decimal,
+            in: 1..10,
+          )
+
+          expect(record).
+            to validate_numericality.
+            is_in(1..10)
+        end
+      end
+    end
+
+    context 'not validating with in' do
+      it 'rejects since it does not disallow numbers that are not in the range specified' do
+        record = build_record_validating_numericality
+
+        assertion = lambda do
+          expect(record).to validate_numericality.
+            is_in(1..10)
+        end
+
+        message = <<-MESSAGE
 Expected Example to validate that :attr looks like a number from ‹1› to
 ‹10›, but this could not be proved.
   After setting :attr to ‹"11"›, the matcher expected the Example to be
   invalid, but it was valid instead.
-          MESSAGE
+        MESSAGE
 
-          expect(&assertion).to fail_with_message(message)
-        end
+        expect(&assertion).to fail_with_message(message)
       end
     end
   end

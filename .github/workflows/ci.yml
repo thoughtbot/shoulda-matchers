@@ -36,7 +36,6 @@ jobs:
           - rails_8_0
           - rails_7_2
           - rails_7_1
-          - rails_7_0
         adapter:
           - sqlite3
           - postgresql
@@ -44,8 +43,6 @@ jobs:
           - { ruby: 3.2.9, appraisal: rails_8_0 }
           - { ruby: 3.1.7, appraisal: rails_8_0 }
           - { ruby: 3.0.7, appraisal: rails_8_0 }
-          - { ruby: 3.4.5, appraisal: rails_7_0 }
-          - { ruby: 3.0.7, appraisal: rails_7_0 }
           - { ruby: 3.0.7, appraisal: rails_7_1 }
           - { ruby: 3.0.7, appraisal: rails_7_2 }
     env:

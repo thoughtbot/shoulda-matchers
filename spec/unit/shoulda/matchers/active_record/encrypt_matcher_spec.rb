@@ -1,32 +1,30 @@
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveRecord::EncryptMatcher, type: :model do
-  if rails_version >= 7.0
-    context 'a encrypt attribute' do
-      it 'accepts' do
-        expect(with_encrypt_attr).to encrypt(:attr)
-      end
-
-      it 'rejects when used in the negative' do
-        assertion = lambda do
-          expect(with_encrypt_attr).not_to encrypt(:attr)
-        end
-
-        expect(&assertion).to fail_with_message(<<~MESSAGE)
-Did not expect to encrypt :attr of Example,
-but it did
-        MESSAGE
-      end
+  context 'a encrypt attribute' do
+    it 'accepts' do
+      expect(with_encrypt_attr).to encrypt(:attr)
     end
 
-    context 'an attribute that is not part of the encrypted-attributes set' do
-      it 'rejects being encrypted' do
-        model = define_model :example, attr: :string, other: :string do
-          encrypts :attr
-        end.new
-
-        expect(model).not_to encrypt(:other)
+    it 'rejects when used in the negative' do
+      assertion = lambda do
+        expect(with_encrypt_attr).not_to encrypt(:attr)
       end
+
+      expect(&assertion).to fail_with_message(<<~MESSAGE)
+Did not expect to encrypt :attr of Example,
+but it did
+      MESSAGE
+    end
+  end
+
+  context 'an attribute that is not part of the encrypted-attributes set' do
+    it 'rejects being encrypted' do
+      model = define_model :example, attr: :string, other: :string do
+        encrypts :attr
+      end.new
+
+      expect(model).not_to encrypt(:other)
     end
 
     context 'an attribute on a class with no encrypt attributes' do
@@ -192,17 +190,17 @@ but it did
         MESSAGE
       end
     end
+  end
 
-    def with_encrypt_attr(**options)
-      define_model :example, attr: :string do
-        encrypts :attr, **options
-      end.new
-    end
+  def with_encrypt_attr(**options)
+    define_model :example, attr: :string do
+      encrypts :attr, **options
+    end.new
+  end
 
-    def with_encrypt_ignore_case_attr(**options)
-      define_model :example, attr: :string, original_attr: :string do
-        encrypts :attr, deterministic: true, ignore_case: true, **options
-      end.new
-    end
+  def with_encrypt_ignore_case_attr(**options)
+    define_model :example, attr: :string, original_attr: :string do
+      encrypts :attr, deterministic: true, ignore_case: true, **options
+    end.new
   end
 end
