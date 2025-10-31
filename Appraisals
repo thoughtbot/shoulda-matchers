@@ -34,6 +34,7 @@ appraise 'rails_7_1' do
   gem 'shoulda-context', '~> 2.0.0'
 
   # other dependencies
+  gem 'mutex_m', '~> 0.3.0'
   gem 'bcrypt', '~> 3.1.7'
 
   # Database adapters
@@ -70,6 +71,7 @@ appraise 'rails_7_2' do
   gem 'shoulda-context', '~> 2.0.0'
 
   # other dependencies
+  gem 'mutex_m', '~> 0.3.0'
   gem 'bcrypt', '~> 3.1.7'
 
   # Database adapters
@@ -111,6 +113,7 @@ appraise 'rails_8_0' do
   gem 'shoulda-context', '~> 2.0.0'
 
   # other dependencies
+  gem 'mutex_m', '~> 0.3.0'
   gem 'bcrypt', '~> 3.1.7'
 
   # Database adapters
@@ -154,6 +157,7 @@ appraise 'rails_8_1' do
   gem 'shoulda-context', '~> 2.0.0'
 
   # other dependencies
+  gem 'mutex_m', '~> 0.3.0'
   gem 'bcrypt', '~> 3.1.7'
 
   # Database adapters

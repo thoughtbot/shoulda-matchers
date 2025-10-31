@@ -38,4 +38,5 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 3.2'
   s.add_dependency 'activesupport', '>= 7.1'
+  s.add_dependency 'mutex_m', '~> 0.3.0'
 end
