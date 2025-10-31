@@ -7,7 +7,7 @@ module Shoulda
       # @private
       class NonNullableBooleanError < Shoulda::Matchers::Error
         def self.create(attribute)
-          super(attribute: attribute)
+          super(attribute:)
         end
 
         attr_accessor :attribute
@@ -24,7 +24,7 @@ Hence, this test will fail and there is no way to make it pass.
       # @private
       class CouldNotSetPasswordError < Shoulda::Matchers::Error
         def self.create(model)
-          super(model: model)
+          super(model:)
         end
 
         attr_accessor :model

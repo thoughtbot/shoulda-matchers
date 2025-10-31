@@ -672,8 +672,8 @@ pass, or do something else entirely.
 
         def default_attribute_message_values
           defaults = {
-            model_name: model_name,
-            instance: instance,
+            model_name:,
+            instance:,
             attribute: attribute_to_check_message_against,
           }
 

@@ -72,9 +72,9 @@ describe Shoulda::Matchers::ActiveRecord::SerializeMatcher, type: :model do
 
     define_model(:example, attr: :string) do
       if type
-        serialize :attr, *args, type: type, coder: coder
+        serialize(:attr, *args, type:, coder:)
       else
-        serialize :attr, *args, coder: coder
+        serialize :attr, *args, coder:
       end
     end.new
   end

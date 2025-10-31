@@ -107,8 +107,8 @@ module Shoulda
         def allow_value_matcher(value, message = nil, &block)
           build_allow_or_disallow_value_matcher(
             matcher_class: AllowValueMatcher,
-            value: value,
-            message: message,
+            value:,
+            message:,
             &block
           )
         end
@@ -116,8 +116,8 @@ module Shoulda
         def disallow_value_matcher(value, message = nil, &block)
           build_allow_or_disallow_value_matcher(
             matcher_class: DisallowValueMatcher,
-            value: value,
-            message: message,
+            value:,
+            message:,
             &block
           )
         end

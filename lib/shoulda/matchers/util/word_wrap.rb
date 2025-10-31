@@ -34,7 +34,7 @@ module Shoulda
 
       def wrapped_paragraphs
         paragraphs.map do |paragraph|
-          Paragraph.new(paragraph, indent: indent).wrap
+          Paragraph.new(paragraph, indent:).wrap
         end
       end
     end
@@ -100,11 +100,11 @@ module Shoulda
       end
 
       def wrap_lines(lines)
-        lines.map { |line| Line.new(line, indent: indent).wrap }
+        lines.map { |line| Line.new(line, indent:).wrap }
       end
 
       def wrap_generic_paragraph
-        Line.new(combine_paragraph_into_one_line, indent: indent).wrap
+        Line.new(combine_paragraph_into_one_line, indent:).wrap
       end
 
       def combine_paragraph_into_one_line
@@ -188,7 +188,7 @@ module Shoulda
           leftover = line[index + 1..]
         end
 
-        { fitted_line: fitted_line, leftover: leftover }
+        { fitted_line:, leftover: }
       end
 
       def determine_where_to_break_line(line, args)

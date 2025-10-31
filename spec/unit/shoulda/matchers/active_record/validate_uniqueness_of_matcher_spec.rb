@@ -51,7 +51,7 @@ describe Shoulda::Matchers::ActiveRecord::ValidateUniquenessOfMatcher, type: :mo
 
     context "when more than one record exists that has the next version of the attribute's value" do
       it 'accepts' do
-        value1 = dummy_value_for(value_type, array: array)
+        value1 = dummy_value_for(value_type, array:)
         value2 = next_version_of(value1, value_type)
         value3 = next_version_of(value2, value_type)
         model = define_model_validating_uniqueness(
@@ -319,9 +319,9 @@ not be proved.
 
     define_method(:build_attribute) do |attribute_options|
       attribute_options.deep_merge(
-        column_type: column_type,
-        value_type: value_type,
-        options: { array: array },
+        column_type:,
+        value_type:,
+        options: { array: },
       )
     end
   end
@@ -1596,7 +1596,7 @@ this could not be proved.
   end
 
   def dummy_value_for(attribute_type, array: false)
-    Shoulda::Matchers::Util.dummy_value_for(attribute_type, array: array)
+    Shoulda::Matchers::Util.dummy_value_for(attribute_type, array:)
   end
 
   def next_version_of(value, value_type)

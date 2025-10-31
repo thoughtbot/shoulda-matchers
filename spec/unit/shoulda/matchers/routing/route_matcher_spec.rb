@@ -362,7 +362,7 @@ describe 'Shoulda::Matchers::Routing::RouteMatcher', type: :routing do
   context 'given a controller and action specified as individual options' do
     include_examples 'core tests' do
       def build_route_matcher(method:, path:, port: nil, **params)
-        super(method: method, path: path, port: port).to(params)
+        super(method:, path:, port:).to(params)
       end
     end
   end
@@ -370,7 +370,7 @@ describe 'Shoulda::Matchers::Routing::RouteMatcher', type: :routing do
   context 'given a controller and action joined together in a string' do
     include_examples 'core tests' do
       def build_route_matcher(method:, path:, controller:, action:, port: nil, **rest)
-        super(method: method, path: path, port: port).
+        super(method:, path:, port:).
           to("#{controller}##{action}", **rest)
       end
     end
@@ -380,12 +380,12 @@ describe 'Shoulda::Matchers::Routing::RouteMatcher', type: :routing do
     define_controller(controller.camelize)
 
     define_routes do
-      send(method, path, controller: controller, action: action, **params)
+      send(method, path, controller:, action:, **params)
     end
   end
 
   def build_route_matcher(method:, path:, port:, **)
-    route(method, path, port: port)
+    route(method, path, port:)
   end
 
   let(:port_constraint_class) do

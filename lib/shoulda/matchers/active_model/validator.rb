@@ -105,8 +105,8 @@ module Shoulda
           validation_error_messages = record.errors[attribute]
 
           {
-            all_validation_errors: all_validation_errors,
-            validation_error_messages: validation_error_messages,
+            all_validation_errors:,
+            validation_error_messages:,
             validation_exception_message: nil,
           }
         rescue ::ActiveModel::StrictValidationFailed => e

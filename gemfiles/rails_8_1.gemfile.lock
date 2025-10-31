@@ -415,8 +415,8 @@ DEPENDENCIES
   bundler (~> 2.0)
   bundler-audit
   capybara
-  fssm
   image_processing (~> 1.2)
+  fssm
   importmap-rails
   jbuilder
   kamal

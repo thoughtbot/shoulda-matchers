@@ -32,7 +32,7 @@ module Shoulda
         end
 
         def to_hash
-          { method_name: method_name, args: args }
+          { method_name:, args: }
         end
 
         def inspect

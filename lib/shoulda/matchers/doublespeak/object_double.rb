@@ -24,9 +24,9 @@ module Shoulda
 
         def method_missing(method_name, *args, &block)
           call = MethodCall.new(
-            method_name: method_name,
-            args: args,
-            block: block,
+            method_name:,
+            args:,
+            block:,
             caller: ::Kernel.caller,
           )
           calls << call

@@ -184,7 +184,7 @@ module Shoulda
 
       def generate_file_that_redirects_to_latest_version(version)
         ref = determine_ref_from(version)
-        locals = { ref: ref, github_username: GITHUB_USERNAME }
+        locals = { ref:, github_username: GITHUB_USERNAME }
 
         erb = ERB.new(File.read('doc_config/gh-pages/index.html.erb'))
 

@@ -204,9 +204,9 @@ module Shoulda
           def attribute_changed_value_error
             AttributeChangedValueError.create(
               model: object.class,
-              attribute_name: attribute_name,
-              value_written: value_written,
-              value_read: value_read,
+              attribute_name:,
+              value_written:,
+              value_read:,
             )
           end
 
@@ -217,7 +217,7 @@ module Shoulda
           def attribute_does_not_exist_error
             AttributeDoesNotExistError.create(
               model: object.class,
-              attribute_name: attribute_name,
+              attribute_name:,
               value: value_written,
             )
           end

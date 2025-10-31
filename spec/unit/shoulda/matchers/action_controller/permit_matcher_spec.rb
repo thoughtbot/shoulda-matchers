@@ -147,11 +147,11 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
       expect(controller).
         to permit(:bar).
         on(:foo).
-        for(:create, params: params)
+        for(:create, params:)
       expect(controller).
         to permit(:baz).
         on(:foo).
-        for(:create, params: params)
+        for(:create, params:)
     end
   end
 
@@ -396,7 +396,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
               }
               expect(@controller).
                 to permit(:name, :age, :city, :country).
-                for(:create, params: params).
+                for(:create, params:).
                 on(:person)
             end
 
@@ -424,7 +424,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
               }
               expect(@controller).
                 to permit(:name, :age, :city, :country).
-                for(:create, params: params).
+                for(:create, params:).
                 on(:person)
             end
 
@@ -475,7 +475,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
           }
           expect(@controller).
             not_to permit(:name, :age).
-            for(:create, params: params).
+            for(:create, params:).
             on(:person)
         end
 
@@ -502,7 +502,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
           verb: :post,
           action: :create,
           params: {},
-          context: context,
+          context:,
         )
       end
     end
@@ -519,7 +519,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
           verb: :patch,
           action: :update,
           params: {},
-          context: context,
+          context:,
         )
       end
     end
@@ -538,7 +538,7 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
           verb: :delete,
           action: :hide,
           params: {},
-          context: context,
+          context:,
         )
       end
     end
@@ -603,6 +603,6 @@ describe Shoulda::Matchers::ActionController::PermitMatcher, type: :controller d
   end
 
   def expect_to_have_made_controller_request(context:, verb:, action:, params:)
-    expect(context).to have_received(verb).with(action, params: params)
+    expect(context).to have_received(verb).with(action, params:)
   end
 end

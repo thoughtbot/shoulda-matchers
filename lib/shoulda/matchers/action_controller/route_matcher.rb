@@ -125,7 +125,7 @@ module Shoulda
       # @return [RouteMatcher]
       #
       def route(method, path, port: nil)
-        RouteMatcher.new(self, method, path, port: port)
+        RouteMatcher.new(self, method, path, port:)
       end
 
       # @private
@@ -190,7 +190,7 @@ module Shoulda
         def route_recognized?
           context.send(
             :assert_routing,
-            { method: method, path: path },
+            { method:, path: },
             params,
           )
           true

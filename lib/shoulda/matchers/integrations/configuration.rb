@@ -1,5 +1,3 @@
-require 'set'
-
 module Shoulda
   module Matchers
     module Integrations

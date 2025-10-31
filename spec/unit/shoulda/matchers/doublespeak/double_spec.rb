@@ -82,11 +82,11 @@ module Shoulda::Matchers::Doublespeak
         args = [:any, :args]
         block = -> {}
         call = MethodCall.new(
-          double: double,
+          double:,
           object: instance,
-          method_name: method_name,
-          args: args,
-          block: block,
+          method_name:,
+          args:,
+          block:,
           caller: :some_caller,
         )
 
@@ -184,7 +184,7 @@ module Shoulda::Matchers::Doublespeak
         instance = klass.new
         call = double('call',
           object: instance,
-          method_name: method_name,
+          method_name:,
           args: expected_args,
           block: expected_block,)
         double = described_class.new(
@@ -205,7 +205,7 @@ module Shoulda::Matchers::Doublespeak
       it 'does nothing if no method has been stored' do
         method_name = :a_method
         world = build_world(original_method_for: nil)
-        call = double('call', method_name: method_name)
+        call = double('call', method_name:)
         double = described_class.new(
           world,
           :klass,

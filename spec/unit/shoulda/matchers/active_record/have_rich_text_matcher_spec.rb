@@ -97,7 +97,7 @@ describe Shoulda::Matchers::ActiveRecord::HaveRichTextMatcher, type: :model do
     define_model 'Post', columns do
       if is_rich_text_association
         if encrypted
-          has_rich_text :content, encrypted: encrypted
+          has_rich_text(:content, encrypted:)
         else
           has_rich_text :content
         end
