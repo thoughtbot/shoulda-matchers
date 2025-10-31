@@ -322,6 +322,7 @@ PLATFORMS
   arm64-darwin-22
   arm64-darwin-23
   arm64-darwin-24
+  arm64-darwin-25
   x86_64-linux
 
 DEPENDENCIES
@@ -333,6 +334,7 @@ DEPENDENCIES
   fssm
   importmap-rails
   jbuilder
+  mutex_m
   pg (~> 1.1)
   pry
   pry-byebug

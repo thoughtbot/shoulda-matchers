@@ -63,7 +63,6 @@ appraise 'rails_7_2' do
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'webdrivers'
-  gem 'mutex_m', require: false
 
   # test dependencies
   gem 'rspec-rails', '~> 6.0'
@@ -99,7 +98,6 @@ appraise 'rails_8_0' do
   gem 'selenium-webdriver'
   gem 'webdrivers'
   gem 'propshaft'
-  gem 'mutex_m', require: false
   gem 'solid_cache'
   gem 'solid_queue'
   gem 'solid_cable'
@@ -140,7 +138,6 @@ appraise 'rails_8_1' do
   gem 'selenium-webdriver'
   gem 'webdrivers'
   gem 'propshaft'
-  gem 'mutex_m', require: false
   gem 'solid_cache'
   gem 'solid_queue'
   gem 'solid_cable'

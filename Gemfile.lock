@@ -102,6 +102,7 @@ DEPENDENCIES
   appraisal (= 2.5.0)
   bundler (~> 2.0)
   fssm
+  mutex_m
   pry
   pry-byebug
   rake (= 13.0.1)

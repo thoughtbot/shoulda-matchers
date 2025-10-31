@@ -406,6 +406,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-24
+  arm64-darwin-25
 
 DEPENDENCIES
   appraisal (= 2.5.0)
@@ -415,8 +416,8 @@ DEPENDENCIES
   bundler (~> 2.0)
   bundler-audit
   capybara
-  image_processing (~> 1.2)
   fssm
+  image_processing (~> 1.2)
   importmap-rails
   jbuilder
   kamal
