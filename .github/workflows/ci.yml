@@ -27,11 +27,9 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - 3.4.5
-          - 3.3.9
+          - 3.4.7
+          - 3.3.10
           - 3.2.9
-          - 3.1.7
-          - 3.0.7
         appraisal:
           - rails_8_1
           - rails_8_0
@@ -45,13 +43,7 @@ jobs:
           - { ruby: 3.1.7, appraisal: rails_8_1 }
           - { ruby: 3.0.7, appraisal: rails_8_1 }
           - { ruby: 3.2.9, appraisal: rails_8_0 }
-          - { ruby: 3.1.7, appraisal: rails_8_0 }
-          - { ruby: 3.0.7, appraisal: rails_8_0 }
           - { ruby: 3.2.9, appraisal: rails_8_0 }
-          - { ruby: 3.1.7, appraisal: rails_8_0 }
-          - { ruby: 3.0.7, appraisal: rails_8_0 }
-          - { ruby: 3.0.7, appraisal: rails_7_1 }
-          - { ruby: 3.0.7, appraisal: rails_7_2 }
     env:
       DATABASE_ADAPTER: ${{ matrix.adapter }}
       BUNDLE_GEMFILE: gemfiles/${{ matrix.appraisal }}.gemfile
