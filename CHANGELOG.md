@@ -1,5 +1,41 @@
 # Changelog
 
+## 7.0.0 - 2025-10-31
+
+### Backward-incompatible changes
+
+- Drop support for Rails 6.1 and older by @matsales28 ([#1678])
+- Drop support for Rails 7.0 by @matsales28 ([#1680])
+
+### Bug fixes
+
+- Ensure @options is always set in ActiveModel::ValidationMatcher by @yelvert ([#1669])
+
+### Features
+
+- Add support for Rails 8 by @matsales28 ([#1677])
+- Add Rails 8.1 support by @matsales28 ([#1682])
+- Support encrypted ActionText attributes by @spdawson ([#1667])
+- Add `service`, `strict_loading`, and `dependent` options to `have_attached` matcher by @matsales28 ([#1675])
+
+### Improvements
+
+- Refactor Ruby manager setup, add mise integration by @amalrik ([#1674])
+- Update Ruby versions to latest stable releases by @matsales28 ([#1676], [#1683])
+- Update supported Ruby versions to 3.3.10 and 3.4.7
+
+[#1667]: https://github.com/thoughtbot/shoulda-matchers/pull/1667
+[#1669]: https://github.com/thoughtbot/shoulda-matchers/pull/1669
+[#1674]: https://github.com/thoughtbot/shoulda-matchers/pull/1674
+[#1675]: https://github.com/thoughtbot/shoulda-matchers/pull/1675
+[#1676]: https://github.com/thoughtbot/shoulda-matchers/pull/1676
+[#1677]: https://github.com/thoughtbot/shoulda-matchers/pull/1677
+[#1678]: https://github.com/thoughtbot/shoulda-matchers/pull/1678
+[#1680]: https://github.com/thoughtbot/shoulda-matchers/pull/1680
+[#1682]: https://github.com/thoughtbot/shoulda-matchers/pull/1682
+[#1683]: https://github.com/thoughtbot/shoulda-matchers/pull/1683
+
+
 ## 6.5.0 - 2025-04-25
 
 ## What's Changed
