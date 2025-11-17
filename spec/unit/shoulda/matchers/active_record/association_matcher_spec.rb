@@ -749,6 +749,52 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       end
     end
 
+    if rails_version >= 8.1
+      context 'an association with a :touch option' do
+        [false, true].each do |deprecated_value|
+          context "when the model has deprecated: #{deprecated_value}" do
+            it 'accepts a matching deprecated option' do
+              expect(belonging_to_parent(deprecated: deprecated_value)).
+                to belong_to(:parent).deprecated(deprecated_value)
+            end
+
+            it 'rejects a non-matching deprecated option' do
+              expect(belonging_to_parent(deprecated: deprecated_value)).
+                not_to belong_to(:parent).deprecated(!deprecated_value)
+            end
+
+            it 'defaults to deprecated(true)' do
+              if deprecated_value
+                expect(belonging_to_parent(deprecated: deprecated_value)).
+                  to belong_to(:parent).deprecated
+              else
+                expect(belonging_to_parent(deprecated: deprecated_value)).
+                  not_to belong_to(:parent).deprecated
+              end
+            end
+
+            it 'will not break matcher when deprecated option is unspecified' do
+              expect(belonging_to_parent(deprecated: deprecated_value)).to belong_to(:parent)
+            end
+          end
+        end
+      end
+
+      context 'an association without a :deprecated option' do
+        it 'accepts deprecated(false)' do
+          expect(belonging_to_parent).to belong_to(:parent).deprecated(false)
+        end
+
+        it 'rejects deprecated(true)' do
+          expect(belonging_to_parent).not_to belong_to(:parent).deprecated(true)
+        end
+
+        it 'rejects deprecated()' do
+          expect(belonging_to_parent).not_to belong_to(:parent).deprecated
+        end
+      end
+    end
+
     def belonging_to_parent(options = {}, parent_options = {}, &block)
       child_model = create_child_model_belonging_to_parent(
         options,
@@ -801,6 +847,18 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
   end
 
   context 'have_many' do
+    if rails_version <= 8.1
+      context 'using the deprecated matcher' do
+        it 'raises a NotImplementedError' do
+          expected_message = '`deprecated` association matcher is only available on Active Record >= 8.1.'
+
+          expect do
+            expect(having_many_children(deprecated: false)).to have_many(:children).deprecated(false)
+          end.to raise_error(NotImplementedError, expected_message)
+        end
+      end
+    end
+
     it 'accepts a valid association without any options' do
       expect(having_many_children).to have_many(:children)
     end
@@ -1250,6 +1308,74 @@ Expected Parent to have a has_many association called children through conceptio
       end
 
       expect(Hotel.new).to have_many(:visitors).with_foreign_type(:facility_type)
+    end
+
+    if rails_version >= 8.1
+      context 'deprecated' do
+        it 'accepts deprecated(false) when the :deprecated option is false' do
+          expect(having_many_children(deprecated: false)).to have_many(:children).deprecated(false)
+        end
+
+        it 'accepts deprecated(true) when the :deprecated option is true' do
+          expect(having_many_children(deprecated: true)).to have_many(:children).deprecated(true)
+        end
+
+        it 'rejects deprecated(false) when the :deprecated option is true' do
+          expect(having_many_children(deprecated: true)).not_to have_many(:children).deprecated(false)
+        end
+
+        it 'rejects deprecated(true) when the :deprecated option is false' do
+          expect(having_many_children(deprecated: false)).not_to have_many(:children).deprecated(true)
+        end
+
+        it 'assumes deprecated() means deprecated(true)' do
+          expect(having_many_children(deprecated: true)).to have_many(:children).deprecated
+        end
+
+        it 'rejects deprecated() when :deprecated option is false' do
+          expect(having_many_children(deprecated: false)).not_to have_many(:children).deprecated
+        end
+
+        it 'rejects deprecated(true) when no :deprecated option was specified' do
+          expect(having_many_children).not_to have_many(:children).deprecated(true)
+        end
+
+        it 'rejects deprecated(false) when no :deprecated option was specified' do
+          expect(having_many_children).to have_many(:children).deprecated(false)
+        end
+
+        it 'rejects deprecated() when no :deprecated option was specified' do
+          expect(having_many_children).not_to have_many(:children).deprecated
+        end
+
+        it 'accepts an association :through with a :deprecated option' do
+          define_model(:author) do
+            has_many :books
+            has_many :paperbacks, through: :books, source: :format, source_type: 'Paperback', deprecated: true
+          end
+          define_model(:book, format_id: :integer) do
+            belongs_to :format, polymorphic: true
+          end
+          define_model(:paperback)
+
+          expect(Author.new).to have_many(:paperbacks).source(:format).deprecated
+          expect(Author.new).not_to have_many(:paperbacks).source(:format).deprecated(false)
+        end
+
+        it 'accepts an association :through without a :deprecated option' do
+          define_model(:author) do
+            has_many :books
+            has_many :paperbacks, through: :books, source: :format, source_type: 'Paperback'
+          end
+          define_model(:book, format_id: :integer) do
+            belongs_to :format, polymorphic: true
+          end
+          define_model(:paperback)
+
+          expect(Author.new).to have_many(:paperbacks).source(:format).deprecated(false)
+          expect(Author.new).not_to have_many(:paperbacks).source(:format).deprecated(true)
+        end
+      end
     end
 
     describe 'strict_loading' do
@@ -1920,6 +2046,67 @@ Expected Parent to have a has_many association called children through conceptio
       expect {
         expect(Person.new).to have_one(:detail).autosave(true)
       }.to fail_with_message(message)
+    end
+
+    if rails_version >= 8.1
+      it 'accepts an association with a matching :deprecated option' do
+        define_model :detail, person_id: :integer, disabled: :boolean
+        define_model :person do
+          has_one :detail, deprecated: true
+        end
+
+        expect(Person.new).to have_one(:detail).deprecated(true)
+      end
+
+      it 'rejects an association with a non-matching :deprecated option' do
+        define_model :detail, person_id: :integer, disabled: :boolean
+        define_model :person do
+          has_one :detail, deprecated: false
+        end
+
+        expect(Person.new).to have_one(:detail).deprecated(false)
+      end
+
+      it 'rejects an association with a non-matching :deprecated option when no option is passed' do
+        define_model :detail, person_id: :integer, disabled: :boolean
+        define_model :person do
+          has_one :detail
+        end
+
+        expect(Person.new).to have_one(:detail).deprecated(false)
+      end
+
+      it 'accepts an association :through with a :deprecated option' do
+        define_model :detail
+
+        define_model :account do
+          has_one :detail
+        end
+
+        define_model :person do
+          has_one :account
+          has_one :detail, through: :account, deprecated: true
+        end
+
+        expect(Person.new).to have_one(:detail).through(:account).deprecated
+        expect(Person.new).not_to have_one(:detail).through(:account).deprecated(false)
+      end
+
+      it 'accepts an association :through without a :deprecated option' do
+        define_model :detail
+
+        define_model :account do
+          has_one :detail
+        end
+
+        define_model :person do
+          has_one :account
+          has_one :detail, through: :account
+        end
+
+        expect(Person.new).to have_one(:detail).through(:account).deprecated(false)
+        expect(Person.new).not_to have_one(:detail).through(:account).deprecated(true)
+      end
     end
 
     it 'accepts an association with a through' do
@@ -2613,6 +2800,30 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
       end
     end
 
+    if rails_version >= 8.1
+      context 'deprecated' do
+        it 'accepts when the :deprecated option matches' do
+          expect(having_and_belonging_to_many_relatives(deprecated: false)).
+            to have_and_belong_to_many(:relatives).deprecated(false)
+        end
+
+        it 'rejects when the :deprecated option does not match' do
+          expect(having_and_belonging_to_many_relatives(deprecated: true)).
+            to have_and_belong_to_many(:relatives).deprecated(false)
+        end
+
+        it 'assumes deprecated() means deprecated(true)' do
+          expect(having_and_belonging_to_many_relatives(deprecated: false)).
+            not_to have_and_belong_to_many(:relatives).deprecated
+        end
+
+        it 'matches deprecated(false) to having no deprecated option specified' do
+          expect(having_and_belonging_to_many_relatives).
+            to have_and_belong_to_many(:relatives).deprecated(false)
+        end
+      end
+    end
+
     def having_and_belonging_to_many_relatives(_options = {})
       define_model :relative
       define_model :people_relative, id: false, person_id: :integer,
@@ -2845,6 +3056,52 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
 
       it 'rejects touch()' do
         expect(delegating_type_to_drivable).not_to have_delegated_type(:drivable).touch
+      end
+    end
+
+    if rails_version >= 8.1
+      context 'an association with a :deprecated option' do
+        [false, true].each do |deprecated_value|
+          context "when the model has deprecated: #{deprecated_value}" do
+            it 'accepts a matching deprecated option' do
+              expect(delegating_type_to_drivable(deprecated: deprecated_value)).
+                to have_delegated_type(:drivable).deprecated(deprecated_value)
+            end
+
+            it 'rejects a non-matching deprecated option' do
+              expect(delegating_type_to_drivable(deprecated: deprecated_value)).
+                not_to have_delegated_type(:drivable).deprecated(!deprecated_value)
+            end
+
+            it 'defaults to deprecated(true)' do
+              if deprecated_value
+                expect(delegating_type_to_drivable(deprecated: deprecated_value)).
+                  to have_delegated_type(:drivable).deprecated
+              else
+                expect(delegating_type_to_drivable(deprecated: deprecated_value)).
+                  not_to have_delegated_type(:drivable).deprecated
+              end
+            end
+
+            it 'will not break matcher when deprecated option is unspecified' do
+              expect(delegating_type_to_drivable(deprecated: deprecated_value)).to have_delegated_type(:drivable)
+            end
+          end
+        end
+      end
+
+      context 'an association without a :deprecated option' do
+        it 'accepts deprecated(false)' do
+          expect(delegating_type_to_drivable).to have_delegated_type(:drivable).deprecated(false)
+        end
+
+        it 'rejects deprecated(true)' do
+          expect(delegating_type_to_drivable).not_to have_delegated_type(:drivable).deprecated(true)
+        end
+
+        it 'rejects deprecated()' do
+          expect(delegating_type_to_drivable).not_to have_delegated_type(:drivable).deprecated
+        end
       end
     end
 
