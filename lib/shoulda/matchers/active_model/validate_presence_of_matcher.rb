@@ -343,7 +343,7 @@ validation for you? Instead of using `validate_presence_of`, try
             attribute_serialization_coder.object_class == String
           else
             RailsShim.supports_full_attributes_api?(model) &&
-              attribute_type.try(:type) == :string
+              attribute_type.respond_to?(:type) && attribute_type.type == :string
           end
         end
 
