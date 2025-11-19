@@ -1387,6 +1387,18 @@ Expected Parent to have a has_many association called children through conceptio
           expect(Author.new).to have_many(:paperbacks).source(:format).deprecated(false)
           expect(Author.new).not_to have_many(:paperbacks).source(:format).deprecated(true)
         end
+
+        it 'rejects an association with a non-matching :deprecated option with the correct message' do
+          define_model :child, parent_id: :integer
+          define_model :parent do
+            has_many :children, deprecated: false
+          end
+
+          message = 'Expected Parent to have a has_many association called children (children should have deprecated set to true)'
+          expect do
+            expect(Parent.new).to have_many(:children).deprecated(true)
+          end.to fail_with_message(message)
+        end
       end
     end
 
@@ -2119,6 +2131,18 @@ Expected Parent to have a has_many association called children through conceptio
         expect(Person.new).to have_one(:detail).through(:account).deprecated(false)
         expect(Person.new).not_to have_one(:detail).through(:account).deprecated(true)
       end
+
+      it 'rejects an association with a non-matching :deprecated option with the correct message' do
+        define_model :detail, person_id: :integer, disabled: :boolean
+        define_model :person do
+          has_one :detail, deprecated: false
+        end
+
+        message = 'Expected Person to have a has_one association called detail (detail should have deprecated set to true)'
+        expect do
+          expect(Person.new).to have_one(:detail).deprecated(true)
+        end.to fail_with_message(message)
+      end
     end
 
     it 'accepts an association with a through' do
@@ -2833,6 +2857,20 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
           expect(having_and_belonging_to_many_relatives).
             to have_and_belong_to_many(:relatives).deprecated(false)
         end
+
+        it 'rejects an association with a non-matching :deprecated option with the correct message' do
+          define_model :relatives, adopted: :boolean
+          define_model :person do
+            has_and_belongs_to_many :relatives
+          end
+          define_model :people_relative, person_id: :integer,
+            relative_id: :integer
+
+          message = 'Expected Person to have a has_and_belongs_to_many association called relatives (relatives should have deprecated set to true)'
+          expect do
+            expect(Person.new).to have_and_belong_to_many(:relatives).deprecated(true)
+          end.to fail_with_message(message)
+        end
       end
     end
 
@@ -3099,6 +3137,14 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
               expect(delegating_type_to_drivable(deprecated: deprecated_value)).to have_delegated_type(:drivable)
             end
           end
+        end
+
+        it 'rejects an association with a non-matching :deprecated option with the correct message' do
+          message = 'Expected Vehicle to have a belongs_to association called drivable (drivable should have deprecated set to true)'
+
+          expect do
+            expect(delegating_type_to_drivable(deprecated: false)).to have_delegated_type(:drivable).deprecated(true)
+          end.to fail_with_message(message)
         end
       end
 

@@ -1959,7 +1959,8 @@ module Shoulda
           if option_verifier.correct_for_boolean?(:deprecated, options[:deprecated])
             true
           else
-            @missing = "#{name} should have deprecated: #{options[:deprecated]}"
+            @missing = "#{name} should have deprecated set to"\
+                " #{options[:deprecated]}"
             false
           end
         end
