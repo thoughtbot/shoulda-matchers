@@ -1643,7 +1643,7 @@ module Shoulda
         end
 
         def deprecated(deprecated = true)
-          if ::ActiveRecord::VERSION::STRING >= '8.1'
+          if Shoulda::Matchers::RailsShim.active_record_gte_8_1?
             @options[:deprecated] = deprecated
             self
           else

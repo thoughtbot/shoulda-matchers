@@ -749,7 +749,19 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       end
     end
 
-    if rails_version >= 8.1
+    unless active_record_gte_8_1?
+      context 'using the deprecated matcher' do
+        it 'raises a NotImplementedError' do
+          expected_message = '`deprecated` association matcher is only available on Active Record >= 8.1.'
+
+          expect do
+            expect(belonging_to_parent).to belong_to(:parent).deprecated
+          end.to raise_error(NotImplementedError, expected_message)
+        end
+      end
+    end
+
+    if active_record_gte_8_1?
       context 'an association with a :touch option' do
         [false, true].each do |deprecated_value|
           context "when the model has deprecated: #{deprecated_value}" do
@@ -847,13 +859,13 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
   end
 
   context 'have_many' do
-    if rails_version <= 8.1
+    unless active_record_gte_8_1?
       context 'using the deprecated matcher' do
         it 'raises a NotImplementedError' do
           expected_message = '`deprecated` association matcher is only available on Active Record >= 8.1.'
 
           expect do
-            expect(having_many_children(deprecated: false)).to have_many(:children).deprecated(false)
+            expect(having_many_children).to have_many(:children).deprecated
           end.to raise_error(NotImplementedError, expected_message)
         end
       end
