@@ -372,8 +372,6 @@ module Shoulda
       #       should belong_to(:organization).optional
       #     end
       #
-      # @return [AssociationMatcher]
-      #
       # ##### deprecated
       #
       # Use `deprecated` to assert that the `:deprecated` option was specified.
@@ -392,6 +390,8 @@ module Shoulda
       #     class AccountTest < ActiveSupport::TestCase
       #       should belong_to(:bank).deprecated(true)
       #     end
+      #
+      # @return [AssociationMatcher]
       #
       def belong_to(name)
         AssociationMatcher.new(:belongs_to, name)
@@ -700,8 +700,6 @@ module Shoulda
       #       should have_delegated_type(:drivable).optional
       #     end
       #
-      # @return [AssociationMatcher]
-      #
       # ##### deprecated
       #
       # Use `deprecated` to assert that the association is not allowed to be nil.
@@ -720,6 +718,8 @@ module Shoulda
       #     class VehicleTest < ActiveSupport::TestCase
       #       should have_delegated_type(:drivable).deprecated
       #     end
+      #
+      # @return [AssociationMatcher]
       #
       def have_delegated_type(name)
         AssociationMatcher.new(:belongs_to, name)
@@ -1007,7 +1007,6 @@ module Shoulda
       #       should have_many(:employees).inverse_of(:company)
       #     end
       #
-      # @return [AssociationMatcher]
       #
       # ##### deprecated
       #
@@ -1027,6 +1026,8 @@ module Shoulda
       #     class PlayerTest < ActiveSupport::TestCase
       #       should have_many(:games).deprecated(true)
       #     end
+      #
+      # @return [AssociationMatcher]
       #
       def have_many(name)
         AssociationMatcher.new(:has_many, name)
@@ -1273,7 +1274,6 @@ module Shoulda
       #       should have_one(:brain).required
       #     end
       #
-      # @return [AssociationMatcher]
       #
       # ##### deprecated
       #
@@ -1293,6 +1293,8 @@ module Shoulda
       #     class AccountTest < ActiveSupport::TestCase
       #       should have_one(:bank).deprecated(true)
       #     end
+      #
+      # @return [AssociationMatcher]
       #
       def have_one(name)
         AssociationMatcher.new(:has_one, name)
@@ -1449,8 +1451,6 @@ module Shoulda
       #     class AccountTest < ActiveSupport::TestCase
       #       should have_and_belong_to_many(:advertisers).autosave(true)
       #     end
-      #
-      # @return [AssociationMatcher]
       #
       # ##### deprecated
       #
