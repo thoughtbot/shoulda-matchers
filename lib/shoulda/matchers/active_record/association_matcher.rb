@@ -1692,8 +1692,8 @@ module Shoulda
             touch_correct? &&
             types_correct? &&
             strict_loading_correct? &&
-            submatchers_match? &&
-            deprecated_correct?
+            deprecated_correct? &&
+            submatchers_match?
         end
 
         def join_table_name
