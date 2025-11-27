@@ -532,7 +532,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
       end
 
       context 'when qualified with required(false)' do
-        it 'passes' do
+        it 'fails with an appropriate message' do
           assertion = lambda do
             expect(belonging_to_parent(required: true)).
               to belong_to(:parent).required(false)
@@ -762,7 +762,7 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
     end
 
     if active_record_gte_8_1?
-      context 'an association with a :touch option' do
+      context 'an association with a :deprecated option' do
         [false, true].each do |deprecated_value|
           context "when the model has deprecated: #{deprecated_value}" do
             it 'accepts a matching deprecated option' do
@@ -804,6 +804,18 @@ describe Shoulda::Matchers::ActiveRecord::AssociationMatcher, type: :model do
         it 'rejects deprecated()' do
           expect(belonging_to_parent).not_to belong_to(:parent).deprecated
         end
+      end
+
+      it 'rejects an association with a non-matching :deprecated option with the correct message' do
+        define_model :parent, adopter: :boolean
+        define_model :child, parent_id: :integer do
+          belongs_to :parent, deprecated: false
+        end
+
+        message = 'Expected Child to have a belongs_to association called parent (parent should have deprecated set to true)'
+        expect do
+          expect(Child.new).to belong_to(:parent).deprecated(true)
+        end.to fail_with_message(message)
       end
     end
 
@@ -3138,14 +3150,6 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
             end
           end
         end
-
-        it 'rejects an association with a non-matching :deprecated option with the correct message' do
-          message = 'Expected Vehicle to have a belongs_to association called drivable (drivable should have deprecated set to true)'
-
-          expect do
-            expect(delegating_type_to_drivable(deprecated: false)).to have_delegated_type(:drivable).deprecated(true)
-          end.to fail_with_message(message)
-        end
       end
 
       context 'an association without a :deprecated option' do
@@ -3160,6 +3164,14 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
         it 'rejects deprecated()' do
           expect(delegating_type_to_drivable).not_to have_delegated_type(:drivable).deprecated
         end
+      end
+
+      it 'rejects an association with a non-matching :deprecated option with the correct message' do
+        message = 'Expected Vehicle to have a belongs_to association called drivable (drivable should have deprecated set to true)'
+
+        expect do
+          expect(delegating_type_to_drivable(deprecated: false)).to have_delegated_type(:drivable).deprecated(true)
+        end.to fail_with_message(message)
       end
     end
 

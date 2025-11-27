@@ -702,7 +702,7 @@ module Shoulda
       #
       # ##### deprecated
       #
-      # Use `deprecated` to assert that the association is not allowed to be nil.
+      # Use `deprecated` to assert that the `:deprecated` option was specified.
       # (Enabled by default in Rails 8.1+).
       #
       #     class Vehicle < ActiveRecord::Base
