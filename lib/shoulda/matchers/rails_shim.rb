@@ -25,6 +25,10 @@ module Shoulda
           Gem::Requirement.new('< 7').satisfied_by?(active_model_version)
         end
 
+        def active_record_gte_8_1?
+          Gem::Requirement.new('>= 8.1').satisfied_by?(active_record_version)
+        end
+
         def generate_validation_message(
           record,
           attribute,

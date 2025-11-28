@@ -372,6 +372,25 @@ module Shoulda
       #       should belong_to(:organization).optional
       #     end
       #
+      # ##### deprecated
+      #
+      # Use `deprecated` to assert that the `:deprecated` option was specified.
+      # (Enabled by default in Rails 8.1+).
+      #
+      #     class Account < ActiveRecord::Base
+      #       belongs_to :bank, deprecated: true
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Account, type: :model do
+      #       it { should belong_to(:bank).deprecated(true) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class AccountTest < ActiveSupport::TestCase
+      #       should belong_to(:bank).deprecated(true)
+      #     end
+      #
       # @return [AssociationMatcher]
       #
       def belong_to(name)
@@ -681,9 +700,27 @@ module Shoulda
       #       should have_delegated_type(:drivable).optional
       #     end
       #
+      # ##### deprecated
+      #
+      # Use `deprecated` to assert that the `:deprecated` option was specified.
+      # (Enabled by default in Rails 8.1+).
+      #
+      #     class Vehicle < ActiveRecord::Base
+      #       delegated_type :drivable, types: %w(Car Truck), deprecated: true
+      #     end
+      #
+      #     # RSpec
+      #     describe Vehicle
+      #       it { should have_delegated_type(:drivable).deprecated }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class VehicleTest < ActiveSupport::TestCase
+      #       should have_delegated_type(:drivable).deprecated
+      #     end
+      #
       # @return [AssociationMatcher]
       #
-
       def have_delegated_type(name)
         AssociationMatcher.new(:belongs_to, name)
       end
@@ -970,6 +1007,26 @@ module Shoulda
       #       should have_many(:employees).inverse_of(:company)
       #     end
       #
+      #
+      # ##### deprecated
+      #
+      # Use `deprecated` to assert that the `:deprecated` option was specified.
+      # (Enabled by default in Rails 8.1+)
+      #
+      #     class Player < ActiveRecord::Base
+      #       has_many :games, deprecated: true
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Player, type: :model do
+      #       it { should have_many(:games).deprecated(true) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class PlayerTest < ActiveSupport::TestCase
+      #       should have_many(:games).deprecated(true)
+      #     end
+      #
       # @return [AssociationMatcher]
       #
       def have_many(name)
@@ -1217,6 +1274,26 @@ module Shoulda
       #       should have_one(:brain).required
       #     end
       #
+      #
+      # ##### deprecated
+      #
+      # Use `deprecated` to assert that the `:deprecated` option was specified.
+      # (Enabled by default in Rails 8.1+).
+      #
+      #     class Account < ActiveRecord::Base
+      #       has_one :bank, deprecated: true
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Account, type: :model do
+      #       it { should have_one(:bank).deprecated(true) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class AccountTest < ActiveSupport::TestCase
+      #       should have_one(:bank).deprecated(true)
+      #     end
+      #
       # @return [AssociationMatcher]
       #
       def have_one(name)
@@ -1373,6 +1450,25 @@ module Shoulda
       #     # Minitest (Shoulda)
       #     class AccountTest < ActiveSupport::TestCase
       #       should have_and_belong_to_many(:advertisers).autosave(true)
+      #     end
+      #
+      # ##### deprecated
+      #
+      # Use `deprecated` to assert that the `:deprecated` option was specified.
+      # (Enabled by default in Rails 8.1+).
+      #
+      #     class Publisher < ActiveRecord::Base
+      #       has_and_belongs_to_many :advertisers, deprecated: true
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Publisher, type: :model do
+      #       it { should have_and_belong_to_many(:advertisers).deprecated(true) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class AccountTest < ActiveSupport::TestCase
+      #       should have_and_belong_to_many(:advertisers).deprecated(true)
       #     end
       #
       # @return [AssociationMatcher]
@@ -1546,6 +1642,16 @@ module Shoulda
           self
         end
 
+        def deprecated(deprecated = true)
+          if Shoulda::Matchers::RailsShim.active_record_gte_8_1?
+            @options[:deprecated] = deprecated
+            self
+          else
+            raise NotImplementedError,
+              '`deprecated` association matcher is only available on Active Record >= 8.1.'
+          end
+        end
+
         def without_validating_presence
           remove_submatcher(AssociationMatchers::RequiredMatcher)
           self
@@ -1586,6 +1692,7 @@ module Shoulda
             touch_correct? &&
             types_correct? &&
             strict_loading_correct? &&
+            deprecated_correct? &&
             submatchers_match?
         end
 
@@ -1844,6 +1951,16 @@ module Shoulda
             true
           else
             @missing = "#{name} should have touch: #{options[:touch]}"
+            false
+          end
+        end
+
+        def deprecated_correct?
+          if option_verifier.correct_for_boolean?(:deprecated, options[:deprecated])
+            true
+          else
+            @missing = "#{name} should have deprecated set to"\
+                " #{options[:deprecated]}"
             false
           end
         end
