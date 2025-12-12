@@ -690,12 +690,11 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
       end
 
       [[false, true], [true, false]].each do |booleans|
-        it 'prints a warning' do
+        it 'prints a warning with the model and attribute names' do
           valid_values = booleans
           builder = build_object_allowing(valid_values)
           message =
-            'You are using `validate_inclusion_of` to assert that a boolean '\
-            'column allows boolean values and disallows non-boolean ones'
+            "You are using `validate_inclusion_of` to assert that the column 'Example#attr' allows boolean values and disallows non-boolean ones"
 
           stderr = capture(:stderr) do
             expect_to_match_in_array(builder, valid_values)
@@ -750,12 +749,11 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
             end
           end
 
-          it 'prints a warning' do
+          it 'prints a warning with the model and attribute names' do
             valid_values = [nil]
             builder = build_object_allowing(valid_values)
             message =
-              'You are using `validate_inclusion_of` to assert that a '\
-              'boolean column allows nil'
+              "You are using `validate_inclusion_of` to assert that the column 'Example#attr' allows nil"
 
             stderr = capture(:stderr) do
               expect_to_match_in_array(builder, valid_values)
