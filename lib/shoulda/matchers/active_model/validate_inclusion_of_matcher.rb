@@ -278,18 +278,6 @@ module Shoulda
         ARBITRARY_OUTSIDE_DATE = Date.jd(9999999)
         ARBITRARY_OUTSIDE_DATETIME = DateTime.jd(9999999)
         ARBITRARY_OUTSIDE_TIME = Time.at(9999999999)
-        BOOLEAN_ALLOWS_BOOLEAN_MESSAGE = <<EOT.freeze
-You are using `validate_inclusion_of` to assert that a boolean column allows
-boolean values and disallows non-boolean ones. Be aware that it is not possible
-to fully test this, as boolean columns will automatically convert non-boolean
-values to boolean ones. Hence, you should consider removing this test.
-EOT
-        BOOLEAN_ALLOWS_NIL_MESSAGE = <<EOT.freeze
-You are using `validate_inclusion_of` to assert that a boolean column allows nil.
-Be aware that it is not possible to fully test this, as anything other than
-true, false or nil will be converted to false. Hence, you should consider
-removing this test.
-EOT
 
         def initialize(attribute)
           super(attribute)
@@ -400,6 +388,24 @@ EOT
 
         private
 
+        def boolean_allows_boolean_message
+          <<-EOT.strip
+            You are using `validate_inclusion_of` to assert that the column '#{@subject.class.name}##{attribute}'
+            allows boolean values and disallows non-boolean ones. Be aware that it
+            is not possible to fully test this, as boolean columns will automatically
+            convert non-boolean values to boolean ones. Hence, you should consider
+            removing this test.
+          EOT
+        end
+
+        def boolean_allows_nil_message
+          <<-EOT.strip
+            You are using `validate_inclusion_of` to assert that the column '#{@subject.class.name}##{attribute}'
+            allows nil. Be aware that it is not possible to fully test this, as anything other than
+            true, false or nil will be converted to false. Hence, you should consider removing this test.
+          EOT
+        end
+
         def minimum_range_value
           @range.begin
         end
@@ -492,11 +498,11 @@ EOT
           if attribute_type == :boolean
             case @array
             when [false, true], [true, false]
-              Shoulda::Matchers.warn BOOLEAN_ALLOWS_BOOLEAN_MESSAGE
+              Shoulda::Matchers.warn boolean_allows_boolean_message
               return true
             when [nil]
               if attribute_column.null
-                Shoulda::Matchers.warn BOOLEAN_ALLOWS_NIL_MESSAGE
+                Shoulda::Matchers.warn boolean_allows_nil_message
                 return true
               else
                 raise NonNullableBooleanError.create(@attribute)
@@ -513,11 +519,11 @@ EOT
           if attribute_type == :boolean
             case @array
             when [false, true], [true, false]
-              Shoulda::Matchers.warn BOOLEAN_ALLOWS_BOOLEAN_MESSAGE
+              Shoulda::Matchers.warn boolean_allows_boolean_message
               return true
             when [nil]
               if attribute_column.null
-                Shoulda::Matchers.warn BOOLEAN_ALLOWS_NIL_MESSAGE
+                Shoulda::Matchers.warn boolean_allows_nil_message
                 return true
               else
                 raise NonNullableBooleanError.create(@attribute)
