@@ -320,6 +320,12 @@ module Shoulda
           self
         end
 
+        def with_options(**)
+          raise NotImplementedError,
+            'with_options is not a valid qualifier for the define_enum_for matcher. '\
+            'Did you mean to use with_values instead?'
+        end
+
         def with_prefix(expected_prefix = true)
           options[:prefix] = expected_prefix
           self

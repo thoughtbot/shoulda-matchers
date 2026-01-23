@@ -103,6 +103,26 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     end
   end
 
+  describe 'when with_options is used instead of with_values' do
+    it 'raises an appropriate error' do
+      record = build_record_with_array_values(
+        model_name: 'Example',
+        attribute_name: :attr,
+      )
+
+      assertion = lambda do
+        expect(record).
+          to define_enum_for(:attr).
+          with_options(active: 0, archived: 1)
+      end
+
+      message = 'with_options is not a valid qualifier for the define_enum_for matcher. '\
+        'Did you mean to use with_values instead?'
+
+      expect(&assertion).to raise_error(NotImplementedError, message)
+    end
+  end
+
   describe 'with both attribute name and enum values specified' do
     context 'when the actual enum values are an array' do
       context 'if the attribute is not defined as an enum' do
