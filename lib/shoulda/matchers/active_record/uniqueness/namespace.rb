@@ -10,7 +10,7 @@ module Shoulda
           end
 
           def has?(name)
-            constant.const_defined?(name)
+            constant.const_defined?(name, false)
           end
 
           def set(name, value)
@@ -18,8 +18,25 @@ module Shoulda
           end
 
           def clear
+            test_model_classes = []
+
             constant.constants.each do |child_constant|
-              constant.__send__(:remove_const, child_constant)
+              child = constant.const_get(child_constant)
+
+              if defined?(::ActiveRecord::Base) &&
+                 child.is_a?(Class) &&
+                 child < ::ActiveRecord::Base
+                test_model_classes << child
+              end
+
+              constant.remove_const(child_constant)
+            rescue NameError
+              # Constant may have been removed elsewhere; ignore
+            end
+
+            if defined?(::ActiveSupport::DescendantsTracker) &&
+               test_model_classes.any?
+              ::ActiveSupport::DescendantsTracker.clear(test_model_classes)
             end
           end
 
