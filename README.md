@@ -63,7 +63,7 @@ Start by including `shoulda-matchers` in your Gemfile:
 
 ```ruby
 group :test do
-  gem 'shoulda-matchers', '~> 6.0'
+  gem 'shoulda-matchers', '~> 7.0'
 end
 ```
 
@@ -125,7 +125,7 @@ Otherwise, add `shoulda-matchers` to your Gemfile:
 
 ```ruby
 group :test do
-  gem 'shoulda-matchers', '~> 6.0'
+  gem 'shoulda-matchers', '~> 7.0'
 end
 ```
 
@@ -508,9 +508,11 @@ Shoulda Matchers is tested and supported against Ruby 3.0+, Rails
 
 - For Ruby < 2.4 and Rails < 4.1 compatibility, please use [v3.1.3][v3.1.3].
 - For Ruby < 3.0 and Rails < 6.1 compatibility, please use [v4.5.1][v4.5.1].
+- For Rails < 7.1 compatibility, please use [v6.5.0][v6.5.0].
 
 [v3.1.3]: https://github.com/thoughtbot/shoulda-matchers/tree/v3.1.3
 [v4.5.1]: https://github.com/thoughtbot/shoulda-matchers/tree/v4.5.1
+[v6.5.0]: https://github.com/thoughtbot/shoulda-matchers/tree/v6.5.0
 
 ## Versioning
 
