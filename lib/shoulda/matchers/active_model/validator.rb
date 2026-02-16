@@ -45,6 +45,10 @@ module Shoulda
           validation_result[:validation_exception_message]
         end
 
+        def formatted_validation_error_messages
+          format_validation_errors(all_validation_errors, attribute)
+        end
+
         protected
 
         attr_reader :attribute, :context, :record
