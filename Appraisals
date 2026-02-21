@@ -104,6 +104,8 @@ appraise 'rails_8_0' do
   gem 'kamal'
   gem 'thruster'
 
+  gem 'image_processing', '~> 1.2'
+
   # test dependencies
   gem 'rspec-rails', '~> 6.0'
   gem 'shoulda-context', '~> 2.0.0'
