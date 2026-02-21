@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'appraisal', '2.5.0'
+gem 'benchmark', require: false
 gem 'bundler', '~> 2.0'
 gem 'mutex_m'
 gem 'ostruct', require: false

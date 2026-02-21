@@ -362,6 +362,7 @@ PLATFORMS
 DEPENDENCIES
   appraisal (= 2.5.0)
   bcrypt (~> 3.1.7)
+  benchmark
   bootsnap
   brakeman
   bundler (~> 2.0)

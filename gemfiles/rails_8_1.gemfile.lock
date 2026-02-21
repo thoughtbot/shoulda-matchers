@@ -85,6 +85,7 @@ GEM
     base64 (0.3.0)
     bcrypt (3.1.21)
     bcrypt_pbkdf (1.1.1)
+    benchmark (0.5.0)
     bigdecimal (4.0.1)
     bootsnap (1.23.0)
       msgpack (~> 1.2)
@@ -415,6 +416,7 @@ PLATFORMS
 DEPENDENCIES
   appraisal (= 2.5.0)
   bcrypt (~> 3.1.7)
+  benchmark
   bootsnap
   brakeman
   bundler (~> 2.0)
