@@ -2925,7 +2925,7 @@ Expected Person to have a has_and_belongs_to_many association called relatives (
 
     it 'rejects an association that has a nonexistent foreign key' do
       define_model :car
-      expect((define_model(:vehicle) { delegated_type :drivable, types: ['Car'] }).new).not_to have_delegated_type(:drivable)
+      expect(define_model(:vehicle) { delegated_type :drivable, types: ['Car'] }.new).not_to have_delegated_type(:drivable)
     end
 
     it 'accepts an association with an existing custom foreign key' do

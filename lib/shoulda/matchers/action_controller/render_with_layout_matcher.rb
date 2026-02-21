@@ -111,11 +111,7 @@ module Shoulda
         end
 
         def rendered_with_expected_layout?
-          if @expected_layout.nil?
-            true
-          else
-            rendered_layouts.include?(@expected_layout)
-          end
+          @expected_layout.nil? || rendered_layouts.include?(@expected_layout)
         end
 
         def rendered_layouts

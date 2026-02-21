@@ -9,6 +9,8 @@ require 'yaml'
 
 module UnitTests
   class RailsApplication
+    include RubyVersions
+
     def initialize
       @fs = Tests::Filesystem.new
       @bundle = Tests::Bundle.new
@@ -91,7 +93,11 @@ module UnitTests
     end
 
     def rails_new_command
-      "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --skip-javascript --no-rc --skip-bootsnap"
+      if ruby_gt_4_0?
+        "rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --skip-javascript --no-rc --skip-bootsnap"
+      else
+        "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --skip-javascript --no-rc --skip-bootsnap"
+      end
     end
 
     def fix_available_locales_warning
@@ -144,13 +150,21 @@ end
 
     def add_action_text_migration
       fs.within_project do
-        run_command! 'bundle exec rake action_text:install:migrations'
+        if ruby_gt_4_0?
+          run_command! 'rake action_text:install:migrations'
+        else
+          run_command! 'bundle exec rake action_text:install:migrations'
+        end
       end
     end
 
     def add_active_storage_migration
       fs.within_project do
-        run_command! 'bundle exec rake active_storage:install:migrations'
+        if ruby_gt_4_0?
+          run_command! 'rake active_storage:install:migrations'
+        else
+          run_command! 'bundle exec rake active_storage:install:migrations'
+        end
       end
     end
 
@@ -168,15 +182,28 @@ end
     end
 
     def run_migrations
-      fs.within_project do
-        run_command! 'bundle exec rake db:drop:all'
-        run_command! 'bundle exec rake db:create RAILS_ENV=test'
-        run_command! 'bundle exec rake db:create RAILS_ENV=development'
-        run_command! 'bundle exec rake db:create RAILS_ENV=production'
-      end
+      if ruby_gt_4_0?
+        fs.within_project do
+          run_command! 'rake db:drop:all'
+          run_command! 'rake db:create RAILS_ENV=test'
+          run_command! 'rake db:create RAILS_ENV=development'
+          run_command! 'rake db:create RAILS_ENV=production'
+        end
 
-      fs.within_project do
-        run_command! 'bundle exec rake db:migrate'
+        fs.within_project do
+          run_command! 'rake db:migrate'
+        end
+      else
+        fs.within_project do
+          run_command! 'bundle exec rake db:drop:all'
+          run_command! 'bundle exec rake db:create RAILS_ENV=test'
+          run_command! 'bundle exec rake db:create RAILS_ENV=development'
+          run_command! 'bundle exec rake db:create RAILS_ENV=production'
+        end
+
+        fs.within_project do
+          run_command! 'bundle exec rake db:migrate'
+        end
       end
     end
 

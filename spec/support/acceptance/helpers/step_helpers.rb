@@ -1,6 +1,7 @@
 require_relative 'file_helpers'
 require_relative 'gem_helpers'
 require_relative 'minitest_helpers'
+require_relative 'ruby_version_helpers'
 
 require 'yaml'
 
@@ -91,7 +92,11 @@ module AcceptanceTests
     end
 
     def rails_new_command
-      "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --skip-javascript --no-rc --skip-bootsnap"
+      if ruby_gt_4_0?
+        "rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --skip-javascript --no-rc --skip-bootsnap"
+      else
+        "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --skip-javascript --no-rc --skip-bootsnap"
+      end
     end
 
     def configure_routes
@@ -113,7 +118,7 @@ module AcceptanceTests
 
     def add_rspec_rails_to_project!
       add_gem 'rspec-rails', rspec_rails_version
-      run_command_within_bundle!('bundle install --local --binstubs')
+      run_command_within_bundle!('bundle install')
       run_command_within_bundle!('rails g rspec:install')
       remove_from_file '.rspec', '--warnings'
     end
