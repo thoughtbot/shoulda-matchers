@@ -34,6 +34,7 @@ GEM
     minitest (6.0.1)
       prism (~> 1.5)
     mutex_m (0.2.0)
+    ostruct (0.6.3)
     parallel (1.24.0)
     parser (3.3.0.5)
       ast (~> 2.4.1)
@@ -105,6 +106,7 @@ DEPENDENCIES
   bundler (~> 2.0)
   fssm
   mutex_m
+  ostruct
   pry
   pry-byebug
   rake (= 13.0.1)
