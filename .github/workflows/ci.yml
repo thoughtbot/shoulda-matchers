@@ -27,6 +27,7 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
+          - 4.0.1
           - 3.4.7
           - 3.3.10
           - 3.2.9
@@ -39,6 +40,8 @@ jobs:
           - sqlite3
           - postgresql
         exclude:
+          - { ruby: 4.0.1, appraisal: rails_7_1 }
+          - { ruby: 4.0.1, appraisal: rails_7_2 }
           - { ruby: 3.2.9, appraisal: rails_8_1 }
           - { ruby: 3.1.7, appraisal: rails_8_1 }
           - { ruby: 3.0.7, appraisal: rails_8_1 }
@@ -61,6 +64,6 @@ jobs:
       - name: Install dependencies
         run: bundle install --jobs=3 --retry=3
       - name: Run Unit Tests
-        run: RUBYOPT='--enable=frozen-string-literal' bundle exec rake spec:unit --trace
+        run: RUBYOPT='-W:no-deprecated -W:no-experimental --enable=frozen-string-literal' bundle exec rake spec:unit --trace
       - name: Run Acceptance Tests
-        run: RUBYOPT='--enable=frozen-string-literal' bundle exec rake spec:acceptance --trace
+        run: RUBYOPT='-W:no-deprecated -W:no-experimental --enable=frozen-string-literal' bundle exec rake spec:acceptance --trace
