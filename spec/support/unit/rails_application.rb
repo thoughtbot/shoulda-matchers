@@ -9,6 +9,8 @@ require 'yaml'
 
 module UnitTests
   class RailsApplication
+    include RubyVersions
+
     def initialize
       @fs = Tests::Filesystem.new
       @bundle = Tests::Bundle.new
@@ -91,7 +93,7 @@ module UnitTests
     end
 
     def rails_new_command
-      "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --skip-javascript --no-rc --skip-bootsnap"
+      "#{additional_command} rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --skip-javascript --no-rc --skip-bootsnap"
     end
 
     def fix_available_locales_warning
@@ -144,13 +146,13 @@ end
 
     def add_action_text_migration
       fs.within_project do
-        run_command! 'bundle exec rake action_text:install:migrations'
+        run_command! "#{additional_command} rake action_text:install:migrations"
       end
     end
 
     def add_active_storage_migration
       fs.within_project do
-        run_command! 'bundle exec rake active_storage:install:migrations'
+        run_command! "#{additional_command} rake active_storage:install:migrations"
       end
     end
 
@@ -169,14 +171,14 @@ end
 
     def run_migrations
       fs.within_project do
-        run_command! 'bundle exec rake db:drop:all'
-        run_command! 'bundle exec rake db:create RAILS_ENV=test'
-        run_command! 'bundle exec rake db:create RAILS_ENV=development'
-        run_command! 'bundle exec rake db:create RAILS_ENV=production'
+        run_command! "#{additional_command} rake db:drop:all"
+        run_command! "#{additional_command} rake db:create RAILS_ENV=test"
+        run_command! "#{additional_command} rake db:create RAILS_ENV=development"
+        run_command! "#{additional_command} rake db:create RAILS_ENV=production"
       end
 
       fs.within_project do
-        run_command! 'bundle exec rake db:migrate'
+        run_command! "#{additional_command} rake db:migrate"
       end
     end
 
@@ -197,6 +199,12 @@ end
 
     def rails_version
       bundle.version_of('rails')
+    end
+
+    def additional_command
+      unless ruby_gt_4_0?
+        'bundle exec'
+      end
     end
   end
 end
