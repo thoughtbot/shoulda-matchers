@@ -39,7 +39,7 @@ complex, and error-prone.
   - [Availability of RSpec matchers in example groups](#availability-of-rspec-matchers-in-example-groups)
     - [Rails projects](#rails-projects)
     - [Non-Rails projects](#non-rails-projects)
-  - [`should` vs `is_expected.to`](#should-vs-is_expectedto)
+  - [`should` vs `is_expected.to`](#should-vs-is_expected-to)
   - [A Note on Testing Style](#a-note-on-testing-style)
 - [Matchers](#matchers)
   - [ActiveModel matchers](#activemodel-matchers)
