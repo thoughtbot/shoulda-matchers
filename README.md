@@ -39,7 +39,7 @@ complex, and error-prone.
   - [Availability of RSpec matchers in example groups](#availability-of-rspec-matchers-in-example-groups)
     - [Rails projects](#rails-projects)
     - [Non-Rails projects](#non-rails-projects)
-  - [`should` vs `is_expected.to`](#should-vs-is_expected-to)
+  - [`should` vs `is_expected.to`](#should-vs-is_expectedto)
   - [A Note on Testing Style](#a-note-on-testing-style)
 - [Matchers](#matchers)
   - [ActiveModel matchers](#activemodel-matchers)
@@ -341,6 +341,7 @@ RSpec.describe MySpecialModel, type: :model do
 end
 ```
 
+<a name="should-vs-is_expectedto"></a>
 ### `should` vs `is_expected.to`
 
 In this README and throughout the documentation, you'll notice that we use the
