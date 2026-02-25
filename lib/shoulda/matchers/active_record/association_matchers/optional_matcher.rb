@@ -49,12 +49,10 @@ module Shoulda
                   'to '
                 end
 
-              missing_option_string << (
-                'fail validation if '\
+              missing_option_string << 'fail validation if '\
                 ":#{attribute_name} is unset; i.e., either the association "\
                 'should have been defined with `optional: '\
                 "#{optional.inspect}`, or there "
-              )
 
               missing_option_string <<
                 if optional

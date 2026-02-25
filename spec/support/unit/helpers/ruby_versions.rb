@@ -14,5 +14,9 @@ module UnitTests
     def ruby_gt_3_4?
       ruby_version >= '3.4'
     end
+
+    def ruby_gt_4_0?
+      ruby_version >= '4.0'
+    end
   end
 end

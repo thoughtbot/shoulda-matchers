@@ -558,12 +558,9 @@ module Shoulda
         end
 
         def does_not_match_allow_nil?
-          expects_to_allow_nil? && (
-            update_existing_record!(nil) &&
-            (@failure_reason = nil ||
-              disallows_value_of(nil, @expected_message)
+          expects_to_allow_nil? && update_existing_record!(nil) &&
+            (@failure_reason = disallows_value_of(nil, @expected_message)
             )
-          )
         end
 
         def matches_allow_blank?
@@ -574,10 +571,8 @@ module Shoulda
         end
 
         def does_not_match_allow_blank?
-          expects_to_allow_blank? && (
-            update_existing_record!('') &&
-            (@failure_reason = nil || disallows_value_of('', @expected_message))
-          )
+          expects_to_allow_blank? && update_existing_record!('') &&
+            (@failure_reason = disallows_value_of('', @expected_message))
         end
 
         def existing_record

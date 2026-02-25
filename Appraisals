@@ -28,6 +28,12 @@ appraise 'rails_7_1' do
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'webdrivers'
+  gem 'readline'
+  gem 'ostruct'
+  gem 'benchmark'
+  gem 'cgi'
+
+  gem 'minitest', '~> 5.1'
 
   # test dependencies
   gem 'rspec-rails', '~> 6.0'
@@ -63,10 +69,13 @@ appraise 'rails_7_2' do
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'webdrivers'
+  gem 'ostruct'
+  gem 'readline'
 
   # test dependencies
   gem 'rspec-rails', '~> 6.0'
   gem 'shoulda-context', '~> 2.0.0'
+  gem 'minitest', '5.25.5'
 
   # other dependencies
   gem 'bcrypt', '~> 3.1.7'
@@ -103,6 +112,10 @@ appraise 'rails_8_0' do
   gem 'solid_cable'
   gem 'kamal'
   gem 'thruster'
+  gem 'readline'
+
+  gem 'image_processing', '~> 1.2'
+  gem 'bundler-audit'
 
   # test dependencies
   gem 'rspec-rails', '~> 6.0'
@@ -145,6 +158,7 @@ appraise 'rails_8_1' do
   gem 'thruster'
   gem 'image_processing', '~> 1.2'
   gem 'bundler-audit'
+  gem 'readline'
 
   # test dependencies
   gem 'rspec-rails', '~> 6.0'
