@@ -341,6 +341,7 @@ RSpec.describe MySpecialModel, type: :model do
 end
 ```
 
+<a name="should-vs-is_expectedto"></a>
 ### `should` vs `is_expected.to`
 
 In this README and throughout the documentation, you'll notice that we use the
