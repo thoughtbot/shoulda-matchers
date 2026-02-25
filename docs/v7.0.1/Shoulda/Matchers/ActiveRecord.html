@@ -1101,6 +1101,26 @@ the association to a meaningful value:</p>
 <span class="k">end</span>
 </code></pre>
 
+<h5 id="deprecated">deprecated</h5>
+
+<p>Use <code>deprecated</code> to assert that the <code>:deprecated</code> option was specified.
+(Enabled by default in Rails 8.1+).</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Account</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:bank</span><span class="p">,</span> <span class="ss">deprecated: </span><span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Account</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:bank</span><span class="p">).</span><span class="nf">deprecated</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">AccountTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">belong_to</span><span class="p">(</span><span class="ss">:bank</span><span class="p">).</span><span class="nf">deprecated</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
 
   </div>
 </div>
@@ -1113,12 +1133,12 @@ the association to a meaningful value:</p>
       <pre>
 
 
-377
-378
-379</pre>
+396
+397
+398</pre>
     </td>
     <td class="code">
-      <pre><span class="info file"># File 'lib/shoulda/matchers/active_record/association_matcher.rb', line 377</span>
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_record/association_matcher.rb', line 396</span>
 
 <span class="k">def</span> <span class="nf">belong_to</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
   <span class="no">AssociationMatcher</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">:belongs_to</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
@@ -1732,6 +1752,26 @@ asserts that the table you&#39;re referring to actually exists.</p>
 <span class="k">end</span>
 </code></pre>
 
+<h5 id="deprecated">deprecated</h5>
+
+<p>Use <code>deprecated</code> to assert that the <code>:deprecated</code> option was specified.
+(Enabled by default in Rails 8.1+).</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Publisher</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_and_belongs_to_many</span> <span class="ss">:advertisers</span><span class="p">,</span> <span class="ss">deprecated: </span><span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Publisher</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_and_belong_to_many</span><span class="p">(</span><span class="ss">:advertisers</span><span class="p">).</span><span class="nf">deprecated</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">AccountTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">have_and_belong_to_many</span><span class="p">(</span><span class="ss">:advertisers</span><span class="p">).</span><span class="nf">deprecated</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
 
   </div>
 </div>
@@ -1744,12 +1784,12 @@ asserts that the table you&#39;re referring to actually exists.</p>
       <pre>
 
 
-1380
-1381
-1382</pre>
+1476
+1477
+1478</pre>
     </td>
     <td class="code">
-      <pre><span class="info file"># File 'lib/shoulda/matchers/active_record/association_matcher.rb', line 1380</span>
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_record/association_matcher.rb', line 1476</span>
 
 <span class="k">def</span> <span class="nf">have_and_belong_to_many</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
   <span class="no">AssociationMatcher</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">:has_and_belongs_to_many</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
@@ -2379,6 +2419,26 @@ the association to a meaningful value:</p>
 <span class="k">end</span>
 </code></pre>
 
+<h5 id="deprecated">deprecated</h5>
+
+<p>Use <code>deprecated</code> to assert that the <code>:deprecated</code> option was specified.
+(Enabled by default in Rails 8.1+).</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Vehicle</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">delegated_type</span> <span class="ss">:drivable</span><span class="p">,</span> <span class="ss">types: </span><span class="sx">%w(Car Truck)</span><span class="p">,</span> <span class="ss">deprecated: </span><span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="n">describe</span> <span class="no">Vehicle</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_delegated_type</span><span class="p">(</span><span class="ss">:drivable</span><span class="p">).</span><span class="nf">deprecated</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">VehicleTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">have_delegated_type</span><span class="p">(</span><span class="ss">:drivable</span><span class="p">).</span><span class="nf">deprecated</span>
+<span class="k">end</span>
+</code></pre>
+
 
   </div>
 </div>
@@ -2391,12 +2451,12 @@ the association to a meaningful value:</p>
       <pre>
 
 
-687
-688
-689</pre>
+724
+725
+726</pre>
     </td>
     <td class="code">
-      <pre><span class="info file"># File 'lib/shoulda/matchers/active_record/association_matcher.rb', line 687</span>
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_record/association_matcher.rb', line 724</span>
 
 <span class="k">def</span> <span class="nf">have_delegated_type</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
   <span class="no">AssociationMatcher</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">:belongs_to</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
@@ -2772,6 +2832,26 @@ specified.</p>
 <span class="k">end</span>
 </code></pre>
 
+<h5 id="deprecated">deprecated</h5>
+
+<p>Use <code>deprecated</code> to assert that the <code>:deprecated</code> option was specified.
+(Enabled by default in Rails 8.1+)</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Player</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_many</span> <span class="ss">:games</span><span class="p">,</span> <span class="ss">deprecated: </span><span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Player</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:games</span><span class="p">).</span><span class="nf">deprecated</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">PlayerTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">have_many</span><span class="p">(</span><span class="ss">:games</span><span class="p">).</span><span class="nf">deprecated</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
 
   </div>
 </div>
@@ -2784,12 +2864,12 @@ specified.</p>
       <pre>
 
 
-975
-976
-977</pre>
+1032
+1033
+1034</pre>
     </td>
     <td class="code">
-      <pre><span class="info file"># File 'lib/shoulda/matchers/active_record/association_matcher.rb', line 975</span>
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_record/association_matcher.rb', line 1032</span>
 
 <span class="k">def</span> <span class="nf">have_many</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
   <span class="no">AssociationMatcher</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">:has_many</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
@@ -3124,6 +3204,26 @@ association.</p>
 <span class="k">end</span>
 </code></pre>
 
+<h5 id="deprecated">deprecated</h5>
+
+<p>Use <code>deprecated</code> to assert that the <code>:deprecated</code> option was specified.
+(Enabled by default in Rails 8.1+).</p>
+
+<pre class="code ruby"><code class="ruby"><span class="k">class</span> <span class="nc">Account</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_one</span> <span class="ss">:bank</span><span class="p">,</span> <span class="ss">deprecated: </span><span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># RSpec</span>
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="no">Account</span><span class="p">,</span> <span class="ss">type: :model</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:bank</span><span class="p">).</span><span class="nf">deprecated</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Minitest (Shoulda)</span>
+<span class="k">class</span> <span class="nc">AccountTest</span> <span class="o">&lt;</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TestCase</span>
+  <span class="n">should</span> <span class="n">have_one</span><span class="p">(</span><span class="ss">:bank</span><span class="p">).</span><span class="nf">deprecated</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
 
   </div>
 </div>
@@ -3136,12 +3236,12 @@ association.</p>
       <pre>
 
 
-1222
-1223
-1224</pre>
+1299
+1300
+1301</pre>
     </td>
     <td class="code">
-      <pre><span class="info file"># File 'lib/shoulda/matchers/active_record/association_matcher.rb', line 1222</span>
+      <pre><span class="info file"># File 'lib/shoulda/matchers/active_record/association_matcher.rb', line 1299</span>
 
 <span class="k">def</span> <span class="nf">have_one</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
   <span class="no">AssociationMatcher</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">:has_one</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
@@ -4060,7 +4160,7 @@ attribute.</p>
 
       <div id="footer">
   Generated on
-  October 31, 2025
+  February 25, 2026
   by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">YARD</a>.
 </div>
