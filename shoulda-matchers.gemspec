@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
   }
 
   s.files = Dir['{docs,lib}/**/*', 'README.md', 'LICENSE',
-    'shoulda-matchers.gemspec']
+    'shoulda-matchers.gemspec',]
   s.require_paths = ['lib']
 
   s.required_ruby_version = '>= 3.2'

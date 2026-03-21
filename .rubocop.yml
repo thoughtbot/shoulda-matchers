@@ -104,7 +104,7 @@ Naming/HeredocDelimiterNaming:
   Enabled: false
 Naming/MemoizedInstanceVariableName:
   EnforcedStyleForLeadingUnderscores: required
-Naming/PredicateName:
+Naming/PredicatePrefix:
   Enabled: false
 Naming/VariableNumber:
   Enabled: false

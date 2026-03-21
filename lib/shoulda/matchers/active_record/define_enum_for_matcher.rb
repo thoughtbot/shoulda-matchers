@@ -673,7 +673,7 @@ module Shoulda
           end
 
           value = case attribute_schema
-                  in [_, { default: default_value } ]
+                  in [_, { default: default_value }]
                     default_value
                   in [_, default_value, *]
                     default_value

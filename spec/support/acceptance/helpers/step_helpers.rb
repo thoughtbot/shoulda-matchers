@@ -1,6 +1,7 @@
 require_relative 'file_helpers'
 require_relative 'gem_helpers'
 require_relative 'minitest_helpers'
+require_relative 'ruby_version_helpers'
 
 require 'yaml'
 
@@ -91,7 +92,7 @@ module AcceptanceTests
     end
 
     def rails_new_command
-      "bundle exec rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --skip-javascript --no-rc --skip-bootsnap"
+      "#{additional_command} rails new #{fs.project_directory} --database=#{database.adapter_name} --skip-bundle --skip-javascript --no-rc --skip-bootsnap"
     end
 
     def configure_routes
@@ -124,6 +125,12 @@ module AcceptanceTests
 
     def run_rspec_suite
       run_rake_tasks('spec', env: { SPEC_OPTS: '-fd' })
+    end
+
+    def additional_command
+      unless ruby_gt_4_0?
+        'bundle exec'
+      end
     end
   end
 end
