@@ -110,7 +110,7 @@ module Shoulda
         end
 
         def has_expected_db_column?
-          matcher = HaveDbColumnMatcher.new(token_attribute).of_type(:string)
+          matcher = HaveDbColumnMatcher.new(token_attribute).of_type(:string) || HaveDbColumnMatcher.new(token_attribute).of_type(:text)
           matcher.matches?(@subject)
         end
 
