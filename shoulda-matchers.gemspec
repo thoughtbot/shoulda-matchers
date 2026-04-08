@@ -30,6 +30,7 @@ Gem::Specification.new do |s|
     'documentation_uri' => 'https://matchers.shoulda.io/docs',
     'homepage_uri' => 'https://matchers.shoulda.io',
     'source_code_uri' => 'https://github.com/thoughtbot/shoulda-matchers',
+    'rubygems_mfa_required' => 'true',
   }
 
   s.files = Dir['{docs,lib}/**/*', 'README.md', 'LICENSE',
