@@ -117,7 +117,7 @@ describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :mode
     end
 
     context 'against a date attribute' do
-      today = Date.today
+      today = Date.new(2023, 1, 1)
 
       define_method(:today) { today }
 
