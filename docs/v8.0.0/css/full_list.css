@@ -1,0 +1,12 @@
+body {
+  font-size: 14px;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 1.5em;
+}
+
+.search_info, .toggle {
+  display: none;
+}
