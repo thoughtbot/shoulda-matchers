@@ -51,7 +51,7 @@ appraise 'rails_7_2' do
   instance_eval(&shared_spring_dependencies)
   instance_eval(&controller_test_dependency)
 
-  gem 'rails', '~> 7.2'
+  gem 'rails', '~> 7.2.0'
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem 'brakeman', require: false
@@ -75,7 +75,7 @@ appraise 'rails_7_2' do
   # test dependencies
   gem 'rspec-rails', '~> 6.0'
   gem 'shoulda-context', '~> 2.0.0'
-  gem 'minitest', '5.25.5'
+  gem 'minitest', '~> 5.26'
 
   # other dependencies
   gem 'bcrypt', '~> 3.1.7'
@@ -89,7 +89,7 @@ appraise 'rails_8_0' do
   instance_eval(&shared_spring_dependencies)
   instance_eval(&controller_test_dependency)
 
-  gem 'rails', '~> 8.0'
+  gem 'rails', '~> 8.0.0'
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem 'brakeman', require: false
