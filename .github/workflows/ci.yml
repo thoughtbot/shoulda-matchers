@@ -30,23 +30,15 @@ jobs:
           - 4.0.5
           - 3.4.9
           - 3.3.11
-          - 3.2.11
         appraisal:
           - rails_8_1
           - rails_8_0
           - rails_7_2
-          - rails_7_1
         adapter:
           - sqlite3
           - postgresql
         exclude:
-          - { ruby: 3.2.11, appraisal: rails_8_1 }
-          - { ruby: 3.1.7, appraisal: rails_8_1 }
-          - { ruby: 3.0.7, appraisal: rails_8_1 }
-          - { ruby: 3.2.11, appraisal: rails_8_0 }
-          - { ruby: 3.2.11, appraisal: rails_8_0 }
           - { ruby: 4.0.5, appraisal: rails_7_2 }
-          - { ruby: 4.0.5, appraisal: rails_7_1 }
     env:
       DATABASE_ADAPTER: ${{ matrix.adapter }}
       BUNDLE_GEMFILE: gemfiles/${{ matrix.appraisal }}.gemfile

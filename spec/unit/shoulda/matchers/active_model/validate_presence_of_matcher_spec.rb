@@ -139,102 +139,51 @@ this could not be proved.
       expect(&assertion).to fail_with_message(message)
     end
 
-    if rails_version >= 7.1
-      context 'when the attribute is decorated with serialize' do
-        context 'and the serializer is a built-in Ruby type' do
-          context 'and the type is a string' do
-            it 'still works' do
-              record = record_validating_presence_of(:traits) do
-                serialize :traits, type: String, coder: YAML
-              end
-
-              expect(record).to validate_presence_of(:traits)
-            end
-          end
-
-          context 'and the type is not a string' do
-            it 'still works' do
-              record = record_validating_presence_of(:traits) do
-                serialize :traits, type: Array, coder: YAML
-              end
-
-              expect(record).to validate_presence_of(:traits)
-            end
-          end
-        end
-
-        context 'and the serializer is JSON' do
+    context 'when the attribute is decorated with serialize' do
+      context 'and the serializer is a built-in Ruby type' do
+        context 'and the type is a string' do
           it 'still works' do
             record = record_validating_presence_of(:traits) do
-              serialize :traits, coder: JSON
+              serialize :traits, type: String, coder: YAML
             end
 
             expect(record).to validate_presence_of(:traits)
           end
         end
 
-        context 'and the serializer is something custom' do
+        context 'and the type is not a string' do
           it 'still works' do
-            serializer = Class.new do
-              define_singleton_method(:dump) { |value| value }
-              define_singleton_method(:load) { |value| value }
+            record = record_validating_presence_of(:traits) do
+              serialize :traits, type: Array, coder: YAML
             end
 
-            record = record_validating_presence_of(:data) do
-              serialize :data, coder: serializer
-            end
-
-            expect(record).to validate_presence_of(:data)
+            expect(record).to validate_presence_of(:traits)
           end
         end
       end
-    else
-      context 'when the attribute is decorated with serialize' do
-        context 'and the serializer is a built-in Ruby type' do
-          context 'and the type is a string' do
-            it 'still works' do
-              record = record_validating_presence_of(:traits) do
-                serialize :traits, String
-              end
 
-              expect(record).to validate_presence_of(:traits)
-            end
+      context 'and the serializer is JSON' do
+        it 'still works' do
+          record = record_validating_presence_of(:traits) do
+            serialize :traits, coder: JSON
           end
 
-          context 'and the type is not a string' do
-            it 'still works' do
-              record = record_validating_presence_of(:traits) do
-                serialize :traits, Array
-              end
-
-              expect(record).to validate_presence_of(:traits)
-            end
-          end
+          expect(record).to validate_presence_of(:traits)
         end
+      end
 
-        context 'and the serializer is JSON' do
-          it 'still works' do
-            record = record_validating_presence_of(:traits) do
-              serialize :traits, JSON
-            end
-
-            expect(record).to validate_presence_of(:traits)
+      context 'and the serializer is something custom' do
+        it 'still works' do
+          serializer = Class.new do
+            define_singleton_method(:dump) { |value| value }
+            define_singleton_method(:load) { |value| value }
           end
-        end
 
-        context 'and the serializer is something custom' do
-          it 'still works' do
-            serializer = Class.new do
-              define_singleton_method(:dump) { |value| value }
-              define_singleton_method(:load) { |value| value }
-            end
-
-            record = record_validating_presence_of(:data) do
-              serialize :data, serializer
-            end
-
-            expect(record).to validate_presence_of(:data)
+          record = record_validating_presence_of(:data) do
+            serialize :data, coder: serializer
           end
+
+          expect(record).to validate_presence_of(:data)
         end
       end
     end

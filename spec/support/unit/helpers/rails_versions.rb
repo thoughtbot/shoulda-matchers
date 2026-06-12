@@ -12,7 +12,7 @@ module UnitTests
     end
 
     def rails_oldest_version_supported
-      7.1
+      7.2
     end
 
     def rails_gt_8_0?

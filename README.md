@@ -504,16 +504,18 @@ machine, understanding the codebase, and creating a good pull request.
 
 ## Compatibility
 
-Shoulda Matchers is tested and supported against Ruby 3.2+, Rails
-7.1+, RSpec 3.x, and Minitest 5.x.
+Shoulda Matchers is tested and supported against Ruby 3.3+, Rails
+7.2+, RSpec 3.x, and Minitest 5.x.
 
 - For Ruby < 2.4 and Rails < 4.1 compatibility, please use [v3.1.3][v3.1.3].
 - For Ruby < 3.0 and Rails < 6.1 compatibility, please use [v4.5.1][v4.5.1].
 - For Rails < 7.1 compatibility, please use [v6.5.0][v6.5.0].
+- For Ruby < 3.3 and Rails < 7.2 compatibility, please use [v7.0.1][v7.0.1].
 
 [v3.1.3]: https://github.com/thoughtbot/shoulda-matchers/tree/v3.1.3
 [v4.5.1]: https://github.com/thoughtbot/shoulda-matchers/tree/v4.5.1
 [v6.5.0]: https://github.com/thoughtbot/shoulda-matchers/tree/v6.5.0
+[v7.0.1]: https://github.com/thoughtbot/shoulda-matchers/tree/v7.0.1
 
 ## Versioning
 

@@ -925,122 +925,56 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
     end
   end
 
-  if rails_version >= 7.1
-    describe 'qualified with #validating' do
-      context 'enum values are an array' do
-        context 'if enum is being validated' do
-          context 'but validating qualifier is not used' do
-            it 'matches' do
-              record = build_record_with_array_values(attribute_name: :attr, default: 'published', validate: true)
+  describe 'qualified with #validating' do
+    context 'enum values are an array' do
+      context 'if enum is being validated' do
+        context 'but validating qualifier is not used' do
+          it 'matches' do
+            record = build_record_with_array_values(attribute_name: :attr, default: 'published', validate: true)
 
-              matcher = lambda do
-                define_enum_for(:attr).with_values(['published', 'unpublished', 'draft'])
-              end
-
-              message = format_message(<<-MESSAGE)
-                Expected Example not to define :attr as an enum backed by an integer,
-                mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"›
-                to ‹2›, but it did.
-              MESSAGE
-
-              expect(&matcher).to match_against(record).or_fail_with(message)
-            end
-          end
-
-          context 'and validating qualifier is used as false' do
-            it 'rejects with an appropriate failure message' do
-              record = build_record_with_array_values(attribute_name: :attr, default: 'published', validate: true)
-
-              assertion = lambda do
-                expect(record).
-                  to define_enum_for(:attr).
-                  with_values(['published', 'unpublished', 'draft']).
-                  validating(false)
-              end
-
-              message = format_message(<<-MESSAGE)
-                Expected Example to define :attr as an enum backed by an integer,
-                mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"›
-                to ‹2›. However, :attr is being validated.
-              MESSAGE
-
-              expect(&assertion).to fail_with_message(message)
-            end
-          end
-
-          context 'and validating qualifier is used' do
-            it 'matches' do
-              record = build_record_with_array_values(attribute_name: :attr, validate: true)
-
-              matcher = lambda do
-                define_enum_for(:attr).
-                  with_values(['published', 'unpublished', 'draft']).
-                  validating
-              end
-
-              message = format_message(<<-MESSAGE)
-                Expected Example not to define :attr as an enum backed by an integer,
-                mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"›
-                to ‹2›, and being validated not allowing nil values, but it did.
-              MESSAGE
-
-              expect(&matcher).to match_against(record).or_fail_with(message)
-            end
-          end
-
-          context 'using allow_nil' do
-            context 'when allowing nil on qualifier' do
-              it 'matches' do
-                record = build_record_with_array_values(attribute_name: :attr, validate: { allow_nil: true })
-
-                matcher = lambda do
-                  define_enum_for(:attr).
-                    with_values(['published', 'unpublished', 'draft']).
-                    validating(allowing_nil: true)
-                end
-
-                message = format_message(<<-MESSAGE)
-                  Expected Example not to define :attr as an enum backed by an integer,
-                  mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"›
-                  to ‹2›, and being validated allowing nil values, but it did.
-                MESSAGE
-
-                expect(&matcher).to match_against(record).or_fail_with(message)
-              end
+            matcher = lambda do
+              define_enum_for(:attr).with_values(['published', 'unpublished', 'draft'])
             end
 
-            context 'when not allowing nil on qualifier' do
-              it 'rejects with an appropriate failure message' do
-                record = build_record_with_array_values(attribute_name: :attr, validate: { allow_nil: true })
+            message = format_message(<<-MESSAGE)
+              Expected Example not to define :attr as an enum backed by an integer,
+              mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"›
+              to ‹2›, but it did.
+            MESSAGE
 
-                assertion = lambda do
-                  expect(record).
-                    to define_enum_for(:attr).
-                    with_values(['published', 'unpublished', 'draft']).
-                    validating
-                end
-
-                message = format_message(<<-MESSAGE)
-                  Expected Example to define :attr as an enum backed by an integer,
-                  mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"›
-                  to ‹2›, and being validated not allowing nil values. However, :attr is
-                  allowing nil values.
-                MESSAGE
-
-                expect(&assertion).to fail_with_message(message)
-              end
-            end
+            expect(&matcher).to match_against(record).or_fail_with(message)
           end
         end
 
-        context 'when not allowing nil values' do
-          it 'matches if qualifier does not allow' do
-            record = build_record_with_array_values(attribute_name: :attr, validate: { allow_nil: false })
+        context 'and validating qualifier is used as false' do
+          it 'rejects with an appropriate failure message' do
+            record = build_record_with_array_values(attribute_name: :attr, default: 'published', validate: true)
+
+            assertion = lambda do
+              expect(record).
+                to define_enum_for(:attr).
+                with_values(['published', 'unpublished', 'draft']).
+                validating(false)
+            end
+
+            message = format_message(<<-MESSAGE)
+              Expected Example to define :attr as an enum backed by an integer,
+              mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"›
+              to ‹2›. However, :attr is being validated.
+            MESSAGE
+
+            expect(&assertion).to fail_with_message(message)
+          end
+        end
+
+        context 'and validating qualifier is used' do
+          it 'matches' do
+            record = build_record_with_array_values(attribute_name: :attr, validate: true)
 
             matcher = lambda do
               define_enum_for(:attr).
                 with_values(['published', 'unpublished', 'draft']).
-                validating(allowing_nil: false)
+                validating
             end
 
             message = format_message(<<-MESSAGE)
@@ -1051,369 +985,433 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
 
             expect(&matcher).to match_against(record).or_fail_with(message)
           end
+        end
 
-          it 'rejects with an appropriate failure message if qualifier allows' do
-            record = build_record_with_array_values(attribute_name: :attr, validate: { allow_nil: false })
+        context 'using allow_nil' do
+          context 'when allowing nil on qualifier' do
+            it 'matches' do
+              record = build_record_with_array_values(attribute_name: :attr, validate: { allow_nil: true })
+
+              matcher = lambda do
+                define_enum_for(:attr).
+                  with_values(['published', 'unpublished', 'draft']).
+                  validating(allowing_nil: true)
+              end
+
+              message = format_message(<<-MESSAGE)
+                Expected Example not to define :attr as an enum backed by an integer,
+                mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"›
+                to ‹2›, and being validated allowing nil values, but it did.
+              MESSAGE
+
+              expect(&matcher).to match_against(record).or_fail_with(message)
+            end
+          end
+
+          context 'when not allowing nil on qualifier' do
+            it 'rejects with an appropriate failure message' do
+              record = build_record_with_array_values(attribute_name: :attr, validate: { allow_nil: true })
+
+              assertion = lambda do
+                expect(record).
+                  to define_enum_for(:attr).
+                  with_values(['published', 'unpublished', 'draft']).
+                  validating
+              end
+
+              message = format_message(<<-MESSAGE)
+                Expected Example to define :attr as an enum backed by an integer,
+                mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"›
+                to ‹2›, and being validated not allowing nil values. However, :attr is
+                allowing nil values.
+              MESSAGE
+
+              expect(&assertion).to fail_with_message(message)
+            end
+          end
+        end
+      end
+
+      context 'when not allowing nil values' do
+        it 'matches if qualifier does not allow' do
+          record = build_record_with_array_values(attribute_name: :attr, validate: { allow_nil: false })
+
+          matcher = lambda do
+            define_enum_for(:attr).
+              with_values(['published', 'unpublished', 'draft']).
+              validating(allowing_nil: false)
+          end
+
+          message = format_message(<<-MESSAGE)
+            Expected Example not to define :attr as an enum backed by an integer,
+            mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"›
+            to ‹2›, and being validated not allowing nil values, but it did.
+          MESSAGE
+
+          expect(&matcher).to match_against(record).or_fail_with(message)
+        end
+
+        it 'rejects with an appropriate failure message if qualifier allows' do
+          record = build_record_with_array_values(attribute_name: :attr, validate: { allow_nil: false })
+
+          assertion = lambda do
+            expect(record).
+              to define_enum_for(:attr).
+              with_values(['published', 'unpublished', 'draft']).
+              validating(allowing_nil: true)
+          end
+
+          message = format_message(<<-MESSAGE)
+            Expected Example to define :attr as an enum backed by an integer,
+            mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"›
+            to ‹2›, and being validated allowing nil values. However, :attr is allowing
+            nil values.
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'if enum is not being validated' do
+        context 'but validating qualifier is used' do
+          it 'rejects with an appropriate failure message' do
+            record = build_record_with_array_values(attribute_name: :attr, default: 'published')
 
             assertion = lambda do
               expect(record).
                 to define_enum_for(:attr).
                 with_values(['published', 'unpublished', 'draft']).
-                validating(allowing_nil: true)
+                validating
             end
 
             message = format_message(<<-MESSAGE)
               Expected Example to define :attr as an enum backed by an integer,
               mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"›
-              to ‹2›, and being validated allowing nil values. However, :attr is allowing
-              nil values.
+              to ‹2›, and being validated not allowing nil values. However, :attr
+              is not being validated.
             MESSAGE
 
             expect(&assertion).to fail_with_message(message)
           end
         end
 
-        context 'if enum is not being validated' do
-          context 'but validating qualifier is used' do
-            it 'rejects with an appropriate failure message' do
-              record = build_record_with_array_values(attribute_name: :attr, default: 'published')
-
-              assertion = lambda do
-                expect(record).
-                  to define_enum_for(:attr).
-                  with_values(['published', 'unpublished', 'draft']).
-                  validating
-              end
-
-              message = format_message(<<-MESSAGE)
-                Expected Example to define :attr as an enum backed by an integer,
-                mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"›
-                to ‹2›, and being validated not allowing nil values. However, :attr
-                is not being validated.
-              MESSAGE
-
-              expect(&assertion).to fail_with_message(message)
-            end
-          end
-
-          context 'and validating qualifier is used as false' do
-            it 'matches' do
-              record = build_record_with_array_values(attribute_name: :attr, default: 'published')
-
-              matcher = lambda do
-                define_enum_for(:attr).
-                  with_values(['published', 'unpublished', 'draft']).
-                  validating(false)
-              end
-
-              message = format_message(<<-MESSAGE)
-                Expected Example not to define :attr as an enum backed by an integer,
-                mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"›
-                to ‹2›, but it did.
-              MESSAGE
-
-              expect(&matcher).to match_against(record).or_fail_with(message)
-            end
-          end
-
-          context 'and validating qualifier is not used' do
-            it 'matches' do
-              record = build_record_with_array_values(attribute_name: :attr, default: 'published')
-
-              matcher = lambda do
-                define_enum_for(:attr).with_values(['published', 'unpublished', 'draft'])
-              end
-
-              message = format_message(<<-MESSAGE)
-                Expected Example not to define :attr as an enum backed by an integer,
-                mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"›
-                to ‹2›, but it did.
-              MESSAGE
-
-              expect(&matcher).to match_against(record).or_fail_with(message)
-            end
-          end
-        end
-      end
-
-      context 'enum values are a hash' do
-        context 'if enum is being validated' do
-          context 'but validating qualifier is not used' do
-            it 'matches' do
-              record = build_record_with_hash_values(attribute_name: :attr, default: 'active', validate: true)
-
-              matcher = lambda do
-                define_enum_for(:attr).with_values(active: 0, archived: 1)
-              end
-
-              message = format_message(<<-MESSAGE)
-                Expected Example not to define :attr as an enum backed by an integer,
-                mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›,
-                but it did.
-              MESSAGE
-
-              expect(&matcher).to match_against(record).or_fail_with(message)
-            end
-          end
-
-          context 'and validating qualifier is used as false' do
-            it 'rejects with an appropriate failure message' do
-              record = build_record_with_hash_values(attribute_name: :attr, default: 'active', validate: true)
-
-              assertion = lambda do
-                expect(record).
-                  to define_enum_for(:attr).
-                  with_values(active: 0, archived: 1).
-                  validating(false)
-              end
-
-              message = format_message(<<-MESSAGE)
-                Expected Example to define :attr as an enum backed by an integer,
-                mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›.
-                However, :attr is being validated.
-              MESSAGE
-
-              expect(&assertion).to fail_with_message(message)
-            end
-          end
-
-          context 'and validating qualifier is used' do
-            it 'matches' do
-              record = build_record_with_hash_values(attribute_name: :attr, validate: true)
-
-              matcher = lambda do
-                define_enum_for(:attr).
-                  with_values(active: 0, archived: 1).
-                  validating
-              end
-
-              message = format_message(<<-MESSAGE)
-                Expected Example not to define :attr as an enum backed by an integer,
-                mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›, and being validated
-                not allowing nil values, but it did.
-              MESSAGE
-
-              expect(&matcher).to match_against(record).or_fail_with(message)
-            end
-          end
-
-          context 'using allow_nil' do
-            context 'when allowing nil on qualifier' do
-              it 'matches' do
-                record = build_record_with_hash_values(attribute_name: :attr, validate: { allow_nil: true })
-
-                matcher = lambda do
-                  define_enum_for(:attr).
-                    with_values(active: 0, archived: 1).
-                    validating(allowing_nil: true)
-                end
-
-                message = format_message(<<-MESSAGE)
-                  Expected Example not to define :attr as an enum backed by an integer,
-                  mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›,
-                  and being validated allowing nil values, but it did.
-                MESSAGE
-
-                expect(&matcher).to match_against(record).or_fail_with(message)
-              end
-            end
-
-            context 'when not allowing nil on qualifier' do
-              it 'rejects with an appropriate failure message' do
-                record = build_record_with_hash_values(attribute_name: :attr, validate: { allow_nil: true })
-
-                assertion = lambda do
-                  expect(record).
-                    to define_enum_for(:attr).
-                    with_values(active: 0, archived: 1).
-                    validating
-                end
-
-                message = format_message(<<-MESSAGE)
-                  Expected Example to define :attr as an enum backed by an integer,
-                  mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›,
-                  and being validated not allowing nil values. However, :attr is
-                  allowing nil values.
-                MESSAGE
-
-                expect(&assertion).to fail_with_message(message)
-              end
-            end
-          end
-        end
-
-        context 'when not allowing nil values' do
-          it 'matches if qualifier does not allow' do
-            record = build_record_with_hash_values(attribute_name: :attr, validate: { allow_nil: false })
+        context 'and validating qualifier is used as false' do
+          it 'matches' do
+            record = build_record_with_array_values(attribute_name: :attr, default: 'published')
 
             matcher = lambda do
               define_enum_for(:attr).
-                with_values(active: 0, archived: 1).
-                validating(allowing_nil: false)
+                with_values(['published', 'unpublished', 'draft']).
+                validating(false)
             end
 
             message = format_message(<<-MESSAGE)
               Expected Example not to define :attr as an enum backed by an integer,
-              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›,
-              and being validated not allowing nil values, but it did.
+              mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"›
+              to ‹2›, but it did.
             MESSAGE
 
             expect(&matcher).to match_against(record).or_fail_with(message)
           end
+        end
 
-          it 'rejects with an appropriate failure message if qualifier allows' do
-            record = build_record_with_hash_values(attribute_name: :attr, validate: { allow_nil: false })
+        context 'and validating qualifier is not used' do
+          it 'matches' do
+            record = build_record_with_array_values(attribute_name: :attr, default: 'published')
 
-            assertion = lambda do
-              expect(record).
-                to define_enum_for(:attr).
-                with_values(active: 0, archived: 1).
-                validating(allowing_nil: true)
+            matcher = lambda do
+              define_enum_for(:attr).with_values(['published', 'unpublished', 'draft'])
             end
 
             message = format_message(<<-MESSAGE)
-              Expected Example to define :attr as an enum backed by an integer,
-              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›,
-              and being validated allowing nil values. However, :attr is allowing
-              nil values.
+              Expected Example not to define :attr as an enum backed by an integer,
+              mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"›
+              to ‹2›, but it did.
             MESSAGE
 
-            expect(&assertion).to fail_with_message(message)
-          end
-        end
-
-        context 'if enum is not being validated' do
-          context 'but validating qualifier is used' do
-            it 'rejects with an appropriate failure message' do
-              record = build_record_with_hash_values(attribute_name: :attr, default: 'active')
-
-              assertion = lambda do
-                expect(record).
-                  to define_enum_for(:attr).
-                  with_values(active: 0, archived: 1).
-                  validating
-              end
-
-              message = format_message(<<-MESSAGE)
-                Expected Example to define :attr as an enum backed by an integer,
-                mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›,
-                and being validated not allowing nil values. However, :attr
-                is not being validated.
-              MESSAGE
-
-              expect(&assertion).to fail_with_message(message)
-            end
-          end
-
-          context 'and validating qualifier is used as false' do
-            it 'matches' do
-              record = build_record_with_hash_values(attribute_name: :attr, default: 'active')
-
-              matcher = lambda do
-                define_enum_for(:attr).
-                  with_values(active: 0, archived: 1).
-                  validating(false)
-              end
-
-              message = format_message(<<-MESSAGE)
-                Expected Example not to define :attr as an enum backed by an integer,
-                mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›,
-                but it did.
-              MESSAGE
-
-              expect(&matcher).to match_against(record).or_fail_with(message)
-            end
-          end
-
-          context 'and validating qualifier is not used' do
-            it 'matches' do
-              record = build_record_with_hash_values(attribute_name: :attr, default: 'active')
-
-              matcher = lambda do
-                define_enum_for(:attr).with_values(active: 0, archived: 1)
-              end
-
-              message = format_message(<<-MESSAGE)
-                Expected Example not to define :attr as an enum backed by an integer,
-                mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›,
-                but it did.
-              MESSAGE
-
-              expect(&matcher).to match_against(record).or_fail_with(message)
-            end
+            expect(&matcher).to match_against(record).or_fail_with(message)
           end
         end
       end
     end
 
-    describe 'qualified with #without_instance_methods' do
-      context 'if instance methods are set to false on the enum but without_instance_methods is not used' do
-        it 'rejects with failure message' do
-          record = build_record_with_array_values(
-            attribute_name: :attr,
-            instance_methods: false,
-          )
+    context 'enum values are a hash' do
+      context 'if enum is being validated' do
+        context 'but validating qualifier is not used' do
+          it 'matches' do
+            record = build_record_with_hash_values(attribute_name: :attr, default: 'active', validate: true)
 
-          matcher = lambda do
-            expect(record).
-              to define_enum_for(:attr).
-              with_values(['published', 'unpublished', 'draft'])
+            matcher = lambda do
+              define_enum_for(:attr).with_values(active: 0, archived: 1)
+            end
+
+            message = format_message(<<-MESSAGE)
+              Expected Example not to define :attr as an enum backed by an integer,
+              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›,
+              but it did.
+            MESSAGE
+
+            expect(&matcher).to match_against(record).or_fail_with(message)
+          end
+        end
+
+        context 'and validating qualifier is used as false' do
+          it 'rejects with an appropriate failure message' do
+            record = build_record_with_hash_values(attribute_name: :attr, default: 'active', validate: true)
+
+            assertion = lambda do
+              expect(record).
+                to define_enum_for(:attr).
+                with_values(active: 0, archived: 1).
+                validating(false)
+            end
+
+            message = format_message(<<-MESSAGE)
+              Expected Example to define :attr as an enum backed by an integer,
+              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›.
+              However, :attr is being validated.
+            MESSAGE
+
+            expect(&assertion).to fail_with_message(message)
+          end
+        end
+
+        context 'and validating qualifier is used' do
+          it 'matches' do
+            record = build_record_with_hash_values(attribute_name: :attr, validate: true)
+
+            matcher = lambda do
+              define_enum_for(:attr).
+                with_values(active: 0, archived: 1).
+                validating
+            end
+
+            message = format_message(<<-MESSAGE)
+              Expected Example not to define :attr as an enum backed by an integer,
+              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›, and being validated
+              not allowing nil values, but it did.
+            MESSAGE
+
+            expect(&matcher).to match_against(record).or_fail_with(message)
+          end
+        end
+
+        context 'using allow_nil' do
+          context 'when allowing nil on qualifier' do
+            it 'matches' do
+              record = build_record_with_hash_values(attribute_name: :attr, validate: { allow_nil: true })
+
+              matcher = lambda do
+                define_enum_for(:attr).
+                  with_values(active: 0, archived: 1).
+                  validating(allowing_nil: true)
+              end
+
+              message = format_message(<<-MESSAGE)
+                Expected Example not to define :attr as an enum backed by an integer,
+                mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›,
+                and being validated allowing nil values, but it did.
+              MESSAGE
+
+              expect(&matcher).to match_against(record).or_fail_with(message)
+            end
           end
 
-          message = format_message(<<-MESSAGE)
-          Expected Example to define :attr as an enum backed by an integer,
-          mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"› to
-          ‹2›. :attr does map to these values, but the enum is configured with no
-          instance methods.
-          MESSAGE
+          context 'when not allowing nil on qualifier' do
+            it 'rejects with an appropriate failure message' do
+              record = build_record_with_hash_values(attribute_name: :attr, validate: { allow_nil: true })
 
-          expect(&matcher).to fail_with_message(message)
+              assertion = lambda do
+                expect(record).
+                  to define_enum_for(:attr).
+                  with_values(active: 0, archived: 1).
+                  validating
+              end
+
+              message = format_message(<<-MESSAGE)
+                Expected Example to define :attr as an enum backed by an integer,
+                mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›,
+                and being validated not allowing nil values. However, :attr is
+                allowing nil values.
+              MESSAGE
+
+              expect(&assertion).to fail_with_message(message)
+            end
+          end
         end
       end
 
-      context 'if instance methods are set to false on the enum' do
-        it 'matches' do
-          record = build_record_with_array_values(
-            attribute_name: :attr,
-            instance_methods: false,
-          )
+      context 'when not allowing nil values' do
+        it 'matches if qualifier does not allow' do
+          record = build_record_with_hash_values(attribute_name: :attr, validate: { allow_nil: false })
 
           matcher = lambda do
             define_enum_for(:attr).
-              with_values(['published', 'unpublished', 'draft']).
-              without_instance_methods
-          end
-
-          expect(&matcher).
-            to match_against(record).
-            or_fail_with(<<-MESSAGE)
-            Expected Example not to define :attr as an enum backed by an integer,
-            mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"› to
-            ‹2›, but it did.
-          MESSAGE
-        end
-      end
-
-      context 'if instance methods are not set to false on the enum' do
-        it 'rejects with failure message' do
-          record = build_record_with_array_values(attribute_name: :attr)
-
-          matcher = lambda do
-            expect(record).
-              to define_enum_for(:attr).
-              with_values(['published', 'unpublished', 'draft']).
-              without_instance_methods
+              with_values(active: 0, archived: 1).
+              validating(allowing_nil: false)
           end
 
           message = format_message(<<-MESSAGE)
-          Expected Example to define :attr as an enum backed by an integer,
-          mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"› to
-          ‹2›. :attr does map to these values with instance methods, but expected
-          no instance methods.
+            Expected Example not to define :attr as an enum backed by an integer,
+            mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›,
+            and being validated not allowing nil values, but it did.
           MESSAGE
 
-          expect(&matcher).to fail_with_message(message)
+          expect(&matcher).to match_against(record).or_fail_with(message)
         end
+
+        it 'rejects with an appropriate failure message if qualifier allows' do
+          record = build_record_with_hash_values(attribute_name: :attr, validate: { allow_nil: false })
+
+          assertion = lambda do
+            expect(record).
+              to define_enum_for(:attr).
+              with_values(active: 0, archived: 1).
+              validating(allowing_nil: true)
+          end
+
+          message = format_message(<<-MESSAGE)
+            Expected Example to define :attr as an enum backed by an integer,
+            mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›,
+            and being validated allowing nil values. However, :attr is allowing
+            nil values.
+          MESSAGE
+
+          expect(&assertion).to fail_with_message(message)
+        end
+      end
+
+      context 'if enum is not being validated' do
+        context 'but validating qualifier is used' do
+          it 'rejects with an appropriate failure message' do
+            record = build_record_with_hash_values(attribute_name: :attr, default: 'active')
+
+            assertion = lambda do
+              expect(record).
+                to define_enum_for(:attr).
+                with_values(active: 0, archived: 1).
+                validating
+            end
+
+            message = format_message(<<-MESSAGE)
+              Expected Example to define :attr as an enum backed by an integer,
+              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›,
+              and being validated not allowing nil values. However, :attr
+              is not being validated.
+            MESSAGE
+
+            expect(&assertion).to fail_with_message(message)
+          end
+        end
+
+        context 'and validating qualifier is used as false' do
+          it 'matches' do
+            record = build_record_with_hash_values(attribute_name: :attr, default: 'active')
+
+            matcher = lambda do
+              define_enum_for(:attr).
+                with_values(active: 0, archived: 1).
+                validating(false)
+            end
+
+            message = format_message(<<-MESSAGE)
+              Expected Example not to define :attr as an enum backed by an integer,
+              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›,
+              but it did.
+            MESSAGE
+
+            expect(&matcher).to match_against(record).or_fail_with(message)
+          end
+        end
+
+        context 'and validating qualifier is not used' do
+          it 'matches' do
+            record = build_record_with_hash_values(attribute_name: :attr, default: 'active')
+
+            matcher = lambda do
+              define_enum_for(:attr).with_values(active: 0, archived: 1)
+            end
+
+            message = format_message(<<-MESSAGE)
+              Expected Example not to define :attr as an enum backed by an integer,
+              mapping ‹"active"› to ‹0› and ‹"archived"› to ‹1›,
+              but it did.
+            MESSAGE
+
+            expect(&matcher).to match_against(record).or_fail_with(message)
+          end
+        end
+      end
+    end
+  end
+
+  describe 'qualified with #without_instance_methods' do
+    context 'if instance methods are set to false on the enum but without_instance_methods is not used' do
+      it 'rejects with failure message' do
+        record = build_record_with_array_values(
+          attribute_name: :attr,
+          instance_methods: false,
+        )
+
+        matcher = lambda do
+          expect(record).
+            to define_enum_for(:attr).
+            with_values(['published', 'unpublished', 'draft'])
+        end
+
+        message = format_message(<<-MESSAGE)
+        Expected Example to define :attr as an enum backed by an integer,
+        mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"› to
+        ‹2›. :attr does map to these values, but the enum is configured with no
+        instance methods.
+        MESSAGE
+
+        expect(&matcher).to fail_with_message(message)
+      end
+    end
+
+    context 'if instance methods are set to false on the enum' do
+      it 'matches' do
+        record = build_record_with_array_values(
+          attribute_name: :attr,
+          instance_methods: false,
+        )
+
+        matcher = lambda do
+          define_enum_for(:attr).
+            with_values(['published', 'unpublished', 'draft']).
+            without_instance_methods
+        end
+
+        expect(&matcher).
+          to match_against(record).
+          or_fail_with(<<-MESSAGE)
+          Expected Example not to define :attr as an enum backed by an integer,
+          mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"› to
+          ‹2›, but it did.
+        MESSAGE
+      end
+    end
+
+    context 'if instance methods are not set to false on the enum' do
+      it 'rejects with failure message' do
+        record = build_record_with_array_values(attribute_name: :attr)
+
+        matcher = lambda do
+          expect(record).
+            to define_enum_for(:attr).
+            with_values(['published', 'unpublished', 'draft']).
+            without_instance_methods
+        end
+
+        message = format_message(<<-MESSAGE)
+        Expected Example to define :attr as an enum backed by an integer,
+        mapping ‹"published"› to ‹0›, ‹"unpublished"› to ‹1›, and ‹"draft"› to
+        ‹2›. :attr does map to these values with instance methods, but expected
+        no instance methods.
+        MESSAGE
+
+        expect(&matcher).to fail_with_message(message)
       end
     end
   end
