@@ -1,5 +1,14 @@
 # Changelog
 
+## 8.0.1 - 2026-06-12
+
+### Bug fixes
+
+- Fix `validate_uniqueness_of` raising "DescendantsTracker.clear was disabled"
+  when `config.enable_reloading` is false by @matsales28 ([#1713])
+
+[#1713]: https://github.com/thoughtbot/shoulda-matchers/pull/1713
+
 ## 8.0.0 - 2026-06-12
 
 ### Backward-incompatible changes
