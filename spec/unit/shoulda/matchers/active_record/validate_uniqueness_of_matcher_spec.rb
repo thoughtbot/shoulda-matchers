@@ -1566,6 +1566,39 @@ this could not be proved.
       expect(test_model_descendants).to be_empty,
         "Expected no test models in ActiveRecord::Base.descendants, but found: #{test_model_descendants.join(', ')}"
     end
+
+    it 'removes test models from descendants when clearing is disabled' do
+      tracker = ActiveSupport::DescendantsTracker
+      original = tracker.instance_variable_get(:@clear_disabled)
+      tracker.instance_variable_set(:@clear_disabled, true)
+
+      descendants_before = ActiveRecord::Base.descendants.map(&:to_s)
+
+      model = define_model :example, owner_id: :integer, owner_type: :string do |m|
+        m.belongs_to :owner, polymorphic: true
+        m.validates_uniqueness_of :owner_id, scope: :owner_type
+      end
+
+      existing_owner_model = define_model(:user)
+      owner = existing_owner_model.create!
+      model.create!(owner:)
+
+      record = model.new
+
+      expect(record).to validate_uniqueness_of(:owner_id).scoped_to(:owner_type)
+
+      descendants_after = ActiveRecord::Base.descendants.map(&:to_s)
+      new_descendants = descendants_after - descendants_before
+
+      test_model_descendants = new_descendants.select do |name|
+        name.start_with?('Shoulda::Matchers::ActiveRecord::Uniqueness::TestModels::')
+      end
+
+      expect(test_model_descendants).to be_empty,
+        "Expected no test models in ActiveRecord::Base.descendants, but found: #{test_model_descendants.join(', ')}"
+    ensure
+      tracker.instance_variable_set(:@clear_disabled, original)
+    end
   end
 
   let(:model_attributes) { {} }
