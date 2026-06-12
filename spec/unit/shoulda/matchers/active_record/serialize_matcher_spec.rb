@@ -68,7 +68,7 @@ describe Shoulda::Matchers::ActiveRecord::SerializeMatcher, type: :model do
   end
 
   def with_serialized_attr(type: nil, coder: YAML)
-    args = rails_version >= 7.1 ? [] : [type || coder]
+    args = []
 
     define_model(:example, attr: :string) do
       if type
