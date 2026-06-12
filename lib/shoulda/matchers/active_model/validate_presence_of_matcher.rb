@@ -145,10 +145,34 @@ module Shoulda
       #         with_message('Robot has no legs')
       #     end
       #
+      # #### Multiple attributes
+      #
+      # You can pass multiple attributes to assert that each one has the
+      # validation. Any qualifier chained on the matcher is applied to
+      # every attribute uniformly.
+      #
+      #     class Robot
+      #       include ActiveModel::Model
+      #       attr_accessor :arms, :legs
+      #
+      #       validates_presence_of :arms, :legs
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Robot, type: :model do
+      #       it { should validate_presence_of(:arms, :legs) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class RobotTest < ActiveSupport::TestCase
+      #       should validate_presence_of(:arms, :legs)
+      #     end
+      #
       # @return [ValidatePresenceOfMatcher]
       #
-      def validate_presence_of(attr)
-        ValidatePresenceOfMatcher.new(attr)
+
+      def validate_presence_of(*attrs)
+        MatcherCollection.build(attrs) { |attr| ValidatePresenceOfMatcher.new(attr) }
       end
 
       # @private
@@ -206,26 +230,28 @@ module Shoulda
           "validate that :#{@attribute} cannot be empty/falsy"
         end
 
-        def failure_message
-          message = super
-
+        def failure_reason
+          reason = super
           if should_add_footnote_about_belongs_to?
-            message << "\n\n"
-            message << Shoulda::Matchers.word_wrap(<<-MESSAGE.strip, indent: 2)
-You're getting this error because #{reason_for_existing_presence_validation}.
-*This* presence validation doesn't use "can't be blank", the usual validation
-message, but "must exist" instead.
-
-With that said, did you know that the `belong_to` matcher can test this
-validation for you? Instead of using `validate_presence_of`, try
-#{suggestions_for_belongs_to}
-            MESSAGE
+            "#{reason}\n\n#{belongs_to_footnote}"
+          else
+            reason
           end
-
-          message
         end
 
         private
+
+        def belongs_to_footnote
+          <<~MESSAGE.strip
+            You're getting this error because #{reason_for_existing_presence_validation}.
+            *This* presence validation doesn't use "can't be blank", the usual validation
+            message, but "must exist" instead.
+
+            With that said, did you know that the `belong_to` matcher can test this
+            validation for you? Instead of using `validate_presence_of`, try
+            #{suggestions_for_belongs_to}
+          MESSAGE
+        end
 
         def secure_password_being_validated?
           Shoulda::Matchers::RailsShim.digestible_attributes_in(@subject).

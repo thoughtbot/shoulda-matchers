@@ -1,6 +1,58 @@
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateComparisonOfMatcher, type: :model do
+  context 'passing multiple attributes' do
+    it 'accepts when every attribute has the validation' do
+      model = define_model 'Example', attr1: :integer, attr2: :integer do
+        validates_comparison_of :attr1, :attr2, greater_than: 18
+      end
+
+      expect(model.new).
+        to validate_comparison_of(:attr1, :attr2).is_greater_than(18)
+    end
+
+    it 'rejects when one attribute has the validation and one does not' do
+      model = define_model 'Example', attr1: :integer, attr2: :integer do
+        validates_comparison_of :attr1, greater_than: 18, allow_nil: true
+      end
+
+      assertion = lambda do
+        expect(model.new).
+          to validate_comparison_of(:attr1, :attr2).is_greater_than(18)
+      end
+
+      message = <<-MESSAGE
+Expected Example to validate that :attr2 looks like a value greater than
+18, but this could not be proved.
+  After setting :attr2 to ‹18›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
+    end
+
+    it 'rejects when no attribute has the validation' do
+      model = define_model 'Example', attr1: :integer, attr2: :integer
+
+      assertion = lambda do
+        expect(model.new).
+          to validate_comparison_of(:attr1, :attr2).is_greater_than(18)
+      end
+
+      message = <<-MESSAGE
+Expected Example to validate that :attr1 looks like a value greater than
+18 and validate that :attr2 looks like a value greater than 18, but this
+could not be proved.
+  After setting :attr1 to ‹18›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+  After setting :attr2 to ‹18›, the matcher expected the Example to be
+  invalid, but it was valid instead.
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
+    end
+  end
+
   context 'with combinations of qualifiers together' do
     context 'when the qualifiers do not match the validation options' do
       specify 'such as validating greater_than_or_equal_to but testing that greater_than is validated' do

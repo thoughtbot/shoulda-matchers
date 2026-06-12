@@ -263,10 +263,33 @@ module Shoulda
       #         allow_blank
       #     end
       #
+      # #### Multiple attributes
+      #
+      # You can pass multiple attributes to assert that each one has the
+      # validation. Any qualifier chained on the matcher is applied to
+      # every attribute uniformly.
+      #
+      #     class Article
+      #       include ActiveModel::Model
+      #       attr_accessor :status, :category
+      #
+      #       validates_inclusion_of :status, :category, in: %w[draft published]
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Article, type: :model do
+      #       it { should validate_inclusion_of(:status, :category).in_array(%w[draft published]) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class ArticleTest < ActiveSupport::TestCase
+      #       should validate_inclusion_of(:status, :category).in_array(%w[draft published])
+      #     end
+      #
       # @return [ValidateInclusionOfMatcher]
       #
-      def validate_inclusion_of(attr)
-        ValidateInclusionOfMatcher.new(attr)
+      def validate_inclusion_of(*attrs)
+        MatcherCollection.build(attrs) { |attr| ValidateInclusionOfMatcher.new(attr) }
       end
 
       # @private

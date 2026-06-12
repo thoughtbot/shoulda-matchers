@@ -88,10 +88,31 @@ module Shoulda
       #       should have_one_attached(:avatar).strict_loading
       #     end
       #
+      # #### Multiple attributes
+      #
+      # You can pass multiple attributes to assert that each one has the
+      # validation. Any qualifier chained on the matcher is applied to
+      # every attribute uniformly.
+      #
+      #     class User < ActiveRecord::Base
+      #       has_one_attached :avatar
+      #       has_one_attached :cover
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe User, type: :model do
+      #       it { should have_one_attached(:avatar, :cover) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class UserTest < ActiveSupport::TestCase
+      #       should have_one_attached(:avatar, :cover)
+      #     end
+      #
       # @return [HaveAttachedMatcher]
       #
-      def have_one_attached(name)
-        HaveAttachedMatcher.new(:one, name)
+      def have_one_attached(*names)
+        MatcherCollection.build(names) { |name| HaveAttachedMatcher.new(:one, name) }
       end
 
       # The `have_many_attached` matcher tests usage of the
@@ -138,6 +159,10 @@ module Shoulda
 Expected #{expectation}, but this could not be proved.
   #{@failure}
           MESSAGE
+        end
+
+        def failure_reason
+          @failure
         end
 
         def failure_message_when_negated

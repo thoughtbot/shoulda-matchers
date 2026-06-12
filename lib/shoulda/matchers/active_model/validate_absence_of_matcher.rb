@@ -70,10 +70,33 @@ module Shoulda
       #         with_message("there shall be peace on Earth")
       #     end
       #
+      # #### Multiple attributes
+      #
+      # You can pass multiple attributes to assert that each one has the
+      # validation. Any qualifier chained on the matcher is applied to
+      # every attribute uniformly.
+      #
+      #     class Robot
+      #       include ActiveModel::Model
+      #       attr_accessor :arms, :legs
+      #
+      #       validates_absence_of :arms, :legs
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Robot, type: :model do
+      #       it { should validate_absence_of(:arms, :legs) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class RobotTest < ActiveSupport::TestCase
+      #       should validate_absence_of(:arms, :legs)
+      #     end
+      #
       # @return [ValidateAbsenceOfMatcher}
       #
-      def validate_absence_of(attr)
-        ValidateAbsenceOfMatcher.new(attr)
+      def validate_absence_of(*attrs)
+        MatcherCollection.build(attrs) { |attr| ValidateAbsenceOfMatcher.new(attr) }
       end
 
       # @private

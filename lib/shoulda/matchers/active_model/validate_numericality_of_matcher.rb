@@ -350,10 +350,33 @@ module Shoulda
       #       should validate_numericality_of(:age).allow_nil
       #     end
       #
+      # #### Multiple attributes
+      #
+      # You can pass multiple attributes to assert that each one has the
+      # validation. Any qualifier chained on the matcher is applied to
+      # every attribute uniformly.
+      #
+      #     class Item
+      #       include ActiveModel::Model
+      #       attr_accessor :price, :quantity
+      #
+      #       validates_numericality_of :price, :quantity
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Item, type: :model do
+      #       it { should validate_numericality_of(:price, :quantity) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class ItemTest < ActiveSupport::TestCase
+      #       should validate_numericality_of(:price, :quantity)
+      #     end
+      #
       # @return [ValidateNumericalityOfMatcher]
       #
-      def validate_numericality_of(attr)
-        ValidateNumericalityOfMatcher.new(attr)
+      def validate_numericality_of(*attrs)
+        MatcherCollection.build(attrs) { |attr| ValidateNumericalityOfMatcher.new(attr) }
       end
 
       # @private
@@ -480,6 +503,13 @@ module Shoulda
             message <<
               failure_message_for_first_submatcher_that_fails_to_not_match
           end
+        end
+
+        def failure_reason
+          raw_submatcher_failure_reason_for(
+            first_submatcher_that_fails_to_match,
+            :failure_message,
+          )
         end
 
         def given_numeric_column?
@@ -620,21 +650,26 @@ module Shoulda
           submatcher,
           failure_message_method
         )
+          Shoulda::Matchers.word_wrap(
+            raw_submatcher_failure_reason_for(submatcher, failure_message_method),
+            indent: 2,
+          )
+        end
+
+        def raw_submatcher_failure_reason_for(submatcher, failure_message_method)
           failure_message = submatcher.public_send(failure_message_method)
           submatcher_description = submatcher.simple_description.
             sub(/\bvalidate that\b/, 'validates').
             sub(/\bdisallow\b/, 'disallows').
             sub(/\ballow\b/, 'allows')
-          submatcher_message =
-            if number_of_submatchers_for_failure_message > 1
-              "In checking that #{model.name} #{submatcher_description}, " +
-                failure_message[0].downcase +
-                failure_message[1..]
-            else
-              failure_message
-            end
 
-          Shoulda::Matchers.word_wrap(submatcher_message, indent: 2)
+          if number_of_submatchers_for_failure_message > 1
+            "In checking that #{model.name} #{submatcher_description}, " +
+              failure_message[0].downcase +
+              failure_message[1..]
+          else
+            failure_message
+          end
         end
 
         def full_allowed_type

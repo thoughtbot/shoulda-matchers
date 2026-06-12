@@ -2,6 +2,55 @@ require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateLengthOfMatcher, type: :model do
   context 'an attribute with a non-zero minimum length validation' do
+    context 'passing multiple attributes' do
+      it 'accepts when every attribute has the validation' do
+        model = define_model 'Example', attr1: :string, attr2: :string do
+          validates_length_of :attr1, :attr2, minimum: 4
+        end
+
+        expect(model.new).to validate_length_of(:attr1, :attr2).is_at_least(4)
+      end
+
+      it 'rejects when one attribute has the validation and one does not' do
+        model = define_model 'Example', attr1: :string, attr2: :string do
+          validates_length_of :attr1, minimum: 4, allow_nil: true
+        end
+
+        assertion = lambda do
+          expect(model.new).to validate_length_of(:attr1, :attr2).is_at_least(4)
+        end
+
+        message = <<-MESSAGE
+Expected Example to validate that the length of :attr2 is at least 4,
+but this could not be proved.
+  After setting :attr2 to ‹"xxx"›, the matcher expected the Example to
+  be invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+
+      it 'rejects when no attribute has the validation' do
+        model = define_model 'Example', attr1: :string, attr2: :string
+
+        assertion = lambda do
+          expect(model.new).to validate_length_of(:attr1, :attr2).is_at_least(4)
+        end
+
+        message = <<-MESSAGE
+Expected Example to validate that the length of :attr1 is at least 4 and
+validate that the length of :attr2 is at least 4, but this could not be
+proved.
+  After setting :attr1 to ‹"xxx"›, the matcher expected the Example to
+  be invalid, but it was valid instead.
+  After setting :attr2 to ‹"xxx"›, the matcher expected the Example to
+  be invalid, but it was valid instead.
+        MESSAGE
+
+        expect(&assertion).to fail_with_message(message)
+      end
+    end
+
     it 'accepts ensuring the correct minimum length' do
       expect(validating_length(minimum: 4)).
         to validate_length_of(:attr).is_at_least(4)

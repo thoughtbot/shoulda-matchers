@@ -240,7 +240,6 @@ module Shoulda
       #       should validate_length_of(:bio).is_at_least(15).allow_nil
       #     end
       #
-      # @return [ValidateLengthOfMatcher]
       #
       # ##### allow_blank
       #
@@ -286,8 +285,32 @@ module Shoulda
       #       should validate_length_of(:arr).as_array.is_at_least(15)
       #     end
       #
-      def validate_length_of(attr)
-        ValidateLengthOfMatcher.new(attr)
+      # #### Multiple attributes
+      #
+      # You can pass multiple attributes to assert that each one has the
+      # validation. Any qualifier chained on the matcher is applied to
+      # every attribute uniformly.
+      #
+      #     class User
+      #       include ActiveModel::Model
+      #       attr_accessor :first_name, :last_name
+      #
+      #       validates_length_of :first_name, :last_name, minimum: 2
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe User, type: :model do
+      #       it { should validate_length_of(:first_name, :last_name).is_at_least(2) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class UserTest < ActiveSupport::TestCase
+      #       should validate_length_of(:first_name, :last_name).is_at_least(2)
+      #     end
+      #
+      # @return [ValidateLengthOfMatcher]
+      def validate_length_of(*attrs)
+        MatcherCollection.build(attrs) { |attr| ValidateLengthOfMatcher.new(attr) }
       end
 
       # @private

@@ -73,10 +73,33 @@ module Shoulda
       #         with_message('You must accept the terms of service')
       #     end
       #
+      # #### Multiple attributes
+      #
+      # You can pass multiple attributes to assert that each one has the
+      # validation. Any qualifier chained on the matcher is applied to
+      # every attribute uniformly.
+      #
+      #     class User
+      #       include ActiveModel::Model
+      #       attr_accessor :terms, :privacy_policy
+      #
+      #       validates_acceptance_of :terms, :privacy_policy
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe User, type: :model do
+      #       it { should validate_acceptance_of(:terms, :privacy_policy) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class UserTest < ActiveSupport::TestCase
+      #       should validate_acceptance_of(:terms, :privacy_policy)
+      #     end
+      #
       # @return [ValidateAcceptanceOfMatcher]
       #
-      def validate_acceptance_of(attr)
-        ValidateAcceptanceOfMatcher.new(attr)
+      def validate_acceptance_of(*attrs)
+        MatcherCollection.build(attrs) { |attr| ValidateAcceptanceOfMatcher.new(attr) }
       end
 
       # @private

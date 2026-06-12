@@ -86,6 +86,10 @@ module Shoulda
           end
         end
 
+        def failure_reason
+          last_submatcher_run.try(:failure_message)
+        end
+
         protected
 
         attr_reader :attribute, :context, :subject, :last_submatcher_run
@@ -148,14 +152,6 @@ module Shoulda
             "Expected #{model.name} not to #{description}, but this could "\
             'not be proved.',
           )
-        end
-
-        def failure_reason
-          last_submatcher_run.try(:failure_message)
-        end
-
-        def failure_reason_when_negated
-          last_submatcher_run.try(:failure_message_when_negated)
         end
 
         def build_allow_or_disallow_value_matcher(args)

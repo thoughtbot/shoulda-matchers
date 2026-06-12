@@ -1,6 +1,58 @@
 require 'unit_spec_helper'
 
 describe Shoulda::Matchers::ActiveModel::ValidateInclusionOfMatcher, type: :model do
+  context 'passing multiple attributes' do
+    it 'accepts when every attribute has the validation' do
+      model = define_model 'Example', attr1: :integer, attr2: :integer do
+        validates_inclusion_of :attr1, :attr2, in: [1, 2, 3]
+      end
+
+      expect(model.new).
+        to validate_inclusion_of(:attr1, :attr2).in_array([1, 2, 3])
+    end
+
+    it 'rejects when one attribute has the validation and one does not' do
+      model = define_model 'Example', attr1: :integer, attr2: :integer do
+        validates_inclusion_of :attr1, in: [1, 2, 3], allow_nil: true
+      end
+
+      assertion = lambda do
+        expect(model.new).
+          to validate_inclusion_of(:attr1, :attr2).in_array([1, 2, 3])
+      end
+
+      message = <<-MESSAGE
+Expected Example to validate that :attr2 is either ‹1›, ‹2›, or ‹3›, but
+this could not be proved.
+  After setting :attr2 to ‹123456789›, the matcher expected the Example
+  to be invalid, but it was valid instead.
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
+    end
+
+    it 'rejects when no attribute has the validation' do
+      model = define_model 'Example', attr1: :integer, attr2: :integer
+
+      assertion = lambda do
+        expect(model.new).
+          to validate_inclusion_of(:attr1, :attr2).in_array([1, 2, 3])
+      end
+
+      message = <<-MESSAGE
+Expected Example to validate that :attr1 is either ‹1›, ‹2›, or ‹3› and
+validate that :attr2 is either ‹1›, ‹2›, or ‹3›, but this could not be
+proved.
+  After setting :attr1 to ‹123456789›, the matcher expected the Example
+  to be invalid, but it was valid instead.
+  After setting :attr2 to ‹123456789›, the matcher expected the Example
+  to be invalid, but it was valid instead.
+      MESSAGE
+
+      expect(&assertion).to fail_with_message(message)
+    end
+  end
+
   shared_context 'for a generic attribute' do
     context 'against an integer attribute' do
       it_behaves_like 'it supports in_array',
