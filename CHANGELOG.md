@@ -1,5 +1,47 @@
 # Changelog
 
+## 8.0.0 - 2026-06-12
+
+### Backward-incompatible changes
+
+- Drop support for Rails 7.1 and Ruby 3.2 by @matsales28
+
+### Features
+
+- Add support for validating multiple attributes at once by @matsales28 ([#1651])
+- Add error for using `with_options` in `define_enum_for` matcher by @matsales28 ([#1693])
+- Introduce support for deprecated associations API by @stefannibrasil ([#1690])
+
+### Bug fixes
+
+- Prevent ActiveRecord constant leak in uniqueness matcher by @matsales28 ([#1694])
+
+### Improvements
+
+- Add Ruby 4 support by @stefannibrasil ([#1697])
+- Update Ruby versions to latest stable releases by @matsales28 ([#1708])
+- Update Rails versions to latest stable releases by @matsales28 ([#1709])
+- Improve `validate_inclusion_of` matcher boolean warn messages by @stefannibrasil ([#1692])
+- Use a fixed date in `validate_inclusion_of` date attribute spec by @HoangMinhBK ([#1703])
+- Require MFA for gem pushes by @MatheusRich ([#1702])
+- Update README to reflect the v7 release by @brendanthomas1 ([#1695])
+- Fix broken README anchor for should vs is_expected.to by @LarytheLord ([#1700])
+- Fix `foreign_type` example in `association_matcher` docs by @artinboghosian ([#1705])
+
+[#1651]: https://github.com/thoughtbot/shoulda-matchers/pull/1651
+[#1690]: https://github.com/thoughtbot/shoulda-matchers/pull/1690
+[#1692]: https://github.com/thoughtbot/shoulda-matchers/pull/1692
+[#1693]: https://github.com/thoughtbot/shoulda-matchers/pull/1693
+[#1694]: https://github.com/thoughtbot/shoulda-matchers/pull/1694
+[#1695]: https://github.com/thoughtbot/shoulda-matchers/pull/1695
+[#1697]: https://github.com/thoughtbot/shoulda-matchers/pull/1697
+[#1700]: https://github.com/thoughtbot/shoulda-matchers/pull/1700
+[#1702]: https://github.com/thoughtbot/shoulda-matchers/pull/1702
+[#1703]: https://github.com/thoughtbot/shoulda-matchers/pull/1703
+[#1705]: https://github.com/thoughtbot/shoulda-matchers/pull/1705
+[#1708]: https://github.com/thoughtbot/shoulda-matchers/pull/1708
+[#1709]: https://github.com/thoughtbot/shoulda-matchers/pull/1709
+
 ## 7.0.1 - 2025-10-31
 
 ### Bug fixes
