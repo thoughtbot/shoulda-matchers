@@ -89,7 +89,7 @@ appraise 'rails_8_0' do
   instance_eval(&shared_spring_dependencies)
   instance_eval(&controller_test_dependency)
 
-  gem 'rails', '~> 8.0'
+  gem 'rails', '~> 8.0.0'
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem 'brakeman', require: false
