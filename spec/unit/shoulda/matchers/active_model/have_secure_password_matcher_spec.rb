@@ -18,6 +18,44 @@ describe Shoulda::Matchers::ActiveModel::HaveSecurePasswordMatcher, type: :model
     end
   end
 
+  context 'with the without_validations qualifier' do
+    it 'matches when has_secure_password is declared with validations: false' do
+      working_model = define_model(:example, password_digest: :string) do
+        has_secure_password validations: false
+      end
+      expect(working_model.new).to have_secure_password.without_validations
+    end
+
+    it 'does not match when the password validations are present' do
+      working_model = define_model(:example, password_digest: :string) do
+        has_secure_password
+      end
+      expect(working_model.new).not_to have_secure_password.without_validations
+    end
+
+    it 'matches when the model opts out but defines its own validations' do
+      working_model = define_model(:example, password_digest: :string) do
+        has_secure_password validations: false
+        validates :password, presence: true
+      end
+      expect(working_model.new).to have_secure_password.without_validations
+    end
+
+    it 'rejects with an appropriate failure message' do
+      working_model = define_model(:example, password_digest: :string) do
+        has_secure_password
+      end
+      assertion = lambda do
+        expect(working_model.new).to have_secure_password.without_validations
+      end
+
+      message = 'expected Example to have a secure password without'\
+        ' validations on password, but validations were present'
+
+      expect(&assertion).to fail_with_message_including(message)
+    end
+  end
+
   context 'when custom attribute is given to has_secure_password' do
     it 'matches when the subject configures has_secure_password with correct options' do
       working_model = define_model(:example, reset_password_digest: :string) { has_secure_password :reset_password }

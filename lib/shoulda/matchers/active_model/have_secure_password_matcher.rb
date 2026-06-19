@@ -28,6 +28,32 @@ module Shoulda
       #       should have_secure_password(:reset_password)
       #     end
       #
+      # #### Qualifiers
+      #
+      # ##### without_validations
+      #
+      # Use `without_validations` to assert that `has_secure_password` was
+      # declared with `validations: false`, which opts out of the built-in
+      # password presence, length, and confirmation validations.
+      #
+      #     class User
+      #       include ActiveModel::Model
+      #       include ActiveModel::SecurePassword
+      #       attr_accessor :password
+      #
+      #       has_secure_password validations: false
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe User, type: :model do
+      #       it { should have_secure_password.without_validations }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class UserTest < ActiveSupport::TestCase
+      #       should have_secure_password.without_validations
+      #     end
+      #
       # @return [HaveSecurePasswordMatcher]
       #
       def have_secure_password(attr = :password)
@@ -47,16 +73,28 @@ module Shoulda
           did_not_authenticate_correct_password: 'expected %{subject} to'\
             ' authenticate the correct %{attribute}',
           method_not_found: 'expected %{subject} to respond to %{methods}',
+          unexpected_validations: 'expected %{subject} to have a secure'\
+            ' password without validations on %{attribute}, but'\
+            ' validations were present',
           should_not_have_secure_password: 'expected %{subject} to'\
             ' not %{description}!',
         }.freeze
 
         def initialize(attribute)
           @attribute = attribute.to_sym
+          @expects_no_validations = false
+        end
+
+        def without_validations
+          @expects_no_validations = true
+          self
         end
 
         def description
-          "have a secure password, defined on #{@attribute} attribute"
+          description = "have a secure password, defined on #{@attribute}"\
+            ' attribute'
+          description += ' without validations' if @expects_no_validations
+          description
         end
 
         def matches?(subject)
@@ -96,11 +134,27 @@ module Shoulda
                { attribute: @attribute },]
             elsif subject.send(authenticate_method, INCORRECT_PASSWORD)
               [:authenticated_incorrect_password, { attribute: @attribute }]
+            elsif @expects_no_validations && validations_present?
+              [:unexpected_validations, { attribute: @attribute }]
             end
           end
         end
 
         private
+
+        # `has_secure_password` (with the default `validations: true`) registers
+        # a confirmation validator on the attribute alongside its other built-in
+        # validations. They are all installed together, so the presence of that
+        # validator is a reliable structural signal that validations are enabled
+        # without having to run them, which is what `without_validations`
+        # asserts against.
+        def validations_present?
+          return false unless subject.class.respond_to?(:validators_on)
+
+          subject.class.validators_on(@attribute).any? do |validator|
+            validator.is_a?(::ActiveModel::Validations::ConfirmationValidator)
+          end
+        end
 
         def expected_methods
           @_expected_methods ||= %I[
