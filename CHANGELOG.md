@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+### Features
+
+- Add `without_validations`, `with_reset_token`, and `without_reset_token`
+  qualifiers to the `have_secure_password` matcher by @matsales28 ([#1716])
+
+[#1716]: https://github.com/thoughtbot/shoulda-matchers/pull/1716
+
 ## 8.0.1 - 2026-06-12
 
 ### Bug fixes
