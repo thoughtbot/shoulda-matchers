@@ -190,6 +190,57 @@ but it did
         MESSAGE
       end
     end
+
+    context 'with_key_provider' do
+      it 'accepts when the key provider matches' do
+        key_provider = build_key_provider
+
+        expect(with_encrypt_attr(key_provider: key_provider)).
+          to encrypt(:attr).with_key_provider(key_provider)
+      end
+
+      it 'accepts when given the key provider class' do
+        expect(with_encrypt_attr(key_provider: build_key_provider)).
+          to encrypt(:attr).
+          with_key_provider(ActiveRecord::Encryption::KeyProvider)
+      end
+
+      it 'rejects when given a non-matching key provider class' do
+        assertion = lambda do
+          expect(with_encrypt_attr(key_provider: build_key_provider)).
+            to encrypt(:attr).
+            with_key_provider(ActiveRecord::Encryption::DerivedSecretKeyProvider)
+        end
+
+        expect(&assertion).to fail_with_message_including(
+          'Expected to encrypt :attr of Example using :key_provider option',
+        )
+      end
+
+      it 'rejects when the key provider does not match' do
+        assertion = lambda do
+          expect(with_encrypt_attr(key_provider: build_key_provider)).
+            to encrypt(:attr).with_key_provider(build_key_provider)
+        end
+
+        expect(&assertion).to fail_with_message_including(
+          'Expected to encrypt :attr of Example using :key_provider option',
+        )
+      end
+
+      it 'rejects when used in the negative' do
+        key_provider = build_key_provider
+
+        assertion = lambda do
+          expect(with_encrypt_attr(key_provider: key_provider)).
+            not_to encrypt(:attr).with_key_provider(key_provider)
+        end
+
+        expect(&assertion).to fail_with_message_including(
+          'Did not expect to encrypt :attr of Example',
+        )
+      end
+    end
   end
 
   def with_encrypt_attr(**options)
@@ -202,5 +253,11 @@ but it did
     define_model :example, attr: :string, original_attr: :string do
       encrypts :attr, deterministic: true, ignore_case: true, **options
     end.new
+  end
+
+  def build_key_provider
+    ActiveRecord::Encryption::KeyProvider.new(
+      ActiveRecord::Encryption::Key.new(SecureRandom.hex(16)),
+    )
   end
 end

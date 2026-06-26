@@ -76,6 +76,13 @@ module Shoulda
 
       # @private
       class EncryptMatcher
+        SCHEME_READERS = {
+          deterministic: :deterministic?,
+          downcase: :downcase?,
+          ignore_case: :ignore_case?,
+          key_provider: :key_provider,
+        }.freeze
+
         def initialize(attribute)
           @attribute = attribute.to_sym
           @options = {}
@@ -95,14 +102,13 @@ module Shoulda
           with_option(:ignore_case, ignore_case)
         end
 
+        def with_key_provider(key_provider)
+          with_option(:key_provider, key_provider)
+        end
+
         def matches?(subject)
           @subject = subject
-          result = encrypted_attributes_included? &&
-                   options_correct?(
-                     :deterministic,
-                     :downcase,
-                     :ignore_case,
-                   )
+          result = encrypted_attributes_included? && options_correct?
 
           if result
             @failure_message_when_negated = "Did not expect to #{description} of #{class_name}"
@@ -142,13 +148,18 @@ but it did"
           self
         end
 
-        def options_correct?(*opts)
-          opts.all? do |opt|
-            next true unless @options.key?(opt)
+        def option_matches?(expected, actual)
+          if expected.is_a?(Module)
+            actual.is_a?(expected)
+          else
+            expected == actual
+          end
+        end
 
-            expected = @options[opt]
-            actual = encrypted_attribute_scheme.send("#{opt}?")
-            next true if expected == actual
+        def options_correct?
+          @options.all? do |opt, expected|
+            actual = encrypted_attribute_scheme.public_send(SCHEME_READERS.fetch(opt))
+            next true if option_matches?(expected, actual)
 
             @failure_message = "Expected to #{description} of #{class_name} using :#{opt} option
 as ‹#{expected}›, but got ‹#{actual}›"
