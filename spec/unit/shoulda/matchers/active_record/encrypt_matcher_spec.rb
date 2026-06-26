@@ -241,6 +241,38 @@ but it did
         )
       end
     end
+
+    context 'supporting_unencrypted_data' do
+      it 'accepts when the attribute supports unencrypted data' do
+        expect(with_encrypt_attr(support_unencrypted_data: true)).
+          to encrypt(:attr).supporting_unencrypted_data
+      end
+
+      it 'rejects when the attribute does not support unencrypted data' do
+        assertion = lambda do
+          expect(with_encrypt_attr(support_unencrypted_data: false)).
+            to encrypt(:attr).supporting_unencrypted_data
+        end
+
+        expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected to encrypt :attr of Example using :support_unencrypted_data option
+as ‹true›, but got ‹false›
+        MESSAGE
+      end
+
+      it 'rejects when used in the negative' do
+        assertion = lambda do
+          expect(with_encrypt_attr(support_unencrypted_data: true)).
+            not_to encrypt(:attr).supporting_unencrypted_data
+        end
+
+        expect(&assertion).to fail_with_message(<<~MESSAGE)
+Did not expect to encrypt :attr of Example
+using :support_unencrypted_data option as ‹true›,
+but it did
+        MESSAGE
+      end
+    end
   end
 
   def with_encrypt_attr(**options)

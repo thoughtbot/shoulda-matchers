@@ -81,6 +81,7 @@ module Shoulda
           downcase: :downcase?,
           ignore_case: :ignore_case?,
           key_provider: :key_provider,
+          support_unencrypted_data: :support_unencrypted_data?,
         }.freeze
 
         def initialize(attribute)
@@ -104,6 +105,10 @@ module Shoulda
 
         def with_key_provider(key_provider)
           with_option(:key_provider, key_provider)
+        end
+
+        def supporting_unencrypted_data
+          with_option(:support_unencrypted_data, true)
         end
 
         def matches?(subject)
