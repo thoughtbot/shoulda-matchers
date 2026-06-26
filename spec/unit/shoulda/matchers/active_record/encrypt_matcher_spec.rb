@@ -206,26 +206,33 @@ but it did
       end
 
       it 'rejects when given a non-matching key provider class' do
+        key_provider = build_key_provider
+        expected = ActiveRecord::Encryption::DerivedSecretKeyProvider
+
         assertion = lambda do
-          expect(with_encrypt_attr(key_provider: build_key_provider)).
-            to encrypt(:attr).
-            with_key_provider(ActiveRecord::Encryption::DerivedSecretKeyProvider)
+          expect(with_encrypt_attr(key_provider: key_provider)).
+            to encrypt(:attr).with_key_provider(expected)
         end
 
-        expect(&assertion).to fail_with_message_including(
-          'Expected to encrypt :attr of Example using :key_provider option',
-        )
+        expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected to encrypt :attr of Example using :key_provider option
+as ‹#{expected}›, but got ‹#{key_provider}›
+        MESSAGE
       end
 
       it 'rejects when the key provider does not match' do
+        key_provider = build_key_provider
+        expected = build_key_provider
+
         assertion = lambda do
-          expect(with_encrypt_attr(key_provider: build_key_provider)).
-            to encrypt(:attr).with_key_provider(build_key_provider)
+          expect(with_encrypt_attr(key_provider: key_provider)).
+            to encrypt(:attr).with_key_provider(expected)
         end
 
-        expect(&assertion).to fail_with_message_including(
-          'Expected to encrypt :attr of Example using :key_provider option',
-        )
+        expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected to encrypt :attr of Example using :key_provider option
+as ‹#{expected}›, but got ‹#{key_provider}›
+        MESSAGE
       end
 
       it 'rejects when used in the negative' do
@@ -236,9 +243,48 @@ but it did
             not_to encrypt(:attr).with_key_provider(key_provider)
         end
 
-        expect(&assertion).to fail_with_message_including(
-          'Did not expect to encrypt :attr of Example',
-        )
+        expect(&assertion).to fail_with_message(<<~MESSAGE)
+Did not expect to encrypt :attr of Example
+using :key_provider option as ‹#{key_provider}›,
+but it did
+        MESSAGE
+      end
+    end
+
+    context 'with_previous' do
+      it 'accepts when the previous schemes match' do
+        expect(with_encrypt_attr(previous: { deterministic: true })).
+          to encrypt(:attr).with_previous(deterministic: true)
+      end
+
+      it 'rejects when the previous schemes do not match' do
+        expected = [{ deterministic: false }]
+        actual = [{ deterministic: true }]
+
+        assertion = lambda do
+          expect(with_encrypt_attr(previous: { deterministic: true })).
+            to encrypt(:attr).with_previous(deterministic: false)
+        end
+
+        expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected to encrypt :attr of Example using :previous option
+as ‹#{expected}›, but got ‹#{actual}›
+        MESSAGE
+      end
+
+      it 'rejects when used in the negative' do
+        previous = [{ deterministic: true }]
+
+        assertion = lambda do
+          expect(with_encrypt_attr(previous: { deterministic: true })).
+            not_to encrypt(:attr).with_previous(deterministic: true)
+        end
+
+        expect(&assertion).to fail_with_message(<<~MESSAGE)
+Did not expect to encrypt :attr of Example
+using :previous option as ‹#{previous}›,
+but it did
+        MESSAGE
       end
     end
 

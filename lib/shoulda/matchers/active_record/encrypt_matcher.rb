@@ -68,6 +68,60 @@ module Shoulda
       #       should encrypt(:access_code).ignore_case(true)
       #     end
       #
+      # ##### with_key_provider
+      #
+      #     class Survey < ActiveRecord::Base
+      #       encrypts :access_code, key_provider: ENCRYPTION_KEY_PROVIDER
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Survey, type: :model do
+      #       it { should encrypt(:access_code).with_key_provider(ENCRYPTION_KEY_PROVIDER) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class SurveyTest < ActiveSupport::TestCase
+      #       should encrypt(:access_code).with_key_provider(ENCRYPTION_KEY_PROVIDER)
+      #     end
+      #
+      # A class may also be given to assert the kind of key provider used,
+      # without holding a reference to the exact instance:
+      #
+      #     should encrypt(:access_code).
+      #       with_key_provider(ActiveRecord::Encryption::DerivedSecretKeyProvider)
+      #
+      # ##### with_previous
+      #
+      #     class Survey < ActiveRecord::Base
+      #       encrypts :access_code, deterministic: true, previous: { deterministic: false }
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Survey, type: :model do
+      #       it { should encrypt(:access_code).with_previous(deterministic: false) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class SurveyTest < ActiveSupport::TestCase
+      #       should encrypt(:access_code).with_previous(deterministic: false)
+      #     end
+      #
+      # ##### supporting_unencrypted_data
+      #
+      #     class Survey < ActiveRecord::Base
+      #       encrypts :access_code, support_unencrypted_data: true
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Survey, type: :model do
+      #       it { should encrypt(:access_code).supporting_unencrypted_data }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class SurveyTest < ActiveSupport::TestCase
+      #       should encrypt(:access_code).supporting_unencrypted_data
+      #     end
+      #
       # @return [EncryptMatcher]
       #
       def encrypt(value)
@@ -82,6 +136,7 @@ module Shoulda
           ignore_case: :ignore_case?,
           key_provider: :key_provider,
           support_unencrypted_data: :support_unencrypted_data?,
+          previous: -> (scheme) { scheme.previous_schemes.map(&:to_h) },
         }.freeze
 
         def initialize(attribute)
@@ -109,6 +164,10 @@ module Shoulda
 
         def supporting_unencrypted_data
           with_option(:support_unencrypted_data, true)
+        end
+
+        def with_previous(*previous)
+          with_option(:previous, previous)
         end
 
         def matches?(subject)
@@ -153,6 +212,16 @@ but it did"
           self
         end
 
+        def scheme_value_for(opt)
+          reader = SCHEME_READERS.fetch(opt)
+
+          if reader.respond_to?(:call)
+            reader.call(encrypted_attribute_scheme)
+          else
+            encrypted_attribute_scheme.public_send(reader)
+          end
+        end
+
         def option_matches?(expected, actual)
           if expected.is_a?(Module)
             actual.is_a?(expected)
@@ -163,7 +232,7 @@ but it did"
 
         def options_correct?
           @options.all? do |opt, expected|
-            actual = encrypted_attribute_scheme.public_send(SCHEME_READERS.fetch(opt))
+            actual = scheme_value_for(opt)
             next true if option_matches?(expected, actual)
 
             @failure_message = "Expected to #{description} of #{class_name} using :#{opt} option
