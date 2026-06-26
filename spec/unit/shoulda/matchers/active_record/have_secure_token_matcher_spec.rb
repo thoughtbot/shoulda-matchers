@@ -27,6 +27,17 @@ describe Shoulda::Matchers::ActiveRecord::HaveSecureTokenMatcher,
     expect(valid_model.new).to have_secure_token
   end
 
+  it 'matches when the subject configures has_secure_token with the db using a text datatype' do
+    create_table(:users) do |t|
+      t.string :token
+      t.index :text, unique: true
+    end
+
+    valid_model = define_model_class(:User) { has_secure_token }
+
+    expect(valid_model.new).to have_secure_token
+  end
+
   it 'matches when the subject configures has_secure_token with the db for ' \
       'a custom attribute' do
     create_table(:users) do |t|
