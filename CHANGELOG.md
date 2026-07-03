@@ -10,14 +10,13 @@
   `with_compressor`, `without_compression` and `supporting_unencrypted_data`
   qualifiers by @matsales28 ([#1717])
 
-[#1716]: https://github.com/thoughtbot/shoulda-matchers/pull/1716
-[#1717]: https://github.com/thoughtbot/shoulda-matchers/pull/1717
-
 ### Bug fixes
 
 - Allow the `have_secure_token` matcher to accept a `text` column in addition
   to `string` by @matsales28 ([#1719])
 
+[#1716]: https://github.com/thoughtbot/shoulda-matchers/pull/1716
+[#1717]: https://github.com/thoughtbot/shoulda-matchers/pull/1717
 [#1719]: https://github.com/thoughtbot/shoulda-matchers/pull/1719
 
 ## 8.0.1 - 2026-06-12
