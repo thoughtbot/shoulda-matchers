@@ -94,7 +94,7 @@ module Shoulda
             @errors << 'missing expected class and instance methods'
           end
           if !has_expected_db_column?
-            @errors << "missing correct column #{token_attribute}:string"
+            @errors << "missing correct column #{token_attribute}:string/text"
           end
           if !@options[:ignore_check_for_db_index] && !has_expected_db_index?
             @errors << "missing unique index for #{table_and_column}"
@@ -110,8 +110,10 @@ module Shoulda
         end
 
         def has_expected_db_column?
-          matcher = HaveDbColumnMatcher.new(token_attribute).of_type(:string)
-          matcher.matches?(@subject)
+          %i[string text].any? do |type|
+            HaveDbColumnMatcher.new(token_attribute).of_type(type).
+              matches?(@subject)
+          end
         end
 
         def has_expected_db_index?

@@ -27,6 +27,17 @@ describe Shoulda::Matchers::ActiveRecord::HaveSecureTokenMatcher,
     expect(valid_model.new).to have_secure_token
   end
 
+  it 'matches when the token column is a text column' do
+    create_table(:users) do |t|
+      t.text :token
+      t.index :token, unique: true
+    end
+
+    valid_model = define_model_class(:User) { has_secure_token }
+
+    expect(valid_model.new).to have_secure_token
+  end
+
   it 'matches when the subject configures has_secure_token with the db for ' \
       'a custom attribute' do
     create_table(:users) do |t|
@@ -72,7 +83,7 @@ describe Shoulda::Matchers::ActiveRecord::HaveSecureTokenMatcher,
     expected_message =
       'Expected User to have :token as a secure token but the following ' \
       'errors were found: missing expected class and instance methods, ' \
-      'missing correct column token:string, missing unique index for ' \
+      'missing correct column token:string/text, missing unique index for ' \
       'users.token'
 
     aggregate_failures do
@@ -130,7 +141,7 @@ describe Shoulda::Matchers::ActiveRecord::HaveSecureTokenMatcher,
     expected_message =
       'Expected User to have :auth_token as a secure token but the ' \
       'following errors were found: missing expected class and instance '  \
-      'methods, missing correct column auth_token:string, missing unique ' \
+      'methods, missing correct column auth_token:string/text, missing unique ' \
       'index for users.auth_token'
 
     aggregate_failures do
