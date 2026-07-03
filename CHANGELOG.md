@@ -6,8 +6,12 @@
 
 - Add `without_validations`, `with_reset_token`, and `without_reset_token`
   qualifiers to the `have_secure_password` matcher by @matsales28 ([#1716])
+- Expand the `encrypt` matcher with `with_key_provider`, `with_previous`,
+  `with_compressor`, `without_compression` and `supporting_unencrypted_data`
+  qualifiers by @matsales28 ([#1717])
 
 [#1716]: https://github.com/thoughtbot/shoulda-matchers/pull/1716
+[#1717]: https://github.com/thoughtbot/shoulda-matchers/pull/1717
 
 ## 8.0.1 - 2026-06-12
 

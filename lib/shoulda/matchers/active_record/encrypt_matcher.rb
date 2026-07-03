@@ -106,6 +106,38 @@ module Shoulda
       #       should encrypt(:access_code).with_previous(deterministic: false)
       #     end
       #
+      # ##### with_compressor
+      #
+      #     class Survey < ActiveRecord::Base
+      #       encrypts :access_code, compressor: ZstdCompressor
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Survey, type: :model do
+      #       it { should encrypt(:access_code).with_compressor(ZstdCompressor) }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class SurveyTest < ActiveSupport::TestCase
+      #       should encrypt(:access_code).with_compressor(ZstdCompressor)
+      #     end
+      #
+      # ##### without_compression
+      #
+      #     class Survey < ActiveRecord::Base
+      #       encrypts :access_code, compress: false
+      #     end
+      #
+      #     # RSpec
+      #     RSpec.describe Survey, type: :model do
+      #       it { should encrypt(:access_code).without_compression }
+      #     end
+      #
+      #     # Minitest (Shoulda)
+      #     class SurveyTest < ActiveSupport::TestCase
+      #       should encrypt(:access_code).without_compression
+      #     end
+      #
       # ##### supporting_unencrypted_data
       #
       #     class Survey < ActiveRecord::Base
@@ -137,6 +169,16 @@ module Shoulda
           key_provider: :key_provider,
           support_unencrypted_data: :support_unencrypted_data?,
           previous: -> (scheme) { scheme.previous_schemes.map(&:to_h) },
+          compressor: -> (scheme) {
+            properties = scheme.to_h
+            encryptor = properties[:encryptor]
+            encryptor ? encryptor.compressor : properties[:compressor]
+          },
+          compress: -> (scheme) {
+            properties = scheme.to_h
+            encryptor = properties[:encryptor]
+            encryptor ? encryptor.compress? : properties.fetch(:compress, true)
+          },
         }.freeze
 
         def initialize(attribute)
@@ -168,6 +210,14 @@ module Shoulda
 
         def with_previous(*previous)
           with_option(:previous, previous)
+        end
+
+        def with_compressor(compressor)
+          with_option(:compressor, compressor)
+        end
+
+        def without_compression
+          with_option(:compress, false)
         end
 
         def matches?(subject)
@@ -223,11 +273,9 @@ but it did"
         end
 
         def option_matches?(expected, actual)
-          if expected.is_a?(Module)
-            actual.is_a?(expected)
-          else
-            expected == actual
-          end
+          return true if expected == actual
+
+          expected.is_a?(Module) && actual.is_a?(expected)
         end
 
         def options_correct?

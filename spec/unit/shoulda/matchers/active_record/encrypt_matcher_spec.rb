@@ -288,6 +288,76 @@ but it did
       end
     end
 
+    context 'with_compressor' do
+      it 'accepts when the compressor matches' do
+        compressor = Module.new
+
+        expect(with_encrypt_attr(compressor: compressor)).
+          to encrypt(:attr).with_compressor(compressor)
+      end
+
+      it 'rejects when the compressor does not match' do
+        expected = Module.new
+        actual = Module.new
+
+        assertion = lambda do
+          expect(with_encrypt_attr(compressor: actual)).
+            to encrypt(:attr).with_compressor(expected)
+        end
+
+        expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected to encrypt :attr of Example using :compressor option
+as ‹#{expected}›, but got ‹#{actual}›
+        MESSAGE
+      end
+
+      it 'rejects when used in the negative' do
+        compressor = Module.new
+
+        assertion = lambda do
+          expect(with_encrypt_attr(compressor: compressor)).
+            not_to encrypt(:attr).with_compressor(compressor)
+        end
+
+        expect(&assertion).to fail_with_message(<<~MESSAGE)
+Did not expect to encrypt :attr of Example
+using :compressor option as ‹#{compressor}›,
+but it did
+        MESSAGE
+      end
+    end
+
+    context 'without_compression' do
+      it 'accepts when compression is disabled' do
+        expect(with_encrypt_attr(compress: false)).
+          to encrypt(:attr).without_compression
+      end
+
+      it 'rejects when compression is enabled' do
+        assertion = lambda do
+          expect(with_encrypt_attr).to encrypt(:attr).without_compression
+        end
+
+        expect(&assertion).to fail_with_message(<<~MESSAGE)
+Expected to encrypt :attr of Example using :compress option
+as ‹false›, but got ‹true›
+        MESSAGE
+      end
+
+      it 'rejects when used in the negative' do
+        assertion = lambda do
+          expect(with_encrypt_attr(compress: false)).
+            not_to encrypt(:attr).without_compression
+        end
+
+        expect(&assertion).to fail_with_message(<<~MESSAGE)
+Did not expect to encrypt :attr of Example
+using :compress option as ‹false›,
+but it did
+        MESSAGE
+      end
+    end
+
     context 'supporting_unencrypted_data' do
       it 'accepts when the attribute supports unencrypted data' do
         expect(with_encrypt_attr(support_unencrypted_data: true)).
