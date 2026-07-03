@@ -10,15 +10,21 @@
   `with_compressor`, `without_compression` and `supporting_unencrypted_data`
   qualifiers by @matsales28 ([#1717])
 
-[#1716]: https://github.com/thoughtbot/shoulda-matchers/pull/1716
-[#1717]: https://github.com/thoughtbot/shoulda-matchers/pull/1717
-
 ### Bug fixes
 
 - Fix `with_high_message` not expecting a custom validation message in the
   `validate_inclusion_of` matcher by @matsales28 ([#1718])
 
+### Improvements
+
+- Fix "`if` at the end of line without an expression" warnings in the spec
+  support files so the suite runs warning-free on Ruby 3.4+ by @matsales28
+  ([#1720])
+
+[#1716]: https://github.com/thoughtbot/shoulda-matchers/pull/1716
+[#1717]: https://github.com/thoughtbot/shoulda-matchers/pull/1717
 [#1718]: https://github.com/thoughtbot/shoulda-matchers/pull/1718
+[#1720]: https://github.com/thoughtbot/shoulda-matchers/pull/1720
 
 ## 8.0.1 - 2026-06-12
 
