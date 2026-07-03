@@ -13,6 +13,13 @@
 [#1716]: https://github.com/thoughtbot/shoulda-matchers/pull/1716
 [#1717]: https://github.com/thoughtbot/shoulda-matchers/pull/1717
 
+### Bug fixes
+
+- Fix `with_high_message` not expecting a custom validation message in the
+  `validate_inclusion_of` matcher by @matsales28 ([#1718])
+
+[#1718]: https://github.com/thoughtbot/shoulda-matchers/pull/1718
+
 ## 8.0.1 - 2026-06-12
 
 ### Bug fixes

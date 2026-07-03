@@ -973,6 +973,32 @@ Expected Issue to validate that :severity_type is either ‹"Low"›,
           'validate that :attr lies inside the range ‹1› to ‹10›',
         )
       end
+
+      context 'qualified with with_low_message' do
+        it 'states that it produces a custom validation error on failure' do
+          matcher = validate_inclusion_of(:attr).
+            in_range(1..10).
+            with_low_message('too low')
+
+          expect(matcher.description).to eq(
+            'validate that :attr lies inside the range ‹1› to ‹10›, ' \
+            'producing a custom validation error on failure',
+          )
+        end
+      end
+
+      context 'qualified with with_high_message' do
+        it 'states that it produces a custom validation error on failure' do
+          matcher = validate_inclusion_of(:attr).
+            in_range(1..10).
+            with_high_message('too high')
+
+          expect(matcher.description).to eq(
+            'validate that :attr lies inside the range ‹1› to ‹10›, ' \
+            'producing a custom validation error on failure',
+          )
+        end
+      end
     end
   end
 
