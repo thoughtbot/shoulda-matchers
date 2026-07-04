@@ -50,6 +50,8 @@ module Shoulda
 
       # @private
       class HaveSecureTokenMatcher
+        ALLOWED_COLUMN_TYPES = %i[string text].freeze
+
         attr_reader :token_attribute
 
         def initialize(token_attribute)
@@ -94,7 +96,8 @@ module Shoulda
             @errors << 'missing expected class and instance methods'
           end
           if !has_expected_db_column?
-            @errors << "missing correct column #{token_attribute}:string"
+            @errors << "missing correct column #{token_attribute}:" \
+                       "#{ALLOWED_COLUMN_TYPES.join('/')}"
           end
           if !@options[:ignore_check_for_db_index] && !has_expected_db_index?
             @errors << "missing unique index for #{table_and_column}"
@@ -110,8 +113,10 @@ module Shoulda
         end
 
         def has_expected_db_column?
-          matcher = HaveDbColumnMatcher.new(token_attribute).of_type(:string)
-          matcher.matches?(@subject)
+          ALLOWED_COLUMN_TYPES.any? do |type|
+            HaveDbColumnMatcher.new(token_attribute).of_type(type).
+              matches?(@subject)
+          end
         end
 
         def has_expected_db_index?
