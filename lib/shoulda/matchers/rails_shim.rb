@@ -102,18 +102,9 @@ module Shoulda
           end
         end
 
-        def digestible_attributes_in(record)
-          record.methods.inject([]) do |array, method_name|
-            match = method_name.to_s.match(
-              /\A(\w+)_(?:confirmation|digest)=\Z/,
-            )
-
-            if match
-              array.concat([match[1].to_sym])
-            else
-              array
-            end
-          end
+        def digestible_attribute?(record, attribute_name)
+          record.respond_to?("#{attribute_name}_digest=") ||
+            record.respond_to?("#{attribute_name}_confirmation=")
         end
 
         def secure_password_module

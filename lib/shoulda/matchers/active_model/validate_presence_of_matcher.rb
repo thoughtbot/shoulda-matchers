@@ -254,8 +254,10 @@ module Shoulda
         end
 
         def secure_password_being_validated?
-          Shoulda::Matchers::RailsShim.digestible_attributes_in(@subject).
-            include?(@attribute)
+          Shoulda::Matchers::RailsShim.digestible_attribute?(
+            @subject,
+            @attribute,
+          )
         end
 
         def possibly_ignore_interference_by_writer
