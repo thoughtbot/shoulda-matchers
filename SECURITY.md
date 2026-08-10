@@ -3,7 +3,7 @@
 
 ## Supported Versions
 
-Only the the latest version of this project is supported at a given time. If
+Only the latest version of this project is supported at a given time. If
 you find a security issue with an older version, please try updating to the
 latest version first.
 
