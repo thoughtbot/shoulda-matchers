@@ -691,8 +691,17 @@ module Shoulda
         end
 
         def instance_methods_exist?
-          expected_instance_methods.all? do |method|
-            record.methods.include?(method)
+          new_record = record.dup
+          pairs = expected_instance_methods.each_slice(2)
+
+          expected_enum_value_names.zip(pairs).all? do |name, (predicate, bang)|
+            next false unless new_record.respond_to?(predicate) && new_record.respond_to?(bang)
+
+            # Method names alone can't tell prefixed/suffixed methods apart
+            # from another attribute's, so call them and check they affect
+            # this one.
+            new_record.public_send("#{attribute_name}=", name)
+            new_record.public_send(predicate) == true && new_record.public_send(bang) == true
           end
         end
 
