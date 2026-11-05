@@ -42,8 +42,7 @@ module Shoulda
           end
 
           def join_table_exists?
-            if connection.data_sources.
-                include?(join_table_name.to_s)
+            if actual_join_table_name
               true
             else
               @failure_message = missing_table_message
@@ -78,8 +77,21 @@ module Shoulda
             [foreign_key, association_foreign_key]
           end
 
+          # A database with an identifier length limit stores the join table
+          # under a truncated name, while the name Rails derives from the model
+          # names is not truncated. The association still works, so accept
+          # either.
+          def actual_join_table_name
+            @_actual_join_table_name ||= begin
+              derived = join_table_name.to_s
+              candidates =
+                [derived, derived[0, connection.max_identifier_length]].uniq
+              candidates.detect { |name| connection.data_sources.include?(name) }
+            end
+          end
+
           def actual_join_table_columns
-            connection.columns(join_table_name).map(&:name)
+            connection.columns(actual_join_table_name).map(&:name)
           end
 
           def missing_table_message
