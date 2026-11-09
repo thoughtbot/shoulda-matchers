@@ -2282,6 +2282,31 @@ Expected Parent to have a has_many association called children through conceptio
       end.to fail_with_message_including('missing columns: person_id, relative_id')
     end
 
+    it 'accepts an association whose join table name the database truncated' do
+      define_model :technical_and_organisational_security_measure
+      define_model :data_protection_processing_activity do
+        has_and_belongs_to_many :technical_and_organisational_security_measures
+      end
+
+      connection = DataProtectionProcessingActivity.connection
+      derived_name = DataProtectionProcessingActivity.
+        reflect_on_association(:technical_and_organisational_security_measures).
+        join_table
+
+      create_table(
+        derived_name[0, connection.max_identifier_length],
+        id: false,
+      ) do |t|
+        t.references :data_protection_processing_activity
+        t.references :technical_and_organisational_security_measure
+      end
+
+      expect(DataProtectionProcessingActivity.new).
+        to have_and_belong_to_many(
+          :technical_and_organisational_security_measures,
+        )
+    end
+
     context 'when qualified with join_table' do
       context 'and it is a symbol' do
         context 'and the association has been declared with a :join_table option' do
