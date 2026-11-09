@@ -536,13 +536,17 @@ module Shoulda
         end
 
         def column_type_matches?
-          if column.type == expected_column_type.to_sym
+          actual_type = column&.type || virtual_attribute_type
+          return true if actual_type.nil?
+
+          if actual_type == expected_column_type.to_sym
             true
           else
+            kind = column ? 'column' : 'attribute'
             @failure_message_continuation =
               "However, #{attribute_name.inspect} is "\
-              "#{Shoulda::Matchers::Util.a_or_an(column.type)}"\
-              ' column'
+              "#{Shoulda::Matchers::Util.a_or_an(actual_type)}"\
+              " #{kind}"
             false
           end
         end
@@ -556,6 +560,13 @@ module Shoulda
           column_name = model.attribute_alias(key) || key
 
           model.columns_hash[column_name]
+        end
+
+        def virtual_attribute_type
+          key = attribute_name.to_s
+          column_name = model.attribute_alias(key) || key
+          type = model.attribute_types[column_name]&.type
+          type if type && type != :value
         end
 
         def model
