@@ -462,6 +462,71 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
           MESSAGE
         end
       end
+
+      context 'when another attribute shares the same enum values' do
+        context 'if the correct prefix is used' do
+          it 'matches' do
+            model = define_model(
+              'Example',
+              attr_one: { type: :string },
+              attr_two: { type: :string },
+            ) do
+              enum :attr_one, { active: 'active', archived: 'archived' }, prefix: :one
+              enum :attr_two, { active: 'active', archived: 'archived' }, prefix: :two
+            end
+            record = model.new
+
+            matcher = lambda do
+              define_enum_for(:attr_two).
+                with_values(active: 'active', archived: 'archived').
+                backed_by_column_of_type(:string).
+                with_prefix(:two)
+            end
+
+            expect(&matcher).
+              to match_against(record).
+              or_fail_with(<<-MESSAGE, wrap: true)
+                Expected Example not to define :attr_two as an enum backed by
+                a string, mapping ‹"active"› to ‹"active"› and ‹"archived"› to
+                ‹"archived"› and prefixing accessor methods with "two_", but
+                it did.
+              MESSAGE
+          end
+        end
+
+        context 'if the wrong prefix is used' do
+          it 'rejects with an appropriate failure message' do
+            model = define_model(
+              'Example',
+              attr_one: { type: :string },
+              attr_two: { type: :string },
+            ) do
+              enum :attr_one, { active: 'active', archived: 'archived' }, prefix: :one
+              enum :attr_two, { active: 'active', archived: 'archived' }, prefix: :two
+            end
+            record = model.new
+
+            matcher = lambda do
+              expect(record).
+                to define_enum_for(:attr_two).
+                with_values(active: 'active', archived: 'archived').
+                backed_by_column_of_type(:string).
+                with_prefix(:one)
+            end
+
+            message = format_message(<<-MESSAGE)
+              Expected Example to define :attr_two as an enum backed by a
+              string, mapping ‹"active"› to ‹"active"› and ‹"archived"› to
+              ‹"archived"› and prefixing accessor methods with "one_".
+              :attr_two does map to these values, but the enum is configured
+              with either a different prefix or no prefix at all (we can't
+              tell which).
+            MESSAGE
+
+            expect(&matcher).to fail_with_message(message)
+          end
+        end
+      end
     end
 
     context 'when the prefix is implicit' do
@@ -621,6 +686,71 @@ describe Shoulda::Matchers::ActiveRecord::DefineEnumForMatcher, type: :model do
           expect(matcher.description).to eq(<<~MESSAGE.strip)
             define :attr as an enum backed by an integer with values ‹[:active, :archived]›, suffix: :foo
           MESSAGE
+        end
+      end
+
+      context 'when another attribute shares the same enum values' do
+        context 'if the correct suffix is used' do
+          it 'matches' do
+            model = define_model(
+              'Example',
+              attr_one: { type: :string },
+              attr_two: { type: :string },
+            ) do
+              enum :attr_one, { active: 'active', archived: 'archived' }, suffix: :one
+              enum :attr_two, { active: 'active', archived: 'archived' }, suffix: :two
+            end
+            record = model.new
+
+            matcher = lambda do
+              define_enum_for(:attr_two).
+                with_values(active: 'active', archived: 'archived').
+                backed_by_column_of_type(:string).
+                with_suffix(:two)
+            end
+
+            expect(&matcher).
+              to match_against(record).
+              or_fail_with(<<-MESSAGE, wrap: true)
+                Expected Example not to define :attr_two as an enum backed by
+                a string, mapping ‹"active"› to ‹"active"› and ‹"archived"› to
+                ‹"archived"› and suffixing accessor methods with "_two", but
+                it did.
+              MESSAGE
+          end
+        end
+
+        context 'if the wrong suffix is used' do
+          it 'rejects with an appropriate failure message' do
+            model = define_model(
+              'Example',
+              attr_one: { type: :string },
+              attr_two: { type: :string },
+            ) do
+              enum :attr_one, { active: 'active', archived: 'archived' }, suffix: :one
+              enum :attr_two, { active: 'active', archived: 'archived' }, suffix: :two
+            end
+            record = model.new
+
+            matcher = lambda do
+              expect(record).
+                to define_enum_for(:attr_two).
+                with_values(active: 'active', archived: 'archived').
+                backed_by_column_of_type(:string).
+                with_suffix(:one)
+            end
+
+            message = format_message(<<-MESSAGE)
+              Expected Example to define :attr_two as an enum backed by a
+              string, mapping ‹"active"› to ‹"active"› and ‹"archived"› to
+              ‹"archived"› and suffixing accessor methods with "_one".
+              :attr_two does map to these values, but the enum is configured
+              with either a different suffix or no suffix at all (we can't
+              tell which).
+            MESSAGE
+
+            expect(&matcher).to fail_with_message(message)
+          end
         end
       end
     end
